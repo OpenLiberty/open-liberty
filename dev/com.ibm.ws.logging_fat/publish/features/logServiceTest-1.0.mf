@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Subsystem-ManifestVersion: 1
+IBM-ShortName: logServiceTest-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.logServiceTest-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content:  logservice.tester;  version="[1,1.0.100)", com.ibm.wsspi.appserver.webBundle-1.0; type="osgi.subsystem.feature", com.ibm.websphere.appserver.servlet-3.1; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Localization: OSGI-INF/l10n/subsystem 

@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.820,ou=attributeTypes,cn=adsconfig,ou=schema
+m-supattributetype: distinguishedName
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-ordering: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.820
+m-name: ads-searchBaseDN
+m-description: base DN of the DIT to be searched or replicated
+entryUUID: e236b9c7-607e-4fce-9865-d521cd954798
+entryCSN: 20130919065344.673000Z#000000#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065354.012Z

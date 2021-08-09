@@ -1,0 +1,136 @@
+<server>
+
+  <variable name="onError" value="FAIL"/>
+
+  <!--
+  <logging traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.sib.msgstore.cache.links.AbstractItemLink=all:com.ibm.ws.sib.msgstore.deliverydelay.*=all:com.ibm.ws.sib.processor.impl.JSLocalConsumerPoint=all:com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher=all:com.ibm.ws.sib.processor.impl.ConsumerDispatcher=all:com.ibm.ws.sib.comms.client.ConsumerSessionProxy=all:com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl=all:SIBMessageTrace=all" maxFileSize="200"/>
+    -->
+
+  <!-- -->
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+
+    <feature>wasJmsServer-1.0</feature>
+    <feature>wasJmsSecurity-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+
+    <feature>timedexit-1.0</feature>
+  </featureManager>
+
+  <!-- -->
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+                host="*"
+                httpPort="${bvt.prop.HTTP_default}"
+                httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- -->
+
+  <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}"/>
+  <variable name="bvt.prop.jms.ssl"  value="${bvt.prop.jms.1.ssl}"/>
+
+  <wasJmsEndpoint id="InboundJmsCommsEndpoint" host="*" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}"/>
+
+  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
+  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}"/>
+
+  <!-- -->
+
+  <keyStore location="${server.output.dir}/resources/security/mykey.jks" password="{xor}NDombm1s" id="defaultKeyStore"/>
+
+  <basicRegistry id="basic" realm="customRealm">
+    <user name="user1" password="user1pwd"/>
+    <user name="user2" password="user2pwd"/>
+    <user name="user3" password="user3pwd"/>
+    <group name="Testers">
+      <member name="user3"/>
+    </group>
+  </basicRegistry>
+
+  <!-- -->
+
+  <messagingEngine>
+    <queue id="QUEUE1"/>
+    <queue id="QUEUE2"/>
+    <queue id="QUEUE3"/>
+    <queue id="QUEUE4"/>
+
+    <topicSpace id="NewTopic1"/>
+    <topicSpace id="NewTopic2"/>
+    <topicSpace id="NewTopic3"/>
+
+    <messagingSecurity>
+      <role name="developer">
+        <queuePermission queueRef="QUEUE1">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <queuePermission queueRef="QUEUE2">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <queuePermission queueRef="QUEUE3">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <queuePermission queueRef="QUEUE4">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <topicPermission topicSpaceRef="NewTopic1" topicName="testTopic">
+          <action>ALL</action>
+        </topicPermission>
+
+        <topicPermission topicSpaceRef="NewTopic2" topicName="testTopic2">
+          <action>ALL</action>
+        </topicPermission>
+
+        <topicPermission topicSpaceRef="NewTopic3" topicName="testTopic3">
+          <action>ALL</action>
+        </topicPermission>
+
+        <topicPermission topicSpaceRef="Default.Topic.Space" topicName="_tempTopic">
+          <action>ALL</action>
+        </topicPermission>
+
+        <tempDestinationPermission prefix="TEMP">
+          <action>CREATE</action>
+          <action>SEND</action>
+          <action>RECEIVE</action>
+        </tempDestinationPermission>
+
+        <tempDestinationPermission prefix="Qtemp">
+          <action>CREATE</action>
+          <action>SEND</action>
+          <action>RECEIVE</action>
+        </tempDestinationPermission>
+
+        <tempDestinationPermission prefix="Ttemp">
+          <action>CREATE</action>
+          <action>SEND</action>
+          <action>RECEIVE</action>
+        </tempDestinationPermission>
+
+        <user name="user1"/>
+        <group name="Testers"/>
+      </role>
+
+    </messagingSecurity>
+  </messagingEngine>
+
+</server>

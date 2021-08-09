@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.2.14,ou=objectClasses,cn=samba,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+creatorsname: uid=admin,ou=system
+m-oid: 1.3.6.1.4.1.7165.2.2.14
+m-name: sambaTrustPassword
+m-description: Samba Trust Password
+m-supobjectclass: top
+m-must: sambaDomainName
+m-must: sambaNTPassword
+m-must: sambaTrustFlags
+entryUUID: 475bf5f9-9646-4fcf-ab9b-7a4231d472b5
+m-may: sambaPwdLastSet
+m-may: sambaSID
+entryCSN: 20130919065345.621000Z#000000#000#000000
+entryParentId: 8e14d1f0-66fb-4720-9d3a-d644eb1f3fd6
+createTimestamp: 20130919065353.300Z

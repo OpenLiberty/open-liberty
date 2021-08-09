@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.9,ou=objectClasses,cn=nis,ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+m-oid: 1.3.6.1.1.1.2.9
+m-name: nisMap
+m-description: A generic abstraction of a NIS map
+m-supobjectclass: top
+m-must: nisMapName
+entryUUID: 3aa2c021-c2a3-4635-b81d-04ff87f68cf4
+m-may: description
+entryCSN: 20130919065345.470000Z#000001#000#000000
+entryParentId: 035737fa-66e0-4a13-849d-0c1787cf820f
+createTimestamp: 20130919065352.255Z

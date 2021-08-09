@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_id" xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+    metadata-complete="false" version="3.0">
+
+    <enterprise-beans>
+        <!-- Stateful Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>OLGH16686SFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.olgh16686.ejblocal.OLGH16686SFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+            <resource-ref>
+                <res-ref-name>jdbc/JPA_DS</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-ref>
+                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+
+            <!-- Persistence Context Definitions -->
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/OLGH16686_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>OLGH16686_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OLGH16686_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>OLGH16686_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OLGH16686_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>OLGH16686_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+
+        <!-- Stateful Session Bean, PC: CM-ES -->
+        <session>
+            <ejb-name>OLGH16686SFExEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.olgh16686.ejblocal.OLGH16686SFExEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+            <resource-ref>
+                <res-ref-name>jdbc/JPA_DS</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-ref>
+                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+
+            <!-- Persistence Context Definitions -->
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/OLGH16686_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>OLGH16686_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+        </session>
+
+        <!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+        <session>
+            <ejb-name>OLGH16686SLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.olgh16686.ejblocal.OLGH16686SLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+            <resource-ref>
+                <res-ref-name>jdbc/JPA_DS</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+            <resource-ref>
+                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+
+            <!-- Persistence Context Definitions -->
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/OLGH16686_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>OLGH16686_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OLGH16686_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>OLGH16686_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/OLGH16686_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>OLGH16686_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

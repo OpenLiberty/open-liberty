@@ -1,0 +1,92 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Die Suche nach dem Anwendungsnamen in JNDI hat keinen Wert zur\u00fcckgegeben. Es wird ein Standardname f\u00fcr den Opentracing-Service verwendet.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=Das Feature stellt den Anwendungsnamen f\u00fcr die vom Benutzer bereitgestellte OpentracingTracerFactory-Implementierung bereit. Der Anwendungsname konnte mit der JNDI-Suche nach "java:app/AppName" nicht abgerufen werden. Es wurde ein Standardservicename bereitgestellt.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=Stellen Sie fest, warum der Anwendungsname bei der JNDI-Suche nach "java:app/AppName" nicht gefunden wurde.
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Der Aufruf der vom Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) ist mit einer Ausnahme fehlgeschlagen. Nachricht: {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat eine Ausnahme zur\u00fcckgegeben.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance eine Ausnahme zur\u00fcckgegeben hat.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Der Aufruf der von der Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) hat null zur\u00fcckgegeben.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat null zur\u00fcckgegeben.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance null zur\u00fcckgegeben hat.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing kann JAX-RS-Anforderungen nicht verfolgen, weil keine OpentracingTracerFactory-Klasse angegeben wurde.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing funktioniert nicht ordnungsgem\u00e4\u00df, weil keine OpentracingTracerFactory-Klasse angegeben wurde. JAX-RS-Anforderungen werden zwar normal ausgef\u00fchrt, aber sie werden nicht verfolgt.
+OPENTRACING_NO_TRACERFACTORY.useraction=Weitere Informationen finden Sie in der Dokumentation zur Aktivierung des verteilten OpenTracing-Tracings.
+
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Der OpenTracing-Ausnahme-Mapper hat eine nicht behandelte Ausnahme der JAX-RS-Anwendung entdeckt und verarbeitet.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=In der JAX-RS-basierte Anwendung ist eine Ausnahme eingetreten, die nicht innerhalb der Anwendung verarbeitet wurde. Der OpenTracing-Code verarbeitet sie, indem der Stack-Trace f\u00fcr Ausnahmebedingung protokolliert und eine Antwort des Typs '500 Internal Server Error' zur\u00fcckgegeben wird.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Dieses Verhalten ist m\u00f6glicherweise zul\u00e4ssig. Wenn die Ausnahme anders verarbeitet werden soll, kann der Anwendungsentwickler eine ExceptionMapper-Schnittstelle zur Verarbeitung der Ausnahme hinzuf\u00fcgen und ihr eine andere Antwort zuordnen.
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing kann JAX-RS-Anforderungen nicht verfolgen, weil keine OpentracingTracerFactory-Klasse angegeben wurde oder weil Clientbibliotheken f\u00fcr das Back-End-Tracing nicht im Klassenpfad enthalten sind.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS-Anforderungen werden normal ausgef\u00fchrt, aber sie werden nicht \u00fcberwacht.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Weitere Informationen zur Aktivierung und Konfiguration des verteilten OpenTracing-Tracings finden Sie in der Dokumentation. Sie k\u00f6nnen diese Warnung ignorieren, wenn OpenTracing nicht verwendet wird.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: In der Opentracing-API ist ein Fehler aufgetreten: {0}
+temporary.CWMOT9999E.explanation=In der Opentracing-API ist ein Fehler aufgetreten, der einen normalen Betrieb verhindert.
+temporary.CWMOT9999E.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.

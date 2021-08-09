@@ -1,0 +1,13 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    <featureManager>
+    	<feature>servlet-3.1</feature>
+        <feature>osgiconsole-1.0</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+    <quickStartSecurity userName="Bob" userPassword="bobpwd" />
+    <keyStore id="defaultKeyStore" password="passw0rd" />
+</server>

@@ -1,0 +1,2 @@
+-Djava.io.tmpdir=@BUILD_TMP@
+-Dcom.ibm.ws.kernel.feature.support.fileinstall=true

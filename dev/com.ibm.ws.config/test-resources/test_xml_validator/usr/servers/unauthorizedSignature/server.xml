@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <version maxVersion="${myMaxVersion}" minVersion="${maxVersion}" version="${minVersion}"/>
+
+    <variable name="myMaxVersion" value="99${lastDigit}"/>
+    <variable name="lastDigit" value="9"/>
+    
+    <serverInfo maxVersion="${minVersion}.9" minVersion="1.0" single="${array}" versionFile="${shared.resource.dir}/version.info">
+
+        <supportedVersions>${minVersion}</supportedVersions>
+        <supportedVersions>${maxVersion}</supportedVersions>
+        <supportedVersions>${minVersion} - ${maxVersion}</supportedVersions>
+        <supportedVersions>${jdkVersion}</supportedVersions>
+        <supportedVersions>${myMaxVersion}</supportedVersions>
+
+        <array>v1</array>
+        <array>v2</array>
+        <array>v3,v4</array>
+        <array>v\5</array>
+    </serverInfo>
+
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output encoding="UTF-8"/>
+<xsl:strip-space elements="*"/>
+<xsl:template match="@*|node()">
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="variable"/>
+</xsl:stylesheet></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>5FUDKaf7vzcTb2J4Gf//7IzVvaw=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>OzQTlvgLWYwzIF4UVakN8qLcwdR3fwIQQgXR1kZPB6spUvdb5AYKLOYNbyGUeUa4ZWv01AaNdTZd9sUOMaAMYUxIO4eG50WAtXhc+0PwG/ZJg0g2ph+CL1XCoD6P9dRgEmxqM2TJBEZ6t4Pp0mv2dgynRXITiYZXQzO0mbODJW3S7/fNlcyZA3Pg57XRiJgiaTIFdxt6ResMnGhNfQCb5k8CPbZjVF9K3Ljh6zBDaX5WBiK3SRaPC9NA30X92XeKjK940BkZ/u7A3C1VWwPP5Ik0+pc/xoIf7wkE2pr8TTaLrRgrVkJjeG60hgi1OjTPxy7vaHz1FImusLwVByr0Kw==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509SubjectName>CN=WebServers,OU=IT Back Office,O=ABC Corp,L=Reno,ST=Nevada,C=US</ds:X509SubjectName><ds:X509Certificate>MIIDezCCAmOgAwIBAgIEQar3cjANBgkqhkiG9w0BAQsFADBuMQswCQYDVQQGEwJVUzEPMA0GA1UECBMGTmV2YWRhMQ0wCwYDVQQHEwRSZW5vMREwDwYDVQQKEwhBQkMgQ29ycDEXMBUGA1UECxMOSVQgQmFjayBPZmZpY2UxEzARBgNVBAMTCldlYlNlcnZlcnMwHhcNMTIwNzMwMjMwMzAwWhcNMzIwNzI1MjMwMzAwWjBuMQswCQYDVQQGEwJVUzEPMA0GA1UECBMGTmV2YWRhMQ0wCwYDVQQHEwRSZW5vMREwDwYDVQQKEwhBQkMgQ29ycDEXMBUGA1UECxMOSVQgQmFjayBPZmZpY2UxEzARBgNVBAMTCldlYlNlcnZlcnMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCQfP8uVP6rBUCO2ROd6WKTaKNrgzfbeI5vJUa1dOBsRyN7LlSX19KUIpp3VDxteA4ZNimeckMA7ZdNNjYN5aLQIy3Xlj3ri0sgtkcCH7039aLiKyZ6/OLZARArRUMf+7hlusUQ69LuZ1MI4y/HVq36///sKkKjJpMXHwBKau0g14iRRvuTQE4/eaBnRu8D5SLbCRoYBTVeoTuGeCqW2P7hAiNDEEVfuZyLA4m33tzFh0rEjzOzR/Xonhovv+XB0jZ2RkDT1EguAxTpcmEYy/Z3/OjaTqmslAJyleGczzC6DLEmA9ZyzbpRRWh356uyP6O7inYq550Ensu4BT/EgZ9zAgMBAAGjITAfMB0GA1UdDgQWBBRgkYYx9ZYOdSdflYpkkmMadlZ8ATANBgkqhkiG9w0BAQsFAAOCAQEAHcOQwX/2TglY5/3BUXbVbB/rKja6iWaJSbKOpTuXd0nonejeCLuu2zteQgXlQZ0Ix1J1/y6+1fLO+TOSs0Nn03BanHknVLcwsZbjqOe6vn6y202T8nt7scYsUs4mkQlh0jnUYCC2eJ4zD4hr5a0p/ZgLbgYvbEbd9cxX9dKJ//RI/DS2kO3LC/DJmP4PW5uSGha0ukOOBtfITxL0x4kjJCvf9Ly3zahbl8NGgbfpDxKe4JaJCZ4wcrVs4WD9kFbVfjZlk6n9aL7r+rKnC3rCDl7WxmN3TTJlLihqwNuaMTWzU7zgPtDfa5WNXF7md+Bh4W3CVfpZ395SqW4q5dondQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></server>

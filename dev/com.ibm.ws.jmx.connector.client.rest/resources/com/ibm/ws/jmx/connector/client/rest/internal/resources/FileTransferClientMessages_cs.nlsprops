@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Nov\u00fd klient p\u0159enosu soubor\u016f se spojil s identifik\u00e1torem p\u0159ipojen\u00ed {0}.
+filetransfer.client.init.explanation=Nov\u00fd klient p\u0159enosu soubor\u016f se spojil s ur\u010den\u00fdm identifik\u00e1torem p\u0159ipojen\u00ed.
+filetransfer.client.init.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+filetransfer.client.error=CWWKX7952E: Do\u0161lo k chybov\u00e1 zpr\u00e1v\u011b "{0}" na stran\u011b klienta pro p\u0159ipojen\u00ed {1}.
+filetransfer.client.error.explanation=Do\u0161lo k chyb\u011b konektoru JMX REST na stran\u011b klienta a byla generov\u00e1na ur\u010den\u00e1 zpr\u00e1va.
+filetransfer.client.error.useraction=Pomoc\u00ed generovan\u00e9 chybov\u00e9 zpr\u00e1vy identifikujte a opravte probl\u00e9m, kter\u00fd tuto chybu zp\u016fsobil, a spus\u0165te operaci znovu.
+
+filetransfer.server.error=CWWKX7953E: Do\u0161lo k chybov\u00e1 zpr\u00e1v\u011b "{0}" na stran\u011b serveru pro p\u0159ipojen\u00ed {1}.
+filetransfer.server.error.explanation=Do\u0161lo k chyb\u011b konektoru JMX REST na stran\u011b serveru a byla generov\u00e1na uveden\u00e1 zpr\u00e1va.
+filetransfer.server.error.useraction=Pomoc\u00ed generovan\u00e9 chybov\u00e9 zpr\u00e1vy identifikujte a opravte probl\u00e9m, kter\u00fd tuto chybu zp\u016fsobil, a spus\u0165te operaci znovu.
+
+filetransfer.client.bad.credentials=CWWKX7954E: Zadan\u00e9 u\u017eivatelsk\u00e9 jm\u00e9no a heslo nen\u00ed autorizovan\u00e9. Server odpov\u011bd\u011bl k\u00f3dem {0} a zpr\u00e1vou "{1}" pro p\u0159ipojen\u00ed {2}.
+filetransfer.client.bad.credentials.explanation=Pov\u011b\u0159en\u00ed zadan\u00e1 p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed jsou nespr\u00e1vn\u00e1. Je mo\u017en\u00e9, \u017ee u\u017eivatel neexistuje, nem\u00e1 opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup na server nebo je nespr\u00e1vn\u00e9 heslo.
+filetransfer.client.bad.credentials.useraction=Opravte jm\u00e9no u\u017eivatele nebo heslo a pot\u00e9 z\u00edskejte nov\u00e9 p\u0159ipojen\u00ed.
+
+filetransfer.response.code.error=CWWKX7955E: Klient p\u0159enosu soubor\u016f p\u0159ijal k\u00f3d odezvy {0} se zpr\u00e1vou "{1}" pro p\u0159ipojen\u00ed {2}.
+filetransfer.response.code.error.explanation=Klient p\u0159enosu soubor\u016f p\u0159ijal neo\u010dek\u00e1van\u00fd k\u00f3d odezvy ze serveru.
+filetransfer.response.code.error.useraction=Pomoc\u00ed k\u00f3du odezvy klienta ur\u010dete a vy\u0159e\u0161te p\u0159\u00ed\u010dinu tohoto probl\u00e9mu a spus\u0165te operaci znovu.
+
+filetransfer.download.file=CWWKX7956I: Po\u017eadavek na sta\u017een\u00ed souboru {0} byl \u00fasp\u011b\u0161n\u011b proveden a obsah byl zaps\u00e1n do souboru {1} pomoc\u00ed p\u0159ipojen\u00ed {2}.
+filetransfer.download.file.explanation=Po\u017eadavek na sta\u017een\u00ed uveden\u00e9ho souboru byl \u00fasp\u011b\u0161n\u011b proveden.
+filetransfer.download.file.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+filetransfer.unsupported.operation=CWWKX7957E: Operaci {0} klient p\u0159enosu soubor\u016f nepodporuje pro p\u0159ipojen\u00ed {1}.
+filetransfer.unsupported.operation.explanation=Uvedenou operaci klient p\u0159enosu soubor\u016f nepodporuje.
+filetransfer.unsupported.operation.useraction=Vy\u017e\u00e1dejte si operaci, kterou klient p\u0159enosu soubor\u016f podporuje.
+
+filetransfer.upload.file=CWWKX7958I: Po\u017eadavek na odesl\u00e1n\u00ed souboru {0} byl \u00fasp\u011b\u0161n\u011b proveden a obsah byl zaps\u00e1n do souboru {1} pomoc\u00ed p\u0159ipojen\u00ed {2}.
+filetransfer.upload.file.explanation=Po\u017eadavek na odesl\u00e1n\u00ed uveden\u00e9ho souboru byl \u00fasp\u011b\u0161n\u011b proveden.
+filetransfer.upload.file.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+filetransfer.delete.file=CWWKX7959I: Po\u017eadavek na odstran\u011bn\u00ed souboru {0} byl proveden \u00fasp\u011b\u0161n\u011b pomoc\u00ed p\u0159ipojen\u00ed {1}.
+filetransfer.delete.file.explanation=Po\u017eadavek na odstran\u011bn\u00ed uveden\u00e9ho souboru byl \u00fasp\u011b\u0161n\u00fd.
+filetransfer.delete.file.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+filetransfer.delete.all=CWWKX7960I: Po\u017eadavek na odstran\u011bn\u00ed v\u0161ech soubor\u016f a slo\u017eek z kolekce {0} byl \u00fasp\u011b\u0161n\u011b proveden pomoc\u00ed p\u0159ipojen\u00ed {1}.
+filetransfer.delete.all.explanation=Po\u017eadavek na odstran\u011bn\u00ed uveden\u00e9 kolekce byl \u00fasp\u011b\u0161n\u00fd.
+filetransfer.delete.all.useraction=Toto je informativn\u00ed zpr\u00e1va a nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

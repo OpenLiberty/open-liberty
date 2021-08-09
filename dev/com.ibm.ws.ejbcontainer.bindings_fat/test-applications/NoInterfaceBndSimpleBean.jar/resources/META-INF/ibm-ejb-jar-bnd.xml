@@ -1,0 +1,32 @@
+<ejb-jar-bnd
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+  version="1.0">
+
+  <session name="NoInterfaceSF"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSF"/>
+  <session name="NoInterfaceSFLocal"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSFLocal"/>
+  <session name="NoInterfaceSFRemote"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSFRemote"/>
+  <session name="NoInterfaceSFComponent"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSFComponent"/>
+
+  <session name="NoInterfaceSG"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSG"/>
+  <session name="NoInterfaceSGLocal"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSGLocal"/>
+  <session name="NoInterfaceSGRemote"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSGRemote"/>
+
+  <session name="NoInterfaceSL"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSL"/>
+  <session name="NoInterfaceSLLocal"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSLLocal"/>
+  <session name="NoInterfaceSLRemote"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSLRemote"/>
+  <session name="NoInterfaceSLComponent"
+   simple-binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/NoInterfaceSLComponent"/>
+
+</ejb-jar-bnd>

@@ -1,0 +1,106 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<oauthProvider
+		id="OAuthConfigSamplePKCE"
+		filter="request-url%=snoop;request-url!=snooping"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client_defaults</autoAuthorizeClient>
+		<autoAuthorizeClient>client_proofKeyForCodeExchange_omitted_publicClient_true</autoAuthorizeClient>
+		<autoAuthorizeClient>client_proofKeyForCodeExchange_true_publicClient_false</autoAuthorizeClient>
+		<autoAuthorizeClient>client_proofKeyForCodeExchange_true_publicClient_true</autoAuthorizeClient>
+		<autoAuthorizeClient>client_proofKeyForCodeExchange_false_publicClient_false</autoAuthorizeClient>
+		<autoAuthorizeClient>client_proofKeyForCodeExchange_false_publicClient_true</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client_defaults"
+				secret="{xor}LDo8LTor"
+				displayname="client_defaults"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client_proofKeyForCodeExchange_omitted_publicClient_true"
+				secret="{xor}LDo8LTor"
+				displayname="client_proofKeyForCodeExchange_omitted_publicClient_true"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" 
+				publicClient="false" />
+			<client
+				name="client_proofKeyForCodeExchange_true_publicClient_false"
+				secret="{xor}LDo8LTor"
+				displayname="client_proofKeyForCodeExchange_true_publicClient_false"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" 
+				proofKeyForCodeExchange="true"
+				publicClient="false" />
+			<client
+				name="client_proofKeyForCodeExchange_true_publicClient_true"
+				secret="{xor}LDo8LTor"
+				displayname="client_proofKeyForCodeExchange_true_publicClient_true"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" 
+				proofKeyForCodeExchange="true"
+				publicClient="true" />
+			<client
+				name="client_proofKeyForCodeExchange_false_publicClient_false"
+				secret="{xor}LDo8LTor"
+				displayname="client_proofKeyForCodeExchange_false_publicClient_false"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" 
+				proofKeyForCodeExchange="false"
+				publicClient="false" />
+			<client
+				name="client_proofKeyForCodeExchange_false_publicClient_true"
+				secret="{xor}LDo8LTor"
+				displayname="client_proofKeyForCodeExchange_false_publicClient_true"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" 
+				proofKeyForCodeExchange="false"
+				publicClient="true" />		
+		</localStore>
+	</oauthProvider>
+
+
+	<oauthProvider
+		id="OAuthConfigSamplePKCELifetime"
+		filter="request-url%=snooping"
+		oauthOnly="true"
+		autoAuthorize="true"
+		authorizationCodeLifetime="5s"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client_lifetime</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client_lifetime"
+				secret="{xor}LDo8LTor"
+				displayname="client_defaults"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true"
+				proofKeyForCodeExchange="true"
+				publicClient="true" />
+		</localStore>
+	</oauthProvider>
+
+</server>

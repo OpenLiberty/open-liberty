@@ -1,0 +1,5 @@
+IBM-SPI-Package: com.ibm.websphere.ras,
+ com.ibm.websphere.ras.annotation, 
+ com.ibm.wsspi.logging,
+ com.ibm.ws.ffdc,
+ com.ibm.ws.ffdc.annotation

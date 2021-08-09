@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: L''\u00e9l\u00e9ment {2} ne comporte pas l''attribut obligatoire {3} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+required.attribute.missing.explanation=Un attribut requis est manquant pour l'\u00e9l\u00e9ment indiqu\u00e9.
+required.attribute.missing.useraction=Corrigez le descripteur de d\u00e9ploiement en ajoutant l'attribut manquant.
+
+invalid.root.element=CWWKC2252E: Nom racine local {2} non valide dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+invalid.root.element.explanation=L'\u00e9l\u00e9ment racine est incorrect.
+invalid.root.element.useraction=V\u00e9rifier le fichier XML afin de vous assurer que l'\u00e9l\u00e9ment racine est correct.
+
+root.element.not.found=CWWKC2253E: Impossible de localiser l''\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+root.element.not.found.explanation=L'\u00e9l\u00e9ment racine \u00e9tait manquant dans le descripteur de d\u00e9ploiement.
+root.element.not.found.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+end.element.not.found=CWWKC2254E: La balise d''\u00e9l\u00e9ment final de l''\u00e9l\u00e9ment {2} est introuvable dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+end.element.not.found.explanation=Le descripteur de d\u00e9ploiement ne semble pas \u00eatre un fichier XML.
+end.element.not.found.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+incorrect.id.attr.namespace=CWWKC2255E: L''espace de nom de l''attribut ID de l''\u00e9l\u00e9ment {2} \u00e9tait {3} alors qu''il devrait \u00eatre {4} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+incorrect.id.attr.namespace.explanation=L'espace de nom des \u00e9l\u00e9ments dans le descripteur de d\u00e9ploiement n'\u00e9tait pas coh\u00e9rent avec celui des attributs.
+incorrect.id.attr.namespace.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+unexpected.attribute=CWWKC2256E: Attribut {3} inattendu d\u00e9tect\u00e9 lors de l''analyse de l''\u00e9l\u00e9ment {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+unexpected.attribute.explanation=Un attribut ne devant pas figurer dans le descripteur de d\u00e9ploiement a \u00e9t\u00e9 d\u00e9tect\u00e9.
+unexpected.attribute.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+unexpected.content=CWWKC2257E: Contenu inattendu d\u00e9tect\u00e9 dans l''\u00e9l\u00e9ment {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+unexpected.content.explanation=Du contenu textuel ne devant figurer dans le descripteur de d\u00e9ploiement a \u00e9t\u00e9 d\u00e9tect\u00e9.
+unexpected.content.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+incorrect.child.element.namespace=CWWKC2258E: L''espace de nom de l''\u00e9l\u00e9ment enfant {3} de l''\u00e9l\u00e9ment parent {2} \u00e9tait {4} et non pas {5} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+incorrect.child.element.namespace.explanation=L'espace de nom des \u00e9l\u00e9ments dans le descripteur de d\u00e9ploiement n'\u00e9tait pas coh\u00e9rent avec celui des attributs.
+incorrect.child.element.namespace.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+unexpected.child.element=CWWKC2259E: El\u00e9ment enfant {3} inattendu de l''\u00e9l\u00e9ment parent {2} d\u00e9tect\u00e9 dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+unexpected.child.element.explanation=Un \u00e9l\u00e9ment ne devant pas figurer dans le descripteur de d\u00e9ploiement a \u00e9t\u00e9 d\u00e9tect\u00e9.
+unexpected.child.element.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+invalid.href.prefix=CWWKC2260E: La valeur de l''attribut href de l''\u00e9l\u00e9ment {2} ne commence pas par {3} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+invalid.href.prefix.explanation=Un attribut href doit commencer par le chemin d'acc\u00e8s correct au descripteur r\u00e9f\u00e9renc\u00e9.
+invalid.href.prefix.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Une erreur s''est produite lors de la tentative d''identification de la version du descripteur de d\u00e9ploiement {0}.
+unknown.deployment.descriptor.version.explanation=La version ou l'espace de nom \u00e9taient non valides ou non indiqu\u00e9s dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+unknown.deployment.descriptor.version.useraction=V\u00e9rifiez ou corrigez la version ou l'espace de nom dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: Le serveur ne parvient pas \u00e0 traiter la version {3} et l''espace de nom {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+invalid.deployment.descriptor.namespace.explanation=Soit la version et l'espace de nom sp\u00e9cifi\u00e9s ne sont pas valides, soit la configuration du serveur ne dispose pas d'une fonction pouvant traiter la version et l'espace de nom.
+invalid.deployment.descriptor.namespace.useraction=V\u00e9rifiez et corrigez la version ou l'espace de nom dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement, ou v\u00e9rifiez et corrigez les fonctions dans la configuration du serveur.
+
+invalid.deployment.descriptor.version=CWWKC2263E: L''attribut de version {2} sp\u00e9cifi\u00e9 dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1} n''est pas valide.
+invalid.deployment.descriptor.version.explanation=Une version non valide a \u00e9t\u00e9 indiqu\u00e9e dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+invalid.deployment.descriptor.version.useraction=V\u00e9rifiez et corrigez le num\u00e9ro de version dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: Une erreur s''est produite lors de la tentative d''identification de l''espace de nom du descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+missing.deployment.descriptor.namespace.explanation=Un nom d'espace non valide a \u00e9t\u00e9 indiqu\u00e9 dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+missing.deployment.descriptor.namespace.useraction=V\u00e9rifiez et corrigez l'espace de nom dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+
+missing.deployment.descriptor.version=CWWKC2265E: Une erreur s''est produite lors de la tentative d''identification de la version du descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+missing.deployment.descriptor.version.explanation=La version n'a pas \u00e9t\u00e9 indiqu\u00e9e dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+missing.deployment.descriptor.version.useraction=V\u00e9rifiez et corrigez la version dans l'\u00e9l\u00e9ment racine du descripteur de d\u00e9ploiement.
+
+at.most.one.occurrence=CWWKC2266E: Il doit y avoir tout au plus un \u00e9l\u00e9ment enfant {3} de l''\u00e9l\u00e9ment parent {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+at.most.one.occurrence.explanation=Certains \u00e9l\u00e9ments du descripteur de d\u00e9ploiement peuvent \u00eatre affich\u00e9s une seule fois lorsqu'ils sont pr\u00e9sents.
+at.most.one.occurrence.useraction=Corrigez le descripteur de d\u00e9ploiement.
+
+required.method.element.missing=CWWKC2267E: L''\u00e9l\u00e9ment {2} doit avoir au moins un \u00e9l\u00e9ment enfant {3} d\u00e9fini dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}.
+required.method.element.missing.explanation=Un \u00e9l\u00e9ment enfant requis est manquant dans l'\u00e9l\u00e9ment parent indiqu\u00e9. 
+required.method.element.missing.useraction=Corrigez le descripteur de d\u00e9ploiement en ajoutant l'\u00e9l\u00e9ment enfant requis.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Lorsqu''un attribut de mode de l''\u00e9l\u00e9ment <run-as-mode> est d\u00e9fini \u00e0 SPECIFIED_IDENTITY dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}, l''\u00e9l\u00e9ment enfant <specified-identity> doit \u00eatre d\u00e9fini.
+runasmode.missing.specifiedID.element.explanation=L'\u00e9l\u00e9ment enfant <specified-identity> est manquant pour l'\u00e9l\u00e9ment <run-as-mode> dont le mode est d\u00e9fini sur SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Corrigez le descripteur de d\u00e9ploiement en ajoutant l'\u00e9l\u00e9ment enfant requis ou modifiez le mode.
+
+found.duplicate.ejbname=CWWKC2269E: L''attribut de nom pour tous les \u00e9l\u00e9ments bean <session> et <message-driven> doit \u00eatre unique. Un nom {1} en double a \u00e9t\u00e9 trouv\u00e9 dans le descripteur de d\u00e9ploiement {0}.
+found.duplicate.ejbname.explanation=Tous les noms de bean session et g\u00e9r\u00e9 par message doivent \u00eatre uniques.  Le nom de bean indiqu\u00e9 est utilis\u00e9 plusieurs fois.
+found.duplicate.ejbname.useraction=Corrigez le descripteur de d\u00e9ploiement en changeant les noms de bean enterprise en double.
+
+found.duplicate.attribute.value=CWWKC2270E: L''attribut {2} de tous les \u00e9l\u00e9ments {1} doit \u00eatre unique. Un nom {3} en double a \u00e9t\u00e9 trouv\u00e9 dans le descripteur de d\u00e9ploiement {0}.
+found.duplicate.attribute.value.explanation=La valeur de l'attribut indiqu\u00e9 doit \u00eatre unique pour tous les \u00e9l\u00e9ments de m\u00eame type. 
+found.duplicate.attribute.value.useraction=Corrigez le descripteur de d\u00e9ploiement en modifiant le nom pour toute valeur d'attribut en double.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Un fichier validation.xml a \u00e9t\u00e9 trouv\u00e9 pour le module {0}. Toutefois, le fichier validation.xml n''est pas configur\u00e9 pour la validation. C''est pourquoi, ce fichier XML est ignor\u00e9.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=Le service BeanValidationService ne peut pas cr\u00e9er de classe ValidatorFactory en raison d'une erreur d'analyse du fichier validation.xml avec le fichier de sch\u00e9ma validation-configuration-1.0.xsd. Cette erreur peut indiquer que le fichier validation.xml n'est pas con\u00e7u pour \u00eatre utilis\u00e9 par l'environnement d'ex\u00e9cution de validation de bean. C'est pourquoi, ce fichier XML est ignor\u00e9.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Si le fichier validation.xml ne permet pas la cr\u00e9ation d'une instance ValidatorFactory, ignorez le message. Toutefois, si le fichier validation.xml est con\u00e7u pour cr\u00e9er une instance ValidatorFactory, il existe un probl\u00e8me.  Activez la trace de l'environnement d'ex\u00e9cution de validation des beans dans le serveur d'applications, arr\u00eatez l'application, red\u00e9marrez cette derni\u00e8re puis recherchez dans le fichier de sortie un \u00e9v\u00e9nement de trace, tel une exception inattendue, lors de la tentative de d\u00e9conversion du fichier validation.xml. Examinez la trace de pile d'exception pour obtenir de l'assistance en mati\u00e8re de d\u00e9bogage.
+
+xml.error=CWWKC2272E: Une erreur s''est produite lors de l''analyse du descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1}. Le message d''erreur est le suivant : : {2}
+xml.error.explanation=Une erreur s'est produite lors de l'analyse du descripteur de d\u00e9ploiement XML. Reportez-vous au message d'erreur pour plus d'informations.
+xml.error.useraction=Corrigez le descripteur de d\u00e9ploiement pour supprimer l'erreur.
+
+invalid.enum.value=CWWKC2273E: La valeur {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1} n''est pas valide. Les valeurs valides sont : {3}
+invalid.enum.value.explanation=Le descripteur de d\u00e9ploiement sp\u00e9cifie une valeur non valide.
+invalid.enum.value.useraction=Corrigez le descripteur de d\u00e9ploiement afin d'utiliser une des valeurs pr\u00e9vues.
+
+invalid.int.value=CWWKC2274E: La valeur {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1} n''est pas un entier valide.
+invalid.int.value.explanation=Le descripteur de d\u00e9ploiement sp\u00e9cifie une valeur qui n'est pas un nombre sur la plage -2147483648 \u00e0 2147483647.
+invalid.int.value.useraction=Corrigez le descripteur de d\u00e9ploiement afin d'utiliser un entier valide.
+
+invalid.long.value=CWWKC2275E: La valeur {2} dans le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1} n''est pas un nombre valide de type Long.
+invalid.long.value.explanation=Le descripteur de d\u00e9ploiement sp\u00e9cifie une valeur qui n'est pas un nombre sur la plage -9223372036854775808 \u00e0 9223372036854775807.
+invalid.long.value.useraction=Corrigez le descripteur de d\u00e9ploiement afin d'utiliser un nombre valide de type Long.
+
+module.name.not.specified=CWWKC2276E: L''\u00e9l\u00e9ment {0} doit sp\u00e9cifier un attribut de nom de module.
+module.name.not.specified.explanation=La configuration de liaison et d'extension pour les modules EJB et Web doit contenir un attribut modulename qui indique le module auquel la configuration s'applique. 
+module.name.not.specified.useraction=Ajoutez un attribut moduleName \u00e0 l'\u00e9l\u00e9ment web-bnd, web-ext, ejb-bnd ou ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Un ou plusieurs noms de module sur l''\u00e9l\u00e9ment {1} ne sont pas valides. Nom(s) de module non valide(s) : {0}.
+module.name.invalid.explanation=La configuration de liaison et d'extension pour les modules Web doit sp\u00e9cifier un attribut moduleName valide. Au moins une configuration a sp\u00e9cifi\u00e9 un nom de module non valide. Le nom du module doit \u00eatre celui du fichier acrhive contentant l'application Web ou EJB.
+module.name.invalid.useraction=Corrigez l'attribut moduleName dans la configuration de liaison ou d'extension. 

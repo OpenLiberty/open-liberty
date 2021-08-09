@@ -1,0 +1,41 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Trust Assocation Interceptor sample configuration">
+
+    <!-- NOTE: This file is for reference only. -->
+
+    <!-- Enable appSecurity-2.0 -->
+    <featureManager>
+         <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <!-- Sample configuration for the Trust Association Interceptor configuration. This sample shows
+        1. A TAI implementation (com.ibm.websphere.security.sample.SimpleTAI) which should implement
+           the com.ibm.wsspi.security.tai.TrustAssociationInterceptor interface.  
+        2. The simplateTAI implementation is packaged in simpleTAI.jar.
+        3. The simpleTAI.jar is configured in the server's config directory. 
+        4. This TAI configued will not be invoked for unprotected URIs.
+        5. The authentication will not fallback to the application authentication type
+        6. It will only be invoked before the SingleSignOn authentication 
+        
+    -->
+
+    <trustAssociation id="myTrustAssociation" invokeForUnprotectedURI="false" failOverToAppAuthType="false">
+          <interceptors id="simpleTAI" enabled="true"  className="com.ibm.websphere.security.sample.SimpleTAI" invokeBeforeSSO="true" invokeAfterSSO="false" libraryRef="simpleTAI">
+                <properties hostName="machine1" application="test1"/>
+          </interceptors>
+    </trustAssociation>
+
+    <library id="simpleTAI">
+        <fileset dir="${server.config.dir}" includes="simpleTAI.jar"/>      
+    </library> 
+
+</server>

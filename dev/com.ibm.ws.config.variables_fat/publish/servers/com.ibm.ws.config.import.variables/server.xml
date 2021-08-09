@@ -1,0 +1,32 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>configfatlibertyinternals-1.0</feature>
+		<feature>componentTest-1.0</feature>
+    </featureManager>
+    
+    <application id="restart" name="restart" type="war" location="restart.war"/>
+    
+    <!-- Rely on a value from the environment to be valid -->
+    <variable name="import1" defaultValue="i-dont-exist.xml"/>
+    <variable name="relativeLocation" value="relative.xml"/>
+    <variable name="shared" defaultValue="shared.xml"/>
+    
+    <include location="${import1}"/>
+            
+    <person lastName="Doe"/>
+
+</server>

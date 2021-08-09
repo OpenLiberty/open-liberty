@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.quickstart/resources/com/ibm/ws/security/quickstart/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Quick Start Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0900 - CWWKS0999
+
+QUICK_START_SECURITY_MISSING_ATTIRBUTES=CWWKS0900E: L''\u00e9l\u00e9ment <quickStartSecurity> n''inclut pas les attributs requis : {0}. D\u00e9finissez les attributs manquants.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.explanation=L'\u00e9l\u00e9ment <quickStartSecurity> n'inclut pas les attributs requis.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.useraction=D\u00e9finissez les attributs requis.
+
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY=CWWKS0901E: La configuration <quickStartSecurity> sera ignor\u00e9e car un autre registre d'utilisateurs est configur\u00e9.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.explanation=La configuration <quickStartSecurity> est utilis\u00e9e uniquement lorsqu'aucune autre configuration de registre d'utilisateurs n'est sp\u00e9cifi\u00e9e.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.useraction=Utilisez une seule configuration de registre d'utilisateurs.
+
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION=CWWKS0902E: La configuration <quickStartSecurity> sera ignor\u00e9e car les liaisons d'autorisation pour la s\u00e9curit\u00e9 de gestion sont explicitement d\u00e9finies.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.explanation=La configuration <quickStartSecurity> est utilis\u00e9e uniquement lorsqu'aucune liaison d'autorisation pour la s\u00e9curit\u00e9 de gestion n'est d\u00e9finie.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.useraction=Utilisez <quickStartSecurity> et supprimez les liaisons d'autorisation pour la s\u00e9curit\u00e9 de gestion explicite ou configurez un autre registre d'utilisateurs.

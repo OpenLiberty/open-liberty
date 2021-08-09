@@ -1,0 +1,78 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1"
+    metadata-complete="true">
+
+    <servlet>
+        <servlet-name>StringApplicationServlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.client.fat.pathparam.string.StringApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>stringapp</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StringApplicationServlet</servlet-name>
+        <url-pattern>/string/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>LongApplicationServlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.client.fat.pathparam.biglong.LongApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>longapp</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LongApplicationServlet</servlet-name>
+        <url-pattern>/biglong/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>DoubleApplicationServlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.client.fat.pathparam.bigdouble.DoubleApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>doubleapp</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DoubleApplicationServlet</servlet-name>
+        <url-pattern>/bigdouble/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ShortApplicationServlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.client.fat.pathparam.smallshort.ShortApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>shortapp</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShortApplicationServlet</servlet-name>
+        <url-pattern>/smallshort/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,110 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: \uc8fc\uc81c\uc758 \uad6c\ubb38 {0}\uc774(\uac00) \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {1} \ubb38\uc790\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 ''*'' \ubb38\uc790\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=\uc8fc\uc81c\uac00 \uc798\ubabb \ud615\uc2dd\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. '*' \ub2e8\uc77c \ub808\ubca8 \uc640\uc77c\ub4dc\uce74\ub4dc \ubb38\uc790\uac00 \uc8fc\uc81c\uc5d0 \ub300\ud55c \ub808\ubca8\uc758 \ub2e8\uc77c \ubb38\uc790\ub85c\ub9cc \ub098\ud0c0\ub0a0 \uc218 \uc788\uc2b5\ub2c8\ub2e4(\uc608: */a \ub610\ub294 a/*/b \ub610\ub294 a/*).
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=\uc798\ubabb\ub41c \uc8fc\uc81c \uc2a4\ud399\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: \uc8fc\uc81c\uc758 \uad6c\ubb38 {0}\uc774(\uac00) \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {1} \ubb38\uc790\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 ''.'' \ubb38\uc790\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=\uc8fc\uc81c\uac00 \uc798\ubabb \ud615\uc2dd\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. '.' \ubb38\uc790\uac00 \uc8fc\uc81c\uc5d0 \ub300\ud55c \ub808\ubca8\uc758 \ub2e8\uc77c \ubb38\uc790\ub85c\ub9cc \ub098\ud0c0\ub098\uac70\ub098 \uc8fc\uc81c \ud45c\ud604\uc2dd\uc758 \ub05d\uc5d0\ub9cc \ub098\ud0c0\ub0a0 \uc218 \uc788\uc2b5\ub2c8\ub2e4(\uc608: /./a \ub610\ub294 a//).
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=\uc798\ubabb\ub41c \uc8fc\uc81c \uc2a4\ud399\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: \uc8fc\uc81c\uc758 \uad6c\ubb38 {0}\uc774(\uac00) \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {1} \ubb38\uc790\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 ''/'' \ubb38\uc790\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=\uc8fc\uc81c\uac00 \uc798\ubabb \ud615\uc2dd\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc11c\ub85c\uc758 \uc606\uc5d0 \uc138 \uac1c\uc758 '/' \ubb38\uc790\uac00 \uc788\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=\uc798\ubabb\ub41c \uc8fc\uc81c \uc2a4\ud399\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: \uc8fc\uc81c\uc758 \uad6c\ubb38 {0}\uc774(\uac00) \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {1} \ubb38\uc790\uc5d0\uc11c ''/'' \ubb38\uc790 \ub2e4\uc74c\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \ubb38\uc790\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=\uc8fc\uc81c\uac00 \uc798\ubabb \ud615\uc2dd\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc640\uc77c\ub4dc\uce74\ub4dc \ubb38\uc790\ub294 '/'\ub97c \uc81c\uc678\ud55c \ub2e4\ub978 \ubb38\uc790 \uc55e\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc798\ubabb\ub41c \uc8fc\uc81c\uc758 \uc608\ub85c\ub294 a//.a \ub610\ub294 a/*b\uac00 \uc788\uc2b5\ub2c8\ub2e4. 
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=\uc798\ubabb\ub41c \uc8fc\uc81c \uc2a4\ud399\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: \uc8fc\uc81c\uac00 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=\uc81c\uacf5\ub41c \uc8fc\uc81c\uac00 \ub110\uc774\ubbc0\ub85c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub110\uc740 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=\uc8fc\uc81c\uac00 \uc720\ud6a8\ud55c \ubb38\uc790\uc5f4 \uc624\ube0c\uc81d\ud2b8\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: \uacf5\uac1c\ub41c \uba54\uc2dc\uc9c0\uc758 \uc8fc\uc81c \uad6c\ubb38\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=\uc81c\uacf5\ub41c \uc8fc\uc81c\uac00 \uacf5\uac1c\uc774\ubbc0\ub85c \uc640\uc77c\ub4dc\uce74\ub4dc \ubb38\uc790\ub97c \ud3ec\ud568\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=\uacf5\uac1c \uba54\uc2dc\uc9c0\uc5d0\uc11c \uc640\uc77c\ub4dc\uce74\ub4dc \ubb38\uc790\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: \uc77c\uce58\ud558\ub294 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678 {0}.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=sib.matchspaceImpl.jar\uac00 \ub204\ub77d\ub418\uc5c8\uac70\ub098 \uc190\uc0c1\ub418\uc5c8\uc73c\ubbc0\ub85c \uc77c\uce58\ud558\ub294 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ucda9\ubd84\ud55c \uc815\ubcf4\uac00 \uc5c6\ub294 \uacbd\uc6b0, \ucd94\uac00 \ub3c4\uc6c0\ub9d0\uc744 \ubcf4\ub824\uba74 \uc774\uc804 \uba54\uc2dc\uc9c0\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+TEMPORARY_CWSIH9999.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \uc774\uc804 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.

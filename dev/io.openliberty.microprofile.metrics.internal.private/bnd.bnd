@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: MicroProfile Metrics Private REST API
+Bundle-SymbolicName: io.openliberty.microprofile.metrics.internal.private
+
+Bundle-Description: MicroProfile Metrics Private REST API, version ${bVersion}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+IBM-Web-Extension-Processing-Disabled: true
+
+Web-ContextPath: @privateMetricsURL
+OL-VirtualHost: ${admin.virtual.host}
+
+Import-Package: \
+	org.eclipse.microprofile.metrics;version="[1.0,4)",\
+	org.eclipse.microprofile.metrics.*;version="[1.0,4)",\
+	*
+
+Private-Package: \
+	io.openliberty.microprofile.metrics.internal.privateapi,\
+	io.openliberty.microprofile.metrics.internal.privateapi.resources
+
+Include-Resource: \
+	WEB-INF=resources/WEB-INF
+
+
+-dsannotations-inherit: true
+-dsannotations: io.openliberty.microprofile.metrics.internal.privateapi.PrivateMetricsRESTHandler
+
+WS-TraceGroup: METRICS
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	io.openliberty.org.eclipse.microprofile.metrics.3.0;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.microprofile.metrics;version=latest,\
+	io.openliberty.microprofile.metrics.internal.3.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

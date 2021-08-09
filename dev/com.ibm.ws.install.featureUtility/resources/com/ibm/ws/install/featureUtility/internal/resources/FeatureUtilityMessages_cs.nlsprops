@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=Nastaven\u00ed featureUtility
+MSG_PROPERTIES_FILE_NOT_FOUND=Nebyla zji\u0161t\u011bna konfigurace u\u017eivatele. Centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven je v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Chcete-li p\u0159izp\u016fsobit nastaven\u00ed featureUtility, vytvo\u0159te soubor featureUtility.properties v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Pomoc\u00ed n\u00e1sleduj\u00ed uk\u00e1zky jako \u0161ablony vytvo\u0159te vlastn\u00ed soubor featureUtility.properties. Zru\u0161te koment\u00e1\u0159 u \u0159\u00e1dk\u016f ozna\u010den\u00fdch jedn\u00edm znakem # a hodnoty nahra\u010fte vlastn\u00edmi upraven\u00fdmi hodnotami.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Chcete-li upravit nastaven\u00ed p\u0159\u00edkazu installUtility, vytvo\u0159te soubor repositories.properties v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Pomoc\u00ed n\u00e1sleduj\u00ed uk\u00e1zky jako \u0161ablony vytvo\u0159te vlastn\u00ed soubor repositories.properties. Zru\u0161te koment\u00e1\u0159 u \u0159\u00e1dk\u016f ozna\u010den\u00fdch jedn\u00edm znakem # a hodnoty nahra\u010fte vlastn\u00edmi upraven\u00fdmi hodnotami.
+MSG_TRUE=Ano
+MSG_FALSE=Ne
+MSG_DEFAULT_REPO_USEAGE_LABEL=Pou\u017e\u00edt v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b:
+MSG_DEFAULT_REPO_NAME_LABEL=V\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv:
+MSG_DEFAULT_REPO_NAME=Centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven
+MSG_CONFIG_REPO_LABEL=Konfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b
+MSG_MAVEN_LOCAL_REPO=Lok\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven
+MSG_NO_CONFIG_REPO=Nebyla nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 \u00falo\u017ei\u0161t\u011b
+MSG_UNSPECIFIED=<Nespecifikov\u00e1no>
+MSG_PASSWORD_NOT_ENCODED_PROXY=Heslo pro tento server proxy nen\u00ed zak\u00f3dovan\u00e9. Chcete-li zak\u00f3dovat heslo, spus\u0165te akci zak\u00f3dov\u00e1n\u00ed securityUtility s volbou --encoding nastavenou na podporovan\u00fd typ k\u00f3dov\u00e1n\u00ed. Podporovan\u00e9 typy jsou xor (v\u00fdchoz\u00ed), aes a hash.
+MSG_PROXY_LABEL=Nastaven\u00ed serveru proxy
+MSG_NO_CONFIG_PROXY=Nebyly nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 servery proxy
+MSG_REPO_FILE_NOT_FOUND=Nebyla zji\u0161t\u011bna konfigurace u\u017eivatele. IBM WebSphere Liberty Repository je v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Chcete-li upravit nastaven\u00ed p\u0159\u00edkazu installUtility, vytvo\u0159te soubor repositories.properties v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Pomoc\u00ed n\u00e1sleduj\u00ed uk\u00e1zky jako \u0161ablony vytvo\u0159te vlastn\u00ed soubor repositories.properties. Zru\u0161te koment\u00e1\u0159 u \u0159\u00e1dk\u016f ozna\u010den\u00fdch jedn\u00edm znakem # a hodnoty nahra\u010fte vlastn\u00edmi upraven\u00fdmi hodnotami.
+MSG_VALIDATION_SUCCESSFUL=Soubor vlastnost\u00ed \u00fasp\u011b\u0161n\u011b ov\u011b\u0159en.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed se nezda\u0159ilo. Podrobn\u00e9 zpr\u00e1vy ov\u011b\u0159en\u00ed platnosti zobraz\u00edte pomoc\u00ed volby --viewValidationMessages.
+MSG_VALIDATION_NUM_OF_ERRORS=Po\u010det chyb: {0}
+MSG_VALIDATION_MESSAGES=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=N\u00e1zev: {0}
+FIELD_REPO_LOCATION=Um\u00edst\u011bn\u00ed: {0}
+FIELD_REPO_STATUS=Stav: {0}
+FIELD_REPO_REASON=P\u0159\u00ed\u010dina: {0}
+FIELD_REPO_WARNING=Varov\u00e1n\u00ed: {0}
+FIELD_NAME=N\u00e1zev:
+FIELD_PORT=Port:
+FIELD_LOCATION=Um\u00edst\u011bn\u00ed:
+FIELD_PROXY_SERVER=Server proxy:
+FIELD_USER=Jm\u00e9no u\u017eivatele:
+FIELD_PASS=Heslo:
+FIELD_PROPS_FILE=Soubor vlastnost\u00ed: {0}
+FIELD_REPO=Server \u00falo\u017ei\u0161t\u011b: {0} ({1})
+FIELD_PROXY=Server proxy: {0}
+FIELD_VALIDATION_RESULTS=V\u00fdsledky ov\u011b\u0159en\u00ed platnosti: {0}
+FIELD_VALIDATION_LINE=\u0158\u00e1dek: {0}

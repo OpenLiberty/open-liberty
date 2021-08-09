@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.1,ou=objectClasses,cn=nis,ou=schema
+m-must: uid
+m-oid: 1.3.6.1.1.1.2.1
+m-supobjectclass: top
+m-description: Additional attributes for shadow passwords
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: shadowAccount
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system
+m-may: userPassword
+m-may: shadowLastChange
+m-may: shadowMin
+m-may: shadowMax
+m-may: shadowWarning
+m-may: shadowInactive
+m-may: shadowExpire
+m-may: shadowFlag
+m-may: description

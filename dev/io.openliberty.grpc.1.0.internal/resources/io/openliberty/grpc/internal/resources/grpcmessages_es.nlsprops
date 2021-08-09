@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: El servicio gRPC proporcionado por {0} est\u00e1 disponible en: {1}
+service.available.explanation=Este mensaje es meramente informativo.
+service.available.useraction=No se requiere ninguna acci\u00f3n.
+
+invalid.serverinterceptor=CWWKT0202W: No se ha podido cargar el interceptor gRPC definido en serverInterceptors {0}
+invalid.serverinterceptor.explanation=No se ha podido cargar un interceptor gRPC definido en serverInterceptors.
+invalid.serverinterceptor.useraction=Verifique el nombre del interceptor configurado y la v\u00eda de acceso de clases de la aplicaci\u00f3n.
+
+invalid.inbound.msg.size=CWWKT0203E: El valor maxInboundMessageSize {0} no es v\u00e1lido. Los tama\u00f1os deben ser mayores que 0.
+invalid.inbound.msg.size.explanation=El valor configurado de maxInboundMessageSize no es v\u00e1lido.
+invalid.inbound.msg.size.useraction=Configure un valor v\u00e1lido para maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: La solicitud gRPC para {0} no puede continuar. La respuesta ya se hab\u00eda confirmado.
+response.already.committed.explanation=La solicitud gRPC no es v\u00e1lida porque la respuesta se ha confirmado antes de que se iniciaran los m\u00e9todos gRPC.
+response.already.committed.useraction=Analice los registros para otros avisos o mensajes de error antes de este mensaje. Es posible que este error se produzca debido a un error de seguridad anterior.
+
+authentication.error=CWWKT0205E: La solicitud de servicio gRPC para {0} ha fallado con el error de autenticaci\u00f3n {1}.
+authentication.error.explanation=La solicitud gRPC no se ha podido autenticar antes de que se iniciaran los m\u00e9todos gRPC.
+authentication.error.useraction=Analice los registros para otros avisos o mensajes de error antes de este mensaje. Es posible que este error se produzca porque no se han proporcionado credenciales con la solicitud o porque se han proporcionado credenciales que no son v\u00e1lidas.
+
+authorization.error=CWWKT0206E: La solicitud de servicio gRPC de {0} ha fallado con el error de autorizaci\u00f3n {1}.
+authorization.error.explanation=La solicitud gRPC no se ha podido autorizar antes de que se iniciaran los m\u00e9todos gRPC.
+authorization.error.useraction=Analice los registros para otros avisos o mensajes de error antes de este mensaje. Es posible que este error se produzca porque no se han proporcionado credenciales con la solicitud o porque se han proporcionado credenciales que no son v\u00e1lidas.

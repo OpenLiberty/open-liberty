@@ -1,0 +1,30 @@
+<server>
+	<application
+		type="war"
+		id="microProfilePropagationClient"
+		name="microProfilePropagationClient"
+		location="${server.config.dir}/apps/microProfilePropagationClient.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+
+<!--
+	<javaPermission codebase="${server.config.dir}/apps/microProfilePropagationClient.war" className="*" actions="*" name="*"/>
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission" name="*" actions="read" />
+-->
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission className="javax.security.auth.AuthPermission" actions="wssecurity.getRunAsSubject" name="*"/>
+	<javaPermission className="java.lang.RuntimePermission" actions="setFactory" name="*" />
+
+</server>    

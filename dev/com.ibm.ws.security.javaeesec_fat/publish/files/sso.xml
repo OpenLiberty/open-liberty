@@ -1,0 +1,50 @@
+<server description="JavaEESec Security FAT">
+
+	<featureManager>
+		<feature>appSecurity-3.0</feature>
+		<feature>jsp-2.3</feature>
+	</featureManager>
+
+	<webAppSecurity useLtpaSSOForJaspic="true" />
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+	<basicRegistry id="basic1" realm="JaspiRealm">
+		<user name="jaspiuser2" password="s3cur1ty" />
+		<user name="jaspiuser1" password="s3cur1ty" />
+		<user name="jaspiuser3" password="s3cur1ty" />
+		<user name="jaspiuser4" password="s3cur1ty" />
+		<user name="jaspiuser5" password="s3cur1ty" />
+		<group name="group1">
+			<member name="jaspiuser1" />
+		</group>
+		<group name="group2">
+			<member name="jaspiuser2" />
+		</group>
+		<group name="group3">
+			<member name="jaspiuser3" />
+		</group>
+		<group name="group5">
+			<member name="jaspiuser5" />
+		</group>
+	</basicRegistry>
+
+	<application type="war" id="JavaEESec" name="JavaEESec"
+		location="JavaEESec.war">
+		<application-bnd>
+			<security-role name="grantedgroup">
+				<group name="group1" access-id="group1" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application type="war" id="FormPostRedirect" name="FormPostRedirect" location="FormPostRedirect.war">
+		<application-bnd>
+			<security-role name="grantedgroup">
+				<group name="group1" access-id="group1" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml" />
+</server>

@@ -1,0 +1,519 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Message component file for Exception messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SIRC0001=CWSIK0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - All msgs are for use by the Exception Destination mechanism. These messages
+#       - will be exposed to the user when a message cannot be delivered.
+#
+#   - Developers: Please ensure that every message in this message file is
+#       - only used once. Servicability requirements mean we need to be able
+#       - determine exactly who decided to reroute a message to the exception
+#       - destination. In addition, please ensure that you add as much useful
+#       - information as possible. Remember that the exception destination
+#       - may be on a different server.
+#
+#		**** IMPORTANT ***
+#       Please ensure EVERY message added has a corresponding reason code
+#		in com/ibm/websphere/sib/SIRCConstants.java
+#       ******************
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4
+#
+#CMVCPATHNAME ws/code/sib.mfp.api/com/ibm/websphere/sib/CWSIKMessages.nlsprops
+#COMPONENTPREFIX CWSIK
+#COMPONENTNAMEFOR CWSIK SIBus Return Codes
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# SIRC (Service Integration Return Code) messages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# Note to developers: Notice that this message has NO useful inserts. It is the default used by
+# by SICoreException if no exception reason is provided to the SICoreException. NO CODE MAY
+# CONSTRUCT AN SICOREEXCEPTION WITHOUT PROVIDING AN EXCEPTION REASON. ANY CODE THAT DOES WILL
+# BE CAUSING A SERVICABILITY PROBLEM AND (IF DISCOVERED) WILL RESULT IN A DEFECT
+DELIVERY_ERROR_SIRC_1=CWSIK0001E: A survenit o eroare intern\u0103.
+DELIVERY_ERROR_SIRC_1.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_1.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_2=CWSIK0002E: Destina\u0163ia {0} pe motorul de mesagerie {1} este o coad\u0103, dar aplica\u0163ia care se conecteaz\u0103 a cerut un spa\u0163iu subiect.
+DELIVERY_ERROR_SIRC_2.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_2.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_3=CWSIK0003E: Destina\u0163ia {0} pe motorul de mesagerie {1} este o coad\u0103, dar aplica\u0163ia care se conecteaz\u0103 a cerut un serviciu
+DELIVERY_ERROR_SIRC_3.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a cerut un tip de destina\u0163ie care nu se potrive\u015fte cu tipul de destina\u0163ie de baz\u0103.
+DELIVERY_ERROR_SIRC_3.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_4=CWSIK0004E: Destina\u0163ia {0} pe motorul de mesagerie {1} este o coad\u0103, dar aplica\u0163ia care se conecteaz\u0103 a cerut un port.
+DELIVERY_ERROR_SIRC_4.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a cerut un tip de destina\u0163ie care nu se potrive\u015fte cu tipul de destina\u0163ie de baz\u0103.
+DELIVERY_ERROR_SIRC_4.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_5=CWSIK0005E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un serviciu, dar aplica\u0163ia care se conecteaz\u0103 a cerut o coad\u0103.
+DELIVERY_ERROR_SIRC_5.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_5.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_6=CWSIK0006E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un serviciu, dar aplica\u0163ia care se conecteaz\u0103 a cerut un spa\u0163iu subiect.
+DELIVERY_ERROR_SIRC_6.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_6.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_7=CWSIK0007E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un serviciu, dar aplica\u0163ia care se conecteaz\u0103 a cerut un port.
+DELIVERY_ERROR_SIRC_7.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_7.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_8=CWSIK0008E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un port, dar aplica\u0163ia care se conecteaz\u0103 a cerut o coad\u0103.
+DELIVERY_ERROR_SIRC_8.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_8.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_9=CWSIK0009E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un port, dar aplica\u0163ia care se conecteaz\u0103 a cerut un spa\u0163iu subiect.
+DELIVERY_ERROR_SIRC_9.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_9.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_10=CWSIK0010E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un port, dar aplica\u0163ia care se conecteaz\u0103 a cerut un serviciu.
+DELIVERY_ERROR_SIRC_10.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_10.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_11=CWSIK0011E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un spa\u0163iu subiect, dar aplica\u0163ia care se conecteaz\u0103 a cerut o coad\u0103.
+DELIVERY_ERROR_SIRC_11.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_11.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_12=CWSIK0012E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un spa\u0163iu subiect, dar aplica\u0163ia care se conecteaz\u0103 a cerut un serviciu.
+DELIVERY_ERROR_SIRC_12.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_12.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_13=CWSIK0013E: Destina\u0163ia {0} pe motorul de mesagerie {1} este un spa\u0163iu subiect, dar aplica\u0163ia care se conecteaz\u0103 a cerut un port.
+DELIVERY_ERROR_SIRC_13.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_13.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# {0} The destination name
+# {1} The messaging engine name.
+# {2} The destination Type
+# {3} The expected destination type
+DELIVERY_ERROR_SIRC_14=CWSIK0014E: Destina\u0163ia {0} pe motorul de mesagerie {1} este de tipul {2}, dar aplica\u0163ia care se conecteaz\u0103 a cerut un tip necunoscut {3}.
+DELIVERY_ERROR_SIRC_14.explanation=O aplica\u0163ie s-a conectat la motorul de mesagerie \u015fi a solicitat un tip de destina\u0163ie care nu de potrive\u015fte cu tipul de destina\u0163ie subordonat.
+DELIVERY_ERROR_SIRC_14.useraction=Corecta\u0163i aplica\u0163ia de conectare sau modifica\u0163i destina\u0163ia tipului cerut utiliz\u00e2nd consola de administrare.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# {0} is the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_15=CWSIK0015E: Destina\u0163ia {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1}.
+DELIVERY_ERROR_SIRC_15.explanation=Destina\u0163ia indicat\u0103 este necunoscut\u0103 pe motorul local de mesagerie.
+DELIVERY_ERROR_SIRC_15.useraction=Verifica\u0163i c\u0103 numele destina\u0163iei este corect \u015fi c\u0103 a\u0163i creat destina\u0163ia pe magistral\u0103.  Dac\u0103 destina\u0163ia exist\u0103 pe alt motor de mesagerie, asigura\u0163i-v\u0103 c\u0103 func\u0163ioneaz\u0103 comunica\u0163ia cu cel\u0103lalt motor de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# {0} The destination address
+DELIVERY_ERROR_SIRC_16=CWSIK0016E: Tranzac\u0163ia folosit\u0103 pentru trimitere pe destina\u0163ia: {0} a fost deja finalizat\u0103.
+DELIVERY_ERROR_SIRC_16.explanation=S-a f\u0103cut o \u00eencercare s\u0103 se utilizeze o tranzac\u0163ie deja finalizat\u0103.
+DELIVERY_ERROR_SIRC_16.useraction=Asigura\u0163i-v\u0103 c\u0103 tranzac\u0163ia utilizat\u0103 este una nou\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_17=CWSIK0017E: Destina\u0163ia cu numele {0} pe motorul de mesagerie {1} are trimiterea nepermis\u0103.
+DELIVERY_ERROR_SIRC_17.explanation=S-a \u00eencercat transmiterea unui mesaj c\u0103tre o destina\u0163ie \u015fi s-a verificat c\u0103 destina\u0163ia acestuia este permis\u0103.  Verificarea a e\u015fuat \u00eentruc\u0163t destina\u0163ia este nepermis\u0103.
+DELIVERY_ERROR_SIRC_17.useraction=Actualiza\u0163i destina\u0163ia astfel \u00eenc\u00e2t s\u0103 fie permis\u0103 trimiterea \u015fi retrimite\u0163i mesajul.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# {0} The destination name
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_18=CWSIK0018E: Accesul la trimitere c\u0103tre destina\u0163ia {0} a fost refuzat pentru utilizatorul cu subiectul {1}.
+DELIVERY_ERROR_SIRC_18.explanation=Un utilizator nu este autorizat s\u0103 transmit\u0103 la destina\u0163ie.
+DELIVERY_ERROR_SIRC_18.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 autoritatea s\u0103 trimit\u0103 mesaje la o destina\u0163ie dat\u0103, actualiza\u0163i drepturile utilizatorilor cu privire la destina\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# {0} The destination prefix
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_19=CWSIK0019E: Utilizatorul {1} nu este autorizat s\u0103 trimit\u0103 la destina\u0163ii temporare cu prefixul {0}.
+DELIVERY_ERROR_SIRC_19.explanation=Un utilizator nu este autorizat s\u0103 transmit\u0103 c\u0103tre destina\u0163ii temporare cu prefixul precizat..
+DELIVERY_ERROR_SIRC_19.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 autoritatea s\u0103 trimit\u0103 mesaje la o destina\u0163ie temporar\u0103 dat\u0103, actualiza\u0163i drepturile utilizatorilor cu privire la destina\u0163ia temporar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# {0} The destination name
+# {1} The discriminator name
+# {2} The user attempting the operation
+DELIVERY_ERROR_SIRC_20=CWSIK0020E: Accesul la trimitere c\u0103tre discriminatorul {1} pe destina\u0163ia {0} a fost refuzat pentru utilizatorul cu subiectul {2}.
+DELIVERY_ERROR_SIRC_20.explanation=Un utilizator nu este autorizat s\u0103 transmit\u0103 la destina\u0163ie utiliz\u00e2nd subiectul specificat.
+DELIVERY_ERROR_SIRC_20.useraction=Dac\u0103 utilizatorul trebuie s\u0103 aib\u0103 autoritatea s\u0103 trimit\u0103 mesaje pe un subiect dat, actualiza\u0163i drepturile de autorizare utilizatori cu privire la subiectul unei destina\u0163ii date.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_21=CWSIK0021E: Sesiunea Produc\u0103tor este \u00eenchis\u0103 pe destina\u0163ia {0} pe motorul de mesagerie {1} \u015fi nu poate fi folosit\u0103.
+DELIVERY_ERROR_SIRC_21.explanation=Generatorul a fost \u00eenchis \u015fi nu poate fi utilizat la destina\u0163ia specificat\u0103.
+DELIVERY_ERROR_SIRC_21.useraction=Crea\u0163i o nou\u0103 sesiune generatoare la destina\u0163ia specificat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# {0} The messaging engine name
+DELIVERY_ERROR_SIRC_22=CWSIK0022E: Conexiunea este \u00eenchis\u0103 la motorul de mesagerie {0} \u015fi nu poate fi folosit\u0103.
+DELIVERY_ERROR_SIRC_22.explanation=Conexiunea a fost \u00eenchis\u0103 \u015fi nu poate fi utilizat\u0103 pentru nici o conexiune.
+DELIVERY_ERROR_SIRC_22.useraction=Crea\u0163i o nou\u0103 conexiune pe motorul de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# {0}  The destination name that could not be found
+# {1} The reason for failing to put the message to the exception destination
+# {2} The related error
+# {3} The current destination
+DELIVERY_ERROR_SIRC_23=CWSIK0023E: O \u00eencercare de a ruta un mesaj la o destina\u0163ie excep\u0163ie pe destina\u0163ia {3} cauzat\u0103 de destina\u0163ia cale de rutare \u00eenainte {0} a e\u015fuat datorit\u0103 motivului {1} cu eroarea \u00eenrudit\u0103 {2}.
+DELIVERY_ERROR_SIRC_23.explanation=Urm\u0103toarea destina\u0163ie \u00een calea de rutare mai departe nu poate fi g\u0103sit\u0103. Mesajul a fost rutat c\u0103tre destina\u0163ia excep\u0163ie dar a ap\u0103rut o eroare c\u00e2nd mesajul a fost rutat c\u0103tre destina\u0163ia excep\u0163ie.
+DELIVERY_ERROR_SIRC_23.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# {0} the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_24=CWSIK0024E: Destina\u0163ia {0} are nepermis\u0103 trimiterea pentru motorul de mesagerie {1}.
+DELIVERY_ERROR_SIRC_24.explanation=S-a \u00eencercat transmiterea unui mesaj c\u0103tre o destina\u0163ie \u015fi s-a verificat c\u0103 este disponibil un punct coad\u0103 pentru aceast\u0103 destina\u0163ie.  Verificarea a e\u015fuat \u00eentruc\u00e2t singurul punct coad\u0103 pentru aceast\u0103 destina\u0163ie este neadmis la trimitere.
+DELIVERY_ERROR_SIRC_24.useraction=Actualiza\u0163i punctul coad\u0103 pentru destina\u0163ie astfel \u00eenc\u00e2t s\u0103 fie permis\u0103 transmisia \u015fi \u00eencerca\u0163i din nou opera\u0163ia de transmitere.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# {0} is the name of the Destination
+# {1} The name of the messaging engine.
+DELIVERY_ERROR_SIRC_25=CWSIK0025E: Destina\u0163ia {0} pe motorul de mesagerie {1} nu este disponibil\u0103 deoarece limita superioar\u0103 pentru num\u0103rul de mesaje pentru aceast\u0103 destina\u0163ie a fost deja atins\u0103.
+DELIVERY_ERROR_SIRC_25.explanation=Fie toate punctele coad\u0103 a destina\u0163iei precizate, fiecozile de transmitere pe motorul de mesagerie conduc\u00e2nd c\u0103tre aceast\u0103 destina\u0163ie au atins deja limita superioar\u0103 configurat\u0103, din acest motiv mesajul nu a putut fi acceptat.
+DELIVERY_ERROR_SIRC_25.useraction=Verifica\u0163i c\u0103 limita superioar\u0103 configurat\u0103 pentru aceast\u0103 destina\u0163ie este corect\u0103.  Dac\u0103 destina\u0163ia exist\u0103 pe alt motor de mesagerie, asigura\u0163i-v\u0103 c\u0103 func\u0163ioneaz\u0103 comunica\u0163ia cu cel\u0103lalt motor de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_26=CWSIK0026E: Niciun punct de mesaje adresabile permis g\u0103sit pentru destina\u0163ia {0}.
+DELIVERY_ERROR_SIRC_26.explanation=S-a f\u0103cut o \u00eencercare de utilizare a unei destina\u0163ii dar nici un punct de mesaje a acestei destina\u0163ii nu a fost adresabil datorit\u0103 restric\u0163iilor, posibil via utilizarea unui alias sau legarea la un punct de mesaje \u015fters acum.
+DELIVERY_ERROR_SIRC_26.useraction=Dac\u0103 acesta este un mesaj de r\u0103spuns, e posibil s\u0103 fie specificat un motor de mesagerie \u00een mesajul de cerere original, punctul de mesaje pentru aceast\u0103 destina\u0163ie ar putea fi \u015fters p\u00e2n\u0103 acum. Dac\u0103 s-a folosit o destina\u0163ie alias care restric\u0163ioneaz\u0103 punctele de mesaje adresabile a destina\u0163iei vizat\u0103, corecta\u0163i ali asul pentru a identifica un set corect de puncte de mesaje.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# {0} is the destination name
+DELIVERY_ERROR_SIRC_27=CWSIK0027E: Destina\u0163ia cu numele {0} este corupt\u0103
+DELIVERY_ERROR_SIRC_27.explanation=Destina\u0163ia cu numele dat este stricat\u0103 \u015fi nu poate fi folosit\u0103.
+DELIVERY_ERROR_SIRC_27.useraction=Reseta\u0163i destina\u0163ia din consola administrativ\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+# {2} is the alias resolution path
+DELIVERY_ERROR_SIRC_28=CWSIK0028E: Destina\u0163ia alias {0} nu poate fi rezolvat\u0103 deoarece destina\u0163ia vizat\u0103 {1} nu exist\u0103 \u00een calea alias {2}.
+DELIVERY_ERROR_SIRC_28.explanation=Destina\u0163ia vizat\u0103 din calea alias este necunoscut\u0103 pe motorul local de mesagerie.
+DELIVERY_ERROR_SIRC_28.useraction=Defini\u0163i destina\u0163ia vizat\u0103 sau corecta\u0163i aliasul incorect \u00een consola administrativ\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# {0} is the name of the alias destination
+# {1} is the name of the service destination
+# {2} is the alias resolution path
+# {3} The name of the messaging engine bus
+DELIVERY_ERROR_SIRC_29=CWSIK0029E: A avut loc o eroare deoarece destina\u0163ia alias {0} vizeaz\u0103 o destina\u0163ie serviciu {1} pe calea {2} pe magistrala motor de mesagerie {3}.
+DELIVERY_ERROR_SIRC_29.explanation=Destina\u0163ia alias nu este valid\u0103 deoarece \u0163inta sa este o destina\u0163ie serviciu.
+DELIVERY_ERROR_SIRC_29.useraction=\u00cendep\u0103rta\u0163i \u0163inta destina\u0163ie serviciu schimb\u00e2nd aliasurile \u00een calea de rezolu\u0163ie din consola administrativ\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# {0} is the name of the link
+# {1} is the link UUID
+# {2} is the Bus Name
+DELIVERY_ERROR_SIRC_30=CWSIK0030E: Leg\u0103tura cu numele {0} \u015fi UUID {1} nu a fost g\u0103sit\u0103 la crearea magistralei {2}.
+DELIVERY_ERROR_SIRC_30.explanation=Leg\u0103tura precizat\u0103 este necunoscut\u0103 pe motorul de mesagerie local astfel \u00eenc\u00e2t \u00eencercarea de a crea magistrala precizat\u0103 a e\u015fuat.
+DELIVERY_ERROR_SIRC_30.useraction=Verifica\u0163i c\u0103 numele leg\u0103turii este corect \u015fi este definit \u00een consola administrativ\u0103 a magistralei.  Verifica\u0163i c\u0103 motorul de mesagerie are ultima configura\u0163ie aplicat\u0103 lui.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_31=CWSIK0031E: Destina\u0163ia {0} exist\u0103 deja.
+DELIVERY_ERROR_SIRC_31.explanation=Destina\u0163ia precizat\u0103 este cunoscut\u0103 deja pe motorul local de mesagerie, de aceea \u00eencercarea de a o crea a e\u015fuat.
+DELIVERY_ERROR_SIRC_31.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia destina\u0163iei este corect\u0103 \u00een consola administrativ\u0103 \u015fi reporni\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# {0} is the name of the destination
+# {1} The messaging engine name
+DELIVERY_ERROR_SIRC_32=CWSIK0032E: Destina\u0163ia sau magistrala extern\u0103 {0} a fost \u015ftears\u0103 pe motorul de mesagerie {1}.
+DELIVERY_ERROR_SIRC_32.explanation=Destina\u0163ia sau magistrala extern\u0103 nu mai este folosibil\u0103 deoarece a fost \u015ftears\u0103.
+DELIVERY_ERROR_SIRC_32.useraction=Specifica\u0163i o destina\u0163ie sau nume magistral\u0103 extern\u0103 valid atunci c\u00e2nd trimite\u0163i mesaje.
+
+# -------------------------------------------------------------------------------------------------
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# {0}  The messages reliability
+# {1}  The destinations reliability
+# {2}  The destinations name.
+# {3}  The messaging engine name.
+DELIVERY_ERROR_SIRC_33=CWSIK0033E: Valoarea de fiabilitate a mesajului {0} este mai mare dec\u00e2t valoarea fiabilit\u0103\u0163ii destina\u0163iei {1} pentru destina\u0163ia {2} pe motorul de mesagerie {3}.
+DELIVERY_ERROR_SIRC_33.explanation=S+a \u00eencercat rutarea unui mesaj la destina\u0163ie, dar mesajul are o fiabilitate mai mare dec\u00e2t poate suporta destina\u0163ia.
+DELIVERY_ERROR_SIRC_33.useraction=Actualiza\u0163i destina\u0163ia astfel \u00eenc\u00e2t s\u0103 poat\u0103 suporta mesaje de fiabilitate mai mare sau reduce\u0163i fiabilitatea mesajului de trimis.
+
+# -------------------------------------------------------------------------------------------------
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+# {0} the name of the service destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_34=CWSIK0034E: Calea de rutare \u00eenainte nu con\u0163ine nicio intrare pentru aceast\u0103 destina\u0163ie serviciu: {0} pe acest motor de mesagerie: {1}.
+DELIVERY_ERROR_SIRC_34.explanation=S-a \u00eencercat utilizarea unei destina\u0163ii serviciu c\u00e2nd calea de rutare mai departe esze goal\u0103.
+DELIVERY_ERROR_SIRC_34.useraction=O destina\u0163ie serviciu trebuie s\u0103 aib\u0103 destina\u0163ii mediate \u00een calea sa de rutare mai departe. Corecta\u0163i calea \u015fi \u00eencerca\u0163i din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination to which we were delivering
+# {1} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_35=CWSIK0035E: Un mesaj nu poate fi livrat la destina\u0163ia {0} pe motorul de mesagerie {1} deoarece a fost derulat \u00eenapoi de mai multe ori dec\u00e2t pragul s\u0103u de relivrare.
+DELIVERY_ERROR_SIRC_35.explanation=Acest mesaj nu se poate livra pentru c\u0103 nici o \u00eencercare de comitere a tranzac\u0163iei nu a reu\u015fit.
+DELIVERY_ERROR_SIRC_35.useraction=Investiga\u0163i cauza derul\u0103rii \u00eenapoi a tranzac\u0163iei. Pentru mai multe informa\u0163ii \u00een rezolvarea acestei erori, urm\u0103ri\u0163i informa\u0163iile de determinare a problemei pe pagina de WebApplication Server Support : http://www.ibm.com/software/webserver/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination from which the message was rerouted
+# {2} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_36=CWSIK0036E: Mesajul {0} a fost rerutat administrativ de la {1} pe motorul de mesagerie {2}.
+DELIVERY_ERROR_SIRC_36.explanation=Mesajul a fost \u00eenl\u0103turat de la destina\u0163ia dat\u0103 \u015fi mutat la destina\u0163ia excep\u0163ie.
+DELIVERY_ERROR_SIRC_36.useraction=Acest mesaj este pur informa\u0163ional.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the destination that was invalid
+# {1} identifies the messaging engine where the destination is located
+# {2} identifies the last valid destination in the path
+# {3} identified the exception caused by the invalid destination
+DELIVERY_ERROR_SIRC_37=CWSIK0037E: Mesajul nu a putut fi livrat deoarece calea sa de rutare con\u0163inea o destina\u0163ie incorect\u0103 {0}. Ultima destina\u0163ie valid\u0103 a fost {2} pe motorul de mesagerie {3}. Destina\u0163ia a fost incorect\u0103 datorit\u0103 excep\u0163iei{3}.
+DELIVERY_ERROR_SIRC_37.explanation=Un mesaj nu poate trece prin calea de rutare pus\u0103 la dispozi\u0163ie \u00eentruc\u00e2t aceastacon\u0163ine o destina\u0163ie incorect\u0103.
+DELIVERY_ERROR_SIRC_37.useraction=Verifica\u0163i c\u0103 destina\u0163iile pe calea de rutare sunt disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_38=CWSIK0038E: Magistrala extern\u0103 cu numele {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1} pe magistrala {2}.
+DELIVERY_ERROR_SIRC_38.explanation=Magistrala extern\u0103 precizat\u0103 este necunoscut\u0103 pe motorul local de mesagerie.
+DELIVERY_ERROR_SIRC_38.useraction=Verifica\u0163i dac\u0103 numele magistralei externe este corect.  Verifica\u0163i c\u0103 leg\u0103tura cu magistrala extern\u0103 a fost definit\u0103 \u015fi \u00eencerca\u0163i comanda din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_39=CWSIK0039E: Magistrala extern\u0103 cu numele {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1} pe magistrala {2} datorit\u0103 erorii {3}.
+DELIVERY_ERROR_SIRC_39.explanation=Magistrala extern\u0103 numit\u0103 este necunoscut\u0103 pe motorul local de mesagerie.
+DELIVERY_ERROR_SIRC_39.useraction=Verifica\u0163i dac\u0103 numele magistralei externe este corect.  Verifica\u0163i c\u0103 leg\u0103tura cu magistrala extern\u0103 a fost definit\u0103 \u015fi \u00eencerca\u0163i comanda din nou.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus link
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_40=CWSIK0040E: Leg\u0103tura magistral\u0103 extern\u0103 cu numele {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1} pe magistrala {2}.
+DELIVERY_ERROR_SIRC_40.explanation=Magistrala extern\u0103 precizat\u0103 este necunoscut\u0103 pe motorul local de mesagerie.
+DELIVERY_ERROR_SIRC_40.useraction=Verifica\u0163i c\u0103 numele magistralei externe este corect \u015fi are leg\u0103turile definite.  Dac\u0103 nu sunt definite leg\u0103turi, defini\u0163i o nou\u0103 leg\u0103tur\u0103 la o magistral\u0103 extern\u0103 \u00eentre cele dou\u0103 magistrale.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_41=CWSIK0041E: Nu exist\u0103 leg\u0103turi definite pentru a se conecta la magistrala extern\u0103 cu numele {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1} pe magistrala {2} datorit\u0103 erorii {3}.
+DELIVERY_ERROR_SIRC_41.explanation=S-a \u00eencercat trimiterea unui mesaj la o destina\u0163ie pe o magistral\u0103 extern\u0103 dar nu exist\u0103 leg\u0103turi definite \u00eentre magistrala local\u0103 \u015fi magistrala extern\u0103.
+DELIVERY_ERROR_SIRC_41.useraction=Defini\u0163i o leg\u0103tur\u0103 \u00eentre o magistral\u0103 local\u0103 \u015fi una extern\u0103 \u00een consola administrativ\u0103 \u015fi retrimite\u0163i mesajul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the uuid of the mqlink
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_42=CWSIK0042E: Leg\u0103tura MQ cu UUID {0} nu a fost g\u0103sit\u0103 pe motorul de mesagerie {1} pe magistrala {2}.
+DELIVERY_ERROR_SIRC_42.explanation=Leg\u0103tura precizat\u0103 MQ este necunoscut\u0103 pe motorul local de mesagerie.
+DELIVERY_ERROR_SIRC_42.useraction=Verifica\u0163i c\u0103 numele leg\u0103turii MQ este definit \u015fi are scrierea ortografic\u0103 corect\u0103 (inclusiv majuscule).  Dac\u0103 leg\u0103tura MQ nu este definit\u0103, fie utiliza\u0163i o leg\u0103tur\u0103 MQ existent\u0103 fie defini\u0163i o nou\u0103 leg\u0103tur\u0103 MQ.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the current maximum forward routing path depth
+DELIVERY_ERROR_SIRC_43=CWSIK0043E: Un mesaj nu a putut fi livrat la o destina\u0163ie \u00een calea de rutare \u00eenainte deoarece ad\u00e2ncimea maxim\u0103 a c\u0103ii de rutare \u00eenainte ({0}), a fost dep\u0103\u015fit\u0103.
+DELIVERY_ERROR_SIRC_43.explanation=A fost redirectat un mesaj de-a lungul unei cai de rutare \u00eenainte. Num\u0103rul de redirect\u0103ri dep\u0103\u015fe\u015fte num\u0103rul maxim permis. De aceea mesajul a fost trimis la destina\u0163ia excep\u0163ie.
+DELIVERY_ERROR_SIRC_43.useraction=Verifica\u0163i calea de rutare \u00eenainte pentru cicluri. M\u0103ri\u0163i alternativ valoarea maxim\u0103 via proprietatea personalizat\u0103, sib.processor.maxForwardRoutingPath.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination to which we were delivering
+# {1} is the bus from the message originated
+DELIVERY_ERROR_SIRC_44=CWSIK0044E: Un mesaj nu a putut fi livrat la destina\u0163ia {0} deoarece punctul coad\u0103 pentru acea destina\u0163ie este de\u0163inut pe un membru de magistral\u0103 server WebSphere MQ \u015fi mesajul a fost trimis de la magistrala extern\u0103 {1}.
+DELIVERY_ERROR_SIRC_44.explanation=Mesajele nu pot fi trimise de la o magistral\u0103 extern\u0103 direct la o destina\u0163ie al c\u0103rui punct coad\u0103 este de\u0163inut pe WebSphere MQ si accesat folosind un membru de coad\u0103 server WebSphere MQ. 
+DELIVERY_ERROR_SIRC_44.useraction=Sau reconfigura\u0163i aplica\u0163ia de trimitere pentru a se conecta la magistrala local\u0103 sau permite\u0163i destina\u0163iei WebSphere MQ s\u0103 fie accesat\u0103 folosind o conexiune de magistral\u0103 extern\u0103 WebSphere MQ \u015fi ruta\u0163i mesajul prin magistrala extern\u0103 \u015fi nu prin membrul magistrala server WebSphere MQ.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+DELIVERY_ERROR_SIRC_45=CWSIK0045E: Destina\u0163ia alias {0} nu poate fi rezolvat\u0103 deoarece destina\u0163ia \u0163int\u0103 {1} nu exist\u0103.
+DELIVERY_ERROR_SIRC_45.explanation=Destina\u0163ia \u0163int\u0103 nu este disponibil\u0103 \u00een motorul de mesagerie local.
+DELIVERY_ERROR_SIRC_45.useraction=Specifica\u0163i destina\u0163ia \u0163int\u0103 corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination to which the message was rerouted
+# {2} identifies the mediation that caused the message to be rerouted
+# {3} identifies the destination at which the message was mediated
+# {4} identifies the exception that mediation generated that caused the message to be rerouted
+DELIVERY_ERROR_SIRC_101=CWSIK0101W: Mesajul {0} a fost re-rutat la destina\u0163ia excep\u0163ie {1} deoarece medierea {2} la destina\u0163ia {3} a cauzat excep\u0163ia {4}.
+DELIVERY_ERROR_SIRC_101.explanation=Mesajul a fost dat la medierea specific\u0103 ; acea mediere a generat o excep\u0163ie \u015fi, drept urmare, mesajul a fost rerutat c\u0103tre destina\u0163ia excep\u0163ie.
+DELIVERY_ERROR_SIRC_101.useraction=Dac\u0103 medierea nu trebuia s\u0103 reruteze mesajul, investiga\u0163i cauza excep\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+# {3} identifies the message format to which the message does not conform
+DELIVERY_ERROR_SIRC_102=CWSIK0102E: Mesajul {0} nu poate progresa mai departe de-a lungul c\u0103ii sale de rutare \u00eenainte, dup\u0103 ce a fost mediat de medierea {1} la destina\u0163ia {2} deoarece mesajul nu se conformeaz\u0103 formatului de mesaje {3}.
+DELIVERY_ERROR_SIRC_102.explanation=Dup\u0103 ce a fost mediat de medierea specific\u0103, mesajul nu este conform formatului de mesaj specificat. Medierea fie a schimbat con\u0163inutul mesajelor, fie formatul, fie pe am\u00e2ndou\u0103. Versiunea original\u0103 a mesajului a fost rerutat\u0103 la destina\u0163ia excep\u0163ie.
+DELIVERY_ERROR_SIRC_102.useraction=Investiga\u0163i cum \u015fi de ce medierea specificat\u0103 a modificat mesajul astfel \u00eenc\u00e2t acesta nu este conform cu formatul de mesaj specificat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+DELIVERY_ERROR_SIRC_103=CWSIK0103E: Mesajul {0} nu poate progresa mai departe de-a lungul c\u0103ii sale de rutare \u00eenainte, dup\u0103 ce a fost mediat de medierea {1} la destina\u0163ia {2} deoarece mesajul nu este format corespunz\u0103tor.
+DELIVERY_ERROR_SIRC_103.explanation=Dup\u0103 ce a fost mediat de medierea specific\u0103, propriet\u0103\u0163ile mesajului con\u0163in obiecte care nu se pot serializa sau graficul de date nu este valid.
+DELIVERY_ERROR_SIRC_103.useraction=Investiga\u0163i cum \u015fi de ce medierea specificat\u0103 a modificat mesajul astfel \u00eenc\u00e2t acesta nu mai este valid.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_104=CWSIK0104E: Mesajul este prea mare pentru a fi tratat de MQ la distan\u0163\u0103; trimitere la destina\u0163ia de excep\u0163ii: dimensiune mesaj {0}, dimensiune mesaj maxim\u0103 {1}.
+DELIVERY_ERROR_SIRC_104.explanation=Mesajul este prea mare.
+DELIVERY_ERROR_SIRC_104.useraction=Verifica\u0163i set\u0103rile MQ.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_105=CWSIK0105E: Exist\u0103 o eroare de format mesaj.
+DELIVERY_ERROR_SIRC_105.explanation=Mesajul nu poate fi procesat datorit\u0103 unei erori de format.
+DELIVERY_ERROR_SIRC_105.useraction=Verifica\u0163i conexiunea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the WebSphere MQ return code
+# {1} identifies the WebSphere MQ reason code
+DELIVERY_ERROR_SIRC_106=CWSIK0106E: WebSphere MQ a generat o eroare. Codurile WebSphere MQ de \u00eentoarcere \u015fi de cauz\u0103 sunt {0} \u015fi{1}, respectiv.  
+DELIVERY_ERROR_SIRC_106.explanation=Mesajul nu poate fi procesat datorit\u0103 unei erori semnalate de WebSphere MQ.  
+DELIVERY_ERROR_SIRC_106.useraction=Examina\u0163i \u00eenregistr\u0103rile istorice WebSphere MQ de eroare pentru a determina cauza erorii. S-ar putea s\u0103 ave\u0163i nevoie s\u0103 contacta\u0163i administratorul WebSphere MQ s\u0103 v\u0103 ajute s\u0103 rezolva\u0163i aceast\u0103 problem\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name of the Object which cannot be serialized.
+DELIVERY_ERROR_SIRC_200=CWSIK0200E: Un obiect din clasa {0} a fost setat \u00een sarcina util\u0103 a mesajului dar nu poate fi serializat\u0103.
+DELIVERY_ERROR_SIRC_200.explanation=Un Object Message trimis cu stegule\u0163ul producerDoesNotModifyPayloadAfterSet activat pe ConnectionFactory a fost trimis cu o sarcin\u0103 util\u0103 care nu este serializabil\u0103 \u00een sistem.  Acest mesaj de date a fost pierdut.
+DELIVERY_ERROR_SIRC_200.useraction=Dezactiva\u0163i producerDoesNotModifyPayloadAfterSet de pe ConnectionFactory.  F\u0103r\u0103 stegule\u0163 activat, aplica\u0163ia JMS care seteaz\u0103 obiectul \u00een mesaj va primi orice excep\u0163ie de serializare imediat.
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0001
+# {0} The class name
+# {1} The PROBE ID.
+DELIVERY_ERROR_SIRC_900=CWSIK0900E: O eroare de mesagerie intern\u0103 a avut loc \u00een {0}, {1}.
+DELIVERY_ERROR_SIRC_900.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_900.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0002
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+DELIVERY_ERROR_SIRC_901=CWSIK0901E: A avut loc o eroare de mesagerie intern\u0103 \u00een {0}, {1}, {2}.
+DELIVERY_ERROR_SIRC_901.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_CONFIGURATION_ERROR_CWSIP0006
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+DELIVERY_ERROR_SIRC_905=CWSIK0905E: O eroare intern\u0103 de configurare destina\u0163ie a avut loc la destina\u0163ia {2} \u00een {0}, {1}.
+DELIVERY_ERROR_SIRC_905.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_905.useraction=CMSG0002

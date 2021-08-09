@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client Security
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal.client.security/resources/io/openliberty/grpc/internal/client/security/resources/grpcclientsecuritymessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.ssl.protocol=CWWKT0305W: {1} \u4e2d\u914d\u7f6e\u7684 SSL \u901a\u8a0a\u5354\u5b9a {0} \u4e0d\u9069\u7528\u65bc gRPC\u3002\u5fc5\u9808\u4f7f\u7528 TLSv1.2 \u6216\u66f4\u65b0\u7248\u672c\u3002
+invalid.ssl.protocol.explanation=\u6240\u914d\u7f6e\u7684 SSL \u901a\u8a0a\u5354\u5b9a\u4e0d\u9069\u7528\u65bc gRPC\u3002
+invalid.ssl.protocol.useraction=\u8acb\u914d\u7f6e\u503c\u70ba TLSv1.2 \u6216\u66f4\u65b0\u7248\u672c\u7684 SSL \u901a\u8a0a\u5354\u5b9a\u3002
+
+client.ssl.failed=CWWKT0306W: \u7531\u65bc {1}\uff0c\u672a\u4f7f\u7528 {0} SSL \u53c3\u7167\u5efa\u7acb gRPC \u7528\u6236\u7aef SSL \u9023\u7dda\u3002
+client.ssl.failed.explanation=gRPC \u7528\u6236\u7aef SSL \u74b0\u5883\u5b9a\u7fa9\u5efa\u7acb\u4f5c\u696d\u5931\u6557\u3002
+client.ssl.failed.useraction=\u8acb\u5c0d gRPC \u914d\u7f6e\u6709\u6548\u7684 SSL \u5167\u5bb9\u3002

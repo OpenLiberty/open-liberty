@@ -1,0 +1,70 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>ejbPersistentTimer-3.2</feature>
+		<feature>componenttest-1.0</feature>
+		<feature>wasJmsClient-2.0</feature>
+        <feature>wasJmsServer-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+	
+	<messagingEngine id="defaultME" >
+        <queue id="RequestQueue"/>
+        <queue id="ResponseQueue"/>		
+    </messagingEngine>
+	
+	
+	<jmsQueueConnectionFactory jndiName="WSTestQCF">
+        <properties.wasJms/>
+    </jmsQueueConnectionFactory>
+    
+    <jmsQueueConnectionFactory jndiName="Jetstream/jms/WSTestQCF">
+        <properties.wasJms/>
+    </jmsQueueConnectionFactory>	
+    
+    <jmsQueue id="RequestQueue" jndiName="Jetstream/jms/RequestQueue">
+        <properties.wasJms queueName="RequestQueue"/>
+    </jmsQueue>
+    
+    <jmsQueue id="ResponseQueue" jndiName="Jetstream/jms/ResponseQueue">
+        <properties.wasJms queueName="ResponseQueue"/>
+    </jmsQueue>
+    
+    <databaseStore id="HowdyDatabaseStore" tablePrefix="HOWDY_" keyGenerationStrategy="SEQUENCE"/>
+    <persistentExecutor id="Howdy" taskStoreRef="HowdyDatabaseStore" initialPollDelay="-1" enableTaskExecution="true" retryInterval="300s" retryLimit="-1">
+        <contextService/>
+    </persistentExecutor>
+
+    <ejbContainer>
+        <timerService persistentExecutorRef="Howdy"/>
+    </ejbContainer>
+    
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library id="DerbyLib" filesetRef="DerbyFileset"/>
+    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+
+    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:ejbInjectionFat" createDatabase="create"/>
+    </dataSource>
+	
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+    
+    <!-- Permissions required by Derby -->
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+</server>

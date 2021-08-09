@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: A(z) {0} \u00fatvonalhoz a hozz\u00e1f\u00e9r\u00e9s megtagadva.
+ACCESS_DENIED_ERROR.explanation=Olyan \u00fatvonal el\u00e9r\u00e9s\u00e9re t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely k\u00edv\u00fcl esik a be\u00e1ll\u00edtott olvas\u00e1si/\u00edr\u00e1si ter\u00fcleten.
+ACCESS_DENIED_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9rt \u00fatvonal a be\u00e1ll\u00edtott olvas\u00e1si/\u00edr\u00e1si ter\u00fcleten bel\u00fcl tal\u00e1lhat\u00f3.
+
+PATH_ERROR=CWWKX7901E: A(z) {0} f\u00e1jlrendszer \u00fatvonal nem \u00e9rv\u00e9nyes.
+PATH_ERROR.explanation=A megadott f\u00e1jlrendszer \u00fatvonal nem \u00e9rtelmezhet\u0151.
+PATH_ERROR.useraction=Adjon meg egy \u00e9rv\u00e9nyes f\u00e1jlrendszer \u00fatvonalat.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: A f\u00e1jl\u00e1tviteli MBean komponensen kereszt\u00fcli arch\u00edvuml\u00e9trehoz\u00e1s meg lett tagadva a(z) {0} forr\u00e1s\u00fatvonalhoz.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=Olyan \u00fatvonalr\u00f3l t\u00f6rt\u00e9nt k\u00eds\u00e9rlet inform\u00e1ci\u00f3k olvas\u00e1s\u00e1ra, amely k\u00edv\u00fcl esik a be\u00e1ll\u00edtott olvas\u00e1si ter\u00fcleten.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: A f\u00e1jl\u00e1tviteli MBean komponensen kereszt\u00fcli arch\u00edvuml\u00e9trehoz\u00e1s meg lett tagadva a(z) {0} c\u00e9l\u00fatvonalhoz.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=Olyan \u00fatvonalon t\u00f6rt\u00e9nt k\u00eds\u00e9rlet inform\u00e1ci\u00f3k \u00edr\u00e1s\u00e1ra, amely k\u00edv\u00fcl esik a be\u00e1ll\u00edtott \u00edr\u00e1si ter\u00fcleten.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: A(z) {1} arch\u00edvum sikeresen l\u00e9trehozva a k\u00f6vetkez\u0151b\u0151l: {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=Az arch\u00edvum sikeresen l\u00e9trehoz\u00e1sra ker\u00fclt.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: A(z) {1} arch\u00edvum nem hozhat\u00f3 l\u00e9tre a k\u00f6vetkez\u0151b\u0151l: {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=Az arch\u00edvuml\u00e9trehoz\u00e1si k\u00e9r\u00e9s meghi\u00fasult.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: Az arch\u00edvum kibont\u00e1s meg lett tagadva a(z) {0} forr\u00e1s\u00fatvonalhoz.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=Olyan \u00fatvonalr\u00f3l t\u00f6rt\u00e9nt k\u00eds\u00e9rlet inform\u00e1ci\u00f3k olvas\u00e1s\u00e1ra, amely k\u00edv\u00fcl esik a be\u00e1ll\u00edtott olvas\u00e1si ter\u00fcleten.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: Az arch\u00edvum kibont\u00e1s meg lett tagadva a(z) {0} c\u00e9l \u00fatvonalhoz.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=Olyan \u00fatvonalon t\u00f6rt\u00e9nt k\u00eds\u00e9rlet inform\u00e1ci\u00f3k \u00edr\u00e1s\u00e1ra, amely k\u00edv\u00fcl esik a be\u00e1ll\u00edtott \u00edr\u00e1si ter\u00fcleten.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: A(z) {0} arch\u00edvum sikeresen kibontva a k\u00f6vetkez\u0151be: {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=Az arch\u00edvum sikeresen kibont\u00e1sra ker\u00fclt.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: A(z) {0} arch\u00edvum nem bonthat\u00f3 ki a k\u00f6vetkez\u0151be: {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=Az arch\u00edvum kibont\u00e1si k\u00e9r\u00e9s meghi\u00fasult.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: A(z) ''{0}'' m\u0171velet csak akkor \u00e9rhet\u0151 el, ha az MBean hozz\u00e1f\u00e9r\u00e9se az IBM JMX REST csatol\u00f3j\u00e1n kereszt\u00fcl val\u00f3sul meg.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=A megadott MBean m\u0171velet csak akkor \u00e9rhet\u0151 el, ha  hozz\u00e1f\u00e9r\u00e9se az IBM JMX REST csatol\u00f3j\u00e1n kereszt\u00fcl val\u00f3sul meg.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Az MBean el\u00e9r\u00e9s\u00e9t az IBM JMX REST csatol\u00f3j\u00e1n kereszt\u00fcl val\u00f3s\u00edtsa meg.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t kapott, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra the kiszolg\u00e1l\u00f3t a "clean" param\u00e9terrel.
+
+ATTRIBUTE_UPDATED=CWWKX7912I: A(z) {0} FileServiceMXBean attrib\u00fatum sikeresen friss\u00edtve.
+ATTRIBUTE_UPDATED.explanation=A megadott FileServiceMXBean attrib\u00fatum sikeresen friss\u00edt\u00e9sre ker\u00fclt.
+ATTRIBUTE_UPDATED.useraction=Semmit sem kell tennie. 

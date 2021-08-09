@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: Clasa trebuie s\u0103 aib\u0103 un constructor f\u0103r\u0103 argumente (no-arguments constructor).
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=Clasa trebuie s\u0103 aib\u0103 un constructor f\u0103r\u0103 argumente \u015fi trebuie s\u0103 implementeze interfa\u0163a javax.security.auth.callback.CallbackHandler.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=Ad\u0103uga\u0163i un constructor f\u0103r\u0103 argumente la clasa handler-elor de apeluri inverse.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: Excep\u0163ia de injectare urm\u0103toare a ap\u0103rut pentru metoda PostConstruct de manipulare: {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=Apare o excep\u0163ie c\u00e2nd containerul invoc\u0103 metoda PostConstruct.   
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=Asigura\u0163i-v\u0103 c\u0103 metoda PostConstruct este definit\u0103 corect \u00een descriptorul de implementare sau adnotat\u0103 corect \u00een clas\u0103.    
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: Excep\u0163ia de injectare urm\u0103toare a ap\u0103rut pentru metoda PreDestroy de manipulare: {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=Apare o excep\u0163ie c\u00e2nd containerul invoc\u0103 metoda PreDestroy. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=Asigura\u0163i-v\u0103 c\u0103 metoda PreDestroy este definit\u0103 corect \u00een descriptorul de implementare sau adnotat\u0103 corect \u00een clas\u0103. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: Exist\u0103 mai mult de o metod\u0103 PostConstruct sau PreDestroy \u00een clasa {1}. Metoda {0} PostConstruct sau PreDestroy nu va fi invocat\u0103 de c\u0103tre container.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=Exist\u0103 mai mult de o metod\u0103 PostConstruct sau PreDestroy declarat\u0103 \u00een clas\u0103.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Containerul invoc\u0103 prima metod\u0103 pe care o detecteaz\u0103.

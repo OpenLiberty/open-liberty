@@ -1,0 +1,11 @@
+<server>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+        <feature>servlet-3.0</feature>
+    </featureManager>
+   
+	<include location="../fatTestPorts.xml"/>
+	
+	<logging hideMessage="CWWKF0012I" />
+</server>

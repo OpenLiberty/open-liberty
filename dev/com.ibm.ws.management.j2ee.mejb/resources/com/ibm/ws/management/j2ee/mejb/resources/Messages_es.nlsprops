@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mejb/resources/com/ibm/ws/management/j2ee/mejb/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSR77
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+MANAGEMENT_EJB_SERVICE_ACTIVATED=CWWKJ0200I: El servicio ManagementEJB se ha iniciado.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.explanation=El servicio ManagementEJB se ha iniciado satisfactoriamente.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.useraction=Este mensaje es meramente informativo. No se requiere ninguna acci\u00f3n.
+
+MANAGEMENT_EJB_SERVICE_DEACTIVATED=CWWKJ0201I: El servicio ManagementEJB se ha detenido.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.explanation=El servicio ManagementEJB se ha detenido satisfactoriamente.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.useraction=Este mensaje es meramente informativo. No se requiere ninguna acci\u00f3n.
+
+MANAGEMENT_EJB_START_ERROR=CWWKJ0202E: El m\u00f3dulo EJB del sistema no puede iniciarse. Error: {0} 
+MANAGEMENT_EJB_START_ERROR.explanation=El producto no puede iniciar el m\u00f3dulo EJB del sistema porque se ha producido un error.
+MANAGEMENT_EJB_START_ERROR.useraction=Aseg\u00farese de que el m\u00f3dulo EJB se ha configurado correctamente. 
+

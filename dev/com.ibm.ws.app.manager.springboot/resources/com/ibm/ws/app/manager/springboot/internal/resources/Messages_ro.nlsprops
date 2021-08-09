@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Nu s-a putut converti aplica\u0163ia {0} la o aplica\u0163ie sub\u0163ire din cauza excep\u0163iei {1}.
+warning.could.not.thin.application.explanation=Aplica\u0163ia nu a putut fi convertit\u0103 la o aplica\u0163ie sub\u0163ire. Aplica\u0163ia va continua s\u0103 ruleze din JAR-ul original. 
+warning.could.not.thin.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia. 
+
+error.need.springboot.version.15=CWWKC0252E: Pornirea aplica\u0163iei a e\u015fuat, deoarece \u00een fi\u015fierul server.xml este configurat\u0103 caracteristica springBoot-2.0. Pentru a fi configurat\u0103, aplica\u0163ia necesit\u0103 caracteristica springBoot-1.5.
+error.need.springboot.version.15.explanation=Aplica\u0163ia necesit\u0103 caracteristica springBoot-1.5. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
+error.need.springboot.version.15.useraction=Configura\u0163i caracteristica springBoot-1.5 \u00een fi\u015fierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.
+
+error.need.springboot.version.20=CWWKC0253E: Pornirea aplica\u0163iei a e\u015fuat, deoarece \u00een fi\u015fierul server.xml este configurat\u0103 caracteristica springBoot-1.5. Pentru a fi configurat\u0103, aplica\u0163ia necesit\u0103 caracteristica springBoot-2.0.
+error.need.springboot.version.20.explanation=Aplica\u0163ia necesit\u0103 caracteristica springBoot-2.0. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
+error.need.springboot.version.20.useraction=Configura\u0163i caracteristica springBoot-2.0 \u00een fi\u015fierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.
+
+error.missing.servlet=CWWKC0254E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
+error.missing.servlet.explanation=Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
+error.missing.servlet.useraction=Configura\u0163i o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Aplica\u0163ia Spring Boot {0} nu poate fi pornit\u0103 deoarece aplica\u0163ia {1} este deja activ\u0103. Nu pute\u0163i configura mai multe aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server.
+error.multiple.applications.not.allowed.explanation=Configurarea mai multor aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server nu este suportat\u0103.
+error.multiple.applications.not.allowed.useraction=Configura\u0163i doar o aplica\u0163ie Spring Boot per configura\u0163ie de server.
+
+error.no.manifest.found=CWWKC0256E: Nu a fost g\u0103sit niciun fi\u015fier META-INF/MANIFEST.MF pentru aplica\u0163ia Spring Boot {0}.
+error.no.manifest.found.explanation=Aplica\u0163iile Spring Boot trebuie s\u0103 con\u0163in\u0103 un fi\u015fier META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Configura\u0163i o aplica\u0163ie Spring Boot valid\u0103, care s\u0103 con\u0163in\u0103 un fi\u015fier META-INF/MANIFEST.MF, cu serverul.
+
+error.no.spring.class.found=CWWKC0257E: Fi\u015fierul META-INF/MANIFEST.MF al aplica\u0163iei Spring Boot trebuie s\u0103 specifice un antet Start-Class.
+error.no.spring.class.found.explanation=Aplica\u0163iile Boot Spring trebuie s\u0103 con\u0163in\u0103 o clas\u0103 principal\u0103 specificat\u0103 de antetul de manifest Start-Class.
+error.no.spring.class.found.useraction=Configura\u0163i o aplica\u0163ie Spring Boot valid\u0103, care s\u0103 con\u0163in\u0103 un antet de manifest Start-Class, cu serverul.
+
+error.missing.ssl=CWWKC0258E: Pornirea aplica\u0163iei an e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 SSL \u00een fi\u015fierul server.xml.
+error.missing.ssl.explanation=Aplica\u0163ia este o aplica\u0163ie securizat\u0103 \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 SSL \u00een fi\u015fierul server.xml.
+error.missing.ssl.useraction=Configura\u0163i caracteristica transportSecurity-1.0 \u00een fi\u015fierul server.xml.
+
+error.missing.websocket=CWWKC0259E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+error.missing.websocket.explanation=Aplica\u0163ia este o aplica\u0163ie socket web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+error.missing.websocket.useraction=Configura\u0163i o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+
+# CWWKC0260E: GOT REMOVED
+
+warning.spring_config.ignored.compression=CWWKC0261W: Comprimarea a fost activat\u0103 de aplica\u0163ie. Comprimarea nu este suportat\u0103 \u015fi setarea va fi ignorat\u0103.
+warning.spring_config.ignored.compression.explanation=Comprimarea nu este suportat\u0103 \u015fi setarea va fi ignorat\u0103, dar aplica\u0163ia va continua s\u0103 func\u0163ioneze altfel.
+warning.spring_config.ignored.compression.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+warning.spring_config.ignored.session=CWWKC0262W: Timeout-ul de sesiune sau persisten\u0163a sesiunii au fost configurate de aplica\u0163ie. Aceste set\u0103ri de sesiune trebuie s\u0103 fie configurate \u00een fi\u015fierul server.xml.
+warning.spring_config.ignored.session.explanation=Timeout-ul de sesiune sau persisten\u0163a sesiunii trebuie s\u0103 fie configurate \u00een fi\u015fierul server.xml. Aceste set\u0103ri de sesiune ale aplica\u0163iei vor fi ignorate.
+warning.spring_config.ignored.session.useraction=Configura\u0163i timeout-ul de sesiune \u015fi persisten\u0163a sesiunii \u00een fi\u015fierul server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: Versiunea de Spring Boot {0} nu este suportat\u0103. Este necesar\u0103 o versiune Spring Boot din intervalul {1}.
+error.wrong.spring.boot.version.explanation=A fost detectat\u0103 o versiune de Spring Boot care nu este suportat\u0103 de server.
+error.wrong.spring.boot.version.useraction=Actualiza\u0163i aplica\u0163ia Spring Boot s\u0103 foloseasc\u0103 o versiune de Spring Boot din intervalul cerut.
+
+warning.application.started.event.timeout=CWWKC0264W: Aplica\u0163ia {0} nu a emis evenimentul {1} \u00een {2} minute.
+warning.application.started.event.timeout.explanation=Aplica\u0163ia nu a emis evenimentul de pornire \u00een timpul a\u015fteptat. Serverul ar putea fi supra\u00eenc\u0103rcat sau aplica\u0163ia este prea mare. Dac\u0103 aplica\u0163ia porne\u015fte ca parte a pornirii serverului, pornirea serverului se poate finaliza f\u0103r\u0103 a se a\u015ftepta ca aplica\u0163ia s\u0103 porneasc\u0103.
+warning.application.started.event.timeout.useraction=Dac\u0103 aplica\u0163ia porne\u015fte p\u00e2n\u0103 la urm\u0103, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 aplica\u0163ia nu porne\u015fte, verifica\u0163i istoricele serverului pentru a vedea dac\u0103 alte mesaje indic\u0103 o cauz\u0103.
+
+warning.java.version.not.supported=CWWKC0265W: Versiunea curent\u0103 de Java {0} nu este suportat\u0103 de Spring Boot versiunea {1}. Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
+warning.java.version.not.supported.explanation=Versiunile Java mai mari dec\u00e2t 1.8 nu sunt suportate de Spring Boot versiunile 1.5.x \u015fi mai mici.
+warning.java.version.not.supported.useraction=Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Pornirea aplica\u0163iei a e\u015fuat, deoarece fi\u015fierul JAR al serverului Liberty \u00eempachetat nu este valid.
+error.invalid.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat nu are un antet de manifest Server-Name, intr\u0103ri pentru r\u0103d\u0103cina de server sau intr\u0103ri pentru directorul lib.index.cache.
+error.invalid.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JAR de server Liberty \u00eempachetat valid.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Pornirea aplica\u0163iei a e\u015fuat, deoarece nu a fost g\u0103sit\u0103 aplica\u0163ia Spring Boot \u00een fi\u015fierul JAR de server Liberty.
+error.application.not.found.inside.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat trebuie s\u0103 con\u0163in\u0103 o aplica\u0163ie Spring Boot configurat\u0103.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JAR de server Liberty \u00eempachetat valid.

@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry/resources/com/ibm/ws/security/registry/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3000 - CWWKS3099
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID=CWWKS3000E: A avut loc o excep\u0163ie de configurare. Nu exist\u0103 niciun parametru refId configurat pentru configura\u0163ia userRegistry.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.explanation=Elementul de configurare userRegistry referen\u0163iaz\u0103 anumite instan\u0163e UserRegistry dup\u0103 valorile ID-ului lor.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.useraction=Specifica\u0163i un parametru refId \u00een configura\u0163ia userRegistry.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID=CWWKS3001E: A avut loc o excep\u0163ie de configurare. Instan\u0163a UserRegistry cerut\u0103 cu ID-ul {0} nu a putut fi g\u0103sit\u0103.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.explanation=Fiecare configura\u0163ie UserRegistry specific\u0103 un parametru ID.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.useraction=Specifica\u0163i parametrul ID pentru un element configurat, sau crea\u0163i configura\u0163ia cerut\u0103.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE=CWWKS3002E: A avut loc o excep\u0163ie de configurare. Fabrica UserRegistry cerut\u0103 de tipul {0} nu a putut fi g\u0103sit\u0103.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.explanation=Fiecare bundle de implementare UserRegistry specific\u0103 tipul s\u0103u furnizat.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.useraction=Specifica\u0163i un tip suportat, sau instala\u0163i bundle-ul care furnizeaz\u0103 instan\u0163a UserRegistry a tipului cerut.
+
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID=CWWKS3003E: A avut loc o excep\u0163ie de configurare. O configura\u0163ie pentru tipul de registru {0} nu define\u015fte un ID.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.explanation=Configura\u0163ia pentru tipul de registru nu define\u015fte un ID.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.useraction=Defini\u0163i un ID pentru configura\u0163ia tipului de registru.
+
+USER_REGISTRY_SERVICE_WITHOUT_TYPE=CWWKS3004E: A ap\u0103rut o excep\u0163ie intern\u0103. Serviciul {0} nu define\u015fte tipul de registru pe care \u00eel implementeaz\u0103.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.explanation=Serviciul nu define\u015fte proprietatea com.ibm.ws.security.registry.type.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.useraction=Defini\u0163i proprietatea com.ibm.ws.security.registry.type pentru serviciu.
+
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE=CWWKS3005E: A avut loc o excep\u0163ie de configurare. Nu este disponibil\u0103 nicio implementare de serviciu UserRegistry.  Asigura\u0163i-v\u0103 c\u0103 ave\u0163i un registru de utilizatori configurat.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.explanation=Nu este disponibil\u0103 nicio implementare UserRegistry prin registrul de servicii OSGi.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.useraction=Specifica\u0163i o caracteristic\u0103 de implementare UserRegistry.
+
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE=CWWKS3006E: A avut loc o excep\u0163ie de configurare. Exist\u0103 mai multe servicii de implementare UserRegistry disponibile; sistemul nu poate determina pe care s\u0103 \u00eel utilizeze.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.explanation=Sunt disponibile mai multe implement\u0103ri UserRegistry prin registrul de servicii OSGi.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.useraction=Specifica\u0163i doar o caracteristic\u0103 de implementare UserRegistry. Dac\u0103 selecta\u0163i multiple userRegistries, atunci trebuie s\u0103 include\u0163i caracteristica de federalizare pentru federalizarea registrelor utilizator.
+
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE=CWWKS3007E: A avut loc o excep\u0163ie de configurare. O configura\u0163ie de tipul {0} cu ID-ul {1} intr\u0103 \u00een conflict cu configura\u0163ia de tipul {2} cu ID-ul {3}. Ignorare configura\u0163ie de tip {0} cu ID {1}.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.explanation=Mai multe configura\u0163ii de registru definesc acela\u015fi ID. Acest lucru nu este suportat.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.useraction=Modifica\u0163i ID-ul uneia dintre configura\u0163iile de registru \u00een conflict astfel \u00eenc\u00e2t s\u0103 fie unic.
+
+FEDERATING_REGISTRY=CWWKS3008I: Registrul de utilizator cu ID-ul {0} este federalizat.
+FEDERATING_REGISTRY.explanation=Federalizarea registrului de utilizator este activat\u0103 \u015fi registrul utilizator configurat este federalizat.
+FEDERATING_REGISTRY.useraction=Dac\u0103 federalizarea magaziei nu este necesar\u0103, actualiza\u0163i configura\u0163ia \u00een fi\u015fierul server.xml pentru a dezactiva federalizarea
+
+REMOVE_FEDERATED_REGISTRY=CWWKS3009I: Registrul de utilizator cu ID-ul {0} este \u00eenl\u0103turat din federalizare.
+REMOVE_FEDERATED_REGISTRY.explanation=Federalizarea registrului de utilizator este activat\u0103 \u015fi registrul utilizator configurat este cel care a fost federalizat anterior este \u00eenl\u0103turat din federalizare.
+REMOVE_FEDERATED_REGISTRY.useraction=Dac\u0103 federalizarea magaziei nu este necesar\u0103, actualiza\u0163i configura\u0163ia \u00een fi\u015fierul server.xml pentru a dezactiva federalizarea
+
+USER_REGISTRY_SERVICE_FEDERATION_FAILED=CWWKS3010E: A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 la federalizarea registrelor de utilizator: {0}.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.explanation=S-a f\u0103cut o \u00eencercare de a federaliza registrele de utilizator, dar a e\u015fuat.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.useraction=Consulta\u0163i informa\u0163iile pentru determinarea problemei pe pagina web WebSphere Application Server Support: http://www.ibm.com/software/webservers/appserv/was/support

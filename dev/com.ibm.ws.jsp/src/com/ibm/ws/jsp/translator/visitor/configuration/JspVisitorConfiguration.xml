@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<jsp-visitor-configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xsi:schemaLocation="http://www.ibm.com/xml/ns/JspVisitorConfiguration.xsd">
+	<jsp-visitor-definition id="JspValidate">
+		<class-name>com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.validator.ValidateJspResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="JspGenerate">
+		<class-name>com.ibm.ws.jsp.translator.visitor.generator.GenerateJspVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.generator.GenerateJspResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="InMemoryJspGenerate">
+		<class-name>com.ibm.ws.jsp.inmemory.generator.InMemoryGenerateJspVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.generator.GenerateJspResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="TagFileDependencyCheck">
+		<class-name>com.ibm.ws.jsp.translator.visitor.tagfiledep.TagFileDependencyVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.tagfiledep.TagFileDependencyResult</result-type>
+	</jsp-visitor-definition>
+    <jsp-visitor-definition id="TagFileScan">
+        <class-name>com.ibm.ws.jsp.translator.visitor.tagfilescan.TagFileScanVisitor</class-name>
+        <result-type>com.ibm.ws.jsp.translator.visitor.tagfilescan.TagFileScanResult</result-type>
+    </jsp-visitor-definition>
+	<jsp-visitor-definition id="TagFileValidate">
+		<class-name>com.ibm.ws.jsp.translator.visitor.validator.ValidateTagFileVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.validator.ValidateTagFileResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="TagFileGenerate">
+		<class-name>com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="InMemoryTagFileGenerate">
+		<class-name>com.ibm.ws.jsp.inmemory.generator.InMemoryGenerateTagFileVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="Smap">
+		<class-name>com.ibm.ws.jsp.translator.visitor.smap.SmapVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.smap.SmapVisitorResult</result-type>
+	</jsp-visitor-definition>
+	<jsp-visitor-definition id="TagCount">
+		<class-name>com.ibm.ws.jsp.translator.visitor.validator.TagCountVisitor</class-name>
+		<result-type>com.ibm.ws.jsp.translator.visitor.validator.TagCountResult</result-type>
+	</jsp-visitor-definition>
+	
+	<jsp-visitor-collection id="JspTranslation">
+		<jsp-visitor id="TagFileDependencyCheck" order="1" visits="1"/>
+		<jsp-visitor id="TagCount" order="2" visits="1"/>
+		<jsp-visitor id="JspValidate" order="3" visits="1"/>
+		<jsp-visitor id="JspGenerate" order="4" visits="7"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="DebugJspTranslation">
+		<jsp-visitor id="TagFileDependencyCheck" order="1" visits="1"/>
+		<jsp-visitor id="TagCount" order="2" visits="1"/>
+		<jsp-visitor id="JspValidate" order="3" visits="1"/>
+		<jsp-visitor id="JspGenerate" order="4" visits="7"/>
+		<jsp-visitor id="Smap" order="5" visits="1"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="TagFileTranslation">
+		<jsp-visitor id="TagCount" order="1" visits="1"/>
+		<jsp-visitor id="TagFileValidate" order="2" visits="1"/>
+		<jsp-visitor id="TagFileGenerate" order="3" visits="7"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="DebugTagFileTranslation">
+		<jsp-visitor id="TagCount" order="1" visits="1"/>
+		<jsp-visitor id="TagFileValidate" order="2" visits="1"/>
+		<jsp-visitor id="TagFileGenerate" order="3" visits="7"/>
+		<jsp-visitor id="Smap" order="4" visits="1"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="TagFileDependency">
+		<jsp-visitor id="TagFileDependencyCheck" order="1" visits="1"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="TagFileScan">
+    	<jsp-visitor id="TagFileScan" order="1" visits="1"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="InMemoryJspTranslation">
+		<jsp-visitor id="TagFileDependencyCheck" order="1" visits="1"/>
+		<jsp-visitor id="TagCount" order="2" visits="1"/>
+		<jsp-visitor id="JspValidate" order="3" visits="1"/>
+		<jsp-visitor id="InMemoryJspGenerate" order="4" visits="7"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="InMemoryDebugJspTranslation">
+		<jsp-visitor id="TagFileDependencyCheck" order="1" visits="1"/>
+		<jsp-visitor id="TagCount" order="2" visits="1"/>
+		<jsp-visitor id="JspValidate" order="3" visits="1"/>
+		<jsp-visitor id="InMemoryJspGenerate" order="4" visits="7"/>
+		<jsp-visitor id="Smap" order="5" visits="1"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="InMemoryTagFileTranslation">
+		<jsp-visitor id="TagCount" order="1" visits="1"/>
+		<jsp-visitor id="TagFileValidate" order="2" visits="1"/>
+		<jsp-visitor id="InMemoryTagFileGenerate" order="3" visits="7"/>
+	</jsp-visitor-collection>
+	<jsp-visitor-collection id="InMemoryDebugTagFileTranslation">
+		<jsp-visitor id="TagCount" order="1" visits="1"/>
+		<jsp-visitor id="TagFileValidate" order="2" visits="1"/>
+		<jsp-visitor id="InMemoryTagFileGenerate" order="3" visits="7"/>
+		<jsp-visitor id="Smap" order="4" visits="1"/>
+	</jsp-visitor-collection>
+</jsp-visitor-configuration>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- An loose configured ear which contains a version of snoop.war -->
+<archive>
+  <!-- file targetInArchive="/META-INF/application.xml"
+        sourceOnDisk="${server.config.dir}/looseSnoopFiles/arbitraryapplication.sillyextension" /-->
+  <archive targetInArchive="helloEJBServer.jar">
+    <dir targetInArchive="/"
+         sourceOnDisk="${server.config.dir}/helloEJBServer.jar/" />
+  </archive>
+</archive>

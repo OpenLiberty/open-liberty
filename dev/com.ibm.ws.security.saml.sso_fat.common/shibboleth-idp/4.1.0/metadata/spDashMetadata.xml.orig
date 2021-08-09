@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor
+	xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+	entityID="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp-dash"
+>
+	<md:SPSSODescriptor
+		AuthnRequestsSigned="false"
+		WantAssertionsSigned="true"
+		protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
+	>
+		<md:KeyDescriptor use="signing">
+			<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<ds:X509Data>
+					<ds:X509Certificate>MIIDBjCCAe6gAwIBAgIEVydUZTANBgkqhkiG9w0BAQsFADAvMQswCQYDVQQGEwJVUzEMMAoGA1UE
+						ChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwHhcNMTYwNTAyMTMyMTQxWhcNMzUwNzAxMTMyMTQx
+						WjAvMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwggEiMA0G
+						CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCXrqxihzkdcYeeu0YIxnobzMsecCX7GE/ts5AyarAS
+						q3Aj7Ikkbdqy8uElCKLM/RwwDfXt6QkTpUAnYMFPyDaemolJcr8i5VCiQzgI2nQghsPrqqBUsngN
+						LWPN/oYVyIkCIY4fO2XwgJ3v+rQS+5hzB3+xSNOvBGmQtwQfZn8UTayHhrzZTDLFmRfeCFtn/cwW
+						2wyPPDRxKoo9SuAYKvhlwBZl6jJ7zVwvJtjlVv/n95l+R4EgPBJKyyolGaw0EWzbdz5EDKa0po/v
+						CxDDkBMR4jul7SSJYumofjC2wNXI3UL+n69klKJrQ5An/Pz1vk6SakULqoYEbELt46TvXAInAgMB
+						AAGjKjAoMBMGA1UdIwQMMAqACIwWUD/0aQzNMBEGA1UdDgQKBAiMFlA/9GkMzTANBgkqhkiG9w0B
+						AQsFAAOCAQEAP6loJKkjdMul7lPmn3N+nWf0+kyXsDp8DeFCGrh2lGozBLnUobd3c/+edL+zZnhl
+						moE+7ByktdWcfgOS6aB8BGHfUlyPnEm4hd9AOA5dHh7up0gowCU1HeY5j2MY6ztQtK5aE6EZ5vOC
+						rvqAS1sBBsRqQ+QJUxVMOnJpsbqjTuvOSxgiDY/XS7/8WYnehfz7cAlBQFdGSOIA9YJ2zjoK54J/
+						yV6Fk9vtFdim6l3odryRuwIJ5f77ib8LmkB88VGC8zLizeVucj6W/QrDm6VktuCXTjAwJveo60mV
+						MYfdAMTuT+9/WfJbr6xCgrGB8IYGi8JKlWgp+sgJYLY7hsU4Kw==
+					</ds:X509Certificate>
+				</ds:X509Data>
+			</ds:KeyInfo>
+		</md:KeyDescriptor>
+		<md:KeyDescriptor use="encryption">
+			<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<ds:X509Data>
+					<ds:X509Certificate>MIIDBjCCAe6gAwIBAgIEVydUZTANBgkqhkiG9w0BAQsFADAvMQswCQYDVQQGEwJVUzEMMAoGA1UE
+						ChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwHhcNMTYwNTAyMTMyMTQxWhcNMzUwNzAxMTMyMTQx
+						WjAvMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwggEiMA0G
+						CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCXrqxihzkdcYeeu0YIxnobzMsecCX7GE/ts5AyarAS
+						q3Aj7Ikkbdqy8uElCKLM/RwwDfXt6QkTpUAnYMFPyDaemolJcr8i5VCiQzgI2nQghsPrqqBUsngN
+						LWPN/oYVyIkCIY4fO2XwgJ3v+rQS+5hzB3+xSNOvBGmQtwQfZn8UTayHhrzZTDLFmRfeCFtn/cwW
+						2wyPPDRxKoo9SuAYKvhlwBZl6jJ7zVwvJtjlVv/n95l+R4EgPBJKyyolGaw0EWzbdz5EDKa0po/v
+						CxDDkBMR4jul7SSJYumofjC2wNXI3UL+n69klKJrQ5An/Pz1vk6SakULqoYEbELt46TvXAInAgMB
+						AAGjKjAoMBMGA1UdIwQMMAqACIwWUD/0aQzNMBEGA1UdDgQKBAiMFlA/9GkMzTANBgkqhkiG9w0B
+						AQsFAAOCAQEAP6loJKkjdMul7lPmn3N+nWf0+kyXsDp8DeFCGrh2lGozBLnUobd3c/+edL+zZnhl
+						moE+7ByktdWcfgOS6aB8BGHfUlyPnEm4hd9AOA5dHh7up0gowCU1HeY5j2MY6ztQtK5aE6EZ5vOC
+						rvqAS1sBBsRqQ+QJUxVMOnJpsbqjTuvOSxgiDY/XS7/8WYnehfz7cAlBQFdGSOIA9YJ2zjoK54J/
+						yV6Fk9vtFdim6l3odryRuwIJ5f77ib8LmkB88VGC8zLizeVucj6W/QrDm6VktuCXTjAwJveo60mV
+						MYfdAMTuT+9/WfJbr6xCgrGB8IYGi8JKlWgp+sgJYLY7hsU4Kw==
+					</ds:X509Certificate>
+				</ds:X509Data>
+			</ds:KeyInfo>
+		</md:KeyDescriptor>
+		<md:SingleLogoutService
+			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp-dash/slo"
+			Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" />	
+		<md:AssertionConsumerService
+			Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp-dash/acs"
+			index="0"
+			isDefault="true" />
+	</md:SPSSODescriptor>
+</md:EntityDescriptor>

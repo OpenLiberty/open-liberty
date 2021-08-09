@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.client/resources/com/ibm/ws/security/client/internal/resources/SecurityClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service for Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1167 - CWWKS1199
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1167E: O jaasLoginContextEntry {0} n\u00e3o tem m\u00f3dulos de login especificados no loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=O jassLoginContextEntry n\u00e3o tem m\u00f3dulos de login especificados no loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Assegure-se de que haja pelo menos um m\u00f3dulo de login especificado no loginModuleRef.  
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1168W: O loginModuleRef {0} n\u00e3o tem loginModule customizado JAAS definido.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=A autentica\u00e7\u00e3o n\u00e3o foi bem-sucedida porque n\u00e3o h\u00e1 m\u00f3dulo de login definido para a refer\u00eancia de m\u00f3dulo de login.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Assegure-se de que o elemento loginModuleRef tenha uma propriedade loginModule configurada.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1169W: Devido ao nome duplicado, o nome jaasLoginContextEntry {0}, que \u00e9 definido pelo ID {1}, \u00e9 sobrescrito pelo valor do ID {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=O mesmo nome \u00e9 definido por mais de um jassLoginContextEntry. Como resultado, o valor original \u00e9 sobrescrito por outro valor.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Certifique-se de que cada jaasLoginContextEntry possui um ID e nome exclusivos.
+
+JAAS_LOGIN_NO_CALLBACK_HANDLER=CWWKS1170E: O login no aplicativo cliente falhou porque a implementa\u00e7\u00e3o CallbackHandler \u00e9 nula. Certifique-se de que uma implementa\u00e7\u00e3o CallbackHandler v\u00e1lida seja especificada no construtor LoginContext ou no descritor de implementa\u00e7\u00e3o do aplicativo cliente. 
+JAAS_LOGIN_NO_CALLBACK_HANDLER.explanation=O login  no aplicativo cliente falhou porque a classe implementando a interface CallbackHandler \u00e9 nula. Como n\u00e3o h\u00e1 CallbackHandler, n\u00e3o h\u00e1 uma maneira de reunir credenciais para um usu\u00e1rio que deseja efetuar login. Certifique-se de que uma implementa\u00e7\u00e3o CallbackHandler v\u00e1lida seja especificada no construtor LoginContext ou no descritor de implementa\u00e7\u00e3o do aplicativo cliente.
+JAAS_LOGIN_NO_CALLBACK_HANDLER.useraction= Certifique-se de que uma implementa\u00e7\u00e3o CallbackHandler v\u00e1lida seja especificada como um argumento para o construtor LoginContext ou no descritor de implementa\u00e7\u00e3o do aplicativo cliente. 
+
+JAAS_LOGIN_MISSING_CREDENTIALS=CWWKS1171E: O login no aplicativo cliente falhou porque o nome de usu\u00e1rio ou senha \u00e9 nulo. Certifique-se de que a implementa\u00e7\u00e3o CallbackHandler est\u00e1 reunindo as credenciais necess\u00e1rias. 
+JAAS_LOGIN_MISSING_CREDENTIALS.explanation=O login no aplicativo cliente falhou porque o nome de usu\u00e1rio ou senha \u00e9 nulo. Certifique-se de que a implementa\u00e7\u00e3o CallbackHandler est\u00e1 reunindo as credenciais necess\u00e1rias. CallbackHandler pode ser especificada no construtor LoginContext ou no descritor de implementa\u00e7\u00e3o do aplicativo cliente.
+JAAS_LOGIN_MISSING_CREDENTIALS.useraction=Certifique-se de que a implementa\u00e7\u00e3o CallbackHandler est\u00e1 reunindo o nome de usu\u00e1rio e senha. 
+
+JAAS_LOGIN_UNEXPECTED_EXCEPTION=CWWKS1172E: O login no aplicativo cliente falhou devido a uma exce\u00e7\u00e3o inesperada. Revise os logs para entender a causa da exce\u00e7\u00e3o. A exce\u00e7\u00e3o \u00e9: {0}. 
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.explanation=O login no aplicativo cliente falhou devido a uma exce\u00e7\u00e3o inesperada. Revise os logs e entradas FFDC para entender e corrigir a causa da exce\u00e7\u00e3o.
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.useraction=Revise os logs e entradas FFDC para entender e corrigir a causa da exce\u00e7\u00e3o.

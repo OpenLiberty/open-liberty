@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!--
+    ** WARNING: This file was automatically generated. Do not edit it directly,
+    **          or you will lose your changes.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="1.0"
+           xml:lang="en"
+           elementFormDefault="qualified"
+           targetNamespace="http://java.sun.com/jsf/composite">
+
+
+
+    <xs:annotation>
+        <xs:documentation>JSF Composite Facelets Tag Library.</xs:documentation>
+        <xs:documentation>display-name: JSF Composite Facelets Tag Library.</xs:documentation>
+        <xs:documentation>short-name: composite</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="actionSource">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.ActionSourceHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate the name of the attribute that the component should expose
+to page authors.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="targets" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="attribute">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.AttributeHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="targets" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="default" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[If this property is set and the attribute does not have any
+value (null), the value set on this property is returned as default
+instead null.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="displayName" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="required" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate if the attribute is required or not
+<p>
+Myfaces specific feature: this attribute is checked only if project stage is
+not ProjectStage.Production when a composite component is created.</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="preferred" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="expert" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="shortDescription" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="method-signature" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="hidden" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The "hidden" flag is used to identify features that are intended only 
+for tool use, and which should not be exposed to humans.
+Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="targetAttributeName" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="clientBehavior">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="event" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[This attribute is used as the target event 
+name, so client behaviors pointing to "name" 
+will be attached on the related components 
+identified by "targets" attribute and on 
+the event name this attribute holds. In other
+words, this is the "real" event name.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[This attribute represents the source event name 
+that is used when instances of the composite 
+component are used. In other
+words, this is the "logical" event name.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="default" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate this clientBehavior description is the one
+that has to be taken by default. There should be only
+one clientBehavior with this property set to true in
+a composite component interface description.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="targets" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Contains a list of clientIds separated by spaces that 
+identify the component(s) that will be used to attach 
+client behaviors from the composite component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="editableValueHolder">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.EditableValueHolderHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate the name of the attribute that the component should expose
+to page authors.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="targets" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="extension">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.ExtensionHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="facet">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Define the facets used by this composite component.
+<p>
+This tag is used inside composite:interface tag. All facets
+should be saved under the key UIComponent.FACETS_KEY on the
+bean descriptor map as a Map&lt;String, PropertyDescriptor&gt;
+</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.FacetHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="displayName" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="required" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate if the attribute is required or not
+<p>
+Myfaces specific feature: this attribute is checked only if project stage is
+not ProjectStage.Production when a composite component is created.
+</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="preferred" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="expert" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="shortDescription" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="hidden" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The "hidden" flag is used to identify features that are intended only 
+for tool use, and which should not be exposed to humans.
+Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="implementation">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="insertChildren">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="insertFacet">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Insert or move the facet from the composite component body to the expected location.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name that identify the current facet.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="required" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Define if the facet to be inserted is required or not for every instance of
+this composite component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="interface">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.InterfaceHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="componentType" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="displayName" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="preferred" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="expert" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="shortDescription" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="hidden" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The "hidden" flag is used to identify features that are intended only 
+for tool use, and which should not be exposed to humans.
+Only available if ProjectStage is Development.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="renderFacet">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Render the facet defined on the composite component body to the current location]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.RenderFacetHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name that identify the current facet.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="required" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Define if the facet to be inserted is required or not for every instance of
+this composite component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="valueHolder">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.composite.ValueHolderHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate the name of the attribute that the component should expose
+to page authors.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="targets" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

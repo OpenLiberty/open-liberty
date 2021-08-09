@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: Sistemul nu poate crea fi\u015fierul nou {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=O component\u0103 a serverului de aplica\u0163ii nu a putut realiza o opera\u0163ie pe o resurs\u0103 necesar\u0103.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Application Server are permisiune de acces de scriere la directorul pentru resurs\u0103 \u015fi c\u0103 discul nu este plin. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: Sistemul nu poate crea fi\u015fierul {0} din cauza excep\u0163iei urm\u0103toare: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=O \u00eencercare de deschidere a resursei specifice a e\u015fuat. Excep\u0163ia indic\u0103 motivul principal al e\u015fecului.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Application Server are permisiune de acces de scriere la directorul pentru resurs\u0103 \u015fi c\u0103 discul nu este plin. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: Sistemul nu poate \u015fterge fi\u015fierul {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=O component\u0103 a serverului de aplica\u0163ii nu a putut realiza o opera\u0163ie pe o resurs\u0103 necesar\u0103.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Application Server are permisiune de acces de scriere la directorul pentru resurs\u0103 \u015fi c\u0103 discul nu este plin. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: Sistemul nu a putut \u015fterge fi\u015fierul {0} din cauza urm\u0103toarei excep\u0163ii: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=A e\u015fuat o \u00eencercare de a \u015fterge resursa specificat\u0103. Excep\u0163ia indic\u0103 motivul principal al e\u015fecului.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 runtime-ul serverului de aplica\u0163ii are acces de scriere permis \u00een director pentru resurs\u0103. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Serviciul handler fi\u015fier de audit porne\u015fte.
+AUDIT_FILEHANDLER_STARTING.explanation=Serviciul handler fi\u015fier de audit este \u00een proces de pornire. Aceasta poate dura c\u00e2teva minute dac\u0103 ini\u0163ializarea one-time este necesar s\u0103 apar\u0103.
+AUDIT_FILEHANDLER_STARTING.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: Serviciul handler fi\u015fier de audit este gata.
+AUDIT_FILEHANDLER_READY.explanation=Acest mesaj este doar \u00een scop informativ.
+AUDIT_FILEHANDLER_READY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: Serviciul handler fi\u015fier de audit s-a oprit.
+AUDIT_FILEHANDLER_STOPPED.explanation=Acest mesaj este doar \u00een scop informativ.
+AUDIT_FILEHANDLER_STOPPED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: Serviciul de auditare nu poate porni pentru c\u0103 nu este corect\u0103 configura\u0163ia handler-ului de auditare pentru criptarea \u00eenregistr\u0103rilor de auditare. Configura\u0163i o referin\u0163\u0103 de depozit de chei corect\u0103 \u015fi aliasul de certificat. Verifica\u0163i c\u0103 exist\u0103 depozitul de chei la care face referire {1} \u015fi c\u0103 este prezent numele de alias {0} al certificatului pe care-l folosi\u0163i pentru criptarea \u00eenregistr\u0103rilor de auditare. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=Serviciul de auditare nu poate porni din cauza unui erori \u00een configura\u0163ia handler-ului de auditare pentru criptarea \u00eenregistr\u0103rilor de auditare. Pentru mai multe informa\u0163ii, referi\u0163i-v\u0103 la excep\u0163ia din mesajul anterior de e\u015fec la activ\u0103rii serviciului. Specifica\u0163i o referin\u0163\u0103 de depozit de chei valid\u0103 \u015fi asigura\u0163i-v\u0103 c\u0103 aliasul de certificat se refer\u0103 la un certificat care exist\u0103 \u00een depozitul de chei.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ia handler-ului de auditare se specific\u0103 o referin\u0163\u0103 de depozit de chei \u015fi un alias de certificat pentru criptarea \u00eenregistr\u0103rilor de auditare. Asigura\u0163i-v\u0103 c\u0103 depozitul de chei exist\u0103, parola este specificat\u0103 corect, iar depozitul de chei con\u0163ine un certificat care este referit de aliasul de certificat pentru criptare.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: Serviciul de auditare nu poate porni pentru c\u0103 nu este corect\u0103 configura\u0163ia handler-ului de auditare pentru semnarea \u00eenregistr\u0103rilor de auditare. Configura\u0163i o referin\u0163\u0103 de depozit de chei corect\u0103 \u015fi aliasul de certificat personal. Verifica\u0163i c\u0103 exist\u0103 depozitul de chei la care face referire {1} \u015fi c\u0103 este prezent numele de alias {0} al certificatului personal pe care-l folosi\u0163i pentru semnarea \u00eenregistr\u0103rilor de auditare. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=Serviciul de auditare nu poate porni din cauza unui erori \u00een configura\u0163ia handler-ului de auditare pentru semnarea \u00eenregistr\u0103rilor de auditare. Pentru mai multe informa\u0163ii, referi\u0163i-v\u0103 la excep\u0163ia din mesajul anterior de e\u015fec la activ\u0103rii serviciului. Specifica\u0163i o referin\u0163\u0103 de depozit de chei valid\u0103 \u015fi asigura\u0163i-v\u0103 c\u0103 aliasul de certificat personal se refer\u0103 la un certificat personal care exist\u0103 \u00een depozitul de chei.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ia handler-ului de auditare se specific\u0103 o referin\u0163\u0103 de depozit de chei \u015fi un alias de certificat personal pentru semnarea \u00eenregistr\u0103rilor de auditare. Asigura\u0163i-v\u0103 c\u0103 depozitul de chei exist\u0103, parola este specificat\u0103 corect, iar depozitul de chei con\u0163ine un certificat personal care este referit de aliasul de certificat personal pentru semnare.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: Serviciul de auditare nu poate porni din cauza unui e\u015fec care a ap\u0103rut \u00een timp ce serviciul ini\u0163ializa handler-ul de auditare pentru criptarea \u00eenregistr\u0103rilor de auditare. Excep\u0163ia este {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=Serviciul de auditare nu poate porni din cauza unui e\u015fec care a ap\u0103rut \u00een timpul ini\u0163ializ\u0103rii configura\u0163iei handler-ul de auditare pentru criptarea \u00eenregistr\u0103rilor de auditare. Pentru informa\u0163ii suplimentare, vede\u0163i excep\u0163ia din mesaj.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Vede\u0163i excep\u0163ia pentru a determina cauza erorii.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: Serviciul de auditare nu poate porni din cauza unui e\u015fec care a ap\u0103rut \u00een timp ce serviciul ini\u0163ializa handler-ul de auditare pentru semnarea \u00eenregistr\u0103rilor de auditare. Excep\u0163ia este {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=Serviciul de auditare nu poate porni din cauza unui e\u015fec care a ap\u0103rut \u00een timpul ini\u0163ializ\u0103rii configura\u0163iei handler-ul de auditare pentru semnarea \u00eenregistr\u0103rilor de auditare. Pentru informa\u0163ii suplimentare, vede\u0163i excep\u0163ia care este men\u0163ionat\u0103 \u00een mesaj.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Vede\u0163i excep\u0163ia pentru a determina cauza erorii.

@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=2.5.24.4,ou=attributeTypes,cn=apache,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 2.5.24.4
+m-obsolete: FALSE
+m-description: Access control information that applies to a set of entries
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.1
+m-usage: DIRECTORY_OPERATION
+m-name: prescriptiveACI
+creatorsname: uid=admin,ou=system
+m-equality: directoryStringFirstComponentMatch

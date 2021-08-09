@@ -1,0 +1,19 @@
+<server description="default server">
+    <featureManager>
+	   <feature>test.app.notifications</feature>
+    </featureManager>
+
+    <application id="app1" name="app1" location="app.tan"/>
+    <application id="app2" name="app2" location="app.tan"/>
+    <application id="app3" name="app3" location="app.tan"/>
+    <application id="app4" name="app4" location="app.tan"/>
+    <application id="notStarted" name="notStarted" location="app.tan" autoStart="false"/>
+    <application id="returnFailed" name="returnFailed" location="app.tan"/>
+    <application id="returnNull" name="returnNull" location="app.tan"/>
+    <application id="returnFalse" name="returnFalse" location="app.tan"/>
+    <application id="noHandler" name="noHandler" location="app.nha"/>
+    <application id="noFile" name="noFile" location="notFound.tan"/>
+    <application id="noContainer" name="noContainer" location="app.nca"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>

@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.1,ou=objectClasses,cn=apachedns,ou=schema
+m-must: cn
+m-oid: 1.3.6.1.4.1.18060.0.4.2.3.1
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: An abstract DNS record objectClass used to build other specific structural objectclasses for di
+ fferent record types
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: apacheDnsAbstractRecord
+m-typeobjectclass: ABSTRACT
+creatorsname: uid=admin,ou=system
+m-may: apacheDnsTtl
+m-may: description

@@ -1,0 +1,16 @@
+<server description="cdi12APIServer">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>cdi-1.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>concurrent-1.0</feature>
+    </featureManager>
+
+   <!-- Usually, we recommend customers not to change this, however we have a test that checks behaviour on a new thread with a history of timing out -->
+   <executor coreThreads="20"/>
+
+</server>

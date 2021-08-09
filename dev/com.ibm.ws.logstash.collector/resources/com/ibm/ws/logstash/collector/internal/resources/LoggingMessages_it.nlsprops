@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: Il programma di raccolta logstash non \u00e8 stato in grado di connettersi al server logstash sull''host specificato {0} e numero di porta {1}. 
+LOGSTASH_CONNECTION_FAILED.explanation=La connessione al server logstash non \u00e8 riuscita perch\u00e9 il server logstash non era in esecuzione sull'host specificato, le informazioni di configurazione, come il nome host e numero di porta, non erano corrette o l'input lumberjack non \u00e8 configurato nel server logstash.  
+LOGSTASH_CONNECTION_FAILED.useraction=Controllare le informazioni di configurazione e avviare il server logstash sull'host specificato. Verificare che l'input lumberjack sia impostato correttamente e che l'host e il numero della porta specificati nella configurazione del programma di raccolta logstash nel file server.xml corrisponda alla configurazione del server logstash corrispondente.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: Il programma di raccolta logstash non \u00e8 stato in grado di inviare eventi al server logstash. Per inviare eventi \u00e8 necessaria la connessione al server logstash.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Impossibile inviare gli eventi perch\u00e9 la connessione al server logstash non \u00e8 disponibile. \u00c8 possibile che la connessione fosse stabilita prima ma ora sembra essere disconnesso. Il sistema continuer\u00e0 a tentare e si connetter\u00e0 al server logstash quando diventa disponibile.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Assicurarsi che il server logstash sia in esecuzione sull'host.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: Il programma di raccolta logstash \u00e8 connesso al server logstash sull''host specificato {0} e numero di porta {1}.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=Il programma di raccolta logstash \u00e8 connesso correttamente al server logstash.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Nessuna azione richiesta.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: Il programma di raccolta logstash \u00e8 disconnesso dal server logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=Il programma di raccolta logstash si chiude e ristabilisce la connessione al server logstash quando viene aggiornata la configurazione del programma di raccolta logstash, incluso le modifiche alla configurazione keystore e repertorio SSL dipendente. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Nessuna azione richiesta.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: Il programma di raccolta logstash non riconosce l''origine specificata {0}.
+LOGSTASH_SOURCE_UNKNOWN.explanation=L'origine specificata non \u00e8 una delle origini predefinite fornite dall'ambiente di runtime Liberty. L'origine potrebbe far parte di una funzione Liberty che non \u00e8 stata aggiunta alla configurazione del server.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Controllare le informazioni di configurazione. Verificare di aver specificato una delle origini supportate per il programma di raccolta.
+

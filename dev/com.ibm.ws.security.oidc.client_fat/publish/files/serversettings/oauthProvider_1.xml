@@ -1,0 +1,56 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSample"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="OAuthConfigSample" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		    <!-- !d becomes \d for regexp evaluation, any 4 digit port should be accepted. -->
+		   	<client
+				name="client02"
+				secret="{xor}LDo8LTor"
+				displayname="client02"
+				allowRegexpRedirects="true"
+				redirect="regexp:http://localhost:!d!d!d!d/oidcclient/redirect/client02"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+</server>

@@ -1,0 +1,503 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
+ */
+defaultTasks 'clean', 'build'
+
+// Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
+project.version = bnd('Bundle-Version', bnd.buildID)
+jar {
+  version=null
+}
+
+if (parseBoolean(bnd('globalize', 'true'))) {
+  task globalize {
+    // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
+    def quotationExcludes = bnd('globalize.quotation.excludes')
+
+    ext.destinationDir = new File(buildDir, "src/${name}/java")
+    
+    inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
+    outputs.dir destinationDir
+    doFirst {
+      project.mkdir(destinationDir)
+    }
+    doLast {
+      copy {
+        from project.file('resources')
+        into destinationDir
+        include '**/package-info.java'
+      }
+      nlsTaskdef(ant)
+      ant.validate() {
+        fileset(dir: project.file('resources'), includes: "**/*.nlsprops", excludes: "**/*_*.nlsprops")
+        completenessvalidator(messagesonly: "false")
+        duplicatekeyvalidator()
+        metadatavalidator()
+        contentvalidator(constraint: "disallowed", pattern: '"\\{\\d+\\}"', loglevel: "warning", message: "variables should not be encapsulated in quotation marks") {
+            keyfilter {
+                exclude(name: "*.explanation")
+                exclude(name: "*.useraction")
+                if(quotationExcludes != null)
+                    quotationExcludes.split(',').each{ exclude(name: it.trim()) }
+            }
+        }
+        contentvalidator(constraint: "disallowed", pattern: "\\{\\d+\\}", loglevel: "warning", message: "variables are disallowed in explanations or useractions") {
+            keyfilter {
+                include(name: "*.explanation")
+                include(name: "*.useraction")
+            }
+        }
+        contentvalidator(constraint: "disallowed", pattern: "\\b((WAS)|(TAM)|(WIM)|(WPS)|(eWAS)|(LUW)|(ND)|(MQSeries))\\b", loglevel: "warning", message: "product acronyms are disallowed")
+        contentvalidator(constraint: "disallowed", pattern: "([A-Z0-9]{4,5})(\\d{4})([IWE]):\\S", loglevel: "error", message: "malformed message")
+      }
+      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalized'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: project.file('resources'), includes: "**/*.nlsprops")
+        encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
+        globmapper(from: "*.nlsprops", to: "*.normalized")
+      }
+      ant.commonize(dest: new File(project.buildDir, 'nlsbuild/normalized'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
+      }
+      ant.transform() {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
+        javatransformer(dest: destinationDir) {
+          keyfilter {
+            exclude(name: "*.explanation")
+            exclude(name: "*.useraction")
+          }
+        }
+      }
+
+      // Copy the unsuffixed nlsprops files as _en.nlsprops and
+      // commonize and normalize that. Then generate
+      // the tmsource for all languages (including the newly
+      // generated english source)
+      File nlsbuildtemp = new File(project.buildDir, 'nlsbuild/temp')
+      copy {
+        from project.file('resources')
+        into nlsbuildtemp
+        include '**/*.nlsprops'
+        exclude '**/*_??.nlsprops'
+        exclude '**/*_??_??.nlsprops'
+        rename '(.*).nlsprops', '$1' + "_en.nlsprops"
+      }
+      // Existing languages first
+      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: project.file('resources')) {
+          include(name: "**/*.nlsprops")
+        }
+        encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
+        globmapper(from: "*.nlsprops", to: "*.normalized")
+      }
+      // And now english
+      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: nlsbuildtemp) {
+          include(name: "**/*_en.nlsprops")
+        }
+        encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
+        globmapper(from: "*.nlsprops", to: "*.normalized")
+      }
+
+      ant.commonize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.normalized")
+        globmapper(from: "*.normalized", to: "*.commonized")
+      }
+
+      // The xml files generated by the tmstransformer are not usually used by the local project.
+      // They are used and packaged by the build.pii.package project.
+      // So instead of generating these files to the local project and doing a copy, directly generate the
+      // files into the build.pii.package project.
+      ant.transform() {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.commonized")
+        tmstransformer(dest: rootProject.file("build.pii.package/nlsxml/${project.name}"))
+      }
+    }
+  }
+
+  sourceSets {
+    main {
+      java.srcDir globalize.destinationDir
+    }
+  }
+}
+
+if (parseBoolean(bnd('copy.pii', 'true'))) {
+  task copyPiiFiles(type: Copy) {
+    ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
+    from project.file('resources')
+    into ext.destinationDir
+    include '**/*.nlsprops'
+    include 'OSGI-INF/l10n/*'
+    include 'l10n/*'
+    include 'publish/features/l10n/*.properties'
+    include 'WEB-CONTENT/**/nls/*.js'
+    include 'OSGI-INF/**/nls/*.js'
+  }
+} else {
+  task copyPiiFiles { }
+}
+
+if ( parseBoolean( bnd('jakartaeeMe', 'true'))) {
+  configurations {
+    jakartaeeTransformJars
+  }
+
+  dependencies {
+    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
+                            'commons-cli:commons-cli:1.4',
+                            'org.slf4j:slf4j-simple:1.7.30',
+                            'org.slf4j:slf4j-api:1.7.26',
+                            'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
+                            'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+  }
+
+  task jakartaeeTransform {
+    mustRunAfter project.tasks.jar
+    dependsOn jar
+    inputs.files(fileTree(project.buildDir).matching {include '*.jar' exclude '*jakarta.jar' }).skipWhenEmpty()
+    outputs.dir project.buildDir
+    doLast {
+      fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
+
+      FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }        
+      bundles.each { bundleJar ->
+
+        println 'BND [ jakartaeeMe ] detected; performing jakarta transform'
+
+        // Jakarta transform options always input the bundle jar and output
+        // a jakarta transformed copy of the bundle jar.
+        //
+        // Jakarta transform always uses a set of global properties files.
+
+        def initialBundleJarName = project.buildDir.path + '/' + bundleJar.name
+        println 'Initial bundle jar name [ ' + initialBundleJarName + ' ]'
+
+        def finalBundleJarName = initialBundleJarName.replaceAll( '.jar', '.jakarta.jar' )
+        println 'Default jakarta final bundle jar name [ ' + finalBundleJarName + ' ]'
+
+        def localBundleJarName = bnd('jakartaFinalJarName')
+        if ( (localBundleJarName != null) && !localBundleJarName.isEmpty() ) {
+          println 'Local jakarta final bundle jar name [ ' + localBundleJarName + ' ]'
+          println 'Ignoring default jakarta final bundle jar name'
+          finalBundleJarName = project.buildDir.path + '/' + localBundleJarName
+          println 'Override jakarta bundle final jar name [ ' + finalBundleJarName + ' ]'
+        } else {
+          println 'Using default jakarta final bundle jar name'
+        }
+
+        def transformProject = bndWorkspace.getProject('wlp-jakartaee-transform')
+        def globalRules = transformProject.getFile('rules')
+        println 'Using global rules [ ' + globalRules.path + ' ]'
+
+        def transformerArgs = [
+          initialBundleJarName, finalBundleJarName,
+          '-q', // quiet output
+          '-tr', transformProject.getFile('rules/jakarta-renames.properties').path,
+          '-ts', transformProject.getFile('rules/jakarta-selections.properties').path,
+          '-tv', transformProject.getFile('rules/jakarta-versions.properties').path,
+          '-tb', transformProject.getFile('rules/jakarta-bundles.properties').path,
+          '-td', transformProject.getFile('rules/jakarta-direct.properties').path,
+          '-tf', transformProject.getFile('rules/jakarta-xml-master.properties').path ]
+
+        // Add BND file specified local additions.
+
+        project.ext.set( 'jakartaLocalSelections', 'local.selections.properties' )
+
+        def localOptions = [
+            [ 'Selections', '-ts' ],
+            [ 'Renames',    '-tr' ],
+            [ 'Versions',   '-tv' ],
+            [ 'Bundles',    '-tb' ],
+            [ 'Direct',     '-td' ],
+            [ 'TextMaster', '-tf' ]
+        ]
+
+        for ( localEntry in localOptions ) {
+            def localName = localEntry[0]
+            def localOption = localEntry[1]
+
+            def bndProperty = 'jakartaLocal' + localName
+            def localAddition = bnd(bndProperty)
+
+            if ( (localAddition == null) || localAddition.isEmpty() ) {
+                println 'BND [ ' + bndProperty + ' ] is not set'
+
+            } else {
+                def localFile = project.file( 'rules/' + localAddition )
+
+                if ( !localFile.exists() ) {
+                    logger.error( 'ERROR: BND Ignoring [ ' + bndProperty + ' ]; [ ' + localFile.path + ' ] does not exist' )
+
+                } else {
+                    println 'BND adding [ ' + bndProperty + ' ]: [ ' + localFile.path + ' ]'
+                    transformerArgs.add( localOption )
+                    transformerArgs.add( localFile.path )
+                }
+            }
+        }
+
+        def initialBundleId = bnd('jakartaInitialBundleId')
+        if ( (initialBundleId != null) && !initialBundleId.isEmpty() ) {
+          println 'BND jakartaInitialBundleId [ ' + initialBundleId + ' ]'
+
+          def finalBundleId = bnd('jakartaFinalBundleId')
+          if ( (finalBundleId == null) || finalBundleId.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle id property [ jakartaFinalBundleId ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
+          }
+
+          def finalBundleVersion = bnd('jakartaFinalBundleVersion')
+          if ( (finalBundleVersion == null) || finalBundleVersion.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle version property [ jakartaFinalBundleVersion ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
+          }
+
+          def finalBundleShortName = bnd('jakartaFinalBundleShortName')
+          if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle short name property [ jakartaFinalBundleShortName ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
+          }
+
+          def finalBundleDescription = bnd('jakartaFinalBundleDescription')
+          if ( (finalBundleDescription == null) || finalBundleDescription.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle description property [ jakartaFinalBundleDescription ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
+          }
+
+          def directBundleDataKey = initialBundleId
+          def directBundleDataValue =
+            finalBundleId + ',' +
+            finalBundleVersion + ',' + 
+            finalBundleShortName + ',' +
+            finalBundleDescription
+
+          println 'BND jakarta direct key [ ' + directBundleDataKey + ' ]'
+          println 'BND jakarta direct value [ ' + directBundleDataValue + ' ]'
+
+          transformerArgs.add( '-ti' )
+          transformerArgs.add( 'tb' )
+          transformerArgs.add( directBundleDataKey )
+          transformerArgs.add( directBundleDataValue )
+        }
+
+        println 'Transformer options:'
+        transformerArgs.each {
+            println '  [ ' + it + ' ]'
+        }
+
+        javaexec {
+            classpath configurations.jakartaeeTransformJars
+            main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
+            args = transformerArgs
+        }
+      }
+    }
+  }
+
+  assemble.dependsOn(jakartaeeTransform)
+}
+
+compileJava {
+  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
+    inputs.files { rasInstrumentationInputFiles() }
+    outputs.dir compileJava.destinationDir
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd('instrument.classesExcludes').split("\\s*,\\s*"))
+    doLast {
+      if (instrument.isEmpty())
+        return
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
+        fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
+      }
+    }
+  }
+
+  if (parseBoolean(bnd('globalize', 'true'))) {
+    dependsOn globalize
+  }
+
+  options.warnings = false
+  options.fork = true
+}
+
+test {
+  dependsOn ':cnf:copyMavenLibs'
+  def testports = fileTree(dir: compileTestJava.destinationDir, include: 'unittestports.properties')
+
+  doFirst {
+    if (testports.isEmpty())
+      return
+    def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
+    portSelectorTaskdef(ant)
+    ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
+    if (null.equals(ant.properties['jvmargPorts'])) {
+      logger.error( 'Error: PortSelector task failed to set ports; unittestports JVM props will not be set' )
+      return
+    }
+    jvmArgs ant.jvmargPorts.tokenize()
+  }
+
+  afterSuite { desc, result ->
+    if (!desc.parent) { // will match the outermost suite
+      rootProject.ext.testCountTotal = rootProject.ext.testCountTotal + result.testCount
+      rootProject.ext.successfulTestCountTotal = rootProject.ext.successfulTestCountTotal + result.successfulTestCount
+      rootProject.ext.failedTestCountTotal = rootProject.ext.failedTestCountTotal + result.failedTestCount
+      rootProject.ext.skippedTestCountTotal = rootProject.ext.skippedTestCountTotal + result.skippedTestCount
+      println "Test counts so far:"
+      print rootProject.ext.testCountTotal
+      println " total tests"
+      print rootProject.ext.successfulTestCountTotal
+      println " total passing"
+      print rootProject.ext.failedTestCountTotal
+      println " total failing"
+      print rootProject.ext.skippedTestCountTotal
+      println " total skipped"
+    }
+  }
+
+  timeout = Duration.ofMinutes(15)
+  //Set ignore failures using -Dgradle.test.ignoreFailures=true
+  ignoreFailures = Boolean.valueOf(System.getProperty("gradle.test.ignoreFailures", "false"))
+  environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
+  jvmArgs "-Dtest.buildDir=${buildDir}"
+  jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"
+  jvmArgs "-Dmain.classesDir=" + compileJava.destinationDir
+  jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDir
+  jvmArgs "-Dcom.ibm.ws.is.unit.test=true"
+}
+
+task buildfat {
+  // A no-op task for regular projects which FATs will override
+  group = "build"
+}
+
+if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
+  task apiSpiJavadoc(type: Javadoc) {
+    dependsOn jar
+
+    onlyIf {
+      !new File(buildDir, "javadoc").exists()
+    }
+
+    def sp = files()
+    def cp = files()
+    bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
+      def proj = it.getProject()
+      sp += files(proj.getSourcePath())
+      cp += files(it.getFile())
+      cp += files(proj.getBuildpath()*.getFile())
+    }
+
+    destinationDir = file("$buildDir/javadoc")
+    classpath += cp
+    source = sp
+
+    include bnd('Export-Package', '').split(',').collect {
+      def pkg = it
+      int index = pkg.indexOf(";")
+      if (index != -1) {
+        pkg = pkg.substring(0, index)
+      }
+      // Replace . with / (path separator) and * (package name wildcard) with **
+      pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
+      return pkg
+    }
+    exclude "**/internal/**"
+    title = bnd('Bundle-Name')
+    options.source bnd('javac.source')
+    options.memberLevel = 'PUBLIC'
+    options.noIndex true
+    options.use true
+    if (JavaVersion.current().isJava8Compatible()) {
+      options.addStringOption('Xdoclint:none', '-quiet')
+    }
+  }
+
+  task zipJavadoc(type: Zip) {
+    dependsOn apiSpiJavadoc
+    archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+    from new File(project.buildDir, "javadoc")
+  }
+}
+
+/**
+ * This task is meant to perform a simple verification of all of the bundle jars that have been
+ * created for the liberty image. It runs as part of the Package Verification build. The check
+ * it performs is to simply inspect each bundle jar, and verify that if there is at least one
+ * file with translatable messages in it, there is a file for every language.
+*/
+task verifyBundleNLS {
+    doLast {
+        // This is the top level reference to each of the jar files in the build image
+        FileTree bundleJars= fileTree(dir: "${rootDir}/../../../messageVerificationImage/wlp/lib/");
+        bundleJars.include "**/*.jar"
+
+        /* This is the String that contains all of the projects that it is safe to IGNORE message
+         * verification failures for. It is loaded from the properties file messageVerifyIgnores.
+         */
+        String ignoresList = new File("${rootDir}/../../../ant_build/resources/configuration/messageVerifyIgnores").text
+
+        // This string holds all the projects with errors
+        String badProjectsProps = "";
+        String badProjectsNLS = "";
+
+        // With the list of bundle jars, loop over each one to perform the check
+        bundleJars.each { File jarFile ->
+            FileTree jarTree = zipTree( jarFile )
+
+            // Find all the NLS metatype.properties files based on a regex
+            FileTree metatypeFiles = jarTree.matching {
+                include 'OSGI-INF/l10n/**/*'
+            }
+
+            // Store the name of the jar file being examined, and strip off the version string and file type
+            String jarName = jarFile.getName()
+            jarName = jarName.replaceFirst( "_[0-9].[0-9]+.[0-9]+", "" )
+            jarName = jarName.replaceFirst( ".jar", "")
+            jarName += "\n"
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( metatypeFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsProps.isAllWhitespace() )
+                    badProjectsProps += jarFile.getName()
+                else
+                    badProjectsProps += ", " + jarFile.getName()
+            }
+
+            // Find all the NLS .nlsprops files based on a regex
+            // Note that the .nlsprops files have been compiled, so they will be .class files in the jar
+            FileTree nlspropsFiles = jarTree.matching {
+                include '**/resources/[^/]*.class'
+            }
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( nlspropsFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsNLS.isAllWhitespace() )
+                    badProjectsNLS += jarFile.getName()
+                else
+                    badProjectsNLS += ", " + jarFile.getName()
+            }
+        }
+
+        // If either of the checks have failures in them, fail the task
+        if( !badProjectsProps.isAllWhitespace() )
+            throw new GradleException("Missing metatype.properties files: " + badProjectsProps )
+        if( !badProjectsNLS.isAllWhitespace() )
+            throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
+    }
+}

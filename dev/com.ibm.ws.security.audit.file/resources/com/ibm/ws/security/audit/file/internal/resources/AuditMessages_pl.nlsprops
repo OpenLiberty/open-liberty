@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: System nie mo\u017ce utworzy\u0107 nowego pliku {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Komponent serwera aplikacji nie mo\u017ce wykona\u0107 operacji na \u017c\u0105danym zasobie.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b i \u017ce dysk nie jest pe\u0142ny. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: System nie mo\u017ce utworzy\u0107 pliku {0} z powoduj nast\u0119puj\u0105cego wyj\u0105tku: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Pr\u00f3ba otwarcia okre\u015blonego zasobu nie powiod\u0142a si\u0119. Wyj\u0105tek informuje o podstawowej przyczynie niepowodzenia.
+UNABLE_TO_CREATE_RESOURCE.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b i \u017ce dysk nie jest pe\u0142ny. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: System nie mo\u017ce usun\u0105\u0107 pliku {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Komponent serwera aplikacji nie mo\u017ce wykona\u0107 operacji na \u017c\u0105danym zasobie.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b i \u017ce dysk nie jest pe\u0142ny. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: System nie mo\u017ce usun\u0105\u0107 pliku {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Pr\u00f3ba usuni\u0119cia okre\u015blonego zasobu nie powiod\u0142a si\u0119. Wyj\u0105tek informuje o podstawowej przyczynie niepowodzenia.
+UNABLE_TO_DELETE_RESOURCE.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym zas\u00f3b. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Us\u0142uga programu obs\u0142ugi pliku kontroli jest uruchamiana.
+AUDIT_FILEHANDLER_STARTING.explanation=Trwa proces uruchamiania us\u0142ugi programu obs\u0142ugi pliku kontroli. Mo\u017ce to potrwa\u0107 kilka minut, je\u015bli potrzebne jest przeprowadzenie jednokrotnego inicjowania.
+AUDIT_FILEHANDLER_STARTING.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: Us\u0142uga programu obs\u0142ugi pliku kontroli jest gotowa.
+AUDIT_FILEHANDLER_READY.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+AUDIT_FILEHANDLER_READY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: Us\u0142uga programu obs\u0142ugi pliku kontroli zosta\u0142a zatrzymana.
+AUDIT_FILEHANDLER_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+AUDIT_FILEHANDLER_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli, poniewa\u017c konfiguracja procedury obs\u0142ugi kontroli na potrzeby szyfrowania rekord\u00f3w kontroli jest niepoprawna. Skonfiguruj poprawne odwo\u0142anie do magazynu kluczy i alias certyfikatu. Upewnij si\u0119, \u017ce magazyn kluczy przywo\u0142ywany przez {1} istnieje i \u017ce alias {0} certyfikatu u\u017cywany do szyfrowania rekord\u00f3w kontroli istnieje w magazynie kluczy. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli z powodu b\u0142\u0119du w konfiguracji procedury obs\u0142ugi kontroli na potrzeby szyfrowania rekord\u00f3w kontroli. Wi\u0119cej informacji na ten temat zawiera wyj\u0105tek w poprzednim komunikacie o niepowodzeniu aktywacji us\u0142ugi. Nale\u017cy poda\u0107 poprawne odwo\u0142anie do magazynu kluczy i upewni\u0107 si\u0119, \u017ce alias certyfikatu odwo\u0142uje si\u0119 do certyfikatu istniej\u0105cego w magazynie kluczy.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Upewnij si\u0119, \u017ce konfiguracja procedury obs\u0142ugi kontroli okre\u015bla odwo\u0142anie do magazynu kluczy i alias certyfikatu na potrzeby szyfrowania rekord\u00f3w kontroli. Upewnij si\u0119, \u017ce magazyn kluczy istnieje, \u017ce has\u0142o zosta\u0142o wprowadzone poprawnie, a magazyn kluczy zawiera certyfikat przywo\u0142ywany przez alias certyfikatu szyfrowania.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli, poniewa\u017c konfiguracja procedury obs\u0142ugi kontroli na potrzeby podpisywania rekord\u00f3w kontroli jest niepoprawna. Skonfiguruj poprawne odwo\u0142anie do magazynu kluczy i alias certyfikatu osobistego. Upewnij si\u0119, \u017ce magazyn kluczy przywo\u0142ywany przez {1} istnieje i \u017ce alias {0} certyfikatu osobistego u\u017cywany do podpisywania rekord\u00f3w kontroli istnieje w magazynie kluczy. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli z powodu b\u0142\u0119du w konfiguracji procedury obs\u0142ugi kontroli na potrzeby podpisywania rekord\u00f3w kontroli. Wi\u0119cej informacji na ten temat zawiera wyj\u0105tek w poprzednim komunikacie o niepowodzeniu aktywacji us\u0142ugi. Nale\u017cy poda\u0107 poprawne odwo\u0142anie do magazynu kluczy i upewni\u0107 si\u0119, \u017ce alias certyfikatu osobistego odwo\u0142uje si\u0119 do certyfikatu osobistego istniej\u0105cego w magazynie kluczy.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Upewnij si\u0119, \u017ce konfiguracja procedury obs\u0142ugi kontroli okre\u015bla odwo\u0142anie do magazynu kluczy i alias certyfikatu osobistego na potrzeby podpisywania rekord\u00f3w kontroli. Upewnij si\u0119, \u017ce magazyn kluczy istnieje, \u017ce has\u0142o zosta\u0142o wprowadzone poprawnie, a magazyn kluczy zawiera certyfikat osobisty przywo\u0142ywany przez alias certyfikatu podpisywania.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d, gdy us\u0142uga inicjowa\u0142a procedur\u0119 obs\u0142ugi kontroli na potrzeby szyfrowania rekord\u00f3w kontroli. Wyj\u0105tek: {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania konfiguracji procedury obs\u0142ugi kontroli na potrzeby szyfrowania rekord\u00f3w kontroli. Wi\u0119cej informacji zawiera wyj\u0105tek podany w komunikacie.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du, odwo\u0142aj si\u0119 do wyj\u0105tku.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d, gdy us\u0142uga inicjowa\u0142a procedur\u0119 obs\u0142ugi kontroli na potrzeby podpisywania rekord\u00f3w kontroli. Wyj\u0105tek: {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=Nie mo\u017cna uruchomi\u0107 us\u0142ugi kontroli, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania konfiguracji procedury obs\u0142ugi kontroli na potrzeby podpisywania rekord\u00f3w kontroli. Wi\u0119cej informacji zawiera wyj\u0105tek wymieniony w komunikacie.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du, odwo\u0142aj si\u0119 do wyj\u0105tku.

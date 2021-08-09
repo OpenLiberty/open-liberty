@@ -1,0 +1,67 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Cloudant
+Bundle-SymbolicName: com.ibm.ws.cloudant
+Bundle-Description: Allow applications to access Cloudant client APIs as a feature; version=${bVersion}
+
+
+
+WS-TraceGroup: cloudant
+
+Import-Package: \
+    !com.ibm.websphere.ssl.*, \
+    !com.ibm.wsspi.ssl.*, *
+
+DynamicImport-Package: \
+    com.ibm.websphere.ssl, \
+    com.ibm.wsspi.ssl
+
+Private-Package:\
+     com.ibm.ws.cloudant.internal
+     
+Export-Package: \
+    com.ibm.ws.cloudant
+
+Include-Resource:\
+    OSGI-INF=resources/OSGI-INF
+
+-dsannotations: com.ibm.ws.cloudant.CloudantDatabaseService,\
+ com.ibm.ws.cloudant.internal.CloudantApplicationListener
+
+Service-Component: \
+  com.ibm.ws.cloudant.cloudant;\
+    implementation:=com.ibm.ws.cloudant.internal.CloudantService;\
+    provide:='\
+      com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent,\
+      com.ibm.wsspi.resource.ResourceFactory,\
+      com.ibm.wsspi.library.LibraryChangeListener';\
+    configuration-policy:=require;\
+    library=com.ibm.wsspi.library.Library;\
+    appListener='com.ibm.ws.container.service.state.ApplicationStateListener(component.name=com.ibm.ws.cloudant.internal.CloudantApplicationListener)';\
+    appRecycleCoordinator=com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;\
+    classLoaderIdentifier=com.ibm.ws.classloading.ClassLoaderIdentifierService;\
+    containerAuthData=com.ibm.websphere.security.auth.data.AuthData;\
+    ssl=com.ibm.wsspi.ssl.SSLConfiguration;\
+    greedy:='containerAuthData,ssl';\
+    optional:='containerAuthData,ssl';\
+    properties:='\
+      library.target=(id=unbound),\
+      containerAuthData.target=(id=unbound),\
+      ssl.target=(id=unbound),\
+      creates.objectClass=com.cloudant.client.api.ClientBuilder'
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.api.ssl;version=latest,\
+	com.ibm.websphere.appserver.spi.ssl;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.security.auth.data.common;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

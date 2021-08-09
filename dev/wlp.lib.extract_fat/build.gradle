@@ -1,0 +1,25 @@
+
+task addRequiredFiles(type: Copy) {
+  dependsOn ':com.ibm.ws.kernel.feature:jar'
+  from new File(projectDir, 'publish/files/sampleServer.xml')
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/')
+  rename 'sampleServer.xml', 'productSampleServer.xml'
+  doLast {
+    ant.zip(destfile: new File(autoFvtDir, 'lib/LibertyFATTestFiles/wlp.lib.extract.zip')) {
+      zipfileset(src: new File(project(':com.ibm.ws.kernel.feature').buildDir, 'com.ibm.ws.kernel.feature.jar'), includes: 'wlp/**/*.class')
+    }
+  }
+}
+
+autoFVT.dependsOn ':wlp.lib.extract:build'
+autoFVT.dependsOn addRequiredFiles
+
+autoFVT.doLast {
+  /*
+   * Copy wlp.lib.extract.jar for doing bin/server package command
+   */
+  copy {
+  	from new File('../wlp.lib.extract/build/libs', 'wlp.lib.extract.jar')
+  	into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+  }
+}

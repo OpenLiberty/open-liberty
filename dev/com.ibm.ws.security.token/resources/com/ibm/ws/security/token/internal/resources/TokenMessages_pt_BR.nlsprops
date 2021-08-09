@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Ocorreu uma exce\u00e7\u00e3o de configura\u00e7\u00e3o. A inst\u00e2ncia de TokenService solicitada do tipo {0} n\u00e3o \
+p\u00f4de ser localizada.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Cada pacote configur\u00e1vel de implementa\u00e7\u00e3o de TokenService especifica seu tipo \
+fornecido.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Especifique um tipo suportado ou instale o pacote configur\u00e1vel que fornece a inst\u00e2ncia de TokenService do tipo solicitado.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: O token de seguran\u00e7a n\u00e3o pode ser validado. Isso pode ocorrer por causa dos motivos a seguir\n\
+1. O token de seguran\u00e7a foi gerado em outro servidor usando teclas diferentes.\n\
+   2. A configura\u00e7\u00e3o do token ou as chaves de seguran\u00e7a do servi\u00e7o de token que criou o token foi alterada.\n\
+3.    O servi\u00e7o de token que criou o token n\u00e3o est\u00e1 mais dispon\u00edvel.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=O token n\u00e3o p\u00f4de ser recriado pelos servi\u00e7os de token configurados atualmente.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=Verifique se pelo menos um recurso inclui um servi\u00e7o de token \
+que esteja configurada corretamente para recriar o token.
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: O token de seguran\u00e7a n\u00e3o pode ser validado. Isso pode ocorrer por causa dos motivos a seguir\n\
+1. O token de seguran\u00e7a foi gerado em outro servidor usando teclas diferentes.\n\
+2. A configura\u00e7\u00e3o do token ou as chaves de seguran\u00e7a do servi\u00e7o de token que criou o token foi alterada.\n\
+3. O servi\u00e7o de token que criou o token n\u00e3o est\u00e1 mais dispon\u00edvel.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=O token n\u00e3o p\u00f4de ser recriado pelos servi\u00e7os de token configurados atualmente.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Verifique se pelo menos um recurso inclui um servi\u00e7o de token \
+que esteja configurada corretamente para recriar o token.
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: A \
+API da delega\u00e7\u00e3o restrita (S4U2self e S4U2proxy) requer uma vers\u00e3o \
+de ambiente de tempo de execu\u00e7\u00e3o Java m\u00ednima do JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=As APIs da delega\u00e7\u00e3o \
+restrita (S4U2self e S4U2proxy) requerem uma vers\u00e3o de ambiente de \
+tempo de execu\u00e7\u00e3o Java minima do IBM JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Assegure-se \
+de usar um ambiente de tempo de execu\u00e7\u00e3o Java do IBM JavaSE 1.8.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: O servi\u00e7o \
+OSGi de delega\u00e7\u00e3o restrita {0} n\u00e3o est\u00e1 dispon\u00edvel.
+KRB_OSGI_SERVICE_ERROR.explanation=O servi\u00e7o OSGi especificado n\u00e3o est\u00e1 dispon\u00edvel.
+KRB_OSGI_SERVICE_ERROR.useraction=Assegure-se \
+de que o recurso de delega\u00e7\u00e3o restrita esteja ativado e usar um \
+ambiente de tempo de execu\u00e7\u00e3o Java do IBM JavaSE 1.8. Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais.

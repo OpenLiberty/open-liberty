@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="BasicAuthServlet" version="3.0" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>Basic Auth servlets and JSP</display-name>
+  <description>This is for servlets and JSP to test basic auth.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <display-name>BasicAuthServlet</display-name>
+    <description>BasicAuthServlet</description>
+    <servlet-class>web.basicauth.BasicAuthServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+    <security-role-ref>
+      <role-name>MappedToEmployee</role-name>
+      <role-link>Employee</role-link>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>MappedToManager</role-name>
+      <role-link>Manager</role-link>
+    </security-role-ref>
+  </servlet>
+  <servlet id="Servlet_2">
+    <servlet-name>ProgrammaticAPIServlet</servlet-name>
+    <display-name>ProgrammaticAPIServlet</display-name>
+    <description>ProgrammaticAPIServlet</description>
+    <servlet-class>web.common.ProgrammaticAPIServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="Servlet_3">
+    <servlet-name>AuthenticateRedirectServlet</servlet-name>
+    <display-name>AuthenticateRedirectServlet</display-name>
+    <description>AuthenticateRedirectServlet</description>
+    <servlet-class>web.common.AuthenticateRedirectServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="Servlet_4">
+    <servlet-name>JAASServlet</servlet-name>
+    <display-name>JAASServlet</display-name>
+    <description>JAASServlet</description>
+    <servlet-class>web.common.JAASServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="Servlet_5">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <display-name>BasicAuthJSP</display-name>
+    <description>BasicAuthJSP</description>
+    <jsp-file>BasicAuthJSP.jsp</jsp-file>    
+    <load-on-startup></load-on-startup>
+    <security-role-ref>
+      <role-name>MappedToEmployee</role-name>
+      <role-link>Employee</role-link>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>MappedToManager</role-name>
+      <role-link>Manager</role-link>
+    </security-role-ref>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/SimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_2">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/AllRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_3">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/EmployeeRoleServlet</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping id="ServletMapping_3a">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/EveryoneRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_4">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/EmptyConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_5">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/OverlapNoConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_6">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/OverlapNoRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_7">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/StarConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_7a">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/StarStarConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_8">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/UnprotectedSimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_9">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/UnprotectedNoAuthConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_10">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/MatchAny/*</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping id="ServletMapping_11">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/SecureSimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_12">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/ManagerRoleServlet</url-pattern>
+  </servlet-mapping>
+  
+    <!-- for CustomMethod -->  
+  <servlet-mapping id="ServletMapping_12">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/CustomMethodServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_13">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/UnprotectedCustomMethodServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_14">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/SimpleCustomMethodServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_15">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/SecureCustomMethodServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_16">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/OverlapCustomMethodServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_17">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/OmissionBasic</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_18">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/OmissionComplex</url-pattern>
+  </servlet-mapping>  
+    <servlet-mapping id="ServletMapping_19">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/StarStarOmissionBasic</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_20">
+    <servlet-name>BasicAuthServlet</servlet-name>
+    <url-pattern>/StarStarOmissionComplex</url-pattern>
+  </servlet-mapping>  
+  
+  
+  
+  <!-- SERVLET_2 MAPPINGS -->      
+  <servlet-mapping id="Servlet_2_Mapping_1">
+    <servlet-name>ProgrammaticAPIServlet</servlet-name>
+    <url-pattern>/ProgrammaticAPIServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_2_Mapping_2">
+    <servlet-name>ProgrammaticAPIServlet</servlet-name>
+    <url-pattern>/UnprotectedProgrammaticAPIServlet</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping id="Servlet_2_Mapping_3">
+    <servlet-name>ProgrammaticAPIServlet</servlet-name>
+    <url-pattern>/ProgrammaticAPIEmployeeRoleServlet2</url-pattern>
+  </servlet-mapping>
+  
+  <!-- SERVLET_3 MAPPINGS -->      
+  <servlet-mapping id="Servlet_3_Mapping_1">
+    <servlet-name>AuthenticateRedirectServlet</servlet-name>
+    <url-pattern>/AuthenticateRedirectServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_3_Mapping_2">
+    <servlet-name>AuthenticateRedirectServlet</servlet-name>
+    <url-pattern>/UnprotectedAuthenticateRedirectServlet</url-pattern>
+  </servlet-mapping>  
+  
+   <!-- SERVLET_4 MAPPINGS -->      
+  <servlet-mapping id="Servlet_4_Mapping_1">
+    <servlet-name>JAASServlet</servlet-name>
+    <url-pattern>/JAASServlet</url-pattern>
+  </servlet-mapping>
+  
+   <!-- SERVLET_5 MAPPINGS -->      
+  <servlet-mapping id="Servlet_5_Mapping_1">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/SimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_2">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/AllRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_3">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/EmployeeRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_4">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/EmptyConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_5">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/OverlapNoConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_6">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/OverlapNoRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_7">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/StarConstraintServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_8">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/UnprotectedSimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Servlet_5_Mapping_9">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/UnprotectedNoAuthConstraintServlet</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping id="Servlet_5_Mapping_10">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/MatchAny/*</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping id="Servlet_5_Mapping_11">
+    <servlet-name>BasicAuthJSP</servlet-name>
+    <url-pattern>/JSP/SecureSimpleServlet</url-pattern>
+  </servlet-mapping>
+    
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/SimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+        <http-method>PUT</http-method>  
+        <http-method>DELETE</http-method>         
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_2">
+     <web-resource-collection id="WebResourceCollection_2">
+        <web-resource-name>Protected with AllAuthenticated rol</web-resource-name>
+        <url-pattern>/AllRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_2">
+        <role-name>AllAuthenticated</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_3">
+     <web-resource-collection id="WebResourceCollection_3">
+        <web-resource-name>Proteced with Employee role</web-resource-name>
+        <url-pattern>/EmployeeRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_3">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>
+   <security-constraint id="SecurityConstraint_3a">
+     <web-resource-collection id="WebResourceCollection_3a">
+        <web-resource-name>Protected with Everyone role</web-resource-name>
+        <url-pattern>/EveryoneRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_3">
+        <role-name>Everyone</role-name>        
+     </auth-constraint>
+  </security-constraint> 
+  <security-constraint id="SecurityConstraint_4">
+     <web-resource-collection id="WebResourceCollection_4">
+        <web-resource-name>Protected with no roles</web-resource-name>
+        <url-pattern>/EmptyConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_4">        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_5">
+     <web-resource-collection id="WebResourceCollection_5">
+        <web-resource-name>Protected with overlapping * and Employee roles</web-resource-name>
+        <url-pattern>/OverlapNoConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_5">
+        <role-name>*</role-name>         
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_6">
+     <web-resource-collection id="WebResourceCollection_6">
+        <web-resource-name>Protected with overlapping * and Employee roles</web-resource-name>
+        <url-pattern>/OverlapNoConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_6">
+        <role-name>Employee</role-name>         
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_7">
+     <web-resource-collection id="WebResourceCollection_7">
+        <web-resource-name>Protected with overlapping AllAuthenticated and no roles</web-resource-name>
+        <url-pattern>/OverlapNoRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_7">
+        <role-name>AllAuthenticated</role-name>         
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_8">
+     <web-resource-collection id="WebResourceCollection_8">
+        <web-resource-name>Protected with overlapping AllAuthenticated and no roles</web-resource-name>
+        <url-pattern>/OverlapNoRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_8">        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_9">
+     <web-resource-collection id="WebResourceCollection_9">
+        <web-resource-name>Protected with * role</web-resource-name>
+        <url-pattern>/StarConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_9">
+        <role-name>*</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_9a">
+     <web-resource-collection id="WebResourceCollection_9a">
+        <web-resource-name>Protected with ** role</web-resource-name>
+        <url-pattern>/StarStarConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_9a">
+        <role-name>**</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_10">
+     <web-resource-collection id="WebResourceCollection_10">
+        <web-resource-name>Unprotected servlet</web-resource-name>
+        <url-pattern>/UnprotectedNoAuthConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_11">
+     <web-resource-collection id="WebResourceCollection_11">
+        <web-resource-name>Protected with Employee role and /* mapping</web-resource-name>
+        <url-pattern>/MatchAny/*</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_11">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint> 
+  <security-constraint id="SecurityConstraint_11a">
+     <web-resource-collection id="WebResourceCollection_11a">
+        <web-resource-name>Unprotected since no auth constraint overrides MatchAny/* constraint</web-resource-name>
+        <url-pattern>/MatchAny/noAuthConstraint</url-pattern>
+     </web-resource-collection>
+  </security-constraint> 
+  <security-constraint id="SecurityConstraint_12">
+     <web-resource-collection id="WebResourceCollection_12">
+     <web-resource-name>Redirect due to Confidential, protected with Employee or Manager role</web-resource-name>
+        <url-pattern>/SecureSimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_12"> 
+       	<role-name>Employee</role-name>
+     	<role-name>Manager</role-name>
+     </auth-constraint>
+     <user-data-constraint>
+      	<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+     </user-data-constraint>
+  </security-constraint>
+    <security-constraint id="SecurityConstraint_13">
+     <web-resource-collection id="WebResourceCollection_13">
+        <web-resource-name>Protected with Manager role</web-resource-name>
+        <url-pattern>/ManagerRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_3">
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+
+  <!-- for custom method --> 
+  <security-constraint id="SecurityConstraint_13">
+     <web-resource-collection id="WebResourceCollection_13">
+        <web-resource-name>Protected with Employee role</web-resource-name>
+        <url-pattern>/CustomMethodServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>        
+        <http-method>CUSTOM</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_13">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>  
+  <security-constraint id="SecurityConstraint_14">
+     <web-resource-collection id="WebResourceCollection_14">
+        <web-resource-name>Unprotected servlet</web-resource-name>
+        <url-pattern>/UnprotectedCustomMethodServlet</url-pattern>
+        <http-method>CUSTOM</http-method>
+     </web-resource-collection>
+  </security-constraint>  
+  <security-constraint id="SecurityConstraint_15">
+     <web-resource-collection id="WebResourceCollection_15">
+        <web-resource-name>Protected with Employee role</web-resource-name>
+        <url-pattern>/SimpleCustomMethodServlet</url-pattern>
+        <http-method>CUSTOM</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_15">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>  
+   <security-constraint id="SecurityConstraint_16">
+     <web-resource-collection id="WebResourceCollection_16">
+        <web-resource-name>Protected with Employee role.  Protocol is https</web-resource-name>
+        <url-pattern>/SecureCustomMethodServlet</url-pattern>
+        <http-method>CUSTOM</http-method>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>        
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_16">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+     <user-data-constraint>
+      	<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+     </user-data-constraint>     
+  </security-constraint>
+  
+  <!-- for custom method overlap-->  
+  <security-constraint id="SecurityConstraint_CustomMethodOmitted">
+     <web-resource-collection id="WebResourceCollection_CustomMethodOmitted">
+        <web-resource-name>Protected with Manager</web-resource-name>
+        <url-pattern>/OverlapCustomMethodServlet</url-pattern>
+        <http-method-omission>GET</http-method-omission>
+        <http-method-omission>CUSTOM</http-method-omission>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_CustomMethodOmitted">
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  
+  <security-constraint id="SecurityConstraint_GetMethod_CustomNotListed">
+     <web-resource-collection id="WebResourceCollection_GetMethod_CustomNotListed">
+        <web-resource-name>Protected with nothing</web-resource-name>
+        <url-pattern>/OverlapCustomMethodServlet</url-pattern>
+        <http-method>GET</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  
+  <security-constraint id="SecurityConstraint_CustomMethodListed">
+     <web-resource-collection id="WebResourceCollection_CustomMethodListed">
+        <web-resource-name>Protected with Employee</web-resource-name>
+        <url-pattern>/OverlapCustomMethodServlet</url-pattern>
+        <http-method>CUSTOM</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_CustomMethodListed">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  
+  <!-- for http-method-omission-->
+  <security-constraint>
+     <display-name>SecurityConstraint_OmissionBasic</display-name>
+     <web-resource-collection>
+        <web-resource-name>WebResourceCollection_OmissionBasic</web-resource-name>
+        <url-pattern>/OmissionBasic</url-pattern>
+        <http-method-omission>POST</http-method-omission>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+         <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+      
+  <security-constraint>
+     <display-name>SecurityConstraint_OmissionComplex1</display-name>
+     <web-resource-collection>
+        <web-resource-name>WebResourceCollection_OmissionComplex1</web-resource-name>
+        <url-pattern>/OmissionComplex</url-pattern>
+        <http-method>GET</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+     <display-name>SecurityConstraint_OmissionComplex2</display-name>
+     <web-resource-collection>
+        <web-resource-name>WebResourceCollection_OmissionComplex2</web-resource-name>
+        <url-pattern>/OmissionComplex</url-pattern>
+        <http-method-omission>POST</http-method-omission>
+     </web-resource-collection>
+     <auth-constraint/>
+  </security-constraint>   
+  
+    <security-constraint>
+     <display-name>SecurityConstraint_StarStarOmissionBasic</display-name>
+     <web-resource-collection>
+        <web-resource-name>WebResourceCollection_StarStarOmissionBasic</web-resource-name>
+        <url-pattern>/StarStarOmissionBasic</url-pattern>
+        <http-method-omission>POST</http-method-omission>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_111">
+         <role-name>**</role-name>
+     </auth-constraint>
+  </security-constraint>
+      
+  <security-constraint>
+     <display-name>SecurityConstraint_OmissionComplex1</display-name>
+     <web-resource-collection>
+        <web-resource-name>WebResourceCollection_OmissionComplex1</web-resource-name>
+        <url-pattern>/StarStarOmissionComplex</url-pattern>
+        <http-method>GET</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_112">
+        <role-name>**</role-name>
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+     <display-name>SecurityConstraint_OmissionComplex2</display-name>
+     <web-resource-collection>
+        <web-resource-name>WebResourceCollection_OmissionComplex2</web-resource-name>
+        <url-pattern>/StarStarOmissionComplex</url-pattern>
+        <http-method-omission>POST</http-method-omission>
+     </web-resource-collection>
+     <auth-constraint/>
+  </security-constraint>    
+   
+  
+  <!-- SECURITY CONSTRAINTS for SERVLET_2-->  
+  <security-constraint id="SecurityConstraint_FormLogin_1">
+     <web-resource-collection id="WebResourceCollection_FormLogin_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/ProgrammaticAPIServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_FormLogin_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>  
+  <security-constraint id="SecurityConstraint_FormLogin_2">
+     <web-resource-collection id="WebResourceCollection_FormLogin_2">
+        <web-resource-name>Protected with Employee role</web-resource-name>
+        <url-pattern>/ProgrammaticAPIEmployeeRoleServlet2</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_FormLogin_2">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>
+
+  <!-- SECURITY CONSTRAINTS for SERVLET_3-->  
+  <security-constraint id="SecurityConstraint_Redirect_1">
+     <web-resource-collection id="WebResourceCollection_Redirect_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/AuthenticateRedirectServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_Redirect_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+ 
+   <!-- SECURITY CONSTRAINTS for SERVLET_4-->  
+  <security-constraint id="SecurityConstraint_JAAS_1">
+     <web-resource-collection id="WebResourceCollection_JAAS_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/JAASServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_Redirect_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+
+ <!-- SECURITY CONSTRAINTS for SERVLET_5-->  
+  <security-constraint id="SecurityConstraint_JSP_1">
+     <web-resource-collection id="WebResourceCollection_JSP_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/JSP/SimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_2">
+     <web-resource-collection id="WebResourceCollection_JSP_2">
+        <web-resource-name>Protected with AllAuthenticated role</web-resource-name>
+        <url-pattern>/JSP/AllRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_2">
+        <role-name>AllAuthenticated</role-name>        
+     </auth-constraint>
+  </security-constraint>
+    <security-constraint id="SecurityConstraint_JSP_3">
+     <web-resource-collection id="WebResourceCollection_JSP_3">
+        <web-resource-name>Proteced with Employee role</web-resource-name>
+        <url-pattern>/JSP/EmployeeRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_3">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_4">
+     <web-resource-collection id="WebResourceCollection_JSP_4">
+        <web-resource-name>Protected with no roles</web-resource-name>
+        <url-pattern>/JSP/EmptyConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_4">        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_5">
+     <web-resource-collection id="WebResourceCollection_JSP_5">
+        <web-resource-name>Protected with overlapping * and Employee roles</web-resource-name>
+        <url-pattern>/JSP/OverlapNoConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_5">
+        <role-name>*</role-name>         
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_6">
+     <web-resource-collection id="WebResourceCollection_JSP_6">
+        <web-resource-name>Protected with overlapping * and Employee roles</web-resource-name>
+        <url-pattern>/JSP/OverlapNoConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_6">
+        <role-name>Employee</role-name>         
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_7">
+     <web-resource-collection id="WebResourceCollection_JSP_7">
+        <web-resource-name>Protected with overlapping AllAuthenticated and no roles</web-resource-name>
+        <url-pattern>/JSP/OverlapNoRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_7">
+        <role-name>AllAuthenticated</role-name>         
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_8">
+     <web-resource-collection id="WebResourceCollection_JSP_8">
+        <web-resource-name>Protected with overlapping AllAuthenticated and no roles</web-resource-name>
+        <url-pattern>/JSP/OverlapNoRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_8">        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_9">
+     <web-resource-collection id="WebResourceCollection_JSP_9">
+        <web-resource-name>Protected with * role</web-resource-name>
+        <url-pattern>/JSP/StarConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_9">
+        <role-name>*</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_JSP_10">
+     <web-resource-collection id="WebResourceCollection_JSP_10">
+        <web-resource-name>Unprotected servlet</web-resource-name>
+        <url-pattern>/JSP/UnprotectedNoAuthConstraintServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+    <security-constraint id="SecurityConstraint_JSP_11">
+     <web-resource-collection id="WebResourceCollection_JSP_11">
+        <web-resource-name>Protected with AllAuthenticated role and /* mapping</web-resource-name>
+        <url-pattern>/JSP/MatchAny/*</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_11">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>  
+  <security-constraint id="SecurityConstraint_JSP_11a">
+     <web-resource-collection id="WebResourceCollection_JSP_11a">
+        <web-resource-name>Unprotected since no auth constraint overrides MatchAny/* constraint</web-resource-name>
+        <url-pattern>/JSP/MatchAny/noAuthConstraint</url-pattern>
+     </web-resource-collection>
+  </security-constraint> 
+  <security-constraint id="SecurityConstraint_JSP_12">
+     <web-resource-collection id="WebResourceCollection_JSP_12">
+     <web-resource-name>Redirect due to Confidential, protected with Employe or Manager role</web-resource-name>
+        <url-pattern>/JSP/SecureSimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_JSP_12"> 
+       	<role-name>Employee</role-name>
+     	<role-name>Manager</role-name>
+     </auth-constraint>
+     <user-data-constraint>
+      	<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+     </user-data-constraint>
+  </security-constraint>
+    
+  <!-- CHALLENGE TYPE -->
+  <login-config id="LoginConfig_1">
+  	<auth-method>BASIC</auth-method>
+    <realm-name>Basic Authentication</realm-name>
+  </login-config>  
+  
+  <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>Employee role</description>
+     <role-name>Employee</role-name>
+  </security-role>       
+  <security-role id="SecurityRole_2">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  <security-role id="SecurityRole_3">
+     <description>AllAuthenticated role</description>
+     <role-name>AllAuthenticated</role-name>
+  </security-role> 
+   <security-role id="SecurityRole_4">
+     <description>Everyone role</description>
+     <role-name>Everyone</role-name>
+  </security-role>    
+
+</web-app>

@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: Spr\u00e1vci Work Manager se nezda\u0159ilo naplnit p\u0159edm\u011bt prov\u00e1d\u011bn\u00ed \u010dinitelem nebo pov\u011b\u0159ovac\u00edmi \u00fadaji volaj\u00edc\u00edho, nezbytn\u00fdmi pro vytvo\u0159en\u00ed kontextu zabezpe\u010den\u00ed pro tuto pracovn\u00ed instanci.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=Obslu\u017en\u00e9 rutin\u011b zp\u011btn\u00e9ho vol\u00e1n\u00ed JASPIC spr\u00e1vce Work Manager se nezda\u0159ilo naplnit pov\u011b\u0159ovac\u00ed \u00fadaje \u010dinitele nebo vlastn\u00ed pov\u011b\u0159ovac\u00ed \u00fadaje p\u0159edm\u011btu prov\u00e1d\u011bn\u00ed, proto\u017ee se vyskytla v\u00fdjimka p\u0159i zpracov\u00e1n\u00ed zp\u011btn\u00fdch vol\u00e1n\u00ed JASPIC dodan\u00fdch adapt\u00e9rem prost\u0159edku.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=Zjist\u011bte p\u0159\u00ed\u010dinu na z\u00e1klad\u011b dat FFDC a protokol\u016f serveru vygenerovan\u00fdch bezprost\u0159edn\u011b p\u0159ed zpr\u00e1vou J2CA0672E. Pokud se v\u00e1m z p\u0159edchoz\u00edch chybov\u00fdch zpr\u00e1v nepoda\u0159\u00ed zjistit p\u0159\u00ed\u010dinu, shrom\u00e1\u017ed\u011bte diagnostick\u00e1 data a vyhledejte dal\u0161\u00ed informace na webu podpory spole\u010dnosti IBM.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: P\u0159edm\u011bt prov\u00e1d\u011bn\u00ed poskytnut\u00fd spr\u00e1vcem Work Manager neodpov\u00edd\u00e1 p\u0159edm\u011btu dodan\u00e9mu zp\u011btn\u00fdm vol\u00e1n\u00edm {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=Instance p\u0159edm\u011btu prov\u00e1d\u011bn\u00ed poskytnut\u00e1 spr\u00e1vcem Work Manager pro stanoven\u00ed kontextu zabezpe\u010den\u00ed pracovn\u00ed instance nen\u00ed shodn\u00e1 s instanc\u00ed z\u00edskanou z p\u0159\u00edslu\u0161n\u00e9ho zp\u011btn\u00e9ho vol\u00e1n\u00ed. Spr\u00e1vce Work Manager ignoroval p\u0159edm\u011bt z\u00edskan\u00fd ze zp\u011btn\u00e9ho vol\u00e1n\u00ed a pokra\u010doval ve vytv\u00e1\u0159en\u00ed kontextu zabezpe\u010den\u00ed s pou\u017eit\u00edm poskytnut\u00e9 instance.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Obra\u0165te se na dodavatele adapt\u00e9ru prost\u0159edku a po\u017e\u00e1dejte o \u00fapravu metody getSubject() zp\u011btn\u00e9ho vol\u00e1n\u00ed JASPIC tak, aby vracely p\u0159edm\u011bt prov\u00e1d\u011bn\u00ed poskytovan\u00fd instanci kontextu zabezpe\u010den\u00ed prost\u0159ednictv\u00edm vol\u00e1n\u00ed metody setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: Obslu\u017en\u00e1 rutina zp\u011btn\u00e9ho vol\u00e1n\u00ed JASPIC spr\u00e1vce Work Manager se nezda\u0159ila s v\u00fdjimkou {0} p\u0159i zpracov\u00e1n\u00ed zp\u011btn\u00fdch vol\u00e1n\u00ed dodan\u00fdch kontextem zabezpe\u010den\u00ed. Zpr\u00e1va v\u00fdjimky: {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=Spr\u00e1vce Work Manager zjistil v\u00fdjimku p\u0159i zpracov\u00e1n\u00ed zp\u011btn\u00fdch vol\u00e1n\u00ed JASPIC dodan\u00fdch adapt\u00e9rem prost\u0159edku v r\u00e1mci p\u0159enesen\u00e9ho kontextu zabezpe\u010den\u00ed. V\u00fdjimka se m\u016f\u017ee vyskytnout v n\u00e1sleduj\u00edc\u00edch p\u0159\u00edpadech: 1) Data CallerPrincipalCallback poskytla \u010dinitel se jm\u00e9nem u\u017eivatele, kter\u00fd se nevyskytuje v registru u\u017eivatel\u016f. Data PasswordValidationCallback poskytla neplatn\u00e9 jm\u00e9no u\u017eivatele nebo heslo. 3) Data CallerPrincipalCallback a PasswordValidationCallback poskytla r\u016fzn\u00e1 jm\u00e9na u\u017eivatel\u016f. 4) Adapt\u00e9r prost\u0159edku poskytl zp\u011btn\u00e9 vol\u00e1n\u00ed, kter\u00e9 v sou\u010dasn\u00e9 dob\u011b nen\u00ed podporov\u00e1no aplika\u010dn\u00edm serverem. 5) Adapt\u00e9r prost\u0159edku poskytl v\u00edce ne\u017e jeden objekt CallerPrincipalCallback. 6) Ve spr\u00e1vci Work Manager do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Pokud zpr\u00e1va o v\u00fdjimce obsahuje k\u00f3d chyby, seznamte se s doporu\u010den\u00fdmi akcemi u\u017eivatele pro dan\u00fd k\u00f3d chyby. V p\u0159\u00edpad\u011b v\u00fdskytu v\u00fdjimky UnsupportedCallbackException se obra\u0165te na dodavatele adapt\u00e9ru prost\u0159edku, proto\u017ee obslu\u017en\u00e1 rutina zp\u011btn\u00e9ho vol\u00e1n\u00ed JASPIC spr\u00e1vce Work Manager v sou\u010dasn\u00e9 dob\u011b poskytnut\u00e9 zp\u011btn\u00e9 vol\u00e1n\u00ed nepodporuje. V p\u0159\u00edpad\u011b v\u00fdskytu v\u00fdjimky, kter\u00e1 nesouvis\u00ed se \u017e\u00e1dn\u00fdm z uveden\u00fdch probl\u00e9m\u016f, shrom\u00e1\u017ed\u011bte diagnostick\u00e1 data a vyhledejte dal\u0161\u00ed informace na webu podpory IBM.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: Skupina {0} nepat\u0159\u00ed do dom\u00e9ny p\u0159idru\u017een\u00e9 k aplikaci.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=Kontext zabezpe\u010den\u00ed p\u0159en\u00e1\u0161en\u00fd s pracovn\u00ed instanc\u00ed poskytl n\u00e1zev skupiny, kter\u00fd se nevyskytuje ve sf\u00e9\u0159e (registru u\u017eivatel\u016f) dom\u00e9ny zabezpe\u010den\u00ed p\u0159idru\u017een\u00e9 k aplikaci. Spr\u00e1vce Work Manager z\u00edskal neplatn\u00fd n\u00e1zev skupiny z instance objektu JASPIC GroupPrincipalCallback dodan\u00e9 adapt\u00e9rem prost\u0159edku.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Ov\u011b\u0159te, \u017ee skupina poch\u00e1z\u00ed ze stejn\u00e9 sf\u00e9ry, potvrzen\u00edm existence skupiny v registru u\u017eivatel\u016f pro p\u0159\u00edslu\u0161nou sf\u00e9ru. Poch\u00e1z\u00ed-li skupina z jin\u00e9 sf\u00e9ry, obra\u0165te se na dodavatele adapt\u00e9ru prost\u0159edku, proto\u017ee spr\u00e1vce Work Manager nepodporuje skupiny z r\u016fzn\u00fdch sf\u00e9r.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Nebyly nalezeny \u017e\u00e1dn\u00e9 skupiny pro u\u017eivatele s jedine\u010dn\u00fdm ID {0}.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=Kontext zabezpe\u010den\u00ed p\u0159enesen\u00fd s pracovn\u00ed instanc\u00ed poskytl u\u017eivatele, kter\u00fd nepat\u0159\u00ed do \u017e\u00e1dn\u00e9 ze skupin definovan\u00fdch v registru u\u017eivatel\u016f.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: Jm\u00e9no u\u017eivatele {0} nebo heslo poskytnut\u00e9 operaci PasswordValidationCallback je neplatn\u00e9.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=Dan\u00e1 kombinace jm\u00e9na u\u017eivatele a hesla se nevyskytuje v registru u\u017eivatel\u016f sf\u00e9ry, kter\u00e1 je nakonfigurov\u00e1na pro dom\u00e9nu zabezpe\u010den\u00ed p\u0159idru\u017eenou k aplikaci.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Konfigurujte adapt\u00e9r prost\u0159edku a podnikov\u00fd informa\u010dn\u00ed syst\u00e9m tak, aby pou\u017e\u00edvaly platn\u00e9 jm\u00e9no u\u017eivatele a heslo. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Nelze ov\u011b\u0159it jm\u00e9no u\u017eivatele {0} a heslo poskytnut\u00e9 operac\u00ed PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=Spr\u00e1vci Work Manager se nezda\u0159ilo ov\u011b\u0159it jm\u00e9no u\u017eivatele a heslo poskytnut\u00e9 operac\u00ed PasswordValidationCallback, proto\u017ee se vyskytla v\u00fdjimka CustomRegistryException. Tato v\u00fdjimka je zp\u016fsobena pou\u017eit\u00edm neplatn\u00e9ho hesla nebo probl\u00e9my s registrem u\u017eivatel\u016f pro danou sf\u00e9ru aplikace.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=Je-li p\u0159\u00ed\u010dinou v\u00fdjimky CustomRegistryException neplatn\u00e9 heslo, konfigurujte adapt\u00e9r prost\u0159edku \u010di podnikov\u00fd informa\u010dn\u00ed syst\u00e9m tak, aby pou\u017e\u00edvaly platnou kombinaci jm\u00e9na u\u017eivatele a hesla. Jinak vy\u0159e\u0161te probl\u00e9m s registrem u\u017eivatel\u016f.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: Jm\u00e9no u\u017eivatele {0} poskytnut\u00e9 operac\u00ed PasswordValidationCallback a jm\u00e9no u\u017eivatele {1} poskytnut\u00e9 operac\u00ed CallerPrincipalCallback se neshoduj\u00ed.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=Jm\u00e9na u\u017eivatel\u016f poskytnut\u00e1 operacemi PasswordValidationCallback a CallerPrincipalCallback se mus\u00ed shodovat. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Obra\u0165te se na dodavatele adapt\u00e9ru prost\u0159edku a administr\u00e1tora syst\u00e9mu a ujist\u011bte se, \u017ee je adapt\u00e9r prost\u0159edku navr\u017een a nakonfigurov\u00e1n tak, aby ob\u011b zp\u011btn\u00e1 vol\u00e1n\u00ed vracela stejn\u00e9 jm\u00e9no u\u017eivatele.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: Spr\u00e1vci Work Manager se nezda\u0159ilo p\u0159idru\u017eit p\u0159edan\u00fd kontext zabezpe\u010den\u00ed k pracovn\u00ed instanci.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=Spr\u00e1vce Work Manager zjistil probl\u00e9m p\u0159i vytvo\u0159en\u00ed a nastaven\u00ed kontextu zabezpe\u010den\u00ed pro p\u0159\u00edchoz\u00ed pracovn\u00ed po\u017eadavek. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=Zjist\u011bte p\u0159\u00ed\u010dinu na z\u00e1klad\u011b zpr\u00e1v J2CA0668E a J2CA0669E, kter\u00e9 najdete v datech FFDC a protokolech serveru.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: Metoda {0} zachytila v\u00fdjimku {1}.
+METHOD_FAILED_J2CA0132.explanation=Metoda zachytila v\u00fdjimku, kter\u00e1 je s nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed d\u016fsledkem intern\u00ed chyby.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

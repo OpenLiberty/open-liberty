@@ -1,0 +1,12 @@
+<ejb-jar-bnd
+    xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+    version="1.0"
+>
+  <!-- This ibm-ejb-jar-bnd.xml file should be ignored since it is inside a .jar inside a .war -->
+  <session name="XMLDefinedStatelessBean" >
+    <interface class="com.ibm.ws.ejbcontainer.bindings.ejbinwar.intf.XMLDefinedStatelessInJarInWarInterface" binding-name="ejblocal:should/not/use/this"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.ejbinwar.intf.XMLDefinedStatelessInJarInWarInterfaceRemote" binding-name="ejb/should/not/use/this"/>
+  </session>
+</ejb-jar-bnd>

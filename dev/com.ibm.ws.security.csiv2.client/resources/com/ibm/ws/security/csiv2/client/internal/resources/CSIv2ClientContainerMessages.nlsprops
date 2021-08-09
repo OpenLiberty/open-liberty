@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: Invalid authentication layer mechanism(s) specified in the client security {0}. Valid value is GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=The client security authentication layer mechanism(s) specified is/are not supported.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Ensure that the client security authentication layer mechanism specified is GSSUP.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: The authentication layer mechanism(s) specified in the client security is null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=The client security authentication layer mechanism(s) specified is null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Ensure that the client security authentication layer mechanism specified is GSSUP.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: The following attribute(s) is missing in the IIOP client policy. The missing attribute(s) is [{0}]. Unless a programmatic login is implemented by the application, ensure the attribute(s) is specified in the client.xml file.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=There is a missing attribute in the IIOP client policy authentication layer mechanism that is specified.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Ensure that the required attributes are set or the programmatic login is used to supply the values.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: The CSIv2 Authentication Layer is disabled because the value for establishTrustInClient is {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=When establishTrustInClient is set to Never, the CSIv2 Authentication Layer is disabled.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=To enable the CSIv2 Authentication Layer, set the value of establishTrustInClient to Supported or Required.
+
+

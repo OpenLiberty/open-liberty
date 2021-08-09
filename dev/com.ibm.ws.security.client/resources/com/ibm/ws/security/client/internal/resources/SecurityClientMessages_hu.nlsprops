@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.client/resources/com/ibm/ws/security/client/internal/resources/SecurityClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service for Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1167 - CWWKS1199
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1167E: A(z) {0} jaasLoginContextEntry nem rendelkezik a loginModuleRef hivatkoz\u00e1sban megadott bejelentkez\u00e9si modullal.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=A jassLoginContextEntry nem rendelkezik a loginModuleRef hivatkoz\u00e1sban megadott bejelentkez\u00e9si modullal.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Gondoskodj\u00e9k r\u00f3la, hogy legal\u00e1bb egy bejelentkez\u00e9si modul meg legyen adva a loginModuleRef hivatkoz\u00e1sban.  
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1168W: A(z) {0} loginModuleRef nem rendelkezik meghat\u00e1rozott JAAS egy\u00e9ni loginModule modullal.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=A hiteles\u00edt\u00e9s sikertelen, mert a bejelentkez\u00e9si modulhivatkoz\u00e1shoz nincs meghat\u00e1rozva bejelentkez\u00e9si modul.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a loginModuleRef elem rendelkezik be\u00e1ll\u00edtott loginModule tulajdons\u00e1ggal.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1169W: A t\u00f6bbsz\u00f6r szerepl\u0151 n\u00e9v miatt a(z) {1} azonos\u00edt\u00f3 \u00e1ltal meghat\u00e1rozott {0} jaasLoginContextEntry nevet a(z) {2} azonos\u00edt\u00f3 \u00e9rt\u00e9ke fel\u00fcl\u00edrta. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=T\u00f6bb jassLoginContextEntry ugyanazt a nevet hat\u00e1rozza meg. Ennek eredm\u00e9nyek\u00e9nt az eredeti \u00e9rt\u00e9ket egy m\u00e1sik \u00e9rt\u00e9k fel\u00fcl\u00edrta.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Gondoskodj\u00e9k r\u00f3la, hogy minden jaasLoginContextEntry egyedi azonos\u00edt\u00f3val \u00e9s n\u00e9vvel rendelkezzen.
+
+JAAS_LOGIN_NO_CALLBACK_HANDLER=CWWKS1170E: Az \u00fcgyf\u00e9lalkalmaz\u00e1sba nem siker\u00fclt bejelentkezni, mivel a CallbackHandler megval\u00f3s\u00edt\u00e1s null\u00e9rt\u00e9k\u0171. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes CallbackHandler megval\u00f3s\u00edt\u00e1s ker\u00fclt a LoginContext konstruktorban vagy az \u00fcgyf\u00e9lalkalmaz\u00e1s telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban megad\u00e1sra. 
+JAAS_LOGIN_NO_CALLBACK_HANDLER.explanation=Az \u00fcgyf\u00e9lalkalmaz\u00e1sba nem siker\u00fclt bejelentkezni, mivel a CallbackHandler fel\u00fcletet megval\u00f3s\u00edt\u00f3 oszt\u00e1ly null\u00e9rt\u00e9k\u0171. Mivel nincs CallbackHandler megval\u00f3s\u00edt\u00e1s, nincs m\u00f3d \u00f6sszegy\u0171jteni a bejelentkezni k\u00edv\u00e1n\u00f3 felhaszn\u00e1l\u00f3t\u00f3l a hiteles\u00edt\u00e9si adatokat. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes CallbackHandler megval\u00f3s\u00edt\u00e1s ker\u00fclt a LoginContext konstruktorban vagy az \u00fcgyf\u00e9lalkalmaz\u00e1s telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban megad\u00e1sra.
+JAAS_LOGIN_NO_CALLBACK_HANDLER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes CallbackHandler megval\u00f3s\u00edt\u00e1s ker\u00fclt argumentumk\u00e9nt a LoginContext konstruktorban vagy az \u00fcgyf\u00e9lalkalmaz\u00e1s telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban megad\u00e1sra.
+
+JAAS_LOGIN_MISSING_CREDENTIALS=CWWKS1171E: Az \u00fcgyf\u00e9lalkalmaz\u00e1sba nem siker\u00fclt bejelentkezni, mivel a felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 null\u00e9rt\u00e9k\u0171. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CallbackHandler megval\u00f3s\u00edt\u00e1s \u00f6sszegy\u0171jti a sz\u00fcks\u00e9ges hiteles\u00edt\u00e9si adatokat. 
+JAAS_LOGIN_MISSING_CREDENTIALS.explanation=Az \u00fcgyf\u00e9lalkalmaz\u00e1sba nem siker\u00fclt bejelentkezni, mivel a felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 null\u00e9rt\u00e9k\u0171. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CallbackHandler megval\u00f3s\u00edt\u00e1s \u00f6sszegy\u0171jti a sz\u00fcks\u00e9ges hiteles\u00edt\u00e9si adatokat. A CallbackHandler megval\u00f3s\u00edt\u00e1s a LoginContext konstruktorban vagy az \u00fcgyf\u00e9lalkalmaz\u00e1s telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban adhat\u00f3 meg.
+JAAS_LOGIN_MISSING_CREDENTIALS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CallbackHandler megval\u00f3s\u00edt\u00e1s \u00f6sszegy\u0171jti a felhaszn\u00e1l\u00f3nevet \u00e9s a jelsz\u00f3t.
+
+JAAS_LOGIN_UNEXPECTED_EXCEPTION=CWWKS1172E: Az \u00fcgyf\u00e9lalkalmaz\u00e1sba v\u00e1ratlan kiv\u00e9tel miatt nem siker\u00fclt bejelentkezni. A kiv\u00e9tel ok\u00e1nak meg\u00e9rt\u00e9se \u00e9rdek\u00e9ben tekintse \u00e1t a napl\u00f3kat. Kiv\u00e9tel: {0}. 
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.explanation=Az \u00fcgyf\u00e9lalkalmaz\u00e1sba v\u00e1ratlan kiv\u00e9tel miatt nem siker\u00fclt bejelentkezni. A kiv\u00e9tel ok\u00e1nak meg\u00e9rt\u00e9se \u00e9s jav\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a napl\u00f3kat, valamint az FFDC bejegyz\u00e9seket.
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.useraction=A kiv\u00e9tel ok\u00e1nak meg\u00e9rt\u00e9se \u00e9s jav\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a napl\u00f3kat, valamint az FFDC bejegyz\u00e9seket.

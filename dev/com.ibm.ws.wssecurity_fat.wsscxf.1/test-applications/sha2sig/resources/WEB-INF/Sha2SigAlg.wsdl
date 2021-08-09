@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions 
+        targetNamespace="http://sha2sig.wssecfvt.test"
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:apachesoap="http://xml.apache.org/xml-soap"
+        xmlns:intf="http://sha2sig.wssecfvt.test"
+        xmlns:x1="http://sha2sig.wssecfvt.test/types"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+        xmlns:wsp="http://www.w3.org/ns/ws-policy"
+        xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+        xmlns:sp13="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:p="http://cxf.apache.org/policy"        
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        
+     <!-- Sign, SOAP Body, using Sha2 signature algorithm -->
+    <wsp:Policy wsu:Id="SignBodySha2SigAlg">                 
+          
+       <sp:AsymmetricBinding>
+          <wsp:Policy>
+             <sp:InitiatorSignatureToken>
+                <wsp:Policy>
+                   <sp:X509Token
+                      sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                      <wsp:Policy>
+                         <sp:WssX509V3Token10 />
+                      </wsp:Policy>
+                   </sp:X509Token>
+                </wsp:Policy>
+             </sp:InitiatorSignatureToken>
+             <sp:RecipientSignatureToken>
+                <wsp:Policy>
+                   <sp:X509Token
+                      sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToInitiator">
+                      <wsp:Policy>
+                         <sp:WssX509V3Token10 />
+                      </wsp:Policy>
+                   </sp:X509Token>
+                </wsp:Policy>
+             </sp:RecipientSignatureToken>
+             <sp:AlgorithmSuite>
+                <wsp:Policy>
+                   <sp:Basic128/>
+                </wsp:Policy>
+             </sp:AlgorithmSuite>
+             <sp:Layout>
+                <wsp:Policy>
+                   <sp:Strict/>
+                </wsp:Policy>
+             </sp:Layout>
+             <!-- <sp:IncludeTimestamp/> -->
+             <sp:ProtectTokens/>
+             <sp:OnlySignEntireHeadersAndBody/>
+          </wsp:Policy>
+       </sp:AsymmetricBinding>
+                 
+       <sp:SignedParts>
+          <sp:Body/>
+       </sp:SignedParts>
+                               
+    </wsp:Policy>    
+       
+    <!-- Sign, SOAP Body, using Sha256 digest algorithm -->
+    <wsp:Policy wsu:Id="SignBodySha2Digest">                 
+          
+       <sp:AsymmetricBinding>
+          <wsp:Policy>
+             <sp:InitiatorSignatureToken>
+                <wsp:Policy>
+                   <sp:X509Token
+                      sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                      <wsp:Policy>
+                         <sp:WssX509V3Token10 />
+                      </wsp:Policy>
+                   </sp:X509Token>
+                </wsp:Policy>
+             </sp:InitiatorSignatureToken>
+             <sp:RecipientSignatureToken>
+                <wsp:Policy>
+                   <sp:X509Token
+                      sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToInitiator">
+                      <wsp:Policy>
+                         <sp:WssX509V3Token10 />
+                      </wsp:Policy>
+                   </sp:X509Token>
+                </wsp:Policy>
+             </sp:RecipientSignatureToken>
+             <sp:AlgorithmSuite>
+                <wsp:Policy>
+                   <sp:Basic128Sha256/>
+                </wsp:Policy>
+             </sp:AlgorithmSuite>
+             <sp:Layout>
+                <wsp:Policy>
+                   <sp:Strict/>
+                </wsp:Policy>
+             </sp:Layout>
+             <!-- <sp:IncludeTimestamp/> -->
+             <sp:ProtectTokens/>
+             <sp:OnlySignEntireHeadersAndBody/>
+          </wsp:Policy>
+       </sp:AsymmetricBinding>
+                 
+       <sp:SignedParts>
+          <sp:Body/>
+       </sp:SignedParts>
+                               
+    </wsp:Policy>  
+    
+    <wsp:Policy wsu:Id="Sha2SymPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                             <wsp:Policy>
+                                <sp:WssX509V3Token10/>
+                                <sp:RequireKeyIdentifierReference/>
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:EncryptBeforeSigning /> 
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp:Basic128/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                  </wsp:Policy>
+                </sp:SymmetricBinding>
+                <sp:EncryptedParts>
+                  <sp:Body/>
+                </sp:EncryptedParts>            
+                <sp:SignedParts>
+                   <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+                                
+   <wsdl:types>
+        <xsd:schema targetNamespace="http://sha2sig.wssecfvt.test/types">
+                <xsd:element name="requestString">
+                        <xsd:complexType>
+                                <xsd:sequence>
+                                        <xsd:element name="stringreq" type="xsd:string" />
+                                </xsd:sequence>
+                        </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="responseString">
+                        <xsd:complexType>
+                                <xsd:sequence>
+                                        <xsd:element name="stringres" type="xsd:string" />
+                                </xsd:sequence>
+                        </xsd:complexType>
+                </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+
+   <wsdl:message name="getVersionRequest">
+      <wsdl:part element="x1:requestString" name="getVersion"/>
+   </wsdl:message>
+   <wsdl:message name="getVersionResponse">
+      <wsdl:part element="x1:responseString" name="getVersionReturn" />
+   </wsdl:message>
+
+   <wsdl:portType name="Sha2SigAlg">
+      <wsdl:operation name="invoke">
+         <wsdl:input message="intf:getVersionRequest" name="getVersionRequest"/>
+         <wsdl:output message="intf:getVersionResponse" name="getVersionResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="UrnSha2SigSoapBinding1" type="intf:Sha2SigAlg">
+      <wsp:PolicyReference URI="#SignBodySha2SigAlg" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   
+   <wsdl:binding name="UrnSha2SigSoapBinding2" type="intf:Sha2SigAlg">
+      <wsp:PolicyReference URI="#SignBodySha2Digest" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding> 
+   
+   <wsdl:binding name="UrnSha2SigSoapBinding8" type="intf:Sha2SigAlg">
+      <wsp:PolicyReference URI="#Sha2SymPolicy" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding> 
+               
+   <wsdl:service name="Sha2SigService1">
+      <wsdl:port name="UrnSha2Sig1" binding="intf:UrnSha2SigSoapBinding1">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService1"/>
+      </wsdl:port>
+   </wsdl:service> 
+   
+    <wsdl:service name="Sha2SigService2">
+      <wsdl:port name="UrnSha2Sig2" binding="intf:UrnSha2SigSoapBinding2">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService2"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="Sha2SigService3">
+      <wsdl:port name="UrnSha2Sig3" binding="intf:UrnSha2SigSoapBinding1">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService3"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="Sha2SigService4">
+      <wsdl:port name="UrnSha2Sig4" binding="intf:UrnSha2SigSoapBinding1">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService4"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="Sha2SigService5">
+      <wsdl:port name="UrnSha2Sig5" binding="intf:UrnSha2SigSoapBinding1">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService5"/>
+      </wsdl:port>
+   </wsdl:service> 
+   
+   <wsdl:service name="Sha2SigService6">
+      <wsdl:port name="UrnSha2Sig6" binding="intf:UrnSha2SigSoapBinding1">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService6"/>
+      </wsdl:port>
+   </wsdl:service> 
+   
+   <wsdl:service name="Sha2SigService7">
+      <wsdl:port name="UrnSha2Sig7" binding="intf:UrnSha2SigSoapBinding1">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService7"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="Sha2SigService8">
+      <wsdl:port name="UrnSha2Sig8" binding="intf:UrnSha2SigSoapBinding8">
+         <wsdlsoap:address location="http://localhost:8010/sha2sig/Sha2SigService8"/>
+      </wsdl:port>
+   </wsdl:service>
+                                 
+</wsdl:definitions>
+

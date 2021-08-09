@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   12/03/2012  syed           New CXF Web service
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>x509sig</display-name>
+
+    <servlet>
+        <servlet-name>x509sig</servlet-name>
+        <display-name>x509sig</display-name>
+        <description>X509 XML Signature CXF Endpoint</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509sig.X509SigWebSvc</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlSigService3</servlet-name>
+        <display-name>X509XmlSigService3</display-name>
+        <description>X509 X509XmlSigService3</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509sig.X509SigWebSvc3</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+     <servlet>
+        <servlet-name>X509XmlSigService5</servlet-name>
+        <display-name>X509XmlSigService5</display-name>
+        <description>X509 X509XmlSigService5</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509sig.X509SigWebSvc5</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlStrService1</servlet-name>
+        <display-name>X509XmlStrService1</display-name>
+        <description>X509 X509XmlStrService1</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509sig.X509StrWebSvc1</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlStrService2</servlet-name>
+        <display-name>X509XmlStrService2</display-name>
+        <description>X509 X509XmlStrService2</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509sig.X509StrWebSvc2</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>x509sig</servlet-name>
+        <url-pattern>/X509XmlSigService1</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>x509sig</servlet-name>
+        <url-pattern>/X509XmlSigService2</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>X509XmlSigService3</servlet-name>
+        <url-pattern>/X509XmlSigService3</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>X509XmlSigService5</servlet-name>
+        <url-pattern>/X509XmlSigService5</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>X509XmlStrService1</servlet-name>
+        <url-pattern>/X509XmlStrService1</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>X509XmlStrService2</servlet-name>
+        <url-pattern>/X509XmlStrService2</url-pattern>
+    </servlet-mapping>
+            
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

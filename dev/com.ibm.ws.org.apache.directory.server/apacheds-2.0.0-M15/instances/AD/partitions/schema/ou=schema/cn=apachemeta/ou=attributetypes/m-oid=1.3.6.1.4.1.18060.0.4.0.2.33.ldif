@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.33,ou=attributeTypes,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.5
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.33
+m-name: m-bytecode
+m-description: The Java bytecode for a code based schema entity
+m-obsolete: FALSE
+entryUUID: 67b93f53-4276-4146-b617-bc4db8c08f05
+entryCSN: 20130919081858.460000Z#000000#000#000000
+entryParentId: d15ad417-7f57-4a04-9588-51e0a2f4bfd0
+createTimestamp: 20130919081909.560Z

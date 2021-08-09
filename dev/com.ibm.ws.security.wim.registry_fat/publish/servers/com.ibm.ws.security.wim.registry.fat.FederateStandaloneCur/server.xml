@@ -1,0 +1,16 @@
+<server description="FederatedStandaloneCurTest">
+	<include location="../fatTestPorts.xml" />
+
+	<!-- Enable features -->
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>customRegistrySample-1.0</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+
+	<fileRegistrySample
+		usersFile="${server.config.dir}/resources/security/users.props"
+		groupsFile="${server.config.dir}/resources/security/groups.props"
+		multiValueDelimiter=";" />
+</server>

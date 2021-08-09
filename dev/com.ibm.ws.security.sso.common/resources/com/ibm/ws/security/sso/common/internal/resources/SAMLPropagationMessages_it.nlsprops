@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/sso/common/internal/resources/SAMLPropagationMessages.nlsprops
+#COMPONENTPREFIX CWWKS CWTAI
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML PROPAGATION
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5251 - CWWKS5299
+
+no_saml_found_in_subject=CWWKS5251W: Il token SAML richiesto manca dal soggetto. Questo problema pu\u00f2 verificarsi se l'utente non \u00e8 stato autenticato correttamente con SAML, si \u00e8 scollegato precedentemente o l'attributo di configurazione includeTokenInSubject SAML \u00e8 impostato su false.
+no_saml_found_in_subject.explanation=Si \u00e8 verificato un errore durante l'estrazione del token SAML dal soggetto o non \u00e8 stato trovato un elemento SAML nel soggetto corrente.
+no_saml_found_in_subject.useraction=Se l'utente ha creato il soggetto Esegui come, verificare che il token SAML sia aggiunto al soggetto. In caso contrario verificare che la configurazione del server supporti l'aggiunta del token SAML al soggetto controllando l'attributo includeTokenInSubject nella configurazione SAML.
+
+failed_to_extract_saml_token_from_subject=CWWKS5252W: Si \u00e8 verificata una eccezione nel tentativo di estrarre il token SAML dal soggetto. L''eccezione era: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Si \u00e8 verificata un'eccezione durante l'estrazione del token SAML dal soggetto.
+failed_to_extract_saml_token_from_subject.useraction=Verificare i log del server per ulteriori informazioni sull'errore.

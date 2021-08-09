@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+
+    <display-name>Bindings and Extensions Override Test Web Application</display-name>
+    <description>Used to run override tests for various bindings and extensions</description>
+
+    <servlet id="Default">
+        <description>Print's to log... that's it!.</description>
+        <servlet-name>Auto Servlet</servlet-name>      
+        <servlet-class>servlettest.web.AutoServlet</servlet-class>
+        <load-on-startup></load-on-startup>
+    </servlet>
+
+    <servlet-mapping id="ServletMapping_Default">
+        <servlet-name>Auto Servlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="HelloworldServlet" version="3.0" 
+     xmlns="http://java.sun.com/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+     
+    <display-name>Providers Test Application</display-name>
+
+    <servlet>
+        <servlet-name>StandardEntityProviders</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.standard.Application</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_standard</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ExceptionMapperMappedProviders</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.exceptionmappers.mapped.GuestbookApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_exceptionmappers</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>ExceptionMapperNoMapper</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.exceptionmappers.nomapper.GuestbookApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_noexceptionmappers</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>ExceptionMapperNull</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.exceptionmappers.nullconditions.Application</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_nullconditions</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+	
+    <servlet>
+        <servlet-name>SubresourceExceptions</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.subresource.Application</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_subresourceexceptions</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+<!-- 60481 and 60482 tests, comment out for now -->
+<!--    <servlet>
+        <servlet-name>SimpleContextResolver</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.contextresolver.Application</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_simplecontextresolver</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet> -->
+    
+    <servlet>
+        <servlet-name>com.ibm.ws.jaxrs.fat.provider.readerwritermatch.Application</servlet-name>
+        
+    </servlet> 
+    
+    <servlet-mapping>
+        <servlet-name>StandardEntityProviders</servlet-name>
+        <url-pattern>/stdtest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExceptionMapperMappedProviders</servlet-name>
+        <url-pattern>/exceptionsmapped/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExceptionMapperNoMapper</servlet-name>
+        <url-pattern>/exceptionsnomapper/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExceptionMapperNull</servlet-name>
+        <url-pattern>/exceptionsnull/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SubresourceExceptions</servlet-name>
+        <url-pattern>/subresourceexceptions/*</url-pattern>
+    </servlet-mapping>
+    
+<!-- Tests still TODO -->	
+<!--
+     <servlet-name>SimpleContextResolver</servlet-name>
+		<servlet-mapping>
+        <url-pattern>/simplecontextresolver/*</url-pattern>
+    </servlet-mapping> -->
+    <servlet-mapping>
+        <servlet-name>com.ibm.ws.jaxrs.fat.provider.readerwritermatch.Application</servlet-name>
+        <url-pattern>/readerwritermatch/*</url-pattern>
+    </servlet-mapping> 
+</web-app>

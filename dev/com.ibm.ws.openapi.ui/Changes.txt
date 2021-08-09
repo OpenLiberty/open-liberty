@@ -1,0 +1,56 @@
+
+-----------------------
+Changes to swagger-ui
+-----------------------
+
+Added files :
+
+swagger-ui/dev-helpers/openapi.yaml
+swagger-ui/dev-helpers/openapi.json
+swagger-ui/src/img/ibm-logo.png
+swagger-ui/src/plugins/headerbar/headerbar.jsx
+swagger-ui/src/plugins/headerbar/index.js
+swagger-ui/src/style/_footer.scss
+swagger-ui/src/style/_headerbar.scss
+
+
+Modified files :
+
+swagger-ui/dev-helpers/index.html
+swagger-ui/src/core/components/footer.jsx
+swagger-ui/src/core/components/info.jsx
+swagger-ui/src/core/components/layouts/base.jsx
+swagger-ui/src/standalone/index.js
+swagger-ui/src/standalone/layout.jsx
+swagger-ui/src/style/main.scss
+
+swagger-ui/src/core/components/operation.jsx
+swagger-ui/src/core/components/operations.jsx
+swagger-ui/src/core/components/responses.jsx
+
+swagger-ui/src/polyfills.js
+
+Modified to resolve accessibility scanner violations:
+swagger-ui/src/style/_buttons.scss
+swagger-ui/src/style/_colors.scss
+swagger-ui/src/style/_footer.scss
+swagger-ui/src/style/_information.scss
+swagger-ui/src/style/_models.scss
+swagger-ui/src/style/_table.scss
+swagger-ui/src/style/_variables.scss
+swagger-ui/src/core/components/layouts/base.jsx
+swagger-ui/src/core/components/content-type.jsx
+swagger-ui/src/plugins/headerbar/headerbar.jsx
+swagger-ui/src/core/components/layout-utils.jsx
+swagger-ui/src/core/components/model-collapse.jsx
+swagger-ui/src/core/components/model.jsx
+swagger-ui/src/core/components/models.jsx
+swagger-ui/src/core/components/operations.jsx
+swagger-ui/src/core/components/parameter-row.jsx
+swagger-ui/src/core/components/responses.jsx
+swagger-ui/src/core/plugins/oas3/wrap-components/version-stamp.jsx
+swagger-ui/src/core/components/auth/authorization-popup.jsx
+swagger-ui/src/core/json-schema-components.js
+swagger-ui/src/core/plugins/oas3/components/http-auth.jsx
+swagger-ui/src/core/plugins/oas3/components/servers.jsx
+

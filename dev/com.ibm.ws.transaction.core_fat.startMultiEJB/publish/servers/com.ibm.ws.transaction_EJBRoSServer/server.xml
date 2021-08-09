@@ -1,0 +1,58 @@
+<!--
+    Copyright (c) 2017,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
+    <library id="DerbyLib" filesetRef="DerbyFileset" />
+    <fileset id="DerbyFileset"
+             dir="${shared.resource.dir}derby"
+             includes="derby.jar" />
+    
+    <transaction
+        recoverOnStartup="true"
+        waitForRecovery="false"
+        heuristicRetryInterval="10"
+    />
+
+    <dataSource jndiName="jdbc/derby" jdbcDriverRef="DerbyEmbedded">
+      <properties
+        databaseName="${shared.resource.dir}/data/transactionFAT7"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+	
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+    
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+     
+
+</server>

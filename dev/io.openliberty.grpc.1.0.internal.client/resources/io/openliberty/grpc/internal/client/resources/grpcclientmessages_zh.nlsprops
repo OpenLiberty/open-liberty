@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: \u65e0\u6cd5\u88c5\u5165 clientInterceptors {0} \u4e2d\u5b9a\u4e49\u7684 gRPC \u62e6\u622a\u5668
+invalid.clientinterceptor.explanation=\u65e0\u6cd5\u88c5\u5165 clientInterceptors \u4e2d\u5b9a\u4e49\u7684 gRPC \u62e6\u622a\u5668\u3002
+invalid.clientinterceptor.useraction=\u8bf7\u9a8c\u8bc1\u5df2\u914d\u7f6e\u7684\u62e6\u622a\u5668\u540d\u79f0\u548c\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u3002
+
+invalid.keepalive.time=CWWKT0302E: gRPC \u5ba2\u6237\u673a keepAliveTime {0} \u65e0\u6548\u3002\u503c\u5fc5\u987b\u5927\u4e8e 0\u3002
+invalid.keepalive.time.explanation=\u914d\u7f6e\u7684 keepAliveTime \u503c\u65e0\u6548\u3002
+invalid.keepalive.time.useraction=\u8bf7\u4e3a keepAliveTime \u914d\u7f6e\u6709\u6548\u7684\u503c\u3002
+
+invalid.keepalive.timeout=CWWKT0303E: gRPC \u5ba2\u6237\u673a keepAliveTimeout {0} \u65e0\u6548\u3002\u503c\u5fc5\u987b\u5927\u4e8e 0\u3002
+invalid.keepalive.timeout.explanation=\u914d\u7f6e\u7684 keepAliveTimeout \u503c\u65e0\u6548\u3002
+invalid.keepalive.timeout.useraction=\u8bf7\u4e3a keepAliveTimeout \u914d\u7f6e\u6709\u6548\u7684\u503c\u3002
+
+invalid.client.inbound.msg.size=CWWKT0304E: gRPC \u5ba2\u6237\u673a maxInboundMessageSize {0} \u65e0\u6548\u3002\u503c\u5fc5\u987b\u5927\u4e8e 0\u3002
+invalid.client.inbound.msg.size.explanation=\u914d\u7f6e\u7684 maxInboundMessageSize \u503c\u65e0\u6548\u3002
+invalid.client.inbound.msg.size.useraction=\u8bf7\u4e3a maxInboundMessageSize \u914d\u7f6e\u6709\u6548\u7684\u503c\u3002

@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: La d\u00e9finition d''utilisateur n''est pas valide : {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=La syntaxe de d\u00e9finition d'un utilisateur est de la forme <user name="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=Corrigez la d\u00e9finition d'utilisateur dans la configuration.
+USER_MUST_DEFINE_NAME=Un \u00e9l\u00e9ment user doit d\u00e9finir un nom (attribut name).
+USER_MUST_DEFINE_PASSWORD=L''\u00e9l\u00e9ment user ayant le nom ''{0}'' doit d\u00e9finir un mot de passe.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: La d\u00e9finition de groupe n''est pas valide : {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=La syntaxe de d\u00e9finition d'un groupe est de la forme <group name="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=Corrigez la d\u00e9finition de groupe dans la configuration.
+GROUP_MUST_DEFINE_NAME=Un \u00e9l\u00e9ment group doit d\u00e9finir un nom (attribut name).
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: La d\u00e9finition de membre n''est pas valide : {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=La syntaxe de d\u00e9finition d'un membre est de la forme <member name="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=Corrigez la d\u00e9finition de membre dans la configuration.
+MEMBER_MUST_DEFINE_NAME=Un \u00e9l\u00e9ment member doit d\u00e9finir un nom (attribut name).
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Aucun utilisateur n''est d\u00e9fini pour la configuration BasicRegistry dont l''ID est {0}.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=Aucun utilisateur n'est d\u00e9fini pour la configuration. Peut-\u00eatre est-ce intentionnel ? Sinon, il y a vraisemblablement une erreur de configuration.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Si n\u00e9cessaire, d\u00e9finissez au moins un utilisateur dans la configuration.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Plusieurs utilisateurs ayant le nom ''{0}'' sont d\u00e9finis. Les entr\u00e9es de cet utilisateur ne seront pas utilis\u00e9es.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=Les noms d'utilisateur doivent \u00eatre uniques.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=D\u00e9finissez un seul utilisateur avec le nom indiqu\u00e9.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Plusieurs groupes ayant le nom ''{0}'' sont d\u00e9finis. Les entr\u00e9es de ce groupe ne seront pas utilis\u00e9es.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=Les noms de groupe doivent \u00eatre uniques.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=D\u00e9finissez un seul groupe avec le nom indiqu\u00e9.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Plusieurs entr\u00e9es de membre avec le nom ''{0}'' sont d\u00e9finies pour le groupe ''{1}''.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=Pour un groupe donn\u00e9, un nom d'utilisateur particulier ne peut appara\u00eetre que dans une seule entr\u00e9e de membre (member).
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=D\u00e9finissez une seule entr\u00e9e 'member' pour l'utilisateur dans le groupe indiqu\u00e9.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: L''entr\u00e9e member ayant le nom ''{0}'' pour le groupe ''{1}'' ne correspond pas \u00e0 un utilisateur d\u00e9fini.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Le nom sp\u00e9cifi\u00e9 pour l'entr\u00e9e member ne correspond pas \u00e0 un utilisateur d\u00e9fini.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=V\u00e9rifiez l'orthographe du nom du membre et assurez-vous qu'il correspond \u00e0 un utilisateur d\u00e9fini dans le registre.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Un programme de mappage de certificat X.509 personnalis\u00e9 n'\u00e9tait pas li\u00e9 \u00e0 ce registre de base.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=La valeur affect\u00e9e au mode de mappage de certificat X.509 \u00e9tait CUSTOM, mais aucun programme de mappage de certificat X.509 personnalis\u00e9 n'\u00e9tait li\u00e9 au registre de base. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Assurez-vous que l'attribut certificateMapperId dans le registre de base est configur\u00e9 pour pointer vers un programme de mappage de certificat X.509 personnalis\u00e9 valide.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Le filtre ou nom distinctif ''{0}'' renvoy\u00e9 par le programme de mappage de certificat X.509 personnalis\u00e9 n''est pas mapp\u00e9 \u00e0 un utilisateur de registre.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=La valeur renvoy\u00e9e par le programme de mappage de certificat X.509 personnalis\u00e9 n'est pas mapp\u00e9 \u00e0 un utilisateur du registre de base.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Assurez-vous que l'utilisateur existe dans le registre de base et que le mappage est valide.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Si l'exception \u00e9tait inattendue, v\u00e9rifiez l'impl\u00e9mentation du programme de mappage de certificat X.509 personnalis\u00e9 et effectuez les modifications n\u00e9cessaires.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si l'exception \u00e9tait inattendue, v\u00e9rifiez l'impl\u00e9mentation du programme de mappage de certificat X.509 personnalis\u00e9 et effectuez les modifications n\u00e9cessaires.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: Le nom distinctif ''{0}'' n''est pas mapp\u00e9 \u00e0 un utilisateur de registre de base valide.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=Le nom distinctif du principal du sujet dans le certificat X.509 n'est pas mapp\u00e9 \u00e0 un utilisateur de registre de base valide. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Assurez-vous que le nom distinctif du principal du sujet contient un nom distinctif relatif 'cn' et qu'un utilisateur du registre de base est mapp\u00e9 \u00e0 la valeur du nom distinctif relatif. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Le registre de base est configur\u00e9 pour ignorer les demandes d'authentification par certificat X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=La valeur IGNORE a \u00e9t\u00e9 affect\u00e9e \u00e0 l'attribut de configuration certificateMapMode du registre de base.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Pour que le registre de base puisse traiter les demandes d'authentification par certificat X.509, modifiez l'attribut de configuration certificateMapMode de mani\u00e8re \u00e0 permettre le traitement.

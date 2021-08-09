@@ -1,0 +1,231 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die annotierte Endpoint-Klasse {0} weder \u00f6ffentlich noch konkret ist noch einen \u00f6ffentlichen Konstruktor ohne Argumente hat.
+invalid.endpointclass.explanation=Eine annotierte ServerEndpoint-Klasse muss \u00f6ffentlich und konkret sein und einen \u00f6ffentlichen Konstruktor ohne Argumente haben.
+invalid.endpointclass.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse in eine \u00f6ffentliche und konkrete Klasse mit einem Konstruktor ohne Argumente. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+missing.annotation=CWWKH0002E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die Annotationen @onOpen und @onMessage in der annotierten Endpoint-Klasse {0} fehlen.
+missing.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, wenn @OnOpen und @onMessage beide fehlen.
+missing.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie @OnOpen und/oder @OnMessage hinzuf\u00fcgen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanonepong.annotation=CWWKH0003E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere @OnMessage-Methoden mit dem Nachrichtentyp Pong in der annotierten Endpoint-Klasse {0} definiert sind.
+morethanonepong.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnMessage-Methoden mit dem Nachrichtentyp Pong in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanonepong.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnMessage-Methode mit dem Nachrichtentyp Pong definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanonebinary.annotation=CWWKH0004E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere @OnMessage-Methoden mit dem Nachrichtentyp Binary in der annotierten Endpoint-Klasse {0} definiert sind.
+morethanonebinary.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnMessage-Methoden mit dem Nachrichtentyp Binary in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanonebinary.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnMessage-Methode mit dem Nachrichtentyp Binary definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+missing.msgtype.param=CWWKH0005E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die Methode @OnMessage in der annotierten Endpoint-Klasse {0} keinen Nachrichtenparameter des Typs pong, binary oder text hat.
+missing.msgtype.param.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil die Methode @OnMessage keinen Nachrichtenparameter des Typs pong, binary oder text hat. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+missing.msgtype.param.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie die Methode @OnMessage mit einem Nachrichtenparameter des Typs text, binary oder pong deklarieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanonetext.annotation=CWWKH0006E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere @OnMessage-Methoden mit dem Nachrichtentyp text in der annotierten Endpoint-Klasse {0} definiert sind.
+morethanonetext.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnMessage-Methoden mit dem Nachrichtentyp text in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanonetext.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnMessage-Methode mit dem Nachrichtentyp text definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.onopen.annotation=CWWKH0007E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnOpen-Methode {0} in der annotierten Endpoint-Klasse {1} andere Parameter als Session, EndpointConfig oder @PathParam hat.
+invalid.onopen.annotation.explanation=Es wurde ein ung\u00fcltiger Parametertyp in der @OnOpen-Methode gefunden. Eine @OnOpen-Methode kann nur optionale Session-, optionale EndpointConfig- und optionale @PathParam-Parameter haben. 
+invalid.onopen.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie den ung\u00fcltigen Parametertyp aus der @OnOpen-Methode entfernen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanoneclose.annotation=CWWKH0008E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere @OnClose-Methoden in der annotierten Endpoint-Klasse {0} definiert sind. Die @OnClose-Methoden sind {1} und {2}.
+morethanoneclose.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnClose-Methoden in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanoneclose.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnClose-Methode definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.onclose.annotation=CWWKH0009E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnClose-Methode {0} in der annotierten Endpoint-Klasse {1} andere Parameter als Session, CloseReason oder @PathParam hat.
+invalid.onclose.annotation.explanation=Es wurde ein ung\u00fcltiger Parametertyp in der @OnClose-Methode gefunden. Eine @OnClose-Methode kann nur optionale Session-, optionale CloseReason- und optionale @PathParam-Parameter haben. 
+invalid.onclose.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie den ung\u00fcltigen Parametertyp aus der @OnClose-Methode entfernen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanoneerror.annotation=CWWKH0010E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere @OnError-Methoden in der annotierten Endpoint-Klasse {0} definiert sind. Die @OnError-Methoden sind {1} und {2}.
+morethanoneerror.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnError-Methoden in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanoneerror.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnError-Methode definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.onerror.annotation=CWWKH0011E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnError-Methode {0} in der annotierten Endpoint-Klasse {1} andere Parameter als Session, EndpointConfig oder @PathParam hat.
+invalid.onerror.annotation.explanation=Es wurde ein ung\u00fcltiger Parametertyp in der @OnError-Methode gefunden. Eine @OnError-Methode kann nur verbindliche Throwable-, optionale Session- und optionale @PathParam-Parameter haben. 
+invalid.onerror.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie den ung\u00fcltigen Parametertyp aus der @OnError-Methode entfernen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+missing.throwable=CWWKH0012E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnError-Methode {0} in der annotierten Endpoint-Klasse {1} keinen verbindlichen Parameter des Typs Throwable hat.
+missing.throwable.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil die @OnError-Methode den verbindlichen Parameter Throwable nicht hat. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+missing.throwable.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie den verbindlichen Parameter Throwable in der @OnError-Methode hinzuf\u00fcgen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.pong.annotation=CWWKH0013E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnMessage-Methode {0} in der annotierten Endpoint-Klasse {1} den ung\u00fcltigen Parameter {2} enth\u00e4lt.
+invalid.pong.annotation.explanation=Es wurde ein ung\u00fcltiger Parametertyp in der @OnMessage-Methode mit dem Nachrichtentyp Pong gefunden. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert.
+invalid.pong.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie den ung\u00fcltigen Parametertyp aus der @OnMessage-Methode entfernen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanone.binary.param=CWWKH0014E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnMessage-Methode {0} in der annotierten Endpoint-Klasse {1} mehrere Nachrichtentypparameter binary enth\u00e4lt.
+morethanone.binary.param.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil die Methode @OnMessage mehrere Nachrichtentypparameter binary enth\u00e4lt. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+
+morethanone.binary.param.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur einen einzigen Nachrichtentypparameter Binary definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.decoderclass=CWWKH0015E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die Decoder-Klasse {0}, die in der @OnMessage-Methode {1} der annotierten Endpoint-Klasse {2} verwendet wird, weder \u00f6ffentlich noch konkret ist noch einen \u00f6ffentlichen Konstruktor ohne Argumente hat.
+invalid.decoderclass.explanation=Die in der annotierten ServerEndpoint-Klasse verwendete Decoder-Klasse muss \u00f6ffentlich und konkret sein und einen \u00f6ffentlichen Konstruktor ohne Argumente haben.
+invalid.decoderclass.useraction=Korrigieren Sie die Decoder-Klasse in eine \u00f6ffentliche und konkrete Klasse mit einem Konstruktor ohne Argumente. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanone.message.param=CWWKH0016E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnMessage-Methode {0} in der annotierten Endpoint-Klasse {1} mehrere Nachrichtentypparameter {2} enth\u00e4lt.
+morethanone.message.param.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil die Methode @OnMessage mehrere Nachrichtentypparameter enth\u00e4lt. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanone.message.param.useraction=Korrigieren Sie die @OnMessage-Methode, indem Sie entsprechend der Dokumentation zur API javax.websocket.OnMessage nur einen einzigen Nachrichtentypparameter definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.binary.param=CWWKH0017E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnMessage-Methode {0} in der annotierten Endpoint-Klasse {1} den ung\u00fcltigen Parameter {2} enth\u00e4lt.
+invalid.binary.param.explanation=Es wurde ein ung\u00fcltiger Parametertyp in der @OnMessage-Methode mit dem Nachrichtentyp Binary gefunden. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert.
+invalid.binary.param.useraction=Korrigieren Sie die @OnMessage-Methode, indem Sie den ung\u00fcltigen Parametertyp gem\u00e4\u00df der Dokumentation zur API javax.websocket.OnMessage entfernen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+morethanone.text.param=CWWKH0018E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnMessage-Methode {0} in der annotierten Endpoint-Klasse {1} mehrere Textnachrichtentypparameter ({2}) enth\u00e4lt.
+morethanone.text.param.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil die Methode @OnMessage mehrere Textnachrichtentypparameter enth\u00e4lt. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanone.text.param.useraction=Korrigieren Sie die @OnMessage-Methode, indem Sie entsprechend der Dokumentation zur API javax.websocket.OnMessage nur einen einzigen Nachrichtentypparameter text definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.text.param=CWWKH0019E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @OnMessage-Methode {0} in der annotierten Endpoint-Klasse {1} den ung\u00fcltigen Parameter {2} enth\u00e4lt.
+invalid.text.param.explanation=Es wurde ein ung\u00fcltiger Parametertyp in der @OnMessage-Methode mit dem Nachrichtentyp text gefunden. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert.
+invalid.text.param.useraction=Korrigieren Sie die @OnMessage-Methode, indem Sie den ung\u00fcltigen Parametertyp gem\u00e4\u00df der Dokumentation zur API javax.websocket.OnMessage entfernen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+missing.path.segment=CWWKH0020E: Beim Aufrufen des WebSocket-Serverendpunkts ist ein Fehler aufgetreten. Der @PathParam-Parameter {0}, der in der Methode {1} definiert ist, hat kein entsprechendes Pfadsegment in der @ServerEndpoint-URI in der annotierten Endpoint-Klasse {2}.
+missing.path.segment.explanation=Der @PathParam-Parameter hat keine entsprechendes Pfadsegment in der @ServerEndpoint-URI. 
+missing.path.segment.useraction=Korrigieren Sie den @PathParam-Parameternamen so, dass er einem der Pfadsegmente in der @ServerEndpoint-URI entspricht. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+missing.pathparam.value=CWWKH0021E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil die @PathParam-Annotation {0}, die in der Methode {1} definiert ist, keinen Annotationswert in der annotierten Endpoint-Klasse {2} hat.
+missing.pathparam.value.explanation=Die @PathParam-Annotation hat keinen Wert. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert.
+missing.pathparam.value.useraction=Korrigieren Sie die @PathParam-Annotation, indem Sie der Annotation den Wert hinzuf\u00fcgen. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.pathparam.type=CWWKH0022E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil der @PathParam-Parameter {0}, der in der Methode {1} definiert ist, einen ung\u00fcltigen Typ in der annotierten Endpoint-Klasse {2} hat.
+invalid.pathparam.type.explanation=Der @PathParam-Parameter hat einen ung\u00fcltigen Typ. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert.
+invalid.pathparam.type.useraction=Korrigieren Sie den Typ der @PathParam-Annotation in String, einen primitiven Java-Datentyp oder in eine isolierte Version. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+mismatch.pathparam.type=CWWKH0023E: W\u00e4hrend der Ausf\u00fchrung der Methode {0} in der der annotierten Endpoint-Klasse {1} ist beim Konvertieren der @PathParam-Daten an Parameterindex {2} in den Typ {3} ein Fehler aufgetreten.
+mismatch.pathparam.type.explanation=Die Konvertierung des @PathParam-Pfadparameters mit dem entsprechenden Segment aus der ServerEndpoint-URI ist wegen eines ung\u00fcltigen Typs fehlgeschlagen. Die Endpunktmethode wurde nicht erfolgreich ausgef\u00fchrt.
+mismatch.pathparam.type.useraction=Stellen Sie sicher, dass das eingehende ServerEndpoint-URI-Segment dem Datentyp f\u00fcr den entsprechenden @PathParam-Parameter entspricht.
+
+bytes.notavailable=CWWKH0024E: Beim Lesen einer eingehenden WebSocket-Nachricht ist eine Ausnahme eingetreten, weil keine Bytes mehr zum Lesen verf\u00fcgbar sind.
+bytes.notavailable.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist eine Ausnahme eingetreten, weil keine Bytes mehr zum Lesen verf\u00fcgbar sind.
+bytes.notavailable.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtendaten.
+
+onmessage.notdefined=CWWKH0025E: Der Client hat eine Nachricht an den Endpunkt {0} gesendet, in dem keine @OnMessage-Methode und kein Nachrichtenhandler f\u00fcr diesen Typ von Nachrichten definiert ist.
+onmessage.notdefined.explanation=Die WebSocket-Clientanforderung kann nicht ausgef\u00fchrt werden, weil der Client eine Nachricht an den Serverendpunkt gesendet hat, in dem keine @OnMessage-Methode und kein Nachrichtenhandler f\u00fcr diesen Typ von Nachrichten definiert ist.
+onmessage.notdefined.useraction=Benachrichtigen Sie den Client oder f\u00fcgen Sie der annotierten ServerEndpoint-Klasse eine @OnMessage-Methode hinzu oder f\u00fcgen Sie einen Nachrichtenhandler hinzu, um die Clientanforderung zu verarbeiten, und implementieren Sie dann die Anwendung erneut.
+
+decoder.ioexception=CWWKH0026E: Die WebSocket-Clientanforderung kann nicht ausgef\u00fchrt werden, weil beim Aufrufen von onMessage in der Klasse {0} eine Ausnahme des Typs IOExeption eingetreten ist, als die {1}-Nachrichtendaten decodiert wurden. Ausnahmenachricht: {2}
+decoder.ioexception.explanation=Die WebSocket-Clientanforderung kann nicht ausgef\u00fchrt werden, weil beim Aufrufen von onMessage w\u00e4hrend der Decodierung der Nachrichtendaten eine Ausnahme des Typs IOExeption eingetreten ist. 
+decoder.ioexception.useraction=\u00dcberpr\u00fcfen Sie die eingehenden Nachrichtendaten und den Decoder.
+
+decoder.create.exception=CWWKH0027E: Die WebSocket-Anforderung kann nicht ausgef\u00fchrt werden, weil beim Erstellen einer neuen Instanz der Decoder-Klasse {0} ein Problem aufgetreten ist. Ausnahme: {1}
+decoder.create.exception.explanation=Die WebSocket-Anforderung kann nicht ausgef\u00fchrt werden, weil beim Erstellen einer neuen Instanz der Decoder-Klasse ein Problem aufgetreten ist.
+decoder.create.exception.useraction=\u00dcberpr\u00fcfen Sie die Decoder-Klasse.
+
+fin1.processing.error=CWWKH0028E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} w\u00e4hrend der Verarbeitung des FIN-Werts 1 eine Ausnahme eingetreten.
+fin1.processing.error.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist w\u00e4hrend der Verarbeitung des FIN-Werts 1 eine Ausnahme eingetreten.
+fin1.processing.error.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten.
+ 
+fin0.processing.error=CWWKH0029E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} w\u00e4hrend der Verarbeitung des FIN-Werts 0 eine Ausnahme eingetreten.
+fin0.processing.error.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist w\u00e4hrend der Verarbeitung des FIN-Werts 0 eine Ausnahme eingetreten.
+fin0.processing.error.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten.
+
+invalid.opcode=CWWKH0030E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} eine Ausnahme eingetreten, weil der Opcode {1} im Nachrichtenrahmen ung\u00fcltig ist.
+invalid.opcode.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist eine Ausnahme eingetreten, weil ein Opcode im Nachrichtenrahmen ung\u00fcltig ist.
+invalid.opcode.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten.
+
+invalid.continue.opcode=CWWKH0031E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} wegen eines ung\u00fcltigen continue-Opcodes in der nicht fragmentierten Nachricht eine Ausnahme eingetreten.
+invalid.continue.opcode.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist wegen eines ung\u00fcltigen continue-Opcodes in der nicht fragmentierten Nachricht eine Ausnahme eingetreten.
+invalid.continue.opcode.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten. 
+
+incorrect.maskflag=CWWKH0032E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} eine Ausnahme eingetreten, weil das Flag mask im Nachrichtenrahmen nicht ordnungsgem\u00e4\u00df definiert ist.
+incorrect.maskflag.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist eine Ausnahme eingetreten, weil das Flag mask im Nachrichtenrahmen nicht ordnungsgem\u00e4\u00df definiert ist.
+incorrect.maskflag.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten. 
+
+invalid.maskflag.value=CWWKH0033E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} eine Ausnahme eingetreten, weil das Flag Mask auf einen falschen Wert gesetzt ist.
+invalid.maskflag.value.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist eine Ausnahme eingetreten, weil das Flag Mask im Nachrichtenrahmen auf einen falschen Wert gesetzt ist.
+invalid.maskflag.value.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten.
+
+duplicate.uri=CWWKH0034E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere Serverendpunkte dieselbe URI {0} haben.
+duplicate.uri.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere Serverendpunkte dieselbe URI haben. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+duplicate.uri.useraction=Definieren Sie eindeutige ServerEndPoint-URIs in der WebSocket-Anwendung. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.nonzero.opcode=CWWKH0035E: Beim Lesen einer eingehenden WebSocket-Nachricht ist in der ServerEndpoint-Klasse {0} wegen eines ung\u00fcltigen Opcodes ungleich null im Rahmen, der nicht der erste Rahmen ist, eine Ausnahme eingetreten.
+invalid.nonzero.opcode.explanation=Beim Lesen einer eingehenden WebSocket-Nachricht ist wegen eines ung\u00fcltigen Opcodes ungleich null im Rahmen, der nicht der erste Rahmen ist, eine Ausnahme eingetreten.
+invalid.nonzero.opcode.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der eingehenden WebSocket-Nachrichtenrahmendaten.
+
+morethanoneonopen.annotation=CWWKH0036E: W\u00e4hrend der Implementierung der WebSocket-Anwendung ist eine Ausnahme eingetreten, weil mehrere @OnOpen-Methoden in der annotierten Endpoint-Klasse {0} definiert sind.
+morethanoneonopen.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnOpen-Methoden in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert. 
+morethanoneonopen.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnOpen-Methode definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+invalid.message.toobig=CWWKH0037E: Ung\u00fcltige eingehende WebSocket-Nachricht in der ServerEndpoint-Klasse {0}. Die eingehende Nachricht hat die Gr\u00f6\u00dfe {1}, die gr\u00f6\u00dfer ist als der in der @OnMessage-Annotationsmethode {3} definierte maxMessageSize-Wert {2}.
+invalid.message.toobig.explanation=Die Gr\u00f6\u00dfe einer WebSocket-Nachricht darf den in der @OnMessage-Annotation definierten maxMessageSize-Wert nicht \u00fcberschreiten.
+invalid.message.toobig.useraction=Stellen Sie sicher, dass der Client WebSocket-Nachrichten sendet, die kleiner sind als der mit maxMessageSize in @OnMessage definierte Wert, oder erh\u00f6hen Sie den maxMessageSize-Wert in @OnMessage und implementieren Sie die Anwendung erneut.
+
+maxidletimeout.closesession=CWWKH0038E: Die WebSocket-Sitzung ist seit {0} Sekunden inaktiv. Die Verbindung wird geschlossen.
+maxidletimeout.closesession.explanation=Das WebSocket-Sitzungszeitlimit wurde \u00fcberschritten. WebSocket-Sitzungen werden inaktiv, wenn innerhalb des mit der maxIdleTimeout-Einstellung angegebenen Anzahl von Sekunden keine Nachrichten gesendet oder empfangen werden.
+maxidletimeout.closesession.useraction=Pr\u00fcfen Sie, warum der Client keine Nachrichten sendet oder empf\u00e4ngt. Erh\u00f6hen Sie, sofern erforderlich, die maxIdleTimeout-Einstellung mit der API Session.setMaxIdleTimeout().
+
+client.invalid.returncode=CWWKH0039E: Wenn eine abgehende WebSocket-Anforderung an den Endpunkt {1} auf dem Zielserver gesendet wurde, wurde eine Antwort des Typs {0} anstelle einer Antwort des Typs 101 zur\u00fcckgegeben.
+client.invalid.returncode.explanation=Abgehende WebSocket-Operationen erfordern einen Antwortcode 101.
+client.invalid.returncode.useraction=Verwenden Sie den ung\u00fcltigen Antwortcode, um festzustellen, ob der Zielendpunkt ein g\u00fcltiger und aktiver WebSocket-Endpunkt ist, und um Ursache f\u00fcr das Fehlschlagen der abgehenden WebSocket-Anforderung zu ermitteln. 
+
+client.invalid.acceptkey=CWWKH0040E: Der Zielserver hat beim Senden einer abgehenden WebSocket-Anforderung an den Endpunkt {1} mit einem ung\u00fcltigen WebSocket-accept-Schl\u00fcssel geantwortet. 
+client.invalid.acceptkey.explanation=Abgehende WebSocket-Operationen erfordern, dass der Zielserver einen g\u00fcltigen WebSocket-accept-Schl\u00fcssel f\u00fcr WebSocket-Operationen zur\u00fcckgibt.
+client.invalid.acceptkey.useraction=Vergewissern Sie sich, dass der Zielserver mit dem WebSocket-Protokoll kompatibel ist.
+
+client.invalid.endpoint=CWWKH0041E: Bei einer abgehenden WebSocket-Anforderung wurde der ung\u00fcltige Endpunkt {0} angegeben.
+client.invalid.endpoint.explanation=F\u00fcr eine abgehende WebSocket-Anforderung muss ein g\u00fcltiger Endpunkt angegeben werden.
+client.invalid.endpoint.useraction=Vergewissern Sie sich, dass der in der Methode connectToServer des WebSocket-API-Aufrufs angegebene ClientEndpoint-Parameter ein annotierter Clientendpunkt ist. 
+
+client.invalid.scheme=CWWKH0042E: F\u00fcr die abgehende Clientverbindung wurde das ung\u00fcltige Schema {0} verwendet. Die g\u00fcltigen Schemas f\u00fcr das WebSocket-Protokoll sind ws und wss.
+client.invalid.scheme.explanation=Die g\u00fcltigen WebSocket-Schemas sind ws und wss.
+client.invalid.scheme.useraction=Verwenden Sie bei einer abgehenden WebSocket-Anforderung ein g\u00fcltiges Schema.
+
+client.invalid.configurator=CWWKH0043E: W\u00e4hrend einer abgehenden Anforderung wurde die Configurator-Klasse {0} nicht erstellt. Ausnahme: {1} 
+client.invalid.configurator.explanation=Die Configurator-Klasse wurde w\u00e4hrend einer abgehenden Anforderung nicht erstellt. M\u00f6glicherweise ist der \u00f6ffentliche Nullargumentkonstruktor der Configurator-Klasse nicht vorhanden oder nicht zug\u00e4nglich.
+client.invalid.configurator.useraction=\u00dcberpr\u00fcfen Sie die Richtigkeit der Configurator-Klasse und vergewissern Sie sich, dass die Klasse einen zug\u00e4nglichen \u00f6ffentlichen Nullargumentkonstruktor hat.
+ 
+client.connection.error=CWWKH0044E: Der Endpunkt {0} konnte w\u00e4hrend einer abgehenden WebSocket-Anforderung nicht verarbeitet werden. Ausnahme: {1}
+client.connection.error.explanation=Die Ausnahme ist eingetreten, als der Endpunkt versucht hat, w\u00e4hrend einer abgehenden WebSocket-Anforderung eine Verbindung zum Zielserver herzustellen.
+client.connection.error.useraction=Verwenden Sie die Ausnahmedetails, um die Ursache zu bestimmen und das Problem zu beheben.
+
+client.invalid.endpointclass=CWWKH0045E: Die Klasse {0} ist nicht g\u00fcltig und wurde w\u00e4hrend einer abgehenden WebSocket-Anforderung angegeben.
+client.invalid.endpointclass.explanation=F\u00fcr eine abgehende WebSocket-Anforderung muss eine g\u00fcltige Endpunktklasse angegeben werden.
+client.invalid.endpointclass.useraction=Vergewissern Sie sich, dass der Parameter Endpoint, der in der Methode connectToServer des WebSocket-API-Aufrufs verwendet wird, eine WebSocket-Endpunktklasse erweitert.
+
+adding.endpoint=CWWKH0046I: Es wird ein WebSocket-ServerEndpoint-Objekt mit der folgenden URI hinzugef\u00fcgt: {0}
+adding.endpoint.explanation=Das WebSocket-ServerEndpoint-Objekt mit der angegebenen URI ist f\u00fcr den WebSocket-Client verf\u00fcgbar.
+adding.endpoint.useraction=Es ist keine Aktion erforderlich. 
+
+invalid.endpoint.context=CWWKH0047E: Die WebSocket-ServerEndpoint-Objekt mit dem Kontextpfad {0} sind f\u00fcr den Client nicht verf\u00fcgbar.
+invalid.endpoint.context.explanation=Die WebSocket-ServerEndpoint-Objekte mit dem angegebenen Kontextpfad sind f\u00fcr den WebSocket-Client nicht verf\u00fcgbar.
+invalid.endpoint.context.useraction=Informationen zur Nichtverf\u00fcgbarkeit der ServerEndpoint-Objekte finden Sie in den Serverprotokollen und Traceprotokollen des Liberty-Profils.
+
+client.connection.nossl=CWWKH0048E: Der Endpunkt {0} konnte w\u00e4hrend einer abgehenden sicheren WebSocket-Anforderung nicht verarbeitet werden, weil die Sicherheit nicht aktiviert ist.
+client.connection.nossl.explanation=Die Sicherheit muss aktiviert werden, damit abgehende sichere WebSocket-Anforderungen verarbeitet werden k\u00f6nnen.
+client.connection.nossl.useraction=Aktivieren Sie die Sicherheit.
+
+endpoint.addsclosed=CWWKH0049E: Nach dem Start der WebSocket-Anwendung k\u00f6nnen keine weiteren WebSocket-Endpunkte hinzugef\u00fcgt werden.
+endpoint.addsclosed.explanation=WebSocket-Endpunkte m\u00fcssen vor dem Start der WebSocket-Anwendung hinzugef\u00fcgt werden.
+endpoint.addsclosed.useraction=F\u00fcgen Sie WebSocket-Endpunkte vor dem Start der WebSocket-Anwendung hinzu.
+
+endpoint.creation.error=CWWKH0050E: Die Endpunktklasse {0} konnte nicht erstellt werden. Ausnahme: {1}
+endpoint.creation.error.explanation=Bei der Erstellung der Endpunktklasse ist eine Ausnahme eingetreten.
+endpoint.creation.error.useraction=Verwenden Sie die Ausnahmedetails, um die Ursache zu bestimmen und das Problem zu beheben.
+
+endpoint.instance.error=CWWKH0051E: Der Server kann wegen der folgenden Ausnahme nicht auf die Endpoint-Klasse {0} zugreifen: {1}
+endpoint.instance.error.explanation=Als der Server versucht hat, auf die angegebene Endpoint-Klasse zuzugreifen, ist ein Fehler aufgetreten.
+endpoint.instance.error.useraction=Stellen Sie mithilfe der Ausnahmedetails fest, warum der Zugriff auf die Endpoint-Klassen nicht m\u00f6glich ist, und beheben Sie dann das Problem.
+
+missingslashornull.uri=CWWKH0052E: W\u00e4hrend des Implementierens/Startens des Serverendpunkts {0} mit dem URI "{1}" ist eine Ausnahme eingetreten. Der Endpunkt-URI ist null oder er beginnt nicht mit /.
+missingslashornull.uri.explanation=Der Serverendpunkt ist ung\u00fcltig, weil der Endpunkt-URI entweder null ist oder nicht mit einem Schr\u00e4gstrich (/) in der Endpunktklasse beginnt. Die WebSocket-Anwendung ist f\u00fcr Anforderungen nicht verf\u00fcgbar. 
+missingslashornull.uri.useraction=Definieren Sie einen Endpunkt-URI ungleich null, der mit / beginnt. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
+
+
+

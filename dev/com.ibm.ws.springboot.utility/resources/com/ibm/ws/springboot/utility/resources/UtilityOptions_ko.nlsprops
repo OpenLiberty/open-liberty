@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=\uc124\uba85:
+global.actions=\uc870\uce58:
+global.options=\uc635\uc158:
+global.usage=\uc0ac\uc6a9\ubc95:
+global.required=\ud544\uc218:
+global.options.statement=\t\uac01 \uc870\uce58\uc758 \uc790\uc138\ud55c \uc635\uc158 \uc815\ubcf4\ub294 help [actionName]\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\t\uc9c0\uc815\ub41c \uc870\uce58\uc758 \ub3c4\uc6c0\ub9d0 \uc815\ubcf4\ub97c \uc778\uc1c4\ud569\ub2c8\ub2e4.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [actionName]
+
+
+# -------- THIN OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+thin.desc=\t\uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c \uc0ac\uc6a9\ud560 \uc52c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc791\uc131\ud569\ub2c8\ub2e4. 
+#Note to translator the word "thin" should not be translated
+thin.usage.options=\t{0} thin --sourceAppPath=path [\uc635\uc158]
+
+thin.required-key.sourceapp=\ \ \ \ --sourceAppPath=file
+thin.required-desc.sourceapp=\t\uc52c\uc5d0 \ub300\ud55c \uc18c\uc2a4 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud30c\uc77c\uc758 \uacbd\ub85c\uc785\ub2c8\ub2e4.
+
+thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=file
+#Note to translator the word ".spring" should not be translated
+thin.optional-desc.targetthinapp=\t\uc52c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud30c\uc77c\uc744 \uc800\uc7a5\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 \uacbd\ub85c\uc785\ub2c8\ub2e4.\n\
+\t\uc774 \uc635\uc158\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0, \uc0c8 \ud30c\uc77c\uc774\n\
+\t\uc18c\uc2a4 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uc0c1\uc704 \ub514\ub809\ud1a0\ub9ac\uc5d0\uc11c .spring \ud655\uc7a5\uc790\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc791\uc131\ub429\ub2c8\ub2e4. 
+
+thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
+#Note to translator the word "lib.index.cache" should not be translated
+thin.optional-desc.targetlibcache=\t\ub77c\uc774\ube0c\ub7ec\ub9ac \uce90\uc2dc\ub97c \uc800\uc7a5\ud558\ub294 \ub370 \uc0ac\uc6a9\ub418\ub294 \ub514\ub809\ud1a0\ub9ac \uacbd\ub85c\uc785\ub2c8\ub2e4.\n\
+\t\uc774 \uc635\uc158\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0, lib.index.cache\ub77c\ub294 \ub514\ub809\ud1a0\ub9ac\uac00\n\
+\t\uc18c\uc2a4 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uc0c1\uc704 \ub514\ub809\ud1a0\ub9ac\uc5d0\uc11c \uc791\uc131\ub429\ub2c8\ub2e4.
+
+thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=directory
+thin.optional-desc.parentlibcache=\t\uc0c1\uc704 \uc77d\uae30 \uc804\uc6a9 \ub77c\uc774\ube0c\ub7ec\ub9ac \uce90\uc2dc\uc758 \ub514\ub809\ud1a0\ub9ac \uacbd\ub85c\uc785\ub2c8\ub2e4.\n\
+\t\uae30\uc874 \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \ucc3e\uae30 \uc704\ud574 \uc0c1\uc704 \ub77c\uc774\ube0c\ub7ec\ub9ac\n\
+\t\uce90\uc2dc\uac00 \uba3c\uc800 \uac80\uc0c9\ub429\ub2c8\ub2e4. \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc73c\uba74,\n\
+\t\ub77c\uc774\ube0c\ub7ec\ub9ac\uac00\n\
+\t--targetLibCachePath \uc635\uc158\uc73c\ub85c \uc9c0\uc815\ub41c \uc4f0\uae30 \uac00\ub2a5\ud55c \ub77c\uc774\ube0c\ub7ec\ub9ac \uce90\uc2dc\uc5d0 \uc800\uc7a5\ub429\ub2c8\ub2e4. \uc774 \uc635\uc158\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0,\n\
+\t\uc0c1\uc704 \ub77c\uc774\ube0c\ub7ec\ub9ac \uce90\uc2dc\uac00 \uac80\uc0c9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+
+

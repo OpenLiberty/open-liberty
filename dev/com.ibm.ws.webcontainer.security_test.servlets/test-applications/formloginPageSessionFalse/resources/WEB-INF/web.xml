@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="FormLoginServlet" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>Form Login servlets</display-name>
+  <description>This is for servlets to test form login.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+    <servlet-name>FormLoginPageSessionFalseServlet</servlet-name>
+    <display-name>FormLoginPageSessionFalseServlet</display-name>
+    <description>FormLoginPageSessionFalseServlet</description>
+    <servlet-class>web.formloginpagesessionfalse.FormLoginPageSessionFalseServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+    <security-role-ref>
+      <role-name>MappedToEmployee</role-name>
+      <role-link>Employee</role-link>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>MappedToManager</role-name>
+      <role-link>Manager</role-link>
+    </security-role-ref>
+  </servlet>
+  <servlet id="Servlet_2">
+    <servlet-name>FormLogoutPageSessionFalseServlet</servlet-name>
+    <display-name>FormLogoutPageSessionFalseServlet</display-name>
+    <description>FormLogoutPageSessionFalseServlet</description>
+    <servlet-class>web.formloginpagesessionfalse.FormLogoutPageSessionFalseServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+  </servlet>    
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>FormLoginPageSessionFalseServlet</servlet-name>
+    <url-pattern>/SimpleServlet</url-pattern>
+  </servlet-mapping>
+  
+  <!-- SERVLET_2 MAPPINGS -->      
+  <servlet-mapping id="Servlet_2_Mapping_1">
+    <servlet-name>FormLogoutPageSessionFalseServlet</servlet-name>
+    <url-pattern>/SimpleLogoutServlet</url-pattern>
+  </servlet-mapping>
+  
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/SimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+
+  <!-- SECURITY CONSTRAINTS for SERVLET_2 (for logout method)-->  
+  <security-constraint id="SecurityConstraint_FormLogout_1">
+     <web-resource-collection id="WebResourceCollection_FormLogout_1">
+        <web-resource-name>Protected with Employee role</web-resource-name>
+        <url-pattern>/SimpleLogoutServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_FormLogout_1">
+        <role-name>Employee</role-name>        
+     </auth-constraint>
+  </security-constraint>  
+    
+  <!-- CHALLENGE TYPE -->
+  <login-config>
+  	<auth-method>FORM</auth-method>
+  	<realm-name>Test Realm</realm-name>
+    <form-login-config id="FormLoginConfig_1">
+    	<form-login-page>/login.jsp</form-login-page>
+        <form-error-page>/loginError.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+  <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>Employee role</description>
+     <role-name>Employee</role-name>
+  </security-role>       
+  <security-role id="SecurityRole_2">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  <security-role id="SecurityRole_3">
+     <description>AllAuthenticated role</description>
+     <role-name>AllAuthenticated</role-name>
+  </security-role>
+
+</web-app>

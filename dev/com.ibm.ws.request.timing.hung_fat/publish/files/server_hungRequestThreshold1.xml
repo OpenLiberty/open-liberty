@@ -1,0 +1,22 @@
+<server description="new server">
+
+  <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+      <feature>requestTiming-1.0</feature>
+    </featureManager>
+  
+	<httpEndpoint id="defaultHttpEndpoint" host="*" />
+
+	<include location="../fatTestPorts.xml"/>
+  	
+   <requestTiming slowRequestThreshold="60s" hungRequestThreshold = "120s">
+     <servletTiming hungRequestThreshold="300s"
+    		 appName="TestWebApp" servletName="TestServlet"/> 
+     <servletTiming hungRequestThreshold="301s"
+    		 appName="TestWebApp" servletName="FirstIntrospectorTestServlet"/> 
+     <servletTiming hungRequestThreshold="302s"
+    		 appName="TestWebApp" servletName="ThirdIntrospectorTestServlet"/> 
+   </requestTiming>
+  
+</server>

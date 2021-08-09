@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.security/resources/com/ibm/ws/ejbcontainer/security/internal/resources/EjbSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server EJB Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9400- CWWKS9499
+EJB_AUTHZ_FAILED=CWWKS9400A: {0} felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} megh\u00edv\u00e1sakor a k\u00f6vetkez\u0151n: {2}. A felhaszn\u00e1l\u00f3nak nincs megadva hozz\u00e1f\u00e9r\u00e9s a sz\u00fcks\u00e9ges szerepek egyik\u00e9hez sem: {3}.
+EJB_AUTHZ_FAILED.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez sz\u00fcks\u00e9ges enged\u00e9lyekkel.
+EJB_AUTHZ_FAILED.useraction=Ha a v\u00e9dett er\u0151forr\u00e1s el\u00e9r\u00e9se sz\u00fcks\u00e9ges, akkor gondoskodj\u00e9k r\u00f3la, hogy a felhaszn\u00e1l\u00f3 le legyen k\u00e9pezve az er\u0151forr\u00e1st v\u00e9d\u0151 szerepek egyik\u00e9re.
+EJB_AUTHZ_PRECLUDED=CWWKS9401A: {0} felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} megh\u00edv\u00e1sakor a k\u00f6vetkez\u0151n: {2}. Jogosults\u00e1gi megszor\u00edt\u00e1s van megadva, de nincs olyan szerep, amely hozz\u00e1f\u00e9r\u00e9st enged\u00e9lyezne a v\u00e9dett er\u0151forr\u00e1shoz.
+EJB_AUTHZ_PRECLUDED.explanation=A hozz\u00e1f\u00e9r\u00e9s megtagadva, mert nincsenek megadva szerepek a v\u00e9dett er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez.
+EJB_AUTHZ_PRECLUDED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy legyen legal\u00e1bb egy olyan szerep, amely v\u00e9di az er\u0151forr\u00e1st.
+EJB_AUTHZ_EXCLUDED=CWWKS9402A: A jogosults\u00e1g meghi\u00fasult a(z) {0} felhaszn\u00e1l\u00f3 eset\u00e9n a(z) {1} met\u00f3dus megh\u00edv\u00e1sa sor\u00e1n itt: {2}, mert a met\u00f3dus biztons\u00e1gi metaadatai kifejezetten kiz\u00e1rj\u00e1k a hozz\u00e1f\u00e9r\u00e9st az \u00f6sszes biztons\u00e1gi szerep sz\u00e1m\u00e1ra.
+EJB_AUTHZ_EXCLUDED.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez sz\u00fcks\u00e9ges enged\u00e9llyel, mert a telep\u00edt\u00e9si le\u00edr\u00f3 vagy az annot\u00e1ci\u00f3k kifejezetten megadj\u00e1k, hogy egyetlen biztons\u00e1gi szerep sem h\u00edvhatja meg a met\u00f3dust.
+EJB_AUTHZ_EXCLUDED.useraction=M\u00f3dos\u00edtsa a met\u00f3dus biztons\u00e1gi metaadatait vagy a telep\u00edt\u00e9si le\u00edr\u00f3ban, vagy az annot\u00e1ci\u00f3kban, ha a v\u00e9dett er\u0151forr\u00e1sok el\u00e9r\u00e9se sz\u00fcks\u00e9ges.
+EJB_AUTHZ_SERVICE_NOTFOUND=CWWKS9403E: A kiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9si szolg\u00e1ltat\u00e1sa nem m\u0171k\u00f6d\u0151k\u00e9pes. Ennek eredm\u00e9nyek\u00e9pp a(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a(z) {1} megh\u00edv\u00e1s\u00e1ra a k\u00f6vetkez\u0151n: {2}.
+EJB_AUTHZ_SERVICE_NOTFOUND.explanation=A felhaszn\u00e1l\u00f3 nem kap jogosults\u00e1got az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez, mert a hiteles\u00edt\u00e9si szolg\u00e1ltat\u00e1s nem m\u0171k\u00f6d\u0151k\u00e9pes.
+EJB_AUTHZ_SERVICE_NOTFOUND.useraction=A biztons\u00e1gi konfigur\u00e1ci\u00f3 \u00e9s a CWWKS \u00fczenetek napl\u00f3inak \u00e1ttekint\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hiteles\u00edt\u00e9si szolg\u00e1ltat\u00e1s regisztr\u00e1lva van \u00e9s elindult.
+EJB_SECURITY_CONFIGURATION_UPDATED=CWWKS9404A: Az EJB biztons\u00e1gi egy\u00fcttm\u0171k\u00f6d\u0151 be\u00e1ll\u00edt\u00e1sai megv\u00e1ltoztak a server.xml f\u00e1jlban. Az al\u00e1bbi tulajdons\u00e1gok lettek m\u00f3dos\u00edtva: {0}
+EJB_SECURITY_CONFIGURATION_UPDATED.explanation=Az EJB biztons\u00e1gi egy\u00fcttm\u0171k\u00f6d\u0151 be\u00e1ll\u00edt\u00e1sai m\u00f3dos\u00edt\u00e1sra ker\u00fcltek a server.xml f\u00e1jlban. Az \u00fczenetben szerepl\u0151 tulajdons\u00e1g\u00e9rt\u00e9kek az \u00faj \u00e9rt\u00e9kek.
+EJB_SECURITY_CONFIGURATION_UPDATED.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l. Semmit sem kell tennie.
+EJB_RUNAS_SYSTEM_NOT_SUPPORTED=CWWKS9405E: A jogosults\u00e1g meghi\u00fasulta(z) {0} EJB met\u00f3dus eset\u00e9ben a(z) {1} alkalmaz\u00e1sban. Az ibm-ejb-jar-ext.xml f\u00e1jlban megadott SYSTEM_IDENTITY futtat\u00e1s-mint m\u00f3dja nem t\u00e1mogatott, \u00e9s el kell t\u00e1vol\u00edtani vagy fel\u00fcl kell \u00edrni.
+EJB_RUNAS_SYSTEM_NOT_SUPPORTED.explanation=A SYSTEM_IDENTITY futtat\u00e1s-mint m\u00f3dja nem t\u00e1mogatott. Az adott alkalmaz\u00e1s ibm-ejb-jar-ext.xml f\u00e1jlj\u00e1t m\u00f3dos\u00edtani kell a SYSTEM_IDENTITY meghat\u00e1roz\u00e1s elt\u00e1vol\u00edt\u00e1s\u00e1val vagy fel\u00fcl\u00edr\u00e1s\u00e1val.
+EJB_RUNAS_SYSTEM_NOT_SUPPORTED.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1s ibm-ejb-jar-ext.xml f\u00e1jlj\u00e1ban a biztons\u00e1gi metaadatokat a SYSTEM_IDENTITY futtat\u00e1s-mint meghat\u00e1roz\u00e1s elt\u00e1vol\u00edt\u00e1s\u00e1val vagy fel\u00fcl\u00edr\u00e1s\u00e1val, mert a SYSTEM_IDENTITY nem t\u00e1mogatott. A t\u00e1mogatott futtat\u00e1s-mint m\u00f3dok: CALLER_IDENTITY \u00e9s SPECIFIED_IDENTITY.
+EJB_JACC_AUTHZ_FAILED=CWWKS9406A: {0} felhaszn\u00e1l\u00f3 JACC szolg\u00e1ltat\u00f3 \u00e1ltali hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} megh\u00edv\u00e1sakor a k\u00f6vetkez\u0151n: {2}. A felhaszn\u00e1l\u00f3nak nincs megadva hozz\u00e1f\u00e9r\u00e9s a sz\u00fcks\u00e9ges szerepek egyik\u00e9hez sem.
+EJB_JACC_AUTHZ_FAILED.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik a sz\u00fcks\u00e9ges jogosults\u00e1ggal az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez.
+EJB_JACC_AUTHZ_FAILED.useraction=Ha a v\u00e9dett er\u0151forr\u00e1s el\u00e9r\u00e9se sz\u00fcks\u00e9ges, akkor gondoskodj\u00e9k r\u00f3la, hogy a felhaszn\u00e1l\u00f3 le legyen k\u00e9pezve az er\u0151forr\u00e1st a JACC szolg\u00e1ltat\u00f3 \u00e1ltal v\u00e9d\u0151 szerepek egyik\u00e9re.

@@ -1,0 +1,1014 @@
+###############################################################################
+# Copyright (c) 2012, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d341984         2006-01-27 holdeni  Remove unused messages
+# d353701         2006-08-15 matrober Warn application writers they may be leaking JMS resources
+# SIB0121.jms.3   2007-01-29 jamessid Adding exception text for producer-guarantee violations
+# SIB0121.jms.4   2007-02-26 jamessid Remove 'guarantee' prop value, add forwarder flag to ActSpec
+# 431745          2007-04-13 jamessid Information development updates
+# 490428          2008-01-15 susana   Fail more helpfully at an unknown property on decode
+# 499445          2008-02-21 susana   Fix up any 'non-IBM-approved' terms
+# 99986           2013-05-23 Chetan   Proper error message on authentication exception
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.websphere.sib.api.jms.CWSIAJMSMessages.props
+#
+# SIB.api.jms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIA0001=CWSIA0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSIA0000-CWSIA0500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSIA0001-CWSIA0020   com.ibm.ws.sib.api.jms.impl.JmsFactoryFactoryImpl
+#   CWSIA0021-CWSIA0040   com.ibm.ws.sib.api.jms.impl.JmsConnectionImpl
+#   CWSIA0041-CWSIA0060   com.ibm.ws.sib.api.jms.impl.JmsSessionImpl
+#   CWSIA0061-CWSIA0080   com.ibm.ws.sib.api.jms.impl.JmsMsgProducerImpl
+#   CWSIA0081-CWSIA0100   com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl
+#   CWSIA0101-CWSIA0120   com.ibm.ws.sib.api.jms.impl.JmsMessageImpl
+#   CWSIA0121-CWSIA0140   com.ibm.ws.sib.api.jms.impl.JmsObjectMessageImpl
+#   CWSIA0141-CWSIA0160   com.ibm.ws.sib.api.jms.impl.JmsQueueBrowserImpl
+#   CWSIA0161-CWSIA0180   com.ibm.ws.sib.api.jms.impl.JmsStreamMessageImpl
+#   CWSIA0181-CWSIA0200   com.ibm.ws.sib.api.jms.impl.JmsBytesMessageImpl
+#   CWSIA0201-CWSIA0220   com.ibm.ws.sib.api.jms.impl.JmsInternalsFactory
+#   CWSIA0221-CWSIA0240   com.ibm.ws.sib.api.jms.impl.JmsDurableSubscriberImpl
+#   CWSIA0241-CWSIA0260   com.ibm.ws.sib.api.jms.impl.JmsManagedConnectionFactoryImpl
+#   CWSIA0261-CWSIA0280   com.ibm.ws.sib.api.jms.impl.JmsConnectionFactoryImpl
+#   CWSIA0281-CWSIA0300   com.ibm.ws.sib.api.jms.impl.JmsDestinationImpl
+#   CWSIA0301-CWSIA0320   com.ibm.ws.sib.api.jms.impl.ProducerProperties
+#   CWSIA0321-CWSIA0340   com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+#   CWSIA0341-CWSIA0359   com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+#   CWSIA0360-CWSIA0380   com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+#   CWSIA0381-CWSIA0390   com.ibm.ws.sib.api.jms.impl.URIDestinationCreator
+#   CWSIA0391-CWSIA0400   com.ibm.ws.sib.api.jms.impl.MQRequestReplyUtilsImpl & factory
+#   CWSIA0481-CWSIA0500   common messages
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jms/CWSIAJMSMessages.nlsprops
+#COMPONENTPREFIX CWSIA
+#COMPONENTNAMEFOR CWSIA SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# JmsFactoryFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0201 for JmsInternalsFactory
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0008 for JmsFactoryFactoryImpl
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0391 for MQRequestReplyUtils
+UNABLE_TO_CREATE_FACTORY_CWSIA0001=CWSIA0001E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+JAR \ud30c\uc77c {1}\uc774(\uac00) \uc5c6\uc73c\ubbc0\ub85c {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception.
+INITIALIZATION_ERROR_CWSIA0002=CWSIA0002E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+\ud544\uc218 \ud074\ub798\uc2a4\ub97c \uc778\uc2a4\ud134\uc2a4\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+INITIALIZATION_ERROR_CWSIA0002.explanation=CMSG0001
+INITIALIZATION_ERROR_CWSIA0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0003=CWSIA0003E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0003.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0003.useraction=\ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc744 \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the supplied user name
+AUTHENTICATION_FAILED_CWSIA0004=CWSIA0004E: \uc81c\uacf5\ub41c \uc0ac\uc6a9\uc790 \uc774\ub984 {0} \ubc0f \uc5f0\uad00\ub41c \ube44\ubc00\ubc88\ud638 \uc778\uc99d\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+AUTHENTICATION_FAILED_CWSIA0004.explanation=\uc0ac\uc6a9\uc790 \uc774\ub984 \ub610\ub294 \ube44\ubc00\ubc88\ud638\uac00 \uc798\ubabb\ub418\uc5b4 \uc81c\uacf5\ub41c \uc138\ubd80\uc0ac\ud56d\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc778\uc99d\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+AUTHENTICATION_FAILED_CWSIA0004.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc0ac\uc6a9\uc790 \uc774\ub984 \ubc0f \ube44\ubc00\ubc88\ud638\uac00 \uc62c\ubc14\ub974\uace0 \uc2dc\uc2a4\ud15c\uc5d0 \uc815\uc758\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+JCA_RESOURCE_EXC_CWSIA0005=CWSIA0005E: JCA \ub7f0\ud0c0\uc784\uc774 \uc5f0\uacb0\uc744 \ud560\ub2f9\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+JCA_RESOURCE_EXC_CWSIA0005.explanation=JCA \ub7f0\ud0c0\uc784 \ud658\uacbd\uc758 \uc608\uc678\ub85c \uc778\ud574 JMS \uc5f0\uacb0\uc744 \uc791\uc131\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+JCA_RESOURCE_EXC_CWSIA0005.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc608\uc678\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+AUTHORIZATION_FAILED_CWSIA0006=CWSIA0006E: \uc81c\uacf5\ub41c \uc0ac\uc6a9\uc790 \uc774\ub984\uc5d0 \uad8c\ud55c\uc774 \ubd80\uc5ec\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+AUTHORIZATION_FAILED_CWSIA0006.explanation=\uc0ac\uc6a9\uc790 \uc774\ub984\uc774 \uc790\uc6d0\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294 \uad8c\ud55c\uc744 \uac16\uace0 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+AUTHORIZATION_FAILED_CWSIA0006.useraction=\uc0ac\uc6a9\uc790 \uc774\ub984\uc740 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc2dc\uc2a4\ud15c\uc758 \ud544\uc218 \uc790\uc6d0\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uad8c\ud55c\uc774 \ubd80\uc5ec\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0007=CWSIA0007E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0007.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0007.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008=CWSIA0008E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+JAR \ud30c\uc77c {1}\uc774(\uac00) \uc5c6\uc73c\ubbc0\ub85c {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+AUTHENTICATION_FAILED_CWSIA0009=CWSIA0009E: \uc81c\uacf5\ub41c \uc0ac\uc6a9\uc790 \uc774\ub984\uc5d0 \ub300\ud55c \uc778\uc99d\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+AUTHENTICATION_FAILED_CWSIA0009.explanation=\uc0ac\uc6a9\uc790 \uc774\ub984 \ub610\ub294 \ube44\ubc00\ubc88\ud638\uac00 \uc798\ubabb\ub418\uc5b4 \uc81c\uacf5\ub41c \uc138\ubd80\uc0ac\ud56d\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc778\uc99d\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+AUTHENTICATION_FAILED_CWSIA0009.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc0ac\uc6a9\uc790 \uc774\ub984 \ubc0f \ube44\ubc00\ubc88\ud638\uac00 \uc62c\ubc14\ub974\uace0 \uc2dc\uc2a4\ud15c\uc5d0 \uc815\uc758\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+ 
+# -------------------------------------------------------------------------------------------------
+
+# JmsConnectionImpl
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0021=CWSIA0021E: \uc774 \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
+CONNECTION_CLOSED_CWSIA0021.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc5f0\uacb0\uc774 \ub2eb\ud78c \ud6c4 \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+CONNECTION_CLOSED_CWSIA0021.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uae30 \uc804\uc5d0 \uc5f0\uacb0\uc774 \ub2eb\ud600 \uc788\uc9c0 \uc54a\uc740\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+# {1} is the name of the method which received it, and is effectively a unique probe ID for this message.
+# This message is cloned widely within this file.
+EXCEPTION_RECEIVED_CWSIA0022=CWSIA0022E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0022.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0022.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_FIXED_CWSIA0023=CWSIA0023E: \uc774 \uc5f0\uacb0\uc758 \ud074\ub77c\uc774\uc5b8\ud2b8 ID\uac00 \uc77d\uae30 \uc804\uc6a9\uc785\ub2c8\ub2e4.
+CLIENT_ID_FIXED_CWSIA0023.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ud074\ub77c\uc774\uc5b8\ud2b8 ID\ub97c \uc124\uc815\ud558\ub824\uace0 \ud588\uc9c0\ub9cc \uc774 ID\ub294 \uc774\ubbf8 \uc124\uc815\ub418\uc5c8\uac70\ub098 \uad00\ub9ac\uc0c1 \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CLIENT_ID_FIXED_CWSIA0023.useraction=\ud074\ub77c\uc774\uc5b8\ud2b8 ID\ub97c \uc774\uc804\uc5d0 \uc124\uc815\ud558\uac70\ub098 \uad6c\uc131\ud55c \ud6c4\uc5d0\ub294 \ud074\ub77c\uc774\uc5b8\ud2b8 ID\ub97c \uc124\uc815\ud558\uc9c0 \uc54a\uc544\uc57c \ud569\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+JCA_CREATE_SESS_CWSIA0024=CWSIA0024E: JCA \ub7f0\ud0c0\uc784\uc774 \uc138\uc158\uc744 \uc791\uc131\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+JCA_CREATE_SESS_CWSIA0024.explanation=\uc138\uc158\uc744 \uc791\uc131\ud558\uae30 \uc704\ud55c JCA \ub7f0\ud0c0\uc784 \ud658\uacbd\uc5d0 \ub300\ud55c \ud638\ucd9c\ub85c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+JCA_CREATE_SESS_CWSIA0024.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that is not permitted to call in this container.
+# This message is cloned as MGD_ENV_CWSIA0052 and MGD_ENV_CWSIA0084.
+MGD_ENV_CWSIA0025=CWSIA0025E: \uc774 \ucee8\ud14c\uc774\ub108\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\uac00 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+MGD_ENV_CWSIA0025.explanation=\ud604\uc7ac \ucee8\ud14c\uc774\ub108\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+MGD_ENV_CWSIA0025.useraction=\uba54\uc18c\ub4dc \ud638\ucd9c\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0026=CWSIA0026E: \uc774 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c\ub294 {0}\uc774(\uac00) \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_FUNC_CWSIA0026.explanation=\ud604\uc7ac \uc18c\ud504\ud2b8\uc6e8\uc5b4 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uae30\ub2a5 \ub610\ub294 \uc131\ub2a5\uc744 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_FUNC_CWSIA0026.useraction=\uc774 \uc131\ub2a5\uc744 \uc0ac\uc6a9\ud558\ub824\ub294 \ucf54\ub4dc\ub97c \uc81c\uac70\ud558\uac70\ub098, \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uacbd\uc6b0, \uc18c\ud504\ud2b8\uc6e8\uc5b4\uc758 \ucd5c\uc2e0 \ub9b4\ub9ac\uc2a4\ub85c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Sessions that are currently open on the connection.
+# {1} is the line of application code that created the latest session
+MANY_SESSIONS_WARNING_CWSIA0027=CWSIA0027W: \ud604\uc7ac \uc5f0\uacb0\uc5d0 \ub300\ud574 {0}\uac1c \uc138\uc158\uc774 \uc5f4\ub824 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc138\uc158 \uc0ac\uc6a9\uc744 \uc644\ub8cc\ud560 \ub54c \uc138\uc158\uc774 \ub2eb\ud788\uc9c0 \uc54a\uc74c\uc744 \ub098\ud0c0\ub0c5\ub2c8\ub2e4. \uc138\uc158\uc740 {1}\uc5d0\uc11c \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANY_SESSIONS_WARNING_CWSIA0027.explanation=\uc5f0\uacb0\uc5d0\uc11c \uc138\uc158\uc774 \ub108\ubb34 \ub9ce\uc774 \uc5f4\ub824 \uc788\uc73c\uba74 \uc131\ub2a5\uc5d0 \ubd80\uc815\uc801\uc778 \uc601\ud5a5\uc744 \uc904 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+MANY_SESSIONS_WARNING_CWSIA0027.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ub354 \uc774\uc0c1 \ud544\uc694\ud558\uc9c0 \uc54a\uc740 \uc138\uc158\uc744 \ub2eb\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028=CWSIA0028E: \ud074\ub77c\uc774\uc5b8\ud2b8 ID {0}\uacfc(\uc640) \uac19\uc740 \ud074\ub77c\uc774\uc5b8\ud2b8 ID\uac00 \uc774\ubbf8 \uc2e4\ud589\uc911\uc774\uae30 \ub54c\ubb38\uc5d0 \uc5f0\uacb0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc758\ud574 \uc124\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8 ID\ub294 \ud65c\uc131 \uc5f0\uacb0\uc758 \ud074\ub77c\uc774\uc5b8\ud2b8 ID\uc640 \uac19\uc2b5\ub2c8\ub2e4.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.useraction=\uc785\ub825\ud55c \ud074\ub77c\uc774\uc5b8\ud2b8 ID\uac00 \uace0\uc720\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# JmsSessionImpl
+
+# clone of 222
+CONN_CLOSED_CWSIA0041=CWSIA0041E: \uc5f0\uacb0 \ub2eb\ud798
+CONN_CLOSED_CWSIA0041.explanation=\uc774 \uba54\uc18c\ub4dc \uc2e4\ud589 \uc911\uc5d0 \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
+CONN_CLOSED_CWSIA0041.useraction=\uc0c8 \uc5f0\uacb0\uc744 \uc0ac\uc6a9\ud558\uc5ec \ub2e4\uc2dc \ud638\ucd9c\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a nontransacted session.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042=CWSIA0042E: \ucc98\ub9ac\ub418\uc9c0 \uc54a\uc740 \uc138\uc158\uc5d0\uc11c {0} \uba54\uc18c\ub4dc \ud638\ucd9c\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ucc98\ub9ac\ub418\uc9c0 \uc54a\uc740 \uc138\uc158\uc5d0\uc11c \ud638\ucd9c\ud574\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \uc791\ub3d9\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+DSUB_LOCKED_CWSIA0043=CWSIA0043E: \uad6c\ub3c5 \uc7a0\uae40
+DSUB_LOCKED_CWSIA0043.explanation=\ud65c\uc131 \uc774\uc6a9\uc790\uac00 \uc788\uac70\ub098 \ud65c\uc131 \ud2b8\ub79c\uc7ad\uc158\uc5d0\uc11c \uc7a0\uae34 \uba54\uc2dc\uc9c0\ub97c \ubcf4\uc720\ud558\ub294 \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc5d0\uc11c \uad6c\ub3c5 \ud574\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DSUB_LOCKED_CWSIA0043.useraction=\ud65c\uc131 \uc774\uc6a9\uc790\uac00 \uc5c6\ub294\uc9c0 \ud655\uc778\ud55c \ud6c4 \uad6c\ub3c5 \ud574\uc81c \uba54\uc18c\ub4dc\ub97c \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+NOT_AUTH_CWSIA0044=CWSIA0044E: \uad8c\ud55c\uc774 \uc5c6\uae30 \ub54c\ubb38\uc5d0 \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc758 \uad6c\ub3c5 \ud574\uc81c \uc694\uccad\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+NOT_AUTH_CWSIA0044.explanation=\ud604\uc7ac \uc0ac\uc6a9\uc790\uc5d0\uac8c \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc744 \uad6c\ub3c5 \ud574\uc81c\ud560 \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+NOT_AUTH_CWSIA0044.useraction=\ud604\uc7ac \uc0ac\uc6a9\uc790\uc5d0\uac8c \ud544\uc694\ud55c \uc790\uc6d0\uc5d0 \ub300\ud574 \ud544\uc694\ud55c \uc561\uc138\uc2a4 \uad8c\ud55c\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation which is not supported
+UNSUPPORTED_OPERATION_CWSIA0045=CWSIA0045E: \uc774 \uad6c\ud604\uc73c\ub85c \uc120\ud0dd\uc801 JMS \uc870\uc791 {0}\uc774(\uac00) \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_OPERATION_CWSIA0045.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c JMS \uc2a4\ud399\uc5d0\uc11c \uc120\ud0dd\uc801\uc774\uba70 \uc774 \uad6c\ud604\uc73c\ub85c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_OPERATION_CWSIA0045.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc \ud638\ucd9c\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object instance which is not supported.
+FOREIGN_IMPLEMENTATION_CWSIA0046=CWSIA0046E: \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uc678\ubd80 \uad6c\ud604\uc5d0 {0} \ub9e4\uac1c\ubcc0\uc218\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+FOREIGN_IMPLEMENTATION_CWSIA0046.explanation=\uc0ac\uc6a9\uc790 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 JMS \uc81c\uacf5\uc790\uc5d0\uc11c \uad6c\ud604 \ud074\ub798\uc2a4\uc5d0 \uc804\ub2ec\ud588\uc2b5\ub2c8\ub2e4.
+FOREIGN_IMPLEMENTATION_CWSIA0046.useraction=\uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c0\uc6d0\ub418\ub294 \uc624\ube0c\uc81d\ud2b8\ub85c \ub300\uccb4\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object type which was being created.
+MALFORMED_DESCRIPTOR_CWSIA0047=CWSIA0047E: {1} \uc774\ub984\uc774 {0} \uc720\ud615\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uae30\uc220\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+MALFORMED_DESCRIPTOR_CWSIA0047.explanation=createTopic \ud638\ucd9c\uc5d0 \ud050 \uc774\ub984\uc774 \uc81c\uacf5\ub418\uace0 createQueue \ud638\ucd9c\uc5d0 \uc8fc\uc81c \uc774\ub984\uc774 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MALFORMED_DESCRIPTOR_CWSIA0047.useraction=\uc774\ub984\uc744 \uc62c\ubc14\ub978 \uc624\ube0c\uc81d\ud2b8 \uc720\ud615\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0048=CWSIA0048E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0048.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0048.useraction=\ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc744 \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+SESSION_CLOSED_CWSIA0049=CWSIA0049E: \uc774 \uc138\uc158\uc740 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
+SESSION_CLOSED_CWSIA0049.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc138\uc158\uc774 \ub2eb\ud78c \ud6c4\uc5d0 \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+SESSION_CLOSED_CWSIA0049.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uae30 \uc804\uc5d0 \uc138\uc158\uc774 \ub2eb\ud600 \uc788\uc9c0 \uc54a\uc740\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a transacted session
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050=CWSIA0050E: \ucc98\ub9ac\ub41c \uc138\uc158\uc5d0\uc11c {0} \uba54\uc18c\ub4dc \ud638\ucd9c\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \ucc98\ub9ac\ub41c \uc138\uc158\uc5d0\uc11c \ud638\ucd9c\ub418\uc5b4\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \uc791\ub3d9\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0051=CWSIA0051E: \uc774 \uc138\uc158\uacfc \uc5f0\uad00\ub41c \uc774 \uc5f0\uacb0\uc774 \ub2eb\ud600 \uc788\uc2b5\ub2c8\ub2e4.
+CONNECTION_CLOSED_CWSIA0051.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc5f0\uad00\ub41c \uc5f0\uacb0\uc774 \ub2eb\ud78c \uc138\uc158 \uc624\ube0c\uc81d\ud2b8\uc5d0\uc11c \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+CONNECTION_CLOSED_CWSIA0051.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uae30 \uc804\uc5d0 \uc5f0\uacb0\uc774 \ub2eb\ud600 \uc788\uc9c0 \uc54a\uc740\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 64
+# {0} is the destination which does not exist
+DESTINATION_DOES_NOT_EXIST_CWSIA0052=CWSIA0052E: {0} \ub300\uc0c1\uc774 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc815\uc758\ub418\uc9c0 \uc54a\uc740 \ub300\uc0c1\uc73c\ub85c \uc5f0\uacb0\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.useraction=\ud544\uc218 \ub300\uc0c1\uc744 \uc815\uc758\ud558\uace0 \uc870\uc791\uc744 \ubc18\ubcf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0053=CWSIA0053E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0053.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0053.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription in question.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054=CWSIA0054E: \uad6c\ub3c5 \uc774\ub984\uc774 {0}\uc778 \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc774 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc874\uc7ac\ud558\uc9c0 \uc54a\ub294 \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc744 \uad6c\ub3c5 \ud574\uc81c\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uad6c\ub3c5\uc758 \uc874\uc7ac\ub97c \uc608\uc0c1\ud558\uc9c0 \uc54a\ub294 \ud55c(\uc774\uc804\uc5d0 \uad6c\ub3c5\uc744 \uc791\uc131\ud55c \uacbd\uc6b0\uc5d0) \ud544\uc694\ud55c \uc870\uce58\ub294 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Producers that are currently open on the session.
+# {1} is the line of application code that created the latest producer
+MANY_PRODUCERS_WARNING_CWSIA0055=CWSIA0055W: \ud604\uc7ac \uc138\uc158\uc5d0 \ub300\ud574 {0}\uac1c JMS \uc0dd\uc131\uc790\uac00 \uc5f4\ub824 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc0dd\uc131\uc790 \uc0ac\uc6a9\uc744 \uc644\ub8cc\ud560 \ub54c \uc0dd\uc131\uc790\uac00 \ub2eb\ud788\uc9c0 \uc54a\uc74c\uc744 \ub098\ud0c0\ub0c5\ub2c8\ub2e4. \uc0dd\uc131\uc790\ub294 {1}\uc5d0\uc11c \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANY_PRODUCERS_WARNING_CWSIA0055.explanation=\uc0dd\uc131\uc790\uac00 \ub108\ubb34 \ub9ce\uc774 \uc5f4\ub824 \uc788\uc73c\uba74 \uc131\ub2a5\uc5d0 \ubd80\uc815\uc801\uc778 \uc601\ud5a5\uc744 \uc904 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+MANY_PRODUCERS_WARNING_CWSIA0055.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ub354 \uc774\uc0c1 \ud544\uc694\ud558\uc9c0 \uc54a\uc740 \uc0dd\uc131\uc790\ub97c \ub2eb\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056=CWSIA0056E: ConnectFactory\uc758 durableSubscriptionHome \ud2b9\uc131\uc5d0 \ub110 \ub610\ub294 \ube44\uc5b4 \uc788\ub294 \uac12\uc774 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.explanation=\uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc744 \uc0ac\uc6a9\ud558\ub294 \uc5f0\uacb0\uc744 \uc791\uc131\ud558\ub824\uba74 durableSubscriptionHome \ud2b9\uc131\uc744 \uc124\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.useraction=ConnectionFactory durableSubscriptionHome \ud2b9\uc131\uc744 \uad6c\ub3c5\uc774 \ud604\uc9c0\ud654\ub418\uc5b4\uc57c \ud558\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 \uc774\ub984\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# Clone of CWSIA0006, with userID inserted
+# {0} UserID that failed to be autherised
+AUTHORIZATION_FAILED_CWSIA0057=CWSIA0057E: {0}\uc5d0 \uad8c\ud55c\uc774 \ubd80\uc5ec\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+AUTHORIZATION_FAILED_CWSIA0057.explanation=\uc0ac\uc6a9\uc790 \uc774\ub984\uc774 \uc790\uc6d0\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294 \uad8c\ud55c\uc744 \uac16\uace0 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+AUTHORIZATION_FAILED_CWSIA0057.useraction=\ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\uc758 \uc0ac\uc6a9\uc790 \uc774\ub984\uc5d0 \uc2dc\uc2a4\ud15c\uc758 \ud544\uc218 \uc790\uc6d0\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uad8c\ud55c\uc774 \ubd80\uc5ec\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+
+DEST_LOCKED_CWSIA0058=CWSIA0058E: \uc784\uc2dc \uc8fc\uc81c \uc7a0\uae40
+DEST_LOCKED_CWSIA0058.explanation=\uc784\uc2dc \uc8fc\uc81c\ub97c \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ud65c\uc131 \uad6c\ub3c5\uc790\uac00 \uc788\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+DEST_LOCKED_CWSIA0058.useraction=\uc8fc\uc81c\uc5d0 \ub300\ud55c \ubaa8\ub4e0 \uad6c\ub3c5\uc790\ub97c \ub2eb\uace0 \ub2e4\uc2dc \ud638\ucd9c\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Consumers that are currently open on the session.
+# {1} is the line of application code that created the latest consumer
+MANY_CONSUMERS_WARNING_CWSIA0059=CWSIA0059W: \ud604\uc7ac \uc138\uc158\uc5d0 \ub300\ud574 {0}\uac1c JMS \uc774\uc6a9\uc790\uac00 \uc5f4\ub824 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc774\uc6a9\uc790 \uc0ac\uc6a9\uc744 \uc644\ub8cc\ud560 \ub54c \uc774\uc6a9\uc790\uac00 \ub2eb\ud788\uc9c0 \uc54a\uc74c\uc744 \ub098\ud0c0\ub0c5\ub2c8\ub2e4. \uc774\uc6a9\uc790\ub294 {1}\uc5d0\uc11c \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANY_CONSUMERS_WARNING_CWSIA0059.explanation=\uc138\uc158\uc5d0\uc11c \uc774\uc6a9\uc790\uac00 \ub108\ubb34 \ub9ce\uc774 \uc5f4\ub824 \uc788\uc73c\uba74 \uc131\ub2a5\uc5d0 \ubd80\uc815\uc801\uc778 \uc601\ud5a5\uc744 \uc904 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+MANY_CONSUMERS_WARNING_CWSIA0059.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ub354 \uc774\uc0c1 \ud544\uc694\ud558\uc9c0 \uc54a\uc740 \uc774\uc6a9\uc790\ub97c \ub2eb\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+
+# JmsMsgProducerImpl
+# -------------------------------------------------------------------------------------------------
+PRODUCER_CLOSED_CWSIA0061=CWSIA0061E: \uc774 \uba54\uc2dc\uc9c0 \uc0dd\uc131\uc790\uac00 \ub2eb\ud600 \uc788\uc2b5\ub2c8\ub2e4.
+PRODUCER_CLOSED_CWSIA0061.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uba54\uc2dc\uc9c0 \uc0dd\uc131\uc790\uac00 \ub2eb\ud78c \ud6c4 \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+PRODUCER_CLOSED_CWSIA0061.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uae30 \uc804\uc5d0 \uba54\uc2dc\uc9c0 \uc0dd\uc131\uc790\uac00 \ub2eb\ud600 \uc788\uc9c0 \uc54a\uc740\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MP_CREATE_FAILED_CWSIA0062=CWSIA0062E: {0}\uc5d0 \ub300\ud55c MessageProducer \uc791\uc131 \uc2e4\ud328
+MP_CREATE_FAILED_CWSIA0062.explanation=MessageProducer\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uc810\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+MP_CREATE_FAILED_CWSIA0062.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+SEND_FAILED_CWSIA0063=CWSIA0063E: {0}\uc5d0 \uc804\uc1a1 \uc911 \uc2e4\ud328
+SEND_FAILED_CWSIA0063.explanation=\uba54\uc2dc\uc9c0\ub97c \uc804\uc1a1\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uc810\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+SEND_FAILED_CWSIA0063.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# 64 deleted
+
+# -------------------------------------------------------------------------------------------------
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065=CWSIA0065E: \uc774 \uc0dd\uc131\uc790\ub85c\ubd80\ud130 \uc804\uc1a1\ub420 \ub54c \ub300\uc0c1\uc774 \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.explanation=\uc0dd\uc131\uc790\uac00 \ub110 \ub300\uc0c1\uc73c\ub85c \uc791\uc131\ub418\uc5c8\uac70\ub098 \ub300\uc0c1\uc774 \uc804\uc1a1 \uba54\uc18c\ub4dc\uc5d0 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.useraction=\ub300\uc0c1\uc744 \uc9c0\uc815\ud558\ub294 \uc804\uc1a1 \uba54\uc18c\ub4dc\uac00 \uc0ac\uc6a9\ub418\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uac70\ub098 \uc0dd\uc131\uc790 \uc791\uc131 \uc2dc \ub300\uc0c1\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DEST_SPECIFIED_ON_SEND_CWSIA0066=CWSIA0066E: \uc774 \uc0dd\uc131\uc790\ub85c\ubd80\ud130 \uc804\uc1a1\ub420 \ub54c \ub300\uc0c1\uc744 \uc9c0\uc815\ud558\ub294 \uac83\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.explanation=\uc0dd\uc131\uc790\uac00 \uc9c0\uc815\ub41c \ub300\uc0c1\uc73c\ub85c \uc791\uc131\ub418\uc5c8\uc73c\ub098, \uba54\uc2dc\uc9c0\ub97c \uc804\uc1a1\ud560 \ub54c \ub2e4\uc2dc \ub300\uc0c1\uc744 \uc9c0\uc815\ud558\ub294 \uac83\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.useraction=\ub300\uc0c1\uc744 \uc9c0\uc815\ud558\uc9c0 \uc54a\uc740 \uc804\uc1a1 \uba54\uc18c\ub4dc\uac00 \uc0ac\uc6a9\ub418\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uac70\ub098 \uc0dd\uc131\uc790 \uc791\uc131 \uc2dc \ub110 \ub300\uc0c1\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0067=CWSIA0067E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0067.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0067.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0068=CWSIA0068E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0068.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0068.useraction=\ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc744 \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+PRODUCER_AUTH_ERROR_CWSIA0069=CWSIA0069E: \uc0ac\uc6a9\uc790\uc5d0\uac8c \uc774 \uc870\uc791\uc744 \uc218\ud589\ud560 \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc608\uc678\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+PRODUCER_AUTH_ERROR_CWSIA0069.explanation=\ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\uc5d0\ub294 \uc774 \uc870\uc791\uc744 \uc218\ud589\ud558\ub294 \ub370 \ud544\uc694\ud55c \uad8c\ud55c\uc758 \uc138\ubd80\uc0ac\ud56d\uc774 \ub4e4\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+PRODUCER_AUTH_ERROR_CWSIA0069.useraction=\uad00\ub9ac\uc790\uac00 \uad00\ub828 \uc0ac\uc6a9\uc790\uc5d0\uac8c \ud544\uc218 \uad8c\ud55c\uc744 \ubd80\uc5ec\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+
+# -------------------------------------------------------------------------------------------------
+#{0} Delivery delay time
+#{1} Expiry time or time to live
+INVALID_VALUE_CWSIA0070=CWSIA0070E: {0}\uc758 deliverDelay \uac12\uc774 {1}\uc758 timeToLive \uac12\ubcf4\ub2e4 \ud074 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0070.explanation=timeToLive \uac12\uc774 deliveryDelay \uac12\ubcf4\ub2e4 \uc791\uc73c\uba74 \uba54\uc2dc\uc9c0\uac00 \uba3c\uc800 \ub9cc\uae30\ub429\ub2c8\ub2e4. \ub9cc\uae30 \uc2dc \uba54\uc2dc\uc9c0\uac00 \uc0ad\uc81c\ub429\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0070.useraction=deliverDelay \uac12\uc744 timeToLive \uac12\ubcf4\ub2e4 \uc791\uac8c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+
+# JmsMsgConsumerImpl
+# -------------------------------------------------------------------------------------------------
+CONSUMER_CLOSED_CWSIA0081=CWSIA0081E: \uc774 \uba54\uc2dc\uc9c0 \uc774\uc6a9\uc790\uac00 \ub2eb\ud600 \uc788\uc2b5\ub2c8\ub2e4.
+CONSUMER_CLOSED_CWSIA0081.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uba54\uc2dc\uc9c0 \uc774\uc6a9\uc790\uac00 \ub2eb\ud78c \ud6c4 \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+CONSUMER_CLOSED_CWSIA0081.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uae30 \uc804\uc5d0 \uba54\uc2dc\uc9c0 \uc774\uc6a9\uc790\uac00 \ub2eb\ud600 \uc788\uc9c0 \uc54a\uc740\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# conflict between asynchronous message delivery and a synchronous call
+# {0} the call which triggered the exception
+ASYNC_IN_PROGRESS_CWSIA0082=CWSIA0082E: \uc138\uc158\uc774 \ube44\ub3d9\uae30\uc801\uc73c\ub85c \uc0ac\uc6a9\ub418\uace0 \uc788\uc744 \ub54c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\ub294 \ub3d9\uae30 \uba54\uc18c\ub4dc \ud638\ucd9c:  {0}
+ASYNC_IN_PROGRESS_CWSIA0082.explanation=\ube44\ub3d9\uae30 \uba54\uc2dc\uc9c0 \uc804\ub2ec\uc774 \uc2e4\ud589 \uc911\uc77c \ub54c JMS \uc2a4\ud399\uc5d0\uc11c \ub3d9\uae30 \uba54\uc18c\ub4dc \uc138\uc158\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ASYNC_IN_PROGRESS_CWSIA0082.useraction=\ub3d9\uae30 \uba54\uc18c\ub4dc\uc640 \ube44\ub3d9\uae30 \uc804\ub2ec\uc744 \ubaa8\ub450 \ub3d9\uc2dc\uc5d0 \uc0ac\uc6a9\ud558\ub824\uba74 \ubcc4\ub3c4 \uc138\uc158\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SELECTOR_CWSIA0083=CWSIA0083E: \uc120\ud0dd\uae30\uac00 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_SELECTOR_CWSIA0083.explanation=\uc798\ubabb\ub41c \uba54\uc2dc\uc9c0 \uc120\ud0dd\uae30\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+INVALID_SELECTOR_CWSIA0083.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of MGD_ENV_CWSIA0025.
+MGD_ENV_CWSIA0084=CWSIA0084E: \uc774 \ucee8\ud14c\uc774\ub108\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\uac00 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+MGD_ENV_CWSIA0084.explanation=\ud604\uc7ac \ucee8\ud14c\uc774\ub108\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+MGD_ENV_CWSIA0084.useraction=\uba54\uc18c\ub4dc \ud638\ucd9c\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0085=CWSIA0085E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0085.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0085.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MC_CREATE_FAILED_CWSIA0086=CWSIA0086E: {0}\uc5d0 \ub300\ud55c MessageConsumer \uc791\uc131 \uc2e4\ud328
+MC_CREATE_FAILED_CWSIA0086.explanation=MessageConsumer\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+MC_CREATE_FAILED_CWSIA0086.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 87 deleted, replaced
+
+# This is used as a WARNING message if a receive times out whilst the connection is stopped.
+# {0} is the class/line number of method which called the message consumer (finger of blame).
+MC_CONN_STOPPED_CWSIA0087=CWSIA0087W: \uc5f0\uacb0\uc774 \uc911\uc9c0\ub41c \ub3d9\uc548 \uba54\uc2dc\uc9c0\ub97c \uc774\uc6a9\ud558\ub824\uace0 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c \uba54\uc18c\ub4dc\uc5d0\uc11c \uba54\uc2dc\uc9c0 \uc774\uc6a9\uc790\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4. {0}.
+MC_CONN_STOPPED_CWSIA0087.explanation=\uc911\uc9c0\ub41c \uc5f0\uacb0\uc744 \ud1b5\ud574 \uba54\uc2dc\uc9c0 \uc774\uc6a9\uc790\uc5d0\uac8c \uba54\uc2dc\uc9c0\ub97c \uc804\ub2ec\ud560 \uc218\ub294 \uc5c6\uc2b5\ub2c8\ub2e4. \uc911\uc9c0\ub41c \uc5f0\uacb0\uc5d0\uc11c \uba54\uc2dc\uc9c0\ub97c \uc774\uc6a9\ud558\ub824\uace0 \ud558\ub294 \uacbd\uc6b0, \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub85c\uc9c1\uc5d0\uc11c \uc624\ub958\ub97c \ud45c\uc2dc\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+MC_CONN_STOPPED_CWSIA0087.useraction=\uc911\uc9c0\ub41c \uc5f0\uacb0\uc5d0\uc11c \uc774\uc6a9\ud558\ub294 \uac83\uc774 \uc608\uc0c1\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub3d9\uc791\uc778\uc9c0 \uc5ec\ubd80\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uadf8\ub807\uc9c0 \uc54a\uc740 \uacbd\uc6b0, \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc124\uacc4\ub97c \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 88 deleted
+
+# -------------------------------------------------------------------------------------------------
+# RuntimeException thrown by onMessage
+ML_THREW_EXCPTN_CWSIA0089=CWSIA0089E: MessageListener.onMessage\uc5d0 \uc758\ud574 RuntimeException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ML_THREW_EXCPTN_CWSIA0089.explanation=\uad6c\ub3c5\ub41c MessageListener\ub97c \uc0ac\uc6a9\ud558\ub294 MessageConsumer\uac00 onMessage \uba54\uc18c\ub4dc\uc5d0\uc11c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+ML_THREW_EXCPTN_CWSIA0089.useraction=\uc608\uc678 \ubc1c\uc0dd\uc744 \ub9c9\uc73c\ub824\uba74 onMessage \uba54\uc18c\ub4dc\ub97c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+CONSUMER_AUTH_ERROR_CWSIA0090=CWSIA0090E: \uc0ac\uc6a9\uc790\uc5d0\uac8c \uc774 \uc870\uc791\uc744 \uc218\ud589\ud560 \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc608\uc678\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+CONSUMER_AUTH_ERROR_CWSIA0090.explanation=\ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub294 \uc774 \uc870\uc791\uc744 \uc218\ud589\ud558\ub294 \ub370 \ud544\uc694\ud55c \uad8c\ud55c\uc744 \uc124\uba85\ud569\ub2c8\ub2e4.
+CONSUMER_AUTH_ERROR_CWSIA0090.useraction=\uad00\ub9ac\uc790\uac00 \uad00\ub828 \uc0ac\uc6a9\uc790\uc5d0\uac8c \ud544\uc218 \uad8c\ud55c\uc744 \ubd80\uc5ec\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+
+# JmsMessageImpl
+
+# 101 deleted
+
+# -------------------------------------------------------------------------------------------------
+# Used when an inappropriate type of object is given to setObjectProperty
+# {0} is the class of object.
+# {1} is the name of the property
+INVALID_OBJECT_TYPE_CWSIA0102=CWSIA0102E: {0} \uc720\ud615\uc744 {1} \uc624\ube0c\uc81d\ud2b8 \ud2b9\uc131\uc73c\ub85c \uc0ac\uc6a9\ud558\ub294 \uac83\uc740 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_OBJECT_TYPE_CWSIA0102.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c JMS \uc2a4\ud399\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\ub294 \uc624\ube0c\uc81d\ud2b8 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc624\ube0c\uc81d\ud2b8 \ud2b9\uc131\uc744 \uc124\uc815\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+INVALID_OBJECT_TYPE_CWSIA0102.useraction=\uae30\ubcf8 \ub7a9\ud37c \ud074\ub798\uc2a4 \ub610\ub294 \ubb38\uc790\uc5f4 \uc624\ube0c\uc81d\ud2b8 \uc911 \ud558\ub098\uc778 \ud5c8\uc6a9\ub418\ub294 \uc624\ube0c\uc81d\ud2b8 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0103=CWSIA0103E: \uba54\uc2dc\uc9c0\ub97c \uc218\uc2e0\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+INBOUND_MSG_ERROR_CWSIA0103.explanation=\uba54\uc2dc\uc9c0\ub97c \uc218\uc2e0\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc870\uc791\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+INBOUND_MSG_ERROR_CWSIA0103.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the item which is being converted
+# {1} is the actual type of the item
+# {2} is the type that the user has requested it be converted to.
+INVALID_TYPE_CONVERSION_CWSIA0104=CWSIA0104E: {0} \ud56d\ubaa9\uc744 {1} \uc720\ud615\uc5d0\uc11c {2} \uc720\ud615\uc73c\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_TYPE_CONVERSION_CWSIA0104.explanation=JMS \uc2a4\ud399\uc740 \uc9c0\uc815\ub41c \ub450 \ub370\uc774\ud130 \uc720\ud615 \uac04\uc758 \ubcc0\ud658\uc744 \ud5c8\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_TYPE_CONVERSION_CWSIA0104.useraction=\ud5c8\uc6a9\ub41c \ubcc0\ud658 \uc911 \ud558\ub098\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc774\ub984 \uc9c0\uc815\ub41c \ud56d\ubaa9\uc744 \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+FIELD_NOT_SET_CWSIA0105=CWSIA0105E: {0} \uba54\uc2dc\uc9c0 \ud544\ub4dc\uac00 \uc124\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+FIELD_NOT_SET_CWSIA0105.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc124\uc815\ub418\uc9c0 \uc54a\uc740 \ud544\ub4dc\uac12\uc744 \uac80\uc0c9\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+FIELD_NOT_SET_CWSIA0105.useraction=\uac80\uc0c9\ud558\uae30 \uc804\uc5d0 \ud544\ub4dc\uac12\uc744 \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+INVALID_FIELD_NAME_CWSIA0106=CWSIA0106E: \ub110 \ub610\ub294 \ube44\uc5b4 \uc788\ub294 \ubb38\uc790\uc5f4 \ud544\ub4dc \uc774\ub984\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_FIELD_NAME_CWSIA0106.explanation=\uc0ac\uc6a9\uc790 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc774\ub984(\uc608: \ub110 \ub610\ub294 \ube44\uc5b4 \uc788\ub294 \ubb38\uc790\uc5f4)\uc744 \uc0ac\uc6a9\ud558\uc5ec \ud544\ub4dc\ub97c \uc124\uc815\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+INVALID_FIELD_NAME_CWSIA0106.useraction=\uc720\ud6a8\ud55c \ud544\ub4dc \uc774\ub984\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_BODY_CWSIA0107=CWSIA0107E: \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc774 \uc77d\uae30 \uc804\uc6a9\uc774\uae30 \ub54c\ubb38\uc5d0 \uc2dc\uc2a4\ud15c\uc774 \uba54\uc2dc\uc9c0\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.explanation=\uc0ac\uc6a9\uc790 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ud604\uc7ac \uc77d\uae30 \uc804\uc6a9\uc778 \uba54\uc2dc\uc9c0\uc758 \ubcf8\ubb38\uc744 \ubcc0\uacbd\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud504\ub85c\uadf8\ub7a8\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \ub3d9\uc791\uc744 \uc81c\uac70\ud558\uac70\ub098 clearBody \uba54\uc18c\ub4dc\ub97c \uba3c\uc800 \ud638\ucd9c\ud558\uc5ec \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc744 \uc4f0\uae30 \uac00\ub2a5 \uc0c1\ud0dc\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108=CWSIA0108E: \uba54\uc2dc\uc9c0 \ud2b9\uc131\uc774 \uc77d\uae30 \uc804\uc6a9\uc774\uae30 \ub54c\ubb38\uc5d0 \uc2dc\uc2a4\ud15c\uc774 \uba54\uc2dc\uc9c0\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.explanation=\uc0ac\uc6a9\uc790 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ud604\uc7ac \uc77d\uae30 \uc804\uc6a9\uc778 \uba54\uc2dc\uc9c0\uc758 \ud2b9\uc131\uc744 \ubcc0\uacbd\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud504\ub85c\uadf8\ub7a8\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \ub3d9\uc791\uc744 \uc81c\uac70\ud558\uac70\ub098 clearProperties \uba54\uc18c\ub4dc\ub97c \uba3c\uc800 \ud638\ucd9c\ud558\uc5ec \uba54\uc2dc\uc9c0 \ud2b9\uc131\uc744 \uc4f0\uae30 \uac00\ub2a5 \uc0c1\ud0dc\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109=CWSIA0109E: \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc774 \uc4f0\uae30 \uc804\uc6a9\uc774\ubbc0\ub85c \uba54\uc2dc\uc9c0\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.explanation=\uc0ac\uc6a9\uc790 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc4f0\uae30 \uc804\uc6a9 \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc744 \uc77d\uc73c\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \uc791\ub3d9\uc744 \uc81c\uac70\ud558\uac70\ub098 reset \uba54\uc18c\ub4dc\ub97c \uba3c\uc800 \ud638\ucd9c\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the action which was invalid
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110=CWSIA0110E: \uc218\uc2e0 \ud638\ucd9c\uc744 \uc0ac\uc6a9\ud558\uc5ec \ud655\ubcf4\ud55c \uba54\uc2dc\uc9c0 \ub610\ub294 MessageListener\uc5d0 \ud45c\uc2dc\ub41c \uba54\uc2dc\uc9c0\uc5d0\uc11c\ub294 {0} \uc870\uc791\ub9cc \ud638\ucd9c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uad6c\uc131\ub418\uc5c8\uac70\ub098 \ud050 \ube0c\ub77c\uc6b0\uc800\ub97c \uc0ac\uc6a9\ud558\uc5ec \ud655\ubcf4\ub418\uc5c8\uc73c\ubbc0\ub85c \uc9c0\uc815\ub41c \uc870\uc791\uc744 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc218\uc2e0 \ud638\ucd9c\uc744 \uc0ac\uc6a9\ud558\uc5ec \ud655\ubcf4\ud55c \uba54\uc2dc\uc9c0 \ub610\ub294 MessageListener\uc5d0 \ud45c\uc2dc\ub41c \uba54\uc2dc\uc9c0\uc5d0\uc11c \uc774 \uc870\uc791\ub9cc \ud638\ucd9c\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+MSG_CREATE_FAILED_CWSIA0111=CWSIA0111E: \uba54\uc2dc\uc9c0\ub97c \uc791\uc131\ud558\ub824\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc608\uc678\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+MSG_CREATE_FAILED_CWSIA0111.explanation=\uba54\uc2dc\uc9c0\uc758 \ub2e4\ub978 \ud30c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uc5ec JMS\uc5d0\uc11c \uba54\uc2dc\uc9c0\ub97c \uc778\uc2a4\ud134\uc2a4\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MSG_CREATE_FAILED_CWSIA0111.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+INVALID_PROPNAME_CWSIA0112=CWSIA0112E: {0} \ud2b9\uc131 \uc774\ub984\uc774 \uc720\ud6a8\ud55c Java ID\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+INVALID_PROPNAME_CWSIA0112.explanation=\uc81c\uacf5\ub41c \ud2b9\uc131 \uc774\ub984\uc774 JMS \uc2a4\ud399\uc5d0 \uc124\uba85\ub418\uc5b4 \uc788\ub294 \ud615\uc2dd\uc744 \uc900\uc218\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_PROPNAME_CWSIA0112.useraction=\ud2b9\uc131 \uc774\ub984\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+RESERVED_PROPNAME_CWSIA0113=CWSIA0113E: {0} \ud2b9\uc131 \uc774\ub984\uc774 \uc608\uc57d\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+RESERVED_PROPNAME_CWSIA0113.explanation=\uc81c\uacf5\ub41c \ud2b9\uc131 \uc774\ub984\uc774 JMS \uc811\ub450\ubd80\ub85c \uc2dc\uc791\ub418\ub098 \uc9c0\uc6d0\ub418\ub294 \uc124\uc815 \uac00\ub2a5 \ud2b9\uc131 \uc911 \ud558\ub098\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+RESERVED_PROPNAME_CWSIA0113.useraction=\ud2b9\uc131 \uc774\ub984\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+# {1} is the type of the variable eg. Integer.class
+JMS_IBM_INVALID_TYPE_CWSIA0114=CWSIA0114E: {0} \ud2b9\uc131\uc774 {2}\uc774(\uac00) \uc544\ub2c8\ub77c {1} \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc124\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+JMS_IBM_INVALID_TYPE_CWSIA0114.explanation=JMS_IBM \ud2b9\uc131\uc740 \ud2b9\uc815 \ubcc0\uc218 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc124\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+JMS_IBM_INVALID_TYPE_CWSIA0114.useraction=\uc774 JMS_IBM \ud2b9\uc131\uc744 \uc124\uc815\ud560 \ub54c \ud544\uc218 \ubcc0\uc218 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0115=CWSIA0115E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}
+EXCEPTION_RECEIVED_CWSIA0115.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0115.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0116=CWSIA0116E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0116.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0116.useraction=\ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc744 \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+STREAM_MESSAGE_CWSIA0117=CWSIA0117E: \uba54\uc2dc\uc9c0\uac00 StreamMessage\uc785\ub2c8\ub2e4. 
+STREAM_MESSAGE_CWSIA0117.explanation=\ubc1b\uc740 \uba54\uc2dc\uc9c0\uac00 StreamMessage \uc720\ud615\uc785\ub2c8\ub2e4.
+STREAM_MESSAGE_CWSIA0117.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+# {0} The type to which the message body will be assigned
+INVALID_CLASS_TYPE_CWSIA0118=CWSIA0118E: \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc740 \uc9c0\uc815\ud55c \uc720\ud615 {0}\uc5d0 \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+INVALID_CLASS_TYPE_CWSIA0118.explanation= \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc774 \uc9c0\uc815\ub41c \uba54\uc2dc\uc9c0 \uc720\ud615\uacfc \ud638\ud658\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_CLASS_TYPE_CWSIA0118.useraction=\uc62c\ubc14\ub978 \uba54\uc2dc\uc9c0 \uc720\ud615\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+NO_MSG_BODY_CWSIA0119=CWSIA0119E: \uba54\uc2dc\uc9c0\uc5d0 \ubcf8\ubb38\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+NO_MSG_BODY_CWSIA0119.explanation= \ubc1b\uc740 \uba54\uc2dc\uc9c0\uc5d0 \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+NO_MSG_BODY_CWSIA0119.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+GET_MSG_BODY_FAILED_CWSIA0120=CWSIA0120E: \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc744 \uac80\uc0c9\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+GET_MSG_BODY_FAILED_CWSIA0120.explanation= \ub0b4\ubd80 \uc624\ub958\ub85c \uba54\uc2dc\uc9c0 \ubcf8\ubb38\uc744 \uac80\uc0c9\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+GET_MSG_BODY_FAILED_CWSIA0120.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+
+# JmsObjectMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+SERIALIZATION_EXCEPTION_CWSIA0121=CWSIA0121E: \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+SERIALIZATION_EXCEPTION_CWSIA0121.explanation=\uc624\ub958\ub85c \uc778\ud574 \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SERIALIZATION_EXCEPTION_CWSIA0121.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+DESERIALIZATION_EXCEPTION_CWSIA0122=CWSIA0122E: \uba54\uc2dc\uc9c0\ub97c \uc9c1\ub82c\ud654 \ud574\uc81c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}.
+DESERIALIZATION_EXCEPTION_CWSIA0122.explanation=\ud45c\uc2dc\ub41c \uc608\uc678\ub85c \uc778\ud574 \uba54\uc2dc\uc9c0\ub97c \uc9c1\ub82c\ud654 \ud574\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DESERIALIZATION_EXCEPTION_CWSIA0122.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# JmsQueueBrowserImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+NO_MESSAGE_AVAILABLE_CWSIA0141=CWSIA0141E: \ud050 \ube0c\ub77c\uc6b0\uc800\uc5d0 \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uba54\uc2dc\uc9c0\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+NO_MESSAGE_AVAILABLE_CWSIA0141.explanation=\uc0ac\uc6a9 \uac00\ub2a5\ud55c \uba54\uc2dc\uc9c0\uac00 \uc5c6\uc744 \ub54c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ud050 \ube0c\ub77c\uc6b0\uc800\uc5d0\uc11c \uba54\uc2dc\uc9c0\ub97c \uc694\uccad\ud588\uc2b5\ub2c8\ub2e4.
+NO_MESSAGE_AVAILABLE_CWSIA0141.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc218\uc815\ud558\uc5ec \uc774 \uc624\ub958\ub97c \ucc98\ub9ac\ud558\uac70\ub098 hasMoreElements \uba54\uc18c\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \ucd94\uac00 \uba54\uc2dc\uc9c0\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\ub294\uc9c0 \uc5ec\ubd80\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_CLOSED_CWSIA0142=CWSIA0142E: \uc774 \ud050 \ube0c\ub77c\uc6b0\uc800\uac00 \ub2eb\ud600 \uc788\uc2b5\ub2c8\ub2e4.
+BROWSER_CLOSED_CWSIA0142.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \ud050 \ube0c\ub77c\uc6b0\uc800\uac00 \ub2eb\ud78c \ud6c4\uc5d0 \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548\ub418\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+BROWSER_CLOSED_CWSIA0142.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uae30 \uc804\uc5d0 \ud050 \ube0c\ub77c\uc6b0\uc800\uac00 \ub2eb\ud600 \uc788\uc9c0 \uc54a\uc740\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_CREATE_BSESSION_CWSIA0143=CWSIA0143E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.explanation=createBrowserSession \ud638\ucd9c\uc774 \uc720\ud6a8\ud55c BrowserSession \uc624\ube0c\uc81d\ud2b8 \ub300\uc2e0\uc5d0 \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.useraction=CMSG0001
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0144=CWSIA0144E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0144.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0144.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+BROWSE_FAILED_CWSIA0145=CWSIA0145E: {0} \ubaa9\uc801\uc9c0\ub97c \ucc3e\uc544\ubcfc \uc218 \uc5c6\uc74c
+BROWSE_FAILED_CWSIA0145.explanation=\ub300\uc0c1\uc744 \ucc3e\uc544\ubcf4\ub294 \uc911\uc5d0 \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BROWSE_FAILED_CWSIA0145.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 146 deleted
+
+# -------------------------------------------------------------------------------------------------
+# clone of 83
+INVALID_SELECTOR_CWSIA0147=CWSIA0147E: \uc120\ud0dd\uae30\uac00 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_SELECTOR_CWSIA0147.explanation=\uc798\ubabb\ub41c \uba54\uc2dc\uc9c0 \uc120\ud0dd\uae30\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+INVALID_SELECTOR_CWSIA0147.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 103
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0148=CWSIA0148E: \uba54\uc2dc\uc9c0\ub97c \uc218\uc2e0\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+INBOUND_MSG_ERROR_CWSIA0148.explanation=\uba54\uc2dc\uc9c0\ub97c \uc218\uc2e0\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc870\uc791\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+INBOUND_MSG_ERROR_CWSIA0148.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+BROWSER_AUTH_ERROR_CWSIA0149=CWSIA0149E: \uc0ac\uc6a9\uc790\uc5d0\uac8c \uc774 \uc870\uc791\uc744 \uc218\ud589\ud560 \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc608\uc678\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+BROWSER_AUTH_ERROR_CWSIA0149.explanation=\ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\uc5d0\ub294 \uc774 \uc870\uc791\uc744 \uc218\ud589\ud558\ub294 \ub370 \ud544\uc694\ud55c \uad8c\ud55c\uc758 \uc138\ubd80\uc0ac\ud56d\uc774 \ub4e4\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+BROWSER_AUTH_ERROR_CWSIA0149.useraction=\uad00\ub9ac\uc790\uac00 \uad00\ub828 \uc0ac\uc6a9\uc790\uc5d0\uac8c \ud544\uc218 \uad8c\ud55c\uc744 \ubd80\uc5ec\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+
+
+# JmsStreamMessageImpl
+# -------------------------------------------------------------------------------------------------
+NULL_BUFFER_CWSIA0161=CWSIA0161E: \uc77d\uae30 \ubc84\ud37c\uac00 \ub110\uc785\ub2c8\ub2e4.
+NULL_BUFFER_CWSIA0161.explanation=\ub110 \ucc38\uc870\uac00 StreamMessage.readBytes \uba54\uc18c\ub4dc\ub85c \uc804\ub2ec\ub418\ubbc0\ub85c \ub9ac\ud134\ud560 \uc218 \uc788\ub294 \ub370\uc774\ud130\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+NULL_BUFFER_CWSIA0161.useraction=\uc801\ub2f9\ud558\uac8c \ud06c\uae30 \uc870\uc815\ub41c \ubc84\ud37c\ub97c readBytes \uba54\uc18c\ub4dc\ub85c \uc804\ub2ec\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+END_STREAM_CWSIA0162=CWSIA0162I: \uba54\uc2dc\uc9c0 \uc2a4\ud2b8\ub9bc\uc758 \ub05d\uc5d0 \ub3c4\ub2ec\ud588\uc2b5\ub2c8\ub2e4.
+END_STREAM_CWSIA0162.explanation=\uba54\uc2dc\uc9c0 \ub0b4\uc6a9\uc758 \ub05d\uc5d0 \ub3c4\ub2ec\ud588\uc2b5\ub2c8\ub2e4. \uc77d\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc608\uc0c1\ud558\ub294 \ub370\uc774\ud130 \uc591\uc744 \uc54c \uc218 \uc5c6\ub294 \uacbd\uc6b0, \uc815\uc0c1\uc785\ub2c8\ub2e4.
+END_STREAM_CWSIA0162.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+INCOMPLETE_BYTE_ARRAY_CWSIA0163=CWSIA0163E: StreamMessage \ubc14\uc774\ud2b8 \ubc30\uc5f4\uc744 \ubd88\uc644\uc804\ud558\uac8c \uc77d\uc5c8\uc2b5\ub2c8\ub2e4.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.explanation=\ud604\uc7ac \ubc14\uc774\ud2b8 \ubc30\uc5f4 \ud544\ub4dc\ub97c \uc644\uc804\ud788 \uc77d\uae30 \uc804\uc5d0 StreamMessage\uc5d0\uc11c \ub2e4\uc74c \ud544\ub4dc\ub97c \uc77d\uc73c\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.useraction=\uc0ac\uc6a9\uc790 \ucf54\ub4dc\uac00 \ub2e4\uc74c \ud544\ub4dc\ub97c \uc77d\uae30 \uc804\uc5d0 \ubc14\uc774\ud2b8 \ubc30\uc5f4\uc744 \uc644\uc804\ud788 \uc77d\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+NULL_CHAR_CWSIA0164=CWSIA0164E: \ubb38\uc790\ub85c \ub110\uc744 \ub9ac\ud134\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+NULL_CHAR_CWSIA0164.explanation=readChar \uba54\uc18c\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \ub110\uc744 \ud3ec\ud568\ud558\ub294 StreamMessage \ud544\ub4dc\ub97c \uc77d\uc73c\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+NULL_CHAR_CWSIA0164.useraction=readChar \uba54\uc18c\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \ub110\uc744 \uc77d\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.
+
+# JmsBytesMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding string
+BAD_ENCODING_CWSIA0181=CWSIA0181E: \uc778\ucf54\ub529\uc774 {0} \ubb38\uc790\uc5f4\uc5d0 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+BAD_ENCODING_CWSIA0181.explanation=\uc81c\uacf5\ub41c \uac12\uc5d0 \uc54c\ub824\uc9c4 \uc778\ucf54\ub529\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+BAD_ENCODING_CWSIA0181.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc815\uc758\ub41c \uc778\ucf54\ub529 \ubaa9\ub85d\uc758 \uac12\uc744 \uc81c\uacf5\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DATA_STREAM_PROBLEM_CWSIA0182=CWSIA0182E: \ub370\uc774\ud130 \uc2a4\ud2b8\ub9bc\uc5d0 \uc4f0\ub294 \uc911\uc5d0 \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DATA_STREAM_PROBLEM_CWSIA0182.explanation=float \ubc0f double \uac12\uc758 \ud615\uc2dd \ubcc0\ud658\uc5d0 \uc0ac\uc6a9\ub41c \ub370\uc774\ud130 \uc2a4\ud2b8\ub9bc\uc5d0 \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DATA_STREAM_PROBLEM_CWSIA0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+END_BYTESMESSAGE_CWSIA0183=CWSIA0183I: \uba54\uc2dc\uc9c0 \ub05d\uc744 \uc9c0\ub098\uc11c \uc77d\uc73c\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+END_BYTESMESSAGE_CWSIA0183.explanation=\uba54\uc2dc\uc9c0 \ub05d\uc744 \uc9c0\ub098\uc11c \uc77d\uc73c\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 JMS 1.0.2 \uc2a4\ud399\uc744 \uc0ac\uc6a9\ud558\uc5ec \uac00\ubcc0 \uae38\uc774 \ub370\uc774\ud130\ub97c \uc77d\uae30 \uc704\ud574 \ucf54\ub4dc\ud654\ub41c \uacbd\uc6b0, \uc774\ub294 \ud45c\uc900 \uc870\uac74\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+END_BYTESMESSAGE_CWSIA0183.useraction=\ud544\uc694\ud55c \uacbd\uc6b0, getBodyLength \uba54\uc18c\ub4dc\ub97c \uc0ac\uc6a9\ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ub2e4\uc2dc \ucf54\ub4dc\ud654\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+UTF8_CONV_CWSIA0184=CWSIA0184E: UTF-8 \ubcc0\ud658\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+UTF8_CONV_CWSIA0184.explanation=UTF-8 \ubb38\uc790\uc5f4\uc744 \uc77d\uac70\ub098 \uc4f0\ub294 \uc911\uc5d0 \ubb38\uc81c\uc810\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub300\ubd80\ubd84\uc758 \uacf5\ud1b5\uc801\uc778 \ubb38\uc81c\uc810\uc740 65535\uc790\ubcf4\ub2e4 \uae34 \ubb38\uc790\uc5f4\uc744 \uc4f0\ub824\ub294 \uac83\uc785\ub2c8\ub2e4.
+UTF8_CONV_CWSIA0184.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsBytesMessageImpl - clones CWSIA0188 and CWSIA0189 created
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0185=CWSIA0185E: {0} \uc720\ud615\uc758 \uc798\ubabb\ub41c \uc624\ube0c\uc81d\ud2b8\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_OBJECT_CWSIA0185.explanation=\uae30\ubcf8 \ub7a9\ud37c \uc720\ud615\uc774 \uc544\ub2cc \uc624\ube0c\uc81d\ud2b8 \ub9e4\uac1c\ubcc0\uc218\uac00 writeObject \uba54\uc18c\ub4dc\uc5d0 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_OBJECT_CWSIA0185.useraction=\ud5c8\uc6a9\ub41c \uc720\ud615\uc758 \uc624\ube0c\uc81d\ud2b8\ub9cc\uc774 writeObject \uba54\uc18c\ub4dc\uc5d0 \ub9e4\uac1c\ubcc0\uc218\ub85c \uc804\ub2ec\ub418\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+WRITE_PROBLEM_CWSIA0186=CWSIA0186E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+\uba54\uc2dc\uc9c0\uc5d0 \uc4f0\ub294 \ub370 \ubb38\uc81c\uac00 \uc788\uc2b5\ub2c8\ub2e4.
+WRITE_PROBLEM_CWSIA0186.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ud56d\ubaa9\uc744 \uc4f0\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+WRITE_PROBLEM_CWSIA0186.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#ENCS_TOSTR_CWSIA0187=Integer encoding: {0}, floating point encoding {1}
+#ENCS_TOSTR_CWSIA0187.explanation=This message is for informational purposes only.
+#ENCS_TOSTR_CWSIA0187.useraction=No action required.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsMapMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0188=CWSIA0188E: {0} \uc720\ud615\uc758 \uc798\ubabb\ub41c \uc624\ube0c\uc81d\ud2b8\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_OBJECT_CWSIA0188.explanation=\uae30\ubcf8 \ub7a9\ud37c \uc720\ud615\uc774 \uc544\ub2cc \uc624\ube0c\uc81d\ud2b8 \ub9e4\uac1c\ubcc0\uc218\uac00 writeObject \uba54\uc18c\ub4dc\uc5d0 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_OBJECT_CWSIA0188.useraction=\ud5c8\uc6a9\ub41c \uc720\ud615\uc758 \uc624\ube0c\uc81d\ud2b8\ub9cc\uc774 writeObject \uba54\uc18c\ub4dc\uc5d0 \ub9e4\uac1c\ubcc0\uc218\ub85c \uc804\ub2ec\ub418\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsStreamMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0189=CWSIA0189E: {0} \uc720\ud615\uc758 \uc798\ubabb\ub41c \uc624\ube0c\uc81d\ud2b8\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_OBJECT_CWSIA0189.explanation=\uae30\ubcf8 \ub7a9\ud37c \uc720\ud615\uc774 \uc544\ub2cc \uc624\ube0c\uc81d\ud2b8 \ub9e4\uac1c\ubcc0\uc218\uac00 writeObject \uba54\uc18c\ub4dc\uc5d0 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_OBJECT_CWSIA0189.useraction=\ud5c8\uc6a9\ub41c \uc720\ud615\uc758 \uc624\ube0c\uc81d\ud2b8\ub9cc\uc774 writeObject \uba54\uc18c\ub4dc\uc5d0 \ub9e4\uac1c\ubcc0\uc218\ub85c \uc804\ub2ec\ub418\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0190=CWSIA0190E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}
+EXCEPTION_RECEIVED_CWSIA0190.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0190.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+# com.ibm.ws.sib.api.jms.JmsInternalsFactory
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201=CWSIA0201E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+JAR \ud30c\uc77c {1}\uc774(\uac00) \uc5c6\uc73c\ubbc0\ub85c {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.useraction=CMSG0002
+
+
+# com.ibm.websphere.sib.api.jms.JmsDurableSubscriberImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0221=CWSIA0221E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}.
+EXCEPTION_RECEIVED_CWSIA0221.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0221.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+CONN_CLOSED_CWSIA0222=CWSIA0222E: \uc5f0\uacb0 \ub2eb\ud798
+CONN_CLOSED_CWSIA0222.explanation=\uc774 \uba54\uc18c\ub4dc \uc2e4\ud589 \uc911\uc5d0 \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
+CONN_CLOSED_CWSIA0222.useraction=\uc0c8 \uc5f0\uacb0\uc744 \uc0ac\uc6a9\ud558\uc5ec \ub2e4\uc2dc \ud638\ucd9c\ud558\uc2ed\uc2dc\uc624.
+
+DEST_LOCKED_CWSIA0223=CWSIA0223E: \uad6c\ub3c5 \uc7a0\uae40
+DEST_LOCKED_CWSIA0223.explanation=\uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc5d0\uc11c \uc774\uc6a9\uc790\ub97c \uc2b9\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud65c\uc131 \uad6c\ub3c5\uc790\uac00 \uc774\ubbf8 \uc788\uac70\ub098 \uad00\ub9ac\uc0c1 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud558\uac8c \ub418\uc5c8\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+DEST_LOCKED_CWSIA0223.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc9c0\uc18d \uac00\ub2a5\ud55c \ub2e8\uc77c \uad6c\ub3c5\uc5d0 \uc5ec\ub7ec \ubc88 \uc561\uc138\uc2a4\ud558\ub824\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. JMS \uc2a4\ud399\uc5d0\uc11c\ub294 \uc774\ub7ec\ud55c \uc2dc\ub3c4\ub97c \uae08\uc9c0\ud558\uc9c0\ub9cc \ubc18\ub4dc\uc2dc \ud544\uc694\ud55c \uacbd\uc6b0, \uc5f0\uacb0 \ud329\ud1a0\ub9ac\uc5d0 \ub300\ud55c shareDurableSubscriptions \uc635\uc158\uc744 \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+NOT_AUTH_CWSIA0224=CWSIA0224E: \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc5d0 \uc561\uc138\uc2a4\ud560 \uad8c\ud55c \uc5c6\uc74c
+NOT_AUTH_CWSIA0224.explanation=\ud604\uc7ac \uc0ac\uc6a9\uc790\uc5d0\uac8c \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294 \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+NOT_AUTH_CWSIA0224.useraction=\uc0ac\uc6a9\uc790 ID\uac00 \ud544\uc694\ud55c \uc790\uc6d0\uc5d0 \ub300\ud55c \ud544\uc218 \uc561\uc138\uc2a4\ub97c \uac16\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+BAD_SELECT_CWSIA0225=CWSIA0225E: \uc81c\uacf5\ub41c \uba54\uc2dc\uc9c0 \uc120\ud0dd\uae30\uac00 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc74c
+BAD_SELECT_CWSIA0225.explanation=\uc81c\uacf5\ub41c \uc120\ud0dd\uae30 \ubb38\uc790\uc5f4\uc744 \ud574\uc11d\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BAD_SELECT_CWSIA0225.useraction=\uc120\ud0dd\uae30 \ubb38\uc790\uc5f4\uc744 \ud655\uc778\ud55c \ud6c4 \uc624\ub958\ub97c \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+BAD_TOPICSPACE_CWSIA0226=CWSIA0226E: \uc8fc\uc5b4\uc9c4 \uc8fc\uc81c\uc5d0 \ub300\ud574 \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc790\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc74c
+BAD_TOPICSPACE_CWSIA0226.explanation=\uc8fc\uc81c \uc601\uc5ed \uad00\ub828 \ubb38\uc81c\uc810\uc73c\ub85c \uc778\ud574 \uc9c0\uc18d \uac00\ub2a5\ud55c \uad6c\ub3c5\uc790\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+BAD_TOPICSPACE_CWSIA0226.useraction=\uc138\ubd80\uc0ac\ud56d\uc740 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc8fc\uc81c \uc601\uc5ed\uc774 \uc5c6\ub294 \uacbd\uc6b0, \uc8fc\uc81c \uc601\uc5ed\uc744 \uc791\uc131\ud558\uac70\ub098 \uae30\uc874 \uc8fc\uc81c \uc601\uc5ed\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624. \uc784\uc2dc \uc8fc\uc81c\uc778 \uacbd\uc6b0, \uc9c0\uc18d \ubd88\uac00\ub2a5\ud55c \uad6c\ub3c5\uc790\ub97c \uc0ac\uc6a9\ud558\uac70\ub098 \uc601\uad6c \uc8fc\uc81c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+# com.ibm.websphere.sib.api.jms.JmsManagedConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0241=CWSIA0241E: {1} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}
+EXCEPTION_RECEIVED_CWSIA0241.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\ub97c \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \ub2e4\ub978 \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+EXCEPTION_RECEIVED_CWSIA0241.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+
+# com.ibm.websphere.sib.api.jms.JmsConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0261=CWSIA0261E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0261.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0261.useraction=\uac12\uc744 \ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+# com.ibm.websphere.sib.api.jms.JmsDestinationImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0281=CWSIA0281E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0281.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0281.useraction=\uac12\uc744 \ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc73c\ub85c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# Generic error message for a blocked destination
+# {0} is the reason code for the blocking of the destination
+DESTINATION_BLOCKED_CWSIA0283=CWSIA0283E: \ud574\ub2f9 \ub300\uc0c1\uc5d0\uc11c {0}\uc758 \uc774\uc720 \ucf54\ub4dc\uc640 \ud568\uaed8 \uba54\uc2dc\uc9c0\ub97c \uc0dd\uc131/\uc218\uc2e0\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4.
+DESTINATION_BLOCKED_CWSIA0283.explanation=\ub300\uc0c1 \uc624\ube0c\uc81d\ud2b8\uc5d0 \uba54\uc2dc\uc9c0 \uc0dd\uc131 \ubc0f \uc774\uc6a9\uc5d0 \ub300\ud55c \uc815\ubcf4\uac00 \ucda9\ubd84\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DESTINATION_BLOCKED_CWSIA0283.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Specific message for destination blockage due to missing PSB reply data (no broker input stream)
+# {0} is the string form of the JMS Destination
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284=CWSIA0284E: \uc774 \ub300\uc0c1\uc73c\ub85c \uba54\uc2dc\uc9c0\ub97c \ub77c\uc6b0\ud2b8\ud558\uae30\uc5d0 \uc815\ubcf4\uac00 \ucda9\ubd84\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {0}
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.explanation=MQ\uc5d0\uc11c \uc6d0\ub798 \uacf5\uac1c\ub97c \uc804\uc1a1\ud558\ub294 \ub370 \uc0ac\uc6a9\ub41c \ubc1c\ud589/\uad6c\ub3c5 \ube0c\ub85c\ucee4 \ud504\ub85c\ud30c\uc77c \uc8fc\uc81c \ub9f5\ud551\uc5d0 \ube0c\ub85c\ucee4 \uc785\ub825 \ud050\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.useraction=\uc801\ud569\ud55c \ube0c\ub85c\ucee4 \ud504\ub85c\ud30c\uc77c \uc8fc\uc81c \ub9f5\ud551\uc5d0 \ube0c\ub85c\ucee4 \uc785\ub825 \ud050 \uc774\ub984\uc744 \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+
+# com.ibm.ws.sib.api.jms.impl.ProducerProperties
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0301=CWSIA0301E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0301.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0301.useraction=\ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc744 \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+
+# com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0321=CWSIA0321E: {0}\uc5d0 \uc9c0\uc815\ub41c {1} \uac12\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0321.explanation=\uc81c\uacf5\ub41c \uac12\uc774 \uc9c0\uc815\ub41c \ud2b9\uc131\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_VALUE_CWSIA0321.useraction=\ud2b9\uc131\uc5d0 \uc9c0\uc6d0\ub418\ub294 \uac12\uc744 \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+
+
+# com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+# -------------------------------------------------------------------------------------------------
+# Generic message for when an exception occurs during core processing for async delivery
+ASYNC_EXCEPTION_CWSIA0341=CWSIA0341E: \ube44\ub3d9\uae30 \ucc98\ub9ac \uc911\uc5d0 \uc608\uc678\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. {0}
+ASYNC_EXCEPTION_CWSIA0341.explanation=\ube44\ub3d9\uae30 \uc804\ub2ec\uc744 \uc2e4\ud589\ud558\ub294 \uc911\uc5d0 \uc0ac\uc6a9\uc790 \ucf54\ub4dc \uc678\ubd80\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ASYNC_EXCEPTION_CWSIA0341.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# The messaging engine is shutting down
+ME_QUIESCE_CWSIA0342=CWSIA0342E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \uc885\ub8cc \uc911\uc785\ub2c8\ub2e4.
+ME_QUIESCE_CWSIA0342.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc5f0\uacb0\ub41c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ME_QUIESCE_CWSIA0342.useraction=\uc774\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 \uc5f0\uacb0\uc744 \ub04a\uae30 \uc704\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c \uc2e0\ud638\uc785\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+# The connection is closed due to a communications failure.
+# {0} is the exception passed to the commsFailure notification method.
+COMMS_FAILURE_CWSIA0343=CWSIA0343E: \ub2e4\uc74c \uc608\uc678\ub85c \uc778\ud574 \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4. {0}
+COMMS_FAILURE_CWSIA0343.explanation=\ud1b5\uc2e0 \uc2e4\ud328\ub85c \uc778\ud574 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0 \uc5f0\uacb0\uc774 \ub04a\uc5b4\uc84c\uc2b5\ub2c8\ub2e4.
+COMMS_FAILURE_CWSIA0343.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This method is called when a connection is closed because the messaging engine has terminated.
+ME_TERMINATED_CWSIA0344=CWSIA0344E: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc885\ub8cc\ub418\uc5c8\uc73c\ubbc0\ub85c \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
+ME_TERMINATED_CWSIA0344.explanation=\uc5f0\uacb0\uc774 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud55c \uc0c1\ud0dc\ub85c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc774 \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ME_TERMINATED_CWSIA0344.useraction=\uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc744 \ub2e4\uc2dc \uc2dc\uc791\ud55c \ud6c4 \ub2e4\uc2dc \uc5f0\uacb0\ud558\uc2ed\uc2dc\uc624.
+
+
+# com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+# -------------------------------------------------------------------------------------------------
+# Could not find the required character set for this utility class (UTF-8)
+UNSUPPORTED_ENCODING_CWSIA0360=CWSIA0360E: \ud544\uc218 \ubb38\uc790 \uc138\ud2b8 \uc778\ucf54\ub529 {0}\uc774(\uac00) \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_ENCODING_CWSIA0360.explanation=\uc774 \uae30\ub2a5 \uc870\uc791\uc5d0\ub294 \uc9c0\uc815\ub41c \ubb38\uc790 \uc138\ud2b8\uac00 \ud544\uc694\ud558\uc9c0\ub9cc \ud574\ub2f9 \ubb38\uc790 \uc138\ud2b8\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_ENCODING_CWSIA0360.useraction=\uc774 JVM\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub3c4\ub85d \uc9c0\uc815\ub41c \ubb38\uc790 \uc138\ud2b8\ub97c \uc0ac\uc6a9 \uac00\ub2a5\ud558\uac8c \ub9cc\ub4dc\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is the invalid value that was supplied
+# {1} is the property/method parameter for which it was supplied.
+INTERNAL_INVALID_VALUE_CWSIA0361=CWSIA0361E: {0}\uc774(\uac00) {1}\uc5d0 \ub300\ud574 \uc9c0\uc815\ub418\uc5c8\uc73c\ubbc0\ub85c \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+INTERNAL_INVALID_VALUE_CWSIA0361.explanation=CMSG0001
+INTERNAL_INVALID_VALUE_CWSIA0361.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is a probeID to enable service to identify the problem location.
+# {1} and {2} are additional information to enable problem diagnosis.
+INTERNAL_ERROR_CWSIA0362=CWSIA0362E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. ProbeID: {0}. \ucd94\uac00 \uc815\ubcf4: {1} : {2}
+INTERNAL_ERROR_CWSIA0362.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0362.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An unknown property name has been found in the encoded JMS destination or replyTo field
+# {0} is the unknown name found
+UNKNOWN_PROPERTY_CWSIA0363=CWSIA0363E: JMSDestination \ub610\ub294 JMSReplyTo\uc5d0 \uc54c \uc218 \uc5c6\ub294 \ud2b9\uc131 \uc774\ub984\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. {0}.
+UNKNOWN_PROPERTY_CWSIA0363.explanation=JMS \uba54\uc2dc\uc9c0\uac00 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc758 \uc774\ud6c4 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c \uc218\uc2e0\ub418\uc5b4 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \
+\uadf8\ub7f0 \ub2e4\uc74c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ud574\ub2f9 \uba54\uc2dc\uc9c0\uc5d0\uc11c JMSDestination \ub610\ub294 JMSReplyTo \uba54\uc2dc\uc9c0 \ud5e4\ub354 \uac80\uc0c9\uc744 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4. \
+\ud2b9\uc131 \uc911 \ud558\ub098\uac00 \uc774 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uba54\uc2dc\uc9c0 \ud5e4\ub354 \ud544\ub4dc\ub97c \uac80\uc0c9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNKNOWN_PROPERTY_CWSIA0363.useraction=\uc804\uc1a1\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub294 JMSDestination \ub610\ub294 JMSReplyTo\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud2b9\uc131\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624. \
+\uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud2b9\uc131\uc740 \uc804\uc1a1\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc758\ud574 \uc9c1\uc811 \uc9c0\uc815\ub418\uc5c8\uc744 \uc218 \uc788\uc73c\uba70 JMS \ud050\uc758 \uad6c\uc131\uc5d0 \uc9c0\uc815\ub418\uc5c8\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the malformed URI element
+# {1} is the full URI from which {0} has been identified
+MALFORMED_URI_ELEMENT_CWSIA0382=CWSIA0382E: URI {1}\uc5d0\uc11c URI \uc694\uc18c {0}\uc774(\uac00) \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MALFORMED_URI_ELEMENT_CWSIA0382.explanation=\uc2dd\ubcc4\ub41c \uc774\ub984-\uac12 \uc30d \uc694\uc18c\uc758 \ud615\uc2dd\uc774 \uc798\ubabb\ub418\uc5c8\uc73c\uba70 \uc774\ub984\uacfc \uac12\uc774 \ubaa8\ub450 \ud3ec\ud568\ub418\uc9c0 \uc54a\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+MALFORMED_URI_ELEMENT_CWSIA0382.useraction=\uc774\ub984-\uac12 \uc30d \uc694\uc18c\uc758 \ud615\uc2dd\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the reserved destination prefix
+# {1} is the full URI from which {0} has been identified
+RESERVED_DEST_PREFIX_CWSIA0383=CWSIA0383E: URI {1}\uc5d0 \uc608\uc57d\ub41c \ub300\uc0c1 \uc811\ub450\ubd80 {0}\uc774(\uac00) \uc788\uc2b5\ub2c8\ub2e4.
+RESERVED_DEST_PREFIX_CWSIA0383.explanation=\uc2dd\ubcc4\ub41c \ub300\uc0c1 \uc811\ub450\ubd80\uac00 \uc608\uc57d\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+RESERVED_DEST_PREFIX_CWSIA0383.useraction=\ud050 \ub300\uc0c1\uc758 \uacbd\uc6b0, 'queue://' \uc811\ub450\ubd80\ub97c, \uc8fc\uc81c \ub300\uc0c1\uc758 \uacbd\uc6b0, 'topic://' \uc811\ub450\ubd80\ub97c \uc0ac\uc6a9\ud560 \uac83\uc744 \uace0\ub824\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name in the URI element
+# {1} is the property value in the URI element
+# {2} is the full URI from which {0} and {1} have been identified
+INVALID_URI_ELEMENT_CWSIA0384=CWSIA0384E: URI \uc694\uc18c {0}={1}\uc744(\ub97c) URI {2}\uc5d0\uc11c \ub300\uc0c1 \uc624\ube0c\uc81d\ud2b8\uc758 \ud2b9\uc131\uc73c\ub85c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_URI_ELEMENT_CWSIA0384.explanation=\uc2dd\ubcc4\ub41c URI \uc694\uc18c\uc758 \uc774\ub984 \ud2b9\uc131\uc744 \uc720\ud6a8\ud55c \ub300\uc0c1 \ud2b9\uc131\uc73c\ub85c \ub514\ucf54\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_URI_ELEMENT_CWSIA0384.useraction=\uc2dd\ubcc4\ub41c \uc774\ub984 \ud2b9\uc131\uc774 \ub300\uc0c1 \uc624\ube0c\uc81d\ud2b8\uc5d0 \uc720\ud6a8\ud55c \ud2b9\uc131\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI with the illegal MA88 queue manager specified
+INVALID_URI_ELEMENT_CWSIA0385=CWSIA0385E: URI\uc5d0 \uc788\ub294 \uac83\ucc98\ub7fc \ub300\uc0c1 URI\uac00 \ud050 \uad00\ub9ac\uc790\ub97c \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+INVALID_URI_ELEMENT_CWSIA0385.explanation=\ub300\uc0c1 URI\uc5d0 \uc9c0\uc815\ub41c \ub300\ub85c \ud050 \uad00\ub9ac\uc790\uc758 \uc0ac\uc6a9\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_URI_ELEMENT_CWSIA0385.useraction=\ud050 \uad00\ub9ac\uc790\ub97c \uc0ac\uc6a9\ud558\uc9c0 \uc54a\ub294 URI\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# The code has entered an inconsistent state
+INTERNAL_ERROR_CWSIA0386=CWSIA0386E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+INTERNAL_ERROR_CWSIA0386.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0386.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Found an escaped character which shouldn't have been escaped
+# {0} is the string containing the problem
+BAD_ESCAPE_CHAR_CWSIA0387=CWSIA0387E: \ubd80\uc801\uc808\ud55c \uc774\uc2a4\ucf00\uc774\ud504 \uc21c\uc11c\ub97c \ud3ec\ud568\ud558\ub294 \ubb38\uc790\uc5f4: {0}
+BAD_ESCAPE_CHAR_CWSIA0387.explanation=CMSG0001
+BAD_ESCAPE_CHAR_CWSIA0387.useraction=CMSG0002
+
+# MQRequestReplyUtils
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391=CWSIA0391E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+JAR \ud30c\uc77c {1}\uc774(\uac00) \uc5c6\uc73c\ubbc0\ub85c {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.useraction=CMSG0002
+
+# Common
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueSessionImpl - clone 0483 created for JmsTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0481=CWSIA0481E: {1} \ud074\ub798\uc2a4\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_CLASS_CWSIA0481.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 JMS \uc2a4\ud399\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_CLASS_CWSIA0481.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \uc791\ub3d9\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueConnectionImpl - clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0482=CWSIA0482E: \uc774 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c\ub294 {0}\uc774(\uac00) \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_FUNC_CWSIA0482.explanation=\ud604\uc7ac \uc18c\ud504\ud2b8\uc6e8\uc5b4 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uae30\ub2a5 \ub610\ub294 \uc131\ub2a5\uc744 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_FUNC_CWSIA0482.useraction=\uc774 \uc131\ub2a5\uc744 \uc0ac\uc6a9\ud558\ub824\ub294 \ucf54\ub4dc\ub97c \uc81c\uac70\ud558\uac70\ub098, \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uacbd\uc6b0, \uc18c\ud504\ud2b8\uc6e8\uc5b4\uc758 \ucd5c\uc2e0 \ub9b4\ub9ac\uc2a4\ub85c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0481 created for use in JmsQueueTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0483=CWSIA0483E: {1} \ud074\ub798\uc2a4\uc5d0\uc11c {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_CLASS_CWSIA0483.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 JMS \uc2a4\ud399\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_OP_FOR_CLASS_CWSIA0483.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uc5ec \uc774 \uc791\ub3d9\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0482 created for use in JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0484=CWSIA0484E: \uc774 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c\ub294 {0}\uc774(\uac00) \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_FUNC_CWSIA0484.explanation=\ud604\uc7ac \uc18c\ud504\ud2b8\uc6e8\uc5b4 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uae30\ub2a5 \ub610\ub294 \uc131\ub2a5\uc744 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4.
+UNSUPPORTED_FUNC_CWSIA0484.useraction=\uc774 \uc131\ub2a5\uc744 \uc0ac\uc6a9\ud558\ub824\ub294 \ucf54\ub4dc\ub97c \uc81c\uac70\ud558\uac70\ub098, \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uacbd\uc6b0, \uc18c\ud504\ud2b8\uc6e8\uc5b4\uc758 \ucd5c\uc2e0 \ub9b4\ub9ac\uc2a4\ub85c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property or variable
+# {1} is the value of the property or variable
+INTERNAL_ERROR_CWSIA0499=CWSIA0499E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+{1} \uac12\uc774 \ub9e4\uac1c\ubcc0\uc218 \ub610\ub294 \ubcc0\uc218 {0}\uc5d0 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INTERNAL_ERROR_CWSIA0499.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0499.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIA0500=CWSIA0500E: {0}
+TEMPORARY_CWSIA0500.explanation=\uc790\uc138\ud55c \uc815\ubcf4\ub294 \ub9c1\ud06c\ub41c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+TEMPORARY_CWSIA0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the BytesMessage method that was called
+PROMISE_BROKEN_EXCEPTION_CWSIA0510=CWSIA0510E: ConnectionFactory \ub610\ub294 ActivationSpecification \ud2b9\uc131 ''producerDoesNotModifyPayloadAfterSet''\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc73c\ubbc0\ub85c BytesMessage \uba54\uc18c\ub4dc {0}\uc744(\ub97c) \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.explanation=\uba54\uc2dc\uc9c0 \uc0dd\uc131\uc790 \uaddc\uce59\uc5d0 \ub530\ub974\uba74 \uc124\uc815\ub41c \uba54\uc2dc\uc9c0 \ud398\uc774\ub85c\ub4dc\ub294 \uc218\uc815\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0 \uc624\ube0c\uc81d\ud2b8\uc5d0 \ub300\ud55c \ud2b9\uc815 \uba54\uc18c\ub4dc \ud638\ucd9c\uc740 \uc774 \uaddc\uce59\uc5d0 \uc704\ubc30\ub429\ub2c8\ub2e4.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc5ec \uc704\ubc18 \ud638\ucd9c\uc744 \uc81c\uac70\ud558\uac70\ub098 \uaddc\uce59 \uc900\uc218\ub97c \ub098\ud0c0\ub0b4\ub294 \uad00\ub9ac \uc635\uc158\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624. \uad00\ub9ac \uc635\uc158\uc744 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud558\uac8c \ud558\uba74 \uc131\ub2a5\uc774 \uc800\ud558\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+PROMISE_BROKEN_EXCEPTION_CWSIA0511=CWSIA0511E: ConnectionFactory \ub610\ub294 ActivationSpecification \ud2b9\uc131 'producerDoesNotModifyPayloadAfterSet'\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc73c\ubbc0\ub85c BytesMessage.writeBytes(byte[])\ub97c \uc5ec\ub7ec \ubc88 \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.explanation=\uba54\uc2dc\uc9c0 \uc0dd\uc131\uc790 \uaddc\uce59\uc5d0 \ub530\ub974\uba74 \uc124\uc815\ub41c \uba54\uc2dc\uc9c0 \ud398\uc774\ub85c\ub4dc\ub294 \uc218\uc815\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uacbd\uc6b0, BytesMessage.writeBytes(byte[] \uac12)\ub294 \ud55c \ubc88\ub9cc \ud638\ucd9c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.useraction=\uc774 \ubb38\uc81c\uc810\uc740 \ub2e4\uc74c \uc138 \uac00\uc9c0 \uc870\uce58\ub85c \ud574\uacb0\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. 1) \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc5ec \uc704\ubc18 \ud638\ucd9c\uc744 \uc81c\uac70\ud569\ub2c8\ub2e4. 2) \uccab \ubc88\uc9f8 \ud638\ucd9c \ud6c4 BytesMessage.clearBody()\ub97c \ud638\ucd9c\ud569\ub2c8\ub2e4. 3) \uaddc\uce59 \uc900\uc218\ub97c \ub098\ud0c0\ub0b4\ub294 \uad00\ub9ac \uc635\uc158\uc744 \ubcc0\uacbd\ud569\ub2c8\ub2e4. \uad00\ub9ac \uc635\uc158\uc744 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud558\uac8c \ud558\uba74 \uc131\ub2a5\uc774 \uc800\ud558\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+# The error message CWSIA0512E is not required in JMS 2 feature,  it is moved to com.ibm.ws.cdi-1.2.jms project and some modifcation in wordings had done
+# {0} method name
+#JMSCONTEXT_INJECTED_CWSIA0512=CWSIA0512E: The method {0} is not permitted if the JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.explanation= A method was called that is not permitted if JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.useraction= Remove the call to the method.
+# -------------------------------------------------------------------------------------------------
+CREATECONTEXT_IN_CONTAINER_CWSIA0513=CWSIA0513E: createContext\ub294 Java EE \uc6f9 \ub610\ub294 EJB \ucee8\ud14c\uc774\ub108\uc5d0\uc11c \uc2e4\ud589 \uc911\uc778 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.explanation= \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc5f0\uacb0\ub2f9 \ub458 \uc774\uc0c1\uc758 \ud65c\uc131 \uc138\uc158 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud558\ub3c4\ub85d \ud5c8\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.useraction=createContext \uba54\uc18c\ub4dc\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 Java EE \uc6f9 \ub610\ub294 EJB \ucee8\ud14c\uc774\ub108\uc5d0\uc11c \uc2e4\ud589 \uc911\uc778 \uacbd\uc6b0 \uc0ac\uc6a9\ub418\uc5b4\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+# {0} the acknowledgement mode
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514=CWSIA0514E: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc218\uc2e0\ud655\uc778 \ubaa8\ub4dc {0}\uc785\ub2c8\ub2e4.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.explanation= \uc218\uc2e0\ud655\uc778 \ubaa8\ub4dc\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.useraction=\uc62c\ubc14\ub978 \uc218\uc2e0\ud655\uc778 \ubaa8\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+# {0} method name
+INVALID_METHOD_CWSIA0515=CWSIA0515E: CompletionListener \uba54\uc18c\ub4dc\uac00 \uace0\uc720\ud55c JMSContext, \uc138\uc158 \ub610\ub294 \uc5f0\uacb0\uc5d0\uc11c {0}\uc744(\ub97c) \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_METHOD_CWSIA0515.explanation= CompletionListener \uba54\uc18c\ub4dc(onComplete/OnException)\uac00 \uace0\uc720\ud55c JMSContext, \uc138\uc158 \ub610\ub294 \uc5f0\uacb0\uc5d0\uc11c \ub2eb\uae30, \ub864\ubc31 \ub610\ub294 \ucee4\ubbf8\ud2b8 \uc870\uc791\uc744 \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uace0\uc720\ud55c JMSContext, \uc138\uc158 \ub610\ub294 \uc5f0\uacb0\uc5d0\uc11c \ud574\ub2f9 \uc870\uc791\uc744 \ud638\ucd9c\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uacbd\uc6b0 \ubd88\uc644\uc804\ud55c \uba54\uc2dc\uc9c0 \ubcf4\ub0b4\uae30\uac00 \uc644\ub8cc\ub420 \ub54c\uae4c\uc9c0 JMS \uc81c\uacf5\uc790\uac00 \ud574\ub2f9 \uc870\uc791\uc744 \ud5c8\uc6a9\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc608\uc678\uac00 \ubc1c\ud589\ud569\ub2c8\ub2e4.
+INVALID_METHOD_CWSIA0515.useraction= \uace0\uc720\ud55c JMSContext, \uc138\uc158 \ub610\ub294 \uc5f0\uacb0\uc5d0\uc11c \uba54\uc18c\ub4dc {0}\uc744(\ub97c) \ud638\ucd9c\ud558\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+INVALID_MESSAGE_ACCESS_CWSIA0516=CWSIA0516E: \ube44\ub3d9\uae30 \ubcf4\ub0b4\uae30\uac00 \uc9c4\ud589 \uc911\uc778 \uacbd\uc6b0 \uba54\uc2dc\uc9c0 \uc624\ube0c\uc81d\ud2b8\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_MESSAGE_ACCESS_CWSIA0516.explanation= JMS 2.0 \uc2a4\ud399\uc5d0 \ub530\ub77c \ube44\ub3d9\uae30 \ubcf4\ub0b4\uae30\uac00 \uc544\uc9c1 \uc9c4\ud589 \uc911\uc778 \uacbd\uc6b0 \uba54\uc2dc\uc9c0 \uc624\ube0c\uc81d\ud2b8\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_MESSAGE_ACCESS_CWSIA0516.useraction= onCompletion \ub610\ub294 OnException\uc774 \ud638\ucd9c\ub418\uace0 \ub09c \uc774\ud6c4\uc778, \ube44\ub3d9\uae30 \uc804\uc1a1\uc774 \ud574\uacb0\ub418\uace0 \ub09c \ud6c4 \uba54\uc2dc\uc9c0 \uc624\ube0c\uc81d\ud2b8\uc5d0 \uc561\uc138\uc2a4\ub418\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0517=CWSIA0517E: \uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ub108\ub294 \ud574\ub2f9 \uc5f0\uacb0 \ub610\ub294 JMSContext\uc5d0\uc11c \uc911\uc9c0 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub824\uace0 \uc2dc\ub3c4\ud574\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+INVALID_METHOD_CWSIA0517.explanation=\uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ub108\uac00 \ud574\ub2f9 \uc5f0\uacb0 \ub610\ub294 JMSContext\ub97c \uc911\uc9c0\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uacbd\uc6b0 \uc608\uc678 \ucc98\ub9ac\ub429\ub2c8\ub2e4.
+INVALID_METHOD_CWSIA0517.useraction= \uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ub108\ub294 \ud574\ub2f9 JMSContext \ub610\ub294 \uc5f0\uacb0\uc5d0\uc11c \uc911\uc9c0 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud574\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0518=CWSIA0518E: \uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ub108\ub294 \ud574\ub2f9 JMSContext, \uc5f0\uacb0 \ub610\ub294 \uc138\uc158\uc5d0\uc11c \ub2eb\uae30 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub824\uace0 \uc2dc\ub3c4\ud574\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+INVALID_METHOD_CWSIA0518.explanation=\uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ub108\uac00 \ud574\ub2f9 \uc5f0\uacb0, JMSContext \ub610\ub294 \uc138\uc158\uc744 \ub2eb\uc73c\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uacbd\uc6b0 \uc608\uc678 \ucc98\ub9ac\ub429\ub2c8\ub2e4.
+INVALID_METHOD_CWSIA0518.useraction= \uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ub108\ub294 \ud574\ub2f9 JMSContext, \uc5f0\uacb0 \ub610\ub294 \uc138\uc158\uc5d0\uc11c \ub2eb\uae30 \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud574\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------

@@ -1,0 +1,27 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="FAT configuration for BasicRegistry">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>basicRegistryInternals-1.0</feature>
+    </featureManager>
+    
+    <variable name="wlp.password.encryption.key" value="Some_alternate_secret"/>
+    
+    <basicRegistry id="alternate" realm="AlternateRealm">
+    	<user name="customUser" password="{aes}AL4f8Vek3bMHFusOdK3KleiHJRh8ghFdc5OzO8vo3UtRKprTjetDKmaG7NWRLX0qaA==" />
+    </basicRegistry>
+
+</server>

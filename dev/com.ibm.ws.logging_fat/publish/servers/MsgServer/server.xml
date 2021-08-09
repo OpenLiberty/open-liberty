@@ -1,0 +1,15 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+       	<feature>sampleSourceHandler-1.0</feature>
+    	<feature>timedexit-1.0</feature>
+    </featureManager>
+                  
+    <httpEndpoint id="defaultHttpEndpoint"
+    			  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+  
+</server>

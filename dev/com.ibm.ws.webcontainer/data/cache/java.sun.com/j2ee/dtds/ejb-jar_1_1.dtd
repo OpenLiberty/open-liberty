@@ -1,0 +1,655 @@
+<!--
+This is the XML DTD for the EJB 1.1 deployment descriptor.
+-->
+<!--
+The assembly-descriptor element contains application-assembly infor-mation.
+The application-assembly information consists of the following parts:
+the definition of security roles, the definition of method permis-sions,
+and the definition of transaction attributes for enterprise
+beans with container-managed transaction demarcation.
+All the parts are optional in the sense that they are omitted if the
+lists represented by them are empty.
+Providing an assembly-descriptor in the deployment descriptor is
+optional for the ejb-jar file producer.
+Used in: ejb-jar
+-->
+<!ELEMENT assembly-descriptor (security-role*, method-permission*,
+container-transaction*)>
+<!--
+The cmp-field element describes a container-managed field. The field
+element includes an optional description of the field, and the name of
+the field.
+Used in: entity
+-->
+<!ELEMENT cmp-field (description?, field-name)>
+<!--
+The container-transaction element specifies how the container must
+manage transaction scopes for the enterprise bean's method invoca-tions.
+The element consists of an optional description, a list of
+method elements, and a transaction attribute.The transaction
+attribute is to be applied to all the specified methods.
+Used in: assembly-descriptor
+-->
+<!ELEMENT container-transaction (description?, method+,
+trans-attribute)>
+<!--
+The description element is used by the ejb-jar file producer to pro-vide
+text describing the parent element.
+The description element should include any information that the
+ejb-jar file producer wants to provide to the consumer of the ejb-jar
+file (i.e. to the Deployer). Typically, the tools used by the ejb-jar
+file consumer will display the description when processing the parent element.
+Used in: cmp-field, container-transaction, ejb-jar, entity,
+env-entry, ejb-ref, method, method-permission, resource-ref, secu-rity-
+role, security-role-ref, and session.
+-->
+<!ELEMENT description (#PCDATA)>
+<!--
+The display-name element contains a short name that is intended to be
+display by tools.
+Used in: ejb-jar, session, and entity
+Example:
+<display-name>Employee Self Service</display-name>
+-->
+<!ELEMENT display-name (#PCDATA)>
+<!--
+The ejb-class element contains the fully-qualified name of the enter-prise
+bean's class.
+Used in: entity and session
+Example:
+<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+-->
+<!ELEMENT ejb-class (#PCDATA)>
+<!--
+The optional ejb-client-jar element specifies a JAR file that con-tains
+the class files necessary for a client program to access the
+enterprise beans in the ejb-jar file. The Deployer should make the
+ejb-client JAR file accessible to the client's class-loader.
+Used in: ejb-jar
+Example:
+<ejb-client-jar>employee_service_client.jar</ejb-client-jar>
+-->
+<!ELEMENT ejb-client-jar (#PCDATA)>
+<!--
+The ejb-jar element is the root element of the EJB deployment descrip-tor.
+It contains an optional description of the ejb-jar file, optional
+display name, optional small icon file name, optional large icon file
+name, mandatory structural information about all included enterprise
+beans, optional application-assembly descriptor, and an optional name
+of an ejb-client-jar file for the ejb-jar.
+-->
+<!ELEMENT ejb-jar (description?, display-name?, small-icon?,
+large-icon?, enterprise-beans, assembly-descriptor?,
+ejb-client-jar?)>
+<!--
+The ejb-link element is used in the ejb-ref element to specify that an
+EJB reference is linked to another enterprise bean in the ejb-jar
+file.
+The value of the ejb-link element must be the ejb-name of an enter-prise
+bean in the same ejb-jar file, or in another ejb-jar file in the
+same J2EE application unit.
+Used in: ejb-ref
+Example:
+<ejb-link>EmployeeRecord</ejb-link>
+-->
+<!ELEMENT ejb-link (#PCDATA)>
+<!--
+The ejb-name element specifies an enterprise bean's name. This name is
+assigned by the ejb-jar file producer to name the enterprise bean in
+the ejb-jar file's deployment descriptor. The name must be unique
+among the names of the enterprise beans in the same ejb-jar file.
+The enterprise bean code does not depend on the name; therefore the
+name can be changed during the application-assembly process without
+breaking the enterprise bean's function.
+There is no architected relationship between the ejb-name in the
+deployment descriptor and the JNDI name that the Deployer will assign
+to the enterprise bean's home.
+The name must conform to the lexical rules for an NMTOKEN.
+Used in: entity, method, and session
+Example:
+<ejb-name>EmployeeService</ejb-name>
+-->
+<!ELEMENT ejb-name (#PCDATA)>
+<!--
+The ejb-ref element is used for the declaration of a reference to
+another enterprise bean's home. The declaration consists of an
+optional description; the EJB reference name used in the code of the
+referencing enterprise bean; the expected type of the referenced
+enterprise bean; the expected home and remote interfaces of the ref-erenced
+enterprise bean; and an optional ejb-link information.
+The optional ejb-link element is used to specify the referenced enter-prise
+bean. It is used typically in ejb-jar files that contain an
+assembled application.
+Used in: entity and session
+-->
+<!ELEMENT ejb-ref (description?, ejb-ref-name, ejb-ref-type, home,
+remote, ejb-link?)>
+<!--
+The ejb-ref-name element contains the name of an EJB reference. The
+EJB reference is an entry in the enterprise bean's environment.
+It is recommended that name is prefixed with "ejb/".
+Used in: ejb-ref
+Example:
+<ejb-ref-name>ejb/Payroll</ejb-ref-name>
+-->
+<!ELEMENT ejb-ref-name (#PCDATA)>
+<!--
+The ejb-ref-type element contains the expected type of the referenced
+enterprise bean.
+The ejb-ref-type element must be one of the following:
+<ejb-ref-type>Entity</ejb-ref-type>
+<ejb-ref-type>Session</ejb-ref-type>
+Used in: ejb-ref
+-->
+<!ELEMENT ejb-ref-type (#PCDATA)>
+<!--
+The enterprise-beans element contains the declarations of one or more
+enterprise beans.
+-->
+<!ELEMENT enterprise-beans (session | entity)+>
+<!--
+The entity element declares an entity bean. The declaration consists
+of: an optional description; optional display name; optional small
+icon file name; optional large icon file name; a name assigned to the
+enterprise bean in the deployment descriptor; the names of the entity
+bean's home and remote interfaces; the entity bean's implementation
+class; the entity bean's persistence management type; the entity
+bean's primary key class name; an indication of the entity bean's
+reentrancy; an optional list of container-managed fields; an optional
+specification of the primary key field; an optional declaration of the
+bean's environment entries; an optional declaration of the bean's EJB
+references; an optional declaration of the security role references;
+and an optional declaration of the bean's resource manager connection
+factory references.
+The optional primkey-field may be present in the descriptor if the
+entity's persistency-type is Container.
+The other elements that are optional are 'optional' in the sense that
+they are omitted if the lists represented by them are empty.
+At least one cmp-field element must be present in the descriptor if
+the entity's persistency-type is Container, and none must not be
+present if the entity's persistence-type is Bean.
+Used in: enterprise-beans
+-->
+<!ELEMENT entity (description?, display-name?, small-icon?,
+large-icon?, ejb-name, home, remote, ejb-class,
+persistence-type, prim-key-class, reentrant,
+cmp-field*, primkey-field?, env-entry*,
+ejb-ref*, security-role-ref*, resource-ref*)>
+<!--
+The env-entry element contains the declaration of an enterprise
+bean's environment entries. The declaration consists of an optional
+description, the name of the environment entry, and an optional value.
+Used in: entity and session
+-->
+<!ELEMENT env-entry (description?, env-entry-name, env-entry-type,
+env-entry-value?)>
+<!--
+The env-entry-name element contains the name of an enterprise bean's
+environment entry.
+Used in: env-entry
+Example:
+<env-entry-name>minAmount</env-entry-name>
+-->
+<!ELEMENT env-entry-name (#PCDATA)>
+<!--
+The env-entry-type element contains the fully-qualified Java type of
+the environment entry value that is expected by the enterprise bean's
+code.
+The following are the legal values of env-entry-type: java.lang.Bool-ean,
+java.lang.String, java.lang.Integer, java.lang.Double,
+java.lang.Byte, java.lang.Short, java.lang.Long, and java.lang.Float.
+Used in: env-entry
+Example:
+<env-entry-type>java.lang.Boolean</env-entry-type>
+-->
+<!ELEMENT env-entry-type (#PCDATA)>
+<!--
+The env-entry-value element contains the value of an enterprise
+bean's environment entry.
+Used in: env-entry
+Example:
+<env-entry-value>100.00</env-entry-value>
+-->
+<!ELEMENT env-entry-value (#PCDATA)>
+<!--
+The field-name element specifies the name of a container managed
+field. The name must be a public field of the enterprise bean class or
+one of its superclasses.
+Used in: cmp-field
+Example:
+<field-name>firstName</field-Name>
+-->
+<!ELEMENT field-name (#PCDATA)>
+<!--
+The home element contains the fully-qualified name of the enterprise
+bean's home interface.
+Used in: ejb-ref, entity, and session
+Example:
+<home>com.aardvark.payroll.PayrollHome</home>
+-->
+<!ELEMENT home (#PCDATA)>
+<!--
+The large-icon element contains the name of a file containing a large
+(32 x 32) icon image. The file name is relative path within the
+ejb-jar file.
+The image must be either in the JPEG or GIF format, and the file name
+must end with the suffix ".jpg" or ".gif" respectively.
+The icon can be used by tools.
+Example:
+<large-icon>employee-service-icon32x32.jpg</large-icon>
+-->
+<!ELEMENT large-icon (#PCDATA)>
+<!--
+The method element is used to denote a method of an enterprise bean's
+home or remote interface, or a set of methods. The ejb-name element
+must be the name of one of the enterprise beans in declared in the
+deployment descriptor; the optional method-intf element allows to
+distinguish between a method with the same signature that is defined
+in both the home and remote interface; the method-name element speci-fies
+the method name; and the optional method-params elements iden-tify
+a single method among multiple methods with an overloaded method
+name.
+There are three possible styles of the method element syntax:
+1. <method>
+<ejb-name>EJBNAME</ejb-name>
+<method-name>*</method-name>
+</method>
+This style is used to refer to all the methods of the specified
+enterprise bean's home and remote interfaces.
+2. <method>
+<ejb-name>EJBNAME</ejb-name>
+<method-name>METHOD</method-name>
+</method>>
+This style is used to refer to the specified method of the
+specified enterprise bean. If there are multiple methods with
+the same overloaded name, the element of this style refers to
+all the methods with the overloaded name.
+3. <method>
+<ejb-name>EJBNAME</ejb-name>
+<method-name>METHOD</method-name>
+<method-params>
+<method-param>PARAM-1</method-param>
+<method-param>PARAM-2</method-param>
+...
+<method-param>PARAM-n</method-param>
+</method-params>
+<method>
+This style is used to refer to a single method within a set of
+methods with an overloaded name. PARAM-1 through PARAM-n are the
+fully-qualified Java types of the method's input parameters (if
+the method has no input arguments, the method-params element
+contains no method-param elements). Arrays are specified by the
+array element's type, followed by one or more pair of square
+brackets (e.g. int[][]).
+Used in: method-permission and container-transaction
+Examples:
+Style 1: The following method element refers to all the methods of
+the EmployeeService bean's home and remote interfaces:
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-name>*</method-name>
+</method>
+Style 2: The following method element refers to all the create
+methods of the EmployeeService bean's home interface:
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-name>create</method-name>
+</method>
+Style 3: The following method element refers to the
+create(String firstName, String LastName) method of the
+EmployeeService bean's home interface.
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-name>create</method-name>
+<method-params>
+<method-param>java.lang.String</method-param>
+<method-param>java.lang.String</method-param>
+</method-params>
+</method>
+The following example illustrates a Style 3 element with
+more complex parameter types. The method
+foobar(char s, int i, int[] iar, mypackage.MyClass mycl,
+mypackage.MyClass[][] myclaar)
+would be specified as:
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-name>foobar</method-name>
+<method-params>
+<method-param>char</method-param>
+<method-param>int</method-param>
+<method-param>int[]</method-param>
+<method-param>mypackage.MyClass</method-param>
+<method-param>mypackage.MyClass[][]</method-param>
+</method-params>
+</method>
+The optional method-intf element can be used when it becomes
+necessary to differentiate between a method defined in the home
+interface and a method with the same name and signature that is
+defined in the remote interface.
+For example, the method element
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-intf>Remote</method-intf>
+<method-name>create</method-name>
+<method-params>
+<method-param>java.lang.String</method-param>
+<method-param>java.lang.String</method-param>
+</method-params>
+</method>
+can be used to differentiate the create(String, String) method
+defined in the remote interface from the create(String, String)
+method defined in the home interface, which would be defined as
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-intf>Home</method-intf>
+<method-name>create</method-name>
+<method-params>
+<method-param>java.lang.String</method-param>
+<method-param>java.lang.String</method-param>
+</method-params>
+</method>
+The method-intf element can be used with all three Styles of the
+method element usage. For example, the following method element exam-ple
+could be used to refer to all the methods of the EmployeeService
+bean's home interface.
+<method>
+<ejb-name>EmployeeService</ejb-name>
+<method-intf>Home</method-intf>
+<method-name>*</method-name>
+</method>
+-->
+<!ELEMENT method (description?, ejb-name, method-intf?, method-name,
+method-params?)>
+<!--
+The method-intf element allows a method element to differentiate
+between the methods with the same name and signature that are defined
+in both the remote and home interfaces.
+The method-intf element must be one of the following:
+<method-intf>Home</method-intf>
+<method-intf>Remote</method-intf>
+Used in: method
+-->
+<!ELEMENT method-intf (#PCDATA)>
+<!--
+The method-name element contains a name of an enterprise bean method,
+or the asterisk (*) character. The asterisk is used when the element
+denotes all the methods of an enterprise bean's remote and home inter-faces.
+Used in: method
+-->
+<!ELEMENT method-name (#PCDATA)>
+<!--
+The method-param element contains the fully-qualified Java type name
+of a method parameter.
+Used in: method-params
+-->
+<!ELEMENT method-param (#PCDATA)>
+<!--
+The method-params element contains a list of the fully-qualified Java
+type names of the method parameters.
+Used in: method
+-->
+<!ELEMENT method-params (method-param*)>
+<!--
+The method-permission element specifies that one or more security
+roles are allowed to invoke one or more enterprise bean methods. The
+method-permission element consists of an optional description, a list
+of security role names, and a list of method elements.
+The security roles used in the method-permission element must be
+defined in the security-role element of the deployment descriptor,
+and the methods must be methods defined in the enterprise bean's
+remote and/or home interfaces.
+Used in: assembly-descriptor
+-->
+<!ELEMENT method-permission (description?, role-name+, method+)>
+<!--
+The persistence-type element specifies an entity bean's persistence
+management type.
+The persistence-type element must be one of the two following:
+<persistence-type>Bean</persistence-type>
+<persistence-type>Container</persistence-type>
+Used in: entity
+-->
+<!ELEMENT persistence-type (#PCDATA)>
+<!--
+The prim-key-class element contains the fully-qualified name of an
+entity bean's primary key class.
+If the definition of the primary key class is deferred to deployment
+time, the prim-key-class element should specify java.lang.Object.
+Used in: entity
+Examples:
+<prim-key-class>java.lang.String</prim-key-class>
+<prim-key-class>com.wombat.empl.EmployeeID</prim-key-class>
+<prim-key-class>java.lang.Object</prim-key-class>
+-->
+<!ELEMENT prim-key-class (#PCDATA)>
+<!--
+The primkey-field element is used to specify the name of the primary
+key field for an entity with container-managed persistence.
+The primkey-field must be one of the fields declared in the cmp-field
+element, and the type of the field must be the same as the primary key
+type.
+The primkey-field element is not used if the primary key maps to mul-tiple
+container-managed fields (i.e. the key is a compound key). In
+this case, the fields of the primary key class must be public, and
+their names must correspond to the field names of the entity bean
+class that comprise the key.
+Used in: entity
+Example:
+<primkey-field>EmployeeId</primkey-field>
+-->
+<!ELEMENT primkey-field (#PCDATA)>
+<!--
+The reentrant element specifies whether an entity bean is reentrant or
+not.
+The reentrant element must be one of the two following:
+<reentrant>True</reentrant>
+<reentrant>False</reentrant>
+Used in: entity
+-->
+<!ELEMENT reentrant (#PCDATA)>
+<!--
+The remote element contains the fully-qualified name of the enter-prise
+bean's remote interface.
+Used in: ejb-ref, entity, and session
+Example:
+<remote>com.wombat.empl.EmployeeService</remote>
+-->
+<!ELEMENT remote (#PCDATA)>
+<!--
+The res-auth element specifies whether the enterprise bean code signs
+on programmatically to the resource manager, or whether the Container
+will sign on to the resource manager on behalf of the bean. In the
+latter case, the Container uses information that is supplied by the
+Deployer.
+The value of this element must be one of the two following:
+<res-auth>Application</res-auth>
+<res-auth>Container</res-auth>
+-->
+<!ELEMENT res-auth (#PCDATA)>
+<!--
+The res-ref-name element specifies the name of a resource manager con-nection
+factory reference.
+Used in: resource-ref
+-->
+<!ELEMENT res-ref-name (#PCDATA)>
+<!--
+The res-type element specifies the type of the data source. The type
+is specified by the Java interface (or class) expected to be imple-mented
+by the data source.
+Used in: resource-ref
+-->
+<!ELEMENT res-type (#PCDATA)>
+<!--
+The resource-ref element contains a declaration of enterprise bean's
+reference to an external resource. It consists of an optional descrip-tion,
+the resource manager connection factory reference name, the
+indication of the resource manager connection factory type expected
+by the enterprise bean code, and the type of authentication (bean or
+container).
+Used in: entity and session
+Example:
+<resource-ref>
+<res-ref-name>EmployeeAppDB</res-ref-name>
+<res-type>javax.sql.DataSource</res-type>
+<res-auth>Container</res-auth>
+</resource-ref>
+-->
+<!ELEMENT resource-ref (description?, res-ref-name, res-type,
+res-auth)>
+<!--
+The role-link element is used to link a security role reference to a
+defined security role. The role-link element must contain the name of
+one of the security roles defined in the security-role elements.
+Used in: security-role-ref
+-->
+<!ELEMENT role-link (#PCDATA)>
+<!--
+The role-name element contains the name of a security role.
+The name must conform to the lexical rules for an NMTOKEN.
+Used in: method-permission, security-role, and security-role-ref
+-->
+<!ELEMENT role-name (#PCDATA)>
+<!--
+The security-role element contains the definition of a security role.
+The definition consists of an optional description of the security
+role, and the security role name.
+Used in: assembly-descriptor
+Example:
+<security-role>
+<description>
+This role includes all employees who are authorized
+to access the employee service application.
+</description>
+<role-name>employee</role-name>
+</security-role>
+-->
+<!ELEMENT security-role (description?, role-name)>
+<!--
+The security-role-ref element contains the declaration of a security
+role reference in the enterprise bean's code. The declaration con-sists
+of an optional description, the security role name used in the
+code, and an optional link to a defined security role.
+The value of the role-name element must be the String used as the
+parameter to the EJBContext.isCallerInRole(String roleName) method.
+The value of the role-link element must be the name of one of the
+security roles defined in the security-role elements.
+Used in: entity and session
+-->
+<!ELEMENT security-role-ref (description?, role-name, role-link?)>
+<!--
+The session-type element describes whether the session bean is a
+stateful session, or stateless session.
+The session-type element must be one of the two following:
+<session-type>Stateful</session-type>
+<session-type>Stateless</session-type>
+-->
+<!ELEMENT session-type (#PCDATA)>
+<!--
+The session element declares an session bean. The declaration con-sists
+of: an optional description; optional display name; optional
+small icon file name; optional large icon file name; a name assigned
+to the enterprise bean in the deployment description; the names of the
+session bean's home and remote interfaces; the session bean's imple-mentation
+class; the session bean's state management type; the ses-sion
+bean's transaction management type; an optional declaration of
+the bean's environment entries; an optional declaration of the bean's
+EJB references; an optional declaration of the security role refer-ences;
+and an optional declaration of the bean's resource manager con-nection
+factory references.
+The elements that are optional are 'optional' in the sense that they
+are omitted when if lists represented by them are empty.
+Used in: enterprise-beans
+-->
+<!ELEMENT session (description?, display-name?, small-icon?,
+large-icon?, ejb-name, home, remote, ejb-class,
+session-type, transaction-type, env-entry*,
+ejb-ref*, security-role-ref*, resource-ref*)>
+<!--
+The small-icon element contains the name of a file containing a small
+(16 x 16) icon image. The file name is relative path within the
+ejb-jar file.
+The image must be either in the JPEG or GIF format, and the file name
+must end with the suffix ".jpg" or ".gif" respectively.
+The icon can be used by tools.
+Example:
+<small-icon>employee-service-icon16x16.jpg</small-icon>
+-->
+<!ELEMENT small-icon (#PCDATA)>
+<!--
+The transaction-type element specifies an enterprise bean's transac-tion
+management type.
+The transaction-type element must be one of the two following:
+<transaction-type>Bean</transaction-type>
+<transaction-type>Container</transaction-type>
+Used in: session
+-->
+<!ELEMENT transaction-type (#PCDATA)>
+<!--
+The trans-attribute element specifies how the container must manage
+the transaction boundaries when delegating a method invocation to an
+enterprise bean's business method.
+The value of trans-attribute must be one of the following:
+<trans-attribute>NotSupported</trans-attribute>
+<trans-attribute>Supports</trans-attribute>
+<trans-attribute>Required</trans-attribute>
+<trans-attribute>RequiresNew</trans-attribute>
+<trans-attribute>Mandatory</trans-attribute>
+<trans-attribute>Never</trans-attribute>
+Used in: container-transaction
+-->
+<!ELEMENT trans-attribute (#PCDATA)>
+<!--
+The ID mechanism is to allow tools that produce additional deployment
+information (i.e information beyond the standard EJB deployment
+descriptor information) to store the non-standard information in a
+separate file, and easily refer from these tools-specific files to the
+information in the standard deployment descriptor.
+The EJB architecture does not allow the tools to add the non-standard
+information into the EJB deployment descriptor.
+-->
+<!ATTLIST assembly-descriptor id ID #IMPLIED>
+<!ATTLIST cmp-field id ID #IMPLIED>
+<!ATTLIST container-transaction id ID #IMPLIED>
+<!ATTLIST description id ID #IMPLIED>
+<!ATTLIST display-name id ID #IMPLIED>
+<!ATTLIST ejb-class id ID #IMPLIED>
+<!ATTLIST ejb-client-jar id ID #IMPLIED>
+<!ATTLIST ejb-jar id ID #IMPLIED>
+<!ATTLIST ejb-link id ID #IMPLIED>
+<!ATTLIST ejb-name id ID #IMPLIED>
+<!ATTLIST ejb-ref id ID #IMPLIED>
+<!ATTLIST ejb-ref-name id ID #IMPLIED>
+<!ATTLIST ejb-ref-type id ID #IMPLIED>
+<!ATTLIST enterprise-beans id ID #IMPLIED>
+<!ATTLIST entity id ID #IMPLIED>
+<!ATTLIST env-entry id ID #IMPLIED>
+<!ATTLIST env-entry-name id ID #IMPLIED>
+<!ATTLIST env-entry-type id ID #IMPLIED>
+<!ATTLIST env-entry-value id ID #IMPLIED>
+<!ATTLIST field-name id ID #IMPLIED>
+<!ATTLIST home id ID #IMPLIED>
+<!ATTLIST large-icon id ID #IMPLIED>
+<!ATTLIST method id ID #IMPLIED>
+<!ATTLIST method-intf id ID #IMPLIED>
+<!ATTLIST method-name id ID #IMPLIED>
+<!ATTLIST method-param id ID #IMPLIED>
+<!ATTLIST method-params id ID #IMPLIED>
+<!ATTLIST method-permission id ID #IMPLIED>
+<!ATTLIST persistence-type id ID #IMPLIED>
+<!ATTLIST prim-key-class id ID #IMPLIED>
+<!ATTLIST primkey-field id ID #IMPLIED>
+<!ATTLIST reentrant id ID #IMPLIED>
+<!ATTLIST remote id ID #IMPLIED>
+<!ATTLIST res-auth id ID #IMPLIED>
+<!ATTLIST res-ref-name id ID #IMPLIED>
+<!ATTLIST res-type id ID #IMPLIED>
+<!ATTLIST resource-ref id ID #IMPLIED>
+<!ATTLIST role-link id ID #IMPLIED>
+<!ATTLIST role-name id ID #IMPLIED>
+<!ATTLIST security-role id ID #IMPLIED>
+<!ATTLIST security-role-ref id ID #IMPLIED>
+<!ATTLIST session-type id ID #IMPLIED>
+<!ATTLIST session id ID #IMPLIED>
+<!ATTLIST small-icon id ID #IMPLIED>
+<!ATTLIST transaction-type id ID #IMPLIED>
+<!ATTLIST trans-attribute id ID #IMPLIED>

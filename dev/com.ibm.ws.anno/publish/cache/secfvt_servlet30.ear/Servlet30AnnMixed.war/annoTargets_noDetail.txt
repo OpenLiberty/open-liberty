@@ -1,0 +1,72 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30AnnMixed.war.unpacked/WEB-INF/lib/Servlet30AnnMixed.jar
+Class-Source: Servlet30AnnMixed.war.unpacked
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30Ann3
+  ClassSource: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30AnnMixed.war.unpacked/WEB-INF/lib/Servlet30AnnMixed.jar
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30Ann3FragmentCnfl
+  ClassSource: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30AnnMixed.war.unpacked/WEB-INF/lib/Servlet30AnnMixed.jar
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30Ann10
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30Ann3Fragment
+  ClassSource: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30AnnMixed.war.unpacked/WEB-INF/lib/Servlet30AnnMixed.jar
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.utils.ServletMethodHelper
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: Servlet30AnnMixed.war.unpacked
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.io.Serializable
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.annotation.ServletSecurity
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.annotation.WebServlet
+  ClassSource: Servlet30AnnMixed.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+# ============================================================

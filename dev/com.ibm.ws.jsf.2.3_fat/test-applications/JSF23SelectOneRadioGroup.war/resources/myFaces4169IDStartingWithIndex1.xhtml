@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title>MyFaces-4169 Issue</title> 
+    </h:head>
+    <h:body>
+        <H2>
+            Rendering test - When ID contains a number at the end, and that number is not 0, 
+            for example “radio1”, it will select the second item in the list, 
+            instead of starting from the first.
+        </H2>
+        <br/>
+        <h:form id="form1" prependId="false">
+            <h:selectOneRadio id="radio1" group="group1" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="staticValue1"/>
+                <f:selectItem itemValue="staticValue2"/>
+                <f:selectItem itemValue="staticValue3"/>
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" group="group1"/>
+
+        </h:form>
+    </h:body>
+</html>

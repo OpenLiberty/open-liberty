@@ -1,0 +1,948 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.mfp.CWSIFMessages.props
+#
+# SIB.mfp component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIF0001=CWSIF0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIF0001-CWSIF0010 belong to class com.ibm.ws.sib.mfp.JsMessageFactory & JsMessageFactoryImpl
+#   - Msgs in the range CWSIF0011-CWSIF0020 belong to class com.ibm.ws.sib.mfp.JsJmsMessageFactory
+#   - Msgs in the range CWSIF0021-CWSIF0030 belong to class com.ibm.ws.sib.mfp.trm.TrmMessageFactory
+#   - Msgs in the range CWSIF0031-CWSIF0040 belong to classes com.ibm.ws.sib.mfp.impl.JsMessageHandle*
+#   - Msgs in the range CWSIF0041-CWSIF0050 belong to class com.ibm.ws.sib.mfp.mp.ControlMessageFactory
+#   - Msgs in the range CWSIF0051-CWSIF0060 belong to class com.ibm.ws.sib.mfp.CompHandshakeFactory
+#   - Msgs in the range CWSIF0101-CWSIF0180 belong to class com.ibm.ws.sib.mfp.impl.JsMessageImpl
+#   - Msgs in the range CWSIF0181-CWSIF0190 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0191-CWSIF0199 belong to class com.ibm.ws.sib.mfp.impl.JsApiMessageImpl
+#   - Msgs in the range CWSIF0200-CWSIF0210 belong to class com.ibm.ws.sib.mfp.util.HexString
+#   - Msgs in the range CWSIF0211-CWSIF0220 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulation
+#   - Msgs in the range CWSIF0221-CWSIF0230 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulationManager
+#   - Msgs in the range CWSIF0231-CWSIF0240 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0241-CWSIF0250 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0251-CWSIF0260 belong to class com.ibm.ws.sib.mfp.sdo.mediators.BlobMediator
+#   - Msgs in the range CWSIF0271-CWSIF0280 belong to package com.ibm.ws.sib.mfp.sdo.soap
+#   - Msgs in the range CWSIF0281-CWSIF0290 belong to package com.ibm.ws.sib.mfp.sdo.soap.write
+#   - Msgs in the range CWSIF0291-CWSIF0310 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0311-CWSIF0320 belong to class com.ibm.ws.sib.mfp.sdo.mediators.JmfDataMediator
+#   - Msgs in the range CWSIF0321-CWSIF0350 belong to package com.ibm.ws.sib.mfp.sdo.bean
+#   - Msgs in the range CWSIF0351-CWSIF0360 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0361-CWSIF0370 belong to class com.ibm.ws.sib.mfp.sdo.DataGraphFactoryImpl
+#   - Msgs in the range CWSIF0371-CWSIF0380 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+#   - Msgs in the range CWSIF0381-CWSIF0390 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+#   - Msgs in the range CWSIF0391-CWSIF0410 are no longer allocated
+#   - Msgs in the range CWSIF0411-CWSIF0420 are no longer allocated
+#   - Msgs in the range CWSIF0421-CWSIF0430 are no longer allocated
+#   - Msgs in the range CWSIF0431-CWSIF0439 belong to package com.ibm.ws.sib.mfp.sdo.resource
+#   - Msgs in the range CWSIF0500-CWSIF0510 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0600-CWSIF0610 belong to class com.ibm.ws.sib.mfp.sdo.repository.WSDLMetaData
+#   - Msgs in the range CWSIF0700-CWSIF0710 belong to class com.ibm.ws.sib.mfp.mqimpl.MQJmsMapMessageEncapsulation
+#   - Msgs in the range CWSIF0711-CWSIF0720 belong to package com.ibm.ws.sib.mfp.sdo.jms
+#   - Msgs in the range CWSIF0721-CWSIF0730 belong to package com.ibm.ws.sib.mfp*
+#   - CWSIF9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/mfp/CWSIFMessages.nlsprops
+#COMPONENTPREFIX CWSIF
+#COMPONENTNAMEFOR CWSIF SIBus MFP
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIF0001=CWSIF0001E: Instanci JsMessageFactoryImpl nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+NO_DATASLICES_IN_LIST_CWSIF0002=CWSIF0002E: Pro obnoven\u00ed zpr\u00e1vy byl p\u0159ed\u00e1n pr\u00e1zdn\u00fd seznam DataSlice nebo hodnota null.
+NO_DATASLICES_IN_LIST_CWSIF0002.explanation=CMSG0001
+NO_DATASLICES_IN_LIST_CWSIF0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011=CWSIF0011E: Instanci JsJmsMessageFactoryImpl nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.explanation=CMSG0001
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021=CWSIF0021E: Instanci TrmMessageFactoryImpl nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.explanation=CMSG0001
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031=CWSIF0031E: Instanci JsMessageHandleFactoryImpl nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.explanation=CMSG0001
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the type of bad data that was passed (NULL or Empty String)
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032=CWSIF0032E: Objektu SIMessageHandleRestorer byla p\u0159ed\u00e1na hodnota {0}.
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.explanation=CMSG0001
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033=CWSIF0033E: Data p\u0159edan\u00e1 metod\u011b SIMessageHandleRestorer.restoreFromBytes nemaj\u00ed platnou d\u00e9lku.
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.explanation=CMSG0001
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034=CWSIF0034E: Data p\u0159edan\u00e1 metod\u011b SIMessageHandleRestorer.restoreFromBytes nemaj\u00ed platn\u00e9 informace o verzi.
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.explanation=CMSG0001
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035=CWSIF0035E: Data p\u0159edan\u00e1 metod\u011b SIMessageHandleRestorer.restoreFromBytes nepro\u0161la vnit\u0159n\u00edmi kontrolami d\u00e9lky.
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.explanation=CMSG0001
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041=CWSIF0041E: Instanci ControlMessageFactoryImpl nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.explanation=CMSG0001
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051=CWSIF0051E: Instanci CompHandshakeImpl nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.explanation=CMSG0001
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the implementation class, {1} is the value of the Exception
+UNABLE_TO_CREATE_CWSIF0061=CWSIF0061E: Instanci {0} nelze vytvo\u0159it: v\u00fdjimka {1}.
+UNABLE_TO_CREATE_CWSIF0061.explanation=CMSG0001
+UNABLE_TO_CREATE_CWSIF0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the system message id of the message.
+NOT_API_MESSAGE_CWSIF0101=CWSIF0101E: Selektory zpr\u00e1v nejsou podporov\u00e1ny pro zpr\u00e1vu {0}.
+NOT_API_MESSAGE_CWSIF0101.explanation=Selektory zpr\u00e1v jsou podporov\u00e1ny pouze pro zpr\u00e1vy API.
+NOT_API_MESSAGE_CWSIF0101.useraction=Ov\u011b\u0159te, zda aplikace nepou\u017e\u00edv\u00e1 selektory zpr\u00e1v pro jin\u00e9 zpr\u00e1vy ne\u017e API.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message type found
+# {1} is the expected message type
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102=CWSIF0102E: Byl o\u010dek\u00e1v\u00e1n typ zpr\u00e1vy {1}, ale byl nalezen typ zpr\u00e1vy {0}.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.explanation=Do\u0161lo k pokusu p\u0159ev\u00e9st zpr\u00e1vu z jednoho typu na jin\u00fd. Tento p\u0159evod nen\u00ed podporov\u00e1n.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181=CWSIF0181E: Nelze z\u00edskat graf SDO DataGraph z informa\u010dn\u00edho obsahu zpr\u00e1vy.
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.explanation=CMSG0001
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect class name
+INCORRECT_ENCAPSULATION_CWSIF0182=CWSIF0182E: Zpr\u00e1va obsahuje nespr\u00e1vnou t\u0159\u00eddu zapouzd\u0159en\u00ed: {0}
+INCORRECT_ENCAPSULATION_CWSIF0182.explanation=CMSG0001
+INCORRECT_ENCAPSULATION_CWSIF0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# This is an almost exact copy of CWSIA0114E in file CWSIAJMSMessages.nlsprops
+# {0} is the property name
+# {1} is the expected type of the property value
+# {2} is thetype of the property value given
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183=CWSIF0183E: Vlastnost {0} by se m\u011bla nastavit pomoc\u00ed typu {1}, nikoli {2}.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.explanation=Vlastnosti JMS_IBM_MQMD_ mus\u00ed b\u00fdt nastaveny pomoc\u00ed specifick\u00fdch typ\u016f prom\u011bnn\u00fdch.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.useraction=Opravte k\u00f3d aplikace, kter\u00fd m\u00e1 pou\u017e\u00edvat po\u017eadovan\u00fd typ prom\u011bnn\u00e9 pro nastaven\u00ed t\u00e9to vlastnosti JMS_IBM_MQMD.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0191=CWSIF0191E: Hexadecim\u00e1ln\u00ed \u0159et\u011bzec {0} je nespr\u00e1vn\u011b form\u00e1tov\u00e1n pro ID korelace.
+BAD_HEX_STRING_CWSIF0191.explanation=\u0158et\u011bzec nen\u00ed platn\u00e9 hexadecim\u00e1ln\u00ed ID korelace. Mus\u00ed m\u00edt podobu ID: n\u00e1sledovan\u00e9 sud\u00fdm \u010d\u00edslem pouze ze skupiny hexadecim\u00e1ln\u00edch znak\u016f.
+BAD_HEX_STRING_CWSIF0191.useraction=Opravte \u0159et\u011bzec, u n\u011bho\u017e do\u0161lo k selh\u00e1n\u00ed p\u0159evodu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0200=CWSIF0200E: Hexadecim\u00e1ln\u00ed \u0159et\u011bzec {0} je nespr\u00e1vn\u011b form\u00e1tovan\u00fd.
+BAD_HEX_STRING_CWSIF0200.explanation=Pokus o p\u0159eveden\u00ed z \u0159et\u011bzce na bajtov\u00e9 pole selhal v d\u016fsledku toho, \u017ee \u0159et\u011bzec obsahoval jin\u00e9 ne\u017e hexadecim\u00e1ln\u00ed znaky, nebo obsahoval lich\u00fd po\u010det znak\u016f.
+BAD_HEX_STRING_CWSIF0200.useraction=Ov\u011b\u0159te obsah \u0159et\u011bzce, u n\u011bho\u017e do\u0161lo k selh\u00e1n\u00ed p\u0159evodu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+FORMAT_NOT_FOUND_CWSIF0211=CWSIF0211E: Form\u00e1t zpr\u00e1vy nelze ur\u010dit: v\u00fdjimka {0}
+FORMAT_NOT_FOUND_CWSIF0211.explanation=CMSG0001
+FORMAT_NOT_FOUND_CWSIF0211.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+GET_LENGTH_FAILED_CWSIF0212=CWSIF0212E: D\u00e9lku zpr\u00e1vy nelze vypo\u010d\u00edtat: v\u00fdjimka {0}
+GET_LENGTH_FAILED_CWSIF0212.explanation=CMSG0001
+GET_LENGTH_FAILED_CWSIF0212.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+WRITE_FAILED_CWSIF0213=CWSIF0213E: Zpr\u00e1vu nelze vypo\u010d\u00edtat: v\u00fdjimka {0}
+WRITE_FAILED_CWSIF0213.explanation=CMSG0001
+WRITE_FAILED_CWSIF0213.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+UNASSEMBLE_FAILED_CWSIF0214=CWSIF0214E: Nelze zru\u0161it sestaven\u00ed zpr\u00e1vy JMF: v\u00fdjimka {0}
+UNASSEMBLE_FAILED_CWSIF0214.explanation=CMSG0001
+UNASSEMBLE_FAILED_CWSIF0214.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+SCHEMA_ID_ERROR_CWSIF0221=CWSIF0221E: Chyba sch\u00e9matu JMF ID: v\u00fdjimka {0}
+SCHEMA_ID_ERROR_CWSIF0221.explanation=CMSG0001
+SCHEMA_ID_ERROR_CWSIF0221.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+PARSE_FAILED_CWSIF0222=CWSIF0222E: Zpr\u00e1vu nelze analyzovat: v\u00fdjimka {0}
+PARSE_FAILED_CWSIF0222.explanation=CMSG0001
+PARSE_FAILED_CWSIF0222.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_WSDL_CWSIF0232=CWSIF0232E: Nelze importovat soubor WSDL {0}: v\u00fdjimka {1}
+INVALID_WSDL_CWSIF0232.explanation=Program pro import WSDL nemohl importovat soubor.
+INVALID_WSDL_CWSIF0232.useraction=Ov\u011b\u0159te, zda importujete platn\u00e9 soubory WSDL a zda pou\u017e\u00edv\u00e1te podporovanou verzi standardu WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+INVALID_WSDL_CWSIF0233=CWSIF0233E: Nelze naj\u00edt typ: n\u00e1zev {0}, obor n\u00e1zv\u016f {1}.
+INVALID_WSDL_CWSIF0233.explanation=Program pro import WSDL nenalezl typ definice.
+INVALID_WSDL_CWSIF0233.useraction=Ov\u011b\u0159te, zda jste zahrnuli definici sch\u00e9matu XML dan\u00e9ho typu do sekce typ\u016f WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the namespace
+INVALID_WSDL_CWSIF0234=CWSIF0234E: Nelze naj\u00edt prvek: n\u00e1zev {0}, obor n\u00e1zv\u016f {1}.
+INVALID_WSDL_CWSIF0234.explanation=Program pro import WSDL nenalezl definici prvku.
+INVALID_WSDL_CWSIF0234.useraction=Ov\u011b\u0159te, zda jste zahrnuli definici sch\u00e9matu XML prvku do sekce typ\u016f WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_INPUT_CWSIF0235=CWSIF0235E: Blokov\u00e1n\u00ed p\u0159\u00edstupu do vstupn\u00edho proudu identifik\u00e1toru URI: {0}.
+BLOCKED_INPUT_CWSIF0235.explanation=B\u011bhov\u00e9 prost\u0159ed\u00ed zablokovalo p\u0159\u00edstup k dan\u00e9mu identifik\u00e1toru URI. P\u0159\u00ed\u010dinou je pokus o na\u010dten\u00ed sch\u00e9matu XML, kter\u00e9 nebylo implementov\u00e1no do \u00falo\u017ei\u0161t\u011b SDO.
+BLOCKED_INPUT_CWSIF0235.useraction=Ov\u011b\u0159te, zda jste implementovali p\u0159\u00edslu\u0161n\u00e9 soubory sch\u00e9mat WSDL a XML do \u00falo\u017ei\u0161t\u011b SDO.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_OUTPUT_CWSIF0236=CWSIF0236E: Blokov\u00e1n\u00ed p\u0159\u00edstupu do v\u00fdstupn\u00edho proudu identifik\u00e1toru URI: {0}.
+BLOCKED_OUTPUT_CWSIF0236.explanation=CMSG0001
+BLOCKED_OUTPUT_CWSIF0236.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI, {1} is the exception
+NESTED_ERROR_CWSIF0237=CWSIF0237E: Byla zji\u0161t\u011bna v\u00fdjimka p\u0159i na\u010d\u00edt\u00e1n\u00ed zahrnut\u00e9ho prost\u0159edku. Identifik\u00e1tor URI prost\u0159edku: {0}, v\u00fdjimka: {1}.
+NESTED_ERROR_CWSIF0237.explanation=Soubor zahrnoval vno\u0159en\u00fd prost\u0159edek a p\u0159i na\u010d\u00edt\u00e1n\u00ed vno\u0159en\u00e9ho prost\u0159edku byly nalezeny chyby.
+NESTED_ERROR_CWSIF0237.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace, {1} is the location, {2} is the exception
+RESOURCE_ERROR_CWSIF0238=CWSIF0238E: P\u0159i na\u010d\u00edt\u00e1n\u00ed modelu Ecore byla nalezena v\u00fdjimka. C\u00edlov\u00fd obor n\u00e1zv\u016f {0}, rada um\u00edst\u011bn\u00ed {1}, v\u00fdjimka {2}.
+RESOURCE_ERROR_CWSIF0238.explanation=Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky p\u0159i pokusu o vyhled\u00e1n\u00ed modelu Ecore.
+RESOURCE_ERROR_CWSIF0238.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WSDL defintion type (Message, Port Type, Binding or Operation), {1} is the name of the defintion, {2} is the location.
+INVALID_WSDL_CWSIF0240=CWSIF0240E: Nelze naj\u00edt k\u00f3d WSDL {0} s n\u00e1zvem {1}. Odkazovalo se na definici v souboru {2}.
+INVALID_WSDL_CWSIF0240.explanation=Program pro import WSDL nenalezl definici, na kterou odkazuje k\u00f3d WSDL.
+INVALID_WSDL_CWSIF0240.useraction=Ov\u011b\u0159te, zda jsou definice WSDL kompletn\u00ed, a zda jste zahrnuli v\u0161echny soubory WSDL, na kter\u00e9 se odkazuje.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_XSD_CWSIF0241=CWSIF0241E: Nelze importovat soubor sch\u00e9matu XML {0}: v\u00fdjimka {1}
+INVALID_XSD_CWSIF0241.explanation=Program pro import sch\u00e9matu WSDL nemohl importovat soubor.
+INVALID_XSD_CWSIF0241.useraction=Ov\u011b\u0159te, zda importujete platn\u00e9 soubory sch\u00e9matu XML a zda pou\u017e\u00edv\u00e1te podporovanou verzi standardu XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error
+INVALID_XSD_CWSIF0242=CWSIF0242E: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed sch\u00e9matu XML: {0}
+INVALID_XSD_CWSIF0242.explanation=Program pro import sch\u00e9matu XML nemohl na\u010d\u00edst soubor.
+INVALID_XSD_CWSIF0242.useraction=Ov\u011b\u0159te, zda importujete platn\u00e9 soubory sch\u00e9matu XML a zda pou\u017e\u00edv\u00e1te podporovanou verzi standardu XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error message
+XSD_ERROR_CWSIF0243=CWSIF0243E: {0}
+XSD_ERROR_CWSIF0243.explanation=P\u0159i importu sch\u00e9matu XML byla nahl\u00e1\u0161ena chyba.
+XSD_ERROR_CWSIF0243.useraction=Dal\u0161\u00ed informace uv\u00e1d\u00ed chybov\u00e1 zpr\u00e1va.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_PARSE_FAILURE_CWSIF0251=CWSIF0251E: Nelze analyzovat zpr\u00e1vu: v\u00fdjimka {0}.
+BLOB_PARSE_FAILURE_CWSIF0251.explanation=CMSG0001
+BLOB_PARSE_FAILURE_CWSIF0251.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_LENGTH_FAILURE_CWSIF0252=CWSIF0252E: Nelze vypo\u010d\u00edtat d\u00e9lku zpr\u00e1vy: v\u00fdjimka {0}.
+BLOB_LENGTH_FAILURE_CWSIF0252.explanation=CMSG0001
+BLOB_LENGTH_FAILURE_CWSIF0252.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_WRITE_FAILURE_CWSIF0253=CWSIF0253E: Nelze zapsat zpr\u00e1vu: v\u00fdjimka {0}.
+BLOB_WRITE_FAILURE_CWSIF0253.explanation=CMSG0001
+BLOB_WRITE_FAILURE_CWSIF0253.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+BLOB_MODEL_FAILURE_CWSIF0254=CWSIF0254E: Chybn\u00fd model zpr\u00e1vy: n\u00e1zev typu {0}, obor n\u00e1zv\u016f {1}.
+BLOB_MODEL_FAILURE_CWSIF0254.explanation=CMSG0001
+BLOB_MODEL_FAILURE_CWSIF0254.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_PARSE_FAILURE_CWSIF0271=CWSIF0271E: Nelze analyzovat zpr\u00e1vu: v\u00fdjimka {0}.
+SOAP_PARSE_FAILURE_CWSIF0271.explanation=P\u0159i anal\u00fdze zpr\u00e1vy webov\u00fdch slu\u017eeb do\u0161lo k chyb\u011b.
+SOAP_PARSE_FAILURE_CWSIF0271.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_LENGTH_FAILURE_CWSIF0272=CWSIF0272E: Nelze vypo\u010d\u00edtat d\u00e9lku zpr\u00e1vy: v\u00fdjimka {0}.
+SOAP_LENGTH_FAILURE_CWSIF0272.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SOAP_LENGTH_FAILURE_CWSIF0272.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_WRITE_FAILURE_CWSIF0273=CWSIF0273E: Nelze zapsat zpr\u00e1vu: v\u00fdjimka {0}.
+SOAP_WRITE_FAILURE_CWSIF0273.explanation=P\u0159i z\u00e1pisu zpr\u00e1vy webov\u00fdch slu\u017eeb do\u0161lo k chyb\u011b.
+SOAP_WRITE_FAILURE_CWSIF0273.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+SOAP_FORMAT_ERROR_CWSIF0274=CWSIF0274E: Nespr\u00e1vn\u00fd \u0159et\u011bzec form\u00e1tov\u00e1n\u00ed: {0}
+SOAP_FORMAT_ERROR_CWSIF0274.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SOAP_FORMAT_ERROR_CWSIF0274.useraction=Ov\u011b\u0159te, zda form\u00e1t zpr\u00e1vy odpov\u00edd\u00e1 spr\u00e1vn\u00e9 syntaxi pro zpr\u00e1vu slu\u017eby SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the buffer length, {1} is the start offset, {2} is the length
+SOAP_BUFFER_ERROR_CWSIF0275=CWSIF0275E: Nespr\u00e1vn\u00e1 posunut\u00ed vyrovn\u00e1vac\u00ed pam\u011bti: d\u00e9lka vyrovn\u00e1vac\u00ed pam\u011bti {0}, za\u010d\u00e1tek vyrovn\u00e1vac\u00ed pam\u011bti {1}, d\u00e9lka dat {2}.
+SOAP_BUFFER_ERROR_CWSIF0275.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SOAP_BUFFER_ERROR_CWSIF0275.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_CREATE_FAILURE_CWSIF0276=CWSIF0276E: Nelze vytvo\u0159it nov\u00fd objekt SDO DataGraph: v\u00fdjimka {0}.
+SOAP_CREATE_FAILURE_CWSIF0276.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SOAP_CREATE_FAILURE_CWSIF0276.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of child nodes
+BAD_HEADER_CHILD_CWSIF0281=CWSIF0281E: Polo\u017eka z\u00e1hlav\u00ed obsahuje chybn\u00fd po\u010det pod\u0159\u00edzen\u00fdch datov\u00fdch objekt\u016f. O\u010dek\u00e1v\u00e1no 1, nalezeno {0}.
+BAD_HEADER_CHILD_CWSIF0281.explanation=Datov\u00fd objekt p\u0159edstavuj\u00edc\u00ed polo\u017eku z\u00e1hlav\u00ed neobsahoval spr\u00e1vn\u00fd po\u010det pod\u0159\u00edzen\u00fdch datov\u00fdch objekt\u016f.
+BAD_HEADER_CHILD_CWSIF0281.useraction=Ov\u011b\u0159te, zda ka\u017ed\u00e1 polo\u017eka z\u00e1hlav\u00ed obsahuje p\u0159esn\u011b jednu pod\u0159\u00edzenou polo\u017eku.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error URI, {1} is the error code, {2} is the additional data
+SOAP_PARSE_ERROR_CWSIF0291=CWSIF0291E: Zpr\u00e1vu nelze analyzovat. Chyba identifik\u00e1toru URI {0}, k\u00f3d chyby {1}, dal\u0161\u00ed data {2}.
+SOAP_PARSE_ERROR_CWSIF0291.explanation=Analyz\u00e1tor XML ohl\u00e1sil chybu p\u0159i zpracov\u00e1n\u00ed zpr\u00e1vy SOAP.
+SOAP_PARSE_ERROR_CWSIF0291.useraction=Ujist\u011bte se, zda je zpr\u00e1va spr\u00e1vn\u011b form\u00e1tovan\u00e1 XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0293=CWSIF0293E: Byl nalezen neo\u010dek\u00e1van\u00fd prvek. N\u00e1zev prvku: {0}; obor n\u00e1zv\u016f prvku: {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0293.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP o\u010dek\u00e1val prvek Ob\u00e1lka SOAP, ale na\u0161el v\u00fd\u0161e uveden\u00fd prvek.
+ENVELOPE_PARSE_ERROR_CWSIF0293.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0294=CWSIF0294E: Byl nalezen neo\u010dek\u00e1van\u00fd prvek. N\u00e1zev prvku: {0}; obor n\u00e1zv\u016f prvku: {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0294.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP o\u010dek\u00e1val prvek Z\u00e1hlav\u00ed nebo T\u011blo SOAP, ale na\u0161el v\u00fd\u0161e uveden\u00fd prvek.
+ENVELOPE_PARSE_ERROR_CWSIF0294.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the mustUnderstand value
+MUST_UNDERSTAND_ERROR_CWSIF0295=CWSIF0295E: Byla nalezena neo\u010dek\u00e1van\u00e1 hodnota mustUnderstand. N\u00e1zev prvku: {0}; obor n\u00e1zv\u016f prvku: {1}; hodnota mustUnderstand: {2}.
+MUST_UNDERSTAND_ERROR_CWSIF0295.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl atribut SOAP mustUnderstand s chybnou hodnotou.
+MUST_UNDERSTAND_ERROR_CWSIF0295.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+NON_ROOT_ERROR_CWSIF0296=CWSIF0296E: Byl nalezen neo\u010dek\u00e1van\u00fd prvek t\u011bla, kter\u00fd nen\u00ed ko\u0159enov\u00fdm prvkem SOAP. N\u00e1zev prvku: {0}; obor n\u00e1zv\u016f prvku: {1}.
+NON_ROOT_ERROR_CWSIF0296.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl prvek t\u011bla, kter\u00fd nen\u00ed typu SOAP, ale prvek neobsahuje k\u00f3dov\u00e1n\u00ed SOAP.
+NON_ROOT_ERROR_CWSIF0296.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute value
+NON_ROOT_ERROR_CWSIF0297=CWSIF0297E: Byl nalezen chybn\u00fd ko\u0159enov\u00fd atribut SOAP. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f prvku {1}; hodnota ko\u0159enov\u00e9ho atributu SOAP {2}.
+NON_ROOT_ERROR_CWSIF0297.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl prvek s chybn\u00fdm ko\u0159enov\u00fdm atributem protokolu SOAP.
+NON_ROOT_ERROR_CWSIF0297.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+NIL_DATA_ERROR_CWSIF0298=CWSIF0298E: V prvku nil byla nalezena data. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f prvku {1}, data: {2}.
+NIL_DATA_ERROR_CWSIF0298.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl data v prvku, kter\u00fd m\u011bl atribut xsi:nil="true".
+NIL_DATA_ERROR_CWSIF0298.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed sch\u00e9matu XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the nested element name, {3} is the nested element namespace
+NIL_ELEMENT_ERROR_CWSIF0299=CWSIF0299E: V prvku nil byl nalezen prvek. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f prvku {1}, n\u00e1zev vno\u0159en\u00e9ho prvku {2}, obor n\u00e1zv\u016f vno\u0159en\u00e9ho prvku {3}.
+NIL_ELEMENT_ERROR_CWSIF0299.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl prvek v prvku, kter\u00fd m\u011bl atribut xsi:nil="true".
+NIL_ELEMENT_ERROR_CWSIF0299.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed sch\u00e9matu XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute name, {3} is the attribute namespace
+NIL_ATTR_ERROR_CWSIF0300=CWSIF0300E: V prvku nil byl nalezen atribut. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f prvku {1}, n\u00e1zev atributu {2}, obor n\u00e1zv\u016f atributu {3}.
+NIL_ATTR_ERROR_CWSIF0300.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl atribut v prvku, kter\u00fd m\u011bl atribut xsi:nil="true".
+NIL_ATTR_ERROR_CWSIF0300.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed sch\u00e9matu XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the type URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0301=CWSIF0301E: Nelze analyzovat hodnotu ve zpr\u00e1v\u011b. N\u00e1zev typu {0}, obor n\u00e1zv\u016f typu {1}, data {2}.
+VALUE_PARSE_ERROR_CWSIF0301.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nemohl p\u0159ev\u00e9st hodnotu na instanci typu.
+VALUE_PARSE_ERROR_CWSIF0301.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed s typy modelovan\u00fdmi v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0302=CWSIF0302E: Byl nalezen neo\u010dek\u00e1van\u00fd text. N\u00e1zev prvku: {0}; obor n\u00e1zv\u016f prvku: {1}; data: {2}.
+VALUE_PARSE_ERROR_CWSIF0302.explanation=Prvek XML obsahoval n\u011bjak\u00fd text, ale model WSDL neumo\u017e\u0148uje, aby tento prvek obsahoval data.
+VALUE_PARSE_ERROR_CWSIF0302.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed s typy modelovan\u00fdmi v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the xsi:type value
+XSI_TYPE_ERROR_CWSIF0303=CWSIF0303E: Byl nalezen chybn\u00fd atribut xsi:type p\u0159i zpracov\u00e1n\u00ed prvku. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f {1}, hodnota xsi:type {2}.
+XSI_TYPE_ERROR_CWSIF0303.explanation=Prvek XML obsahoval atribut xsi:type, ale hodnotu atributu nebylo mo\u017en\u00e9 zpracovat.
+XSI_TYPE_ERROR_CWSIF0303.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed sch\u00e9matu XML.
+
+# -------------------------------------------------------------------------------------------------
+BODY_WSDL_MISMATCH_CWSIF0304=CWSIF0304E: T\u011blo zpr\u00e1vy neodpov\u00eddalo \u017e\u00e1dn\u00e9 definici v jazyce WSDL.
+BODY_WSDL_MISMATCH_CWSIF0304.explanation=T\u011blo zpr\u00e1vy protokolu SOAP neodpov\u00eddalo \u017e\u00e1dn\u00e9 definici v jazyce WSDL. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt nespr\u00e1vn\u00e1 zpr\u00e1va SOAP nebo skute\u010dnost, \u017ee \u0159et\u011bzec form\u00e1tu ur\u010dil chybn\u00fd k\u00f3d WSDL.
+BODY_WSDL_MISMATCH_CWSIF0304.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed s jazykem WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+ID_ATTR_NOT_FOUND_CWSIF0305=CWSIF0305E: Nelze nal\u00e9zt atribut ID v prvku t\u011bla zpr\u00e1vy protokolu SOAP, kter\u00fd nen\u00ed ko\u0159enov\u00fd. Podrobnosti o prvku: {0}, obor n\u00e1zv\u016f {1}.
+ID_ATTR_NOT_FOUND_CWSIF0305.explanation=Ka\u017ed\u00fd prvek t\u011bla protokolu SOAP jin\u00fd ne\u017e ko\u0159enov\u00fd by m\u011bl m\u00edt atribut ID s jedine\u010dnou hodnotou.
+ID_ATTR_NOT_FOUND_CWSIF0305.useraction=Ov\u011b\u0159te, zda je zpr\u00e1va form\u00e1tov\u00e1na podle pravidel k\u00f3dov\u00e1n\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the id attribute
+HREF_NOT_FOUND_CWSIF0306=CWSIF0306E: Neodkazuje se na prvek s hodnotou atributu ID {0}.
+HREF_NOT_FOUND_CWSIF0306.explanation=Na ka\u017ed\u00fd prvek t\u011bla protokolu SOAP jin\u00fd ne\u017e ko\u0159enov\u00fd by m\u011bla odkazovat n\u011bjak\u00e1 jin\u00e1 \u010d\u00e1st zpr\u00e1vy.
+HREF_NOT_FOUND_CWSIF0306.useraction=Ov\u011b\u0159te, zda je zpr\u00e1va form\u00e1tov\u00e1na podle pravidel k\u00f3dov\u00e1n\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the href value
+INVALID_HREF_CWSIF0307=CWSIF0307E: Prvek, kter\u00fd odpov\u00edd\u00e1 hodnot\u011b atributu href {0}, nelze naj\u00edt.
+INVALID_HREF_CWSIF0307.explanation=Prvek k\u00f3dovan\u00fd pomoc\u00ed protokolu SOAP pou\u017e\u00edv\u00e1 atribut href, ale nelze naj\u00edt prvek s odpov\u00eddaj\u00edc\u00edm atributem ID.
+INVALID_HREF_CWSIF0307.useraction=Ov\u011b\u0159te, zda je zpr\u00e1va form\u00e1tov\u00e1na podle pravidel k\u00f3dov\u00e1n\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the processing instruction target
+PI_PARSE_ERROR_CWSIF0308=CWSIF0308E: Byl nalezen neo\u010dek\u00e1van\u00fd pokyn pro zpracov\u00e1n\u00ed. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f prvku {1}, c\u00edl {2}.
+PI_PARSE_ERROR_CWSIF0308.explanation=Prvek XML obsahoval pokyn pro zpracov\u00e1n\u00ed, ale protokol SOAP nepovoluje, aby prvky obsahovaly pokyny pro zpracov\u00e1n\u00ed.
+PI_PARSE_ERROR_CWSIF0308.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+SIMPLE_ELEMENT_ERROR_CWSIF0309=CWSIF0309E: Byl nalezen neo\u010dek\u00e1van\u00fd prvek. N\u00e1zev prvku: {0}; obor n\u00e1zv\u016f prvku: {1}.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.explanation=Prvek XML obsahoval jednoduchou hodnotu, ale tato hodnota neodpov\u00edd\u00e1 datov\u00e9mu grafu.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed s typy modelovan\u00fdmi v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the attribute name, {3} is the attribute namespace
+ATTRIBUTE_ERROR_CWSIF0310=CWSIF0310E: Byl nalezen neo\u010dek\u00e1van\u00fd atribut. N\u00e1zev prvku {0}, obor n\u00e1zv\u016f prvku {1}, n\u00e1zev atributu {2}, obor n\u00e1zv\u016f atributu {3}.
+ATTRIBUTE_ERROR_CWSIF0310.explanation=Prvek XML obsahoval atribut, ale tento atribut neodpov\u00edd\u00e1 datov\u00e9mu grafu.
+ATTRIBUTE_ERROR_CWSIF0310.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed s typy modelovan\u00fdmi v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_PARSE_FAILURE_CWSIF0311=CWSIF0311E: Nelze analyzovat zpr\u00e1vu: v\u00fdjimka {0}.
+JMF_PARSE_FAILURE_CWSIF0311.explanation=CMSG0001
+JMF_PARSE_FAILURE_CWSIF0311.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_LENGTH_FAILURE_CWSIF0312=CWSIF0312E: Nelze vypo\u010d\u00edtat d\u00e9lku zpr\u00e1vy: v\u00fdjimka {0}.
+JMF_LENGTH_FAILURE_CWSIF0312.explanation=CMSG0001
+JMF_LENGTH_FAILURE_CWSIF0312.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_WRITE_FAILURE_CWSIF0313=CWSIF0313E: Nelze zapsat zpr\u00e1vu: v\u00fdjimka {0}.
+JMF_WRITE_FAILURE_CWSIF0313.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0313.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect length
+# {1} is the expected length
+JMF_WRITE_FAILURE_CWSIF0314=CWSIF0314E: D\u00e9lka zpr\u00e1vy {0} neodpov\u00eddala o\u010dek\u00e1van\u00e9 d\u00e9lce {1}.
+JMF_WRITE_FAILURE_CWSIF0314.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0314.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+JMF_FORMAT_ERROR_CWSIF0315=CWSIF0315E: Nespr\u00e1vn\u00fd \u0159et\u011bzec form\u00e1tov\u00e1n\u00ed: {0}
+JMF_FORMAT_ERROR_CWSIF0315.explanation=CMSG0001
+JMF_FORMAT_ERROR_CWSIF0315.useraction=Ov\u011b\u0159te, zda form\u00e1t zpr\u00e1vy odpov\u00edd\u00e1 spr\u00e1vn\u00e9 syntaxi pro slu\u017ebu JMF Data Access Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0321=CWSIF0321E: Nelze analyzovat zpr\u00e1vu: v\u00fdjimka {0}.
+BEAN_PARSE_FAILURE_CWSIF0321.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_PARSE_FAILURE_CWSIF0321.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+BEAN_CREATE_FAILURE_CWSIF0322=CWSIF0322E: Selhalo vytvo\u0159en\u00ed objektu DataObject: n\u00e1zev nad\u0159\u00edzen\u00e9ho typu {2}, n\u00e1zev vlastnosti {0}, obor n\u00e1zv\u016f {1}.
+BEAN_CREATE_FAILURE_CWSIF0322.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_CREATE_FAILURE_CWSIF0322.useraction=Ov\u011b\u0159te, zda jste importovali definice sch\u00e9matu WSDL nebo XML pro zpr\u00e1vu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+BEAN_PARSE_FAILURE_CWSIF0323=CWSIF0323E: Nelze ur\u010dit z\u00e1kladn\u00ed typ pro typ odvozen\u00fd z omezen\u00ed: n\u00e1zev typu {0}, obor n\u00e1zv\u016f {1}.
+BEAN_PARSE_FAILURE_CWSIF0323.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_PARSE_FAILURE_CWSIF0323.useraction=Ov\u011b\u0159te, zda jsou definice sch\u00e9matu WSDL nebo XML pro zpr\u00e1vu spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the accessor method name
+# {3} is the target Java class name
+BEAN_WRITE_FAILURE_CWSIF0324=CWSIF0324E: Selhalo z\u00edsk\u00e1n\u00ed a vyvol\u00e1n\u00ed metody p\u0159i zkoum\u00e1n\u00ed objektu, kter\u00fd p\u0159edstavoval vy\u010d\u00edslen\u00fd typ: n\u00e1zev typu {0}, obor n\u00e1zv\u016f {1}, n\u00e1zev metody {2}, n\u00e1zev c\u00edlov\u00e9 t\u0159\u00eddy {3}.
+BEAN_WRITE_FAILURE_CWSIF0324.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_WRITE_FAILURE_CWSIF0324.useraction=Ov\u011b\u0159te, zda dodan\u00e9 objekty maj\u00ed p\u0159\u00edslu\u0161n\u00e9 metody pro p\u0159\u00edstup.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0325=CWSIF0325E: Nelze zapsat zpr\u00e1vu: v\u00fdjimka: {0}.
+BEAN_WRITE_FAILURE_CWSIF0325.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_WRITE_FAILURE_CWSIF0325.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0326=CWSIF0326E: Selhalo z\u00edsk\u00e1n\u00ed a vyvol\u00e1n\u00ed metody p\u0159i zkoum\u00e1n\u00ed objektu typu bean: n\u00e1zev nad\u0159\u00edzen\u00e9ho typu {2}, n\u00e1zev vlastnosti {0}, obor n\u00e1zv\u016f {1}, n\u00e1zev metody {3}, n\u00e1zev c\u00edlov\u00e9 t\u0159\u00eddy {4}.
+GET_FIELD_FAILURE_CWSIF0326.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+GET_FIELD_FAILURE_CWSIF0326.useraction=Ov\u011b\u0159te, zda dodan\u00e9 objekty maj\u00ed p\u0159\u00edslu\u0161n\u00e9 metody pro p\u0159\u00edstup.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0327=CWSIF0327E: Selhalo z\u00edsk\u00e1n\u00ed a vyvol\u00e1n\u00ed metody p\u0159i zkoum\u00e1n\u00ed objektu typu bean: n\u00e1zev nad\u0159\u00edzen\u00e9ho typu {2}, n\u00e1zev vlastnosti {0}, obor n\u00e1zv\u016f {1}, n\u00e1zev metody {3}, n\u00e1zev c\u00edlov\u00e9 t\u0159\u00eddy {4}.
+SET_FIELD_FAILURE_CWSIF0327.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SET_FIELD_FAILURE_CWSIF0327.useraction=Ov\u011b\u0159te, zda dodan\u00e9 objekty maj\u00ed p\u0159\u00edslu\u0161n\u00e9 metody pro p\u0159\u00edstup.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0328=CWSIF0328E: Selhalo z\u00edsk\u00e1n\u00ed a vyvol\u00e1n\u00ed metody p\u0159i zkoum\u00e1n\u00ed objektu typu bean: n\u00e1zev nad\u0159\u00edzen\u00e9ho typu {2}, n\u00e1zev vlastnosti {0}, obor n\u00e1zv\u016f {1}, n\u00e1zev metody {3}, n\u00e1zev c\u00edlov\u00e9 t\u0159\u00eddy {4}.
+SET_FIELD_FAILURE_CWSIF0328.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SET_FIELD_FAILURE_CWSIF0328.useraction=Ov\u011b\u0159te, zda dodan\u00e9 objekty maj\u00ed p\u0159\u00edslu\u0161n\u00e9 metody pro p\u0159\u00edstup.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+MIME_PARSE_FAILURE_CWSIF0329=CWSIF0329E: Selhala anal\u00fdza p\u0159\u00edlohy MIME: typ obsahu {0}.
+MIME_PARSE_FAILURE_CWSIF0329.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+MIME_PARSE_FAILURE_CWSIF0329.useraction=Ov\u011b\u0159te, zda p\u0159edan\u00e9 objekty jsou vhodn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the fault feature name
+# {1} is the namespace
+# {2} is the location
+FAULT_PARSE_FAILURE_CWSIF0330=CWSIF0330E: Selhalo vytvo\u0159en\u00ed objektu DataObject pro chybovou zpr\u00e1vu SOAP: n\u00e1zev funkce selh\u00e1n\u00ed {0}, obor n\u00e1zv\u016f {1}, m\u00edsto {2}.
+FAULT_PARSE_FAILURE_CWSIF0330.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+FAULT_PARSE_FAILURE_CWSIF0330.useraction=Ov\u011b\u0159te, zda jsou pro zpr\u00e1vu k dispozici definice sch\u00e9matu WSDL nebo XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0331=CWSIF0331E: Selhalo z\u00edsk\u00e1n\u00ed a vyvol\u00e1n\u00ed metody p\u0159i zkoum\u00e1n\u00ed objektu typu bean: n\u00e1zev nad\u0159\u00edzen\u00e9ho typu {2}, n\u00e1zev vlastnosti {0}, obor n\u00e1zv\u016f {1}, n\u00e1zev metody {3}, n\u00e1zev c\u00edlov\u00e9 t\u0159\u00eddy {4}.
+GET_FIELD_FAILURE_CWSIF0331.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+GET_FIELD_FAILURE_CWSIF0331.useraction=Ov\u011b\u0159te, zda dodan\u00e9 objekty maj\u00ed p\u0159\u00edslu\u0161n\u00e9 metody pro p\u0159\u00edstup.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the Java class name
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332=CWSIF0332E: Selhalo vytvo\u0159en\u00ed nov\u00e9 instance objektu typu bean: n\u00e1zev nad\u0159\u00edzen\u00e9ho typu {2}, n\u00e1zev vlastnosti {0}, obor n\u00e1zv\u016f {1}, n\u00e1zev t\u0159\u00eddy {3}.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.useraction=Ov\u011b\u0159te, zda lze vytvo\u0159it instance objektu typu bean prost\u0159ednictv\u00edm objektu Class.newInstance().
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333=CWSIF0333E: Selhalo vyhled\u00e1n\u00ed modelu pro objekt DataObject reprezentuj\u00edc\u00ed zpr\u00e1vu pole k\u00f3dovanou pomoc\u00ed protokolu SOAP: obor n\u00e1zv\u016f {0}, m\u00edsto {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.useraction=Ov\u011b\u0159te, zda jsou pro zpr\u00e1vu k dispozici definice sch\u00e9matu WSDL nebo XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334=CWSIF0334E: Selhalo vyhled\u00e1n\u00ed modelu pro objekt DataObject reprezentuj\u00edc\u00ed zpr\u00e1vu pole k\u00f3dovanou pomoc\u00ed protokolu SOAP: obor n\u00e1zv\u016f {0}, m\u00edsto {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.useraction=Ov\u011b\u0159te, zda jsou pro zpr\u00e1vu k dispozici definice sch\u00e9matu WSDL nebo XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+# {1} is the content transfer encoding
+# {2} is the content id
+MIME_WRITE_FAILURE_CWSIF0335=CWSIF0335E: Selhal z\u00e1pis p\u0159\u00edlohy MIME: typ obsahu {0}, k\u00f3dov\u00e1n\u00ed p\u0159enosu obsahu {1}, id obsahu {2}.
+MIME_WRITE_FAILURE_CWSIF0335.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+MIME_WRITE_FAILURE_CWSIF0335.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou vhodn\u00e1 pro vytv\u00e1\u0159en\u00ed \u010d\u00e1sti t\u011bla zpr\u00e1vy MIME.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation name
+# {1} is the message name
+FAULT_WRITE_FAILURE_CWSIF0336=CWSIF0336E: Selhal z\u00e1pis chybov\u00e9 zpr\u00e1vy: n\u00e1zev zpr\u00e1vy {0}, n\u00e1zev operace {1}.
+FAULT_WRITE_FAILURE_CWSIF0336.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+FAULT_WRITE_FAILURE_CWSIF0336.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou vhodn\u00e1 pro vytv\u00e1\u0159en\u00ed detailn\u00edch prvk\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_CREATE_FAILURE_CWSIF0338=CWSIF0338E: Nelze vytvo\u0159it nov\u00fd objekt SDO DataGraph: v\u00fdjimka {0}.
+BEAN_CREATE_FAILURE_CWSIF0338.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_CREATE_FAILURE_CWSIF0338.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0341=CWSIF0341E: Nelze analyzovat zpr\u00e1vu: v\u00fdjimka {0}.
+BEAN_PARSE_FAILURE_CWSIF0341.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_PARSE_FAILURE_CWSIF0341.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0342=CWSIF0342E: Nelze zapsat zpr\u00e1vu: v\u00fdjimka: {0}.
+BEAN_WRITE_FAILURE_CWSIF0342.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_WRITE_FAILURE_CWSIF0342.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_LENGTH_FAILURE_CWSIF0343=CWSIF0343E: Nelze vypo\u010d\u00edtat d\u00e9lku zpr\u00e1vy: v\u00fdjimka {0}.
+BEAN_LENGTH_FAILURE_CWSIF0343.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_LENGTH_FAILURE_CWSIF0343.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the attribute value
+TYPE_MAPPING_FAILURE_CWSIF0346=CWSIF0346E: Selhalo zpracov\u00e1n\u00ed hodnoty atributu: n\u00e1zev typu {0}, obor n\u00e1zv\u016f {1}, hodnota atributu {2}.
+TYPE_MAPPING_FAILURE_CWSIF0346.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+TYPE_MAPPING_FAILURE_CWSIF0346.useraction=Ov\u011b\u0159te, zda je dodan\u00e1 hodnota atributu p\u0159\u00edslu\u0161n\u00e9ho typu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0347=CWSIF0347E: Selhalo mapov\u00e1n\u00ed typu sch\u00e9matu do t\u0159\u00eddy Java: n\u00e1zev typu {0}, obor n\u00e1zv\u016f {1}.
+TYPE_MAPPING_FAILURE_CWSIF0347.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+TYPE_MAPPING_FAILURE_CWSIF0347.useraction=Ov\u011b\u0159te, \u017ee bylo poskytnuto p\u0159\u00edslu\u0161n\u00e9 mapov\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0348=CWSIF0348E: Selhalo mapov\u00e1n\u00ed typu sch\u00e9matu do t\u0159\u00eddy Java: n\u00e1zev typu {0}, obor n\u00e1zv\u016f {1}.
+TYPE_MAPPING_FAILURE_CWSIF0348.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+TYPE_MAPPING_FAILURE_CWSIF0348.useraction=Ov\u011b\u0159te, \u017ee bylo poskytnuto p\u0159\u00edslu\u0161n\u00e9 mapov\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+BEAN_FORMAT_ERROR_CWSIF0350=CWSIF0350E: Nespr\u00e1vn\u00fd \u0159et\u011bzec form\u00e1tov\u00e1n\u00ed: {0}.
+BEAN_FORMAT_ERROR_CWSIF0350.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku, odezvy nebo poruchy pro Webov\u00e9 slu\u017eby do\u0161lo k chyb\u011b.
+BEAN_FORMAT_ERROR_CWSIF0350.useraction=Ov\u011b\u0159te, zda form\u00e1t zpr\u00e1vy odpov\u00edd\u00e1 spr\u00e1vn\u00e9 syntaxi pro slu\u017ebu Bean Data Access Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+MESSAGE_FEATURE_CWSIF0353=CWSIF0353E: Selhalo vyhled\u00e1n\u00ed metadat pro zpr\u00e1vu. Obor n\u00e1zv\u016f slu\u017eby {0}, n\u00e1zev slu\u017eby {1}, n\u00e1zev portu {2}, n\u00e1zev operace {3}, n\u00e1zev zpr\u00e1vy {4}.
+MESSAGE_FEATURE_CWSIF0353.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nenalezl metadata pro danou zpr\u00e1vu.
+MESSAGE_FEATURE_CWSIF0353.useraction=Ov\u011b\u0159te, zda jste importovali definice WSDL pro zpr\u00e1vu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the element name, {2} is the element namespace
+MIME_ELEM_ERROR_CWSIF0354=CWSIF0354E: V \u010d\u00e1sti zpr\u00e1vy byl nalezen neo\u010dek\u00e1van\u00fd prvek. N\u00e1zev \u010d\u00e1sti zpr\u00e1vy {0}, n\u00e1zev prvku {1}, obor n\u00e1zv\u016f prvku {2}.
+MIME_ELEM_ERROR_CWSIF0354.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP zpracov\u00e1val \u010d\u00e1st zpr\u00e1vy, jej\u00ed\u017e obsah je delegov\u00e1n do p\u0159\u00edlohy MIME, ale tato \u010d\u00e1st obsahovala tak\u00e9 vno\u0159en\u00fd prvek.
+MIME_ELEM_ERROR_CWSIF0354.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attribute name, {2} is the attribute namespace
+MIME_ATTR_ERROR_CWSIF0355=CWSIF0355E: V \u010d\u00e1sti zpr\u00e1vy byl nalezen neo\u010dek\u00e1van\u00fd atribut. N\u00e1zev \u010d\u00e1sti zpr\u00e1vy {0}, n\u00e1zev atributu {1}, obor n\u00e1zv\u016f atributu {2}.
+MIME_ATTR_ERROR_CWSIF0355.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP zpracov\u00e1val \u010d\u00e1st zpr\u00e1vy, jej\u00ed\u017e obsah je delegov\u00e1n do p\u0159\u00edlohy MIME, ale tato \u010d\u00e1st obsahovala tak\u00e9 neo\u010dek\u00e1van\u00fd atribut.
+MIME_ATTR_ERROR_CWSIF0355.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the exception
+MIME_REF_ERROR_CWSIF0356=CWSIF0356E: Nelze zpracovat p\u0159\u00edlohu MIME. N\u00e1zev \u010d\u00e1st zpr\u00e1vy {0}, v\u00fdjimka {1}.
+MIME_REF_ERROR_CWSIF0356.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl v\u00fdjimku p\u0159i zpracov\u00e1n\u00ed p\u0159\u00edlohy MIME, na kterou existuje reference v \u010d\u00e1sti zpr\u00e1vy.
+MIME_REF_ERROR_CWSIF0356.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attachment reference
+MIME_REF_NOT_FOUND_CWSIF0357=CWSIF0357E: Nelze naj\u00edt p\u0159\u00edlohu MIME. N\u00e1zev \u010d\u00e1sti zpr\u00e1vy {0}, reference {1}.
+MIME_REF_NOT_FOUND_CWSIF0357.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nemohl naj\u00edt v\u00fdjimku p\u0159i zpracov\u00e1n\u00ed p\u0159\u00edlohy MIME, na kterou existuje reference v \u010d\u00e1sti zpr\u00e1vy.
+MIME_REF_NOT_FOUND_CWSIF0357.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content id, {1} is the content type, {2} is the exception.
+MIME_IO_ERROR_CWSIF0358=CWSIF0358E: Nelze zpracovat p\u0159\u00edlohu MIME. ID obsahu {0}, typ obsahu {1}, v\u00fdjimka {2}.
+MIME_IO_ERROR_CWSIF0358.explanation=Syntaktick\u00fd analyz\u00e1tor SOAP nalezl v\u00fdjimku IOException p\u0159i zpracov\u00e1n\u00ed p\u0159\u00edlohy MIME s dan\u00fdm ID a typem obsahu.
+MIME_IO_ERROR_CWSIF0358.useraction=Ov\u011b\u0159te, zda data ve zpr\u00e1v\u011b jsou kompatibiln\u00ed se specifikac\u00ed protokolu SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+NO_DATA_MEDIATOR_CWSIF0362=CWSIF0362E: Form\u00e1t zpr\u00e1vy {0} je chybn\u00fd.
+NO_DATA_MEDIATOR_CWSIF0362.explanation=Poskytnut\u00fd form\u00e1t zpr\u00e1vy neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9mu form\u00e1tu zpr\u00e1vy.
+NO_DATA_MEDIATOR_CWSIF0362.useraction=Ov\u011b\u0159te, \u017ee je poskytnut spr\u00e1vn\u00fd form\u00e1t zpr\u00e1vy.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This message is cloned as INVALID_ARGUMENT_CWSIF0381.
+INVALID_ARGUMENT_CWSIF0371=CWSIF0371E: Zadan\u00e1 hodnota {0} nen\u00ed platn\u00e1 pro parametr {1} metody {2}.
+INVALID_ARGUMENT_CWSIF0371.explanation=Byla zad\u00e1na hodnota parametru, kter\u00e1 nen\u00ed povolena pro definovanou metodu.
+INVALID_ARGUMENT_CWSIF0371.useraction=Ov\u011b\u0159te, zda jsou do dan\u00e9 metody p\u0159ed\u00e1v\u00e1ny platn\u00e9 parametry.
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_CONTENT_CWSIF0372=CWSIF0372E: P\u0159i z\u00edsk\u00e1v\u00e1n\u00ed obsahu prvku zpr\u00e1vy do\u0161lo k v\u00fdjimce IOException.
+UNABLE_TO_GET_CONTENT_CWSIF0372.explanation=Nebylo mo\u017en\u00e9 deserializovat prvek zpr\u00e1vy v d\u016fsledku propojen\u00e9 v\u00fdjimky IOException.
+UNABLE_TO_GET_CONTENT_CWSIF0372.useraction=Zjist\u011bte a vy\u0159e\u0161te probl\u00e9m uveden\u00fd v propojen\u00e9 v\u00fdjimce IOException.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_COPY_ERROR_CWSIF0373=CWSIF0373E: P\u0159i kop\u00edrov\u00e1n\u00ed prvku zpr\u00e1vy do\u0161lo k v\u00fdjimce: {0}.
+ELEMENT_COPY_ERROR_CWSIF0373.explanation=Nebylo mo\u017en\u00e9 kop\u00edrovat prvek zpr\u00e1vy v d\u016fsledku propojen\u00e9 v\u00fdjimky.
+ELEMENT_COPY_ERROR_CWSIF0373.useraction=Zjist\u011bte a vy\u0159e\u0161te probl\u00e9m uveden\u00fd v propojen\u00e9 v\u00fdjimce.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This is a clone of INVALID_ARGUMENT_CWSIF0371.
+INVALID_ARGUMENT_CWSIF0381=CWSIF0381E: Zadan\u00e1 hodnota {0} nen\u00ed platn\u00e1 pro parametr {1} metody {2}.
+INVALID_ARGUMENT_CWSIF0381.explanation=Byla zad\u00e1na hodnota parametru, kter\u00e1 nen\u00ed povolena pro definovanou metodu.
+INVALID_ARGUMENT_CWSIF0381.useraction=Ov\u011b\u0159te, zda jsou do dan\u00e9 metody p\u0159ed\u00e1v\u00e1ny platn\u00e9 parametry.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method in which the error was found.
+UNABLE_TO_GET_CONTENT_CWSIF0382=CWSIF0382E: P\u0159i serializaci nebo deserializaci zpr\u00e1vy v metod\u011b {0} do\u0161lo k v\u00fdjimce IOException.
+UNABLE_TO_GET_CONTENT_CWSIF0382.explanation=Nebylo mo\u017en\u00e9 serializovat nebo deserializovat prvek zpr\u00e1vy v d\u016fsledku propojen\u00e9 v\u00fdjimky IOException.
+UNABLE_TO_GET_CONTENT_CWSIF0382.useraction=Zjist\u011bte a vy\u0159e\u0161te probl\u00e9m uveden\u00fd v propojen\u00e9 v\u00fdjimce IOException.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the class type of the element that was supplied.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383=CWSIF0383E: Seznam MimeElementList podporuje pouze polo\u017eky MimeElement. Dodan\u00fd parametr byl typu {0}.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.explanation=Seznam MimeElementList je specializovan\u00e1 implementace, kter\u00e1 podporuje pouze polo\u017eky seznamu MimeElement.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.useraction=Vytvo\u0159te objekt MimeElement obsahuj\u00edc\u00ed parametr a teprve potom se jej pokuste p\u0159idat do seznamu.
+
+# -------------------------------------------------------------------------------------------------
+# multipart/related should not be translated
+# {0} is the class type of the element that was supplied.
+NON_MULTIPART_MESSAGE_CWSIF0384=CWSIF0384E: Zadan\u00e1 zpr\u00e1va je typu {0} a nejedn\u00e1 se o po\u017eadovan\u00fd typ souvisej\u00edc\u00ed s v\u00edce \u010d\u00e1stmi.
+NON_MULTIPART_MESSAGE_CWSIF0384.explanation=Implementace nepodporuje typ zadan\u00e9 zpr\u00e1vy.
+NON_MULTIPART_MESSAGE_CWSIF0384.useraction=Pro tento obslu\u017en\u00fd program nezad\u00e1vejte zpr\u00e1vy zadan\u00e9ho typu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of contentType headers that exist in the message.
+CONTENT_HEADER_CARDINALITY_CWSIF0385=CWSIF0385E: Ve zpr\u00e1v\u011b bylo nalezeno {0} polo\u017eky z\u00e1hlav\u00ed ContentType.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.explanation=Tato implementace podporuje pouze zpr\u00e1vy, kter\u00e9 obsahuj\u00ed p\u0159esn\u011b jedno pole z\u00e1hlav\u00ed ContentType.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.useraction=Do tohoto obslu\u017en\u00e9ho programu nedod\u00e1vejte zpr\u00e1vy obsahuj\u00edc\u00ed \u017e\u00e1dn\u00e9 \u010di v\u00edce ne\u017e jedno pole typu obsahu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_LIST_COPY_ERROR_CWSIF0386=CWSIF0386E: P\u0159i kop\u00edrov\u00e1n\u00ed seznamu prvku zpr\u00e1vy do\u0161lo k v\u00fdjimce: {0}.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.explanation=Nebylo mo\u017en\u00e9 kop\u00edrovat seznam prvk\u016f zpr\u00e1vy v d\u016fsledku propojen\u00e9 v\u00fdjimky.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.useraction=Zjist\u011bte a vy\u0159e\u0161te probl\u00e9m uveden\u00fd v propojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name
+# {1} is the containing message name
+NO_TYPE_FOR_PART_CWSIF0431=CWSIF0431E: \u010c\u00e1st WSDL {0} zpr\u00e1vy {1} nen\u00ed p\u0159idru\u017een\u00e1 k typu nebo prvku.
+NO_TYPE_FOR_PART_CWSIF0431.explanation=Ka\u017ed\u00e1 \u010d\u00e1st zpr\u00e1vy WSDL mus\u00ed b\u00fdt p\u0159idru\u017een\u00e1 k typu nebo prvku sch\u00e9matu XML.
+NO_TYPE_FOR_PART_CWSIF0431.useraction=Ov\u011b\u0159te, zda definice ka\u017ed\u00e9 \u010d\u00e1sti zpr\u00e1vy obsahuje atribut 'typ' nebo 'prvek'.
+
+# -------------------------------------------------------------------------------------------------
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500=CWSIF0500E: Nelze z\u00edskat p\u0159\u00edstup ke zpr\u00e1v\u011b mapov\u00e1n\u00ed JMS jako k aplikaci SDO DataGraph.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.explanation=P\u0159\u00edstup zpr\u00e1vy mapov\u00e1n\u00ed JMS p\u0159es rozhran\u00ed SDO nen\u00ed podporov\u00e1n.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.useraction=P\u0159epi\u0161te aplikaci tak, aby pou\u017e\u00edvala podporovanou funkci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501=CWSIF0501E: P\u0159i pokusu o p\u0159\u00edstup k datov\u00e9mu grafu zat\u00ed\u017een\u00ed zpr\u00e1vy jako k bajtov\u00e9mu poli do\u0161lo k chyb\u011b. Propojen\u00e1 v\u00fdjimka je {0}.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.explanation=Serializace datov\u00e9ho grafu zat\u00ed\u017een\u00ed selhala.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502=CWSIF0502E: P\u0159i pokusu o vytvo\u0159en\u00ed datov\u00e9ho grafu zat\u00ed\u017een\u00ed zpr\u00e1vy z bajtov\u00e9ho pole pomoc\u00ed form\u00e1tu {0} do\u0161lo k chyb\u011b. Propojen\u00e1 v\u00fdjimka je {1}.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.explanation=Anal\u00fdza bajtov\u00e9ho pole pro vytvo\u0159en\u00ed datov\u00e9ho grafu selhala.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the DataGraph format of the current message
+# {1} is the DataGraph format that was passed in to change the current message to
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503=CWSIF0503E: P\u0159evod k\u00f3du z form\u00e1tu {0} na form\u00e1t {1} nen\u00ed podporov\u00e1n.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.explanation=P\u0159evod k\u00f3du mezi aktu\u00e1ln\u00edm form\u00e1tem datov\u00e9ho grafu SDO a nov\u00fdm form\u00e1tem datov\u00e9ho grafu nen\u00ed podporov\u00e1n.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.useraction=P\u0159epi\u0161te aplikaci tak, aby pou\u017e\u00edvala podporovanou funkci.
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504=CWSIF0504E: P\u0159i pokusu o vytvo\u0159en\u00ed datov\u00e9ho grafu zat\u00ed\u017een\u00ed zpr\u00e1vy z argumentu bajtov\u00e9ho pole null pomoc\u00ed form\u00e1tu {0} do\u0161lo k chyb\u011b. Propojen\u00e1 v\u00fdjimka je {1}.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.explanation=K sestaven\u00ed datov\u00e9ho grafu tohoto form\u00e1tu je po\u017eadov\u00e1no bajtov\u00e9 pole s hodnotou jinou ne\u017e null.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+WSDL_MISSING_CWSIF0600=CWSIF0600E: \u0158et\u011bzec form\u00e1tu ur\u010dil port s n\u00e1zvem {0} v r\u00e1mci slu\u017eby s n\u00e1zvem {1} a oborem n\u00e1zv\u016f {2} v um\u00edst\u011bn\u00ed k\u00f3du WSDL {3}. K\u00f3d WSDL nelze naj\u00edt.
+WSDL_MISSING_CWSIF0600.explanation=K\u00f3d WSDL ozna\u010den\u00fd \u0159et\u011bzcem form\u00e1tu nelze naj\u00edt. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee um\u00edst\u011bn\u00ed ve form\u00e1tu je chybn\u00e9 nebo \u017ee k\u00f3d WSDL nebyl implementov\u00e1n.
+WSDL_MISSING_CWSIF0600.useraction=Ov\u011b\u0159te, zda je um\u00edst\u011bn\u00ed k\u00f3du WSDL v \u0159et\u011bzci form\u00e1tu spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+SERVICE_MISSING_CWSIF0601=CWSIF0601E: \u0158et\u011bzec form\u00e1tu ur\u010dil port s n\u00e1zvem {0} v r\u00e1mci slu\u017eby s n\u00e1zvem {1} a oborem n\u00e1zv\u016f {2} v um\u00edst\u011bn\u00ed k\u00f3du WSDL {3}. Byl nalezen k\u00f3d WSDL, ale neobsahoval pojmenovac\u00ed slu\u017ebu.
+SERVICE_MISSING_CWSIF0601.explanation=\u0158et\u011bzec form\u00e1tu neodpov\u00eddal definic\u00edm v k\u00f3du WSDL. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee n\u00e1zev slu\u017eby nebo obor n\u00e1zv\u016f ve form\u00e1tu je chybn\u00fd nebo \u017ee byl implementov\u00e1n chybn\u00fd k\u00f3d WSDL.
+SERVICE_MISSING_CWSIF0601.useraction=Ov\u011b\u0159te, zda n\u00e1zev slu\u017eby a obor n\u00e1zv\u016f v \u0159et\u011bzci form\u00e1tu odpov\u00edd\u00e1 definic\u00edm v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+PORT_MISSING_CWSIF0602=CWSIF0602E: \u0158et\u011bzec form\u00e1tu ur\u010dil port s n\u00e1zvem {0} v r\u00e1mci slu\u017eby s n\u00e1zvem {1} a oborem n\u00e1zv\u016f {2} v um\u00edst\u011bn\u00ed k\u00f3du WSDL {3}. Byla nalezena slu\u017eba, ale ta neobsahovala pojmenovan\u00fd port.
+PORT_MISSING_CWSIF0602.explanation=\u0158et\u011bzec form\u00e1tu neodpov\u00eddal definic\u00edm v k\u00f3du WSDL. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee n\u00e1zev portu ve form\u00e1tu je chybn\u00fd nebo \u017ee byl implementov\u00e1n chybn\u00fd k\u00f3d WSDL.
+PORT_MISSING_CWSIF0602.useraction=Ov\u011b\u0159te, zda n\u00e1zev portu v \u0159et\u011bzci form\u00e1tu odpov\u00edd\u00e1 definici v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+BINDING_MISSING_CWSIF0603=CWSIF0603E: \u0158et\u011bzec form\u00e1tu ur\u010dil port s n\u00e1zvem {0} v r\u00e1mci slu\u017eby s n\u00e1zvem {1} a oborem n\u00e1zv\u016f {2} v um\u00edst\u011bn\u00ed k\u00f3du WSDL {3}. Byl nalezen port, ale neobsahoval referenci na vazbu.
+BINDING_MISSING_CWSIF0603.explanation=\u0158et\u011bzec form\u00e1tu neodpov\u00eddal definic\u00edm v k\u00f3du WSDL. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee k\u00f3d WSDL je ne\u00fapln\u00fd nebo \u017ee byl implementov\u00e1n chybn\u00fd k\u00f3d WSDL.
+BINDING_MISSING_CWSIF0603.useraction=Ov\u011b\u0159te, zda je port p\u0159idru\u017een\u00fd k vazb\u011b v k\u00f3du WSDL.
+
+# -------------------------------------------------------------------------------------------------
+DIFFERENT_LENGTH_LISTS_CWSIF0700=CWSIF0700E: Zpr\u00e1va mapov\u00e1n\u00ed nem\u00e1 stejn\u00fd po\u010det n\u00e1zv\u016f a hodnot.
+DIFFERENT_LENGTH_LISTS_CWSIF0700.explanation=Seznam jmen mapov\u00e1n\u00ed a seznamy hodnoty mapov\u00e1n\u00ed mus\u00ed b\u00fdt stejn\u011b dlouh\u00e9. Spole\u010dn\u011b reprezentuj\u00ed dvojici n\u00e1zvu a hodnoty zpr\u00e1vy mapov\u00e1n\u00ed.
+DIFFERENT_LENGTH_LISTS_CWSIF0700.useraction=Ov\u011b\u0159te, zda maj\u00ed oba seznamy stejnou d\u00e9lku.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+JMS_FORMAT_ERROR_CWSIF0711=CWSIF0711E: Nespr\u00e1vn\u00fd \u0159et\u011bzec form\u00e1tov\u00e1n\u00ed: {0}
+JMS_FORMAT_ERROR_CWSIF0711.explanation=\u0158et\u011bzec form\u00e1tu neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu z \u0159et\u011bzc\u016f form\u00e1tu rozpoznan\u00fdch pro zpr\u00e1vu JMS.
+JMS_FORMAT_ERROR_CWSIF0711.useraction=Ujist\u011bte se, \u017ee je form\u00e1t zpr\u00e1vy spr\u00e1vn\u00fd pro typ zpr\u00e1vy podporovan\u00fd pro zpr\u00e1vy JMS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_WRITE_ERROR_CWSIF0712=CWSIF0712E: Zpr\u00e1vu rozhran\u00ed JMS nelze serializovat, v\u00fdjimka: {0}
+JMS_WRITE_ERROR_CWSIF0712.explanation=Program se pokou\u0161\u00ed serializovat zpr\u00e1vu rozhran\u00ed JMS a selhal.
+JMS_WRITE_ERROR_CWSIF0712.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the existing elements type name
+JMS_BAD_MODEL_ERROR_CWSIF0713=CWSIF0713E: Objekt DataObject typu {0} nen\u00ed vhodn\u00fd jako zat\u00ed\u017een\u00ed zpr\u00e1vy rozhran\u00ed JMS.
+JMS_BAD_MODEL_ERROR_CWSIF0713.explanation=Program se pokou\u0161\u00ed ov\u011b\u0159it vhodnost dodan\u00e9ho objektu DataObject k vytvo\u0159en\u00ed zat\u00ed\u017een\u00ed zpr\u00e1vy rozhran\u00ed JMS.
+JMS_BAD_MODEL_ERROR_CWSIF0713.useraction=Upravte program tak, aby dod\u00e1val objekt DataObject p\u0159\u00edslu\u0161n\u00e9ho typu.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_PARSER_CONFIG_ERROR_CWSIF0714=CWSIF0714E: B\u011bhem konfigurace analyz\u00e1toru XML pro \u010dten\u00ed zpr\u00e1vy proudu rozhran\u00ed JMS do\u0161lo k chyb\u011b; v\u00fdjimka: {0}
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.explanation=P\u0159i konfiguraci analyz\u00e1toru XML do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_PARSE_ERROR_CWSIF0715=CWSIF0715E: B\u011bhem anal\u00fdzy informa\u010dn\u00edho obsahu zpr\u00e1vy proudu rozhran\u00ed JMS do\u0161lo k chyb\u011b; v\u00fdjimka: {0}.
+JMS_STREAM_PARSE_ERROR_CWSIF0715.explanation=Z\u00e1t\u011b\u017e zpr\u00e1vy proudu rozhran\u00ed nen\u00ed platn\u00fd k\u00f3d XML.
+JMS_STREAM_PARSE_ERROR_CWSIF0715.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_READ_IO_ERROR_CWSIF0716=CWSIF0716E: Do\u0161lo k chyb\u011b vstupu/v\u00fdstupu v r\u00e1mci slu\u017eby JMS Data Access Service; v\u00fdjimka: {0}.
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.explanation=V r\u00e1mci zpracov\u00e1n\u00ed SAX do\u0161lo k chyb\u011b vstupu/v\u00fdstupu p\u0159i pokusu o anal\u00fdzu t\u011bla zpr\u00e1vy proudu rozhran\u00ed JMS.
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717=CWSIF0717E: Do\u0161lo k chyb\u011b vstupu/v\u00fdstupu v r\u00e1mci slu\u017eby JMS Data Access Service; v\u00fdjimka: {0}.
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.explanation=P\u0159i pokusu o z\u00e1pis informa\u010dn\u00edho obsahu zpr\u00e1vy proudu rozhran\u00ed JMS do\u0161lo k chyb\u011b vstupu/v\u00fdstupu.
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_TYPE_ERROR_CWSIF0718=CWSIF0718E: P\u0159i pokusu o z\u00e1pis zpr\u00e1vy proudu rozhran\u00ed JMS obsahuj\u00edc\u00ed prvek typu {0} do\u0161lo k chyb\u011b.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.explanation=Uveden\u00fd typ prvku nen\u00ed ve zpr\u00e1v\u011b proudu rozhran\u00ed JMS povolen.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.useraction=\u00dapravou programu zajist\u011bte, aby nebyly objekty tohoto typu vkl\u00e1d\u00e1ny do zpr\u00e1vy proudu.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_WRITE_ERROR_CWSIF0719=CWSIF0719E: B\u011bhem z\u00e1pisu informa\u010dn\u00edho obsahu zpr\u00e1vy proudu rozhran\u00ed JMS do\u0161lo k chyb\u011b; v\u00fdjimka: {0}.
+JMS_STREAM_WRITE_ERROR_CWSIF0719.explanation=B\u011bhem z\u00e1pisu informa\u010dn\u00edho obsahu zpr\u00e1vy proudu rozhran\u00ed JMS do bajt\u016f do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+JMS_STREAM_WRITE_ERROR_CWSIF0719.useraction=Prozkoumejte p\u0159ipojenou v\u00fdjimku a ur\u010dete probl\u00e9m.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type of the supplied data
+# {1} is the supplied format
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720=CWSIF0720E: P\u0159i pokusu o ov\u011b\u0159en\u00ed vhodnosti dodan\u00e9ho objektu DataObject typu {0} k vytvo\u0159en\u00ed zat\u00ed\u017een\u00ed zpr\u00e1vy rozhran\u00ed JMS s form\u00e1tem {1} do\u0161lo k chyb\u011b.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.explanation=Typ objektu DataObject dodan\u00fd jako z\u00e1t\u011b\u017e zpr\u00e1vy rozhran\u00ed JMS mus\u00ed b\u00fdt kompatibiln\u00ed s form\u00e1tem dan\u00e9 zpr\u00e1vy.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.useraction=\u00dapravou programu zajist\u011bte, aby byl dodan\u00fd objekt DataObject kompatibiln\u00ed s form\u00e1tem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721=CWSIF0721E: P\u0159i inicializaci t\u0159\u00eddy do\u0161lo k chyb\u011b, v\u00fdjimka: {0}
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.explanation=CMSG0001
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIF9999=CWSIF9999E: {0}
+TEMPORARY_CWSIF9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed n\u00e1pov\u011bdu v okoln\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIF9999.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.

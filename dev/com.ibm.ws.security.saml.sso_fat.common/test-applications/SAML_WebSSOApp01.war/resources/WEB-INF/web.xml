@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app id="WebApp_ID"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.5">
+      <display-name>HTTP router for SAML_WebSSOApp01.war</display-name>
+      <servlet id="Servlet_1">
+         <servlet-name>samlwebsso.idpinitiated.websso01.service.WebSSOSrvlt01</servlet-name>
+         <servlet-class>samlwebsso.idpinitiated.websso01.service.WebSSOSrvlt01</servlet-class>
+         <security-role-ref id="SecurityRoleRef_1">
+            <role-name>Emp</role-name>
+            <role-link>Employee</role-link>
+         </security-role-ref>
+         <security-role-ref id="SecurityRoleRef_2">
+            <role-name>Mgr</role-name>
+            <role-link>Manager</role-link>
+         </security-role-ref>
+      </servlet>
+      <servlet-mapping id="ServletMapping_1">
+         <servlet-name>samlwebsso.idpinitiated.websso01.service.WebSSOSrvlt01</servlet-name>
+         <url-pattern>WebSSOSrvlt01Service</url-pattern>
+      </servlet-mapping>
+      <security-constraint id="SecurityConstraint_1">
+         <web-resource-collection id="WebResourceCollection_1">
+            <web-resource-name>Protected Area</web-resource-name>
+            <url-pattern>/WebSSOSrvlt01Service</url-pattern>
+            <http-method>DELETE</http-method>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>PUT</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>Manager</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <login-config id="LoginConfig_1">
+         <auth-method>BASIC</auth-method>
+         <realm-name>Example Basic Authentication Area</realm-name>
+      </login-config>
+      <security-role id="SecurityRole_3">
+         <description>AllAuthenticated role</description>
+         <role-name>AllAuthenticated</role-name>
+      </security-role>
+      <security-role id="SecurityRole_1">
+         <description>Manager in an enterprise</description>
+         <role-name>Manager</role-name>
+      </security-role>
+      <security-role id="SecurityRole_2">
+         <description>Employee in an enterprise</description>
+         <role-name>Employee</role-name>
+      </security-role>
+      <security-role id="SecurityRole_4">
+         <description>Open to the world with no security protection</description>
+         <role-name>Everyone</role-name>
+      </security-role>
+      <security-role id="SecurityRole_5">
+         <description>Role for the WAS server ID</description>
+         <role-name>EJBServerRole</role-name>
+      </security-role>
+   </web-app>

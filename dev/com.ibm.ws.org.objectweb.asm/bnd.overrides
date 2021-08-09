@@ -1,0 +1,11 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.objectweb.asm
+Bundle-Name: ASM all classes
+Implementation-Title: ASM all classes
+
+DynamicImport-Package: *
+
+Export-Package: \
+  org.objectweb.asm.*;version="9.1"

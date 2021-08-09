@@ -1,0 +1,119 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+  <interceptor class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor">
+     <ejb-ref name="AnnotationInjectionInterceptor/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="AnnotationInjectionInterceptor/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="AnnotationInjectionInterceptor/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="AnnotationInjectionInterceptor/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="AnnotationInjectionInterceptor/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+  </interceptor>
+
+  <interceptor class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor">
+     <ejb-ref name="XMLInjectionInterceptor/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="XMLInjectionInterceptor/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="XMLInjectionInterceptor/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="XMLInjectionInterceptor/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="XMLInjectionInterceptor/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+  </interceptor>
+
+  <interceptor class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3">
+     <ejb-ref name="XMLInjectionInterceptor3/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="XMLInjectionInterceptor3/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="XMLInjectionInterceptor3/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="XMLInjectionInterceptor3/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="XMLInjectionInterceptor3/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+  </interceptor>
+
+  <interceptor class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationDSInjectionInterceptor">
+      <resource-ref name="AnnotationDS/jdbc/dsCustomLogin" binding-name="jdbc/TestDataSource">
+         <custom-login-configuration name="injectionLogin">
+           <property name="com.ibm.mapping.authDataAlias" value="dsCustomLogin" />
+           <property name="com.ibm.mapping.propagateSecAttrs" value="false" />
+           <property name="com.ibm.mapping.targetRealmName" value="&quot;&quot;" />
+           <property name="com.ibm.mapping.unauthenticatedUser" value="BOB" />
+           <property name="com.ibm.mapping.useCallerIdentity" value="false" />
+         </custom-login-configuration>
+      </resource-ref>
+      <resource-ref name="AnnotationDS/jdbc/dsAuthAlias" binding-name="jdbc/TestDataSource">
+          <authentication-alias name="dsAuthAlias" />
+      </resource-ref>
+  </interceptor>
+
+  <interceptor class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLDSInjectionInterceptor">
+      <resource-ref name="XMLDS/jdbc/dsCustomLogin" binding-name="jdbc/TestDataSource">
+         <custom-login-configuration name="injectionLogin">
+           <property name="com.ibm.mapping.authDataAlias" value="dsCustomLogin" />
+           <property name="com.ibm.mapping.propagateSecAttrs" value="false" />
+           <property name="com.ibm.mapping.targetRealmName" value="&quot;&quot;" />
+           <property name="com.ibm.mapping.unauthenticatedUser" value="RYAN" />
+           <property name="com.ibm.mapping.useCallerIdentity" value="false" />
+         </custom-login-configuration>
+      </resource-ref>
+      <resource-ref name="XMLDS/jdbc/dsAuthAlias" binding-name="jdbc/TestDataSource">
+          <authentication-alias name="dsAuthAlias" />
+      </resource-ref>
+  </interceptor>
+
+  <session name="StatefulInterceptorInjectionBean">
+     <interface class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.StatefulInterceptorInjectionLocal"
+          binding-name="ejblocal:session/StatefulInterceptorInjectionBean/StatefulInterceptorInjectionLocal"/>
+     <interface class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal"
+          binding-name="ejblocal:session/StatefulInterceptorInjectionBean/MixedSFLocal"/>
+     <interface class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote"
+          binding-name="session/StatefulInterceptorInjectionBean/MixedSFRemote"/>
+
+     <ejb-ref name="AnnotationInjectionInterceptor2/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="AnnotationInjectionInterceptor2/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="AnnotationInjectionInterceptor2/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="AnnotationInjectionInterceptor2/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="AnnotationInjectionInterceptor2/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+
+     <ejb-ref name="XMLInjectionInterceptor2/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="XMLInjectionInterceptor2/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="XMLInjectionInterceptor2/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="XMLInjectionInterceptor2/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="XMLInjectionInterceptor2/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+
+     <ejb-ref name="XMLInjectionInterceptor4/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="XMLInjectionInterceptor4/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="XMLInjectionInterceptor4/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="XMLInjectionInterceptor4/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="XMLInjectionInterceptor4/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+
+  </session>
+
+  <session name="MixedSFInterceptorBean">
+     <interface class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal"
+          binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <interface class="com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote"
+          binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+  </session>
+
+  <message-driven name="MessageDrivenInjectionBean">
+     <jca-adapter activation-spec-binding-name="ejb/MessageDrivenInjectionBean" activation-spec-auth-alias="" destination-binding-name=""/>
+
+     <ejb-ref name="AnnotationInjectionInterceptor2/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="AnnotationInjectionInterceptor2/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="AnnotationInjectionInterceptor2/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="AnnotationInjectionInterceptor2/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="AnnotationInjectionInterceptor2/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+
+     <ejb-ref name="XMLInjectionInterceptor2/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="XMLInjectionInterceptor2/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="XMLInjectionInterceptor2/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="XMLInjectionInterceptor2/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="XMLInjectionInterceptor2/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+
+     <ejb-ref name="XMLInjectionInterceptor4/ejbLocalRef" binding-name="ejblocal:session/MixedSFInterceptorBean/MixedSFLocal"/>
+     <ejb-ref name="XMLInjectionInterceptor4/ejbRemoteRef" binding-name="session/MixedSFInterceptorBean/MixedSFRemote"/>
+     <resource-ref name="XMLInjectionInterceptor4/jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+     <message-destination-ref name="XMLInjectionInterceptor4/jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+     <resource-env-ref name="XMLInjectionInterceptor4/jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+
+  </message-driven>
+
+</ejb-jar-bnd>

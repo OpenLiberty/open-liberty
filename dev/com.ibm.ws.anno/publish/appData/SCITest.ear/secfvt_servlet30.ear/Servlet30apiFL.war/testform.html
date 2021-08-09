@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>
+    SecFVT Test Entry form for invoking GET or POST
+</TITLE>
+</HEAD>
+<H3>Form used to drive either Http GET or POST request to SecFVTServlet1 servlet</H1>
+
+<BODY>
+<H4>Servlet     /secfvt/servlets/unprotected/SecFVTServlet1</H4>
+<FORM ACTION="/secfvt/servlets/unprotected/SecFVTServlet1"
+    METHOD="GET" NAME="unprotectedServletGet">
+    <INPUT TYPE="HIDDEN" NAME="GETDATA" VALUE="theHiddenGetData">
+    <INPUT TYPE="SUBMIT" VALUE="Submit GET">
+</FORM>
+<FORM ACTION="/secfvt/servlets/unprotected/SecFVTServlet1"
+    METHOD="POST" NAME="unprotectedServletPost">
+    <INPUT TYPE="HIDDEN" NAME="POSTDATA" VALUE="theHiddenPostData">
+    <INPUT TYPE="SUBMIT" VALUE="SUBMIT POST">
+</FORM>
+
+
+<H4>Servlet     /secfvt/servlets/basicauth/SecFVTServlet1</H4>
+<FORM ACTION="/secfvt/servlets/basicauth/SecFVTServlet1"
+    METHOD="GET" NAME="basicauthServletGet">
+    <INPUT TYPE="HIDDEN" NAME="GETDATA" VALUE="theHiddenGetData">
+    <INPUT TYPE="SUBMIT" VALUE="Submit GET">
+</FORM>
+<FORM ACTION="/secfvt/servlets/basicauth/SecFVTServlet1"
+    METHOD="POST" NAME="basicauthServletPost">
+    <INPUT TYPE="HIDDEN" NAME="POSTDATA" VALUE="theHiddenPostData">
+    <INPUT TYPE="SUBMIT" VALUE="SUBMIT POST">
+</FORM>
+
+<H4>JSP     /secfvt/servlets/basicauth/SecFVTJSP1.jsp</H4>
+<FORM ACTION="/secfvt/servlets/basicauth/SecFVTJSP1.jsp"
+    METHOD="GET" NAME="basicauthJSPGet">
+    <INPUT TYPE="HIDDEN" NAME="GETDATA" VALUE="theHiddenGetData">
+    <INPUT TYPE="SUBMIT" VALUE="Submit GET">
+</FORM>
+<FORM ACTION="/secfvt/servlets/basicauth/SecFVTJSP1.jsp"
+    METHOD="POST" NAME="basicauthJSPPost">
+    <INPUT TYPE="HIDDEN" NAME="POSTDATA" VALUE="theHiddenPostData">
+    <INPUT TYPE="SUBMIT" VALUE="SUBMIT POST">
+</FORM>
+
+
+<H4>Servlet     /secfvt/servlets/formauth/SecFVTServlet1</H4>
+<FORM ACTION="/secfvt/servlets/formauth/SecFVTServlet1"
+    METHOD="GET" NAME="formauthServletGet">
+    <INPUT TYPE="HIDDEN" NAME="GETDATA" VALUE="theHiddenGetData">
+    <INPUT TYPE="SUBMIT" VALUE="Submit GET">
+</FORM>
+<FORM ACTION="/secfvt/servlets/formauth/SecFVTServlet1"
+    METHOD="POST" NAME="formauthServletPost">
+    <INPUT TYPE="HIDDEN" NAME="POSTDATA" VALUE="theHiddenPostData">
+    <INPUT TYPE="SUBMIT" VALUE="SUBMIT POST">
+</FORM>
+
+<H4>Servlet     /secfvt/servlets/basicauthdp/SecFVTServlet1</H4>
+<FORM NAME="dataProtectionServletGet" ACTION="/secfvt/servlets/basicauthdp/SecFVTServlet1"
+    METHOD="GET">
+    <INPUT TYPE="SUBMIT" VALUE="Submit GET" NAME="dataProtectionServlet_GET">
+</FORM>
+<FORM NAME="dataProtectionServletPost"  ACTION="/secfvt/servlets/basicauthdp/SecFVTServlet1"
+    METHOD="POST">
+    <INPUT TYPE="SUBMIT" VALUE="SUBMIT POST" NAME="POST">
+</FORM>
+
+<H4>Servlet     /secfvt/servlets/basicauthdp/SecFVTJSP1.jsp</H4>
+<FORM NAME="dataProtectionJSPGet" ACTION="/secfvt/servlets/basicauthdp/SecFVTJSP1.jsp"
+    METHOD="GET">
+    <INPUT TYPE="SUBMIT" VALUE="Submit GET" NAME="dataProtectionJSP_GET">
+</FORM>
+<FORM  NAME="dataProtectionJSPPost" ACTION="/secfvt/servlets/basicauthdp/SecFVTJSP1.jsp"
+    METHOD="POST">
+    <INPUT TYPE="SUBMIT" VALUE="SUBMIT POST" NAME="POST">
+</FORM>
+
+</BODY>
+</HTML>

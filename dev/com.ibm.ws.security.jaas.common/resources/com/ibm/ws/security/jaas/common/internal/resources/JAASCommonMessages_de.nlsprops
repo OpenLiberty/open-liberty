@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2011,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Die WSLoginModuleProxy-Stellvertreteroption (delegate) ist nicht definiert.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Die Authentifizierung war nicht erfolgreich, weil die WSLoginModuleProxy-Stellvertreteroption (delegate) nicht definiert ist.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Vergewissern Sie sich, dass die WSLoginModuleProxy-Konfiguration die Stellvertreteroption (delegate) enth\u00e4lt.  
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: Die URL {0} konnte nicht ge\u00f6ffnet werden. Ausnahme: {1}
+security.jaas.open.URL.explanation=Beim Herstellen der Verbindung zur angegebenen URL ist eine Ausnahme des Typs MalformedURLException eingetreten. 
+security.jaas.open.URL.useraction=Untersuchen Sie die Ausnahme. \u00dcberpr\u00fcfen Sie die angegebene URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: Die URL {0} konnte nicht erstellt werden. Ausnahme: {1}
+security.jaas.create.URL.explanation=Beim Herstellen der Verbindung zur angegebenen URL ist eine Ausnahme des Typs IOException eingetreten.
+security.jaas.create.URL.useraction=Untersuchen Sie die Ausnahme. \u00dcberpr\u00fcfen Sie die angegebene URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: Es ist eine Dateiparserausnahme bei der Datei {0} eingetreten. Ausnahme: {1}
+security.jaas.parser.URL.explanation=Beim Herstellen der Verbindung zur angegebenen URL ist eine Ausnahme des Typs IOException eingetreten.
+security.jaas.parser.URL.useraction=Untersuchen Sie die Ausnahme. \u00dcberpr\u00fcfen Sie die angegebene URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: Doppelter Anmeldekonfigurationsname: {0}. Der Name wird \u00fcberschrieben.
+security.jaas.duplicate.config.explanation=Ein Anmeldekonfigurationsname wurde in den Konfigurationsdaten doppelt angegeben.
+security.jaas.duplicate.config.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationsdaten.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: Beim Parsing der JAAS-Anwendungskonfiguration ist eine Ausnahme des Typs IOException eingetreten. Ausnahme: {0}
+security.jaas.app.parseIO.explanation=Beim Parsing der JAAS-Anwendungskonfiguration ist eine Ausnahme des Typs IOException eingetreten.
+security.jaas.app.parseIO.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationsdatei. Untersuchen Sie die Ausnahme. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: Beim Parsing der JAAS-Anwendungskonfiguration ist eine Ausnahme des Typs ParserException eingetreten. Ausnahme: {0}
+security.jaas.app.parse.explanation=Beim Parsing der JAAS-Anwendungskonfiguration ist eine Ausnahme des Typs ParserException eingetreten.
+security.jaas.app.parse.useraction=Untersuchen Sie die Ausnahme, die Informationen zu dem Syntaxfehler in der Konfigurationsdatei enth\u00e4lt.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: Der jaasLoginContextEntry-Standardeintrag {0} kann nicht in der JAAS-Konfigurationsdatei {1} angegeben werden. Ein jaasLoginContextEntry-Standardeintrag muss in der Datei server.xml oder in der Datei client.xml angegeben werden.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Der jaasLoginContextEntry-Standardeintrag kann nicht in der JAAS-Konfigurationsdatei angegeben werden.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Vergewissern Sie sich, dass die JAAS-Konfigurationsdatei keinen jaasLoginContextEntry-Standardeintrag enth\u00e4lt.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: Ausnahme beim Ausf\u00fchren der Klasse f\u00fcr Namen f\u00fcr {0}. Unerwartete Ausnahme: {1}.  
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=Ausnahme beim Ausf\u00fchren der Klasse f\u00fcr Namen.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Vergewissern Sie sich, dass alle in der JAAS-Konfigurationsdatei angegebenen angepassten JAAS-Anmeldemodule im JAAS-Standardverzeichnis vorhanden sind. Das JAAS-Standardverzeichnis f\u00fcr den Server ist ${server.config.dir}/resources/security/jaas. Das JAAS-Standardverzeichnis f\u00fcr den Client ist ${client.config.dir}/resources/security/jaas.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Doppelter Anmeldekonfigurationsname. Der Anmeldekonfigurationsname {0} wurde in der JAAS-Konfigurationsdatei und in den Dateien server.xml und client.xml angegeben. Es wird der in den Dateien server.xml und client.xml angegebene Anmeldekonfigurationsname verwendet.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=Ein Anmeldekonfigurationsname wurde in der JAAS-Konfigurationsdatei und in den Dateien server.xml und client.xml angegeben.
+JAAS_DUPLICATE_ENTRY_NAME.useraction=\u00dcberpr\u00fcfen Sie die JAAS-Konfigurationsdatei sowie die Dateien server.xml und client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Das Anmeldemodul {0} wird nicht von der Version {1} des Java-Anbieter {2} unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Das Krb5LoginModule-Modul, das in der Datei server.xml und/oder in der Datei jaas.conf angegeben ist, wird von dem verwendeten Java-Anieter und der Java-Version nicht unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Verwenden Sie den Java-Anbieter und die Version, die f\u00fcr das Modul Krb5LoginModule unterst\u00fctzt wird, oder verwenden Sie ein Krb5LoginModule-Modul, das von dem Java-Anbieter und der Version unterst\u00fctzt wird.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Die {0}-Anmeldemoduloptionen werden von dem {1}-Java-Anbieter und der Version {2} nicht unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Die Krb5LoginModule-Optionen, die in der Datei server.xml und/oder in der Datei jaas.conf angegeben sind, werden von dem verwendeten Java-Anieter und der Java-Version nicht unterst\u00fctzt.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=\u00dcberpr\u00fcfen Sie, ob alle Krb5LoginModule-Optionen, die in der Datei server.xml und/oder in der Datei jaas.conf angegeben sind, vom Java-Anbieter und der Version unterst\u00fctzt werden.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Ein {0}-jaasLoginContext-Eintrag kann nicht als JAAS-Konfigurationseintrag in der Datei server.xml und/oder in der Datei jaas.conf angegeben werden.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Die Laufzeit verwendet eine Krb5LoginModule-Konfiguration und die SPNEGO-Konfiguration in der Datei server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Entfernen Sie den jaasLoginContext-Eintrag aus der Datei server.xml oder lassen Sie die Laufzeit den Standardeintrag verwenden.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Das angepasste JAAS-Anmeldemodul {0} wurde nicht geladen, weil das Konfigurationselement {1} die Attribute libraryRef und classProviderRef angibt.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Sie d\u00fcrfen nur ein einziges Attribut angeben, entweder libraryRef oder classProviderRef, um das Artefakt anzugeben, aus dem das angepasste JAAS-Anmeldemodul geladen werden soll.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Entfernen Sie entweder das Attribut libraryRef oder das Attribut classProviderRef, je nachdem, welches die angepasste JAAS-Anmeldemodulklasse nicht enth\u00e4lt.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Das angepasste JAAS-Anmeldemodul {0} wurde nicht gefunden, weil das Konfigurationselement {1} nicht das Attribut libraryRef oder das Attribut classProviderRef angibt.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Sie d\u00fcrfen nur ein einziges Attribut angeben, entweder libraryRef oder classProviderRef, um das Artefakt anzugeben, aus dem das angepasste JAAS-Anmeldemodul geladen werden soll.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Geben Sie entweder das Attribut libraryRef oder das Attribut classProviderRef an, um die Position anzugeben, in der die angepasste JAAS-Anmeldemodulklasse geladen werden soll.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: Die angepasste JAAS-AAnmeldemodulklasse {0} wurde im Artefakt {1} {2} nicht gefunden.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=Die angegebene Anwendung oder der Ressourcenadapter enth\u00e4lt nicht die angeforderte Klasse des angepassten JAAS-Anmeldemoduls oder die Klasse des angepassten JAAS-Anmeldemoduls ist innerhalb der Anwendung vorhanden, aber an einer Position, von der sie nicht geladen werden kann.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Vergewissern Sie sich, dass die konfigurierte angepasste Anmeldemodulklasse und der zugeh\u00f6rige Paketname korrekt sind. Wenn eine Anwendung angegeben wird, muss die Anmeldemodulklasse innerhalb der Anwendung enthalten sein, entweder in einer \u00fcbergeordneten JAR-Datei oder in einem Ressourcenadaptermodul.

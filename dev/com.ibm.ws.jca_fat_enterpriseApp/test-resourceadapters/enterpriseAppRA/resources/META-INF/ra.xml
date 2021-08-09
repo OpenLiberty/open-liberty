@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2013,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6" metadata-complete="true">
+  <description>This is the ra.xml for DerbyRA</description> 
+  <display-name>EnterpriseApp Resource Adapter</display-name> 
+  <vendor-name>IBM</vendor-name> 
+  <eis-type>Derby</eis-type> 
+  <resourceadapter-version>1.0</resourceadapter-version>
+  <resourceadapter>
+    <resourceadapter-class>com.ibm.test.jca.enterprisera.DerbyResourceAdapter</resourceadapter-class>
+    <config-property>
+      <description>Create database if doesn't exist</description>
+      <config-property-name>createDatabase</config-property-name> 
+      <config-property-type>java.lang.Boolean</config-property-type> 
+      <config-property-value>true</config-property-value>
+    </config-property>
+    <config-property>
+      <description>Name of database</description>
+      <config-property-name>databaseName</config-property-name> 
+      <config-property-type>java.lang.String</config-property-type> 
+      <config-property-value>memory:enterpriseRA</config-property-value>
+    </config-property>
+    <config-property>
+      <description>Login timeout</description>
+      <config-property-name>loginTimeout</config-property-name> 
+      <config-property-type>java.lang.Integer</config-property-type> 
+      <config-property-value>60</config-property-value>
+    </config-property>
+    <config-property>
+      <description>Used for testBasicConfigProp</description>
+      <config-property-name>generalConfigProp</config-property-name>
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-value>unset</config-property-value>
+    </config-property>
+    <outbound-resourceadapter>
+      <connection-definition>
+        <managedconnectionfactory-class>com.ibm.test.jca.enterprisera.DerbyManagedConnectionFactory</managedconnectionfactory-class>
+        <config-property>
+          <description>Indicates if connection handles may be dissociated and reassociated</description>
+          <config-property-name>dissociatable</config-property-name> 
+          <config-property-type>java.lang.Boolean</config-property-type>
+          <config-property-value>true</config-property-value> 
+        </config-property>
+        <config-property>
+          <description>User name</description>
+          <config-property-name>userName</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type> 
+        </config-property>
+        <config-property>
+          <description>Password</description>
+          <config-property-name>password</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type>
+          <config-property-confidential>true</config-property-confidential>
+        </config-property>
+        <connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface> 
+        <connectionfactory-impl-class>com.ibm.test.jca.enterprisera.DerbyConnectionFactory</connectionfactory-impl-class> 
+        <connection-interface>java.sql.Connection</connection-interface> 
+        <connection-impl-class>com.ibm.test.jca.enterprisera.DerbyConnection</connection-impl-class> 
+      </connection-definition>
+      <reauthentication-support>false</reauthentication-support> 
+    </outbound-resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener>
+          <messagelistener-type>com.ibm.test.jca.enterprisera.JCAEnterpriseAppMessageListener</messagelistener-type>
+          <activationspec>
+            <activationspec-class>com.ibm.test.jca.enterprisera.JCAEnterpriseAppActivationSpec</activationspec-class>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
+    <!-- Map based admin object -->
+    <adminobject>
+      <adminobject-interface>java.util.Map</adminobject-interface>
+      <adminobject-class>com.ibm.test.jca.enterprisera.DerbyMap</adminobject-class>
+      <config-property>
+        <description>Data Type of Key</description>
+        <config-property-name>keyType</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type>
+        <config-property-value>varchar(20)</config-property-value> 
+      </config-property>
+      <config-property>
+        <description>Table Name</description>
+        <config-property-name>tableName</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type> 
+      </config-property>
+      <config-property>
+        <description>Data Type of Value</description>
+        <config-property-name>valueType</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type>
+      </config-property>
+    </adminobject>
+    <!-- java.util.Queue based admin object -->
+    <adminobject>
+      <adminobject-interface>java.util.Queue</adminobject-interface>
+      <adminobject-class>com.ibm.test.jca.enterprisera.DerbyQueue</adminobject-class>
+      <config-property>
+        <description>Table Name</description>
+        <config-property-name>tableName</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type> 
+        <config-property-value>defaultDerbyQueue</config-property-value> 
+      </config-property>
+      <config-property>
+        <description>Data type of the DerbyQueue</description>
+        <config-property-name>queueType</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type>
+        <config-property-value>varchar(50)</config-property-value>
+      </config-property>
+    </adminobject>
+    <!-- Calendar based admin object -->
+    <adminobject>
+      <adminobject-interface>java.util.Calendar</adminobject-interface>
+      <adminobject-class>java.util.GregorianCalendar</adminobject-class>
+      <config-property>
+        <description>First day of the week (SUNDAY=1, MONDAY=2, ... SATURDAY=7)</description>
+        <config-property-name>firstDayOfWeek</config-property-name> 
+        <config-property-type>java.lang.Integer</config-property-type>
+      </config-property>
+      <config-property>
+        <description>Is the calendar lenient?</description>
+        <config-property-name>lenient</config-property-name>
+        <config-property-type>java.lang.Boolean</config-property-type>
+      </config-property>
+      <config-property>
+        <description>Minimum number of days needed to be considered the first week of the year</description>
+        <config-property-name>minimalDaysInFirstWeek</config-property-name> 
+        <config-property-type>java.lang.Integer</config-property-type>
+      </config-property>
+      <config-property>
+        <description>Date and time specified in milliseconds. Default value is 1 AD</description>
+        <config-property-name>timeInMillis</config-property-name> 
+        <config-property-type>java.lang.Long</config-property-type>
+        <config-property-value>-62135661600000</config-property-value>
+      </config-property>
+    </adminobject>
+  </resourceadapter>
+</connector>

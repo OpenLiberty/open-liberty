@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2012,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: thread factory bundle
+Bundle-SymbolicName: threadfactory
+Bundle-Description:\
+ Test bundle that demonstrates how a component use of the context service\
+ and allows for testing serialization and deserialization of context
+
+# optional... 
+WS-TraceGroup: threadfactory
+
+Export-Package: test.threadfactory;provide:=true
+
+Private-Package: test.threadfactory.internal.*
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype.xml=test-bundles/threadfactory/resources/OSGI-INF/metatype/metatype.xml
+
+Service-Component: \
+  test.thread.factory;\
+    implementation:=test.threadfactory.internal.ThreadFactoryImpl;\
+    provide:='java.util.concurrent.ThreadFactory';\
+    contextService=com.ibm.wsspi.threadcontext.WSContextService;\
+    classloaderContextProvider='com.ibm.wsspi.threadcontext.ThreadContextProvider(component.name=com.ibm.ws.classloader.context.provider)';\
+    jeeMetadataContextProvider='com.ibm.wsspi.threadcontext.ThreadContextProvider(component.name=com.ibm.ws.javaee.metadata.context.provider)';\
+    configuration-policy:=require;\
+    immediate:=true;\
+    properties:='contextService.target=(id=unbound)'

@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: L''elemento {2} \u00e8 privo dell''attributo {3} richiesto nel descrittore di distribuzione {0} alla riga {1}.
+required.attribute.missing.explanation=Un attributo richiesto manca nell'elemento specificato.
+required.attribute.missing.useraction=Correggere il descrittore di distribuzione aggiungendo l'attributo mancante.
+
+invalid.root.element=CWWKC2252E: Nome root locale non valido {2} nel descrittore di distribuzione {0} alla riga {1}.
+invalid.root.element.explanation=L'elemento root non \u00e8 corretto.
+invalid.root.element.useraction=Convalidare il file xml per assicurarsi che l'elemento root sia corretto.
+
+root.element.not.found=CWWKC2253E: Impossibile individuare l''elemento root del descrittore di distribuzione {0} alla riga {1}.
+root.element.not.found.explanation=L'elemento root mancava nel descrittore di distribuzione.
+root.element.not.found.useraction=Correggere il descrittore di distribuzione.
+
+end.element.not.found=CWWKC2254E: Il tag elemento finale dell''elemento {2} non \u00e8 stato trovato nel descrittore di distribuzione {0} alla riga {1}.
+end.element.not.found.explanation=Sembra che il descrittore di distribuzione non sia un xml corretto.
+end.element.not.found.useraction=Correggere il descrittore di distribuzione.
+
+incorrect.id.attr.namespace=CWWKC2255E: Lo spazio dei nomi dell''attributo id dell''elemento {2} era {3}, ma avrebbe dovuto essere {4} nel descrittore di distribuzione {0} alla riga {1}.
+incorrect.id.attr.namespace.explanation=Lo spazio dei nomi degli elementi e quello degli attributi nel descrittore di distribuzione non sono congruenti.
+incorrect.id.attr.namespace.useraction=Correggere il descrittore di distribuzione.
+
+unexpected.attribute=CWWKC2256E: Rilevato un attributo non previsto {3} durante l''analisi dell''elemento {2} nel descrittore di distribuzione {0} alla riga {1}.
+unexpected.attribute.explanation=\u00c8 stato rilevato un attributo che non era previsto si trovasse nel descrittore di distribuzione.
+unexpected.attribute.useraction=Correggere il descrittore di distribuzione.
+
+unexpected.content=CWWKC2257E: Rilevato contenuto imprevisto nell''elemento {2} nel descrittore di distribuzione {0} alla riga {1}.
+unexpected.content.explanation=\u00c8 stato rilevato contenuto di testo che non era previsto si trovasse nel descrittore di distribuzione.
+unexpected.content.useraction=Correggere il descrittore di distribuzione.
+
+incorrect.child.element.namespace=CWWKC2258E: Lo spazio dei nomi dell''elemento child {3} dell''elemento parent {2} era {4} non {5} nel descrittore di distribuzione {0} alla riga {1}.
+incorrect.child.element.namespace.explanation=Lo spazio dei nomi degli elementi e quello degli attributi nel descrittore di distribuzione non sono congruenti.
+incorrect.child.element.namespace.useraction=Correggere il descrittore di distribuzione.
+
+unexpected.child.element=CWWKC2259E: Rilevato elemento child non previsto {3} dell''elemento parent {2} nel descrittore di distribuzione {0} alla riga {1}.
+unexpected.child.element.explanation=\u00c8 stato rilevato un elemento che non era previsto si trovasse nel descrittore di distribuzione.
+unexpected.child.element.useraction=Correggere il descrittore di distribuzione.
+
+invalid.href.prefix=CWWKC2260E: Il valore dell''attributo href dell''elemento {2} non inizia con {3} nel descrittore di distribuzione {0} alla riga {1}.
+invalid.href.prefix.explanation=Un attributo href deve iniziare con il percorso corretto nel descrittore cui fare riferimento.
+invalid.href.prefix.useraction=Correggere il descrittore di distribuzione.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Si \u00e8 verificato un errore durante il tentativo di determinare la versione della descrizione di distribuzione {0}.
+unknown.deployment.descriptor.version.explanation=La versione o lo spazio dei nomi non erano validi oppure non erano specificati nell'elemento root del descrittore di distribuzione.
+unknown.deployment.descriptor.version.useraction=Verificare e correggere la versione o lo spazio dei nomi nell'elemento root del descrittore di distribuzione.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: Il server non \u00e8 in grado di elaborare la versione {3} e lo spazio dei nomi {2} nel descrittore di distribuzione {0} alla riga {1}.
+invalid.deployment.descriptor.namespace.explanation=La versione e lo spazio dei nomi specificati non sono validi o la configurazione del server non dispone di una funzione in grado di elaborare la versione e lo spazio dei nomi.
+invalid.deployment.descriptor.namespace.useraction=Verificare e correggere la versione o lo spazio dei nomi nell'elemento root del descrittore di distribuzione o verificare e correggere le funzioni nella configurazione del server.
+
+invalid.deployment.descriptor.version=CWWKC2263E: L''attributo versione {2} specificato nel descrittore di distribuzione {0} alla riga {1} non \u00e8 valido.
+invalid.deployment.descriptor.version.explanation=Una versione non valida \u00e8 stata specificata nell'elemento root del descrittore di distribuzione.
+invalid.deployment.descriptor.version.useraction=Verificare e correggere il numero di versione nell'elemento root del descrittore di distribuzione.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: Si \u00e8 verificato un errore durante il tentativo di determinare lo spazio dei nomi del descrittore di distribuzione {0} alla riga {1}.
+missing.deployment.descriptor.namespace.explanation=Uno spazio dei nomi non valido \u00e8 stato specificato nell'elemento root del descrittore di distribuzione.
+missing.deployment.descriptor.namespace.useraction=Verificare e correggere lo spazio dei nomi nell'elemento root del descrittore di distribuzione.
+
+missing.deployment.descriptor.version=CWWKC2265E: Si \u00e8 verificato un errore durante il tentativo di determinare la versione del descrittore di distribuzione {0} alla riga {1}.
+missing.deployment.descriptor.version.explanation=La versione non era specificata nell'elemento root del descrittore di distribuzione.
+missing.deployment.descriptor.version.useraction=Verificare e correggere la versione nell'elemento root del descrittore di distribuzione.
+
+at.most.one.occurrence=CWWKC2266E: Deve esserci al massimo un elemento child {3} dell''elemento parent {2} nel descrittore di distribuzione {0} alla riga {1}.
+at.most.one.occurrence.explanation=Alcuni elementi nel descrittore di distribuzione possono comparire solo una volta se presenti.
+at.most.one.occurrence.useraction=Correggere il descrittore di distribuzione.
+
+required.method.element.missing=CWWKC2267E: \u00c8 necessario che per l''elemento {2} sia definito almeno un elemento child {3} nel descrittore di distribuzione {0} alla riga {1}.
+required.method.element.missing.explanation=Un elemento child richiesto manca nell'elemento parent specificato. 
+required.method.element.missing.useraction=Correggere il descrittore di distribuzione aggiungendo l'elemento child richiesto.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Quando un attributo modalit\u00e0 dell''elemento <run-as-mode> \u00e8 impostato su SPECIFIED_IDENTITY nel descrittore di distribuzione {0} alla riga {1}, l''elemento child <specified-identity> deve essere definito.
+runasmode.missing.specifiedID.element.explanation=L'elemento child <specified-identity> manca per l'elemento <run-as-mode> che ha la modalit\u00e0 impostata su SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Correggere il descrittore di distribuzione aggiungendo l'elemento child richiesto o modificare la modalit\u00e0.
+
+found.duplicate.ejbname=CWWKC2269E: L''attributo nome per tutti gli elementi bean <session> e <message-driven> deve essere univoco. Trovato nome duplicato {1} nel descrittore di distribuzione {0}.
+found.duplicate.ejbname.explanation=Tutti i nomi di sessione e degli MDB devono essere univoci.  Il nome del bean specificato viene utilizzato pi\u00f9 di una volta.
+found.duplicate.ejbname.useraction=Correggere il descrittore di distribuzione ridenominando tutti i nomi dei bean enterprise duplicati.
+
+found.duplicate.attribute.value=CWWKC2270E: L''attributo {2} per tutti gli elementi {1} deve essere univoco. Trovato nome duplicato {3} nel descrittore di distribuzione {0}.
+found.duplicate.attribute.value.explanation=Il valore dell'attributo specificato deve essere univoco tra tutti gli elementi dello stesso tipo. 
+found.duplicate.attribute.value.useraction=Correggere il descrittore di distribuzione ridenominando eventuali attributi duplicati.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: \u00c8 stato trovato un file validation.xml per il modulo {0}. Tuttavia, tale file validation.xml non \u00e8 configurato per la convalida, quindi verr\u00e0 ignorato.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=BeanValidationService non pu\u00f2 creare un ValidatorFactory a causa di un errore durante l'analisi del file validation.xml con il file schema validation-configuration-1.0.xsd. Questo errore pu\u00f2 indicare che non \u00e8 previsto che tale file validation.xml sia utilizzato dal runtime della convalida bean; questo file XML viene ignorato.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Se il file validation.xml non deve creare un'istanza ValidatorFactory, ignorare il messaggio. Se invece \u00e8 previsto che il file validation.xml debba creare un'istanza ValidatorFactory, esiste un problema.  Abilitare la traccia del runtime della convalida bean nel server delle applicazioni, arrestare e riavviare l'applicazione, quindi esaminare il file di output della traccia per un evento di traccia del tipo: Eccezione imprevista durante il tentativo di eseguire l'unmarshalling del file validation.xml. Esaminare la traccia stack dell'eccezione per assistenza nel debug.
+
+xml.error=CWWKC2272E: Si \u00e8 verificato un errore durante l''analisi del descrittore di distribuzione {0} alla riga {1}. Il messaggio di errore era: {2}
+xml.error.explanation=Si \u00e8 verificato un errore durante l'analisi del descrittore di distribuzione XML. Per ulteriori informazioni, fare riferimento al messaggio di errore.
+xml.error.useraction=Correggere il descrittore di distribuzione per rimuovere l'errore.
+
+invalid.enum.value=CWWKC2273E: Il valore {2} nel descrittore di distribuzione {0} alla riga {1} non \u00e8 valido. I valori validi sono: {3}
+invalid.enum.value.explanation=Il descrittore di distribuzione specifica un valore non valido.
+invalid.enum.value.useraction=Correggere il descrittore di distribuzione in modo che utilizzi uno dei valori previsti.
+
+invalid.int.value=CWWKC2274E: Il valore {2} nel descrittore di distribuzione {0} alla riga {1} non \u00e8 un numero intero valido.
+invalid.int.value.explanation=Il descrittore di distribuzione specifica un valore che non \u00e8 un numero compreso tra -2147483648 e 2147483647.
+invalid.int.value.useraction=Correggere il descrittore di distribuzione in modo che utilizzi un numero intero valido.
+
+invalid.long.value=CWWKC2275E: Il valore {2} nel descrittore di distribuzione {0} alla riga {1} non \u00e8 un numero long valido.
+invalid.long.value.explanation=Il descrittore di distribuzione specifica un valore che non \u00e8 un numero compreso tra -9223372036854775808 e 9223372036854775807.
+invalid.long.value.useraction=Correggere il descrittore di distribuzione in modo che utilizzi un numero long valido.
+
+module.name.not.specified=CWWKC2276E: L''elemento {0} deve specificare un attributo nome modulo.
+module.name.not.specified.explanation=La configurazione di bind ed estensione per i moduli web e EJB deve contenere un attributo moduleName che specifichi il modulo a cui si applica la configurazione.
+module.name.not.specified.useraction=Aggiungere un attributo moduleName all'elemento web-bnd, web-ext, ejb-bnd o ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Uno o pi\u00f9 nomi modulo sull''elemento {1} non sono validi. I nomi modulo non validi sono {0}.
+module.name.invalid.explanation=La configurazione di bind ed estensione per i moduli web deve specificare un attributo moduleName valido. Almeno in una configurazione \u00e8 specificato un nome modulo non valido. Il nome modulo deve essere il nome del file di archivio che contiene l'applicazione web o EJB.
+module.name.invalid.useraction=Correggere l'attributo moduleName nella configurazione bind o estensione.

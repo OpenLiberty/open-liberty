@@ -1,0 +1,49 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+task runTdsLdap(type: JavaExec) {
+    dependsOn(jar)
+    
+    group = "Execution"
+    description = "Start the TDS LDAP test instance."
+    
+    /*
+     * Include the JAR first, as it has the schema files that need to be extracted.
+     */
+    classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
+    main = "com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer"
+}
+
+task runAdLdap(type: JavaExec) {
+    dependsOn(jar)
+    
+    group = "Execution"
+    description = "Start the Active Directory LDAP test instance."
+    
+    /*
+     * Include the JAR first, as it has the schema files that need to be extracted.
+     */
+    classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
+    main = "com.ibm.ws.com.unboundid.InMemoryADLDAPServer"
+}
+
+task runSunOneLdap(type: JavaExec) {
+    dependsOn(jar)
+    
+    group = "Execution"
+    description = "Start the Sun One LDAP test instance."
+    
+    /*
+     * Include the JAR first, as it has the schema files that need to be extracted.
+     */
+    classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
+    main = "com.ibm.ws.com.unboundid.InMemorySunLDAPServer"
+}

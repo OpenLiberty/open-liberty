@@ -1,0 +1,14 @@
+<server description="new server">
+
+  <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+  		<feature>eventLogging-1.0</feature>
+    </featureManager>
+
+  
+	    <eventLogging includeContextInfo="true" minDuration="0"  eventTypes="websphere.servlet.service,websphere.session.getAttribute,websphere.session.setAttribute"/>
+ 	
+ 	<include location="../fatTestPorts.xml"/>
+  	
+</server>

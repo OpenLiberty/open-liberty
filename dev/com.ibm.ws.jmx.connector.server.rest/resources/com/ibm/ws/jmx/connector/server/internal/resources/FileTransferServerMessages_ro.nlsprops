@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Acces refuzat la calea {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=S-a f\u0103cut o \u00eencercare de a accesa o cale care este \u00een afara regiunii de citire/scriere configurate.
+SERVER_ACCESS_DENIED_ERROR.useraction=Corecta\u0163i calea pentru a indica una care este din regiunea de citire/scriere configurat\u0103.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: Serviciul OSGi {0} nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Aceasta este o eroare intern\u0103 de server pentru c\u0103 nu este disponibil serviciul specificat.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea "clean" (cur\u0103\u0163are).
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: Cererea de desc\u0103rcare a fi\u015fierului {0} s-a finalizat cu succes.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=Cererea de desc\u0103rcare pentru fi\u015fierul specificat s-a finalizat cu succes.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: Cererea de \u00eenc\u0103rcare a fi\u015fierului {0} s-a finalizat cu succes.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=Cererea de \u00eenc\u0103rcare pentru fi\u015fierul specificat s-a finalizat cu succes.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: Cererea de \u015ftergere a fi\u015fierului {0} s-a finalizat cu succes.
+DELETE_REQUEST_COMPLETE_INFO.explanation=Cererea de \u015ftergere pentru fi\u015fierul specificat s-a finalizat cu succes.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: Cererea de \u015ftergere pentru fi\u015fierul {0} nu s-a putut finaliza.
+DELETE_REQUEST_ERROR.explanation=Cererea de \u015ftergere pentru fi\u015fierul specificat nu a avut succes, ar putea fi folosit de alt proces.
+DELETE_REQUEST_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul nu este \u00een curs de folosire de un alt proces \u015fi c\u0103 sunt setate permisiunile corespunz\u0103toare ce permit \u015ftergerea fi\u015fierului.
+
+PATH_NOT_VALID=CWWKX0127E: Calea {0} nu este valid\u0103.
+PATH_NOT_VALID.explanation=Calea specificat\u0103 nu este valid\u0103 \u015fi nu a putut fi localizat\u0103.
+PATH_NOT_VALID.useraction=Asigura\u0163i-v\u0103 c\u0103 se specific\u0103 o cale valid\u0103 ce nu con\u0163ine nici o valoare sau vreun caracter invalid.
+
+NO_WRITE_LOCATION=CWWKX0128E: Nu exist\u0103 nici o loca\u0163ie inscriptibil\u0103 configurat\u0103 pe serverul de rutare.
+NO_WRITE_LOCATION.explanation=Nu exist\u0103 nici o loca\u0163ie inscriptibil\u0103 configurat\u0103 pe serverul de rutare.
+NO_WRITE_LOCATION.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat\u0103 cel pu\u0163in o loca\u0163ie inscriptibil\u0103 pe serverul de rutare.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: Arhiva \u00eenc\u0103rcat\u0103 {0} nu a putut fi expandat\u0103.
+UPLOAD_EXPANSION_ERROR.explanation=Nu s-a putut finaliza expansiunea pentru arhiva \u00eenc\u0103rcat\u0103 specificat\u0103.
+UPLOAD_EXPANSION_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 arhiva nu este corupt\u0103.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: Utilitarul extensor de arhiv\u0103 nu a putut fi localizat.
+ARCHIVE_EXPANDER_ERROR.explanation=Nu s-a putut localiza utilitarul extensor de arhiv\u0103 necesar.
+ARCHIVE_EXPANDER_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul de instalare Liberty nu este corupt.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: un task cu ID-ul {0} nu a fost g\u0103sit.
+UNKNOWN_TASK_ID_ERROR.explanation=Identificatorul furnizat nu se potrive\u015fte cu niciun task care este \u0163inut momentan \u00een registrul de taskuri.
+UNKNOWN_TASK_ID_ERROR.useraction=Interoga\u0163i un identificator valid care nu a fost reciclat.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: Op\u0163iunile ac\u0163iunii de transfer post {0} nu sunt valide.
+INVALID_ACTION_OPTIONS.explanation=Op\u0163iunile ac\u0163iunii de transfer post trebuie se fie nule, goale sau sub form\u0103 de list\u0103 separate prin virgul\u0103 cu aceea\u015fi lungime ca \u015fi lista de ac\u0163iuni.
+INVALID_ACTION_OPTIONS.useraction=Asigura\u0163i-v\u0103 c\u0103 op\u0163iunile ac\u0163iunii de transfer post con\u0163in o valoare valid\u0103.

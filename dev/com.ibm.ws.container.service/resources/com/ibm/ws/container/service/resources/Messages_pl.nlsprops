@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Znaleziono niepoprawn\u0105 \u015bcie\u017ck\u0119 klasy manifestu {0} w pliku JAR {1}.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=\u015acie\u017cka klasy nie jest poprawnie podana. Musi ona by\u0107 \u0142a\u0144cuchem wzgl\u0119dnego identyfikatora URI wskazuj\u0105cym plik JAR lub folder.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Zaktualizuj plik MANIFEST.MF pliku JAR, aby udost\u0119pni\u0107 poprawn\u0105 definicj\u0119 Class-Path.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Nie mo\u017cna znale\u017a\u0107 \u015bcie\u017cki klasy manifestu {0} w pliku JAR {1} ani w jego pliku nadrz\u0119dnym.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 \u015bcie\u017cki klasy manifestu w pliku JAR ani w archiwum zawieraj\u0105cym plik JAR.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Dodaj do archiwum element docelowy \u015bcie\u017cki klasy.
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: W plikach web-fragment.xml {1} i {2} przy korzystaniu z porz\u0105dkowania wzgl\u0119dnego u\u017cyto zduplikowanych nazw {0}.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Przy korzystaniu ze wzgl\u0119dnego porz\u0105dku sortowania wymagana jest nazwa unikalna dla elementu w ka\u017cdym pliku web-fragment.xml.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Przypisz unikaln\u0105 nazw\u0119 dla ka\u017cdego pliku web-fragment.xml przy korzystaniu ze wzgl\u0119dnego porz\u0105dku sortowania lub skonfiguruj element u\u017cycia sortowania bezwzgl\u0119dnego <absolute-ordering> w pliku web.xml.
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+annotation.service.not.available.CWWKM0451E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0451E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna nale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+annotation.service.not.available.CWWKM0452E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0452E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+container.is.not.a.module.CWWKM0453E.explanation=CMSG0001
+container.is.not.a.module.CWWKM0453E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0454E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0455E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=CMSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+annotation.service.not.available.CWWKM0463E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0463E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+container.is.not.a.web.module.CWWKM0464E.explanation=CMSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0465E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=CMSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2} {3}
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=CMSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=CMSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=CMSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+two.fragments.have.the.same.name.CWWKM0479E.explanation=CMSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
+conflicting.relative.order.metadata.CWWKM0480E.explanation=CMSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0}
+loop.found.in.list.CWWKM0481E.explanation=CMSG0001
+loop.found.in.list.CWWKM0481E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia dla serwera WebSphere Application Server, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

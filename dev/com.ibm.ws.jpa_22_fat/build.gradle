@@ -1,0 +1,42 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  jpaFatTools
+  ecl27
+}
+
+dependencies {
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+  ecl27 project(':com.ibm.websphere.appserver.thirdparty.eclipselink.2.7')
+}
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework*.jar"
+  into new File(autoFvtDir, 'lib')      
+  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
+}
+
+task addECL27(type: Copy) {
+  mustRunAfter jar
+  from configurations.ecl27
+  include "**/com.ibm.websphere.appserver.thirdparty.eclipselink.2.7.jar"
+  into new File(autoFvtDir, 'lib')
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
+  dependsOn addECL27
+}

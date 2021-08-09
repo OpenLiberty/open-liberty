@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Un type d''entit\u00e9 {0} avec l''ID {1} n''a pas \u00e9t\u00e9 trouv\u00e9 dans l''unit\u00e9 de persistance {2}.
+
+61001=L''entit\u00e9 r\u00e9f\u00e9renc\u00e9e par le lien n''existe pas, entit\u00e9 type {0}, ID {1}.
+
+61002=Configuration non valide.
+
+61003=Un type d''entit\u00e9 {0} dans l''unit\u00e9 de persistance {1} est en cours de cr\u00e9ation avec un \u00e9l\u00e9ment PUT, mais l''entit\u00e9 n''est pas idempotent en raison d''une g\u00e9n\u00e9ration de s\u00e9quence ou d''une op\u00e9ration en cascade.
+
+61004=Le contexte de persistance {0} n''a pas pu \u00eatre amorc\u00e9.
+
+61005=La classe ou le descripteur de classe est introuvable pour le type d''entit\u00e9 {0} dans la classe de persistance {1}.
+
+61006=Le mappage de base de donn\u00e9es appropri\u00e9 est introuvable pour l''attribut {0} pour le type d''entit\u00e9 {1} et l''ID {2} dans l''unit\u00e9 de persistance {3}.
+
+61007=L''attribut {0} pour le type d''entit\u00e9 {1} et l''ID {2} est introuvable dans l''unit\u00e9 de persistance {3}.
+
+61008=La requ\u00eate de s\u00e9lection pour l''attribut {0}, type d''entit\u00e9 {1} et ID {2} est introuvable dans l''unit\u00e9 de persistance {3}.
+
+61009=Param\u00e8tre(s) non valide(s) dans l''URL de demande de pagination.
+
+61010=L''attribut {0} pour le type d''entit\u00e9 {1} et l''ID {2} dans l''unit\u00e9 de persistance {3} n''a pas pu \u00eatre mis \u00e0 jour.
+
+61011=Param\u00e8tre(s) non valide(s) dans la l''URL de demande de retrait d''attribut {0} pour le type d''entit\u00e9 {1} et l''ID {2} dans l''unit\u00e9 de persistance {3}.
+
+61012=La r\u00e9ponse \u00e0 la demande de recherche pour l''attribut{0} du type d''entit\u00e9 {1} et de l''ID {2} dans l''unit\u00e9 de persistance {3} n''a pas pu \u00eatre g\u00e9n\u00e9r\u00e9e.
+
+61013=La recherche de bean de session avec le nom JNDI {0} a \u00e9chou\u00e9.
+
+61014=La r\u00e9ponse \u00e0 la demande de recherche de requ\u00eate nomm\u00e9e pour la requ\u00eate {0} dans l''unit\u00e9 de persistance {1} n''a pas pu \u00eatre g\u00e9n\u00e9r\u00e9e.
+
+61015=Version de service non valide {0} dans la demande.
+
+61016=Param\u00e8tre de requ\u00eate de pagination (limit ou offset) utilis\u00e9 pour ressource non paginable.
+
+61017="fields" et "excludeFields" ne peuvent pas \u00eatre utilis\u00e9s dans la m\u00eame demande.
+
+61018=La valeur de ce param\u00e8tre n''est pas valide ("{0}" = "{1}").
+
+61999={0} s''est produit(e).
+

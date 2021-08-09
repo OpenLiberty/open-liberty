@@ -1,0 +1,257 @@
+/*****default style in case user didn't set the style class*********/
+/*Use to set style of the parent node div containing all the 
+ children node tables/divs (child element type dependant on 
+ whether scrolling is enabled)*/
+.outerTreeStyle{
+	color: WindowText;
+	border-width: 0px;
+	border-style: none;
+	padding:0px;
+	font-weight: 400;
+}
+
+/*Use to set styles for the table representing each node*/
+.nodeStyle{
+	padding: 0px;
+	letter-spacing: 0;
+	border-collapse: collapse;
+	table-layout:fixed;
+}
+
+
+/*Use to set width of the main node cell within the table representing the tree.
+  In the situation where using a TreeTable this governs the actual tree node rather than
+  the adjoining tabular nodes*/
+.tdStyle{
+	padding: 0px;
+	margin:0px;
+	width: 200px;
+}
+
+/*Use for tree normal node text label style*/
+.labelNormalStyle{
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif; 
+}
+
+/*Use for tree node image style*/
+.nodeImageStyle {
+	border-right: 0px;
+	border-top: 0px; 
+	border-left: 0px;
+	width: 19px;
+	border-bottom: 0px;
+	height: 16px
+}
+
+/*Use for highlighted node text label style*/
+.labelHighlightStyle{
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+/*Use for node text label style when mouse over the label*/
+.labelMouseoverStyle{
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-style: italic;
+}
+
+/* Use for node text label style when item is dragged over it. Default is same as mouseover style*/
+.labelDragoverStyle{
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-style: italic;
+}
+/*So that the text will have no underline*/
+.linkTextStyle{
+	text-decoration: none
+}
+
+/*Use for getting all the system image icons*/
+.classForTreeSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|plustop=jsl/tree/icons/plustop.gif|plus=jsl/tree/icons/plus.gif|plusbottom=jsl/tree/icons/plusbottom.gif|minustop=jsl/tree/icons/minustop.gif|minus=jsl/tree/icons/minus.gif|minusbottom=jsl/tree/icons/minusbottom.gif|jointop=jsl/tree/icons/jointop.gif|joint=jsl/tree/icons/join.gif|jointbottom=jsl/tree/icons/joinbottom.gif|empty=jsl/tree/icons/empty.gif|line=jsl/tree/icons/line.gif|nodeopen=jsl/tree/icons/open_folder.gif|nodeclose=jsl/tree/icons/folder.gif|leaf=jsl/tree/icons/page.gif|baseopen=jsl/tree/icons/root.gif|");*/
+}
+
+/*When using a tree table use to set width of the main node cell within the 
+ table representing the tree.*/
+.tdTreeTabStyle{
+	padding-left: 1px;
+	padding-top: 0px;
+	padding-right:0px;
+	padding-bottom:0px;
+	width: 200px;
+	margin:0px;
+}
+
+/*Use to set style of the adjoining tabular cells when using a TreeTable*/
+.tdTableStyle{
+	width: 200px;
+	padding-left:3px;
+	padding-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	margin:0px;
+}
+
+/*Use to set style of the column headers when using a TreeTable*/
+.headerStyle{
+	width: 200px;
+	background-color: ThreeDFace;
+	color: WindowText;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDShadow;
+	padding-left:1px;
+	padding-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	margin:0px;
+}
+
+
+/********STYLE FOR TREE *******/
+.tree{
+}
+
+/*Use to set style of the parent node div containing all the 
+ children node tables/divs (child element type dependant on 
+ whether scrolling is enabled)*/
+.tree_outerTreeStyle
+{
+	color: WindowText;
+	border-width: 0px;
+	border-style: none;
+	padding:0px;
+	font-weight: 400;
+}
+
+/*Use to set styles for the table representing each node*/
+.tree_nodeStyle {
+	padding: 0px;
+	letter-spacing: 0;
+	border-collapse: collapse;
+	table-layout:fixed;
+}
+
+
+/*Use to set width of the main node cell within the table representing the tree.
+  In the situation where using a TreeTable this governs the actual tree node rather than
+  the adjoining tabular nodes*/
+.tree_tdStyle{
+	padding: 0px;
+	margin:0px;
+	width: 200px;
+	
+}
+
+/*Use for tree normal node text label style*/
+.tree_labelNormalStyle {
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif; 
+	/* To truncate long labels instead of line wrapping them, enable the
+	   following here and in the related styles below
+	white-space: nowrap;
+	overflow: hidden; */
+}
+
+/*Use for tree node image style*/
+.tree_nodeImageStyle {
+	border: 0px;
+	width: 19px;
+	height: 16px;
+	margin:0px;
+	padding:0px;
+	
+}
+
+/*Use for highlighted node text label style*/
+.tree_labelHighlightStyle{
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+/*Use for node text label style when mouse over the label*/
+.tree_labelMouseoverStyle{
+	font-size: 11px;
+	color: #000000;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-style: italic;
+}
+
+/* Use for node text label style when item is dragged over it. Default is same as mouseover*/
+.tree_labelDragoverStyle{
+	font-size: 11px;
+	color: #000000;
+	background-color: #bbbbbb;
+	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-style: italic;
+}
+
+/*So that the text will have no underline*/
+.tree_linkTextStyle{
+	text-decoration: none
+}
+/* In Firefox, when a label has (keyboard) focus, the focus rectangle isn't drawn.
+   Enabling the following will show a focus indicator in FF when a label has focus.
+   The color (and style of borders, ...) needs to be specified to be visible
+   against the tree's background.  */
+/*
+.tree_linkTextStyle:focus TABLE TD {
+	background-color:silver;
+}
+.tree_linkTextStyle TABLE TD {
+	background-color:transparent;
+}
+*/
+/*Use for getting all the system image icons*/
+.tree_classForTreeSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|plustop=jsl/tree/icons/plustop.gif|plus=jsl/tree/icons/plus.gif|plusbottom=jsl/tree/icons/plusbottom.gif|minustop=jsl/tree/icons/minustop.gif|minus=jsl/tree/icons/minus.gif|minusbottom=jsl/tree/icons/minusbottom.gif|jointop=jsl/tree/icons/jointop.gif|joint=jsl/tree/icons/join.gif|jointbottom=jsl/tree/icons/joinbottom.gif|empty=jsl/tree/icons/empty.gif|line=jsl/tree/icons/line.gif|nodeopen=jsl/tree/icons/open_folder.gif|nodeclose=jsl/tree/icons/folder.gif|leaf=jsl/tree/icons/page.gif|baseopen=jsl/tree/icons/root.gif|");*/
+}
+
+/*When using a tree table use to set width of the main node cell within the 
+ table representing the tree.*/
+.tree_tdTreeTabStyle{
+	padding-left: 1px;
+	padding-top: 0px;
+	padding-right:0px;
+	padding-bottom:0px;
+	width: 200px;
+	margin:0px;
+	
+}
+
+/*Use to set style of the adjoining tabular cells when using a TreeTable*/
+.tree_tdTableStyle{
+	width: 200px;
+	padding-left:3px;
+	padding-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	margin:0px;
+	
+}
+
+/*Use to set style of the column headers when using a TreeTable*/
+.tree_headerStyle{
+	width: 200px;
+	background-color: ThreeDFace;
+	color: WindowText;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDShadow;
+	padding-left:1px;
+	padding-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	margin:0px;
+}

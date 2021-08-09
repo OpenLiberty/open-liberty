@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: \u521d\u59cb\u5316 WAB \u5b89\u88c5\u7a0b\u5e8f\u65f6\u53d1\u751f\u9519\u8bef\u3002
+bundle.tracker.init.fail.explanation=\u670d\u52a1\u5668\u672a\u80fd\u521d\u59cb\u5316 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u7a0b\u5e8f\uff0c\u56e0\u6b64\u5c1a\u672a\u5b89\u88c5 WAB\u3002
+bundle.tracker.init.fail.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail=CWWKZ0202E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.explanation=\u670d\u52a1\u5668\u672a\u80fd\u5c06 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail.adapt=CWWKZ0203E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.adapt.explanation=\u670d\u52a1\u5668\u672a\u80fd\u5c06 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.adapt.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail.overlay=CWWKZ0204E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.overlay.explanation=\u670d\u52a1\u5668\u672a\u80fd\u5c06 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.overlay.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail.cache=CWWKZ0205E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.cache.explanation=\u670d\u52a1\u5668\u672a\u80fd\u5c06 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.cache.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail.container=CWWKZ0206E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.container.explanation=\u670d\u52a1\u5668\u672a\u80fd\u5c06 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.container.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail.wiring=CWWKZ0207E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.wiring.explanation=\u670d\u52a1\u5668\u672a\u80fd\u5c06 Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\u3002
+wab.install.fail.wiring.useraction=\u8bf7\u53c2\u9605\u65e5\u5fd7\u548c FFDC \u6587\u4ef6\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+wab.install.fail.clash=CWWKZ0208E: \u65e0\u6cd5\u5c06\u4e0a\u4e0b\u6587\u6839\u4e3a {1} \u7684\u6346\u7ed1\u8f6f\u4ef6 {0} \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\uff0c\u56e0\u4e3a\u5b83\u4e0e\u4e0b\u5217\u6346\u7ed1\u8f6f\u4ef6\u5177\u6709\u540c\u4e00\u4e0a\u4e0b\u6587\u6839\uff1a{2}
+wab.install.fail.clash.explanation=Web \u5bb9\u5668\u4e2d\u7684\u6bcf\u4e2a Web \u5e94\u7528\u7a0b\u5e8f\u6346\u7ed1\u8f6f\u4ef6 (WAB) \u7684\u4e0a\u4e0b\u6587\u6839\u90fd\u5fc5\u987b\u552f\u4e00\u3002\u670d\u52a1\u5668\u65e0\u6cd5\u5c06 WAB \u5b89\u88c5\u5230 Web \u5bb9\u5668\u4e2d\uff0c\u56e0\u4e3a\u5176\u4e0a\u4e0b\u6587\u6839\u4e0e\u53e6\u4e00\u5df2\u90e8\u7f72\u7684\u6346\u7ed1\u8f6f\u4ef6\u76f8\u540c\u3002
+wab.install.fail.clash.useraction=\u8bf7\u4f7f\u7528\u53e6\u4e00\u4e0a\u4e0b\u6587\u6839\u3002

@@ -1,0 +1,450 @@
+/*******************************************************************************
+ * Copyright (c) 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+options {
+  USER_CHAR_STREAM=true;
+  UNICODE_INPUT=true;
+  STATIC=false;
+}
+
+PARSER_BEGIN(MatchParserImpl)
+
+package com.ibm.ws.sib.matchspace.selector.impl;
+import com.ibm.ws.sib.matchspace.Operator;
+import com.ibm.ws.sib.matchspace.Selector;
+import com.ibm.ws.sib.matchspace.tools.MatchParser;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.StringReader;
+
+/** The MatchParser class provides parsing support for a superset of the JMS selector
+ * syntax, returning a Selector tree.  Except for the superset features, the language
+ * accepted is that of the JMS specification.
+ *
+ * MatchParser language features not in JMS:
+ *
+ * (1) Identifiers can be quoted with " and may contain any character except unescaped ".
+ *
+ * (2) Identifiers (unquoted) may contain the field separator character '.'.
+ *
+ * (3) Set predicates allow an arbitrary expression on the left (not restricted to
+ * identifier) and a list of arbitrary expressions on the right (not restricted to string
+ * literals).
+ *
+ * The superset features can be turned off by setting the 'strict' flag, causing the
+ * parser to recognize only the JMS syntax.
+ **/
+
+public class MatchParserImpl implements MatchParser {
+
+  // Strict mode flag
+  private boolean strict;
+
+
+  /** Prime a MatchParser object with a String form selector so that its QueryExpr method
+   * will return the corresponding Selector tree.
+   *
+   * @param parser an existing MatchParser object to be reused, or null if a new one is to
+   * be created.
+   *
+   * @param selector the String-form selector to be parsed
+   *
+   * @param strict true if only the JMS standard syntax is to be accepted, false if the
+   * extended syntax for identifiers, and set expressions, is to be accepted.
+   *
+   * @return a parser, primed with the supplied selector.  This is the same parser object
+   * that was supplied as an argument, if one was supplied.
+   **/
+
+  public static MatchParser prime(MatchParser parser, String selector, boolean strict) {
+    CharStream inStream = new IBMUnicodeCharStream(new StringReader(selector),1,1);
+    if (parser == null)
+      parser =  new MatchParserImpl(inStream);
+    else
+      ((MatchParserImpl)parser).ReInit(inStream);
+    ((MatchParserImpl)parser).strict = strict;
+    return parser;
+  }
+
+  /** Return the Selector tree associated with a primed parser.
+   *
+   * @return a selector tree.  If the parse was successful, the top node of the tree will
+   * be of BOOLEAN type; otherwise, it will be of INVALID type.
+   **/
+
+  public Selector getSelector() {
+    Selector ans;
+    try {
+      ans = QueryExpr();
+      if (!ans.mayBeBoolean())
+        ans.setType(Selector.INVALID);
+    } catch (ParseException e) {
+      // No FFDC code needed
+      Object obj = null;
+      ans = new LiteralImpl(obj);
+      ans.setType(Selector.INVALID);
+    }
+    return ans;
+  }
+}
+
+PARSER_END(MatchParserImpl)
+
+// QueryExpr ::= BooleanExpr <EOF>
+
+Selector QueryExpr() : { Selector ans; } {
+  ans = BooleanExpr() <EOF> { return ans; }
+}
+
+// BooleanExpr  ::=  BooleanTerm
+//               | BooleanTerm <OR> BooleanExpr
+
+Selector BooleanExpr() : { Selector left, right=null; } {
+  ( left = BooleanTerm() ( <OR> right = BooleanExpr() )? ) {
+    if (right == null) return left;
+    else return new OperatorImpl(Operator.OR, left, right);
+  }
+}
+
+// BooleanTerm ::= BooleanFactor
+//              | BooleanFactor <AND> BooleanTerm
+
+Selector BooleanTerm() : { Selector left, right=null; } {
+  ( left = BooleanFactor() ( <AND> right = BooleanTerm() )? ) {
+    if (right == null) return left;
+    else return new OperatorImpl(Operator.AND, left, right);
+  }
+}
+
+// BooleanFactor ::= ( <NOT> Predicate ) | Predicate
+
+Selector BooleanFactor() : { Selector child; boolean neg=false; } {
+  (( <NOT> { neg = true; } )? child = Predicate()) {
+    if (neg) return new OperatorImpl(Operator.NOT, child);
+    else return child;
+  }
+}
+
+// Predicate ::= SetPredicate
+//            | NullPredicate
+//            | ComparisonPredicate
+//            | BetweenPredicate
+//            | LikePredicate
+//            | EmptyPredicate
+//            | Expression
+// SetPredicate ::= JMSSetPredicate
+//               | GeneralSetPredicate
+
+Selector Predicate() : { Selector ans; } {
+  (LOOKAHEAD(ComparisonPredicate()) ans = ComparisonPredicate()
+   | LOOKAHEAD(NullPredicate()) ans = NullPredicate()
+   | LOOKAHEAD(BetweenPredicate()) ans = BetweenPredicate()
+   | LOOKAHEAD(LikePredicate()) ans = LikePredicate()
+   | LOOKAHEAD(JMSSetPredicate()) ans = JMSSetPredicate()
+//   | LOOKAHEAD(GeneralSetPredicate()) ans = GeneralSetPredicate()
+   | ans = Expression()) {
+    return ans;
+  }
+}
+
+// ComparisonPredicate ::= ( Expression ( "<" | ">" | "<=" | ">=" ) Expression
+//                      | Expression ( "<>" | "=" ) Expression )
+
+Selector ComparisonPredicate() : { Selector left, right; int op; } {
+  ( left = Expression() op = ComparisonOperator() right = Expression() ) {
+    return new OperatorImpl(op, left, right);
+  }
+}
+
+int ComparisonOperator() : {} {
+  "<" { return Operator.LT; }
+  | ">" { return Operator.GT; }
+  | "<=" { return Operator.LE; }
+  | ">=" { return Operator.GE; }
+  | "<>" { return Operator.NE; }
+  | "=" { return Operator.EQ; }
+}
+
+// Expression ::= Term
+//             | Term PlusMinus Expression
+
+Selector Expression() : { Selector left, right=null; int op = -1; } {
+  ( left = Term() ( op = PlusMinus() right = Expression() )? ) {
+    if (right == null) return left;
+    else return new OperatorImpl(op, left, right);
+  }
+}
+
+// PlusMinus ::= "+" | "-"
+
+int PlusMinus() : {} {
+  "+" { return Operator.PLUS; }
+  | "-" { return Operator.MINUS; }
+}
+
+// Term ::= Primary
+//       | Primary TimesDiv Term
+
+Selector Term() : { Selector left, right=null; int op = -1; } {
+  ( left = Primary(false) ( op = TimesDiv() right = Term() )? ) {
+    if (right == null) return left;
+    else return new OperatorImpl(op, left, right);
+  }
+}
+
+// TimesDiv ::= "*" | "/"
+
+int TimesDiv() : {} {
+  "*" { return Operator.TIMES; }
+  | "/" { return Operator.DIV; }
+}
+
+// Primary ::= PlusMinus Primary
+//          | PrimaryNotPlusMinus
+
+Selector Primary(boolean negated) : { Selector ans; int op = Operator.PLUS; } {
+  ( ans = PrimaryNotPlusMinus(negated)
+    | op = PlusMinus() { negated ^= (op == Operator.MINUS); } ans = Primary(negated) ) {
+    return ans;
+  }
+}
+
+// PrimaryNotPlusMinus ::= <TRUE>
+//                   | <FALSE>
+//                   | "(" BooleanExpr ")"
+//                   | <INTEGER_LITERAL>
+//                   | <FLOATING_POINT_LITERAL>
+//                   | <STRING_LITERAL>
+//                   | FieldRef
+
+Selector PrimaryNotPlusMinus(boolean negated) : { Selector ans; Token tok; } {
+  ( <TRUE> { ans = new LiteralImpl(Boolean.TRUE); }
+  | <FALSE> { ans = new LiteralImpl(Boolean.FALSE); }
+  | "(" ans = BooleanExpr() ")"
+  | tok = <INTEGER_LITERAL> {
+    ans = ParseUtil.parseIntegerLiteral(((negated) ? "-" : "") + tok.image);
+    negated = false;
+  }
+  | tok = <FLOATING_POINT_LITERAL> {
+    ans = ParseUtil.parseFloatingLiteral(((negated) ? "-" : "") + tok.image);
+    negated = false;
+  }
+  | tok = <STRING_LITERAL> { ans = ParseUtil.parseStringLiteral(tok.image); }
+  | ans = FieldRef() {} ) {
+    if (negated) return new OperatorImpl(Operator.NEG, ans);
+    else return ans;
+  }
+}
+
+// NullPredicate ::= FieldRef <IS> ( <NOT> )? <NULL>
+
+Selector NullPredicate() : { boolean not=false; Selector ans; } {
+  ( ans = FieldRef() <IS> ( <NOT> { not = true; } )? <NULL> ) {
+    ans = new OperatorImpl(Operator.ISNULL, ans);
+    if (not) return new OperatorImpl(Operator.NOT, ans);
+    else return ans;
+  }
+}
+
+// JMSSetPredicate ::= FieldRef ( <NOT> )? <IN> SetString
+
+Selector JMSSetPredicate() : { Selector id; List set; boolean neg=false; } {
+  ( id = FieldRef() ( <NOT> { neg = true; } )? <IN> set = SetString() ) {
+    Selector ans = ParseUtil.convertSet(id, set);
+    if (neg) return new OperatorImpl(Operator.NOT, ans);
+    else return ans;
+  }
+}
+
+// GeneralSetPredicate ::= Expression ( <NOT> )? <IN> SetExpr
+
+Selector GeneralSetPredicate() : { Selector expr; List set; boolean neg=false; } {
+  { if (strict) throw generateParseException(); }
+  ( expr = Expression() ( <NOT> { neg = true; } )? <IN> set = SetExpr() ) {
+    Selector ans = ParseUtil.convertSet(expr, set);
+    if (neg) ans = new OperatorImpl(Operator.NOT, ans);
+    return ans;
+  }
+}
+
+// SetExpr ::= "(" Expression ( "," Expression )* ")"
+
+List SetExpr() : { List ans = new ArrayList(); Selector elem; } {
+  ( "(" elem = Expression() { ans.add(elem); }
+    ( "," elem = Expression() { ans.add(elem); } )* ")" ) {
+    return ans;
+  }
+}
+
+// SetString ::= "(" <STRING_LITERAL> ( "," <STRING_LITERAL> )* ")"
+
+List SetString() : { List ans = new ArrayList(); Token tok; } {
+  ( "(" tok = <STRING_LITERAL>
+    { ans.add(ParseUtil.parseStringLiteral(tok.image)); }
+    ( "," tok = <STRING_LITERAL>
+      { ans.add(ParseUtil.parseStringLiteral(tok.image)); } )* ")" ) {
+    return ans;
+  }
+}
+
+// BetweenPredicate ::= Expression ( <NOT> )? <BETWEEN> Expression <AND> Expression
+
+Selector BetweenPredicate() : { Selector expr1, expr2, expr3; boolean neg=false; } {
+  ( expr1 = Expression() ( <NOT> { neg = true; } )?
+    <BETWEEN> expr2 = Expression() <AND> expr3 = Expression() ) {
+    Selector ans = ParseUtil.convertRange(expr1, expr2, expr3);
+    if (neg) return new OperatorImpl(Operator.NOT, ans);
+    else return ans;
+  }
+}
+
+// LikePredicate ::= FieldRef ( <NOT> )? <LIKE> <STRING_LITERAL>
+//   ( <ESCAPE> <STRING_LITERAL> )?
+
+Selector LikePredicate() : { Selector id; Token pat; Token esc=null; boolean neg=false; } {
+  ( id = FieldRef() ( <NOT> { neg = true; } )?
+    <LIKE> pat = <STRING_LITERAL> ( <ESCAPE> esc = <STRING_LITERAL> )? ) {
+    Selector ans = ParseUtil.convertLike(id, pat.image, (esc==null) ? null : esc.image);
+    if (ans == null) generateParseException();
+    if (neg) return new OperatorImpl(Operator.NOT, ans);
+    else return ans;
+  }
+}
+
+// FieldRef ::=  <IDENTIFIER>
+//             |  <QUOTED_IDENTIFIER>
+
+Selector FieldRef() : { Token tok; String id; } {
+  ( tok = <IDENTIFIER> { id = tok.image;
+                         // Identifiers with '.' in their name are not JMS conformant
+                         if (strict && id.indexOf('.') != -1)
+                         throw generateParseException(); }
+    | tok = <QUOTED_IDENTIFIER> { if (strict) throw generateParseException();
+                                  id = tok.image.substring(1, tok.image.length()-1); } ) {
+    Selector ans = new IdentifierImpl(id);
+    return ans;
+  }
+}
+
+// Lexical definitions
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+TOKEN [ IGNORE_CASE ]:
+{
+  < IS: "IS">
+| < IN: "IN">
+| < BETWEEN: "BETWEEN">
+| < LIKE: "LIKE">
+| < ESCAPE: "ESCAPE">
+| < OR: "OR">
+| < AND: "AND">
+| < NOT: "NOT">
+| < NULL: "NULL">
+| < TRUE: "true">
+| < FALSE: "false">
+}
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|<FIELDSEP>)* >
+| < QUOTED_IDENTIFIER:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+|
+  < #LETTER:
+      [
+       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+ |
+  < #FIELDSEP:
+      [
+        "\u002e"
+      ]
+  >
+|
+  < INTEGER_LITERAL:
+    ( ("-")?
+      ("0" (["0"-"7"])*)
+      |
+      (("0x" | "0X") (["0"-"9","a"-"f","A"-"F"])+)
+      |
+      (["1"-"9"] (["0"-"9"])*)
+    ) (["L", "l"])?
+  >
+|
+  < FLOATING_POINT_LITERAL:
+      (  (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+       | "." (["0"-"9"])+ (<EXPONENT>)?
+       | (["0"-"9"])+ <EXPONENT>
+       | (["0"-"9"])+ (<EXPONENT>)? )  (["D", "d", "F", "f"])?
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < STRING_LITERAL:
+      "\'"
+      (   (~["\'"])
+        |
+         "\'\'"
+      )*
+      "\'"
+>
+}

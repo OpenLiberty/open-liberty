@@ -1,0 +1,80 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc/resources/com/ibm/ws/security/authorization/jacc/internal/resources/JaccAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2850 - CWWKS2879
+
+JACC_SERVICE_STARTING=CWWKS2850I: Uruchamianie us\u0142ugi JACC. Nazwa klasy dostawcy strategii to {0}. Nazwa klasy PolicyConfigurationFactory {1}.
+JACC_SERVICE_STARTING.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JACC_SERVICE_STARTING.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+JACC_SERVICE_STARTED=CWWKS2851I: Us\u0142uga JACC zosta\u0142a uruchomiona. Nazwa klasy dostawcy strategii to {0}. Nazwa klasy PolicyConfigurationFactory {1}.
+JACC_SERVICE_STARTED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JACC_SERVICE_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+JACC_SERVICE_STOPPED=CWWKS2852I: Us\u0142uga JACC zosta\u0142a zatrzymana. Nazwa klasy dostawcy strategii to {0}. Aktywowano wbudowan\u0105 us\u0142ug\u0119 autoryzacji.
+JACC_SERVICE_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JACC_SERVICE_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+JACC_SERVICE_START_FAILURE=CWWKS2853E: Nie powiod\u0142o si\u0119 uruchomienie us\u0142ugi JACC. Nazwa klasy dostawcy strategii to {0}. Nazwa klasy PolicyConfigurationFactory {1}.
+JACC_SERVICE_START_FAILURE.explanation=Nie powiod\u0142o si\u0119 uruchomienie us\u0142ugi JACC.
+JACC_SERVICE_START_FAILURE.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_POLICY_IS_NOT_SET=CWWKS2854E: Nie mo\u017cna zainicjowa\u0107 dostawcy JACC, poniewa\u017c nazwa klasy strategii nie zosta\u0142a ustawiona we w\u0142a\u015bciwo\u015bci (javax.security.jacc.policy.provider).
+JACC_POLICY_IS_NOT_SET.explanation=Nie mo\u017cna zainicjowa\u0107 dostawcy JACC, poniewa\u017c nazwa klasy strategii nie zosta\u0142a ustawiona.
+JACC_POLICY_IS_NOT_SET.useraction=Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 javax.security.jacc.policy.provider) sk\u0142adnika u\u017cytkownika JACC ustawia odpowiedni\u0105 nazw\u0119 klasy.
+
+JACC_FACTORY_IS_NOT_SET=CWWKS2855E: Nie mo\u017cna zainicjowa\u0107 dostawcy JACC, poniewa\u017c nazwa klasy fabryki PolicyConfigurationFactory nie zosta\u0142a ustawiona we w\u0142a\u015bciwo\u015bci (javax.security.jacc.PolicyConfigurationFactory.provider).
+JACC_FACTORY_IS_NOT_SET.explanation=Nie mo\u017cna zainicjowa\u0107 dostawcy JACC, poniewa\u017c nazwa klasy fabryki PolicyConfigurationFactory nie zosta\u0142a ustawiona.
+JACC_FACTORY_IS_NOT_SET.useraction=Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 javax.security.jacc.PolicyConfigurationFactory.provider) sk\u0142adnika u\u017cytkownika JACC ustawia odpowiedni\u0105 nazw\u0119 klasy.
+
+JACC_INCONSISTENT_POLICY_CLASS=CWWKS2856W: Nazwa klasy strategii {0}, kt\u00f3ra jest okre\u015blona przez w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 maszyny JVM (javax.security.jacc.policy.provider), nie jest taka sama, jak nazwa klasy {1}, kt\u00f3ra jest okre\u015blona przez dostawc\u0119 JACC. U\u017cyta zostanie nazwa {1}.
+JACC_INCONSISTENT_POLICY_CLASS.explanation=Nazwa klasy strategii, kt\u00f3ra jest okre\u015blona przez w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 maszyny JVM, nie jest taka sama, jak nazwa klasy strategii, kt\u00f3ra jest okre\u015blona przez w\u0142a\u015bciwo\u015b\u0107 pakunku klasy dostawcy JACC. Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci systemowej jest ignorowana i u\u017cywana jest warto\u015b\u0107 w\u0142a\u015bciwo\u015bci pakunku.
+JACC_INCONSISTENT_POLICY_CLASS.useraction=W\u0142a\u015bciwo\u015b\u0107 systemowa maszyny JVM nie jest wymagana. Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 maszyny JVM, a nast\u0119pnie zrestartuj serwer.
+
+JACC_INCONSISTENT_FACTORY_CLASS=CWWKS2857W: Nazwa klasy fabryki PolicyConfigurationFactory {0}, kt\u00f3ra jest okre\u015blona przez w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 maszyny JVM (javax.security.jacc.PolicyConfigurationFactory.provider), jest niesp\u00f3jna z nazw\u0105 klasy {1}, kt\u00f3ra jest okre\u015blona przez dostawc\u0119 JACC. U\u017cyta zostanie nazwa {1}.
+JACC_INCONSISTENT_FACTORY_CLASS.explanation=Nazwa klasy fabryki PolicyConfigurationFactory, kt\u00f3ra jest okre\u015blona przez w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 maszyny JVM, nie jest taka sama, jak nazwa klasy fabryki PolicyConfigurationFactory, kt\u00f3ra jest okre\u015blona przez w\u0142a\u015bciwo\u015b\u0107 pakunku klasy dostawcy JACC. Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci systemowej jest ignorowana i u\u017cywana jest warto\u015b\u0107 w\u0142a\u015bciwo\u015bci pakunku.
+JACC_INCONSISTENT_FACTORY_CLASS.useraction=W\u0142a\u015bciwo\u015b\u0107 systemowa maszyny JVM nie jest wymagana. Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 maszyny JVM, a nast\u0119pnie zrestartuj serwer.
+
+JACC_FACTORY_INSTANTIATION_FAILURE=CWWKS2858E: Us\u0142uga JACC nie mo\u017cna za\u0142adowa\u0107 klasy fabryki PolicyConfigurationFactory {0}.
+JACC_FACTORY_INSTANTIATION_FAILURE.explanation=Us\u0142uga JACC nie mo\u017cna za\u0142adowa\u0107 okre\u015blonej klasy fabryki PolicyConfigurationFactory.
+JACC_FACTORY_INSTANTIATION_FAILURE.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_POLICY_INSTANTIATION_FAILURE=CWWKS2859E: Us\u0142uga JACC nie mo\u017ce ustawi\u0107 klasy dostawcy strategii {0} z powodu wyj\u0105tku {1}.
+JACC_POLICY_INSTANTIATION_FAILURE.explanation=Us\u0142uga JACC nie mo\u017ce ustawi\u0107 klasy dostawcy strategii z powodu wyj\u0105tku.
+JACC_POLICY_INSTANTIATION_FAILURE.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_GET_POLICYCONFIGURATION_FAILURE=CWWKS2860E: Us\u0142uga JACC nie mo\u017ce pobra\u0107 obiektu PolicyConfiguration o identyfikatorze kontekstu {0}. Wyj\u0105tek: {1}.
+JACC_GET_POLICYCONFIGURATION_FAILURE.explanation=Us\u0142uga JACC nie mo\u017ce pobra\u0107 obiektu PolicyConfiguration dostawcy JACC. Mo\u017ce to by\u0107 powa\u017cny b\u0142\u0105d w dostawcy JACC.
+JACC_GET_POLICYCONFIGURATION_FAILURE.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2861E: Us\u0142uga JACC nie mo\u017ce propagowa\u0107 ogranicze\u0144 zabezpiecze\u0144 WWW o identyfikatorze kontekstu {0} do dostawcy JACC z powodu wyj\u0105tku {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=Us\u0142uga JACC nie mo\u017ce propagowa\u0107 ogranicze\u0144 zabezpiecze\u0144 WWW do dostawcy JACC z powodu wyj\u0105tku.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_IMPLIES_FAILURE=CWWKS2862E: Autoryzacja zasobu o identyfikatorze kontekstu {0} nie powiod\u0142a si\u0119 z powodu wyj\u0105tku {1}.
+JACC_IMPLIES_FAILURE.explanation=Autoryzacja okre\u015blonego zasobu nie powiod\u0142a si\u0119.
+JACC_IMPLIES_FAILURE.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_NO_EJB_PLUGIN=CWWKS2863E: Modu\u0142 do przetwarzania r\u00f3l zabezpiecze\u0144 komponentu EJB jest niedost\u0119pny.
+JACC_NO_EJB_PLUGIN.explanation=Us\u0142uga JACC nie mo\u017ce przetworzy\u0107 r\u00f3l zabezpiecze\u0144 komponentu EJB, poniewa\u017c wymagany modu\u0142 jest niedost\u0119pny.
+JACC_NO_EJB_PLUGIN.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+
+JACC_NO_WEB_PLUGIN=CWWKS2864E: Modu\u0142 do przetwarzania r\u00f3l zabezpiecze\u0144 WWW jest niedost\u0119pny.
+JACC_NO_WEB_PLUGIN.explanation=Us\u0142uga JACC nie mo\u017ce przetworzy\u0107 r\u00f3l zabezpiecze\u0144 WWW, poniewa\u017c wymagany modu\u0142 jest niedost\u0119pny.
+JACC_NO_WEB_PLUGIN.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
+

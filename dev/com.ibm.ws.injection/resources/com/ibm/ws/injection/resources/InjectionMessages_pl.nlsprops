@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: Nie mo\u017cna zako\u0144czy\u0107 operacji JNDI na nazwie java:comp/env, poniewa\u017c bie\u017c\u0105cy w\u0105tek nie jest powi\u0105zany z komponentem aplikacji Java Enterprise Edition. Ten warunek mo\u017ce wyst\u0105pi\u0107, je\u015bli klient JNDI u\u017cywaj\u0105cy nazwy java:comp/env nie wyst\u0119puje w w\u0105tku \u017c\u0105dania aplikacji serwera. Sprawd\u017a, czy aplikacja Java EE nie uruchamia operacji JNDI na nazwach java:comp/env w ramach blok\u00f3w kodu statycznego lub w w\u0105tkach utworzonych przez t\u0119 aplikacj\u0119. Taki kod nie musi by\u0107 wykonywany w w\u0105tku \u017c\u0105dania aplikacji serwera i dlatego nie jest obs\u0142ugiwany przez operacje JNDI na nazwach java:comp/env.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=Operacje JNDI na nazwie java:comp/env s\u0105 obs\u0142ugiwane tylko w w\u0105tkach powi\u0105zanych z komponentem aplikacji Java EE.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=Zmodyfikuj aplikacj\u0119 tak, aby operacja JNDI wyst\u0119powa\u0142a w w\u0105tku powi\u0105zanym z komponentem aplikacji Java EE.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: Nie mo\u017cna utworzy\u0107 instancji obiektu przywo\u0142ywanego przez nazw\u0119 JNDI {0}. Je\u015bli nazwa odwo\u0142ania jest odwzorowana na nazw\u0119 JNDI w powi\u0105zaniach deskryptora wdra\u017cania dla aplikacji wykonuj\u0105cej wyszukanie JNDI, sprawd\u017a, czy odwzorowanie nazwy JNDI w deskryptorze wdra\u017cania jest poprawne. Je\u015bli odwzorowanie nazwy JNDI jest poprawne, sprawd\u017a, czy zas\u00f3b docelowy mo\u017ce zosta\u0107 rozstrzygni\u0119ty przy u\u017cyciu okre\u015blonej nazwy w odniesieniu do domy\u015blnego kontekstu pocz\u0105tkowego.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia instancji odwo\u0142ania do obiektu przy u\u017cyciu okre\u015blonej nazwy JNDI.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=Zapoznaj si\u0119 z zagnie\u017cd\u017conym wyj\u0105tkiem lub poprzednim b\u0142\u0119dem, aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: Odwo\u0142anie {0} zadeklarowane przez plik META-INF/application.xml w aplikacji {1} nie nale\u017cy do kontekstu java:global lub java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=Odwo\u0142ania zadeklarowane w pliku META-INF/application.xml mog\u0105 u\u017cywa\u0107 tylko nazw w kontekstach java:global lub java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=Usu\u0144 odwo\u0142anie lub zaktualizuj nazw\u0119 odwo\u0142ania, aby mia\u0142a ona przedrostek java:global/ lub java:app/.
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: Serwer nie m\u00f3g\u0142 znale\u017a\u0107 powi\u0105zania {0} typu {1} dla odwo\u0142ania {2}.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=Serwer nie m\u00f3g\u0142 znale\u017a\u0107 powi\u0105zania o podanej nazwie i typie.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=Zdefiniuj zas\u00f3b o podanej nazwie lub skonfiguruj powi\u0105zania aplikacji tak, aby u\u017cywa\u0142y ju\u017c zdefiniowanego zasobu.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: Serwer nie m\u00f3g\u0142 znale\u017a\u0107 powi\u0105zania domy\u015blnego {0} typu {1} dla odwo\u0142ania {2}.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=Serwer nie m\u00f3g\u0142 znale\u017a\u0107 powi\u0105zania o podanej nazwie i typie. Aplikacja nie okre\u015bli\u0142a nazwy powi\u0105zania, dlatego zosta\u0142a u\u017cyta nazwa powi\u0105zania domy\u015blnego.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=Zdefiniuj zas\u00f3b o podanej nazwie lub skonfiguruj powi\u0105zania aplikacji tak, aby u\u017cywa\u0142y ju\u017c zdefiniowanego zasobu.
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: Serwer nie m\u00f3g\u0142 znale\u017a\u0107 powi\u0105zania {0} typu {1} dla odwo\u0142ania {2}. Powi\u0105zanie zosta\u0142o okre\u015blone przez us\u0142ug\u0119 {3}.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=Serwer nie m\u00f3g\u0142 znale\u017a\u0107 powi\u0105zania o podanej nazwie i typie.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=Skontaktuj si\u0119 z dostawc\u0105 us\u0142ugi.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: Serwer nie m\u00f3g\u0142 uzyska\u0107 obiektu dla powi\u0105zania {0} typu {1}. Komunikat o wyj\u0105tku to: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=Serwer znalaz\u0142 powi\u0105zanie o okre\u015blonej nazwie i typie, ale wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uzyskania do niego dost\u0119pu. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=Szczeg\u00f3\u0142owe wyja\u015bnienie znajduje si\u0119 w tek\u015bcie komunikatu o wyj\u0105tku.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: W konfiguracji serwera brak sk\u0142adnika do obs\u0142ugi odwo\u0142ania EJB {0} w komponencie {1} modu\u0142u {2} aplikacji {3}.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=Aplikacja deklaruje odwo\u0142anie do komponentu EJB sesji, ale na serwerze nie skonfigurowano sk\u0142adnika, kt\u00f3ry obs\u0142uguje komponenty EJB sesji.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=Zmodyfikuj konfiguracj\u0119 serwera tak, aby w\u0142\u0105czy\u0107 sk\u0142adnik, kt\u00f3ry obs\u0142uguje komponenty EJB sesji. Na przyk\u0142ad w\u0142\u0105cz sk\u0142adnik ejbLite-3.1.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: Powi\u0105zanie zawiera wyszukiwanie po\u015brednie, kt\u00f3re odwo\u0142uje si\u0119 samo do siebie.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=Powi\u0105zanie zawiera wyszukiwanie po\u015brednie, kt\u00f3re odwo\u0142uje si\u0119 samo do siebie. Je\u015bli na przyk\u0142ad zostanie u\u017cyta niepoprawna adnotacja @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), w\u00f3wczas nazwa ma niejawny przedrostek java:comp/env/, tak wi\u0119c \u0142a\u0144cuch wyszukiwania odnosi si\u0119 do odwo\u0142ania zasobu, co powoduje utworzenie p\u0119tli niesko\u0144czonej.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=Zmie\u0144 wyszukiwanie lub nazw\u0119 powi\u0105zania z zasobem docelowym. Je\u015bli na przyk\u0142ad zostanie u\u017cyta niepoprawna adnotacja @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), mo\u017cna zmieni\u0107 wyszukiwanie na jdbc/ds, co spowoduje znalezienie zasobu w domy\u015blnej przestrzeni nazw.

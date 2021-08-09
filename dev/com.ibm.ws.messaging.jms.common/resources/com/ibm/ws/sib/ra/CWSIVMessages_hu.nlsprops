@@ -1,0 +1,1411 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.ra.CWSIVMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIV0001=CWSIV0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIV0001-CWSIV0049 belong to class com.ibm.ws.sib.ra.recovery.impl.SibRaXaResourceInfo
+#   - Msgs in the range CWSIV0050-CWSIV0099 belong to class com.ibm.ws.sib.ra.SibRaFactory
+#   - Msgs in the range CWSIV0100-CWSIV0149 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionFactory
+#   - Msgs in the range CWSIV0150-CWSIV0199 belong to class com.ibm.ws.sib.ra.impl.SibRaConnection
+#   - Msgs in the range CWSIV0200-CWSIV0249 belong to class com.ibm.ws.sib.ra.impl.SibRaDestinationSession
+#   - Msgs in the range CWSIV0250-CWSIV0299 belong to class com.ibm.ws.sib.ra.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0300-CWSIV0349 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionInfo
+#   - Msgs in the range CWSIV0350-CWSIV0399 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnectionFactory
+#   - Msgs in the range CWSIV0400-CWSIV0449 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnection
+#   - Msgs in the range CWSIV0450-CWSIV0499 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+#   - Msgs in the range CWSIV0500-CWSIV0549 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaActivationSpecImpl
+#   - Msgs in the range CWSIV0550-CWSIV0599 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointActivation
+#   - Msgs in the range CWSIV0600-CWSIV0649 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatcher
+#   - Msgs in the range CWSIV0650-CWSIV0699 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaTransactionalDispatcher
+#   - Msgs in the range CWSIV0700-CWSIV0749 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0750-CWSIV0799 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaStaticDestinationEndpointActivation
+#   - Msgs in the range CWSIV0800-CWSIV0849 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDynamicDestinationEndpointActivation
+#   - Msgs in the range CWSIV0850-CWSIV0899 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointInvokerImpl
+#   - Msgs in the range CWSIV0900-CWSIV0949 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaListener
+#   - Msgs in the range CWSIV0950-CWSIV0999 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMessagingEngineConnection
+#   - Msgs in the range CWSIV1000-CWSIV1049 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchEndpointActivation
+#   - Msgs in the range CWSIV1050-CWSIV1099 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchTarget
+#   - Msgs in the range CWSIV1100-CWSIV1149 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSingleProcessListener
+#   - Msgs in the range CWSIV1150-CWSIV1199 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMultiProcessListener
+#   - Msgs in the range CWSIV1200-CWSIV1249 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSynchronizedDispatcher
+#   - CWSIV9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.29,0,05/04/28,09:28:22
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/ra/CWSIVMessages.nlsprops
+#COMPONENTPREFIX CWSIV
+#COMPONENTNAMEFOR CWSIV SIBus Resource Adapter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the security alias that could not be resolved
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001=CWSIV0001W: A(z) {0} biztons\u00e1gi \u00e1ln\u00e9v felbont\u00e1sa meghi\u00fasult a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s sor\u00e1n.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.explanation=Egy biztons\u00e1gi \u00e1ln\u00e9v ker\u00fclt megad\u00e1sra azon az er\u0151forr\u00e1son, amely helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1sa t\u00f6rt\u00e9nik, de az \u00e1ln\u00e9v nem bonthat\u00f3 fel.  A feldolgoz\u00e1s null\u00e9rt\u00e9k\u0171 felhaszn\u00e1l\u00f3n\u00e9vvel \u00e9s jelsz\u00f3val fog folytat\u00f3dni.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \
+\u00e1ln\u00e9v meg van-e hat\u00e1rozva azon alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra, amelyben a helyre\u00e1ll\u00edt\u00e1si \
+feldolgoz\u00e1s t\u00f6rt\u00e9nik.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was received
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050=CWSIV0050E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} kiv\u00e9tel t\u00f6rt\u00e9nt a JCA fut\u00e1si k\u00f6rnyezetben egy kapcsolatgy\u00e1r megszerz\u00e9se sor\u00e1n.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.explanation=Egy SICoreConnectionFactory JCA fut\u00e1si k\u00f6rnyezeten kereszt\u00fcli megszerz\u00e9se sor\u00e1n v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection factory that was returned
+INCORRECT_FACTORY_TYPE_CWSIV0051=CWSIV0051E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} JCA fut\u00e1si k\u00f6rnyezetb\u0151l visszaadott kapcsolatgy\u00e1r nem val\u00f3s\u00edtja meg az SICoreConnectionFactory fel\u00fcletet.
+INCORRECT_FACTORY_TYPE_CWSIV0051.explanation=A JCA fut\u00e1si k\u00f6rnyezetb\u0151l visszaadott kapcsolatgy\u00e1r nem val\u00f3s\u00edtotta meg az SICoreConnectionFactory fel\u00fcletet, azonban ez elv\u00e1r\u00e1s.
+INCORRECT_FACTORY_TYPE_CWSIV0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0052=CWSIV0052E: A(z) {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {1} kapcsolatgy\u00e1r-tulajdons\u00e1g sz\u00e1m\u00e1ra. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kekek a k\u00f6vetkez\u0151k: {2} \u00e9s {3}.
+INVALID_PROPERTY_CWSIV0052.explanation=Az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dusnak \u00e1tadott tulajdons\u00e1gkioszt\u00e1s helytelen \u00e9rt\u00e9ket tartalmazott az adott tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_PROPERTY_CWSIV0052.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dus sz\u00e1m\u00e1ra \u00e1tadott tulajdons\u00e1ghalmaz \u00e9rv\u00e9nyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the property
+# {1} the required type
+INVALID_PROPERTY_TYPE_CWSIV0053=CWSIV0053E: A(z) {0} kapcsolatgy\u00e1r-tulajdons\u00e1g nem a k\u00edv\u00e1nt {1} t\u00edpus\u00fa.
+INVALID_PROPERTY_TYPE_CWSIV0053.explanation=Az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dusnak \u00e1tadott tulajdons\u00e1gkioszt\u00e1s nem elv\u00e1rt t\u00edpus\u00fa \u00e9rt\u00e9ket tartalmazott az adott tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_PROPERTY_TYPE_CWSIV0053.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dus sz\u00e1m\u00e1ra \u00e1tadott tulajdons\u00e1ghalmaz \u00e9rv\u00e9nyes.
+
+# -------------------------------------------------------------------------------------------------
+ALIAS_REQUIRED_CWSIV0054=CWSIV0054E: A kapcsolatgy\u00e1r-tulajdons\u00e1goknak tartalmazniuk kell egy \u00e9rt\u00e9ket a CONTAINER_AUTHENTICATION_ALIAS elem sz\u00e1m\u00e1ra.
+ALIAS_REQUIRED_CWSIV0054.explanation=Az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dusnak \u00e1tadott tulajdons\u00e1gkioszt\u00e1s azt k\u00e9rte, hogy a t\u00e1rol\u00f3 a hiteles\u00edt\u00e9si adatokat az alap\u00e9rtelmezett azonos\u00edt\u00f3kioszt\u00e1s haszn\u00e1lat\u00e1val biztos\u00edtsa, de nem adott meg t\u00e1rol\u00f3hiteles\u00edt\u00e9si \u00e1lnevet.
+ALIAS_REQUIRED_CWSIV0054.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dus sz\u00e1m\u00e1ra \u00e1tadott tulajdons\u00e1ghalmaz tartalmaz \u00e9rt\u00e9ket a CONTAINER_AUTHENTICATION_ALIAS elem sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0055=CWSIV0055E: A(z) {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {1} kapcsolatgy\u00e1r-tulajdons\u00e1g sz\u00e1m\u00e1ra. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek a k\u00f6vetkez\u0151k: {2} \u00e9s {3}.
+INVALID_PROPERTY_CWSIV0055.explanation=Az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dusnak \u00e1tadott tulajdons\u00e1gkioszt\u00e1s helytelen \u00e9rt\u00e9ket tartalmazott az adott tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_PROPERTY_CWSIV0055.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SICoreConnectionFactorySelector elemben l\u00e9v\u0151 getConnectionFactory met\u00f3dus sz\u00e1m\u00e1ra \u00e1tadott tulajdons\u00e1ghalmaz \u00e9rv\u00e9nyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection that was returned
+# {1} the expected type for the connection
+INCORRECT_CONNECTION_TYPE_CWSIV0101=CWSIV0101E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A JCA kapcsolatkezel\u0151 a(z) {0} kapcsolatot adta vissza, amely nem az elv\u00e1rt {1} t\u00edpus\u00fa volt.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.explanation=Egy kapcsolat JCA kapcsolatkezel\u0151n kereszt\u00fcli megszerz\u00e9se sor\u00e1n egy nem v\u00e1rt t\u00edpus\u00fa kapcsolat ker\u00fclt visszaad\u00e1sra.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0150=CWSIV0150E: Egy l\u00e9tez\u0151 SIUncoordinatedTransaction tranzakci\u00f3 nem fejez\u0151d\u00f6tt be.
+ACTIVE_LOCAL_TRAN_CWSIV0150.explanation=Egy \u00faj SIUncoordinatedTransaction tranzakci\u00f3 l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amikor a jelenlegi m\u00e9g nem fejez\u0151d\u00f6tt be.
+ACTIVE_LOCAL_TRAN_CWSIV0150.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e9gleges\u00edt\u00e9s vagy visszag\u00f6rget\u00e9s megh\u00edv\u00e1sra ker\u00fclt a jelenlegi SIUncoordinatedTransaction tranzakci\u00f3n egy \u00faj l\u00e9trehoz\u00e1sa el\u0151tt.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_CONTAINER_TRAN_CWSIV0151=CWSIV0151E: Egy t\u00e1rol\u00f3 \u00e1ltal kezelt tranzakci\u00f3 tal\u00e1lhat\u00f3 a sz\u00e1lon.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.explanation=Egy \u00faj SIUncoordinatedTransaction tranzakci\u00f3 l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, mik\u00f6zben egy t\u00e1rol\u00f3 \u00e1ltal kezelt tranzakci\u00f3 tal\u00e1lhat\u00f3 a sz\u00e1lon.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st \u00fagy, hogy a h\u00edv\u00e1s egy olyan k\u00f6rnyezetben t\u00f6rt\u00e9njen meg, ahol nincs t\u00e1rol\u00f3 \u00e1ltal kezelt tranzakci\u00f3 a sz\u00e1lon.
+
+# -------------------------------------------------------------------------------------------------
+XARESOURCE_NOT_SUPPORTED_CWSIV0152=CWSIV0152E: Egy SIXAResource er\u0151forr\u00e1s l\u00e9trehoz\u00e1sa nem t\u00e1mogatott.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.explanation=Egy SIXAResource er\u0151forr\u00e1s l\u00e9trehoz\u00e1sa nem \
+t\u00e1mogatott a platform \u00fczenetkezel\u00e9si magj\u00e1nak SPI RA_CONNECTION megval\u00f3s\u00edt\u00e1s\u00e1nak \
+haszn\u00e1latakor, mert a glob\u00e1lis tranzakci\u00f3kat az er\u0151forr\u00e1s-csatol\u00f3 kezeli.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.useraction=Ha az alkalmaz\u00e1snak kifejezetten kezelnie kell a glob\u00e1lis tranzakci\u00f3kat, akkor a platform \u00fczenetkezel\u00e9si magj\u00e1nak egy m\u00e1sik megval\u00f3s\u00edt\u00e1s\u00e1t haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el a getSIXAResource h\u00edv\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+CLONE_NOT_SUPPORTED_CWSIV0153=CWSIV0153E: Egy kapcsolat m\u00e1sol\u00e1sa nem t\u00e1mogatott.
+CLONE_NOT_SUPPORTED_CWSIV0153.explanation=Egy kapcsolat m\u00e1sol\u00e1sa nem t\u00e1mogatott a mag SPI RA_CONNECTION megval\u00f3s\u00edt\u00e1s\u00e1nak haszn\u00e1latakor.
+CLONE_NOT_SUPPORTED_CWSIV0153.useraction=Gondolja \u00e1t, hogy egy kapcsolat m\u00e1sol\u00e1s\u00e1ra sz\u00fcks\u00e9g van-e, vagy egy m\u00e1sik kapcsolat egyszer\u0171 l\u00e9trehoz\u00e1sa elegend\u0151-e.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection manager
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154=CWSIV0154E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} kapcsolatkezel\u0151 nem t\u00e1mogatja a k\u00e9sleltetett besorol\u00e1st.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.explanation=A jelenlegi kapcsolat kezelt kapcsolat\u00e1hoz t\u00e1rs\u00edt\u00e1sa megsz\u00fcntet\u00e9sre ker\u00fclt, de a kapcsolatkezel\u0151 nem t\u00e1mogatja a jelenlegi \u00fajrat\u00e1rs\u00edt\u00e1s k\u00e9sleltetett besorol\u00e1s\u00e1t.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+REASSOCIATION_FAILED_CWSIV0155=CWSIV0155E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy kezelt kapcsolathoz \u00fajrat\u00e1rs\u00edt\u00e1s sor\u00e1n.
+REASSOCIATION_FAILED_CWSIV0155.explanation=A jelenlegi kapcsolat kezelt \
+kapcsolat\u00e1hoz t\u00e1rs\u00edt\u00e1sa megsz\u00fcntet\u00e9sre ker\u00fclt \u00e9s a rendszer egy kiv\u00e9telt fogadott az \
+\u00fajrat\u00e1rs\u00edt\u00e1s sor\u00e1n.
+REASSOCIATION_FAILED_CWSIV0155.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_CONNECTION_CWSIV0156=CWSIV0156E: A kapcsolat \u00e9rv\u00e9nytelen\u00edt\u00e9sre ker\u00fclt.
+INVALID_CONNECTION_CWSIV0156.explanation=Egy kor\u00e1bbi hiba azt okozta, hogy a kapcsolat m\u00e1r \
+nem \u00e9rv\u00e9nyes.
+INVALID_CONNECTION_CWSIV0156.useraction=Ellen\u0151rizze a hibanapl\u00f3kat a kor\u00e1bbi hiba ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz.  Az alkalmaz\u00e1snak l\u00e9tre kell hoznia egy \u00faj kapcsolatot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_TRAN_CWSIV0157=CWSIV0157E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  {0} kiv\u00e9tel t\u00f6rt\u00e9nt a jelenlegi t\u00e1rol\u00f3tranzakci\u00f3 megszerz\u00e9se sor\u00e1n.
+CONTAINER_TRAN_CWSIV0157.explanation=A jelenlegi t\u00e1rol\u00f3tranzakci\u00f3 megszerz\u00e9s\u00e9re \
+tett k\u00eds\u00e9rlet sor\u00e1n a rendszer egy kiv\u00e9telt fogadott.
+CONTAINER_TRAN_CWSIV0157.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0158=CWSIV0158E: Ehhez a kapcsolathoz tartozik egy akt\u00edv SIUncoordinatedTransaction tranzakci\u00f3.
+ACTIVE_LOCAL_TRAN_CWSIV0158.explanation=Egy null\u00e9rt\u00e9k\u0171 tranzakci\u00f3param\u00e9ter haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amikor m\u00e9g tartozik egy akt\u00edv SIUncoordinatedTransaction tranzakci\u00f3 ehhez a kapcsolathoz.
+ACTIVE_LOCAL_TRAN_CWSIV0158.useraction=Adja \u00e1t az akt\u00edv SIUncoordinatedTransaction \
+tranzakci\u00f3t tranzakci\u00f3param\u00e9terk\u00e9nt, vagy a null\u00e9rt\u00e9k \u00e1tad\u00e1sa el\u0151tt h\u00edvja meg a \
+v\u00e9gleges\u00edt\u00e9st/visszag\u00f6rget\u00e9st a tranzakci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_LOCAL_TRAN_CWSIV0159=CWSIV0159E: Az ezen kapcsolathoz tartoz\u00f3 akt\u00edv SIUncoordinatedTransaction tranzakci\u00f3 nem ker\u00fclt \u00e1tad\u00e1sra.
+INCORRECT_LOCAL_TRAN_CWSIV0159.explanation=Egy SIUncoordinatedTransaction tranzakci\u00f3 tranzakci\u00f3param\u00e9terk\u00e9nt haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amikor l\u00e9tezik egy m\u00e1sik akt\u00edv SIUncoordinatedTransaction tranzakci\u00f3 ehhez a kapcsolathoz.
+INCORRECT_LOCAL_TRAN_CWSIV0159.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s a kapcsolathoz tartoz\u00f3 jelenleg akt\u00edv SIUncoordinatedTransaction tranzakci\u00f3t adja \u00e1t, vagy null\u00e9rt\u00e9ket, ha a m\u0171veletet a tranzakci\u00f3n k\u00edv\u00fcl kell v\u00e9grehajtani.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_XARESOURCE_CWSIV0160=CWSIV0160E: Az SIXAResource egy \u00e9rv\u00e9nytelen tranzakci\u00f3param\u00e9ter.
+INVALID_XARESOURCE_CWSIV0160.explanation=Az SIXAResource tranzakci\u00f3param\u00e9terk\u00e9nt \
+haszn\u00e1lata nem t\u00e1mogatott a platform \u00fczenetkezel\u00e9si magj\u00e1nak SPI RA_CONNECTION \
+megval\u00f3s\u00edt\u00e1s\u00e1nak haszn\u00e1latakor, mert a glob\u00e1lis tranzakci\u00f3kat az er\u0151forr\u00e1s-csatol\u00f3 \
+kezeli.
+INVALID_XARESOURCE_CWSIV0160.useraction=Ha az alkalmaz\u00e1snak kifejezetten kezelnie kell a glob\u00e1lis tranzakci\u00f3kat, akkor a platform \u00fczenetkezel\u00e9si magj\u00e1nak egy m\u00e1sik megval\u00f3s\u00edt\u00e1s\u00e1t haszn\u00e1lja, vagy null\u00e9rt\u00e9ket adjon \u00e1t tranzakci\u00f3param\u00e9terk\u00e9nt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction parameter
+UNRECOGNISED_TRAN_CWSIV0161=CWSIV0161E: A(z) {0} tranzakci\u00f3param\u00e9ter t\u00edpusa nem ismerhet\u0151 fel.
+UNRECOGNISED_TRAN_CWSIV0161.explanation=A tranzakci\u00f3param\u00e9terk\u00e9nt \u00e1tadott objektum t\u00edpusa nem ismerhet\u0151 fel.
+UNRECOGNISED_TRAN_CWSIV0161.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tranzakci\u00f3param\u00e9ter null\u00e9rt\u00e9k\u0171, az ezen kapcsolatb\u00f3l megszerzett SIUncoordinatedTransaction vagy egy SibRaAutoCommitTransaction.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_COMMIT_FAILED_CWSIV0162=CWSIV0162E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  {0} kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a t\u00e1rol\u00f3 megpr\u00f3b\u00e1lta v\u00e9gleges\u00edteni egy alkalmaz\u00e1s helyi tranzakci\u00f3j\u00e1t.
+CONTAINER_COMMIT_FAILED_CWSIV0162.explanation=A t\u00e1rol\u00f3 egy alkalmaz\u00e1s f\u00fcgg\u0151ben \
+l\u00e9v\u0151 helyi tranzakci\u00f3j\u00e1t \u00e9szlelte egy megoszt\u00e1si hat\u00f3k\u00f6r v\u00e9g\u00e9n, \u00e9s egy kiv\u00e9tel j\u00f6tt l\u00e9tre \
+annak v\u00e9gleges\u00edt\u00e9se sor\u00e1n.
+CONTAINER_COMMIT_FAILED_CWSIV0162.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_ROLLBACK_FAILED_CWSIV0163=CWSIV0163E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  {0} kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a t\u00e1rol\u00f3 megpr\u00f3b\u00e1lta visszag\u00f6rgetni egy alkalmaz\u00e1s helyi tranzakci\u00f3j\u00e1t.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.explanation=A t\u00e1rol\u00f3 egy alkalmaz\u00e1s f\u00fcgg\u0151ben \
+l\u00e9v\u0151 helyi tranzakci\u00f3j\u00e1t \u00e9szlelte egy megoszt\u00e1si hat\u00f3k\u00f6r v\u00e9g\u00e9n, \u00e9s egy kiv\u00e9tel j\u00f6tt l\u00e9tre \
+annak visszag\u00f6rget\u00e9se sor\u00e1n.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSIV0200=CWSIV0200E: Az a kapcsolat, amelyb\u0151l ez a munkamenet l\u00e9trehoz\u00e1sra ker\u00fclt, \u00e9rv\u00e9nytelen\u00edtve lett.
+INVALID_SESSION_CWSIV0200.explanation=Egy kor\u00e1bbi hiba azt okozta, hogy a kapcsolat m\u00e1r \
+nem \u00e9rv\u00e9nyes.
+INVALID_SESSION_CWSIV0200.useraction=Ellen\u0151rizze a hibanapl\u00f3kat a kor\u00e1bbi hiba ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz.  Az alkalmaz\u00e1snak l\u00e9tre kell hoznia egy \u00faj kapcsolatot \u00e9s munkamenetet.
+
+# -------------------------------------------------------------------------------------------------
+ASYNCHRONOUS_METHOD_CWSIV0250=CWSIV0250E: Az aszinkron \u00fczenet\u00e1tv\u00e9telhez kapcsol\u00f3d\u00f3 met\u00f3dusok nem t\u00e1mogatottak.
+ASYNCHRONOUS_METHOD_CWSIV0250.explanation=Az \u00fczenetek aszinkron \u00e1tv\u00e9tel\u00e9hez kapcsol\u00f3d\u00f3 ConsumerSession (feldolgoz\u00f3-munkamenet) met\u00f3dusok haszn\u00e1lata nem t\u00e1mogatott a platform \u00fczenetkezel\u00e9si magj\u00e1nak SPI RA_CONNECTION megval\u00f3s\u00edt\u00e1s\u00e1nak haszn\u00e1latakor.
+ASYNCHRONOUS_METHOD_CWSIV0250.useraction=Ha aszinkron \u00fczenet\u00e1tv\u00e9telre van sz\u00fcks\u00e9g, akkor a platform \u00fczenetkezel\u00e9si magj\u00e1nak egy m\u00e1sik megval\u00f3s\u00edt\u00e1s\u00e1t haszn\u00e1lja.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CREATION_CWSIV0300=CWSIV0300E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenetkezel\u00e9si alrendszer fel ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n.
+CONNECTION_CREATION_CWSIV0300.explanation=A rendszer egy kiv\u00e9telt fogadott egy \
+\u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n.
+CONNECTION_CREATION_CWSIV0300.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_FACTORY_ERROR_CWSIV0350=CWSIV0350E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy mag SPI kapcsolatgy\u00e1r l\u00e9trehoz\u00e1sa sor\u00e1n.
+CONNECTION_FACTORY_ERROR_CWSIV0350.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre egy mag SPI \
+kapcsolatgy\u00e1r TRM_CONNECTION gy\u00e1rt\u00edpus haszn\u00e1lat\u00e1val l\u00e9trehoz\u00e1sa sor\u00e1n.
+CONNECTION_FACTORY_ERROR_CWSIV0350.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+NON_MANAGED_ENVIRONMENT_CWSIV0351=CWSIV0351E: Egy kapcsolatgy\u00e1r nem kezelt k\u00f6rnyezetben l\u00e9trehoz\u00e1sa nem t\u00e1mogatott.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.explanation=Egy kapcsolatgy\u00e1r l\u00e9trehoz\u00e1sa nem \
+t\u00e1mogatott egy nem kezelt k\u00f6rnyezetben a mag SPI RA_CONNECTION megval\u00f3s\u00edt\u00e1s\u00e1nak \
+haszn\u00e1latakor, mert egy kapcsolatkezel\u0151re sz\u00fcks\u00e9g van a t\u00e1rol\u00f3tranzakci\u00f3 t\u00e1mogat\u00e1s\u00e1nak \
+biztos\u00edt\u00e1s\u00e1ra.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.useraction=Egy nem kezelt k\u00f6rnyezetben az RA_CONNECTION t\u00edpust\u00f3l elt\u00e9r\u0151 gy\u00e1rt\u00edpus\u00fa SICoreConnectionFactorySelector haszn\u00e1lat\u00e1val hozzon l\u00e9tre kapcsolatgy\u00e1rat.
+
+# -------------------------------------------------------------------------------------------------
+NULL_REQUEST_INFO_CWSIV0352=CWSIV0352E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A kapcsolatk\u00e9r\u00e9si inform\u00e1ci\u00f3kra sz\u00fcks\u00e9g van egy kezelt kapcsolat l\u00e9trehoz\u00e1s\u00e1hoz.
+NULL_REQUEST_INFO_CWSIV0352.explanation=A kapcsolatkezel\u0151 egy kapcsolatot a kapcsolatk\u00e9r\u00e9si inform\u00e1ci\u00f3k megad\u00e1sa n\u00e9lk\u00fcl pr\u00f3b\u00e1lt meg l\u00e9trehozni.
+NULL_REQUEST_INFO_CWSIV0352.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLONE_CWSIV0353=CWSIV0353E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenetkezel\u00e9si alrendszer fel ir\u00e1nyul\u00f3 kapcsolat m\u00e1sol\u00e1sa sor\u00e1n.
+CONNECTION_CLONE_CWSIV0353.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre egy \u00fczenetkezel\u00e9si \
+alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat m\u00e1sol\u00e1sa sor\u00e1n egy kezelt kapcsolat l\u00e9trehoz\u00e1sa k\u00f6zben.
+CONNECTION_CLONE_CWSIV0353.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0354=CWSIV0354E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} kapcsolatk\u00e9r\u00e9si inform\u00e1ci\u00f3s objektum nem az elv\u00e1rt {1} t\u00edpus\u00fa volt.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.explanation=A kapcsolatk\u00e9r\u00e9si inform\u00e1ci\u00f3k param\u00e9terek\u00e9nt \u00e1tadott objektum nem az elv\u00e1rt t\u00edpus\u00fa volt.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CREATE_MANAGED_CONNECTION_CWSIV0355=CWSIV0355E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A kezelt kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n a k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {0}.
+CREATE_MANAGED_CONNECTION_CWSIV0355.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre egy kezelt \
+kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_MANAGED_CONNECTION_CWSIV0355.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSIV0356=CWSIV0356W: A kapcsolat megszerz\u00e9s\u00e9re tett \
+k\u00eds\u00e9rlet sor\u00e1n a k\u00f6vetkez\u0151 JCA csatlakoz\u00e1si hiba t\u00f6rt\u00e9nt. A kapcsolat megszerz\u00e9se \u00fajra lesz pr\u00f3b\u00e1lva. A kiv\u00e9tel a(z) {0}.
+CONNECTION_ERROR_RETRY_CWSIV0356.explanation=Hiba t\u00f6rt\u00e9nt egy kapcsolat beszerz\u00e9se sor\u00e1n. A rendszer ki\u00fcr\u00edti a kapcsolatot, majd megk\u00eds\u00e9rel egy m\u00e1sikat beszerezni.
+CONNECTION_ERROR_RETRY_CWSIV0356.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0401=CWSIV0401E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} kapcsolatk\u00e9r\u00e9si inform\u00e1ci\u00f3s objektum nem az elv\u00e1rt {1} t\u00edpus\u00fa volt.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.explanation=A kapcsolatk\u00e9r\u00e9si inform\u00e1ci\u00f3k param\u00e9terek\u00e9nt \u00e1tadott objektum nem az elv\u00e1rt t\u00edpus\u00fa volt.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLOSE_CWSIV0402=CWSIV0402E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenetkezel\u00e9si alrendszer fel ir\u00e1nyul\u00f3 kapcsolat bez\u00e1r\u00e1sa sor\u00e1n.
+CONNECTION_CLOSE_CWSIV0402.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre egy \u00fczenetkezel\u00e9si \
+alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat bez\u00e1r\u00e1sa sor\u00e1n.
+CONNECTION_CLOSE_CWSIV0402.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection object passed
+# {1} the expected type for the object
+UNRECOGNISED_CONNECTION_CWSIV0403=CWSIV0403E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} kapcsolati objektum nem az elv\u00e1rt {1} t\u00edpus\u00fa volt.
+UNRECOGNISED_CONNECTION_CWSIV0403.explanation=A kapcsolati param\u00e9terk\u00e9nt \u00e1tadott objektum nem az ezen er\u0151forr\u00e1s-csatol\u00f3 \u00e1ltal elv\u00e1rt t\u00edpus\u00fa volt.
+UNRECOGNISED_CONNECTION_CWSIV0403.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0404=CWSIV0404E: Bels\u0151 hiba t\u00f6rt\u00e9nt. M\u00e1r van egy akt\u00edv helyi t\u00e1rol\u00f3tranzakci\u00f3.
+ACTIVE_LOCAL_TRAN_CWSIV0404.explanation=A t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt elkezdeni egy helyi tranzakci\u00f3t, amikor m\u00e1r volt egy akt\u00edv.
+ACTIVE_LOCAL_TRAN_CWSIV0404.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_BEGIN_CWSIV0405=CWSIV0405E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt elind\u00edtani egy helyi tranzakci\u00f3t.
+LOCAL_TRAN_BEGIN_CWSIV0405.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre mik\u00f6zben a t\u00e1rol\u00f3 \
+megpr\u00f3b\u00e1lt elind\u00edtani egy helyi tranzakci\u00f3t.
+LOCAL_TRAN_BEGIN_CWSIV0405.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_COMMIT_CWSIV0406=CWSIV0406E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt v\u00e9gleges\u00edteni egy helyi tranzakci\u00f3t.
+LOCAL_TRAN_COMMIT_CWSIV0406.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre mik\u00f6zben a t\u00e1rol\u00f3 \
+megpr\u00f3b\u00e1lt v\u00e9gleges\u00edteni egy helyi tranzakci\u00f3t.
+LOCAL_TRAN_COMMIT_CWSIV0406.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_ROLLBACK_CWSIV0407=CWSIV0407E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt visszag\u00f6rgetni egy helyi tranzakci\u00f3t.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre mik\u00f6zben a t\u00e1rol\u00f3 \
+megpr\u00f3b\u00e1lt visszag\u00f6rgetni egy helyi tranzakci\u00f3t.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+XARESOURCE_CREATE_CWSIV0408=CWSIV0408E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy SIXAResource megszerz\u00e9se sor\u00e1n.
+XARESOURCE_CREATE_CWSIV0408.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre egy SIXAResource \
+megszerz\u00e9se sor\u00e1n.
+XARESOURCE_CREATE_CWSIV0408.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the unexpected activation specification
+# {1} the expected type
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451=CWSIV0451E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A v\u00e9gpontaktiv\u00e1l\u00e1son \u00e1tadott {0} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s nem az elv\u00e1rt {1} t\u00edpus\u00fa volt.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.explanation=A v\u00e9gpontaktiv\u00e1l\u00e1son \u00e1tadott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s nem az er\u0151forr\u00e1scsatol\u00f3 \u00e1ltal elv\u00e1rt t\u00edpus\u00fa volt.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the exception thrown during validation
+INVALID_ACTIVATION_SPEC_CWSIV0452=CWSIV0452E: {1} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s ellen\u0151rz\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n a v\u00e9gpontaktiv\u00e1l\u00e1s k\u00f6zben.
+INVALID_ACTIVATION_SPEC_CWSIV0452.explanation=Egy v\u00e9gpont aktiv\u00e1l\u00e1sa sor\u00e1n az adott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s helytelen volt.
+INVALID_ACTIVATION_SPEC_CWSIV0452.useraction=Tekintse meg a helytelen tulajdons\u00e1gokkal kapcsolatos hivatkozott kiv\u00e9telt \u00e9s jav\u00edtsa ki az \u00e9rt\u00e9keket a fel\u00fcgyelt aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban vagy az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens telep\u00edt\u00e9sle\u00edr\u00f3j\u00e1ban.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the list of messages showing invalid properties
+INVALID_PROPERTIES_CWSIV0501=CWSIV0501E: A rendszer a k\u00f6vetkez\u0151 probl\u00e9m\u00e1kat tal\u00e1lta \
+az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son megadott tulajdons\u00e1gok \u00e9rv\u00e9nyes\u00edt\u00e9sekor. A probl\u00e9m\u00e1k: {1}. Az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s: {0}.
+INVALID_PROPERTIES_CWSIV0501.explanation=Az adott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s ellen\u0151rz\u00e9se sor\u00e1n n\u00e9h\u00e1ny tulajdons\u00e1g helytelen volt.
+INVALID_PROPERTIES_CWSIV0501.useraction=Jav\u00edtsa ki az adott tulajdons\u00e1gokat a fel\u00fcgyelt \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban, vagy az \u00fczenetvez\u00e9relt komponens aktiv\u00e1l\u00e1si \
+konfigur\u00e1ci\u00f3j\u00e1ban, majd ind\u00edtsa el az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+DEST_FACTORY_CWSIV0502=CWSIV0502E: Bels\u0151 hiba.  A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt egy SIDestinationAddressFactory megszerz\u00e9se sor\u00e1n: {0}.
+DEST_FACTORY_CWSIV0502.explanation=A v\u00e9gpont aktiv\u00e1l\u00e1sa sor\u00e1n a mag SPI er\u0151forr\u00e1s-csatol\u00f3 egy SIDestinationAddressFactory elemet pr\u00f3b\u00e1lt megszerezni \u00e9s v\u00e1ratlan kiv\u00e9telt \u00e9szlelt.
+DEST_FACTORY_CWSIV0502.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSIV0503=CWSIV0503E: Bels\u0151 hiba t\u00f6rt\u00e9nt a mag SPI er\u0151forr\u00e1s-csatol\u00f3 WLM oszt\u00e1lyoz\u00f3j\u00e1nak bejegyz\u00e9se sor\u00e1n: {0}.
+WLM_CLASSIFIER_REG_CWSIV0503.explanation=A mag SPI er\u0151forr\u00e1s-csatol\u00f3 WLM oszt\u00e1lyoz\u00f3j\u00e1nak kezel\u0151nyilv\u00e1ntart\u00e1sba bejegyz\u00e9se sor\u00e1n v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+WLM_CLASSIFIER_REG_CWSIV0503.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSIV0504=CWSIV0504E: A buszn\u00e9vnek egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be kell \u00e1ll\u00edtani egy \u00e9rt\u00e9ket.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.explanation=Egy mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \
+be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a busznevet a rendszer \u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.useraction=Jav\u00edtsa ki a buszn\u00e9v tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is another allowed value
+# {4} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505=CWSIV0505E: A k\u00f6vetkez\u0151 c\u00e9lt\u00edpus a mag \
+SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \u00e9rv\u00e9nytelen [{4}]. Az elv\u00e1rt \u00e9rt\u00e9kek [{0}], [{1}], [{2}] vagy \
+[{3}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a c\u00e9lt\u00edpust a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.useraction=Jav\u00edtsa ki a c\u00e9lt\u00edpus tulajdons\u00e1g \
+\u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506=CWSIV0506E: A k\u00f6vetkez\u0151 tart\u00f3s el\u0151fizet\u00e9s \
+megoszt\u00e1sa mez\u0151 a mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \u00e9rv\u00e9nytelen [{3}]. Az elv\u00e1rt \u00e9rt\u00e9kek [{0}], [{1}] vagy [{2}].
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a tart\u00f3s el\u0151fizet\u00e9s megoszt\u00e1sa \
+tulajdons\u00e1got a rendszer \u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.useraction=Jav\u00edtsa ki a tart\u00f3s el\u0151fizet\u00e9s \
+megoszt\u00e1sa tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a \
+kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507=CWSIV0507E: Tart\u00f3s el\u0151fizet\u00e9sek haszn\u00e1latakor a \
+tart\u00f3s el\u0151fizet\u00e9s hely\u00e9nek a mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son egy \u00e9rt\u00e9kkel kell \
+rendelkeznie.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.explanation=Egy mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \
+be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a tart\u00f3s el\u0151fizet\u00e9s hely\u00e9t a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.useraction=Jav\u00edtsa ki a tart\u00f3s el\u0151fizet\u00e9s helye \
+tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508=CWSIV0508E: A k\u00f6vetkez\u0151 c\u00e9lt\u00edpus a mag \
+SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \u00e9rv\u00e9nytelen [{3}]. Az elv\u00e1rt \u00e9rt\u00e9kek [{0}], [{1}] vagy [{2}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a c\u00e9lt\u00edpust a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta. Mivel nincs c\u00e9ln\u00e9v megadva, t\u00e9mak\u00f6r\u00f6k nem enged\u00e9lyezettek.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.useraction=Jav\u00edtsa ki a c\u00e9lt\u00edpus tulajdons\u00e1g \
+\u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSIV0509=CWSIV0509E: A maxim\u00e1lis k\u00f6tegm\u00e9retnek egy mag SPI \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son be kell \u00e1ll\u00edtani egy pozit\u00edv \u00e9rt\u00e9ket.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.explanation=Egy mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \
+be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a maxim\u00e1lis k\u00f6tegm\u00e9retet a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.useraction=Jav\u00edtsa ki a maxim\u00e1lis k\u00f6tegm\u00e9ret \
+tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the deletion mode
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510=CWSIV0510E: A k\u00f6vetkez\u0151 t\u00f6rl\u00e9si m\u00f3d a mag \
+SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \u00e9rv\u00e9nytelen [{3}]. Az elv\u00e1rt \u00e9rt\u00e9kek [{0}], [{1}] vagy [{2}].
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a t\u00f6rl\u00e9si m\u00f3dot a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.useraction=Jav\u00edtsa ki a t\u00f6rl\u00e9si m\u00f3d tulajdons\u00e1g \
+\u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSIV0511=CWSIV0511E: A maxim\u00e1lis p\u00e1rhuzamoss\u00e1gnak egy mag SPI \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son be kell \u00e1ll\u00edtani egy pozit\u00edv \u00e9rt\u00e9ket.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.explanation=Egy mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \
+be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a maxim\u00e1lis p\u00e1rhuzamoss\u00e1got a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.useraction=Jav\u00edtsa ki a maxim\u00e1lis p\u00e1rhuzamoss\u00e1g \
+tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512=CWSIV0512E: A k\u00f6vetkez\u0151 c\u00e9lt\u00edpus mez\u0151 a mag \
+SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \u00e9rv\u00e9nytelen [{3}]. Az elv\u00e1rt \u00e9rt\u00e9kek [{0}], [{1}] vagy [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a c\u00e9lt\u00edpust a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.useraction=Jav\u00edtsa ki a c\u00e9lt\u00edpus tulajdons\u00e1g \
+\u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513=CWSIV0513E: A k\u00f6vetkez\u0151 \
+c\u00e9ljelent\u0151s\u00e9g mez\u0151 a mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son \u00e9rv\u00e9nytelen [{2}]. Az elv\u00e1rt \u00e9rt\u00e9kek [{0}] vagy [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a c\u00e9ljelent\u0151s\u00e9get a rendszer \
+\u00e9rv\u00e9nytelennek tal\u00e1lta.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.useraction=Jav\u00edtsa ki a c\u00e9ljelent\u0151s\u00e9g \
+tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the provider endpoints
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514=CWSIV0514E: A szolg\u00e1ltat\u00f3i v\u00e9gpontok \
+{0} \u00e9rt\u00e9kre lettek \u00e1ll\u00edtva egy mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son. A szolg\u00e1ltat\u00f3i \
+v\u00e9gpontok nem t\u00e1mogatottak, ha a "kiszolg\u00e1l\u00f3 t\u00e1rgy haszn\u00e1lata" tulajdons\u00e1g be van \
+\u00e1ll\u00edtva.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a szolg\u00e1ltat\u00f3i v\u00e9gpontot a \
+rendszer \u00e9rv\u00e9nytelennek tal\u00e1lta, mert a kiszolg\u00e1l\u00f3 t\u00e1rgy haszn\u00e1lata tulajdons\u00e1g be van \
+\u00e1ll\u00edtva.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.useraction=Biztos\u00edtsa, hogy a szolg\u00e1ltat\u00f3i \
+v\u00e9gpontok tulajdons\u00e1g ne legyen be\u00e1ll\u00edtva, ha a kiszolg\u00e1l\u00f3 t\u00e1rgy haszn\u00e1lata be van \
+\u00e1ll\u00edtva. Jav\u00edtsa ki a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a \
+kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515=CWSIV0515E: A "c\u00e9l helyettes\u00edt\u0151 karakterek \
+haszn\u00e1lata" be volt \u00e1ll\u00edtva egy mag SPI aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, mik\u00f6zben egy \
+T\u00e9mak\u00f6rter\u00fclet van haszn\u00e1latban. T\u00e9mak\u00f6rter\u00fclet haszn\u00e1latakor a "c\u00e9l helyettes\u00edt\u0151 \
+karakterek haszn\u00e1lata" nem t\u00e1mogatott.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.explanation=Egy mag SPI aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son be\u00e1ll\u00edtott tulajdons\u00e1gok ellen\u0151rz\u00e9se sor\u00e1n a "c\u00e9l helyettes\u00edt\u0151 karakterek \
+haszn\u00e1lata" tulajdons\u00e1got a rendszer \u00e9rv\u00e9nytelennek tal\u00e1lta, mert egy T\u00e9mak\u00f6rter\u00fclet van \
+haszn\u00e1latban.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.useraction=Biztos\u00edtsa, hogy T\u00e9mak\u00f6rter\u00fclet \
+haszn\u00e1latakor ne legyen "c\u00e9l helyettes\u00edt\u0151 karakterek haszn\u00e1lata" tulajdons\u00e1g be\u00e1ll\u00edtva. Jav\u00edtsa ki a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, majd ind\u00edtsa \u00fajra a \
+kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory throwing the exception
+# {1} the exception thrown
+NO_METHOD_CWSIV0550=CWSIV0550E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {1} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} \u00fczenetv\u00e9gpontgy\u00e1rban annak meghat\u00e1roz\u00e1sa sor\u00e1n, hogy az onMessage met\u00f3dus tranzakci\u00f3kezelt-e.
+NO_METHOD_CWSIV0550.explanation=A v\u00e9gpontaktiv\u00e1l\u00e1s egy kiv\u00e9telt fogadott az \u00fczenetv\u00e9gpontgy\u00e1rb\u00f3l, amely azt jelezte, hogy nincs onMessage met\u00f3dus ezen v\u00e9gpont sz\u00e1m\u00e1ra a tranzakci\u00f3val kapcsolatos jellemz\u0151j\u00e9nek meghat\u00e1roz\u00e1sakor.
+NO_METHOD_CWSIV0550.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the MDB that had the problem
+# {1} the max concurrency on the MDB
+# {2} the max pool size JCA is using
+# {3} the new max concurrency to use
+MAX_CONCURRENCY_CWSIV0551=CWSIV0551W: A(z) {0} \u00fczenetvez\u00e9relt komponens maxim\u00e1lis \
+p\u00e1rhuzamoss\u00e1ga a k\u00f6vetkez\u0151 \u00e9rt\u00e9kre volt be\u00e1ll\u00edtva az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s\u00e1ban: {1}. Ez \
+magasabb, mint a JCA maxim\u00e1lis t\u00e1rm\u00e9rete ({2}), \u00e9s \u00edgy az \u00fczenetvez\u00e9relt komponens \
+maxim\u00e1lis p\u00e1rhuzamoss\u00e1ga az al\u00e1bbi \u00e9rt\u00e9kre lett cs\u00f6kkentve: {3}.
+MAX_CONCURRENCY_CWSIV0551.explanation=A maxim\u00e1lis p\u00e1rhuzamoss\u00e1g konfigur\u00e1ci\u00f3ja az \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son magas vagy a maxim\u00e1lis p\u00e1rhuzamoss\u00e1gra volt be\u00e1ll\u00edtva, vagy a \
+JCA maxim\u00e1lis t\u00e1rm\u00e9rete volt t\u00fal alacsonyra \u00e1ll\u00edtva. Ez nem okozhat probl\u00e9m\u00e1t, mert a \
+Platform \u00fczenetkezel\u00e9s le fogja cs\u00f6kkenteni a maxim\u00e1lis p\u00e1rhuzamoss\u00e1got az aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1son, de a rendszer figyelmeztet\u00e9st ad ki a felhaszn\u00e1l\u00f3nak, hogy tudassa, hogy \
+az \u00e1ltala be\u00e1ll\u00edtott maxim\u00e1lis p\u00e1rhuzamoss\u00e1g nem lesz haszn\u00e1lva.
+MAX_CONCURRENCY_CWSIV0551.useraction=Ez a figyelmeztet\u00e9s mindig meg fog jelenni, amikor \
+csak az \u00fczenetvez\u00e9relt komponens elindul. A figyelmeztet\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz cs\u00f6kkentse az \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sok maxim\u00e1lis p\u00e1rhuzamoss\u00e1g\u00e1t, vagy emelje meg a JCA v\u00e9gpont \
+t\u00e1rj\u00e1nak a maxim\u00e1lis t\u00e1rm\u00e9ret\u00e9t (ehhez haszn\u00e1lja a \
+com.ibm.websphere.ejbcontainer.poolSize Java virtu\u00e1lis g\u00e9p (JVM) rendszertulajdons\u00e1got).
+
+# -------------------------------------------------------------------------------------------------
+# {0} the messaging engine UUID
+# {1} the bus name
+# {2} the endpoint
+ENDPOINT_DEACTIVATED_CWSIV0554=CWSIV0554E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {1} buszon l\u00e9v\u0151 {0} UUID azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat megszerz\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {2} v\u00e9gpont le\u00e1ll\u00edt\u00e1s\u00e1t k\u00f6vet\u0151en.
+ENDPOINT_DEACTIVATED_CWSIV0554.explanation=Az adott \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat k\u00e9r\u00e9se t\u00f6rt\u00e9nt, de a v\u00e9gpontaktiv\u00e1l\u00e1s le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+ENDPOINT_DEACTIVATED_CWSIV0554.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+# {3} the endpoint activation
+MESSAGING_ENGINE_STARTING_CWSIV0555=CWSIV0555E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1s\u00e1nak feldolgoz\u00e1sa sor\u00e1n a(z) {3} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n.
+MESSAGING_ENGINE_STARTING_CWSIV0555.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lta feldolgozni az adott \u00fczenetkezel\u00e9si alrendszert, amikor egy kiv\u00e9telt \u00e9szlelt.  Az ezen az \u00fczenetkezel\u00e9si alrendszeren honos\u00edtott c\u00e9lokb\u00f3l sz\u00e1rmaz\u00f3 \u00fczeneteket nem fogja megkapni az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens. Ha a hivatkozott kiv\u00e9tel egy hiteles\u00edt\u00e9si kiv\u00e9tel, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1shoz t\u00e1rs\u00edt\u00e1sra ker\u00fclt egy \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si \u00e1ln\u00e9v.
+MESSAGING_ENGINE_STARTING_CWSIV0555.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Activation Specification ID
+# {1} Destination Name
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556=CWSIV0556I: Az \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1s sikeres. A(z) {0} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1ssal  rendelkez\u0151 \u00fczenetvez\u00e9relt komponens m\u00e1r k\u00e9pes a(z) {1} c\u00e9l \u00fczeneteinek fogad\u00e1s\u00e1ra.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.explanation=A JMS er\u0151forr\u00e1s-illeszt\u0151 sikeresen kialak\u00edtotta a kapcsolatot az \u00fczenetkezel\u00e9si alrendszerrel. Ez lehet\u0151v\u00e9 teszi az \u00fczenetvez\u00e9relt komponens sz\u00e1m\u00e1ra a c\u00e9lt\u00f3l sz\u00e1rmaz\u00f3 \u00fczenetek fogad\u00e1s\u00e1t.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+# {0} the exception thrown
+# {1} the list of messages
+UNLOCK_EXCEPTION_CWSIV0601=CWSIV0601E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetek z\u00e1rol\u00e1s\u00e1nak felold\u00e1sa sor\u00e1n.
+UNLOCK_EXCEPTION_CWSIV0601.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt az \u00fczenetek egy halmaz\u00e1nak z\u00e1rol\u00e1s\u00e1nak felold\u00e1sa sor\u00e1n.
+UNLOCK_EXCEPTION_CWSIV0601.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the message being deleted
+# {2} the transaction under which the message was being deleted
+DELETE_EXCEPTION_CWSIV0602=CWSIV0602E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenet t\u00f6rl\u00e9se sor\u00e1n a(z) {2} tranzakci\u00f3ban.
+DELETE_EXCEPTION_CWSIV0602.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt egy \u00fczenet t\u00f6rl\u00e9se sor\u00e1n a megadott tranzakci\u00f3ban.
+DELETE_EXCEPTION_CWSIV0602.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messages being deleted
+# {2} the transaction under which the messages were being deleted
+DELETE_SET_EXCEPTION_CWSIV0603=CWSIV0603E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetek t\u00f6rl\u00e9se sor\u00e1n a(z) {2} tranzakci\u00f3ban.
+DELETE_SET_EXCEPTION_CWSIV0603.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt az \u00fczenetek t\u00f6rl\u00e9se sor\u00e1n a megadott tranzakci\u00f3ban.
+DELETE_SET_EXCEPTION_CWSIV0603.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+REQUEST_METRICS_CWSIV0604=CWSIV0604E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00e9r\u00e9ssz\u00e1ml\u00e1l\u00f3 p\u00e9ld\u00e1ny megszerz\u00e9se sor\u00e1n.
+REQUEST_METRICS_CWSIV0604.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt a k\u00e9r\u00e9ssz\u00e1ml\u00e1l\u00f3 p\u00e9ld\u00e1ny\u00e1nak megszerz\u00e9se sor\u00e1n.
+REQUEST_METRICS_CWSIV0604.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the destination the message endpoint is attached to
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605=CWSIV0605W: A(z) {0} \u00fczenet v\u00e9gpontot, amely a(z) {1} c\u00e9lra figyelt, le kell \u00e1ll\u00edtani, mert a rendszer el\u00e9rte a sorozatos meghib\u00e1sod\u00e1sok maxim\u00e1lis sz\u00e1m\u00e1t.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.explanation=A rendszer meg\u00e1llap\u00edtotta, hogy probl\u00e9ma lehet az \u00fczenet v\u00e9gponthoz tartoz\u00f3 MDB-vel.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.useraction=N\u00e9zze \u00e1t az MDB lehets\u00e9ges probl\u00e9m\u00e1it, amelyek sorozatos meghib\u00e1sod\u00e1sokat okozhat. Az \u00fczenet v\u00e9gpontot le\u00e1ll\u00edthatja, hogy meg\u00e1ll\u00edtsa a tov\u00e1bbi hib\u00e1k el\u0151fordul\u00e1s\u00e1t. A v\u00e9gpont le\u00e1ll\u00edt\u00e1s\u00e1hoz haszn\u00e1lja az \u00dczenet v\u00e9gpont MBean komponenst, amely \u00e1tadja a v\u00e9gpont nev\u00e9t ebben az \u00fczenetben, vagy \u00e1ll\u00edtsa le a Message Driven Bean komponenst tartalmaz\u00f3 alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the message handle
+# {2} the transaction
+# {3} the bifurcated consumer session class name
+INVALID_SESSION_CWSIV0606=CWSIV0606E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {2} tranzakci\u00f3 alatt a(z) {1} \u00fczenetle\u00edr\u00f3 elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a(z) {0} munkamenet nem a sz\u00fcks\u00e9ges {3} t\u00edpus\u00fa volt.
+INVALID_SESSION_CWSIV0606.explanation=Egy \u00fczenetle\u00edr\u00f3 t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n az er\u0151forr\u00e1s-illeszt\u0151 hib\u00e1t \u00e9szlelt.
+INVALID_SESSION_CWSIV0606.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the number of messagesin the list
+# {1} the message list
+# {2} the handle
+# {3} the transaction
+MESSAGE_LIST_INCORRECT_CWSIV0607=CWSIV0607E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {3} tranzakci\u00f3 alatt a(z) {2} \u00fczenetle\u00edr\u00f3 elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a(z) {1} \u00fczenetlist\u00e1nak 1 \u00fczenetet kellett volna tartalmaznia, de {0} \u00fczenetet tartalmazott
+MESSAGE_LIST_INCORRECT_CWSIV0607.explanation=Egy \u00fczenetle\u00edr\u00f3 t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n az er\u0151forr\u00e1s-illeszt\u0151 hib\u00e1t \u00e9szlelt.
+MESSAGE_LIST_INCORRECT_CWSIV0607.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the message handle
+# {2} the transaction
+DELETE_EXCEPTION_CWSIV0608=CWSIV0608E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {2} tranzakci\u00f3 alatt a(z) {1} \u00fczenetle\u00edr\u00f3 elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a rendszer a k\u00f6vetkez\u0151 kiv\u00e9telt dobta: {0}.
+DELETE_EXCEPTION_CWSIV0608.explanation=Egy \u00fczenetle\u00edr\u00f3 t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n az er\u0151forr\u00e1s-illeszt\u0151 hib\u00e1t \u00e9szlelt.
+DELETE_EXCEPTION_CWSIV0608.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection throwing the exception
+XARESOURCE_EXCEPTION_CWSIV0650=CWSIV0650E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt az XAResource {1} kapcsolatr\u00f3l megszerz\u00e9se sor\u00e1n.
+XARESOURCE_EXCEPTION_CWSIV0650.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt az XAResource egy kapcsolatr\u00f3l annak \u00e9rdek\u00e9ben megszerz\u00e9se sor\u00e1n, hogy a v\u00e9gpontl\u00e9trehoz\u00e1s sz\u00e1m\u00e1ra \u00e1tadja.
+XARESOURCE_EXCEPTION_CWSIV0650.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV0651=CWSIV0651E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a beforeDelivery (k\u00e9zbes\u00edt\u00e9s el\u0151tt) met\u00f3dus {1} v\u00e9gponton megh\u00edv\u00e1sa sor\u00e1n.
+BEFORE_DELIVERY_CWSIV0651.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt, amikor a beforeDelivery met\u00f3dus egy v\u00e9gponton az onMessage met\u00f3dus megh\u00edv\u00e1sa el\u0151tt ker\u00fclt megh\u00edv\u00e1sra.
+BEFORE_DELIVERY_CWSIV0651.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSIV0652=CWSIV0652E: Egy specifikus \u00fczenetkezel\u00e9si alrendszer nevet \
+kell megadni a JMS er\u0151forr\u00e1sok tranzakci\u00f3ban haszn\u00e1lat\u00e1hoz. A(z) {0} csatlakoz\u00e1si \
+tulajdons\u00e1got {1} \u00e9rt\u00e9kre kell be\u00e1ll\u00edtani.
+ME_NAME_REQUIRED_CWSIV0652.explanation=A tranzakci\u00f3k helyre\u00e1ll\u00edt\u00e1s\u00e1nak \
+enged\u00e9lyez\u00e9s\u00e9hez egy kapcsolatgy\u00e1rnak egy adott \u00fczenetkezel\u00e9si alrendszert kell \
+megc\u00e9loznia a buszon.
+ME_NAME_REQUIRED_CWSIV0652.useraction=M\u00f3dos\u00edtsa a "targetGroup" (c\u00e9lcsoport) \
+kapcsolatgy\u00e1r tulajdons\u00e1got "egy \u00fczenetkezel\u00e9si alrendszer neve a buszon" \u00e9rt\u00e9kre a \
+"targetType" (c\u00e9lt\u00edpus) tulajdons\u00e1got "ME" \u00e9rt\u00e9kre \u00e9s a "targetSignificance" \
+(c\u00e9ljelent\u0151s\u00e9g) tulajdons\u00e1got "Required" \u00e9rt\u00e9kre.
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ConsumerSession whose parent connection is throwing the exception
+CLONE_EXCEPTION_CWSIV0700=CWSIV0700E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt az {1} munkamenet sz\u00fcl\u0151kapcsolat\u00e1nak m\u00e1sol\u00e1sa sor\u00e1n.
+CLONE_EXCEPTION_CWSIV0700.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt egy kapcsolat m\u00e1sol\u00e1sa sor\u00e1n, amelyet vissza kellett volna kapni a getConnection met\u00f3dusb\u00f3l a v\u00e9gpont sz\u00e1m\u00e1ra \u00e1tadand\u00f3 munkameneten.
+CLONE_EXCEPTION_CWSIV0700.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that is not supported
+NOT_SUPPORTED_CWSIV0701=CWSIV0701E: A(z) {0} met\u00f3dus haszn\u00e1lata nem t\u00e1mogatott.
+NOT_SUPPORTED_CWSIV0701.explanation=A megadott met\u00f3dus nem h\u00edvhat\u00f3 meg a platform \
+\u00fczenetkezel\u00e9si mag SPI \u00fczenetvez\u00e9relt komponens onMessage met\u00f3dus\u00e1nak \u00e1tadott \
+munkameneten.
+NOT_SUPPORTED_CWSIV0701.useraction=T\u00e1vol\u00edtsa el a hib\u00e1s h\u00edv\u00e1st \u00e9s sz\u00fcks\u00e9g eset\u00e9n hozzon l\u00e9tre egy \u00f6n\u00e1ll\u00f3 platform \u00fczenetkezel\u00e9si mag SPI munkamenetet.
+
+# -------------------------------------------------------------------------------------------------
+OUT_OF_SCOPE_CWSIV0702=CWSIV0702E: A munkamenet m\u00e1r nincs a hat\u00f3k\u00f6rben.
+OUT_OF_SCOPE_CWSIV0702.explanation=A platform \u00fczenetkezel\u00e9si mag SPI \u00fczenetvez\u00e9relt \
+komponens onMessage met\u00f3dus\u00e1nak \u00e1tadott munkamenet nem haszn\u00e1lhat\u00f3, miut\u00e1n a met\u00f3dus \
+befejez\u0151d\u00f6tt.
+OUT_OF_SCOPE_CWSIV0702.useraction=T\u00e1vol\u00edtsa el a hib\u00e1s h\u00edv\u00e1st \u00e9s sz\u00fcks\u00e9g eset\u00e9n hozzon l\u00e9tre egy \u00f6n\u00e1ll\u00f3 platform \u00fczenetkezel\u00e9si mag SPI munkamenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination UUID
+DESTINATION_LOCALITY_CWSIV0753=CWSIV0753E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} c\u00e9l sorpontjainak halmaz\u00e1nak meghat\u00e1roz\u00e1sa sor\u00e1n: {0}.
+DESTINATION_LOCALITY_CWSIV0753.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt az adott c\u00e9l sorpontjaival rendelkez\u0151 \u00fczenetkezel\u00e9si alrendszerek halmaz\u00e1nak meghat\u00e1roz\u00e1sa sor\u00e1n.
+DESTINATION_LOCALITY_CWSIV0753.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+FOREIGN_DESTINATION_CWSIV0754=CWSIV0754E: A(z) {1} buszon l\u00e9v\u0151 {0} c\u00e9l nincs \
+sorpontk\u00e9nt meghat\u00e1rozva a buszon, amihez az \u00fczenetvez\u00e9relt komponens csatlakozik.
+FOREIGN_DESTINATION_CWSIV0754.explanation=Egy \u00fczenetvez\u00e9relt komponensnek \
+ahhoz a buszhoz kell csatlakoznia, ami otthont ad annak a c\u00e9lnak, amir\u0151l a komponens \
+feldolgoz.  Az idegen buszok nem t\u00e1mogatottak.
+FOREIGN_DESTINATION_CWSIV0754.useraction=M\u00f3dos\u00edtsa az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s\u00e1t \u00fagy, hogy a k\u00edv\u00e1nt buszhoz csatlakozzon, vagy helyezze \u00e1t a c\u00e9lt arra a buszra, amelyhez az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens csatlakozik.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the required destination type
+# {3} the actual destination type
+INCORRECT_TYPE_CWSIV0755=CWSIV0755E: A(z) {1} buszon l\u00e9v\u0151 {3} t\u00edpus\u00fa {0} c\u00e9l nem az elv\u00e1rt {2} t\u00edpus\u00fa.
+INCORRECT_TYPE_CWSIV0755.explanation=Az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s\u00e1ban megadott c\u00e9lt\u00edpus nem egyezik meg a be\u00e1ll\u00edtott c\u00e9l t\u00edpus\u00e1val.
+INCORRECT_TYPE_CWSIV0755.useraction=Ellen\u0151rizze, hogy az \u00fczenetvez\u00e9relt komponens aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sa a helyes c\u00e9llal \u00e9s t\u00edpussal ker\u00fclt-e be\u00e1ll\u00edt\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+UNKNOWN_TYPE_CWSIV0756=CWSIV0756E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {1} buszon l\u00e9v\u0151 {0} c\u00e9l nem v\u00e1rt t\u00edpus\u00fa meghat\u00e1roz\u00e1ssal rendelkezik.
+UNKNOWN_TYPE_CWSIV0756.explanation=A megadott c\u00e9l nem helyi, idegen vagy \u00e1ln\u00e9vc\u00e9l volt.
+UNKNOWN_TYPE_CWSIV0756.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+NOT_FOUND_CWSIV0757=CWSIV0757E: A(z) {0} c\u00e9l nem tal\u00e1lhat\u00f3 a(z) {1} buszon.
+NOT_FOUND_CWSIV0757.explanation=Az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponensben be\u00e1ll\u00edtott c\u00e9l nem l\u00e9tezik a megadott buszon.
+NOT_FOUND_CWSIV0757.useraction=Ellen\u0151rizze az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens aktiv\u00e1l\u00e1si vagy k\u00f6t\u00e9si meghat\u00e1roz\u00e1s\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the exception
+UNEXPECTED_EXCEPTION_CWSIV0758=CWSIV0758E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} c\u00e9l meghat\u00e1roz\u00e1s\u00e1nak megszerz\u00e9se sor\u00e1n: {2}.
+UNEXPECTED_EXCEPTION_CWSIV0758.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt az adott c\u00e9l meghat\u00e1roz\u00e1s\u00e1nak megszerz\u00e9se sor\u00e1n.
+UNEXPECTED_EXCEPTION_CWSIV0758.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+NO_ACTIVE_MES_CWSIV0759=CWSIV0759W: Egy \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens aktiv\u00e1l\u00e1sa sor\u00e1n nem megfelel\u0151 akt\u00edv \u00fczenetkezel\u00e9si alrendszerek tal\u00e1lhat\u00f3k a(z) {0} buszon l\u00e9v\u0151 helyi kiszolg\u00e1l\u00f3n.
+NO_ACTIVE_MES_CWSIV0759.explanation=Egy \u00fczenetvez\u00e9relt komponens az adott \
+buszhoz csatlakoz\u00e1sra ker\u00fclt be\u00e1ll\u00edt\u00e1sra, de nincs megfelel\u0151 akt\u00edv \u00fczenetkezel\u00e9si \
+alrendszer a helyi kiszolg\u00e1l\u00f3n.  Az \u00fczenetfeldolgoz\u00e1s akkor fog elkezd\u0151dni, amikor egy megfelel\u0151 helyi \u00fczenetkezel\u00e9si alrendszer akt\u00edvv\u00e1 v\u00e1lik.
+NO_ACTIVE_MES_CWSIV0759.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151 \u00fczenetkezel\u00e9si \
+alrendszer lett elind\u00edtva. Sikeres kapcsolat l\u00e9tes\u00edt\u00e9sekor megjelenik egy \u00fczenet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+# {1} the name of the messaging engine
+# {2} the name of the destination
+NEW_CONSUMER_CWSIV0764=CWSIV0764I: Egy feldolgoz\u00f3 l\u00e9trehoz\u00e1sra ker\u00fclt egy \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens sz\u00e1m\u00e1ra a(z) {0} buszon l\u00e9v\u0151 {2} c\u00e9l eset\u00e9n a(z) {1} \u00fczenetkezel\u00e9si alrendszer aktiv\u00e1l\u00e1s\u00e1t k\u00f6vet\u0151en.
+NEW_CONSUMER_CWSIV0764.explanation=A k\u00edv\u00e1nt buszon egy \u00fczenetkezel\u00e9si alrendszer aktiv\u00e1l\u00e1sa az adott c\u00e9l egy \u00faj feldolgoz\u00f3j\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz vezetett.
+NEW_CONSUMER_CWSIV0764.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+MESSAGING_ENGINE_STOPPING_CWSIV0765=CWSIV0765E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1sakor a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1sa sor\u00e1n.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.explanation=Az adott \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1sa sor\u00e1n az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt egy alternat\u00edv \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1skor.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert vagy az er\u0151forr\u00e1s-csatol\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0766=CWSIV0766E: {0} kiv\u00e9telt \u00e9szlelt a(z) {3} buszon a(z) {2} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {1} c\u00e9l feldolgoz\u00f3ja a(z) {4} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n.
+SESSION_ERROR_CWSIV0766.explanation=Egy aszinkron kiv\u00e9tel t\u00f6rt\u00e9nt az adott feldolgoz\u00f3 eset\u00e9n.  A vonatkoz\u00f3 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens le\u00e1ll\u00edt\u00e1sra fog ker\u00fclni \u00e9s nem fog t\u00f6bb \u00fczenetet fogadni.
+SESSION_ERROR_CWSIV0766.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0767=CWSIV0767E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 egyik kapcsolaton a(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n.
+CONNECTION_ERROR_CWSIV0767.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az adott kapcsolat eset\u00e9n.  A vonatkoz\u00f3 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens le\u00e1ll\u00edt\u00e1sra fog ker\u00fclni \u00e9s nem fog t\u00f6bb \u00fczenetet fogadni.
+CONNECTION_ERROR_CWSIV0767.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+LAST_ME_CWSIV0768=CWSIV0768I: A(z) {1} buszon l\u00e9v\u0151, {2} v\u00e9gpontaktiv\u00e1l\u00e1s \u00e1ltal haszn\u00e1lt {0} utols\u00f3 helyi \u00fczenetkezel\u00e9si alrendszer le\u00e1ll.
+LAST_ME_CWSIV0768.explanation=Az adott v\u00e9gpontaktiv\u00e1l\u00e1s egy olyan \u00fczenetkezel\u00e9si \
+alrendszert haszn\u00e1lt, ami le\u00e1ll\u00edt\u00e1sra ker\u00fclt.  Nincs m\u00e1s akt\u00edv \u00fczenetkezel\u00e9si alrendszer, amelyhez csatlakozni lehetne.  A hozz\u00e1 tartoz\u00f3 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens akkor fogja \u00fajra megkezdeni az \u00fczenetek fogad\u00e1s\u00e1t, amikor egy megfelel\u0151 \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151v\u00e9 v\u00e1lik.
+LAST_ME_CWSIV0768.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+ATTACH_FAILED_CWSIV0769=CWSIV0769W: A(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz haszn\u00e1lt, {1} buszon l\u00e9v\u0151 {0} t\u00e1voli c\u00e9l feldolgoz\u00f3j\u00e1nak l\u00e9trehoz\u00e1sa meghi\u00fasult a(z) {3} kiv\u00e9tellel.
+ATTACH_FAILED_CWSIV0769.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 sikeresen csatlakozott egy helyi \u00fczenetkezel\u00e9si alrendszerhez, de ezut\u00e1n egy kiv\u00e9tel t\u00f6rt\u00e9nt egy feldolgoz\u00f3 t\u00e1voli sorponton l\u00e9trehoz\u00e1sa sor\u00e1n.
+ATTACH_FAILED_CWSIV0769.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott c\u00e9l egy sorpontj\u00e1val rendelkez\u0151 \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan \u00fajra meg fogja pr\u00f3b\u00e1lni a feldolgoz\u00f3 l\u00e9trehoz\u00e1s\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONSUMER_FAILED_CWSIV0770=CWSIV0770W: A(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz haszn\u00e1lt, {1} buszon l\u00e9v\u0151 {0} t\u00e1voli c\u00e9l feldolgoz\u00f3ja meghi\u00fasult a(z) {3} kiv\u00e9tellel.
+CONSUMER_FAILED_CWSIV0770.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt egy t\u00e1voli sorponton l\u00e9v\u0151 l\u00e9tez\u0151 feldolgoz\u00f3 eset\u00e9n.
+CONSUMER_FAILED_CWSIV0770.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott c\u00e9l egy sorpontj\u00e1val rendelkez\u0151 \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan \u00fajra meg fogja pr\u00f3b\u00e1lni a feldolgoz\u00f3 l\u00e9trehoz\u00e1s\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the messaging engine
+# {2} the name of the bus
+# {3} the endpoint activation
+RELOAD_FAILED_CWSIV0773=CWSIV0773E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer friss\u00edtett be\u00e1ll\u00edt\u00e1s\u00e1nak feldolgoz\u00e1sa sor\u00e1n a(z) {3} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n.
+RELOAD_FAILED_CWSIV0773.explanation=Az adott \u00fczenetkezel\u00e9si alrendszer friss\u00edtett be\u00e1ll\u00edt\u00e1s\u00e1nak feldolgoz\u00e1sa sor\u00e1n kiv\u00e9tel t\u00f6rt\u00e9nt.  Ezen az \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 sorpont \u00fczenetei nem fogadhat\u00f3k a megfelel\u0151 \
+\u00fczenetvez\u00e9relt komponens \u00e1ltal.
+RELOAD_FAILED_CWSIV0773.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the destination
+# {2} the name of the messaging engine
+# {3} the name of the bus
+# {4} the endpoint activation
+FAILURE_DURING_RELOAD_CWSIV0774=CWSIV0774W: {0} kiv\u00e9telt \u00e9szlelt a(z) {3} buszon a(z) {2} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {1} c\u00e9l feldolgoz\u00f3ja a(z) {4} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n, mik\u00f6zben az \u00fczenetkezel\u00e9si alrendszer \u00fajrat\u00f6lt\u00f6tte a be\u00e1ll\u00edt\u00e1sait.
+FAILURE_DURING_RELOAD_CWSIV0774.explanation=Az adott kiv\u00e9tel t\u00f6rt\u00e9nt egy feldolgoz\u00f3 eset\u00e9n, mik\u00f6zben a hozz\u00e1 tartoz\u00f3 \u00fczenetkezel\u00e9si alrendszer \u00fajrat\u00f6lt\u00f6tte a be\u00e1ll\u00edt\u00e1sait.
+FAILURE_DURING_RELOAD_CWSIV0774.useraction=Ez a figyelmeztet\u00e9s figyelmen k\u00edv\u00fcl hagyhat\u00f3, \
+ha a sorpont, amihez a feldolgoz\u00f3 csatlakoztat\u00e1sra ker\u00fclt, sz\u00e1nd\u00e9kosan lett t\u00f6r\u00f6lve a \
+be\u00e1ll\u00edt\u00e1si friss\u00edt\u00e9sek r\u00e9szek\u00e9nt. Ha egy helyettes\u00edt\u0151 sorpont meghat\u00e1roz\u00e1sra ker\u00fclt, akkor egy \u00faj feldolgoz\u00f3 l\u00e9trehoz\u00e1sra fog ker\u00fclni a friss\u00edt\u00e9s befejezt\u00e9vel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0775=CWSIV0775W: A(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz haszn\u00e1lt, {1} buszon l\u00e9v\u0151 {0} c\u00e9l kapcsolat\u00e1nak l\u00e9trehoz\u00e1sa meghi\u00fasult a(z) {3} kiv\u00e9tellel.
+CONNECT_FAILED_CWSIV0775.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt egy t\u00e1voli \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1s sor\u00e1n.
+CONNECT_FAILED_CWSIV0775.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECTION_ERROR_CWSIV0776=CWSIV0776W: A(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz haszn\u00e1lt, {1} buszon l\u00e9v\u0151 {0} t\u00e1voli \u00fczenetkezel\u00e9si alrendszer kapcsolata meghi\u00fasult a(z) {3} kiv\u00e9tellel.
+CONNECTION_ERROR_CWSIV0776.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \
+fogadott egy \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 l\u00e9tez\u0151 kapcsolathoz.
+CONNECTION_ERROR_CWSIV0776.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the destination
+# {2} the name of the bus
+CONNECTED_CWSIV0777=CWSIV0777I: Kapcsolat a(z) {0} \u00fczenetkezel\u00e9si alrendszerhez \
+a(z) {2} buszon l\u00e9v\u0151 {1} c\u00e9lhoz sikeresen l\u00e9trej\u00f6tt.
+CONNECTED_CWSIV0777.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 sikeresen l\u00e9trehozott \
+egy kapcsolatot az adott v\u00e9gpontaktiv\u00e1l\u00e1s egy \u00fczenetkezel\u00e9si alrendszer\u00e9vel.
+CONNECTED_CWSIV0777.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_INITIALIZING_CWSIV0778=CWSIV0778I: A(z) {1} busz azon {0} helyi \u00fczenetkezel\u00e9si alrendszere, amely a(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz sz\u00fcks\u00e9ges, most el\u00e9rhet\u0151.
+ME_INITIALIZING_CWSIV0778.explanation=Az adott v\u00e9gpontaktiv\u00e1l\u00e1s t\u00e1voli m\u00f3don csatlakozott, mert nem volt enged\u00e9lyezett helyi \u00fczenetkezel\u00e9si alrendszer.  Az \u00f6sszes t\u00e1voli kapcsolat m\u00e1r bez\u00e1r\u00e1sra ker\u00fclt.  Amikor a helyi \u00fczenetkezel\u00e9si alrendszer akt\u00edv, akkor egy \u00faj kapcsolat l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nik.
+ME_INITIALIZING_CWSIV0778.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_DESTROYED_CWSIV0779=CWSIV0779I: A(z) {1} busz {0} utols\u00f3 \u00fczenetkezel\u00e9si \
+alrendszere megsemmis\u00edt\u00e9sre ker\u00fclt.
+ME_DESTROYED_CWSIV0779.explanation=Az adott v\u00e9gpontaktiv\u00e1l\u00e1s helyi m\u00f3don csatlakozott, de nem maradt enged\u00e9lyezett helyi \u00fczenetkezel\u00e9si alrendszer.  Az er\u0151forr\u00e1s-csatol\u00f3 csatlakozni pr\u00f3b\u00e1l egy t\u00e1voli \u00fczenetkezel\u00e9si alrendszerhez.
+ME_DESTROYED_CWSIV0779.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_TERMINATED_CWSIV0780=CWSIV0780W: A(z) {1} buszon l\u00e9v\u0151 azon {0} t\u00e1voli \u00fczenetkezel\u00e9si alrendszer, amelyhez a(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1s csatlakozott, lez\u00e1r\u00e1sra ker\u00fclt.
+ME_TERMINATED_CWSIV0780.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 \u00e9rtes\u00edt\u00e9st kapott arr\u00f3l, hogy az a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer lez\u00e1r\u00e1sra ker\u00fclt, amelyhez csatlakozott.
+ME_TERMINATED_CWSIV0780.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_QUIESCING_CWSIV0781=CWSIV0781W: A(z) {1} buszon l\u00e9v\u0151 azon {0} t\u00e1voli \u00fczenetkezel\u00e9si alrendszer, amelyhez a(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1s csatlakozott, t\u00e9tlen.
+ME_QUIESCING_CWSIV0781.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 \u00e9rtes\u00edt\u00e9st kapott arr\u00f3l, hogy az a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer t\u00e9tlen \u00e9s sz\u00e9tkapcsolt, amelyhez csatlakozott.
+ME_QUIESCING_CWSIV0781.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0782=CWSIV0782W: A(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz haszn\u00e1lt, {1} buszon l\u00e9v\u0151 {0} c\u00e9l kapcsolat\u00e1nak l\u00e9trehoz\u00e1sa meghi\u00fasult a(z) {3} kiv\u00e9tellel. Tekintse \u00e1t a(z) {2} v\u00e9gpont aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1st.
+CONNECT_FAILED_CWSIV0782.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \
+fogadott egy \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1s sor\u00e1n.
+CONNECT_FAILED_CWSIV0782.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0783=CWSIV0783E: A(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1shoz haszn\u00e1lt, {1} buszon l\u00e9v\u0151 {0} c\u00e9l kapcsolat\u00e1nak l\u00e9trehoz\u00e1sa meghi\u00fasult a(z) {3} kiv\u00e9tellel.
+CONNECT_FAILED_CWSIV0783.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \
+fogadott egy \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1s sor\u00e1n.  A megfelel\u0151 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens le\u00e1ll\u00edt\u00e1sra ker\u00fcl \u00e9s nem tud t\u00f6bb \u00fczenetet fogadni.
+CONNECT_FAILED_CWSIV0783.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_STOPPING_CWSIV0784=CWSIV0784I: A(z) {1} buszon l\u00e9v\u0151 {0} helyi \u00fczenetkezel\u00e9si \
+alrendszer le\u00e1ll.
+ME_STOPPING_CWSIV0784.explanation=Az adott v\u00e9gpontaktiv\u00e1l\u00e1s egy olyan \
+\u00fczenetkezel\u00e9si alrendszert haszn\u00e1lt, ami le\u00e1ll\u00edt\u00e1sra ker\u00fclt. Az er\u0151forr\u00e1s-csatol\u00f3 \
+megpr\u00f3b\u00e1l egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszerhez csatlakozni.
+ME_STOPPING_CWSIV0784.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_QUIESCING_CWSIV0785=CWSIV0785I: A(z) {1} buszon l\u00e9v\u0151 {0} helyi \u00fczenetkezel\u00e9si \
+alrendszer t\u00e9tlen.
+ME_QUIESCING_CWSIV0785.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 \u00e9rtes\u00edt\u00e9st kapott \
+arr\u00f3l, hogy az \u00fczenetkezel\u00e9si alrendszer, amihez csatlakozott, t\u00e9tlen \u00e9s sz\u00e9tkapcsolt.
+ME_QUIESCING_CWSIV0785.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_TERMINATED_CWSIV0786=CWSIV0786I: A(z) {1} buszon l\u00e9v\u0151 {0} helyi \u00fczenetkezel\u00e9si \
+alrendszer lez\u00e1r\u00e1sra ker\u00fclt.
+ME_TERMINATED_CWSIV0786.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 \u00e9rtes\u00edt\u00e9st kapott \
+arr\u00f3l, hogy az \u00fczenetkezel\u00e9si alrendszer, amihez csatlakozott, lez\u00e1r\u00e1sra ker\u00fclt.
+ME_TERMINATED_CWSIV0786.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the target type
+# {1} the target significance
+# {2} the target
+# {3} the busname
+TARGETTED_CONNECTION_FAILED_CWSIV0787=CWSIV0787I: Nem siker\u00fclt kapcsolatot l\u00e9tes\u00edteni \u00fczenetkezel\u00e9si alrendszerrel a csatlakoz\u00e1si c\u00e9l meghat\u00e1roz\u00e1sakor. A c\u00e9l t\u00edpusa {0} volt, jelent\u0151s\u00e9ge {1}, neve pedig {2}. A c\u00e9l busz {3} volt.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.explanation=A rendszer c\u00e9l inform\u00e1ci\u00f3k halmaz\u00e1nak megad\u00e1sakor nem tudott \u00fczenetkezel\u00e9si alrendszerhez csatlakozni. \
+Ezt ideiglenes kapcsolati probl\u00e9ma is okozhatja, ha nem tal\u00e1lhat\u00f3 a c\u00e9ladatoknak megfelel\u0151 \u00fczenetkezel\u00e9si alrendszer, vagy okozhatja a haszn\u00e1lt aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1ja is.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon a megadott c\u00e9l inform\u00e1ci\u00f3knak megfelel\u0151 \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  \
+Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz. \
+Ha az \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151, akkor ellen\u0151rizze az aktiv\u00e1l\u00e1s konfigur\u00e1ci\u00f3 be\u00e1ll\u00edt\u00e1sainak helyess\u00e9g\u00e9t, k\u00fcl\u00f6n\u00f6s figyelemmel a buszn\u00e9vre \u00e9s a c\u00e9linform\u00e1ci\u00f3kra.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+CONNECTION_FAILED_CWSIV0788=CWSIV0788I: Nem siker\u00fclt kapcsolatot l\u00e9tes\u00edteni \u00fczenetkezel\u00e9si alrendszerrel. A c\u00e9l busz {0} volt.
+CONNECTION_FAILED_CWSIV0788.explanation=A rendszer nem tudott \u00fczenetkezel\u00e9si alrendszerhez csatlakozni. \
+Ezt ideiglenes kapcsolati probl\u00e9ma is okozhatja, ha nem tal\u00e1lhat\u00f3 a buszon \u00fczenetkezel\u00e9si alrendszer, vagy okozhatja a haszn\u00e1lt aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1ja is.
+CONNECTION_FAILED_CWSIV0788.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon egy \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  \
+Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz. \
+Ha az \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151, akkor ellen\u0151rizze az aktiv\u00e1l\u00e1s konfigur\u00e1ci\u00f3 be\u00e1ll\u00edt\u00e1sainak helyess\u00e9g\u00e9t, k\u00fcl\u00f6n\u00f6s figyelemmel a buszn\u00e9vre.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+# {1} the durable subscription home
+DURSUB_CONNECTION_FAILED_CWSIV0789=CWSIV0789I: Nem siker\u00fclt kapcsolatot l\u00e9tes\u00edteni tart\u00f3s el\u0151fizet\u00e9st hosztol\u00f3 \u00fczenetkezel\u00e9si alrendszerrel. A c\u00e9l busz {0} volt, a tart\u00f3s el\u0151fizet\u00e9s helye pedig {1}
+DURSUB_CONNECTION_FAILED_CWSIV0789.explanation=A rendszer nem tudott tart\u00f3s el\u0151fizet\u00e9si helyet hosztol\u00f3 \u00fczenetkezel\u00e9si alrendszerhez csatlakozni. \
+Ezt ideiglenes kapcsolati probl\u00e9ma is okozhatja, ha a buszon az \u00fczenetkezel\u00e9si alrendszer nem \u00e9rhet\u0151 el, vagy okozhatja a haszn\u00e1lt aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1ja is.
+DURSUB_CONNECTION_FAILED_CWSIV0789.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adott buszon a tart\u00f3s el\u0151fizet\u00e9si helyet hosztol\u00f3 \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.  \
+Az er\u0151forr\u00e1s-csatol\u00f3 rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt automatikusan megpr\u00f3b\u00e1l csatlakozni a buszhoz. \
+Ha az \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151, akkor ellen\u0151rizze az aktiv\u00e1l\u00e1s konfigur\u00e1ci\u00f3 be\u00e1ll\u00edt\u00e1sainak helyess\u00e9g\u00e9t, k\u00fcl\u00f6n\u00f6s figyelemmel a buszn\u00e9vre.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+CREATE_CONNECTION_FAILED_CWSIV0801=CWSIV0801E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_FAILED_CWSIV0801.explanation=A bej\u00f6v\u0151 mag SPI er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot az adott \u00fczenetkezel\u00e9si alrendszerhez, amikor egy kiv\u00e9telt \u00e9szlelt.  Az ezen az \u00fczenetkezel\u00e9si alrendszeren honos\u00edtott c\u00e9lokb\u00f3l sz\u00e1rmaz\u00f3 \u00fczeneteket nem fogja megkapni az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens.
+CREATE_CONNECTION_FAILED_CWSIV0801.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0803=CWSIV0803E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {3} buszon a(z) {2} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {1} c\u00e9l sz\u00e1m\u00e1ra egy feldolgoz\u00f3 l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_LISTENER_FAILED_CWSIV0803.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy feldolgoz\u00f3t az adott c\u00e9l sz\u00e1m\u00e1ra, amikor egy kiv\u00e9telt \u00e9szlelt.  Az ezen c\u00e9lhonos\u00edt\u00e1sb\u00f3l sz\u00e1rmaz\u00f3 \u00fczeneteket nem fogja megkapni az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens.
+CREATE_LISTENER_FAILED_CWSIV0803.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804=CWSIV0804E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer c\u00e9lfigyel\u0151j\u00e9nek hozz\u00e1ad\u00e1sa sor\u00e1n.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt hozz\u00e1adni egy c\u00e9lfigyel\u0151t az adott \u00fczenetkezel\u00e9si alrendszerhez, amikor egy kiv\u00e9telt \u00e9szlelt.  Az ezen az \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 sorpontokb\u00f3l sz\u00e1rmaz\u00f3 \u00fczeneteket nem fogja megkapni az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a hivatkozott kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0805=CWSIV0805E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {3} buszon a(z) {2} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {1} \u00faj c\u00e9l sz\u00e1m\u00e1ra egy feldolgoz\u00f3 l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_LISTENER_FAILED_CWSIV0805.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy feldolgoz\u00f3t az adott \u00faj c\u00e9l sz\u00e1m\u00e1ra, amikor egy kiv\u00e9telt \u00e9szlelt.  Az ezen sorpontb\u00f3l sz\u00e1rmaz\u00f3 \u00fczeneteket nem fogja megkapni az \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens.
+CREATE_LISTENER_FAILED_CWSIV0805.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a hivatkozott kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0806=CWSIV0806E: {0} kiv\u00e9telt \u00e9szlelt a(z) {3} buszon a(z) {2} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {1} c\u00e9l feldolgoz\u00f3ja a(z) {4} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n.
+SESSION_ERROR_CWSIV0806.explanation=Egy aszinkron kiv\u00e9tel t\u00f6rt\u00e9nt az adott feldolgoz\u00f3 eset\u00e9n.  A vonatkoz\u00f3 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens le\u00e1ll\u00edt\u00e1sra fog ker\u00fclni \u00e9s nem fog t\u00f6bb \u00fczenetet fogadni.
+SESSION_ERROR_CWSIV0806.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0807=CWSIV0807E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 egyik kapcsolaton a(z) {2} v\u00e9gpontaktiv\u00e1l\u00e1s eset\u00e9n.
+CONNECTION_ERROR_CWSIV0807.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az adott kapcsolat eset\u00e9n.  A vonatkoz\u00f3 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens le\u00e1ll\u00edt\u00e1sra fog ker\u00fclni \u00e9s nem fog t\u00f6bb \u00fczenetet fogadni.
+CONNECTION_ERROR_CWSIV0807.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.  A probl\u00e9ma megold\u00e1s\u00e1t k\u00f6vet\u0151en ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert, az er\u0151forr\u00e1s-csatol\u00f3t vagy az alkalmaz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the messaging engine name
+# {2} the bus name
+# {3} the exception
+SESSION_DROPPED_CWSIV0808=CWSIV0808W: A(z) {2} buszon {1} \u00fczenetkezel\u00e9si \
+alrendszeren l\u00e9v\u0151 {0} c\u00e9lr\u00f3l az \u00fczenetek feldolgoz\u00e1sa le\u00e1llt, mert a munkamenet lerak\u00e1sra \
+ker\u00fclt. A kiv\u00e9tel: {3}
+SESSION_DROPPED_CWSIV0808.explanation=A munkamenet lerak\u00e1sra ker\u00fcl a kiv\u00e9telben \
+jelzett ok miatt. Ez az\u00e9rt lehet, mert a megadott c\u00e9l t\u00f6rl\u00e9sre ker\u00fclt, vagy csak k\u00fcld\u0151nek \
+van jel\u00f6lve.  A vonatkoz\u00f3 \u00fczenet \u00e1ltal ir\u00e1ny\u00edtott komponens le\u00e1ll\u00edt\u00e1sra fog ker\u00fclni \u00e9s nem fog t\u00f6bb \u00fczenetet fogadni.
+SESSION_DROPPED_CWSIV0808.useraction=Ha nem v\u00e1rta ezt a figyelmeztet\u00e9st, akkor oldja meg \
+a probl\u00e9m\u00e1t, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st, er\u0151forr\u00e1s-csatol\u00f3t vagy \u00fczenetkezel\u00e9si \
+alrendszert, amelyik megfelel\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination wildcard string
+# {1} the messaging engine name
+# {2} the bus name
+NO_LISTENERS_CREATED_CWSIV0809=CWSIV0809W: A helyettes\u00edt\u0151 karakteres {0} c\u00e9ln\u00e9v nem \
+felelt meg egyetlen c\u00e9lnak sem, ami el\u00e9rhet\u0151 a(z) {2} busz {1} \u00fczenetkezel\u00e9si \
+alrendszer\u00e9n l\u00e9v\u0151 \u00fczenetek feldolgoz\u00e1s\u00e1hoz.
+NO_LISTENERS_CREATED_CWSIV0809.explanation=Az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s egy \
+helyettes\u00edt\u0151 karakteres c\u00e9lnevet tartalmaz t\u00f6bb c\u00e9lt\u00f3l sz\u00e1rmaz\u00f3 \u00fczenetek feldolgoz\u00e1sa \
+\u00e9rdek\u00e9ben, azonban a helyettes\u00edt\u0151 karakteres n\u00e9vnek nem felel meg egyetlen el\u00e9rhet\u0151 c\u00e9l \
+sem.
+NO_LISTENERS_CREATED_CWSIV0809.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az aktiv\u00e1l\u00e1si \
+meghat\u00e1roz\u00e1s helyettes\u00edt\u0151 karaktereket haszn\u00e1ljon, hogy a helyettes\u00edt\u0151 karakteres n\u00e9vvel \
+be\u00edrt c\u00e9lok megfeleljenek n\u00e9h\u00e1ny c\u00e9lnak, \u00e9s hogy a megadott felhaszn\u00e1l\u00f3i r\u00e9szletek \
+lehet\u0151v\u00e9 tegy\u00e9k a feldolgoz\u00e1st a c\u00e9lr\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSIV0850=CWSIV0850E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} \u00fczenetv\u00e9gpont nem val\u00f3s\u00edtja meg a v\u00e1rt {1} fel\u00fcletet.
+UNEXPECTED_ENDPOINT_CWSIV0850.explanation=Az \u00fczenetv\u00e9gpontgy\u00e1r egy olyan \u00fczenetv\u00e9gpontot adott vissza, amely az elv\u00e1rtakkal ellent\u00e9tben nem val\u00f3s\u00edtja meg a SibRaMessageListener fel\u00fcletet.
+UNEXPECTED_ENDPOINT_CWSIV0850.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSIV0851=CWSIV0851E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt az onMessage met\u00f3dus egy p\u00e9ld\u00e1ny\u00e1nak megszerz\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+ON_MESSAGE_CWSIV0851.explanation=Egy kiv\u00e9tel j\u00f6tt l\u00e9tre az onMessage met\u00f3dus egy \
+p\u00e9ld\u00e1ny\u00e1nak megszerz\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+ON_MESSAGE_CWSIV0851.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the bus name
+# {3} the connection
+LISTENER_CREATION_CWSIV0900=CWSIV0900E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {2} buszon l\u00e9v\u0151 {1} c\u00e9l sz\u00e1m\u00e1ra egy figyel\u0151 l\u00e9trehoz\u00e1sa sor\u00e1n a(z) {3} kapcsolat haszn\u00e1lata mellett.
+LISTENER_CREATION_CWSIV0900.explanation=Egy kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy figyel\u0151t az adott c\u00e9l sz\u00e1m\u00e1ra.
+LISTENER_CREATION_CWSIV0900.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.  Oldja meg a probl\u00e9m\u00e1t, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st, er\u0151forr\u00e1s-csatol\u00f3t vagy \
+\u00fczenetkezel\u00e9si alrendszert, amelyik megfelel\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+SELECTION_FACTORY_CWSIV0901=CWSIV0901E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a SelectionCriteriaFactory met\u00f3dus egy p\u00e9ld\u00e1ny\u00e1nak megszerz\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+SELECTION_FACTORY_CWSIV0901.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a SelectionCriteriaFactory met\u00f3dus egy p\u00e9ld\u00e1ny\u00e1nak megszerz\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+SELECTION_FACTORY_CWSIV0901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902=CWSIV0902W: A(z) {0} \
+\u00fczenetv\u00e9gpontot, ami a(z) {1} c\u00e9lra figyelt, a rendszer sz\u00fcnetelteti.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.explanation=A rendszer sz\u00fcnetelteti az \u00fczenetv\u00e9gpontot, mert probl\u00e9m\u00e1t tal\u00e1lt az \u00fczenetvez\u00e9relt komponens \u00fczenetv\u00e9gpontj\u00e1n.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.useraction=N\u00e9zze \u00e1t az \u00fczenetvez\u00e9relt \
+komponens lehets\u00e9ges probl\u00e9m\u00e1it, amik sorozatos meghib\u00e1sod\u00e1sokat okozhatnak. Amikor azt szeretn\u00e9, hogy az \u00fczenetv\u00e9gpont folytassa m\u0171k\u00f6d\u00e9s\u00e9t, akkor haszn\u00e1lja az adminisztr\u00e1ci\u00f3s konzolt. Alternat\u00edv megold\u00e1sk\u00e9nt a v\u00e9gpont m\u0171k\u00f6d\u00e9s\u00e9nek ind\u00edt\u00e1s\u00e1hoz haszn\u00e1lja az \u00fczenetv\u00e9gpont MBean elemet, \u00e1tadva neki az ebben az \u00fczenetben tal\u00e1lhat\u00f3 v\u00e9gpontnevet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+# {2} the exception thrown from the invoke
+INVOKE_MBEAN_EXCEPTION__CWSIV0903=CWSIV0903W: A(z) {0} \u00fczenetv\u00e9gpontot, ami a(z) \
+{1} c\u00e9lra figyelt, a rendszer megpr\u00f3b\u00e1lta sz\u00fcnetelteti, de az MBean megh\u00edv\u00e1sa meghi\u00fasult \
+az al\u00e1bbi kiv\u00e9tellel: {2}.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.explanation=A rendszer probl\u00e9m\u00e1t tal\u00e1lt az \u00fczenetv\u00e9gpont \u00fczenetvez\u00e9relt komponens\u00e9ben, de nem siker\u00fclt sz\u00fcneteltetnie az \u00fczenetv\u00e9gpontot.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.useraction=A wsadmin parancsf\u00e1jlkezel\u0151 vagy az adminisztr\u00e1ci\u00f3s \
+konzol haszn\u00e1lat\u00e1val ellen\u0151rizze az \u00fczenetv\u00e9gpont \u00e1llapot\u00e1t. Ha az \u00fczenetv\u00e9gpont akt\u00edv, \
+akkor sz\u00fcneteltesse a v\u00e9gpontot, majd der\u00edtse ki az \u00fczenetvez\u00e9relt komponens lehets\u00e9ges \
+probl\u00e9m\u00e1it. Ind\u00edtsa el a v\u00e9gpont m\u0171k\u00f6d\u00e9s\u00e9t, ha k\u00e9szen van.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+NO_MBEAN_EXCEPTION_CWSIV0904=CWSIV0904W: Egy \u00fczenetvez\u00e9relt komponens le\u00e1ll\u00edt\u00e1s\u00e1ra \
+tett k\u00eds\u00e9rlet sor\u00e1n egy \u00fczenetv\u00e9gpont sem volt tal\u00e1lhat\u00f3 a(z) {0} v\u00e9gponthoz, ami a(z) \
+{1} c\u00e9lra figyelt. 
+NO_MBEAN_EXCEPTION_CWSIV0904.explanation=A rendszer nem tal\u00e1lja az \u00fczenetv\u00e9gpontot.
+NO_MBEAN_EXCEPTION_CWSIV0904.useraction=A wsadmin parancsf\u00e1jlkezel\u0151 vagy az adminisztr\u00e1ci\u00f3s \
+konzol haszn\u00e1lat\u00e1val ellen\u0151rizze az \u00fczenetv\u00e9gpont \u00e1llapot\u00e1t. Ha az \u00fczenetv\u00e9gpont akt\u00edv, \
+akkor sz\u00fcneteltesse a v\u00e9gpontot, majd der\u00edtse ki az \u00fczenetvez\u00e9relt komponens lehets\u00e9ges \
+probl\u00e9m\u00e1it. Ind\u00edtsa el a v\u00e9gpont m\u0171k\u00f6d\u00e9s\u00e9t, ha k\u00e9szen van.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905=CWSIV0905W: Egy \u00fczenetvez\u00e9relt komponens \
+le\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n t\u00f6bb \u00fczenetv\u00e9gpont volt tal\u00e1lhat\u00f3 a(z) {0} v\u00e9gponthoz, \
+ami a(z) {1} c\u00e9lra figyelt. Csak egy v\u00e9gpontnak kellene l\u00e9teznie. Az \u00fczenetvez\u00e9relt \
+komponens nem lesz le\u00e1ll\u00edtva. 
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.explanation=A rendszer t\u00f6bbsz\u00f6r\u00f6s \u00fczenetv\u00e9gpontokat \u00e9szlelt. Nem tudta meg\u00e1llap\u00edtani hogy melyik \u00fczenetv\u00e9gpontot kell sz\u00fcneteltetni.
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.useraction=A wsadmin parancsf\u00e1jlkezel\u0151 \
+vagy az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val ellen\u0151rizze az \u00f6sszes \
+\u00fczenetv\u00e9gpont \u00e1llapot\u00e1t ezen az \u00fczenetvez\u00e9relt komponensen. Ha egy \u00fczenetv\u00e9gpont akt\u00edv, \
+akkor sz\u00fcneteltesse a v\u00e9gpontot, majd der\u00edtse ki az \u00fczenetvez\u00e9relt komponens lehets\u00e9ges \
+probl\u00e9m\u00e1it. Ind\u00edtsa el a v\u00e9gpont m\u0171k\u00f6d\u00e9s\u00e9t, ha k\u00e9szen van.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906=CWSIV0906W: Az MDB \
+maxim\u00e1lis sorozatos \u00fczenetmeghib\u00e1sod\u00e1s konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ke {0} \u00e9rt\u00e9kr\u0151l {1} \u00e9rt\u00e9kre \
+v\u00e1ltozott.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.explanation=A maxim\u00e1lis \
+sorozatos \u00fczenetmeghib\u00e1sod\u00e1s \u00e9rt\u00e9ke megv\u00e1ltozott, mert a szigor\u00fa \u00fczenetrendez\u00e9s be lett kapcsolva.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.useraction=Ha nem ig\u00e9nyli a sorozatos \u00fczenethib\u00e1k megfigyel\u00e9se funkci\u00f3t, akkor semmit sem kell tennie. Ha sz\u00fcks\u00e9ge van a sorozatos \u00fczenethib\u00e1k megfigyel\u00e9se funkci\u00f3ra, akkor kapcsolja ki a szigor\u00fa \u00fczenetrendez\u00e9st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907=CWSIV0907W: Az MDB \
+maxim\u00e1lis sorozatos \u00fczenetmeghib\u00e1sod\u00e1s konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ke {0} \u00e9rt\u00e9kr\u0151l {1} \u00e9rt\u00e9kre \
+v\u00e1ltozott.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.explanation=A \
+maxim\u00e1lis sorozatos \u00fczenetmeghib\u00e1sod\u00e1s \u00e9rt\u00e9ke megv\u00e1ltozott, mert nincs kiv\u00e9teli c\u00e9l \
+meghat\u00e1rozva ahhoz a c\u00e9lhoz, amelyen az \u00fczenetvez\u00e9relt komponens figyel.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.useraction=Ha nem ig\u00e9nyli a sorozatos \u00fczenethib\u00e1k megfigyel\u00e9se funkci\u00f3t, akkor semmit sem kell tennie. Ha sz\u00fcks\u00e9ge van a sorozatos \u00fczenethib\u00e1k megfigyel\u00e9se funkci\u00f3ra, akkor \u00e1ll\u00edtson be egy kiv\u00e9teli c\u00e9lt a c\u00e9lhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0950=CWSIV0950E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt egy kapcsolat {1} gy\u00e1ron l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0950.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0950.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0951=CWSIV0951E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetkezel\u00e9si alrendszer fel ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0951.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0951.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0952=CWSIV0952E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy figyel\u0151 olyan kapcsolaton l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely bez\u00e1r\u00e1sra ker\u00fclt.
+LISTENER_CLOSED_CWSIV0952.explanation=Az \u00fczenetkezel\u00e9si alrendszer kapcsolata egy k\u00e9r\u00e9st \
+kapott egy figyel\u0151 l\u00e9trehoz\u00e1s\u00e1ra, de a kapcsolat m\u00e1r bez\u00e1r\u00e1sra ker\u00fclt.
+LISTENER_CLOSED_CWSIV0952.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0953=CWSIV0953E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy ir\u00e1ny\u00edt\u00f3 olyan kapcsolaton l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely bez\u00e1r\u00e1sra ker\u00fclt.
+LISTENER_CLOSED_CWSIV0953.explanation=Az \u00fczenetkezel\u00e9si alrendszer kapcsolata egy k\u00e9r\u00e9st \
+kapott egy ir\u00e1ny\u00edt\u00f3 l\u00e9trehoz\u00e1s\u00e1ra, de a kapcsolat m\u00e1r bez\u00e1r\u00e1sra ker\u00fclt.
+LISTENER_CLOSED_CWSIV0953.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0954=CWSIV0954E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt egy kapcsolat {1} gy\u00e1ron l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0954.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0954.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes felhaszn\u00e1l\u00f3nevet \
+\u00e9s jelsz\u00f3t adta meg azon aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban, aminek a haszn\u00e1lat\u00e1ra az \
+\u00fczenetvez\u00e9relt komponens be\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0955=CWSIV0955E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0955.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0955.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes felhaszn\u00e1l\u00f3nevet \
+\u00e9s jelsz\u00f3t adta meg azon aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban, aminek a haszn\u00e1lat\u00e1ra az \
+\u00fczenetvez\u00e9relt komponens be\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_CONNECTION_CWSIV0957=CWSIV0957E: A(z) {0} hiteles\u00edt\u00e9si kiv\u00e9tel a WebSphere Application Server t\u00e1rgy\u00e1nak lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n el lett dobva.
+CREATE_CONNECTION_CWSIV0957.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 a kiszolg\u00e1l\u00f3t\u00e1rgy haszn\u00e1lat\u00e1val megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, de nem tudta megszerezni a t\u00e1rgyat.
+CREATE_CONNECTION_CWSIV0957.useraction=Ellen\u0151rizze, hogy az Application Server biztons\u00e1gi be\u00e1ll\u00edt\u00e1sok helyesen vannak-e be\u00e1ll\u00edtva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0958=CWSIV0958E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat a(z) {2} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s haszn\u00e1lat\u00e1val l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0958.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0958.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy helyes hiteles\u00edt\u00e9si \u00e1ln\u00e9v \
+van be\u00e1ll\u00edtva azon aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban, aminek a haszn\u00e1lat\u00e1ra az \u00fczenetvez\u00e9relt \
+komponens be van \u00e1ll\u00edtva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0959=CWSIV0959E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat a(z) {2} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s haszn\u00e1lat\u00e1val l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0959.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0959.useraction=Ellen\u0151rizze, hogy a hiteles\u00edt\u00e9si \u00e1ln\u00e9v azon az \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, aminek a haszn\u00e1lat\u00e1ra az \u00fczenetvez\u00e9relt komponens be van \
+\u00e1ll\u00edtva, jogosult-e az \u00fczenetkezel\u00e9si alrendszerhez csatlakozni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0960=CWSIV0960E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} busz fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat a(z) {2} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s haszn\u00e1lat\u00e1val l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0960.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0960.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy helyes hiteles\u00edt\u00e9si \u00e1ln\u00e9v \
+van be\u00e1ll\u00edtva azon aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban, aminek a haszn\u00e1lat\u00e1ra az \u00fczenetvez\u00e9relt \
+komponens be van \u00e1ll\u00edtva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0961=CWSIV0961E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} busz fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat a(z) {2} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s haszn\u00e1lat\u00e1val l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0961.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0961.useraction=Ellen\u0151rizze, hogy a hiteles\u00edt\u00e9si \u00e1ln\u00e9v azon az \
+aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, aminek a haszn\u00e1lat\u00e1ra az \u00fczenetvez\u00e9relt komponens be van \
+\u00e1ll\u00edtva, jogosult-e a buszhoz csatlakozni.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0962=CWSIV0962E: {0} hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} busz fel\u00e9 ir\u00e1nyul\u00f3 kapcsolatnak a(z) {2} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s haszn\u00e1lat\u00e1val t\u00f6rt\u00e9n\u0151 l\u00e9trehoz\u00e1sa sor\u00e1n.
+CREATE_CONNECTION_CWSIV0962.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lt l\u00e9trehozni egy kapcsolatot, amikor egy hiteles\u00edt\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt.
+CREATE_CONNECTION_CWSIV0962.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hiteles\u00edt\u00e9si \u00e1ln\u00e9v hiteles\u00edtett-e a buszhoz csatlakoz\u00e1shoz azon az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1son, aminek a haszn\u00e1lat\u00e1ra az \u00fczenetvez\u00e9relt komponens be van \u00e1ll\u00edtva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1000=CWSIV1000E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Az er\u0151forr\u00e1s-csatol\u00f3hoz \u00e1tadott {0} \u00fczenetv\u00e9gpontgy\u00e1r nem val\u00f3s\u00edtja meg az elv\u00e1rt {1} fel\u00fcletet.
+WAS_ENDPOINT_FACTORY_CWSIV1000.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 sz\u00e1m\u00e1ra sz\u00fcks\u00e9ges az \u00fczenetvez\u00e9relt komponens egyedi nev\u00e9nek megszerz\u00e9se \u00e9rdek\u00e9ben, hogy az \u00fczenetv\u00e9gpontgy\u00e1r megval\u00f3s\u00edtsa a megadott fel\u00fcletet.
+WAS_ENDPOINT_FACTORY_CWSIV1000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the request object passed
+# {1} the expected interface
+MSG_TOKEN_CWSIV1050=CWSIV1050E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Az er\u0151forr\u00e1s-csatol\u00f3hoz \u00e1tadott {0} k\u00e9rt objektum nem val\u00f3s\u00edtja meg az elv\u00e1rt {1} fel\u00fcletet.
+MSG_TOKEN_CWSIV1050.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 ir\u00e1ny\u00edt\u00e1si c\u00e9lja egy olyan k\u00e9r\u00e9sobjektumot fogadott, amely nem az elv\u00e1rt t\u00edpus\u00fa.
+MSG_TOKEN_CWSIV1050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the messages
+READ_SET_CWSIV1051=CWSIV1051E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {2} \u00fczenetazonos\u00edt\u00f3 sz\u00e1m\u00e1ra a(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} munkamenetb\u0151l visszaad\u00e1sra ker\u00fclt {3} \u00fczenett\u00f6mb nem egyetlen \u00fczenetet tartalmazott.
+READ_SET_CWSIV1051.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 ir\u00e1ny\u00edt\u00e1si c\u00e9l nem egyetlen \u00fczenetet kapott vissza az adott \u00fczenetazonos\u00edt\u00f3 eset\u00e9n.
+READ_SET_CWSIV1051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the exception thrown
+EXCEPTION_CWSIV1052=CWSIV1052W: A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 a(z) {3} kiv\u00e9telt \u00e9szlelte a(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} munkamenetben a(z) {2} \u00fczenetazonos\u00edt\u00f3 feldolgoz\u00e1sa sor\u00e1n.
+EXCEPTION_CWSIV1052.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 nem tudta feldolgozni a \
+vez\u00e9rl\u0151ter\u00fcleti b\u0151v\u00edtm\u00e9nyt\u0151l kapott \u00fczenetazonos\u00edt\u00f3t.
+EXCEPTION_CWSIV1052.useraction=Az okok megismer\u00e9se \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9tel r\u00e9szleteit.  Az \u00fczenet k\u00e9zbes\u00edt\u00e9s\u00e9t \u00fajra meg fogja pr\u00f3b\u00e1lni a rendszer, amikor az \u00fczenet z\u00e1rol\u00e1sa lej\u00e1r.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the j2eeName (MDB Name)
+NO_POOL_CWSIV1053=CWSIV1053E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3nak nem siker\u00fclt megtal\u00e1lnia a(z) {0} egy v\u00e9gpontaktiv\u00e1l\u00e1si t\u00e1rol\u00f3j\u00e1t, \u00edgy nem tudott lek\u00e9rni egy v\u00e9gpontaktiv\u00e1l\u00e1st.
+NO_POOL_CWSIV1053.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 nem tudott egy \
+v\u00e9gpontaktiv\u00e1l\u00e1st szerezni a t\u00e1rol\u00f3b\u00f3l, mert nem tal\u00e1lta a t\u00e1rol\u00f3t.
+NO_POOL_CWSIV1053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1100=CWSIV1100E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt az \u00fczenetek {1} felsorol\u00e1sb\u00f3l megszerz\u00e9se sor\u00e1n.
+RETRIEVE_MESSAGES_CWSIV1100.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lta lek\u00e9rni az \u00fczeneteket egy felsorol\u00e1sb\u00f3l, amikor egy v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+RETRIEVE_MESSAGES_CWSIV1100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101=CWSIV1101W: Az MDB maxim\u00e1lis p\u00e1rhuzamoss\u00e1g-be\u00e1ll\u00edt\u00e1s \u00e9rt\u00e9ke {0} \u00e9rt\u00e9kr\u0151l {1} \u00e9rt\u00e9kre v\u00e1ltozott.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.explanation=A maxim\u00e1lis p\u00e1rhuzamoss\u00e1g \u00e9rt\u00e9ke megv\u00e1ltozott, mert a szigor\u00fa \u00fczenetrendez\u00e9s be lett kapcsolva.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.useraction=Semmit sem kell tennie, hacsak \
+p\u00e1rhuzamos \u00fczenetvez\u00e9relt komponensek nem sz\u00fcks\u00e9gesek. Ha \u00edgy van, akkor kapcsolja ki a szigor\u00fa \u00fczenetrendez\u00e9st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1150=CWSIV1150E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt az \u00fczenetek {1} felsorol\u00e1sb\u00f3l megszerz\u00e9se sor\u00e1n.
+RETRIEVE_MESSAGES_CWSIV1150.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lta lek\u00e9rni az \u00fczeneteket egy felsorol\u00e1sb\u00f3l, amikor egy v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+RETRIEVE_MESSAGES_CWSIV1150.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the connection
+GET_ID_CWSIV1151=CWSIV1151E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} kapcsolatb\u00f3l l\u00e9trehozott {0} munkamenet azonos\u00edt\u00f3j\u00e1nak megszerz\u00e9se sor\u00e1n.
+GET_ID_CWSIV1151.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 megpr\u00f3b\u00e1lta megszerezni egy munkamenet azonos\u00edt\u00f3j\u00e1t, amikor egy v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+GET_ID_CWSIV1151.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1152=CWSIV1152E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Az er\u0151forr\u00e1s-csatol\u00f3hoz \u00e1tadott {0} \u00fczenetv\u00e9gpontgy\u00e1r nem val\u00f3s\u00edtja meg az elv\u00e1rt {1} fel\u00fcletet.
+WAS_ENDPOINT_FACTORY_CWSIV1152.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 sz\u00e1m\u00e1ra sz\u00fcks\u00e9ges az \u00fczenetvez\u00e9relt komponens egyedi nev\u00e9nek megszerz\u00e9se \u00e9rdek\u00e9ben, hogy az \u00fczenetv\u00e9gpontgy\u00e1r megval\u00f3s\u00edtsa a megadott fel\u00fcletet.
+WAS_ENDPOINT_FACTORY_CWSIV1152.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default value for message lock expiry.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153=CWSIV1153W: Nem lehet olvasni a MessageLockExpiry \
+egy\u00e9ni tulajdons\u00e1got, mivel a platform \u00fczenetkezel\u00e9s nem tal\u00e1lta a kiszolg\u00e1l\u00f3t. Az \
+alap\u00e9rtelmezett {0} \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 nem \
+tal\u00e1lta a kiszolg\u00e1l\u00f3, ez\u00e9rt a MessageLockExpiry tulajdons\u00e1ghoz egy alap\u00e9rt\u00e9k lett \
+hozz\u00e1rendelve.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.useraction=CMSG0002
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154=CWSIV1154W: A MessageLockExpiry \u00e9rt\u00e9ke {0} \
+\u00e9rt\u00e9k\u0171nek t\u0171nik, ez nem alak\u00edthat\u00f3 \u00e1t eg\u00e9sz sz\u00e1mm\u00e1. Az alap\u00e9rtelmezett {1} \u00e9rt\u00e9k ker\u00fcl \
+felhaszn\u00e1l\u00e1sra.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.explanation=A MessageLockExpiry \u00e9rt\u00e9k\u00e9nek \
+beolvas\u00e1sakor az \u00e9rt\u00e9ket nem lehetett eg\u00e9sz sz\u00e1mm\u00e1 konvert\u00e1lni.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.useraction=Ellen\u0151rizze, hogy a MessageLockExpiry \
+egy\u00e9ni tulajdons\u00e1ghoz hozz\u00e1rendelt \u00e9rt\u00e9k eg\u00e9sz sz\u00e1m-e, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a \
+m\u00f3dos\u00edt\u00e1sok \u00e9letbe l\u00e9ptet\u00e9s\u00e9hez.
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155=CWSIV1155W: A MessageLockExpiry \u00e9rt\u00e9ke {0} \
+\u00e9rt\u00e9k\u0171nek t\u0171nik, ez az \u00e9rt\u00e9k nem lehet negat\u00edv. A(z) {1} alap\u00e9rtelmez\u00e9s ker\u00fcl \
+felhaszn\u00e1l\u00e1sra.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.explanation=Negat\u00edv \u00e9rt\u00e9kek nem megengedettek \
+az \u00fczenetz\u00e1rol\u00e1s lej\u00e1rati idej\u00e9nek.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.useraction=Ellen\u0151rizze, hogy a MessageLockExpiry \
+egy\u00e9ni tulajdons\u00e1ghoz hozz\u00e1rendelt \u00e9rt\u00e9k pozit\u00edv vagy nulla-e, majd ind\u00edtsa \u00fajra a \
+kiszolg\u00e1l\u00f3t a m\u00f3dos\u00edt\u00e1sok \u00e9letbe l\u00e9ptet\u00e9s\u00e9hez.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV1200=CWSIV1200E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {0} kiv\u00e9tel t\u00f6rt\u00e9nt a beforeDelivery (k\u00e9zbes\u00edt\u00e9s el\u0151tt) met\u00f3dus {1} v\u00e9gponton megh\u00edv\u00e1sa sor\u00e1n.
+BEFORE_DELIVERY_CWSIV1200.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt, amikor a beforeDelivery met\u00f3dus egy v\u00e9gponton az onMessage met\u00f3dus megh\u00edv\u00e1sa el\u0151tt ker\u00fclt megh\u00edv\u00e1sra.
+BEFORE_DELIVERY_CWSIV1200.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection on which the create was attempted
+# {1} the exception thrown
+UNCOORD_TRAN_CWSIV1201=CWSIV1201E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {1} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} kapcsolaton egy nem \u00f6sszehangolt tranzakci\u00f3 l\u00e9trehoz\u00e1sa sor\u00e1n.
+UNCOORD_TRAN_CWSIV1201.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt egy nem \u00f6sszehangolt tranzakci\u00f3 adott kapcsolaton l\u00e9trehoz\u00e1sa sor\u00e1n.
+UNCOORD_TRAN_CWSIV1201.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the synchronization that was being registered
+# {1} the exception thrown
+REGISTER_SYNC_CWSIV1202=CWSIV1202E: Bels\u0151 hiba t\u00f6rt\u00e9nt. {1} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} szinkroniz\u00e1l\u00e1s bejegyz\u00e9se sor\u00e1n.
+REGISTER_SYNC_CWSIV1202.explanation=Az er\u0151forr\u00e1s-csatol\u00f3 egy kiv\u00e9telt \u00e9szlelt az adott szinkroniz\u00e1l\u00e1s tranzakci\u00f3kezel\u0151vel bejegyz\u00e9se sor\u00e1n.
+REGISTER_SYNC_CWSIV1202.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction
+# {1} the expected interface
+SYNC_CWSIV1203=CWSIV1203E: A kapcsolatb\u00f3l visszakapott {0} tranzakci\u00f3 nem val\u00f3s\u00edtja meg az elv\u00e1rt {1} fel\u00fcletet.
+SYNC_CWSIV1203.explanation=A bej\u00f6v\u0151 er\u0151forr\u00e1s-csatol\u00f3 sz\u00e1m\u00e1ra sz\u00fcks\u00e9ges az egyf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9soptimaliz\u00e1l\u00e1s v\u00e9grehajt\u00e1sa \u00e9rdek\u00e9ben, hogy a nem \u00f6sszehangolt tranzakci\u00f3 megval\u00f3s\u00edtsa a megadott fel\u00fcletet.
+SYNC_CWSIV1203.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a rendszer helyesen legyen be\u00e1ll\u00edtva \
+egy \u00fczenetkezel\u00e9si alrendszer \u00e9s egy adatb\u00e1zis k\u00f6z\u00f6tti egyf\u00e1zis\u00fa \
+v\u00e9gleges\u00edt\u00e9soptimaliz\u00e1l\u00e1s el\u0151nyeinek kihaszn\u00e1l\u00e1sa \u00e9rdek\u00e9ben, amikor p\u00e9ld\u00e1nykomponensek is \
+haszn\u00e1latosak, amelyek t\u00e1rol\u00f3 \u00e1ltal kezelt megmarad\u00e1st haszn\u00e1lnak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The object name
+# {1} The method name
+NULL_XA_RESOURCE_CWSIV1210=CWSIV1210E: Bels\u0151 hiba t\u00f6rt\u00e9nt: a(z) {0} objektumon l\u00e9v\u0151 {1} met\u00f3dus null \u00e9rt\u00e9ket kapott. \u00c9rv\u00e9nyes XAResource \u00e9rt\u00e9ket kell megadni.
+NULL_XA_RESOURCE_CWSIV1210.explanation=CMSG0001
+NULL_XA_RESOURCE_CWSIV1210.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIV9999=CWSIV9999E: {0}
+TEMPORARY_CWSIV9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor tekintse \
+meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket a tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+TEMPORARY_CWSIV9999.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+

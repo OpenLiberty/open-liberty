@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<IgnoredFFDC>
+	<FFDC>
+		<Exception>com.ibm.wsspi.channelfw.exception.ChannelException</Exception>
+		<Message>com.ibm.wsspi.channelfw.exception.ChannelException: TCP Channel detected a possible loop on thread:</Message>
+	</FFDC>
+    <FFDC>
+        <Exception>org.osgi.framework.ServiceException</Exception>
+        <Message>Exception in org.apache.felix.scr.impl.manager.DelayedComponentManager.ungetService()</Message>
+        <Stack>	at org.eclipse.osgi.internal.serviceregistry.ServiceUse.releaseService(ServiceUse.java:287)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceRegistrationImpl.releaseService(ServiceRegistrationImpl.java:562)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceRegistrationImpl.unregister(ServiceRegistrationImpl.java:245)
+        </Stack>
+    </FFDC>
+    <FFDC>
+        <Exception>java.lang.IllegalStateException</Exception>
+        <Message>BundleContext is no longer valid</Message>
+        <Stack>at org.eclipse.osgi.framework.internal.core.BundleContextImpl.checkValid(BundleContextImpl.java:931)</Stack>
+    </FFDC>
+</IgnoredFFDC>

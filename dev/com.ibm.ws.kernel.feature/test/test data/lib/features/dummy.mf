@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Subsystem-SymbolicName: com.ibm.websphere.dummy;visibility:="internal"
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: simple; location:="lib/simple_3.jar"
+IBM-Feature-Version: 2

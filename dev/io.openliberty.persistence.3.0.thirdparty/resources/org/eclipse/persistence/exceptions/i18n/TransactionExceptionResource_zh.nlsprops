@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=\u67e5\u627e JNDI \u540d\u79f0\u4e3a [{0}] \u7684\u5916\u90e8\u4e8b\u52a1\u8d44\u6e90\u65f6\u53d1\u751f\u9519\u8bef
+
+23002=\u83b7\u53d6\u5f53\u524d\u7684\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u7684\u72b6\u6001\u65f6\u53d1\u751f\u9519\u8bef
+
+23003=\u83b7\u53d6\u5f53\u524d\u7684\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u65f6\u53d1\u751f\u9519\u8bef
+
+23004=\u83b7\u53d6\u4e8b\u52a1\u7ba1\u7406\u5668\u65f6\u53d1\u751f\u9519\u8bef
+
+23005=\u7ed1\u5b9a\u81f3\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u65f6\u53d1\u751f\u9519\u8bef
+
+23006=\u5f00\u59cb\u65b0\u7684\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u65f6\u53d1\u751f\u9519\u8bef
+
+23007=\u843d\u5b9e\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u65f6\u53d1\u751f\u9519\u8bef
+
+23008=\u56de\u6eda\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u65f6\u53d1\u751f\u9519\u8bef
+
+23009=\u6807\u8bb0\u8981\u56de\u6eda\u7684\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u65f6\u53d1\u751f\u9519\u8bef
+
+23010=\u5bf9\u4e8e\u6b64\u7ebf\u7a0b\uff0c\u6ca1\u6709\u4efb\u4f55\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u5f53\u524d\u5904\u4e8e\u6d3b\u52a8\u72b6\u6001
+
+23011=\u5728\u5173\u8054\u7684\u5916\u90e8\u7ba1\u7406\u4e8b\u52a1\u5b8c\u6210\u4e4b\u524d\uff0cUnitOfWork [{0}] \u5448\u73b0\u4e3a\u5904\u4e8e\u4e0d\u6d3b\u52a8\u72b6\u6001\u3002
+
+23012=\u6ca1\u6709\u4efb\u4f55\u4e8b\u52a1\u5f53\u524d\u5904\u4e8e\u6d3b\u52a8\u72b6\u6001
+
+23013=\u4e8b\u52a1\u5f53\u524d\u5904\u4e8e\u6d3b\u52a8\u72b6\u6001
+
+23014=\u5728\u4f7f\u7528 JTA \u65f6\uff0c\u65e0\u6cd5\u4f7f\u7528 EntityTransaction\u3002
+
+23015=\u65e0\u6cd5\u5728\u4e8b\u52a1\u4e2d\u8bf7\u6c42\u591a\u4e2a\u6570\u636e\u6e90\u3002
+
+23016=\u4ee3\u7406\u6267\u884c\u65f6\u53d1\u751f\u5f02\u5e38\u3002
+

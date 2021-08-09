@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore object supports validation of the user. Make sure that at least one IdentityStore object supports user validation.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=No IdentityStore object was found to validate the user. Therefore, the user cannot be authenticated.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentityStore object supports validation of the user.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism object for the {0} module in the {1} application could not be created.
+JAVAEESEC_ERROR_NO_HAM.explanation=The reason that the HttpAuthenticationMechanism object cannot be created varies. The error messages for the HttpAuthenticationMechanism object provide information on why the the HttpAuthenticationMechanism object cannot be created.
+JAVAEESEC_ERROR_NO_HAM.useraction=Investigate any error messages from the HttpAuthenticationMechanism object and make corrections based on the error messages.
+
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: The Expression Language (EL) expression for the ''{0}'' attribute of the identity store annotation cannot be resolved to a valid value. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{1}'' is used instead.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The cause of the error is a mismatch of the type between the EL result and the expected attribute value. For example, if the expected attribute type is String, the EL result needs to be String.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans that are used in the expression are resolvable, and that the type of the result corresponds with the attribute.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm parameter provided for the hashAlgorithm, {0}, is in the incorrect format. The parameter received is {1}. The required format is name=value.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=A hashAlgorithm parameter list is in the incorrect format and cannot be parsed.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Correct the hashAlgorithmParameters element on the DatabaseIdentityStore annotation.
+
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: The credentials for the {0} caller cannot be validated. The DatabaseIdentityStore object failed to run the ''{1}'' query with an error: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=The search for the caller failed with an error.
+JAVAEESEC_ERROR_GEN_DB.useraction=Review the error message and make corrections to the search based on the error message.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: The DatabaseIdentityStore failed to run the ''{1}'' query to get the groups for the {0} caller. The partial list of groups is {2}. The error is {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A partial list of groups for the caller is returned instead of a complete list of groups because of an error in the query.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Review the provided error and make corrections to the query so that the complete list of groups for the caller can be returned. 
+
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: The credential provided to the IdentityStore object is not a UsernamePasswordCredential and cannot be validated.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=The credential provided to the IdentityStore object is not a UsernamePasswordCredential class and cannot be validated.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Review the type of credential passed into the IdentityStore object by the HttpAuthMechanism implementation.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: The hash algorithm bean was not found for class {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=The hash algorithm listed in the hashAlgorithm element on the DatabaseIdentityStoreDefinition annotation was not found.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Add the custom hash algorithm as a bean that is available to the application.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: The ''{1}'' query did not return a password for the {0} caller on the DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=The query did not return a password for the provided caller query.
+JAVAEESEC_WARNING_NO_PWD.useraction=If a password was expected, review the caller query and database contents.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: The ''{1}'' query returned multiple results for the {0} caller on the DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Multiple results were returned for the requested caller. The caller query should only return a single result.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Review the caller query and database contents. Change the caller query to return one result.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND=CWWKS3400W: Binding with the {0} caller failed. The following exception occurred: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.explanation=An exception occurred while binding with the provided caller.
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.useraction=Review the provided exception.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH=CWWKS3401E: Searching for the {0} caller with the {1} filter and the {2} searchBase failed. The following exception occurred: {3}
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.explanation=An exception occurred while searching for the provided caller.
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.useraction=Review the provided exception.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH=CWWKS3402E: Searching for groups of {0} failed. The following exception occurred: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.explanation=An exception occurred searching for groups of the specified user.
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP=CWWKS3403W: Multiple results were returned for the {0} caller on the LdapIdentityStore using the {1} filter and the {2} searchBase.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.explanation=Multiple results were returned for the requested caller. The caller search should only return a single result.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.useraction=Review the callerSearchFilter, searchBase, and repository contents.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3404W: Searching for the {1} attribute on the {0} entity failed. The following exception occurred: {2}
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=An exception occurred searching for attributes on the specified entity.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3405W: The {0} caller is missing the {1} callerNameAttribute.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=The specified caller does not have the specified attribute as set on the LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Review the callerNameAttribute and repository contents.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3406W: The {0} group is missing the {1} groupNameAttribute.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=The specified group does not have the specified attribute as set on the LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Review the groupNameAttribute and repository contents.

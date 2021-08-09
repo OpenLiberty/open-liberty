@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" localization="OSGI-INF/l10n/classloading" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+
+  <OCD name="%classloading.config.name" description="%classloading.config.desc"
+       id="com.ibm.ws.classloading.global"
+       ibm:supportExtensions="true" ibm:alias="classloading">
+    
+     <AD name="%usejarurls" description="%usejarurls.desc"  
+        id="useJarUrls" 
+        required="false" 
+        default="false"
+        type="Boolean"      
+    />
+   </OCD>
+   
+   <Designate pid="com.ibm.ws.classloading.global">
+      <Object ocdref="com.ibm.ws.classloading.global"/>
+  </Designate>
+   
+  
+</metatype:MetaData>

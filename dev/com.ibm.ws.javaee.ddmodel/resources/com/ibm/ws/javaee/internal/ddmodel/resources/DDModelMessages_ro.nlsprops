@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: Elementului {2} \u00eei lipse\u015fte atributul {3} necesar \u00een descriptorul de implementare {0} la linia {1}.
+required.attribute.missing.explanation=Un atribut necesar lipse\u015fte din elementul specificat.
+required.attribute.missing.useraction=Corecta\u0163i desciptorul de implementare ad\u0103ug\u00e2nd atributul lips\u0103.
+
+invalid.root.element=CWWKC2252E: Nume local de root invalid {2} \u00een descriptorul de implementare {0} la linia {1}.
+invalid.root.element.explanation=Elementul root este incorect.
+invalid.root.element.useraction=Valida\u0163i fi\u015fierul xml pentru a v\u0103 asigura c\u0103 elementul root este corect.
+
+root.element.not.found=CWWKC2253E: Nu se poate localiza elementul root al descriptorului de implementare {0} la linia {1}.
+root.element.not.found.explanation=Elementul root lipsea din descriptorul de implementare.
+root.element.not.found.useraction=Corecta\u0163i descriptorul de implementare.
+
+end.element.not.found=CWWKC2254E: Tagul elementului de sf\u00e2r\u015fit {2} nu a fost g\u0103sit \u00een descriptorul de implementare {0} la linia {1}.
+end.element.not.found.explanation=Descriptorul de implementare nu pare s\u0103 fie xml corespunz\u0103tor.
+end.element.not.found.useraction=Corecta\u0163i descriptorul de implementare.
+
+incorrect.id.attr.namespace=CWWKC2255E: Spa\u0163iul nume al atributului id-ului de element {2} a fost {3} c\u00e2nd ar fi trebuit s\u0103 fie  {4} \u00een descriptorul de implementare {0} la lina {1}.
+incorrect.id.attr.namespace.explanation=Spa\u0163iile nume ale elementelor \u015fi atributelor din descriptorul de implementare nu au fost compatibile.
+incorrect.id.attr.namespace.useraction=Corecta\u0163i descriptorul de implementare.
+
+unexpected.attribute=CWWKC2256E: Atribut nea\u015fteptat {3} \u00eent\u00e2lnit la parsarea elementului {2} din descriptorul de implementare {0} la lina {1}.
+unexpected.attribute.explanation=S-a \u00eent\u00e2lnit un atribut care nu este definit s\u0103 fie \u00een descriptorul de implementare.
+unexpected.attribute.useraction=Corecta\u0163i descriptorul de implementare.
+
+unexpected.content=CWWKC2257E: Con\u0163inut nea\u015fteptat \u00eent\u00e2lnit \u00een elementul {2} din descriptorul de implementare {0} la lina {1}.
+unexpected.content.explanation=S-a \u00eent\u00e2lnit con\u0163inut text care nu este definit s\u0103 fie \u00een descriptorul de implementare.
+unexpected.content.useraction=Corecta\u0163i descriptorul de implementare.
+
+incorrect.child.element.namespace=CWWKC2258E: Spa\u0163iul nume al elementului copil {3} al elementului p\u0103rinte {2} a fost {4} nu {5} \u00een descriptorul de implementare {0} la linia {1}.
+incorrect.child.element.namespace.explanation=Spa\u0163iile nume ale elementelor \u015fi atributelor din descriptorul de implementare nu au fost compatibile.
+incorrect.child.element.namespace.useraction=Corecta\u0163i descriptorul de implementare.
+
+unexpected.child.element=CWWKC2259E: Element copil nea\u015fteptat {3} al elementului p\u0103rinte {2} \u00eent\u00e2lnit \u00een descriptorul de implementare {0} la linia {1}.
+unexpected.child.element.explanation=S-a \u00eent\u00e2lnit un element care nu este definit s\u0103 fie \u00een descriptorul de implementare.
+unexpected.child.element.useraction=Corecta\u0163i descriptorul de implementare.
+
+invalid.href.prefix=CWWKC2260E: Valoarea de atribut href a elementului {2} nu \u00eencepe cu {3} \u00een descriptorul de implementare {0} la linia {1}.
+invalid.href.prefix.explanation=Un atribut href trebuie s\u0103 \u00eenceap\u0103 cu calea corect\u0103 spre descriptorul la care se face referire.
+invalid.href.prefix.useraction=Corecta\u0163i descriptorul de implementare.
+
+unknown.deployment.descriptor.version=CWWKC2261E: A ap\u0103rut o eroare \u00een timp ce se \u00eencerca determinarea versiunii descriptorului de implementare {0}.
+unknown.deployment.descriptor.version.explanation=Versiunea sau spa\u0163iul nume a fost invalid(\u0103) sau nu s-a specificat \u00een elementul root al descriptorului de implementare.
+unknown.deployment.descriptor.version.useraction=Verifica\u0163i \u015fi corecta\u0163i versiunea sau spa\u0163iul nume \u00een elementul root al descriptorului de implementare.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: Serverul nu poate procesa versiunea {3} \u015fi spa\u0163iul nume {2} din descriptorul de implementare {0} la linia {1}.
+invalid.deployment.descriptor.namespace.explanation=Fie versiunea specificat\u0103 \u015fi spa\u0163iul nume nu sunt valide, fie configura\u0163ia serverului nu are o caracteristic\u0103 ce poate procesa versiunea \u015fi spa\u0163iul nume.
+invalid.deployment.descriptor.namespace.useraction=Verifica\u0163i \u015fi corecta\u0163i versiunea sau spa\u0163iul nume din elementul root al descriptorului de implementare, sau verifica\u0163i \u015fi corecta\u0163i caracteristicile din configura\u0163ia serverului.
+
+invalid.deployment.descriptor.version=CWWKC2263E: Atributul versiunii {2} specificat \u00een descriptorul de implementare {0} la linia {1} nu este valid.
+invalid.deployment.descriptor.version.explanation=S-a specificat o versiune invalid\u0103 \u00een elementul root al descriptorului de implementare.
+invalid.deployment.descriptor.version.useraction=Verifica\u0163i \u015fi corecta\u0163i num\u0103rul versiunii \u00een elementul root al descriptorului de implementare.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: A survenit o eroare la \u00eencercarea de determinare a spa\u0163iului nume al descriptorului de implementare {0} la linia {1}.
+missing.deployment.descriptor.namespace.explanation=S-a specificat un spa\u0163iu nume invalid \u00een elementul root al descriptorului de implementare.
+missing.deployment.descriptor.namespace.useraction=Verifica\u0163i \u015fi corecta\u0163i spa\u0163iul nume \u00een elementul root al descriptorului de implementare.
+
+missing.deployment.descriptor.version=CWWKC2265E: A survenit o eroare la \u00eencercarea de determinare a versiunii descriptorului de implementare {0} la linia {1}.
+missing.deployment.descriptor.version.explanation=Versiunea nu a fost specificat\u0103 \u00een elementul root al descriptorului de implementare.
+missing.deployment.descriptor.version.useraction=Verifica\u0163i \u015fi corecta\u0163i versiunea \u00een elementul root al descriptorului de implementare.
+
+at.most.one.occurrence=CWWKC2266E: Ar trebui s\u0103 existe cel mult un element copil {3} al elementului p\u0103rinte {2} din descriptorul de implementare {0} la linia {1}.
+at.most.one.occurrence.explanation=Unele elemente din descriptorul de implementare sunt permise s\u0103 apar\u0103 o singur\u0103 dat\u0103 dac\u0103 sunt prezente.
+at.most.one.occurrence.useraction=Corecta\u0163i descriptorul de implementare.
+
+required.method.element.missing=CWWKC2267E: Elementul {2} trebuie s\u0103 aib\u0103 cel pu\u0163in un element copil {3} definit \u00een descriptorul de implementare {0} la linia {1}.
+required.method.element.missing.explanation=Un element copil necesar lipse\u015fte din elementul p\u0103rinte specificat. 
+required.method.element.missing.useraction=Corecta\u0163i desciptorul de implementare ad\u0103ug\u00e2nd elementul copil necesar.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Atunci c\u00e2nd un atribut de mod al elementului <run-as-mode> este setat pe SPECIFIED_IDENTITY \u00een descriptorul de implementare {0}  la lina {1}, elementul copil <specified-identity> trebuie definit.
+runasmode.missing.specifiedID.element.explanation=Elementul copil <specified-identity> lipse\u015fte pentru elementul <run-as-mode> care are modul setat la SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Corecta\u0163i desciptorul de implementare ad\u0103ug\u00e2nd elementul copil necesar sau modifica\u0163i modul.
+
+found.duplicate.ejbname=CWWKC2269E: Atributul nume pentru toate elementele de bean <session> \u015fi <message-driven> trebuie s\u0103 fie unic. S-a g\u0103sit numele duplicat {1} \u00een descriptorul de implementare {0}.
+found.duplicate.ejbname.explanation=Toate numele bean-urilor de sesiune \u015fi controlate de mesaje trebuie s\u0103 fie unice.  Numele bean-ului specificat este folosit mai mult de o dat\u0103.
+found.duplicate.ejbname.useraction=Corecta\u0163i descriptorul de implementare redenumind toate numele de bean de \u00eentreprindere duplicate.
+
+found.duplicate.attribute.value=CWWKC2270E: Atributul {2} pentru toate elementele {1} trebuie s\u0103 fie unic. S-a g\u0103sit numele duplicat {3} \u00een descriptorul de implementare {0}.
+found.duplicate.attribute.value.explanation=Valoarea atributului specificat trebuie s\u0103 fie unic\u0103 pe toate elementele de acela\u015fi tip. 
+found.duplicate.attribute.value.useraction=Corecta\u0163i descriptorul de implementare redenumind toate valorile de atribut duplicate.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A fost g\u0103sit un fi\u015fier validation.xml pentru modulul {0}. Dar, fi\u015fierul validation.xml nu este configurat pentru validare; de aceea acest fi\u015fier XML este ignorat.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=BeanValidationService nu poate crea o instan\u0163\u0103 ValidatorFactory din cauza unei erori la parsarea fi\u015fierului validation.xml cu fi\u015fierul de schem\u0103 validation-configuration-1.0.xsd. Aceast\u0103 eroare poate indica c\u0103 fi\u015fierul validation.xml nu este destinat pentru folosire de c\u0103tre runtime-ul Bean Validation; de aceea, acest fi\u015fier XML este ignorat.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Dac\u0103 fi\u015fierul validation.xml nu este pentru crearea unei instan\u0163e ValidatorFactory, atunci ignora\u0163i mesajul. \u00cens\u0103 dac\u0103 fi\u015fierul validation.xml este destinat pentru crearea unei instan\u0163e ValidatorFactory, atnci exist\u0103 o problem\u0103.  Activa\u0163i urm\u0103rirea pentru runtime-ul Bean Validation \u00een serverul de aplica\u0163ii, opri\u0163i aplica\u0163ia, reporni\u0163i aplica\u0163ia \u015fi examina\u0163i fi\u015fierul de ie\u015fire a urm\u0103rii pentru un eveniment de urm\u0103rire cum ar fi: Excep\u0163ie nea\u015fteptat\u0103 la \u00eencercarea opera\u0163iei unmarshall pentru fi\u015fierul validation.xml. Examina\u0163i urma stivei pentru excep\u0163ie pentru a v\u0103 ajuta la depanare.
+
+xml.error=CWWKC2272E: A survenit o eroare la parsarea descriptorului de implementare {0} la linia {1}. Mesajul de eroare a fost: {2}
+xml.error.explanation=A survenit o eroare la parsarea descriptorului de implementare XML. Face\u0163i referire la mesajul de eroare pentru explica\u0163ii suplimentare.
+xml.error.useraction=Corecta\u0163i descriptorul de implementare pentru a \u00eenl\u0103tura eroarea.
+
+invalid.enum.value=CWWKC2273E: Valoarea {2} din descriptorul de implementare {0} la linia {1} nu este valid. Valorile valide sunt: {3}
+invalid.enum.value.explanation=Descriptorul de implementare specific\u0103 o valoare ce nu este valid\u0103.
+invalid.enum.value.useraction=Corecta\u0163i descriptorul de implementare pentru a utiliza una dintre valorile a\u015fteptate.
+
+invalid.int.value=CWWKC2274E: Valoarea {2} din descriptorul de implementare {0} la linia {1} nu este un num\u0103r \u00eentreg valid.
+invalid.int.value.explanation=Descriptorul de implementare specific\u0103 o valoare ce nu este un num\u0103r din intervalul -2147483648 la 2147483647.
+invalid.int.value.useraction=Corecta\u0163i descriptorul pentru a utiliza un num\u0103r \u00eentreg valid.
+
+invalid.long.value=CWWKC2275E: Valoarea {2} din descriptorul de implementare {0} la linia {1} nu este un num\u0103r lung valid.
+invalid.long.value.explanation=Descriptorul de implementare specific\u0103 o valoare ce nu este un num\u0103r din intervalul -9223372036854775808 la 9223372036854775807.
+invalid.long.value.useraction=Corecta\u0163i descriptorul de implementare pentru a utiliza un num\u0103r lung valid.
+
+module.name.not.specified=CWWKC2276E: Elementul {0} trebuie s\u0103 specifice un atribut de nume de modul.
+module.name.not.specified.explanation=Configura\u0163ia de legare \u015fi extensie pentru EJB \u015fi pentru modulele web trebuie s\u0103 con\u0163in\u0103 un atribut moduleName care specific\u0103 modulul la care se aplic\u0103 configura\u0163ia. 
+module.name.not.specified.useraction=Ad\u0103uga\u0163i un atribut moduleName la elementul web-bnd, web-ext, ejb-bnd sau ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Unul sau mai multe nume de pe elementul {1} sunt invalide. Numele invalid(e) de modul(e) este (sunt) {0}.
+module.name.invalid.explanation=Configura\u0163ia de legare \u015fi extensie pentru modulele web trebuie s\u0103 specifice un atribut valid moduleName. Cel pu\u0163in o configura\u0163ie a specificat un nume invalid de modul. Numele modulului trebuie s\u0103 fie numele fi\u015fierului arhiv\u0103 care con\u0163ine aplica\u0163ia web sau EJB.
+module.name.invalid.useraction=Corecta\u0163i atributul moduleName \u00een configura\u0163ia de legare sau de extensie. 

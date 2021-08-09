@@ -1,0 +1,2 @@
+DROP TABLE SimpleParentEntityOLGH11795;
+DROP TABLE SimpleChildEntityOLGH11795;

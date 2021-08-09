@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: Impossibile configurare la propriet\u00e0 {0} sul servizio {1} con id {2} e valore {3}.
+CWKKD0010.prop.error.explanation=Una propriet\u00e0 configurata non \u00e8 stata riconosciuta o non \u00e8 stata configurata a causa di un errore.
+CWKKD0010.prop.error.useraction=Correggere o rimuovere la propriet\u00e0 configurata.
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: Il servizio {0} con id {1} \u00e8 definito con un numero non uguale di nomi host ({2}) e porte ({3}).
+CWKKD0011.hosts.ports.mismatch.explanation=Gli elenchi di nomi host e porte devono contenere lo stesso numero di elementi. 
+CWKKD0011.hosts.ports.mismatch.useraction=Aggiornare la configurazione del server in modo che gli attributi nomi host e porte contengano lo stesso numero di elementi.
+
+CWKKD0012.authentication.error=CWKKD0012E: Il servizio {0} con id {1} non \u00e8 in grado di autenticarsi con il database {2}.
+CWKKD0012.authentication.error.explanation=Il database ha respinto il tentativo di autenticazione.
+CWKKD0012.authentication.error.useraction=Aggiornare la configurazione del server con il nome utente e la password corretti.
+
+CWKKD0013.unsupported.driver=CWKKD0013E: Il servizio {0} ha rilevato una versione non supportata del driver MongoDB nella libreria condivisa {1}. Previsto un livello minimo {2}, ma \u00e8 stato trovato {3}.
+CWKKD0013.unsupported.driver.explanation=Il servizio MongoDB \u00e8 stato fornito con una libreria di driver non valida.
+CWKKD0013.unsupported.driver.useraction=Aggiornare la libreria condivisa con un livello supportato.
+
+CWKKD0014.missing.driver=CWKKD0014E: Il servizio {0} non \u00e8 stato in grado di individuare le classi di driver MongoDB richieste nella libreria condivisa {1}.
+CWKKD0014.missing.driver.explanation=Il servizio MongoDB non \u00e8 in grado di individuare le classi richieste nella libreria condivisa configurata.
+CWKKD0014.missing.driver.useraction=Aggiornare la libreria condivisa con un livello supportato.
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: Il servizio {0} con id {1} sta tentando di utilizzare l''SSL senza la funzione ssl-1.0 abilitata nel file server.xml.
+CWKKD0015.ssl.feature.missing.explanation=La configurazione SSL non pu\u00f2 essere utilizzata senza la funzione ssl-1.0 abilitata.
+CWKKD0015.ssl.feature.missing.useraction=Aggiungere la funzione ssl-1.0 al file server.xml.
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: Il servizio {0} con id {1} ha rilevato una versione non compatibile del driver MongoDB nella libreria condivisa {2}. Per SSL \u00e8 richiesto un livello minimo di {3}, ma il servizio ha trovato {4}.
+CWKKD0017.ssl.incompatible.driver.explanation=Il servizio MongoDB \u00e8 stato fornito con una libreria di driver non valida per l'uso con SSL.
+CWKKD0017.ssl.incompatible.driver.useraction=Aggiornare la libreria condivisa con un livello supportato.
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: Il servizio {0} con id {1} ha incontrato una combinazione incompatibile di opzioni di autenticazione. useCertificateAuthentication \u00e8 incompatibile con l''utente e la password.
+CWKKD0018.ssl.user.pswd.certificate.explanation=Il servizio MongoDB \u00e8 stato fornito con un'opzione di autenticazione incompatibile per l'uso con SSL.
+CWKKD0018.ssl.user.pswd.certificate.useraction=Aggiornare l'elemento mongo server.xml per specificare l'utente e la password o useCertificateAuthentication ma non entrambi.
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: Il servizio {0} con id {1} \u00e8 stato configurato per utilizzare l''autenticazione certificato senza SSL abilitato.
+CWKKD0019.ssl.certificate.no.ssl.explanation=Il servizio MongoDB \u00e8 stato configurato per l'autenticazione basata sul certificato senza SSL.
+CWKKD0019.ssl.certificate.no.ssl.useraction=Aggiornare l'elemento mongo nel file server.xml per includere sslEnabled=true o rimuovere useCertificateAuthentication.
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: Il servizio {0} con id {1} ha ricevuto un''eccezione durante la lettura di chiave e certificato client dal keystore fornito. L''eccezione nidificata \u00e8 {2}
+CWKKD0020.ssl.get.certificate.user.explanation=Il servizio MongoDB ha tentato di leggere la chiave e il certificato client dal keystore e ha incontrato un problema con il keystore o con un certificato in esso. 
+CWKKD0020.ssl.get.certificate.user.useraction=L'eccezione nidificata fornir\u00e0 maggiori informazioni.
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: Il servizio {0} con id {1} ha rilevato una versione non compatibile del driver MongoDB nella libreria condivisa {2}. Per l''autenticazione certificato \u00e8 richiesto un livello minimo di {3}, ma il servizio ha trovato il livello {4}.
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=Il servizio MongoDB \u00e8 stato fornito con una libreria di driver non valida per l'uso con l'autenticazione certificato.
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=Aggiornare la libreria condivisa con un livello supportato...
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: Il servizio {0} con id {1} ha la propriet\u00e0\u00a0sslRef impostata nel file server.xml ma sslEnabled non \u00e8 impostato su true.
+CWKKD0024.ssl.sslref.no.ssl.explanation=Non \u00e8 possibile avere sslRef impostato senza ssl.
+CWKKD0024.ssl.sslref.no.ssl.useraction=Impostare sslEnabled=true o rimuovere sslRef.
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: Il servizio {0} con id {1} non \u00e8 stato in grado di estrarre chiave e certificato client dal keystore. Non sono presenti chiavi nel keystore o esistono pi\u00f9 chiavi e nell''elemento ssl non \u00e8 stato specificato clientKeyAlias.
+CWKKD0026.ssl.certificate.exception.explanation=Il keystore di riferimento deve contenere almeno una coppia di chiave e certificato client e se ne contiene pi\u00f9 di una, deve essere utilizzato il parametro clientKeyAlias per identificare quale utilizzare.
+CWKKD0026.ssl.certificate.exception.useraction=Esaminare il keystore in uso con il keytool Java. Ad esempio, "keytool -list -keystore keystorename.jks" mostra le voci nel keystore e i relativi alias. Specificare uno degli alias con clientKeyAlias nell'elemento ssl.
+

@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: O opera\u0163ie JNDI pe un nume java:comp/env nu poate fi finalizat\u0103 pentru c\u0103 firul de execu\u0163ie curent nu este asociat cu o component\u0103 de aplica\u0163ie Java Enterprise Edition. Aceast\u0103 condi\u0163ie poate avea loc c\u00e2nd clientul JNDI ce folose\u015fte numele java:comp/env nu apare pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server. Asigura\u0163i-v\u0103 c\u0103 o aplica\u0163ie Java EE nu ruleaz\u0103 opera\u0163ii JNDI pe nume java:comp/env names \u00een cadrul blocurilor de cod static sau \u00een fire de execu\u0163ie create de acea aplica\u0163ie. Un asemenea cod nu ruleaz\u0103 neap\u0103rat pe firul de execu\u0163ie al unei cereri de aplica\u0163ie de server \u015fi, prin urmare, nu este suportat de opera\u0163iile JNDI pe nume java:comp/env.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=Opera\u0163iile JNDI pe un nume java:comp/env sunt suportate numai pe fire de execu\u0163ie asociate cu o component\u0103 de aplica\u0163ie Java EE.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=Modifica\u0163i aplica\u0163ia astfel \u00eenc\u00e2t opera\u0163ia JNDI s\u0103 aib\u0103 loc pe un fir de execu\u0163ie asociat cu o component\u0103 de aplica\u0163ie Java EE.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: Obiectul la care face referire numele JNDI {0} nu a putut fi instan\u0163iat. Dac\u0103 numele referin\u0163\u0103 mapeaz\u0103 la un nume JNDI \u00een leg\u0103turile descriptorului de implementare pentru aplica\u0163ia ce realizeaz\u0103 c\u0103utarea JNDI, asigura\u0163i-v\u0103 c\u0103 maparea numelui JNDI \u00een legarea descriptorului de implementare este corect\u0103. Dac\u0103 maparea numelui JNDI este corect\u0103, asigura\u0163i-v\u0103 c\u0103 resursa \u0163int\u0103 poate fi rezolvat\u0103 cu numele specificat relativ la contextul ini\u0163ial implicit.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=A ap\u0103rut o eroare la crearea unei instan\u0163e a referin\u0163ei de obiect de c\u0103tre numele JNDI specificat.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=Vede\u0163i excep\u0163ia imbricat\u0103 sau o eroare anterioar\u0103 pentru informa\u0163ii suplimentare despre eroare.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: Referin\u0163a {0} declarat\u0103 de fi\u015fierul META-INF/application.xml \u00een aplica\u0163ia {1} nu este \u00een contextul java:global sau java:app context.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=Referin\u0163ele declarate \u00een fi\u015fierul META-INF/application.xml pot folosi numai nume din contextele java:gobal sau java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=\u00cenl\u0103tura\u0163i referin\u0163a sau actualiza\u0163i numele referin\u0163ei s\u0103 aib\u0103 un prefix java:global/ sau java:app/.
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: Serverul nu a putut g\u0103si legarea {0} cu tipul {1} pentru referin\u0163a {2}.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=Serverul nu a putut g\u0103si o legare cu numele \u015fi tipul specificat.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=Defini\u0163i o resurs\u0103 cu numele specificat sau configura\u0163i leg\u0103rile aplica\u0163iei pentru a folosi o resurs\u0103 care este deja definit\u0103.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: Serverul nu a putut g\u0103si legarea implicit\u0103 {0} cu tipul {1} pentru referin\u0163a {2}.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=Serverul nu a putut g\u0103si o legare cu numele \u015fi tipul specificat. Numele leg\u0103rii nu a fost specificat de aplica\u0163ie, a\u015fa c\u0103 s-a folosit un nume de legare implicit.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=Defini\u0163i o resurs\u0103 cu numele specificat sau configura\u0163i leg\u0103rile aplica\u0163iei pentru a folosi o resurs\u0103 care este deja definit\u0103.
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: Serverul nu a putut g\u0103si legarea {0} cu tipul {1} pentru referin\u0163a {2}. Legarea a fost specificat\u0103 de serviciul {3}.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=Serverul nu a putut g\u0103si o legare cu numele \u015fi tipul specificat.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=Contacta\u0163i furnizorul de servicii.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: Serverul nu a putut ob\u0163ine un obiect pentru legarea {0} cu tipul {1}. Mesajul excep\u0163iei a fost: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=Serverul a g\u0103sit o legare cu tipul \u015fi numele specificat, dar a ap\u0103rut o eroare la aceesarea ei. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=Vede\u0163i textul mesajului excep\u0163iei pentru explica\u0163ii ulterioare.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: Configura\u0163iei de server \u00eei lipse\u015fte o caracteristic\u0103 pentru a suporta referin\u0163a {0} EJB din componenta {1} din modulul {2} din aplica\u0163ia {3}.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=Aplica\u0163ia declar\u0103 o referin\u0163\u0103 pentru o sesiune EJB, dar serverul nu este configurat cu o caracteristic\u0103 ce suport\u0103 sesiunea EJBs.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=Modifica\u0163i configura\u0163ia serverului pentru a activa o caracteristic\u0103 ce suport\u0103 EJB-urile sesiunii. De exemplu, activa\u0163i caracteristica ejbLite-3.1.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: Legarea con\u0163ine o c\u0103utare indirect\u0103 care se refer\u0103 la ea \u00eens\u0103\u015fi.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=Legarea con\u0163ine o c\u0103utare indirect\u0103 care se refer\u0103 la ea \u00eens\u0103\u015fi. De exemplu, dac\u0103 este utilizat\u0103 adnotarea incorect\u0103 @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), atunci numele are un prefix implicit java:comp/env/, deci \u015firul de c\u0103utare se refer\u0103 la referin\u0163a resursei, care creeaz\u0103 o bucl\u0103 infinit\u0103.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=Modifica\u0163i c\u0103utarea sau numele de legare la resursa \u0163int\u0103. De exemplu, dac\u0103 este utilizat\u0103 adnotarea incorect\u0103 @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), atunci c\u0103utarea ar putea fi schimbat\u0103 la jdbc/ds, care va localiza resursa \u00een spa\u0163iul de nume implicit.

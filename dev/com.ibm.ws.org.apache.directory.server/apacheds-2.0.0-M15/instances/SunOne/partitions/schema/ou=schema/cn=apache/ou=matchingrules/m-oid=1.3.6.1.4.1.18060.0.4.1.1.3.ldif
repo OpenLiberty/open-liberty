@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.3,ou=matchingRules,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.1.3
+m-obsolete: FALSE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+objectclass: metaMatchingRule
+objectclass: metaTop
+objectclass: top
+m-name: jdbmStringMatch
+creatorsname: uid=admin,ou=system

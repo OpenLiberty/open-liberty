@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="en-us" name="DC.Language" />
+<!-- Licensed Materials — Property of the Open Liberty project -->
+<!-- Copyright IBM Corp and others 1997, 2019. -->
+<!-- Project is distributed under the terms of the Eclipse Public License v1. -->
+<meta name="copyright" content="(C) Copyright IBM Corp and others 1997, 2019." />
+<meta name="DC.rights.owner" content="(C) Copyright IBM Corp and others 1997, 2019." />
+<meta name="DC.Title" content="Open Liberty - Context Root Not Found" />
+<title data-externalizedString="CONTEXT_ROOT_NOT_FOUND"></title>
+<style>
+body{
+    margin:0px;
+    padding:0px;
+    background-color: #fff;
+    color:#000;
+    font-family:Arial,Verdana,Helvetica,Tahoma,sans-serif;
+}
+#ol-banner {
+    background: 
+	url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAtCAIAAADgGZaTAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAABfSURBVHjahI0xDoBQCEMJcTDx/nfxGF7B9Q8OTg7SWvhfV4cmvFKKr1vzvV1O0gN0SJTCzINWM6AZqIxlTn6EFWc+tKfyGB1MxmCid7L7efvy90s6zttNHX9a5ukRYAAtAln+9zGHdAAAAABJRU5ErkJggg==) repeat-x 0 0; width:100%;
+}
+#ol-banner-main {
+    background-color: #1d1e3c;
+    padding-left:18px;
+    height:35px;
+    max-height:35px;
+    white-space:nowrap;
+}
+#ol-banner-product-name {
+    position: absolute;
+    top: .5em;
+    color:#fff;
+    font-family:Helvetica, Verdana, Tahoma, Arial, sans-serif;
+    font-size:0.95em;
+    font-weight:normal;
+}
+#content {
+    font-size: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding: 1em;
+}
+#olLicenseFlowing {
+    font-size: .8em;
+    line-height: 1.2em;
+    padding: 2em 2em 2em 8em;
+    background-color: #fff;
+    background-image: 
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAAAuCAYAAABwF6rfAAAACXBIWXMAABYlAAAWJQFJUiTwAAALg0lEQVRo3uWae3BU1R3HP/fu3WSz2SQE2JikGBIERKKEBAQTIIRCKRAKoQhIH4pU2461arUvqy2xtrUdR0v1j7ajVpnWVslYrYVotdUkJIEAkgiIkkBewCbsLkk2u9nn3XP7x4aQkNdCFqzT30zm7mzOuXu+5/s7v/N7SZqmMRZZsnzrbCFEkRCiQBMiXQgxWRMCIYIXD20BmoEy4I2a6pI6PkWRLgf4F1Z/O10T4gEhRJEmxGQhBEIItAHP4GivaQHeALbXVJc0/08DX7H23nRNiGKhiTu0i8BeBvD+sgMovpobIIc7cNW6+4qBJuCOK7COO4Cm+Xkbiv9nGP/ShgfThRBvaEJk9bGpXczumBnvLx8CRVea/REZX7PpB7OBOiDrKh6/LKBuft6G2Z8K8KLNP9oC1AIJn4LRTQBq5+dt2HJVVX3dVx+erQlRG1Lb4GA1HqOqp6SYWZw/jzk5mUyflk5ysnnQmIYTzbS12cjImPTitZNSft57FV454Ou/9ki60ESdJkRCpIHn5GRy9zc2kpM9E4But53jrXtpOnMYj68bJA1JghiDiYzUWUyflEe8Men89H8A23v9gDGLMsR3b0RavVNSzPzs0XvJyZ6Jo8fGrqpnqTj4Jp2OTiTAaDRiMpqQZJBlcPtcVH6wC0UvYZ44kRun5Gv5WXeujY9JWtt79T0AdEWM8Vtv/2mxJsS2gYyOjfHVhQV87/47MZmM7Hjrhxw8vAchYMrk65kzYyk5M1YSb5w4aGHdbhu1Dbs40vgeZ6wNRMcoZF+/hLXzHwdwAEVjYb8P+MYt29KFEE2DgV0+8NWFBfz0ke/wSWsFfyn9OZ2ObubNWkJR/vdJiDWHvchut5VdNb+m/vQ+EuKN3Jb/W1ISbwK4E3hprFY9os5DH+hTFbzwjx+DBD/ZuoMbpmXyavXdnO74IOx3xRuT+MqSpynK3eYPqvBy+T00tP8H4EVgy2UzftvWx9KFEE1DM3rpjC9aMIffPPEQx0+V89Luh0k1X8cdK5/iudKtdPecIy5e4RvLXyYxNu2SF9ztsfKndzcjKX6ypxQR1IL+j8/segsY12+YF3i79/Pr9yyraBkO+HYhxP2RAG40Gvj7zmcQOhdP/nUdifHJPLjhNX7/5u00th7n+qkzuWvFi2GB9Kku7M4GLJ112J0NOL3t2J0nLodgtTcoeuSeZRWv9rfqRZFS8Qfuux2TycjTr92KPkrhrsLfA1DfeJxrksaPCNrubOBML0hLZx1Ob/uwY4NBDa9bw+cVaAIC/pCtEkHQAJ0OdIp0/qnoFOk6Rc8rz7y96M+yLCUpm+96fDYwOSLXVrKZVSvyqW16DZeni8Lch/ru4VhjLMvn3TUwLrXvo779Hdq6DuMLOAkEPUOrd1cQ4TOhBaPweyTO2tuQZZB1ErIMOp2ErOv3VKShF6iBJtBLOvYqkWR75YpFAFQde4GEuHHMmbq+73+/+OZ7AOw78UeabJU43KcR2mAnp6db4HUaCXiicTr9dHTae+93XwhsL+AxyjgFKIgU8PxFc2nrPILX303uDReMbeXx39Fo24PLawttez9xOQT29gCOjiCODoEkgyS5kWWQ5BCjV0D+pADpkXrb1OvSKK17FFmRMBkTeLlqMw6PZQBYNaBhbVPpsgext6sE1ZCbGvqTuAoiNI0nlUidbwCn9yynO/djiJGoqn92IFiLitUSwN6mQi/I84AvFkOMjClBxhSvI368TLRBJtoweKAIgtsl6LCqBAKjZ5I0QJZZfe/yii4lIjFkkp9bCq38uXLjAHatFhVLsx9bm9p7ecJQnCp6CXOKwrgJCuMm6IiOkfo2rLsrSKctgBrQcHYFBwAcb1aIG6dj0pQoWk74RnZYJASw9Lsr9pQNF6SELfpowaL1pxmf6u37ztMjsLQEsDQH8LjF+R8dzKpRJilVISVNjyle7pt77qxKh03F2SVwOkLGb3pGGubEBGbccCF28nh87Ks9QpPPTdw4HZ9L16MGhnFPdbRqGosfWlPZPFJ0FpbcmG9l2pyOPlAdNhVLcwBLS2DEeeZUhdTJUZhTQj/t7AryyYdeOq1BnI4gExITmJYxlelz05g86VrSUjPQyTHIsgE16CSgdqJpIQ3SKbDnwAfooyR8Xg3dRdZeklB1ivTjH62veiqcsHQUloMs3NBI/ARfH+CTx3x02kbOsSWlKlyfZcBglFEDGi0Nflob/Hjcgkkp17Bi4U1k3ziT5IlT0esS0SuJyLJh8HXnrcfja+WDo0c58NEhJiQrg86/JCP0emmH0Hjw4Y1VXeHG48OfZbOHBetPouhF2IAVvUR2npFEsw41oHH0gAerRSXBFM/nc+eSm3MTqUk3EKWYidIPH7Fpmorb18jHjVWUHazmjPU0ydfq8Xk0NAGSDvRRkkvWUfz41r1PhZOIaAnHshvj/Cz4ciMQ5OgB76gqDRA3TsfNi40oeomTx3y0NPhJMMXzlTULyZ2TTUx0GjFRaUjS8PuvBp14/ac49HEFdfW1tHWcxmgKWXlXt0DRo8WadCe8HrHxl3fvDbs6o/TmskYFnrWslQ67j6MHPKiB8IoQM7JCqnqgvAevU8+65UtZkjcXnRxDQuycIVUZIKB24ldtHG85yLGmOprbTyLp/aBBUNXoOBvElCC3GmKlP/zq7r1PXG7qqQxYPNq59vk7OXrQc0kvTzTr2PfvHpyOIN/6WhGzZky7EHkFrCi6uNB9LLyowonDdZb61lqa2k5i7TqDpPcjBDhdQTw9Ar0uivaT8bR+FP9YTXXJmPIHSm+ObdtIg0zjuy4ZNMDxOi8etyDKINFut2I6ZejnpTXg6HHgdHdjsZ/G4T4Hih9JlvC5BXarik6SEYFoGg+Z6bJGXZwXHHuW9batjzWL3uLfkPG45icmuQpVvfQCY+JEhZhYCUUvoVNCkZPSGy5qve6M2xnEalExGKIIeAx0nonF1mrsy8wW5M/D0malvGI/bW22lprqkjG72Uq/Hbx/eJOqIPtnEhXzCX7fpZWGOu0qXecY6LlJYIqLQtL0+Hui6ThjpOtsTMhZmZbO0txM5nwnE5MplvKK/Tz3/E6crp6Isd0f+PYRgQMu2wSEyGV8WhOyoQO/3z/qJsQlKGhCQtHpUf0yXmcMnu4o7KeMA3LtS1dnMn16OjnZmQDsLi3jued3Ut8wZA1he0QLChu3bHtJiN7y7yWmnuTobjRNEPQpBHzKiJWUOFMsixffzG2bCpk29YLGVuw5wK7dZZRX7B9pvTtqqku2RJLx81nWUUvAptgYli29hQW3ZKGhUVf3CZqmUVF5kPr6ZkAMOS8nJ5PVqwpYnD8PkynEeHu7jb+9uvv82Q1nvRHLBIddUMiYnMLa1QXkzZ9FbGzoPJ61nqOy6hA7X/sXFot1UF49zhRLYWEBmzcV9tXHXC435RX7eeXV3cOp8nAy5itstNpZndBE1nkQn8/PYWnBzdyUObVvTPW+D/nXu1XsqTo0ZHo5O2sGq1bmU7jqQnLnUO0xdpe+T3n5gf6GKlz5sKa6JKJl46F8xaJrksYfLliYHbdm5UKMxpB3ZbV18Pqb7/POu9V0u3rQxECVTk6eyKK8HDbeuoLk5Il9qrxrdxm7St8PV5WHEkck84LDMg7wZmnlpmUFc18B2Lv/CO++V8PhI/VDGrcFt8zmi8vzWJiX0ze/9K1y/rn7fQ4d+igSa8y+Eh1Sw7aCPPvHkp9V1xx5zOV0DWnVv765kC9+IY9rkiYAcOJkKztL3qasYj/ObtdYWkH6y5011SUvcQVkxB6YNZt+MFsTwTIhREJ/4LnzZ1H86Lfp6fHw9juVwxq3MYgDKLiSvXCX3fwzJf1zNJxo+cw2/4Td57Zq3X3FQohtV7jrKaJX1kgSdrq+9PVnioEMQh0JkZYdQMbVAn1JjPeX/7uWzqHks9rE+19GuLbBOMRgCQAAAABJRU5ErkJggg==); background-position: fixed;
+    background-repeat: no-repeat;
+    background-position: 2em center;
+}
+h1.title {
+    font-family:Arial,Verdana,Helvetica,Tahoma,sans-serif;
+    font-size:24px;
+    font-weight: normal;
+    color:#1d1e3c;
+    padding-bottom:6px;
+}
+h4.basichead {
+    font-family:Arial,Verdana,Helvetica,Tahoma,sans-serif;
+}
+p {
+    padding-top: .5em;
+}
+ul {
+    line-height: 1.3em;
+}
+</style>
+</head>
+<body>
+<header role="banner" id="ol-banner">
+    <div id="ol-banner-main">
+        <div id="ol-banner-product-name">Open Liberty</div>
+    </div>
+</header>
+<main id="content">
+    <h1 class="title" data-externalizedString="CONTEXT_ROOT_NOT_FOUND"></h1>
+</main>
+<footer id="olLicenseFlowing" data-externalizedString="COPYRIGHT_OPEN_LIBERTY"></footer>
+</body>
+<script type="text/javascript" src="/js/externalize-string.js"></script>
+<script type="text/javascript">
+    //replace all externalized strings with nls
+    retrieveExternalizedStrings();
+</script>
+</html>

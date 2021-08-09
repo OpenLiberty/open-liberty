@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=\u5fc5\u987b\u8bbe\u7f6e {0} \u5c5e\u6027\u3002
+
+17008=\u9047\u5230\u65e0\u6548 {0} \u5c5e\u6027\u3002
+
+17009=\u5fc5\u987b\u8bbe\u7f6e {0} \u6216 {1} \u5c5e\u6027\u3002
+
+17010=\u8f93\u51fa\u8bb0\u5f55\u5305\u542b\u4e0d\u53d7\u652f\u6301\u7684\u6d88\u606f\u7c7b\u578b
+
+17011=\u5c1a\u672a\u6307\u5b9a\u4efb\u4f55\u8fde\u63a5\u5de5\u5382\u3002
+
+17012=InteractionSspec \u5fc5\u987b\u662f CciJMSInteractionSpec\u3002
+
+17013=Record \u5fc5\u987b\u662f CciJMSRecord\u3002
+
+17014=\u4ea4\u4e92\u89c4\u8303\u7c7b\u578b\u672a\u77e5
+
+17015=\u8f93\u5165\u5fc5\u987b\u5305\u542b\u5355\u4e2a\u6587\u672c\u5143\u7d20\u3002
+
+17016=\u53d1\u751f\u8d85\u65f6 - \u672a\u63a5\u6536\u5230\u4efb\u4f55\u6d88\u606f\u3002
+
+17017=\u8f93\u5165\u8bb0\u5f55\u5305\u542b\u4e0d\u53d7\u652f\u6301\u7684\u6d88\u606f\u7c7b\u578b\u3002
+
+17018=\u65e0\u6cd5\u5728\u975e\u4e8b\u52a1\u6027\u4f1a\u8bdd\u4e0a\u8c03\u7528\u201cbegin()\u201d\u3002
+
+17019=\u9488\u5bf9\u4e8b\u52a1\u6027\u4f1a\u8bdd\u8fdb\u884c\u6d4b\u8bd5\u65f6\u53d1\u751f\u95ee\u9898\uff1a
+
+17020=InteractionSspec \u5fc5\u987b\u662f AQInteractionSpec\u3002
+
+17021=Record \u5fc5\u987b\u662f AQRecord\u3002
+
+17022=\u8f93\u5165\u5fc5\u987b\u5305\u542b\u5355\u4e2a\u539f\u59cb\u5143\u7d20\u3002
+
+17023=\u8bbe\u7f6e MQQueueConnectionFactory \u5c5e\u6027\u65f6\u53d1\u751f\u5f02\u5e38\u3002
+
+17024=\u672a\u80fd\u5220\u9664\u6587\u4ef6\uff1a{0}
+
+17025=\u6b64\u6620\u5c04\u9700\u8981\u5916\u952e\u5206\u7ec4\u5143\u7d20\uff0c\u56e0\u4e3a\u5b58\u5728\u591a\u4e2a\u5916\u952e\u3002
+

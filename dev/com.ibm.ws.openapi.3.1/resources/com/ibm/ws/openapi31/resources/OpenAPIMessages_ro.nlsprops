@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: Serviciul {0} OSGi nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Serviciul specificat nu este disponibil. Aceasta este o eroare de server intern\u0103.   
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea [--clean].
+
+OPENAPI_IS_NULL=CWWKO1701W: Furnizorul {0} nu a returnat niciun document Open API.
+OPENAPI_IS_NULL.explanation=Un obiect Open API creat pentru OASProvidera fost nul, probabil datorit\u0103 unei erori valide.
+OPENAPI_IS_NULL.useraction=Furniza\u0163i un document valid. Inspecta\u0163i istoricele pentru a descoperi eroarea.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: Obiectul OpenAPI pe care l-a creat serverul utiliz\u00e2nd valoarea de personalizare {0} este nul.
+CUSTOMIZATION_IS_NULL.explanation=Un obiect OpenAPI care a fost creat utiliz\u00e2nd valoarea de personalizare este nul.
+CUSTOMIZATION_IS_NULL.useraction=Inspecta\u0163i istoricele pentru a g\u0103si eroarea. Furniza\u0163i un document valid OpenAPI pentru atributul de personalizare.
+
+PUBLIC_URL_INVALID=CWWKO1703W: URL-ul public nu poate fi setat la {0}. Acest URL este rezervat pentru utilizarea de c\u0103tre serverul de aplica\u0163ii.
+PUBLIC_URL_INVALID.explanation=URL-ul public nu poate fi setat la o valoare care a fost rezervat\u0103 pentru utilizarea de c\u0103tre serverul de aplica\u0163ii.
+PUBLIC_URL_INVALID.useraction=Specifica\u0163i o valoare valid\u0103 pentru atributul publicURL \u00een configura\u0163ia serverului.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: Au fost g\u0103site mai multe fi\u015fiere de personalizare Open API: {0}. {1} este monitorizat pentru modific\u0103ri.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=\u00cen directorul ${server.config.dir}/openapi-3.1 se afl\u0103 mai multe fi\u015fiere de personalizare Open API.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een directorul ${server.config.dir}/openapi-3.1 se afl\u0103 un singur fi\u015fier de personalizare Open API implicit.
+
+CSS_NOT_PROCESSED=CWWKO1705W: Serverul nu poate citi documentul CSS specificat {0} datorit\u0103 {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Documentul de CSS nu poate fi procesat din cauza unei erori de validitate.
+CSS_NOT_PROCESSED.useraction=Furniza\u0163i un document Swagger valid.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: Validarea documentului OpenAPI a produs erorile urm\u0103toare:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Documentul OpenAPI este invalid.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Furniza\u0163i un document OpenAPI valid care rezolv\u0103 eroarea raportat\u0103.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: Validarea documentului OpenAPI a produs avertismentele urm\u0103toare:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Documentul OpenAPI con\u0163ine date care nu sunt \u00een formatul recomandat.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Furniza\u0163i un document OpenAPI valid care rezolv\u0103 avertismentul raportat.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: Fi\u015fierul CSS personalizat {0} care a fost specificat pentru interfa\u0163a de utilizator OpenAPI nu a fost procesat. Serverul va restaura valorile implicite pentru interfa\u0163a de utilizator OpenAPI. Motiv={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Serverul nu poate procesa fi\u015fierul CSS personalizat. Serverul va restaura valorile implicite pentru interfa\u0163a de utilizator OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Furniza\u0163i un fi\u015fier CSS personalizat valid pentru interfa\u0163a de utilizator OpenAPI, \u00eempreun\u0103 cu toate dependen\u0163ele.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: Serverul cite\u015fte documentul CSS specificat {0} dar nu poate g\u0103si <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Documentul CSS care este specificat nu con\u0163ine <.swagger-ui .headerbar > sau nu este formatat s\u0103 \u00eendeplineasc\u0103 constr\u00e2ngerile cerute de server.
+CSS_SECTION_NOT_FOUND.useraction=Furniza\u0163i un fi\u015fier CSS valid care con\u0163ine <.swagger-ui .headerbar > \u00een formatul cerut.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: Valoarea care a fost specificat\u0103 pentru proprietatea {0} nu este suportat\u0103. Valoarea trebuie sa fie {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Valoarea pentru proprietatea specificat\u0103 fie nu este valid\u0103, fie nu este acceptat\u0103 de cadrul de lucru OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=Furniza\u0163i o valoare valid\u0103 pentru proprietate \u00een fi\u015fierul CSS personalizat pentru interfa\u0163a de utilizator OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: Imaginea de fundal care a fost specificat\u0103 la {0} nu exist\u0103 sau este invalid\u0103.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Imaginea de fundal nu exist\u0103 sau este invalid\u0103.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Furniza\u0163i o valoare valid\u0103.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: A e\u015fuat parsarea documentului OpenAPI pentru aplica\u0163ia: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=A e\u015fuat parsarea documentului OpenAPI din folderul META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul este \u00een format YAML sau JSON corect.

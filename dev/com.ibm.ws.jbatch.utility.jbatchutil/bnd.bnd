@@ -1,0 +1,29 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/cmdline.props
+bVersion=1.0
+
+Bundle-Name: WebSphere BatchManager Utility
+Bundle-SymbolicName: com.ibm.ws.jbatch.utility.jbatchutil
+Require-Bundle: com.ibm.ws.jbatch.utility; version="[1,1.0.100)", \
+  com.ibm.websphere.javaee.batch.1.0; location="dev/api/spec/"; version="[1,1.0.100)", \
+  com.ibm.ws.logging; version="[1,1.0.100)", \
+  com.ibm.ws.org.glassfish.json.1.0; version="[1,1.0.100)", \
+  com.ibm.websphere.javaee.jsonp.1.0; location="dev/api/spec/"; version="[1,1.0.100)" 
+  
+Command-Class: com.ibm.ws.jbatch.utility.JBatchUtility
+
+-outputmask: ws-jbatchutil.jar
+
+instrument.disabled: true
+
+publish.tool.jar=ws-jbatchutil.jar
+publish.tool.script=batchManager

@@ -1,0 +1,11 @@
+version: 1
+dn: cn=samba,ou=schema
+cn: samba
+m-disabled: TRUE
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+m-dependencies: inetorgperson
+m-dependencies: nis
+creatorsname: uid=admin,ou=system

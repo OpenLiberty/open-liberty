@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.65,ou=attributeTypes,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.1.65
+m-name: sambaLockoutThreshold
+m-description: Lockout users after bad logon attempts (default: 0 => off)
+objectClass: top
+objectClass: metaTop
+objectClass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-equality: integerMatch
+m-singleValue: TRUE
+m-usage: USER_APPLICATIONS
+m-noUserModification: FALSE
+m-collective: FALSE
+m-obsolete: FALSE
+creatorsname: uid=admin,ou=system

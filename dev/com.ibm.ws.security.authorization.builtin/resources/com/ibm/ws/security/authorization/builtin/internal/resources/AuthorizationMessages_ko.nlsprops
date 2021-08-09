@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: \ub2e4\uc911 \uc790\uc6d0\uc774 \uc774\ub984 {0}\uc744(\ub97c) \ubcf4\uc720\ud569\ub2c8\ub2e4. \uad8c\ud55c \ubd80\uc5ec \uc815\ucc45\uc744 \ud310\ubcc4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=\ub3d9\uc77c\ud55c \uc774\ub984\uc758 \uc790\uc6d0\uc774 \uc5ec\ub7ec \uac1c\uac00 \uc788\uc73c\ubbc0\ub85c \uc62c\ubc14\ub978 \uad8c\ud55c \ubd80\uc5ec \uc815\ucc45\uc744 \ud310\ubcc4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc790\uc6d0 \uc774\ub984\uc740 \uace0\uc720\ud574\uc57c \ud569\ub2c8\ub2e4.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=\ubaa8\ub4e0 \uc790\uc6d0\uc774 \uace0\uc720\ud558\ub3c4\ub85d \uc790\uc6d0 \uc774\ub984 \uc911 \ud558\ub098\uc758 \uc774\ub984\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: \uc5ed\ud560 \uc815\uc758\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc74c: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=\uc5ed\ud560 \uc815\uc758 \uad6c\ubb38\uc740 <{1} name="..." />\uc785\ub2c8\ub2e4.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=\uad6c\uc131\uc5d0\uc11c \uc5ed\ud560 \uc815\uc758\ub97c \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: \uc774\ub984\uc774 {1}\uc778 \uc5ec\ub7ec {0} \uc694\uc18c\uac00 \uc788\uc74c
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=\ud574\ub2f9 \uc5ed\ud560\uc758 \uc815\uc758\ub294 \ud558\ub098\ub9cc \ud5c8\uc6a9\ub429\ub2c8\ub2e4.
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=\uad6c\uc131\uc5d0\uc11c \uc911\ubcf5 \uc5ed\ud560 \uc815\uc758\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: {0} \uc5ed\ud560\uc5d0 \uc0ac\uc6a9\uc790, \uadf8\ub8f9, \ud2b9\uc218\ud55c \uc8fc\uc81c\uac00 \ub450 \ubc88 \uc774\uc0c1 \ucd94\uac00\ub428
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=\uc5ed\ud560\ubcc4\ub85c \uba64\ubc84\uc758 \uc815\uc758\ub294 \ud558\ub098\ub9cc \ud5c8\uc6a9\ub429\ub2c8\ub2e4.
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=\uad6c\uc131\uc5d0\uc11c \uc911\ubcf5 \uc5ed\ud560 \uba64\ubc84 \uc815\uc758\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: \ud574\ub2f9 \uc790\uc6d0\uc5d0 \uc561\uc138\uc2a4\ud558\ub294 \ub370 \ud544\uc694\ud55c \uc5ed\ud560 \uc774\ub984\uacfc \uc77c\uce58\ud558\ub294 \uc0ac\uc6a9\uc790\uc758 \uadf8\ub8f9 \uc774\ub984\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {0}\uc758 \uc790\uc6d0\uc5d0 \ub300\ud55c \uad8c\ud55c \ubd80\uc5ec \uc758\uc0ac\uacb0\uc815\uc774 \uc218\ud589\ub429\ub2c8\ub2e4.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uad8c\ud55c \ubd80\uc5ec \ud14c\uc774\ube14\uc774 \uc815\uc758\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc790\uc6d0 \uc561\uc138\uc2a4\uc5d0 \ud544\uc694\ud55c \uc5ed\ud560 \uc774\ub984\uc740 \uc561\uc138\uc2a4 \uac80\uc0ac\ub97c \uc704\ud55c \uadf8\ub8f9 \uc774\ub984\uc73c\ub85c \ucc98\ub9ac\ub429\ub2c8\ub2e4. \uc608\ub97c \ub4e4\uc5b4, \uc790\uc6d0 \uc561\uc138\uc2a4\uc5d0 \ud544\uc694\ud55c \uc5ed\ud560 \uc774\ub984\uc774 \uad00\ub9ac\uc790(Manager)\uc774\uba74 \uc778\uc99d\ub41c \uc0ac\uc6a9\uc790\uac00 \uad00\ub9ac\uc790(Manager) \uadf8\ub8f9\uc5d0 \uc18d\ud558\ub294 \uacbd\uc6b0 \uc561\uc138\uc2a4 \uad8c\ud55c\uc774 \ubd80\uc5ec\ub429\ub2c8\ub2e4. 
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=server.xml\uc5d0\uc11c \uad8c\ud55c \ubd80\uc5ec \uc694\uc18c\uc758 useGroupToRoleName \uc18d\uc131\uc744 false\ub85c \uc124\uc815\ud558\uc5ec \ub0b4\uc7ac\uc801 \uad8c\ud55c \uc810\uac80\uc744 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. 

@@ -1,0 +1,15 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>json-1.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>usr:RSHandler1Feature</feature>
+        <feature>usr:RSHandler2Feature</feature>
+    </featureManager>
+    
+  	<include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>

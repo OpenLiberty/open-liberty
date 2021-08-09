@@ -1,0 +1,13 @@
+version: 1
+dn: cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaSchema
+objectclass: top
+cn: dhcp
+m-disabled: TRUE
+entryUUID: 46016b49-fa8b-4efa-88df-4cc2c46cdfdf
+m-dependencies: system
+m-dependencies: core
+entryCSN: 20130919081858.041000Z#000000#000#000000
+entryParentId: 529257cc-a63e-4ee3-827f-354e24136008
+createTimestamp: 20130919081910.845Z

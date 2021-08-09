@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: Un nombre de atributo, o nombre de par\u00e1metro inicial, es nulo.
+name.is.null.explanation=Se trata de un error de aplicaci\u00f3n. El nombre es nulo en el contexto getAttribute(), setAttribute(), getInitParameter() o setInitParameter().
+name.is.null.useraction=Actualice el nombre de atributo, o nombre de par\u00e1metro inicial, con un valor no nulo.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: No se ha podido establecer la codificaci\u00f3n de caracteres de respuesta: [{0}].
+unsupported.response.encoding.[{0}].explanation=La codificaci\u00f3n de la respuesta especificada en la respuesta no es v\u00e1lida. Se trata de un error de aplicaci\u00f3n.
+unsupported.response.encoding.[{0}].useraction=Revise los registros para determinar si la codificaci\u00f3n especificada es una codificaci\u00f3n v\u00e1lida.
+
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: No se pueden establecer campos de cola si se ha confirmado la respuesta.
+set.trailer.fields.committed.response.explanation=La respuesta ya se ha confirmado.
+set.trailer.fields.committed.response.useraction=Aseg\u00farese de que la respuesta no se ha confirmado antes de que se establezcan campos de cola.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: No se pueden establecer campos de cola si la versi\u00f3n HTTP no es 1.1 o superior.
+set.trailer.fields.incorrect.http.version.explanation=Los campos de cola HTTP s\u00f3lo se soportan en HTTP 1.1 o superior.
+set.trailer.fields.incorrect.http.version.useraction=Aseg\u00farese de que se est\u00e1 utilizando HTTP 1.1 o superior.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: No se pueden establecer campos de cola si el valor de cabecera Transfer-Encoding no es "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=Los campos de cola s\u00f3lo se soportan si el valor de cabecera Transfer-Encoding es "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Aseg\u00farese de que la cabecera Transfer-Encoding contiene valor "chunked".

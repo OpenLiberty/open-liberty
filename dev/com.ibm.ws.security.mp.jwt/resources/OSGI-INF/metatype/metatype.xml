@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2016, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+                  
+     <Designate factoryPid="com.ibm.ws.security.mp.jwt">
+        <Object ocdref="com.ibm.ws.security.mp.jwt.metatype" />
+     </Designate>           
+     <OCD id="com.ibm.ws.security.mp.jwt.metatype" name="%mpjwt.conf" description="%mpjwt.conf.desc" 
+         ibm:alias="mpJwt">    
+         <AD id="id" name="%uniqueId" description="%uniqueId.desc"
+            required="true" type="String" ibm:unique="uniqueId"/>          
+        <AD id="jwksUri" name="%jwksUri" description="%jwksUri.desc"
+            required="false" type="String" />
+        <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="2147483647" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="upn" />    
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="keyName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />
+        <AD id="issuer" name="%issuer" description="%issuer.desc" required="false" type="String" />
+        <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc"
+            required="false"  type="String" default="groups" />
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean"  default="false" /> 
+        <AD id="tokenReuse" name="%tokenReuse"  description="%tokenReuse.desc"
+            required="false" type="Boolean"  default="true" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="hostNameVerificationEnabled" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>
+        <AD id="authorizationHeaderScheme" name="internal" description="internal use only" required="false" type="String" default="Bearer "/>
+        <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="5m" ibm:type="duration" />
+        <AD id="ignoreApplicationAuthMethod" name="%ignoreApplicationAuthMethod"  description="%ignoreApplicationAuthMethod.desc"
+            required="false" type="Boolean"  default="true" />
+            
+        <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
+        <AD id="tokenHeader" name="%tokenHeader" description="%tokenHeader.desc" required="false" type="String" >
+            <Option label="%tokenHeader.Authorization" value="Authorization" />
+            <Option label="%tokenHeader.Cookie" value="Cookie" />
+        </AD>
+        <AD id="cookieName" name="%cookieName" description="%cookieName.desc" required="false" type="String" />
+        <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" />
+
+        <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" >
+            <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+            <Option label="%tokenSignAlgorithm.RS384" value="RS384" />
+            <Option label="%tokenSignAlgorithm.RS512" value="RS512" />
+            <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+            <Option label="%tokenSignAlgorithm.HS384" value="HS384" />
+            <Option label="%tokenSignAlgorithm.HS512" value="HS512" />
+            <Option label="%tokenSignAlgorithm.ES256" value="ES256" />
+            <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
+            <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
+        </AD>
+    </OCD>
+
+               
+</metatype:MetaData>

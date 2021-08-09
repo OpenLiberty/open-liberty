@@ -1,0 +1,2 @@
+CREATE TABLE ${schemaname}.SimpleExample (id INTEGER NOT NULL, boolean1 BOOLEAN, boolean2 BOOLEAN, boolean3 BOOLEAN, byte1 INT8, byte2 INT8, byte3 INT8, char1 INTEGER, char2 INTEGER, char3 INTEGER, double1 DOUBLE PRECISION, double2 DOUBLE PRECISION, double3 DOUBLE PRECISION, float1 REAL, float2 REAL, float3 REAL, int1 INTEGER, int2 INTEGER, int3 INTEGER, long1 NUMERIC(32,0), long2 NUMERIC(32,0), long3 NUMERIC(32,0), short1 INT8, short2 INT8, short3 INT8, str1 VARCHAR(255), str2 VARCHAR(255), str3 VARCHAR(255), PRIMARY KEY (id)) LOCK MODE ROW;
+

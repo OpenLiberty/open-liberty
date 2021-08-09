@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: Mecanismo(s) da camada de autentica\u00e7\u00e3o inv\u00e1lido(s) especificado(s) na seguran\u00e7a do cliente {0}. O valor v\u00e1lido \u00e9 GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado(s) n\u00e3o \u00e9(s\u00e3o) suportado(s).
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado seja GSSUP.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o especificado(s) na seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado seja GSSUP.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: O atributo(s) a seguir est\u00e1 ausente na pol\u00edtica de cliente IIOP. O(s) atributo(s) ausente(s) \u00e9(s\u00e3o) [{0}]. A menos que um login program\u00e1tico seja implementado pelo aplicativo, certifique-se de que o(s) atributo(s) seja(m) especificado(s) no arquivo client.xml.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=H\u00e1 um atributo ausente no mecanismo da camada de autentica\u00e7\u00e3o da pol\u00edtica do cliente IIOP que \u00e9 especificado.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Certifique-se de que os atributos necess\u00e1rios est\u00e3o configurados ou que o login program\u00e1tico \u00e9 usado para fornecer os valores.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: A Camada de Autentica\u00e7\u00e3o do CSIv2 est\u00e1 desativada porque o valor para establishTrustInClient \u00e9 {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Quando establishTrustInClient est\u00e1 configurado como Nunca, a Camada de Autentica\u00e7\u00e3o do CSIv2 \u00e9 desativada.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Para ativar a Camada de Autentica\u00e7\u00e3o do CSIv2, configure o valor de establishTrustInClient como Suportado ou Obrigat\u00f3rio.
+
+

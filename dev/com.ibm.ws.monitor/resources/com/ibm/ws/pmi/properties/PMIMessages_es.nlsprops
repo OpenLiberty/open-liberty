@@ -1,0 +1,321 @@
+###############################################################################
+# Copyright (c) 2001, 2004 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIMessages.nlsprops
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring Instrumentation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# Warning message when a null path is passed to PMI
+PMI0001W=CWPMI0001W: Se ha pasado una v\u00eda de acceso nula a PMI: {0}
+PMI0001W.explanation=Se ha pasado una v\u00eda de acceso nula o no v\u00e1lida a PMI (Performance Monitoring Infrastructure. PMI utiliza el identificador de v\u00eda de acceso para organizar contadores que se utilizan para el seguimiento de las estad\u00edsticas de la aplicaci\u00f3n.  PMI comienza por una v\u00eda de acceso ra\u00edz y todos los componentes y aplicaciones WebSphere almacenan sus estad\u00edsticas como ramas de la v\u00eda de acceso ra\u00edz.  Cuando se pasa una v\u00eda de acceso nula a PMI, impide que PMI satisfaga la petici\u00f3n hecha con ella porque no puede localizar el elemento que se especifica.
+PMI0001W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find a PMI module the mbean
+PMI0002W=CWPMI0002W: No se puede encontrar un nombre de m\u00f3dulo PMI para el MBean: {0}
+PMI0002W.explanation=El nombre del bean gestionado (MBean) especificado por el interlocutor de Performance Monitoring Infrastructure (PMI) no puede emparejarse con un nombre de PMI interno. En la especificaci\u00f3n de Java Management Extensions (JMX), los MBean son objetos java que representan un recurso gestionable. Los recursos PMI son direccionables mediante una interfaz MBean. Si el nombre especificado del MBean no coincide con un nombre PMI cargado actualmente, se genera el aviso.  La causa de este problema es debida a un error realizado por la aplicaci\u00f3n llamante o el hecho de que la aplicaci\u00f3n llamante est\u00e1 intentando hacer referencia a un nombre PMI que no est\u00e1 cargado por el servidor de aplicaciones.
+PMI0002W.useraction=Este mensaje se recibe al utilizar una herramienta de supervisi\u00f3n de rendimiento de terceros para visualizar las estad\u00edsticas de PMI. Compruebe que la configuraci\u00f3n de la herramienta sea la correcta.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when multiple ObjectNames are found but only a single is expected
+PMI0003W=CWPMI0003W: MultipleObjectNamesExistException: La clave de MBean es: {0}
+PMI0003W.explanation=El nombre del Bean gestionado (MBean) especificado por el interlocutor de Performance Monitoring Infrastructure (PMI) coincide con m\u00e1s de un nombre PMI. En la especificaci\u00f3n de Java Management Extensions (JMX), los MBean son objetos java que representan un recurso gestionable. Los recursos PMI son direccionables mediante una interfaz MBean. Si el nombre especificado MBean coincide con m\u00e1s de un nombre PMI, se produce este error.
+PMI0003W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to create AdminUtilImpl
+PMI0004W=CWPMI0004W: Excepci\u00f3n al obtener AdminUtilImpl en PmiJmxMapper: {0}
+PMI0004W.explanation=La clase PmiJmxMapper no puede crear una clase AdminUtil. La interfaz AdminUtil permite a PMI acceder al objeto administrativo, que Java Management Extensions (JMX) requiere para conectividad.
+PMI0004W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected null parameter is passed to PMI
+PMI0005W=CWPMI0005W: Se ha pasado un par\u00e1metro nulo a PMI: {0}
+PMI0005W.explanation=Este suceso se activa cuando PMI (Performance Monitoring Infrastructure) realiza una actualizaci\u00f3n y uno de los par\u00e1metros enviados por el cliente PMI es nulo.
+PMI0005W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot a mbean for the given data descriptor
+PMI0006W=CWPMI0006W: No se puede encontrar un mbean para el descriptor de datos de PMI: {0}
+PMI0006W.explanation=Performance Monitoring Infrastructure (PMI) no puede emparejar un nombre PMI con su Bean gestionado (MBean) asociado. En la especificaci\u00f3n Java Management Extensions (JMX), los MBean son objetos java que representan un recurso gestionable. Los recursos PMI son direccionables mediante una interfaz MBean.
+PMI0006W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when the module config object is null
+PMI0007W=CWPMI0007W: No se ha encontrado ninguna configuraci\u00f3n de m\u00f3dulo PMI: {0}
+PMI0007W.explanation=Este error identifica una condici\u00f3n en la que Performance Monitoring Infrastructure (PMI) no puede localizar la configuraci\u00f3n de un m\u00f3dulo especificado.  Los m\u00f3dulos son las unidades organizativas que PMI utiliza para desglosar los componentes funcionales dentro del servidor de aplicaciones. 
+PMI0007W.useraction=Esta excepci\u00f3n es inesperada. La causa no se conoce inmediatamente. Si el problema persiste, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server en http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an invalid data ID is using in PMI
+PMI0008W=CWPMI0008W: ID de datos no v\u00e1lido: {0}
+PMI0008W.explanation=Un m\u00f3dulo de Performance Monitoring Infrastructure (PMI) no puede identificar un objeto de datos que el m\u00f3dulo procesa. Cada m\u00f3dulo PMI est\u00e1 configurado para un conjunto finito de objetos de datos. El mensaje proporciona la identidad de datos que no es v\u00e1lida.
+PMI0008W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong parameter is passed to updateData method
+PMI0009W=CWPMI0009W: Se ha pasado un par\u00e1metro incorrecto al m\u00e9todo updateData en PmiAbstractModule: {0}
+PMI0009W.explanation=El objeto PmiAbstractModule est\u00e1 establecido para realizar una funci\u00f3n no definida en el objeto de datos proporcionado.
+PMI0009W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find the XML file to read
+PMI0010W=CWPMI0010W: No se puede encontrar el archivo: {0}
+PMI0010W.explanation=Performance Monitoring Infrastructure (PMI) no puede encontrar un archivo para su procesamiento interno, que tiene lugar cuando PMI se est\u00e1 inicializando. El mensaje identifica el nombre de archivo que no se puede localizar.
+PMI0010W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when pmiSpec in WCCM config file is ill-formatted
+PMI0011W=CWPMI0011W: pmiSpec incorrecta en PmiUtil: {0}
+PMI0011W.explanation=Performance Monitoring Infrastructure (PMI) establece el nivel de supervisi\u00f3n de rendimiento en un valor no v\u00e1lido. PMI utiliza el nivel de supervisi\u00f3n de rendimiento para determinar qu\u00e9 m\u00f3dulos, subm\u00f3dulos y estad\u00edsticas incluidas en la supervisi\u00f3n actual establecer.
+PMI0011W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong number of parameters is passed to PmiFactory
+PMI0012W=CWPMI0012W: Se ha pasado un n\u00famero incorrecto de par\u00e1metros a PmiFactory: {0}
+PMI0012W.explanation=Performance Monitoring Infrastructure (PMI) est\u00e1 creando un m\u00f3dulo, pero los par\u00e1metros que se han pasado a PMI no coinciden con los requisitos del m\u00f3dulo que se crea.
+PMI0012W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong type of parameters is passed to PmiFactory
+PMI0013W=CWPMI0013W: Se ha pasado un tipo incorrecto de par\u00e1metros a PmiFactory: {0}
+PMI0013W.explanation=Performance Monitoring Infrastructure (PMI) est\u00e1 creando un m\u00f3dulo, pero uno de los par\u00e1metros que se ha pasado a PMI no es del tipo de objeto esperado. 
+PMI0013W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI failed to create TransactionModule
+PMI0014W=CWPMI0014W: PmiFactory no ha podido crear TransactionModule: {0}
+PMI0014W.explanation=Performance Monitoring Infrastructure (PMI) no puede crear el objeto que gestiona las estad\u00edsticas de rendimiento del m\u00f3dulo de transacci\u00f3n.
+PMI0014W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to connect to AdminClient or AdminService
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0015W=CWPMI0015W: AdminUtilImpl tiene una excepci\u00f3n al conectarse a AdminClient/AdminService: {0}
+PMI0015W.explanation=AdminUtilImpl ha encontrado una excepci\u00f3n al conectar con AdminClient o AdminService.
+PMI0015W.useraction=Esta excepci\u00f3n es inesperada. La causa no se conoce inmediatamente. CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to find the ObjectNames
+PMI0016W=CWPMI0016W: AdminUtilImpl tiene una excepci\u00f3n al buscar/listar ObjectNames: {0}
+PMI0016W.explanation=Performance Monitoring Infrastructure (PMI) no puede emparejar un nombre PMI con su nombre de Bean gestionado (MBean) correspondiente.  En la especificaci\u00f3n Java Management Extensions (JMX), los MBean son objetos java que representan un recurso gestionable. Una interfaz MBean direcciona los recursos PMI.
+PMI0016W.useraction=Este mensaje se recibe al utilizar una herramienta de supervisi\u00f3n de rendimiento de terceros para visualizar las estad\u00edsticas de PMI. Compruebe que la configuraci\u00f3n de la herramienta sea la correcta.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to get status from NodeAgent or AppServer
+PMI0017W=CWPMI0017W: AdminUtilImpl tiene una excepci\u00f3n en getAdminState: {0}
+PMI0017W.explanation=PMI no puede comunicarse con el cliente administrativo. Es posible que el cliente de administraci\u00f3n ya no pueda comunicarse con el agente de nodo o el servidor de aplicaciones de destino.
+PMI0017W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when no ObjectName is returned from query
+PMI0018W=CWPMI0018W: AdminUtilImpl no tiene ning\u00fan ObjectName devuelto de la consulta: {0}
+PMI0018W.explanation= Performance Monitoring Infrastructure (PMI) ha creado el mensaje de aviso cuando PMI no puede emparejar un nombre PMI con su nombre de Bean gestionado (MBean) correspondiente. En la especificaci\u00f3n Java Management Extensions (JMX), los MBean son objetos java que representan un recurso gestionable. Una interfaz MBean direcciona los recursos PMI.
+PMI0018W.useraction=Este mensaje se recibe al utilizar una herramienta de supervisi\u00f3n de rendimiento de terceros para visualizar las estad\u00edsticas de PMI. Compruebe que la configuraci\u00f3n de la herramienta sea la correcta.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected runtime config attribute name passed to PMI
+PMI0019W=CWPMI0019W: Nombre inesperado de atributo de configuraci\u00f3n de tiempo de ejecuci\u00f3n: {0}
+PMI0019W.explanation=Un par\u00e1metro de configuraci\u00f3n especificado para el m\u00f3dulo de la agrupaci\u00f3n de conexiones no es v\u00e1lido. El \u00fanico par\u00e1metro v\u00e1lido para esta opci\u00f3n es 'PoolSize'
+PMI0019W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI counter is obviously wrong, e.g., a negative number
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0020W=CWPMI0020W: El contador ha perdido la sincronizaci\u00f3n: {0}
+PMI0020W.explanation=El contador ha perdido la sincronizaci\u00f3n.
+PMI0020W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0021W=CWPMI0021W: Tipo de datos err\u00f3neo: {0}
+PMI0021W.explanation=Este tipo de datos es incorrecto.
+PMI0021W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0022W=CWPMI0022W: Nombre de m\u00f3dulo duplicado: {0}
+PMI0022W.explanation=Este es un nombre de m\u00f3dulo duplicado.
+PMI0022W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0023W=CWPMI0023W: No se puede registrar el m\u00f3dulo PMI debido a un nombre duplicado: {0}
+PMI0023W.explanation=Performance Monitoring Infrastructure (PMI) no puede registrar un m\u00f3dulo debido a un conflicto de nombres.  PMI hace un seguimiento de todos los m\u00f3dulos y subm\u00f3dulos a trav\u00e9s de un nombre \u00fanico dentro de la v\u00eda de acceso especificada. Si aparece este mensaje, PMI no puede realizar la adici\u00f3n del m\u00f3dulo porque ya existe un m\u00f3dulo con el mismo nombre.
+PMI0023W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0024W=CWPMI0024W: Se sobrescribe la correlaci\u00f3n de MBean con m\u00f3dulo PMI para: {0}
+PMI0024W.explanation=Este mensaje aparece cuando la v\u00eda de acceso del Bean gestionado (MBean) que se almacena como referencia ya existe en la memoria cach\u00e9.  En la especificaci\u00f3n Java Management Extensions (JMX), los MBean son objetos java que representan un recurso gestionable. Un interfaz de MBean direcciona los recursos PMI; en este caso, PMI est\u00e1 asociando una v\u00eda de acceso de MBean con un objeto PMI interno existente.
+PMI0024W.useraction=Este mensaje se recibe al utilizar una herramienta de supervisi\u00f3n de rendimiento de terceros para visualizar las estad\u00edsticas de PMI. Compruebe que la configuraci\u00f3n de la herramienta sea la correcta.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0025W=CWPMI0025W: Error durante la persistencia de la configuraci\u00f3n de PMI en pmi-config.xml: {0}
+PMI0025W.explanation=Se ha producido un error durante la persistencia de la configuraci\u00f3n de Performance Monitoring Infrastructure (PMI) en el archivo pmi-config.xml.
+PMI0025W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0026W=CWPMI0026W: Error al leer la configuraci\u00f3n de PMI de pmi-config.xml: {0}
+PMI0026W.explanation=Performance Monitoring Infrastructure (PMI) no puede leer el archivo pmi-config.xml de su ubicaci\u00f3n esperada.
+PMI0026W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0027W=CWPMI0027W: Error durante la persistencia de la configuraci\u00f3n de PMI en server.xml: {0}
+PMI0027W.explanation=Performance Monitoring Infrastructure (PMI) no ha podido almacenar la informaci\u00f3n de configuraci\u00f3n de PMI actual.  La anomal\u00eda es una excepci\u00f3n capturada que se crea cuando PMI intenta almacenar f\u00edsicamente la informaci\u00f3n.
+PMI0027W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0028W=CWPMI0028W: Error al obtener el servicio de configuraci\u00f3n
+PMI0028W.explanation= Performance Monitoring Infrastructure (PMI) no ha podido localizar el servicio de configuraci\u00f3n. PMI utiliza el servicio de configuraci\u00f3n para interactuar con la informaci\u00f3n de configuraci\u00f3n.
+PMI0028W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0030W=CWPMI0030W: Error al cargar el paquete de recursos PMI personalizado: {0}
+PMI0030W.explanation=Performance Monitoring Infrastructure (PMI) no puede localizar un paquete de recursos traducido. Un paquete de recursos es un conjunto de informaci\u00f3n espec\u00edfica de un idioma utilizada por PMI cuando comunica informaci\u00f3n a los usuarios del servidor de aplicaciones.
+PMI0030W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0031W=CWPMI0031W: Se han detectado configuraciones PMI 5.0 y 6.0. Iniciando el servicio PMI utilizando la configuraci\u00f3n 6.0. El atributo initialSpecLevel de server.xml es obsoleto a partir de la 6.0.
+PMI0031W.explanation=Performance Monitoring Infrastructure (PMI) est\u00e1 inicializado para Application Server versi\u00f3n 6.x, pero encuentra los par\u00e1metros de configuraci\u00f3n de la versi\u00f3n 5.x.  El atributo initialSpecLevel del archivo de configuraci\u00f3n server.xml est\u00e1 en desuso en la versi\u00f3n 6.0.
+PMI0031W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0032W=CWPMI0032W: El servicio PMI no est\u00e1 disponible en el proceso del gestor de despliegue.
+PMI0032W.explanation=Performance Monitoring Infrastructure (PMI) no se ha podido inicializar en el proceso del gestor de despliegue de una configuraci\u00f3n de despliegue en red.  PMI no funciona en el gestor de despliegue, por lo que cualquier intento de inicializarlo puede fallar.
+PMI0032W.useraction=El servicio PMI no est\u00e1 disponible en el proceso del gestor de despliegue.  Revise los archivos de configuraci\u00f3n del gestor de despliegue y desactive PMI.
+
+# ************* CUSTOM PMI MESSAGES *************
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0101W=CWPMI0101W: No se puede crear el MBean por omisi\u00f3n para el m\u00f3dulo PMI personalizado: {0}
+PMI0101W.explanation=No se puede crear el Bean gestionado (MBean) para el m\u00f3dulo Performance Monitoring Infrastructure (PMI) personalizado.
+PMI0101W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0102W=CWPMI0102W:  No se puede leer la configuraci\u00f3n del m\u00f3dulo PMI personalizado: {0}
+PMI0102W.explanation=Performance Monitoring Infrastructure (PMI) no puede leer el archivo XML de origen que se utiliza para la configuraci\u00f3n de un m\u00f3dulo PMI personalizado.  Una PMI personalizada es una interfaz de programaci\u00f3n de aplicaciones (API) utilizada por proveedores de PMI para registrar un m\u00f3dulo en PMI.  Cuando se inicializa un m\u00f3dulo PMI personalizado, PMI lee un archivo XML para determinar la informaci\u00f3n de configuraci\u00f3n del m\u00f3dulo.
+PMI0102W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0103W=CWPMI0103W: No se puede registrar el m\u00f3dulo PMI personalizado debido a un nombre duplicado bajo el mismo padre o v\u00eda de acceso del \u00e1rbol PMI no v\u00e1lida: {0}
+PMI0103W.explanation=Performance Monitoring Infrastructure (PMI) crea un m\u00f3dulo nuevo bajo una v\u00eda de acceso padre no v\u00e1lida o bajo una v\u00eda de acceso padre que contiene un m\u00f3dulo del mismo nombre. Los nombres de m\u00f3dulo PMI deben ser exclusivos en cada v\u00eda de acceso padre del \u00e1rbol PMI.
+PMI0103W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0104W=CWPMI0104W: No se puede localizar un MBean padre para el m\u00f3dulo PMI personalizado: {0}
+PMI0104W.explanation=No se puede localizar un Bean gestionada (MBean) padre para el m\u00f3dulo Performance Monitoring Infrastructure (PMI) personalizado.
+PMI0104W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0105W=CWPMI0105W: No se puede localizar un elemento del m\u00f3dulo PMI para: {0}
+PMI0105W.explanation=Performance Monitoring Infrastructure (PMI) no puede localizar el m\u00f3dulo identificado por la v\u00eda de acceso que se muestra en el mensaje de aviso. PMI est\u00e1 intentando localizar el m\u00f3dulo para poder realizar una tarea en \u00e9l.
+PMI0105W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0106W=CWPMI0106W: Error al desactivar el MBean PMI personalizado: {0}
+PMI0106W.explanation=Se ha producido un error al desactivar el Bean gestionado (MBean) de Performance Monitoring Infrastructure (PMI) personalizado.
+PMI0106W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0107W=CWPMI0107W: No se puede registrar el m\u00f3dulo PMI personalizado porque el servicio PMI no est\u00e1 habilitado: {0}
+PMI0107W.explanation=Performance Monitoring Infrastructure (PMI) est\u00e1 inhabilitado y un componente o aplicaci\u00f3n intenta crear un objeto PMI.  Este mensaje informa al propietario cliente PMI de por qu\u00e9 no se puede completar la petici\u00f3n.
+PMI0107W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0108W=CWPMI0108W: No se puede registrar el m\u00f3dulo de PMI personalizado debido a un ID de estad\u00edsticas duplicado en el grupo o la instancia de estad\u00edsticas padre: ID={0}; ParentStats={1}
+PMI0108W.explanation=Performance Monitoring Infrastructure (PMI) ha creado el mensaje cuando estaba inicializando un m\u00f3dulo PMI personalizado.  PMI no puede construir una identidad estad\u00edstica para el m\u00f3dulo PMI personalizado porque la identidad de estad\u00edsticas proporcionada ya existe para el m\u00f3dulo. Un error en la plantilla XML de PMI personalizado puede que haya creado el problema.
+PMI0108W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0201I=CWPMI0201I: Desactivando MBean PMI personalizado para: {0}
+PMI0201I.explanation=Desactivando el MBean PMI personalizado.
+PMI0201I.useraction=No se requiere ninguna acci\u00f3n del usuario.
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0001I=CWPMI1101I: Se encuentra en la antememoria: {0}
+PMI0001I.explanation=Se encuentra en la antememoria.
+PMI0001I.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0002I=CWPMI1102I: No se encuentra en la antememoria: {0}
+PMI0002I.explanation=No se encuentra en la antememoria.
+PMI0002I.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# Information
+PMI0001A=CWPMI1001I: PMI est\u00e1 habilitado
+PMI0001A.explanation=Se trata de un mensaje de auditor\u00eda que reconoce que Performance Monitoring Infrastructure (PMI) est\u00e1 habilitado y funcionando.
+PMI0001A.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+PMI0002A=CWPMI1002I: PMI est\u00e1 inhabilitado
+PMI0002A.explanation=Performance Monitoring Infrastructure (PMI) est\u00e1 inhabilitado.
+PMI0002A.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# Indicates and internal error in PMI
+PMI9999E=CWPMI9999E: Error interno: {0}
+PMI9999E.explanation=Performance Monitoring Infrastructure (PMI) se\u00f1ala varios problemas. La naturaleza exclusiva del problema se indica en el cuerpo del mensaje.
+PMI9999E.useraction=CMSG0002
+
+

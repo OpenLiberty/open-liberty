@@ -1,0 +1,11 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.13,ou=objectClasses,cn=apache,ou=schema
+m-must: rev
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.13
+m-description: represents a Tag in change log
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: tag
+creatorsname: uid=admin,ou=system
+m-may: description

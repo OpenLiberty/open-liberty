@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2011,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Op\u0163iunea de delegare WSLoginModuleProxy nu este setat\u0103.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Autentificarea nu a reu\u015fit \u00eentruc\u00e2t op\u0163iunea WSLoginModuleProxy nu este setat\u0103.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verifica\u0163i c\u0103 configura\u0163ia WSLoginModuleProxy include op\u0163iunea de delegare.
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: Nu s-a putut deschide URL-ul: {0}. Excep\u0163ia este {1}
+security.jaas.open.URL.explanation=A ap\u0103rut o excep\u0163ie MalformedURLException la \u00eencercarea de conectare la URL-ul specificat. 
+security.jaas.open.URL.useraction=Investiga\u0163i excep\u0163ia. Verifica\u0163i URL-ul specificat.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: Nu s-a putut crea URL-ul: {0}. Excep\u0163ia este {1}
+security.jaas.create.URL.explanation=A ap\u0103rut o excep\u0163ie IOException la \u00eencercarea de conectare la URL-ul specificat.
+security.jaas.create.URL.useraction=Investiga\u0163i excep\u0163ia. Verifica\u0163i URL-ul specificat.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: A ap\u0103rut o excep\u0163ie de parsare fi\u015fier cu fi\u015fierul: {0}. Excep\u0163ia este {1}
+security.jaas.parser.URL.explanation=A ap\u0103rut o excep\u0163ie IOException la \u00eencercarea de conectare la URL-ul specificat.
+security.jaas.parser.URL.useraction=Investiga\u0163i excep\u0163ia. Verifica\u0163i URL-ul specificat.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: Nume de configura\u0163ie de logare duplicat {0}. Se va suprascrie.
+security.jaas.duplicate.config.explanation=\u00cen datele de configura\u0163ie a fost specificat un nume de configura\u0163ie de logare duplicat.
+security.jaas.duplicate.config.useraction=Verifica\u0163i datele de configurare.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: A ap\u0103rut o excep\u0163ie IOException \u00een timpul pars\u0103rii configura\u0163iei aplica\u0163iei JAAS. Excep\u0163ia este {0}.
+security.jaas.app.parseIO.explanation=A ap\u0103rut o excep\u0163ie IOException \u00een timpul pars\u0103rii configura\u0163iei aplica\u0163iei JAAS.
+security.jaas.app.parseIO.useraction=Verifica\u0163i fi\u015fierul de configurare. Investiga\u0163i excep\u0163ia. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: A ap\u0103rut o excep\u0163ie ParserException \u00een timpul pars\u0103rii configura\u0163iei aplica\u0163iei JAAS. Excep\u0163ia este {0}.
+security.jaas.app.parse.explanation=A ap\u0103rut o excep\u0163ie ParserException \u00een timpul pars\u0103rii configura\u0163iei aplica\u0163iei JAAS.
+security.jaas.app.parse.useraction=Investiga\u0163i excep\u0163ia, care are informa\u0163iile de erori de sintax\u0103 din fi\u015fierul de configura\u0163ie.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: O valoare implicit\u0103 jaasLoginContextEntry {0} nu poate fi specificat\u0103 \u00een fi\u015fierul de configura\u0163ie JAAS {1}. O valoare implicit\u0103 jaasLoginContextEntry trebuie s\u0103 fie specificat\u0103 \u00een fi\u015fierul server.xml sau client.xml.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=O valoare implicit\u0103 jaasLoginContextEntry nu poate fi specificat\u0103 \u00een fi\u015fierul de configura\u0163ie JAAS.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Verifica\u0163i c\u0103 fi\u015fierul de configura\u0163ie JAAS nu are o valoare implicit\u0103 jaasLoginContextEntry.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: Serviciul OSGi {0} nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea "clean" (cur\u0103\u0163are).
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: Excep\u0163ie la efectuarea clasei de nume pentru {0}. Excep\u0163ie nea\u015fteptat\u0103 {1}.  
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=Excep\u0163ie la efectuarea clasei pentru nume.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verifica\u0163i c\u0103 toate module de logare JAAS personalizate specificate \u00een fi\u015fierul de configura\u0163ie JAAS exist\u0103 \u00een directorul JAAS implicit. Directorul JAAS implicit pentru server este ${server.config.dir}/resources/security/jaas; Directorul JAAS implicit pentru client este ${client.config.dir}/resources/security/jaas.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: A fost specificat un nume de configura\u0163ie de logare {0} duplicat \u00een fi\u015fierul de configura\u0163ie JAAS \u015fi \u00een fi\u015fierele server.xml/client.xml. Va fi folosit numele de configura\u0163ie de logare din fi\u015fierul server.xml/client.xml.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=A fost specificat un nume de configura\u0163ie de logare duplicat \u00een fi\u015fierul de configura\u0163ie JAAS \u015fi \u00een fi\u015fierul server.xml/client.xml.
+JAAS_DUPLICATE_ENTRY_NAME.useraction=Verifica\u0163i fi\u015fierul de configura\u0163ie JAAS \u015fi fi\u015fierul server.xml/client.xml.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: Modul de logare {0} nu este suportat pentru versiunea {1} vendorul Java {2}.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=Modulul Krb5LoginModule specificat \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere nu este suportat \u00een vendorul Java \u015fi versiunea utilizate.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Utiliza\u0163i vendor Java \u015fi versiune corecte care sunt suportate pentru modulul Krb5LoginModule sau utiliza\u0163i un modul Krb5LoginModule care este suportat de vendorul \u015fi versiunea Java.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: Op\u0163iunile modulului de logare {0} nu sunt suportate de vendorul Java {1} \u015fi de versiunea {2}.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=Op\u0163iunile Krb5LoginModule specificate \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere nu este suportat \u00een vendorul Java \u015fi versiunea utilizate.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=verifica\u0163i c\u0103 toate op\u0163iunile Krb5LoginModule specificate \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere sunt suportate de vendorul \u015fi versiunea Java.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Nu poate fi specificat\u0103 o intrare {0} jaasLoginContext ca o intrare de configura\u0163ie JAAS \u00een fi\u015fierul server.xml, \u00een fi\u015fierul jaas.conf sau \u00een ambele fi\u015fiere.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Runtime-ul utilizeaz\u0103 o configura\u0163ie Krb5LoginModule implicit\u0103 \u015fi configura\u0163ia SPNEGO \u00een fi\u015fierul server.xml.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=\u00cenl\u0103tura\u0163i intrarea jaasLoginContext din fi\u015fierul server.xml sau l\u0103sa\u0163i runtime-ul s\u0103 foloseasc\u0103 intrarea implicit\u0103.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Modulul de logare personalizat JAAS {0} nu este \u00eenc\u0103rcat deoarece elementul de configura\u0163ie {1} specific\u0103 at\u00e2t atributul libraryRef, c\u00e2t \u015fi classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Trebuie s\u0103 specifica\u0163i doar un atribut, libraryRef sau classProviderRef, pentru a indica artefactul din care s\u0103 \u00eenc\u0103rca\u0163i modulul de logare personalizat JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=\u00cenl\u0103tura\u0163i fie atributul libraryRef, fie atributul classProviderRef, oricare dintre ele care nu con\u0163ine clasa de module de logare personalizat\u0103 JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Modulul de logare personalizat JAAS {0} nu este g\u0103sit deoarece elementul de configura\u0163ie {1} nu specific\u0103 atributul libraryRef sau classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Trebuie s\u0103 specifica\u0163i exact un atribut, libraryRef sau classProviderRef, pentru a indica artefactul de la care s\u0103 \u00eenc\u0103rca\u0163i modulul de logare personalizat JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Specifica\u0163i fie atributul libraryRef, fie classProviderRef pentru a indica loca\u0163ia de la care s\u0103 \u00eenc\u0103rca\u0163i clasa de module de logare personalizat\u0103 JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: Modulul de logare personalizat\u0103 JAAS {0} nu este g\u0103sit \u00een artefactul {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=Aplica\u0163ia specificat\u0103 sau adaptorul de resurse nu con\u0163ine clasa de modul de logare personalizat\u0103 JAAS cerut\u0103 sau clasa de modul de logare personalizat\u0103 JAAS este prezent\u0103 \u00een aplica\u0163ie, dar \u00eentr-o loca\u0163ie din care nu poate fi \u00eenc\u0103rcat\u0103.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa de modul de logare personalizat\u0103 JAAS configurat\u0103 \u015fi numele pachetului s\u0103u sunt corecte. Dac\u0103 este specificat\u0103 o aplica\u0163ie, clasa modulului de logare trebuie con\u0163inut\u0103 \u00een aplica\u0163ie, fie \u00eentr-un JAR de nivel superior sau \u00eentr-un modul de adaptor de resurse.

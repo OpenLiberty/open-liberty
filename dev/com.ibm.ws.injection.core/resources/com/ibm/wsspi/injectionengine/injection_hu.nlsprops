@@ -1,0 +1,393 @@
+###############################################################################
+# Copyright (c) 2007, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME ws/code/metadata/src/com/ibm/ws/injectionengine/injection.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+#CWNEN0001W=CWNEN0001W:
+#CWNEN0001W.explanation=
+#CWNEN0001W.useraction=
+
+# --------------------------------
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E=CWNEN0001E: A besz\u00far\u00e1si alrendszer {0} kiv\u00e9telt fogott, \u00e9s a k\u00f6vetkez\u0151 hib\u00e1t hozta l\u00e9tre: {1}.
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.explanation=
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.useraction=
+
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E=CWNEN0005E: A besz\u00far\u00e1si alrendszer szolg\u00e1ltat\u00e1sa nem \u00e9rhet\u0151 el.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.explanation=A megadott kiszolg\u00e1l\u00f3hoz a besz\u00far\u00e1si alrendszer szolg\u00e1ltat\u00e1s nem el\u00e9rhet\u0151.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.useraction=A besz\u00far\u00e1si alrendszer szolg\u00e1ltat\u00e1s, mint egy egyke szolg\u00e1ltat\u00e1s ker\u00fclt elind\u00edt\u00e1sra minden alkalmaz\u00e1skiszolg\u00e1l\u00f3 folyamaton.  Ellen\u0151rizze, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 hiba n\u00e9lk\u00fcl indult-e el.
+
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E=CWNEN0006E: A besz\u00far\u00e1si alrendszer nem tudja bejegyezni a besz\u00far\u00e1si processzorokat, am\u00edg a besz\u00far\u00e1si alrendszer szolg\u00e1ltat\u00e1s nem ker\u00fcl inicializ\u00e1l\u00e1sra.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.explanation=A besz\u00far\u00e1si alrendszer inicializ\u00e1l egy alap\u00e9rtelmezett besz\u00far\u00e1si processzor k\u00e9szletet az ind\u00edt\u00e1s k\u00f6zben.  A besz\u00far\u00e1si alrendszer szolg\u00e1ltat\u00e1st el kell ind\u00edtani \u00e9s inicializ\u00e1lni kell, miel\u0151tt tov\u00e1bbi besz\u00far\u00e1sfeldolgoz\u00f3kat bejegyezhetne a besz\u00far\u00e1si alrendszerben.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a besz\u00far\u00e1si processzorok bejegyz\u00e9sre ker\u00fclnek az alkalmaz\u00e1skiszolg\u00e1l\u00f3 elindul\u00e1sa ut\u00e1n.
+
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E=CWNEN0008E:  A(z) {0} met\u00f3dusnak be\u00e1ll\u00edt\u00f3 met\u00f3dusnak kell lennie; a feljegyz\u00e9s figyelmen k\u00edv\u00fcl marad.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.explanation=A besz\u00far\u00e1si c\u00e9l met\u00f3dus\u00e1nak egy be\u00e1ll\u00edt\u00f3 tulajdons\u00e1g met\u00f3dusnak kell lennie.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a feljegyz\u00e9si vagy besz\u00far\u00e1si c\u00e9l XML a tervezett met\u00f3dust adja meg.
+
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E=CWNEN0009E: A besz\u00far\u00e1si alrendszernek nem siker\u00fclt feldolgoznia a telep\u00edt\u00e9si le\u00edr\u00f3b\u00f3l sz\u00e1rmaz\u00f3 XML k\u00f3dot a k\u00f6vetkez\u0151 hiba miatt: {0}
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.explanation=Hiba t\u00f6rt\u00e9nt a metaadatok feldolgoz\u00e1sakor a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy, hogy a telep\u00edt\u00e9si le\u00edr\u00f3ban tal\u00e1lhat\u00f3 XML helyes.
+
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E=CWNEN0010E:  A besz\u00far\u00e1si alrendszernek nem siker\u00fclt feldolgoznia a(z) {0} vagy {1} feljegyz\u00e9st a(z) {2} oszt\u00e1lyban.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.explanation=A besz\u00far\u00e1si alrendszer k\u00e9ptelen volt megfelel\u0151en be\u00e1ll\u00edtani a besz\u00far\u00e1si c\u00e9lokat a megadott oszt\u00e1ly sz\u00e1m\u00e1ra.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes feljegyz\u00e9sek vannak az oszt\u00e1lyban \u00e9s az XML k\u00f3dban a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E=CWNEN0011E: A besz\u00far\u00e1si alrendszernek nem siker\u00fclt feldolgoznia a metaadatok k\u00f6t\u00e9seit a k\u00f6vetkez\u0151 hiba miatt: {0}
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.explanation=A k\u00f6t\u00e9sek \u00e9s a besz\u00far\u00e1si inform\u00e1ci\u00f3k hib\u00e1kat tartalmaznak.
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a telep\u00edt\u00e9si le\u00edr\u00f3ban tal\u00e1lhat\u00f3 oszt\u00e1ly \u00e9s XML k\u00f3d feljegyz\u00e9sei helyesek.
+
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E=CWNEN0012E: A besz\u00far\u00e1si alrendszernek nem siker\u00fclt inicializ\u00e1lnia a(z) {0} processzort.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.explanation=A processzor inicializ\u00e1l\u00e1sa nem siker\u00fclt.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a processzor el\u00e9rhet\u0151 \u00e9s megfelel\u0151en be van jegyezve a besz\u00far\u00e1si alrendszerbe.
+
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W=CWNEN0013W: A k\u00f6vetkez\u0151 NumberFormatException kiv\u00e9tel t\u00f6rt\u00e9nt, amikor a besz\u00far\u00e1si alrendszer megpr\u00f3b\u00e1lta a(z) {0} &lt;env-entry-name&gt; {1} &lt;env-entry-value&gt;: {2} konvert\u00e1l\u00e1s\u00e1t:
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.explanation=A t\u00e1rol\u00f3 NumberFormatException kiv\u00e9tel miatt nem tudja feldolgozni egy k\u00f6rnyezetbejegyz\u00e9st.
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6rnyezetbejegyz\u00e9s \u00e9rt\u00e9ke a megadott t\u00edpus \u00e9rv\u00e9nyes karaktersorozat-\u00e1br\u00e1zol\u00e1sa.
+
+INVALID_BOOLEAN_FORMAT_CWNEN0014W=CWNEN0014W: A java:comp/env kontextus k\u00f6rnyezet bejegyz\u00e9s a(z) {0} EJB-komponenshez, amely logikai t\u00edpus\u00fa, nem \u00e9rv\u00e9nyes logikai \u00e9rt\u00e9kre van be\u00e1ll\u00edtva: {1}.  Ez\u00e9rt a bejegyz\u00e9shez hamis \u00e9rt\u00e9k van rendelve.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.explanation=Egy java:comp/env kontextus k\u00f6rnyezeti bejegyz\u00e9shez a logikai t\u00edpus EJB-komponens\u00e9hez van igaz, vagy hamis \u00e9rt\u00e9ket kell rendelni. B\u00e1rmely m\u00e1s \u00e9rt\u00e9k hamis \u00e9rt\u00e9ket eredm\u00e9nyez, de konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1t jelezhet. Lehet, hogy az alkalmaz\u00e1s nem a v\u00e1rt m\u00f3don m\u0171k\u00f6dik.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.useraction=M\u00f3dos\u00edtsa a logikai t\u00edpus\u00fa java:comp/env kontextus bejegyz\u00e9st igaz vagy hamis \u00e9rt\u00e9kre.
+
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W=CWNEN0015W: A k\u00f6vetkez\u0151 kiv\u00e9tel ker\u00fclt elfog\u00e1sra a(z) {0} &lt;env-entry-name&gt; {1} &lt;env-entry-value&gt;: \u00f6ssze\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben: \n {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.explanation=A besz\u00far\u00e1si alrendszer egy kiv\u00e9tellel tal\u00e1lkozott, amikor megpr\u00f3b\u00e1lt l\u00e9trehozni egy java:comp/env bejegyz\u00e9st.
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.useraction=Int\u00e9zkedjen a kiv\u00e9telben szerepl\u0151 \u00fczenet alapj\u00e1n.
+
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W=CWNEN0016W: A(z) {3} modul {2} \u00f6sszetev\u0151j\u00e9ben a nem \u00e9rv\u00e9nyes {0} t\u00edpus lett megadva a(z) {1} egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9shez.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.explanation=A besz\u00far\u00e1si alrendszer egy olyan t\u00edpussal tal\u00e1lkozott, amely \u00e9rv\u00e9nytelen egy k\u00f6rnyezeti bejegyz\u00e9shez.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6vetkez\u0151 k\u00f6rnyezeti bejegyz\u00e9st\u00edpusok valamelyik\u00e9t haszn\u00e1lja: karaktersorozat, karakter, byte, r\u00f6vid, eg\u00e9sz sz\u00e1m, hossz\u00fa, logikai, dupla pontoss\u00e1g\u00fa, lebeg\u0151pontos, oszt\u00e1ly, vagy b\u00e1rmilyen felsorol\u00e1si aloszt\u00e1ly.
+
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E=CWNEN0017E: A besz\u00far\u00e1si alrendszer nem tudja feloldani a(z) {0} er\u0151forr\u00e1s hivatkoz\u00e1s deklar\u00e1ci\u00f3 c\u00e9lj\u00e1t a hozz\u00e1 kapcsol\u00f3d\u00f3 k\u00f6t\u00e9si helynek a glob\u00e1lis n\u00e9vt\u00e9rben.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.explanation=A besz\u00far\u00e1si alrendszer nem k\u00e9pes csatol\u00e1st l\u00e9trehozni a java:comp/env n\u00e9vt\u00e9rben \u00e9szlelt n\u00e9v \u00e9s a c\u00e9l er\u0151forr\u00e1s neve k\u00f6z\u00f6tt a glob\u00e1lis Java n\u00e9vad\u00e1si \u00e9s c\u00edmjegyz\u00e9k fel\u00fclet (JNDI) n\u00e9vt\u00e9rben.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a besz\u00far\u00e1sban deklar\u00e1lt n\u00e9v, a @Resource feljegyz\u00e9s vagy az er\u0151forr\u00e1s hivatkoz\u00e1si deklar\u00e1ci\u00f3 haszn\u00e1lat\u00e1val, egyezik ugyanazzal a n\u00e9vvel a k\u00f6t\u00e9si XML f\u00e1jlban.
+
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E=CWNEN0018E: A(z) {0} besz\u00far\u00e1si c\u00e9l egy olyan feljegyz\u00e9sben lett megadva, amely nem l\u00e9tezik az XML telep\u00edt\u00e9si le\u00edr\u00f3ban.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.explanation=A k\u00f6vetkez\u0151 inform\u00e1ci\u00f3k az EJB meghat\u00e1roz\u00e1s \u00fajradefini\u00e1lt szab\u00e1lyaiban tal\u00e1lhat\u00f3k: \n  Amikor egy besz\u00far\u00e1si c\u00e9l m\u00e1r jelen van \u00e9s XML haszn\u00e1lat\u00e1val lett megadva, akkor a feljegyz\u00e9si besz\u00far\u00e1si c\u00e9lnak ugyanazt a mez\u0151t, vagy tulajdons\u00e1g met\u00f3dust kell megadnia.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.useraction=M\u00f3dos\u00edtsa a feljegyz\u00e9s besz\u00far\u00e1si c\u00e9lj\u00e1t, hogy egyezzen ugyanazon mez\u0151 kor\u00e1bban meghat\u00e1rozott XML besz\u00far\u00e1si c\u00e9lj\u00e1val, vagy tulajdons\u00e1g met\u00f3dussal.
+
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E=CWNEN0019E: A(z) {0} besz\u00far\u00e1si c\u00e9lmez\u0151t nem szabad v\u00e9glegesk\u00e9nt deklar\u00e1lni.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.explanation=Az EJB meghat\u00e1roz\u00e1s szerint, egy besz\u00far\u00e1si c\u00e9lmez\u0151t nem szabad v\u00e9glegesk\u00e9nt deklar\u00e1lni.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.useraction=Jav\u00edtsa ki vagy a mez\u0151nevet, vagy a mez\u0151 al\u00e1\u00edr\u00e1s\u00e1t, hogy az egyik nem mag\u00e1n oszt\u00e1ly mez\u0151t adja meg.
+
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E=CWNEN0020E: A besz\u00far\u00e1si alrendszer a k\u00f6vetkez\u0151 biztons\u00e1gi kiv\u00e9telt fogta el, amikor megpr\u00f3b\u00e1lta a(z) {1} tag el\u00e9r\u00e9s\u00e9t: {0}.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.explanation=A besz\u00far\u00e1si alrendszer nem rendelkezett a megfelel\u0151 biztons\u00e1gi hiteles\u00edt\u00e9si adatokkal a tag el\u00e9r\u00e9s\u00e9hez.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.useraction=Tegyen meg rendelkez\u00e9seket a kiv\u00e9telhez tartoz\u00f3 \u00fczenet alapj\u00e1n.
+
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W=CWNEN0021W: A(z) {0} mez\u0151 {1} t\u00edpussal van megadva, de a mez\u0151 k\u00e9rt besz\u00far\u00e1si t\u00edpusa {2}.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.explanation=A besz\u00far\u00e1si c\u00e9lon jelzett mez\u0151t\u00edpus helytelen.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a feljegyz\u00e9si vagy besz\u00far\u00e1si c\u00e9l XML a tervezett mez\u0151t adja meg.
+
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E=CWNEN0022E: A(z) {0} hivatkoz\u00e1s besz\u00far\u00e1si c\u00e9lj\u00e1t nem lehet feldolgozni, mivel a(z) {3} oszt\u00e1lyban sem a(z) {1} met\u00f3dus, sem a(z) {2} f\u00e1jl nem l\u00e9tezik.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.explanation=Az oszt\u00e1ly nem rendelkezik a be\u00e1ll\u00edtott besz\u00far\u00e1si c\u00e9l tulajdons\u00e1g nev\u00e9t tartalmaz\u00f3 met\u00f3dussal vagy mez\u0151vel.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a be\u00e1ll\u00edtott besz\u00far\u00e1si c\u00e9l tulajdons\u00e1g neve helyesen lett megadva, \u00e9s hogy az oszt\u00e1ly tartalmazza a megfelel\u0151 mez\u0151t vagy tulajdons\u00e1g met\u00f3dust.
+
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E=CWNEN0023E: A k\u00f6vetkez\u0151 argumentumok legal\u00e1bb egyike null: {0} targetClass, {1} targetName, {2} injectionClass.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.explanation=A besz\u00far\u00e1si alrendszer egy hib\u00e1val tal\u00e1lkozott, amikor megpr\u00f3b\u00e1lta az XML k\u00f3dban megadott besz\u00far\u00e1si c\u00e9linform\u00e1ci\u00f3kat haszn\u00e1lni.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy, hogy a telep\u00edt\u00e9si le\u00edr\u00f3ban l\u00e9v\u0151 XML helyes.
+
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E=CWNEN0024E: A besz\u00far\u00e1si alrendszernek nem siker\u00fclt bet\u00f6ltenie a(z) {0} ObjectFactory oszt\u00e1lyt.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.explanation=A besz\u00far\u00e1si alrendszernek nem siker\u00fclt bet\u00f6ltenie \u00e9s p\u00e9ld\u00e1nyos\u00edtania a megadott objektumoszt\u00e1lyt.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly el\u00e9rhet\u0151, \u00e9s a konstruktor l\u00e1that\u00f3 \u00e9s el\u00e9rhet\u0151.
+
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W=CWNEN0025W: Az EJB-komponens egy \u00fcres karaktersorozathoz van k\u00f6tve a glob\u00e1lis Java n\u00e9vad\u00e1si \u00e9s c\u00edmjegyz\u00e9k fel\u00fclet (JNDI) n\u00e9vt\u00e9rben.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.explanation=Az inform\u00e1ci\u00f3 feljegyz\u00e9s, vagy a besz\u00far\u00e1si c\u00e9l helytelen, vagy hi\u00e1nyos.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EJB-komponenshez a feljegyz\u00e9si vagy besz\u00far\u00e1si c\u00e9l XML helyes.
+
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E=CWNEN0026E: A(z) {0} EJB-komponens saj\u00e1t \u00e9s t\u00e1voli, vagy helyi-saj\u00e1t \u00e9s helyi elemei vagy hi\u00e1nyoznak, vagy nem oldhat\u00f3k fel.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.explanation=A saj\u00e1t \u00e9s t\u00e1voli, vagy helyi-saj\u00e1t \u00e9s helyi elemei vagy hi\u00e1nyoznak, vagy bonthat\u00f3k fel.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az &lt;ejb-ref&gt; vagy &lt;ejb-local-ref&gt; c\u00edmk\u00e9k helyesen vannak megadva az XML telep\u00edt\u00e9si le\u00edr\u00f3ban.
+
+
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E=CWNEN0027E: A besz\u00far\u00e1si alrendszer a k\u00f6vetkez\u0151 {0} elnevez\u00e9si kiv\u00e9tellel tal\u00e1lkozott, amikor megpr\u00f3b\u00e1lta a(z) {1} k\u00f6t\u00e9s\u00e9t egy glob\u00e1lis Java n\u00e9vad\u00e1si \u00e9s c\u00edmjegyz\u00e9k fel\u00fclet (JNDI) n\u00e9vt\u00e9rbe.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.explanation=A besz\u00far\u00e1si alrendszer egy kiv\u00e9tellel tal\u00e1lkozott, amikor megpr\u00f3b\u00e1lt k\u00f6tni.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.useraction=Int\u00e9zkedjen a kiv\u00e9telben szerepl\u0151 \u00fczenet alapj\u00e1n.
+
+INJECTION_FAILED_CWNEN0028E=CWNEN0028E: A besz\u00far\u00e1si alrendszer a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {0} besz\u00far\u00e1sakor a(z) {1} elembe: {2}
+INJECTION_FAILED_CWNEN0028E.explanation=A megadott t\u00edpus nem besz\u00farhat\u00f3 a megadott oszt\u00e1lyba.
+INJECTION_FAILED_CWNEN0028E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EJB-komponenshez a feljegyz\u00e9si vagy besz\u00far\u00e1si c\u00e9l XML helyes.
+
+INJECTION_FAILED_CWNEN0029E=CWNEN0029E: A besz\u00far\u00e1si alrendszer egy hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {0} besz\u00far\u00e1sakor a(z) {1} elembe.  A(z) {0} t\u00edpus csak egy {1} EJB-komponensbe sz\u00farhat\u00f3 be.
+INJECTION_FAILED_CWNEN0029E.explanation=Csak EJBContext vagy TimerService objektumok sz\u00farhat\u00f3k be k\u00f6zvetlen\u00fcl egy EJB-komponensbe.
+INJECTION_FAILED_CWNEN0029E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott t\u00edpus egy EJBContext vagy TimerService objektum.
+
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E=CWNEN0030E: A(z) {0} gy\u00e1r egy probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {1} k\u00f6t\u00e9si objektum objektump\u00e9ld\u00e1ny\u00e1nak megszerz\u00e9sekor.  A kiv\u00e9tel \u00fczenet: {2}
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.explanation=objektum megadott objektumgy\u00e1r helytelen a k\u00f6t\u00e9si objektumhoz.
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a gy\u00e1rnak megfelel\u0151en k\u00f6t\u00f6tt objektuma van.
+
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E=CWNEN0031E: Hiba t\u00f6rt\u00e9nt a(z) {1} t\u00edpus\u00fa {0} hivatkoz\u00e1s l\u00e9trehoz\u00e1sakor.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.explanation=Egy probl\u00e9ma jelentkezett egy hivatkoz\u00e1s l\u00e9trehoz\u00e1sa k\u00f6zben a glob\u00e1lis Java n\u00e9vad\u00e1si \u00e9s c\u00edmjegyz\u00e9k fel\u00fclet (JNDI) n\u00e9vt\u00e9rben.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott hivatkoz\u00e1s helyes.
+
+FAILED_TO_PROCESS_XML_CWNEN0032E=CWNEN0032E: Az XML feldolgoz\u00e1sa meghi\u00fasult a k\u00f6vetkez\u0151h\u00f6z: {0} {1}.
+FAILED_TO_PROCESS_XML_CWNEN0032E.explanation=A megadott hivatkoz\u00e1shoz az XML helytelen, vagy hi\u00e1nyos.
+FAILED_TO_PROCESS_XML_CWNEN0032E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy, hogy a telep\u00edt\u00e9si le\u00edr\u00f3ban l\u00e9v\u0151 XML helyes.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W=CWNEN0033W: Az &lt;ejb-ref&gt; vagy &lt;ejb-local-ref&gt; c\u00edmk\u00e9khez megadott {0} fel\u00fclet nem tal\u00e1lhat\u00f3.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.explanation=A fel\u00fcleti oszt\u00e1ly vagy hi\u00e1nyzik, vagy nem tal\u00e1lhat\u00f3.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az &lt;ejb-ref&gt; vagy &lt;ejb-local-ref&gt; c\u00edmk\u00e9k helyesen vannak megadva az XML telep\u00edt\u00e9si le\u00edr\u00f3ban, \u00e9s hogy az oszt\u00e1ly el\u00e9rhet\u0151.
+
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E=CWNEN0034E: A(z) ejb-link/beanName helytelen\u00fcl van megadva. A(z) {0} komponens: {1} moduln\u00e9vnek .jar vagy .war kiterjeszt\u00e9ssel kell v\u00e9gz\u0151dnie.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.explanation=Az inform\u00e1ci\u00f3 feljegyz\u00e9s, vagy a besz\u00far\u00e1si c\u00e9l helytelen, vagy hi\u00e1nyos.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EJB-komponenshez a feljegyz\u00e9si vagy besz\u00far\u00e1si c\u00e9l XML helyes.
+
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E=CWNEN0035E: A(z) {4} alkalmaz\u00e1s {3} modul {2} komponens\u00e9nek {1} t\u00edpus\u00fa {0} hivatkoz\u00e1sa nem oldhat\u00f3 fel.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.explanation=Az alkalmaz\u00e1s olyan objektumra hivatkozik, ami nem tal\u00e1lhat\u00f3.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.useraction=Keressen olyan kor\u00e1bbi \u00fczenetet, ami utalhat arra, hogy a hivatkozott objektum mi\u00e9rt nem tal\u00e1lhat\u00f3, illetve ellen\u0151rizze, hogy a hivatkoz\u00e1s be\u00e1ll\u00edt\u00e1sa helyes-e.
+
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E=CWNEN0036E: A(z) {0} k\u00f6t\u00e9si objektum nem hivatkoz\u00e1s.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.explanation=A megadott objektum helytelen.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az objektum Hivatkoz\u00e1s t\u00edpusra lett be\u00e1ll\u00edtva.
+
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E=CWNEN0037E: A(z) {0} gy\u00e1r nem a(z) {1} k\u00f6t\u00e9si objektumhoz hivatkoz\u00e1s l\u00e9trehoz\u00e1s\u00e1ra szolg\u00e1l.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.explanation=A gy\u00e1r helytelen\u00fcl lett megadva.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.useraction=Adjon meg egy gy\u00e1rat a haszn\u00e1latban l\u00e9v\u0151 k\u00f6t\u00e9si objektumhoz.
+
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E=CWNEN0038E: A(z) {0} hivatkoz\u00e1s c\u00edme \u00fcres (null).
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.explanation=Nem lett megadva RefAddr n\u00e9v a Hivatkoz\u00e1shoz.
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.useraction=Adjon meg egy RefAddr c\u00edmet a hivatkoz\u00e1shoz.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E=CWNEN0039E: Az &lt;ejb-ref&gt; vagy &lt;ejb-local-ref&gt; c\u00edmk\u00e9khez megadott {0} fel\u00fclet nem tal\u00e1lhat\u00f3.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.explanation=A fel\u00fcleti oszt\u00e1ly vagy hi\u00e1nyzik, vagy nem tal\u00e1lhat\u00f3.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az &lt;ejb-ref&gt; vagy &lt;ejb-local-ref&gt; c\u00edmk\u00e9k helyesen vannak megadva az XML telep\u00edt\u00e9si le\u00edr\u00f3ban, \u00e9s hogy az oszt\u00e1ly el\u00e9rhet\u0151.
+
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W=CWNEN0040W: A(z) {0} mez\u0151 vagy met\u00f3dus t\u00f6bbsz\u00f6r\u00f6s beilleszt\u00e9sre lett be\u00e1ll\u00edtva.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.explanation=Amikor t\u00f6bb beilleszt\u00e9si c\u00e9l van be\u00e1ll\u00edtva egy mez\u0151 vagy met\u00f3dus sz\u00e1m\u00e1ra, akkor a beilleszt\u0151 alrendszer nem k\u00e9pes eld\u00f6nteni, hogy melyik c\u00e9lt illessze be.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.useraction=Ne \u00e1ll\u00edtsa be ugyanazt a mez\u0151t vagy met\u00f3dust t\u00f6bb beilleszt\u00e9si c\u00e9llal.
+
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E=CWNEN0041E: A(z) {3} v\u00e1llalati komponens {2} fel\u00fclet\u00e9hez tartoz\u00f3 {1} modulban l\u00e9v\u0151 {0} EJB hivatkoz\u00e1st ezen a csom\u00f3ponton nem lehet feloldani.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.explanation=Az AutoLink hat\u00f3k\u00f6re az EJB hivatkoz\u00e1st tartalmaz\u00f3 alkalmaz\u00e1sra van korl\u00e1tozva, valamint azokra a kiszolg\u00e1l\u00f3kra, amelyek nem tagjai egy alkalmaz\u00e1skiszolg\u00e1l\u00f3i f\u00fcrtnek.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.useraction=Ellen\u0151rizze, hogy a hivatkozott EJB-komponensek ugyanabban az alkalmaz\u00e1sban l\u00e9teznek.
+
+#Do no translate env-entry
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W=CWNEN0042W: A(z) {0} env-entry utas\u00edt\u00e1s m\u00e1r meg van adva a(z) {1} t\u00edpussal.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.explanation=Nem enged\u00e9lyezettek az ugyanazon a n\u00e9ven t\u00f6bbsz\u00f6r szerepl\u0151 env-entry utas\u00edt\u00e1sok.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.useraction=Ne konfigur\u00e1ljon env-entry bejegyz\u00e9st ugyanazon a n\u00e9ven.
+
+#Do no translate UserTransaction
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E=CWNEN0043E: UserTransaction fel\u00fclet beilleszt\u00e9se egy t\u00e1rol\u00f3fel\u00fcgyelt tranzakci\u00f3s komponensbe nem enged\u00e9lyezett.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.explanation=Az Enterprise JavaBeans (EJB) specifik\u00e1ci\u00f3 megk\u00f6veteli, hogy a UserTransaction fel\u00fclet el\u00e9rhetetlen legyen a t\u00e1rol\u00f3fel\u00fcgyelt tranzakci\u00f3s demark\u00e1ci\u00f3val rendelkez\u0151 EJB-komponensek sz\u00e1m\u00e1ra.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.useraction=Ne illesszen be UserTransaction fel\u00fcletet egy t\u00e1rol\u00f3fel\u00fcgyelt tranzakci\u00f3s komponensbe.
+
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E=CWNEN0044E: A(z) {1} \u00f6sszetev\u0151h\u00f6z meghat\u00e1rozott {0} er\u0151forr\u00e1s hivatkoz\u00e1shoz nem tal\u00e1lhat\u00f3 er\u0151forr\u00e1s hivatkoz\u00e1s k\u00f6t\u00e9s.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.explanation=El\u0151fordulhat, hogy az er\u0151forr\u00e1s hivatkoz\u00e1s k\u00f6t\u00e9s kimaradt vagy nem helyesen lett megadva.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.useraction=A @Resource feljegyz\u00e9st tartalmaz\u00f3 \u00f6sszetev\u0151h\u00f6z az er\u0151forr\u00e1s hivatkoz\u00e1s egy \u00f6sszetev\u0151 oszt\u00e1lyf\u00e1jlban ker\u00fcl meghat\u00e1roz\u00e1sra, vagy a k\u00f6vetkez\u0151 XML szakaszok egyik\u00e9ben a telep\u00edt\u00e9si le\u00edr\u00f3ban: resource-env-ref, resource-ref, message-destination-ref.  Gondoskodj\u00e9k r\u00f3la, hogy legyen k\u00f6t\u00e9s meghat\u00e1rozva az er\u0151forr\u00e1s hivatkoz\u00e1shoz az ibm-ejb-jar-bnd f\u00e1jlban, ha az \u00f6sszetev\u0151 egy EJB modul, az ibm-web-bnd f\u00e1jlban, ha az \u00f6sszetev\u0151 egy webalkalmaz\u00e1s modul vagy az ibm-application-client-bnd f\u00e1jlban, ha az \u00f6sszetev\u0151 egy \u00fcgyf\u00e9lmodul.
+
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W=CWNEN0045W: A(z) {1} \u00f6sszetev\u0151h\u00f6z meghat\u00e1rozott {0} env-entry bejegyz\u00e9snek nincs besz\u00far\u00e1si c\u00e9lja vagy \u00e9rt\u00e9ke megadva.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.explanation=Meg kell adni az env-entry \u00e9rt\u00e9k\u00e9t, ha a besz\u00far\u00e1si c\u00e9l \u00e9rt\u00e9k nincs be\u00e1ll\u00edtva.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.useraction=Adjon meg egy \u00e9rt\u00e9ket, egy besz\u00far\u00e1si c\u00e9lt vagy mindkett\u0151t az env-entry bejegyz\u00e9shez.
+
+#-------------------------------------------------------------------------------
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W=CWNEN0046W: A(z) {2} modul {1} nev\u0171 resource-ref, resource-env-ref vagy message-destination-ref bejegyz\u00e9s\u00e9re megadott {0} t\u00edpus nem t\u00f6lthet\u0151 be. Az er\u0151forr\u00e1s-hivatkoz\u00e1shoz nem lesz kompatibilit\u00e1si t\u00edpusellen\u0151rz\u00e9s.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.explanation=Az er\u0151forr\u00e1s-hivatkoz\u00e1s k\u00f6t\u00e9s \u00e1ltal felismert er\u0151forr\u00e1st\u00edpus kompatibilit\u00e1sa nem ellen\u0151rizhet\u0151 a k\u00f6vetkez\u0151 XML szakaszok egyik\u00e9ben a telep\u00edt\u00e9si le\u00edr\u00f3ban: resource-env-ref, resource-ref, message-destination-ref.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.useraction=M\u00f3dos\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 er\u0151forr\u00e1s-hivatkoz\u00e1s\u00e1hoz meghat\u00e1rozott t\u00edpust olyanra, amely bet\u00f6lthet\u0151.
+
+#-------------------------------------------------------------------------------
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W=CWNEN0047W: A(z) {0} oszt\u00e1ly mez\u0151inek er\u0151forr\u00e1s feljegyz\u00e9sei figyelmen k\u00edv\u00fcl maradnak. A feljegyz\u00e9sek nem k\u00e9rdezhet\u0151k le a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.explanation=Ha a megadott oszt\u00e1lyt haszn\u00e1lja, az alkalmaz\u00e1s nem fog megfelel\u0151en m\u0171k\u00f6dni.
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.useraction=Vagy t\u00e1vol\u00edtsa el az oszt\u00e1lyt az alkalmaz\u00e1sb\u00f3l, vagy jav\u00edtsa ki a kiv\u00e9tel ok\u00e1t.
+
+#-------------------------------------------------------------------------------
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W=CWNEN0048W: A(z) {0} oszt\u00e1ly mez\u0151inek er\u0151forr\u00e1s feljegyz\u00e9sei figyelmen k\u00edv\u00fcl maradnak. A(z) {0} oszt\u00e1ly feldolgoz\u00e1sra ker\u00fcl feljegyz\u00e9sek ir\u00e1nt, mert a(z) {1} alkalmaz\u00e1soszt\u00e1ly hivatkozik r\u00e1. A feljegyz\u00e9sek nem k\u00e9rdezhet\u0151k le a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {2}
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.explanation=Ha a megadott oszt\u00e1lyt haszn\u00e1lja, az alkalmaz\u00e1s nem fog megfelel\u0151en m\u0171k\u00f6dni.
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.useraction=Vagy t\u00e1vol\u00edtsa el az oszt\u00e1lyt az alkalmaz\u00e1sb\u00f3l, vagy jav\u00edtsa ki a kiv\u00e9tel ok\u00e1t.
+
+#-------------------------------------------------------------------------------
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W=CWNEN0049W: A(z) {0} oszt\u00e1ly met\u00f3dusainak er\u0151forr\u00e1s feljegyz\u00e9sei figyelmen k\u00edv\u00fcl maradnak. A feljegyz\u00e9sek nem k\u00e9rdezhet\u0151k le a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.explanation=Ha a megadott oszt\u00e1lyt haszn\u00e1lja, az alkalmaz\u00e1s nem fog megfelel\u0151en m\u0171k\u00f6dni.
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.useraction=Vagy t\u00e1vol\u00edtsa el az oszt\u00e1lyt az alkalmaz\u00e1sb\u00f3l, vagy jav\u00edtsa ki a kiv\u00e9tel ok\u00e1t.
+
+#-------------------------------------------------------------------------------
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W=CWNEN0050W: A(z) {0} oszt\u00e1ly met\u00f3dusainak er\u0151forr\u00e1s feljegyz\u00e9sei figyelmen k\u00edv\u00fcl maradnak. A(z) {0} oszt\u00e1ly feldolgoz\u00e1sra ker\u00fcl feljegyz\u00e9sek ir\u00e1nt, mert a(z) {1} alkalmaz\u00e1soszt\u00e1ly hivatkozik r\u00e1. A feljegyz\u00e9sek nem k\u00e9rdezhet\u0151k le a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {2}
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.explanation=Ha a megadott oszt\u00e1lyt haszn\u00e1lja, az alkalmaz\u00e1s nem fog megfelel\u0151en m\u0171k\u00f6dni.
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.useraction=Vagy t\u00e1vol\u00edtsa el az oszt\u00e1lyt az alkalmaz\u00e1sb\u00f3l, vagy jav\u00edtsa ki a kiv\u00e9tel ok\u00e1t.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_TYPES_CWNEN0051E=CWNEN0051E: A(z) {2} alkalmaz\u00e1s {1} modul {0} komponens\u00e9nek XML telep\u00edt\u00e9si le\u00edr\u00f3 konfigur\u00e1ci\u00f3s adataiban \u00fctk\u00f6z\u00e9s tal\u00e1lhat\u00f3. \u00dctk\u00f6z\u0151 elemt\u00edpusok tal\u00e1lhat\u00f3k azonos {3} elem\u00e9rt\u00e9kkel: {4}. Az \u00fctk\u00f6z\u0151 elemek: {5} \u00e9s {6}.
+CONFLICTING_XML_TYPES_CWNEN0051E.explanation=Ha t\u00f6bb er\u0151forr\u00e1s-hivatkoz\u00e1s van megadva azonos nev\u0171 azonos \u00f6sszetev\u0151 n\u00e9vterek XML telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban, akkor az er\u0151forr\u00e1s t\u00edpus\u00e1nak is azonosnak kell lennie.  Jellemz\u0151 szitu\u00e1ci\u00f3 az, amikor egy Enterprise Java Bean (EJB) komponenshez \u00e9s vonatkoz\u00f3 elfog\u00f3 oszt\u00e1ly\u00e1hoz ker\u00fcl er\u0151forr\u00e1s-hivatkoz\u00e1s meghat\u00e1roz\u00e1sra. Mind az EJB \u00e9s az elfog\u00f3 oszt\u00e1ly azonos \u00f6sszetev\u0151 n\u00e9vt\u00e9ren osztozik, ez\u00e9rt a k\u00f6z\u00f6s er\u0151forr\u00e1s-hivatkoz\u00e1soknak azonos t\u00edpus\u00fanak kell lenni\u00fck.
+CONFLICTING_XML_TYPES_CWNEN0051E.useraction=V\u00e1ltoztassa meg az egyik er\u0151forr\u00e1s-hivatkoz\u00e1s nev\u00e9t az XML telep\u00edt\u00e9si le\u00edr\u00f3ban, vagy \u00e1ll\u00edtsa a hivatkoz\u00e1sok t\u00edpus\u00e1t azonosra.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWNEN0052E=CWNEN0052E: A(z) {2} alkalmaz\u00e1s {1} modul {0} komponens\u00e9nek XML telep\u00edt\u00e9si le\u00edr\u00f3 konfigur\u00e1ci\u00f3s adataiban \u00fctk\u00f6z\u00e9s tal\u00e1lhat\u00f3. \u00dctk\u00f6z\u0151 {3} elem\u00e9rt\u00e9kek tal\u00e1lhat\u00f3k t\u00f6bb {4} elem eset\u00e9ben azonos {5} elem\u00e9rt\u00e9kkel: {6}. A(z) {3} \u00fctk\u00f6z\u0151 elem\u00e9rt\u00e9kek: {7} \u00e9s {8}.
+CONFLICTING_XML_VALUES_CWNEN0052E.explanation=Ha t\u00f6bb er\u0151forr\u00e1s-hivatkoz\u00e1s van megadva azonos nev\u0171 azonos \u00f6sszetev\u0151 n\u00e9vterek XML telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban, akkor az er\u0151forr\u00e1s \u00f6sszes attrib\u00fatum\u00e1nak azonosnak vagy egym\u00e1shoz rendelhet\u0151nek kell lennie. Jellemz\u0151 szitu\u00e1ci\u00f3 az, amikor egy Enterprise Java Bean (EJB) komponenshez \u00e9s vonatkoz\u00f3 elfog\u00f3 oszt\u00e1ly\u00e1hoz ker\u00fcl er\u0151forr\u00e1s-hivatkoz\u00e1s meghat\u00e1roz\u00e1sra. Mind az EJB \u00e9s az elfog\u00f3 oszt\u00e1ly azonos \u00f6sszetev\u0151 n\u00e9vt\u00e9ren osztozik, ez\u00e9rt a k\u00f6z\u00f6s er\u0151forr\u00e1s-hivatkoz\u00e1soknak kompatibilisnak kell lenni\u00fck.
+CONFLICTING_XML_VALUES_CWNEN0052E.useraction=V\u00e1ltoztassa meg az egyik er\u0151forr\u00e1s-hivatkoz\u00e1s nev\u00e9t az XML telep\u00edt\u00e9si le\u00edr\u00f3ban, vagy \u00e1ll\u00edtsa az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket azonosra vagy egym\u00e1shoz rendelhet\u0151re.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E=CWNEN0053E: A(z) {2} alkalmaz\u00e1s {1} modul {0} komponens\u00e9nek XML telep\u00edt\u00e9si le\u00edr\u00f3 konfigur\u00e1ci\u00f3s adatai \u00fctk\u00f6znek a forr\u00e1sk\u00f3d feljegyz\u00e9seivel. \u00dctk\u00f6z\u0151 {3} elem\u00e9rt\u00e9kek vagy {4} attrib\u00fatum\u00e9rt\u00e9kek tal\u00e1lhat\u00f3k t\u00f6bb {5} elem vagy {6} feljegyz\u00e9s eset\u00e9ben azonos {7} elem\u00e9rt\u00e9kkel vagy {8} attrib\u00fatum\u00e9rt\u00e9kkel: {9}. A(z) {3} \u00fctk\u00f6z\u0151 elem\u00e9rt\u00e9kek vagy {4} attrib\u00fatum\u00e9rt\u00e9kek: {10} \u00e9s {11}.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.explanation=Ha t\u00f6bb er\u0151forr\u00e1s-hivatkoz\u00e1s van megadva azonos nev\u0171 azonos \u00f6sszetev\u0151 n\u00e9vterek XML telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban \u00e9s forr\u00e1sk\u00f3d feljegyz\u00e9seiben, akkor az er\u0151forr\u00e1s n\u00e9h\u00e1ny attrib\u00fatum\u00e1nak azonosnak vagy egym\u00e1shoz rendelhet\u0151nek kell lennie.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.useraction=V\u00e1ltoztassa meg az egyik er\u0151forr\u00e1s-hivatkoz\u00e1s nev\u00e9t az XML telep\u00edt\u00e9si le\u00edr\u00f3ban vagy a forr\u00e1sk\u00f3d feljegyz\u00e9seiben, vagy \u00e1ll\u00edtsa az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket azonosra vagy egym\u00e1shoz rendelhet\u0151re.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E=CWNEN0054E: A(z) {2} alkalmaz\u00e1s {1} modul {0} komponens forr\u00e1sk\u00f3d feljegyz\u00e9seinek konfigur\u00e1ci\u00f3s adataiban \u00fctk\u00f6z\u00e9s tal\u00e1lhat\u00f3. \u00dctk\u00f6z\u0151 {3} attrib\u00fatum\u00e9rt\u00e9kek tal\u00e1lhat\u00f3k t\u00f6bb {4} feljegyz\u00e9s eset\u00e9ben azonos {5} attrib\u00fatum\u00e9rt\u00e9kkel: {6}. A(z) {3} \u00fctk\u00f6z\u0151 attrib\u00fatum\u00e9rt\u00e9kek: {7} \u00e9s {8}.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.explanation=Ha t\u00f6bb er\u0151forr\u00e1s-hivatkoz\u00e1s van megadva azonos nev\u0171 azonos \u00f6sszetev\u0151 n\u00e9vterek forr\u00e1sk\u00f3d feljegyz\u00e9seiben, akkor az er\u0151forr\u00e1s \u00f6sszes attrib\u00fatum\u00e1nak azonosnak vagy egym\u00e1shoz rendelhet\u0151nek kell lennie.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.useraction=V\u00e1ltoztassa meg az egyik er\u0151forr\u00e1s-hivatkoz\u00e1s nev\u00e9t a forr\u00e1sk\u00f3d feljegyz\u00e9seiben, vagy \u00e1ll\u00edtsa az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket azonosra vagy egym\u00e1shoz rendelhet\u0151re.
+
+#-------------------------------------------------------------------------------
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E=CWNEN0055E: A(z) {2} alkalmaz\u00e1s {1} modul {0} \u00fczenet\u00e9nek c\u00edmzettje a csom\u00f3ponton nem tal\u00e1lhat\u00f3.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.explanation=Az AutoLink hat\u00f3k\u00f6re az \u00fczenet c\u00edmzett hivatkoz\u00e1s\u00e1t tartalmaz\u00f3 alkalmaz\u00e1sra van korl\u00e1tozva, valamint azokra a kiszolg\u00e1l\u00f3kra, amelyek nem tagjai egy alkalmaz\u00e1skiszolg\u00e1l\u00f3i f\u00fcrtnek.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.useraction=Ellen\u0151rizze, hogy a hivatkozott \u00fczenet c\u00edmzettek ugyanabban az alkalmaz\u00e1sban l\u00e9teznek. Vagy adjon meg k\u00f6t\u00e9st az \u00fczenet c\u00edmzettj\u00e9nek.
+
+#-------------------------------------------------------------------------------
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E=CWNEN0056E: A(z) {0} er\u0151forr\u00e1s besz\u00far\u00e1sa megad\u00e1sra ker\u00fclt egy tulajdons\u00e1gp\u00e9ld\u00e1ny v\u00e1ltoz\u00f3 \u00e9s annak vonatkoz\u00f3, a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban a(z) {1} oszt\u00e1lyon v\u00e9gzett be\u00e1ll\u00edt\u00e1si m\u0171velete sz\u00e1m\u00e1ra.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.explanation=Er\u0151forr\u00e1s besz\u00far\u00e1s\u00e1nak k\u00e9r\u00e9se tulajdons\u00e1gp\u00e9ld\u00e1ny v\u00e1ltoz\u00f3hoz \u00e9s egy\u00fattal vonatkoz\u00f3 be\u00e1ll\u00edt\u00e1si met\u00f3dus\u00e1hoz hib\u00e1t eredm\u00e9nyez.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.useraction=T\u00e1vol\u00edtsa el a mez\u0151 vagy met\u00f3dus egyik feljegyz\u00e9s\u00e9t.  Vagy a mez\u0151, vagy a met\u00f3dus ig\u00e9nyelheti elt\u00e9r\u0151 (nem alap\u00e9rtelmezett) nev\u0171 er\u0151forr\u00e1s besz\u00far\u00e1s\u00e1t. Az er\u0151forr\u00e1s JNDI nev\u00e9nek kifejezett megad\u00e1s\u00e1val egyetlen er\u0151forr\u00e1s t\u00f6bb mez\u0151be vagy t\u00f6bb oszt\u00e1ly met\u00f3dusaiba is besz\u00farhat\u00f3.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W=CWNEN0057W: A(z) {0}.{1} besz\u00far\u00e1si c\u00e9lt nem szabad statikusk\u00e9nt deklar\u00e1lni.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.explanation=Az EJB meghat\u00e1roz\u00e1s szerint, egy besz\u00far\u00e1si c\u00e9l csak akkor deklar\u00e1lhat\u00f3 statikusk\u00e9nt, ha az \u00fcgyf\u00e9lt\u00e1rol\u00f3ban tal\u00e1lhat\u00f3.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.useraction=Vagy v\u00e1ltoztassa a besz\u00far\u00e1si c\u00e9l k\u00f3dj\u00e1t nem statikusra, vagy v\u00e1lasszon m\u00e1sik besz\u00far\u00e1si c\u00e9lt, vagy t\u00e1vol\u00edtsa el a besz\u00far\u00e1si c\u00e9lt \u00e9s t\u00f6ltse fel saj\u00e1t kez\u0171leg.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E=CWNEN0058E: A(z) {0}.{1} besz\u00far\u00e1si c\u00e9lt statikusk\u00e9nt kell deklar\u00e1lni az \u00fcgyf\u00e9lt\u00e1rol\u00f3ban.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.explanation=Az EJB meghat\u00e1roz\u00e1s szerint egy besz\u00far\u00e1si c\u00e9l statikusk\u00e9nt deklar\u00e1land\u00f3, ha \u00fcgyf\u00e9lt\u00e1rol\u00f3ban tal\u00e1lhat\u00f3.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.useraction=Vagy v\u00e1ltoztassa a besz\u00far\u00e1si c\u00e9l k\u00f3dj\u00e1t statikusra, vagy v\u00e1lasszon m\u00e1sik besz\u00far\u00e1si c\u00e9lt, vagy t\u00e1vol\u00edtsa el a besz\u00far\u00e1si c\u00e9lt \u00e9s t\u00f6ltse fel saj\u00e1t kez\u0171leg.
+
+#-------------------------------------------------------------------------------
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E=CWNEN0059E: A Besz\u00far\u00e1si alrendszernek nem siker\u00fclt a(z) {0} k\u00f6t\u00e9si objektumot besz\u00farni a(z) {1}:{2} EJB f\u00e1jlba, mert a besz\u00far\u00e1si k\u00eds\u00e9rlet rekurz\u00edv vagy ciklikus.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.explanation=Ciklikus vagy rekurz\u00edv besz\u00far\u00e1s olyankor t\u00f6rt\u00e9nik, amikor egy objektum besz\u00far\u00e1sa ugyanazon objektum tov\u00e1bbi besz\u00far\u00e1s\u00e1t ig\u00e9nyli. Ez a helyzet p\u00e9ld\u00e1ul olyankor fordulhat el\u0151, amikor egy \u00e1llapotmeg\u0151rz\u0151 komponens megpr\u00f3b\u00e1lja egy azonos t\u00edpus p\u00e9ld\u00e1ny\u00e1t mag\u00e1ba beilleszteni.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot vagy konfigur\u00e1ci\u00f3t \u00fagy, hogy a besz\u00far\u00e1si c\u00e9lok ne f\u00fcggjenek \u00f6nmagukt\u00f3l k\u00f6zvetlen\u00fcl vagy k\u00f6zvetve.
+
+#--------------------------------------------------------------------------------
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E=CWNEN0060E: Nem lehet besz\u00farni a UserTransaction p\u00e9ld\u00e1nyt a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1nak {1} komponens\u00e9vel t\u00e1rs\u00edtott {0} oszt\u00e1lyba.  A UserTransaction p\u00e9ld\u00e1nyt az\u00e9rt nem lehet besz\u00farni ebbe az oszt\u00e1lyba, mert olyan komponenssel lett t\u00e1rs\u00edtva, ami nem lett be\u00e1ll\u00edtva a komponens \u00e1ltal vez\u00e9relt tranzakci\u00f3k enged\u00e9lyez\u00e9s\u00e9re.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.explanation=Az oszt\u00e1ly \u00fagy lett be\u00e1ll\u00edtva, hogy egy nem enged\u00e9lyezett UserTransaction p\u00e9ld\u00e1ny legyen bele illesztve.  Ha az oszt\u00e1ly egy komponens, akkor a komponens nincs be\u00e1ll\u00edtva komponens \u00e1ltal vez\u00e9relt tranzakci\u00f3khoz.  Ha az oszt\u00e1ly egy elfog\u00f3 vagy webszolg\u00e1ltat\u00e1s kezel\u0151, akkor legal\u00e1bb egy olyan komponens haszn\u00e1lja, amely nincs be\u00e1ll\u00edtva komponens \u00e1ltal vez\u00e9relt tranzakci\u00f3khoz.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.useraction=M\u00f3dos\u00edtsa \u00fagy az oszt\u00e1lyt, hogy le\u00e1ll\u00edtsa a UserTransaction p\u00e9ld\u00e1ny besz\u00far\u00e1s\u00e1t, vagy m\u00f3dos\u00edtsa \u00fagy a komponens be\u00e1ll\u00edt\u00e1s\u00e1t, hogy enged\u00e9lyezze a komponens \u00e1ltal vez\u00e9relt tranzakci\u00f3kat.  Ha az oszt\u00e1ly egy olyan elfog\u00f3 vagy webszolg\u00e1ltat\u00e1s kezel\u0151, melyet t\u00f6bb komponens haszn\u00e1l, s azok n\u00e9melyike be van \u00e1ll\u00edtva komponens \u00e1ltal vez\u00e9relt tranzakci\u00f3khoz, a t\u00f6bbi pedig nincs, akkor hozzon l\u00e9tre egy olyan \u00faj elfog\u00f3 vagy webszolg\u00e1ltat\u00e1s kezel\u0151 oszt\u00e1lyt, amely nem sz\u00far be UserTransaction p\u00e9ld\u00e1nyt, \u00e9s haszn\u00e1lja azt olyan komponensekkel, amelyek komponens \u00e1ltal vez\u00e9relt tranzakci\u00f3khoz lettek be\u00e1ll\u00edtva.
+
+#--------------------------------------------------------------------------------
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E=CWNEN0061E: A(z) {2} oszt\u00e1lyban tal\u00e1lhat\u00f3 {0} besz\u00far\u00e1si c\u00e9l tulajdons\u00e1gneve a(z) {1} hivatkoz\u00e1shoz nem egy\u00e9rtelm\u0171.  A(z) {3} met\u00f3dus \u00e9s a(z) {4} met\u00f3dus t\u00edpusa is kompatibilis a(z) {5} t\u00edpussal.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.explanation=Az oszt\u00e1ly \u00fagy lett be\u00e1ll\u00edtva, hogy tartalmazzon met\u00f3dus besz\u00far\u00e1st, azonban t\u00f6bb met\u00f3dus kompatibilis a besz\u00farand\u00f3 objektum t\u00edpus\u00e1val.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.useraction=M\u00f3dos\u00edtsa \u00fagy a komponenst, hogy meghat\u00e1rozza a met\u00f3dusok egyik\u00e9nek a pontos t\u00edpus\u00e1t, m\u00f3dos\u00edtsa \u00fagy az oszt\u00e1lyt, hogy tartalmazzon egy olyan param\u00e9tert\u00edpussal rendelkez\u0151 met\u00f3dust, mely megegyezik a besz\u00far\u00e1s be\u00e1ll\u00edt\u00e1s t\u00edpus\u00e1val, vagy a nem egy\u00e9rtelm\u0171 met\u00f3dusok egyik\u00e9nek elt\u00e1vol\u00edt\u00e1s\u00e1val vagy \u00e1tnevez\u00e9s\u00e9vel m\u00f3dos\u00edtsa az oszt\u00e1lyt.
+
+#--------------------------------------------------------------------------------
+CONFLICTING_REFERENCES_CWNEN0062E=CWNEN0062E: A(z) {0} komponens \u00e9s a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1nak {1} komponense \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket tartalmaznak a(z) {5} hivatkoz\u00e1s {4} tulajdons\u00e1g\u00e1hoz.  Az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9kek: {6} \u00e9s {7}.
+CONFLICTING_REFERENCES_CWNEN0062E.explanation=Mikor egy komponens n\u00e9vteret egym\u00e1s k\u00f6zt megoszt\u00f3 t\u00f6bb komponens is ugyanolyan nev\u0171 hivatkoz\u00e1st ad meg, a hivatkoz\u00e1s minden k\u00f6t\u00e9s \u00e9s kiterjeszt\u00e9s tulajdons\u00e1g\u00e1nak ugyanannak kell lennie.
+CONFLICTING_REFERENCES_CWNEN0062E.useraction=A modul k\u00f6t\u00e9s \u00e9s kiterjeszt\u00e9s f\u00e1jlj\u00e1ban m\u00f3dos\u00edtson egyet az \u00fctk\u00f6z\u0151 \u00e9rt\u00e9kek k\u00f6z\u00fcl \u00fagy, hogy mind ugyanaz legyen.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Enum
+INVALID_ENUM_IDENTIFIER_CWNEN0063E=CWNEN0063E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1nak a(z) {3} felsorol\u00e1s t\u00edpus\u00fa {0} egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9se nincs be\u00e1ll\u00edtva a k\u00f6vetkez\u0151 \u00e9rv\u00e9nyes felsorol\u00e1s azonos\u00edt\u00f3ra: {4}.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.explanation=Egy v\u00e1llalati modulhoz tartoz\u00f3 felsorol\u00e1s t\u00edpus\u00fa egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9shez hozz\u00e1 kell rendelni egy \u00e9rv\u00e9nyes felsorol\u00e1s azonos\u00edt\u00f3 \u00e9rt\u00e9ket.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.useraction=V\u00e1ltoztassa a felsorol\u00e1s t\u00edpus\u00fa egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9st egy \u00e9rv\u00e9nyes felsorol\u00e1s azonos\u00edt\u00f3 \u00e9rt\u00e9kk\u00e9.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class, and  Enum
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E=CWNEN0064E: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1nak {0} egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9se r\u00e9sz\u00e9re a k\u00f6vetkez\u0151 \u00e9rv\u00e9nytelen t\u00edpus lett megadva: {3}.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.explanation=Egy v\u00e1llalati modul egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9se a k\u00f6vetkez\u0151 Java t\u00edpusok valamelyike lehet: karaktersorozat, karakter, byte, r\u00f6vid, eg\u00e9sz sz\u00e1m, hossz\u00fa, logikai, dupla pontoss\u00e1g\u00fa, lebeg\u0151pontos, oszt\u00e1ly, vagy b\u00e1rmilyen felsorol\u00e1si aloszt\u00e1ly.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.useraction=V\u00e1ltoztassa az egyszer\u0171 k\u00f6rnyezeti bejegyz\u00e9st valamelyik t\u00e1mogatott t\u00edpuss\u00e1.
+
+#--------------------------------------------------------------------------------
+INVALID_REFERENCE_NAME_CWNEN0065E=CWNEN0065E: A(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban l\u00e9v\u0151 {1} \u00f6sszetev\u0151h\u00f6z tartoz\u00f3 {0} hivatkoz\u00e1s neve \u00e9rv\u00e9nytelen.
+INVALID_REFERENCE_NAME_CWNEN0065E.explanation=A hivatkoz\u00e1sok neveit vagy a java:comp/env \u00e9rt\u00e9khez viszony\u00edtva kell megadni, vagy a java:global, java:app, java:module vagy java:comp karaktersorral kell kezd\u0151dni\u00fck.
+INVALID_REFERENCE_NAME_CWNEN0065E.useraction=V\u00e1ltoztassa meg a hivatkoz\u00e1snevet a telep\u00edt\u00e9sle\u00edr\u00f3ban \u00e9s a forr\u00e1sk\u00f3d-magyar\u00e1zatokban.
+
+#--------------------------------------------------------------------------------
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E=CWNEN0066E: A(z) {1} {2} attrib\u00fatummal rendelkez\u0151 {0} forr\u00e1sk\u00f3d feljegyz\u00e9s a(z) {3} \u00f6sszetev\u0151h\u00f6z a(z) {5} alkalmaz\u00e1s {4} modulj\u00e1ban, a tulajdons\u00e1gok attrib\u00fatumhoz a k\u00f6vetkez\u0151 \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3s adatokkal rendelkezik: {6}
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.explanation=A feljegyz\u00e9sben megadott tulajdons\u00e1gok form\u00e1tuma n\u00e9v=\u00e9rt\u00e9k.
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.useraction=V\u00e1ltoztassa a forr\u00e1sk\u00f3d-magyar\u00e1zat tulajdons\u00e1gattrib\u00fatum\u00e1t n\u00e9v=\u00e9rt\u00e9k form\u00e1tum\u00fara.
+
+#--------------------------------------------------------------------------------
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E=CWNEN0067E: A @DataSourceDefinition forr\u00e1sk\u00f3d-magyar\u00e1zat a(z) {3} alkalmaz\u00e1sban l\u00e9v\u0151 {2} modulban tal\u00e1lhat\u00f3 {1} \u00f6sszetev\u0151 {0} n\u00e9vattrib\u00fatum\u00e1ban az isolationLevel attrib\u00fatumhoz a k\u00f6vetkez\u0151 \u00e9rv\u00e9nytelen be\u00e1ll\u00edt\u00e1si adat tartozik: {4}.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.explanation=Az isolationLevel attrib\u00fatumnak a java.sql.Connection oszt\u00e1ly al\u00e1bbi \u00e1lland\u00f3i k\u00f6z\u00fcl valamelyiknek kell lennie: TRANSACTION_NONE, TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ vagy TRANSACTION_SERIALIZABLE.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.useraction=V\u00e1ltoztassa a forr\u00e1sk\u00f3d-magyar\u00e1zat isolationLevel attrib\u00fatum\u00e1nak \u00e9rt\u00e9k\u00e9t valamelyik \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
+
+#--------------------------------------------------------------------------------
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E=CWNEN0068E: A v\u00e1llalati komponens {2} fel\u00fclet\u00e9hez tartoz\u00f3 {1} modulban l\u00e9v\u0151 {0} EJB hivatkoz\u00e1st ezen a csom\u00f3ponton nem lehet feloldani.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.explanation=Az AutoLink hat\u00f3k\u00f6re az EJB hivatkoz\u00e1st tartalmaz\u00f3 alkalmaz\u00e1sra van korl\u00e1tozva, valamint azokra a kiszolg\u00e1l\u00f3kra, amelyek nem tagjai egy alkalmaz\u00e1skiszolg\u00e1l\u00f3i f\u00fcrtnek.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.useraction=Ellen\u0151rizze, hogy a hivatkozott EJB-komponensek ugyanabban az alkalmaz\u00e1sban l\u00e9teznek.
+
+#--------------------------------------------------------------------------------
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E=CWNEN0069E: A(z) {0}.{1} besz\u00far\u00e1si met\u00f3dust pontosan egy param\u00e9terrel kell meghat\u00e1rozni, nem {2} param\u00e9terrel.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.explanation=A besz\u00far\u00e1si met\u00f3dusoknak a JavaBeans tulajdons\u00e1gbe\u00e1ll\u00edt\u00e1si m\u00f3dszerek el\u0151\u00edr\u00e1sait kell k\u00f6vetni\u00fck.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.useraction=V\u00e1ltoztassa meg a besz\u00far\u00e1si met\u00f3dus k\u00f3dj\u00e1t \u00fagy, hogy pontosan egy param\u00e9tert tartalmazzon, vagy v\u00e1lasszon m\u00e1sik besz\u00far\u00e1si c\u00e9lt, vagy t\u00e1vol\u00edtsa el a besz\u00far\u00e1si c\u00e9lt, \u00e9s adja meg k\u00e9zzel az \u00e9rt\u00e9ket.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W=CWNEN0070W: A(z) {0} feljegyz\u00e9soszt\u00e1lyt nem lehet felismerni, mert a(z) {1} helyr\u0151l lett bet\u00f6ltve, \u00e9s nem a term\u00e9koszt\u00e1ly bet\u00f6lt\u0151j\u00e9b\u0151l.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.explanation=Az alkalmaz\u00e1s oszt\u00e1lybet\u00f6lt\u0151je, vagy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 oszt\u00e1lybet\u00f6lt\u0151je bet\u00f6lt\u00f6tt egy feljegyz\u00e9soszt\u00e1lyt, amelyet a term\u00e9k oszt\u00e1lybet\u00f6lt\u0151j\u00e9nek kellet volna bet\u00f6ltenie. Ez olyankor fordul el\u0151, amikor az oszt\u00e1lybet\u00f6lt\u0151 \u00fagy van be\u00e1ll\u00edtva, hogy el\u0151sz\u00f6r a helyi oszt\u00e1lybet\u00f6lt\u0151vel t\u00f6ltse be az oszt\u00e1lyokat (a sz\u00fcl\u0151vel pedig csak ezut\u00e1n). A feljegyz\u00e9st csak akkor lehet majd felismerni, ha a bet\u00f6lt\u00e9se a term\u00e9k oszt\u00e1lybet\u00f6lt\u0151vel t\u00f6rt\u00e9nik.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.useraction=T\u00e1vol\u00edtsa el a feljegyz\u00e9soszt\u00e1lyt az alkalmaz\u00e1s vagy alkalmaz\u00e1s-kiszolg\u00e1l\u00f3 oszt\u00e1ly el\u00e9r\u00e9si \u00fatj\u00e1b\u00f3l.
+
+#--------------------------------------------------------------------------------
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E=CWNEN0071E: A(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban l\u00e9v\u0151 {1} \u00f6sszetev\u0151h\u00f6z tartoz\u00f3 {0} hivatkoz\u00e1s {4} t\u00edpusa \u00e9s a(z) {5} attrib\u00fatum \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen: {6}
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.explanation=A megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9t nem szabad megadni, vagy az alap\u00e9rtelmezett \u00e9rt\u00e9kkel kell rendelkeznie.
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.useraction=T\u00e1vol\u00edtsa el az attrib\u00fatumot a forr\u00e1sk\u00f3d-magyar\u00e1zatb\u00f3l, vagy a telep\u00edt\u00e9sle\u00edr\u00f3b\u00f3l.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E=CWNEN0072E: A(z) {0} hivatkoz\u00e1s \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket ad a(z) {1} attrib\u00fatumnak: {2} \u00e9s {3}.
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.explanation=A Java Enterprise Edition jellemz\u0151iben az \u00e1ll, hogy ha t\u00f6bb \u00f6sszetev\u0151 ad meg hivatkoz\u00e1st egy megosztott n\u00e9vt\u00e9rben, minden megadott \u00e9rt\u00e9k attrib\u00fatumainak egys\u00e9geseknek kell lenni\u00fck.
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.useraction=M\u00f3dos\u00edtsa a megadott \u00e9rt\u00e9kek attrib\u00fatumait \u00fagy, hogy egys\u00e9gesek legyenek.
+
+#--------------------------------------------------------------------------------
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E=CWNEN0073E: A(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban l\u00e9v\u0151 {1} oszt\u00e1lyhoz tartoz\u00f3 {0} oszt\u00e1ly szint\u0171 annot\u00e1ci\u00f3 nem ad meg JNDI nevet.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.explanation=Az oszt\u00e1ly szint\u0171 annot\u00e1ci\u00f3khoz meg kell adni a JNDI nevet.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.useraction=Adjon meg egy JNDI nevet a forr\u00e1sk\u00f3d oszt\u00e1ly szint\u0171 annot\u00e1ci\u00f3j\u00e1ban.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E=CWNEN0074E: A(z) {1} hivatkoz\u00e1shoz lek\u00e9rt objektump\u00e9ld\u00e1ny {0} t\u00edpusa nem kompatibilis a(z) {2} tag t\u00edpus\u00e1val.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.explanation=A besz\u00far\u00e1shoz haszn\u00e1lt objektump\u00e9ld\u00e1nynak megfelel\u0151nek kell lennie a mez\u0151 vagy met\u00f3dus param\u00e9ter t\u00edpus\u00e1hoz.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.useraction=Ellen\u0151rizze, hogy a hivatkoz\u00e1s k\u00f6t\u00e9s megfelel\u0151-e a hivatkoz\u00e1shoz.
+
+#--------------------------------------------------------------------------------
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E=CWNEN0075E: Hiba t\u00f6rt\u00e9nt a(z) {3} \u00f6sszetev\u0151 {2} hivatkoz\u00e1s\u00e1hoz tartoz\u00f3 {1} besz\u00far\u00e1si c\u00e9l {0} oszt\u00e1ly\u00e1nak keres\u00e9se sor\u00e1n a(z) {5} alkalmaz\u00e1s {4} modulj\u00e1ban: {6}
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.explanation=A besz\u00far\u00e1si c\u00e9l nem tal\u00e1lhat\u00f3, mert oszt\u00e1lybet\u00f6lt\u00e9si hiba t\u00f6rt\u00e9nt az oszt\u00e1ly mez\u0151- vagy met\u00f3duslist\u00e1j\u00e1nak lek\u00e9r\u00e9se sor\u00e1n.
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1scsomagol\u00e1s \u00e9s az oszt\u00e1lybet\u00f6lt\u0151 be\u00e1ll\u00edt\u00e1sai helyesek-e.
+
+#-------------------------------------------------------------------------------
+#
+# CWNEN1000 - CWNEN1999 are reserved for liberty...
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# For emergency use only....
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I=CWNEN8990I: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 inform\u00e1ci\u00f3s \u00fczenet: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.explanation=Ez az inform\u00e1ci\u00f3s \u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W=CWNEN8991W: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 figyelmeztet\u0151 \u00fczenet: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.explanation=Ez a figyelmeztet\u0151 \u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E=CWNEN8992E: Ez az \u00fczenet egy kiz\u00e1r\u00f3lag angol nyelv\u0171 hiba\u00fczenet: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.explanation=Ez a hiba\u00fczenet nem ker\u00fclt leford\u00edt\u00e1sra.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.useraction=R\u00e9szletek\u00e9rt tekintse meg az \u00fczenetet.
+
+#-------------------------------------------------------------------------------
+# CWNEN9000 and up are reserved for command line / gui messages...
+# Place all other messages above this point.
+#-------------------------------------------------------------------------------

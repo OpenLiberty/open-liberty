@@ -1,0 +1,68 @@
+<ejb-jar-bnd
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+  version="1.0">
+
+  <session name="NoInterfaceSF">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sf/NoInterfaceSF"/>
+  </session>
+  <session name="NoInterfaceSFLocal">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sfl/NoInterfaceSF"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sfl/NoInterfaceSFLocal"/>
+  </session>
+  <session name="NoInterfaceSFRemote">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sfr/NoInterfaceSF"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.RemoteBusiness"
+               binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sfr/NoInterfaceSFRemote"/>
+  </session>
+  <session name="NoInterfaceSFComponent"
+     local-home-binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sfc/NoInterfaceSFComponent">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sfc/NoInterfaceSF"/>
+  </session>
+
+  <session name="NoInterfaceSG">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sg/NoInterfaceSG"/>
+  </session>
+  <session name="NoInterfaceSGLocal">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sgl/NoInterfaceSG"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sgl/NoInterfaceSGLocal"/>
+  </session>
+  <session name="NoInterfaceSGRemote">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sgr/NoInterfaceSG"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.RemoteBusiness"
+               binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sgr/NoInterfaceSGRemote"/>
+  </session>
+
+  <session name="NoInterfaceSL">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sl/NoInterfaceSL"/>
+  </session>
+  <session name="NoInterfaceSLLocal">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sll/NoInterfaceSL"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/sll/NoInterfaceSLLocal"/>
+  </session>
+  <session name="NoInterfaceSLRemote">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/slr/NoInterfaceSL"/>
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.RemoteBusiness"
+               binding-name="com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/slr/NoInterfaceSLRemote"/>
+  </session>
+  <session name="NoInterfaceSLComponent"
+     local-home-binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/slc/NoInterfaceSLComponent">
+    <interface class="com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean"
+               binding-name="ejblocal:com/ibm/ws/ejbcontainer/bindings/noInterface/bnd/slc/NoInterfaceSL"/>
+  </session>
+
+</ejb-jar-bnd>

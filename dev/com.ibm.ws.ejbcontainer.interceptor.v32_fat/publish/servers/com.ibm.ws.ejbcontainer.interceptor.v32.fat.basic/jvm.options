@@ -1,0 +1,1 @@
+-Dcom.ibm.websphere.ejbcontainer.poolSize=EJB3INTMTestApp#EJB3INTMBean.jar#SLUnspecifiedContextBean=1,1:EJB3INTMTestApp#EJB3INTMBean.jar#CompStatelessLocalBean=1,1:EJB3INTXTestApp#EJB3INTXBean.jar#SLUnspecifiedContextBean=1,1:EJB3INTXTestApp#EJB3INTXBean.jar#CompStatelessLocalBean=1,1

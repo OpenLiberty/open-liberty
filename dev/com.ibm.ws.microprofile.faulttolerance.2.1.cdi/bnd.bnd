@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: com.ibm.ws.microprofile.faulttolerance.2.1.cdi
+Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.2.1.cdi
+Bundle-Description: MicroProfile Fault Tolerance 2.1 CDI Integration, version ${bVersion}
+
+Export-Package: com.ibm.ws.microprofile.faulttolerance21.cdi.config.impl
+
+Include-Resource: 
+
+WS-TraceGroup: FAULTTOLERANCE
+
+-dsannotations-inherit: true
+-dsannotations: 
+
+testsrc=test/src
+
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.2.1;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.ws.microprofile.faulttolerance.spi;version=latest,\
+	com.ibm.ws.microprofile.faulttolerance.cdi;version=latest
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.microprofile.config.1.3;version=latest,\
+	com.ibm.ws.microprofile.config.1.2;version=latest,\
+	com.ibm.ws.microprofile.config.1.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
+	io.openliberty.microprofile.config.internal.common;version=latest, \
+	io.openliberty.microprofile.config.internal.serverxml;version=latest, \
+	com.ibm.ws.container.service;version=latest, \
+	org.eclipse.osgi;version=latest, \
+	com.ibm.ws.microprofile.faulttolerance.2.0;version=latest, \
+	com.ibm.ws.microprofile.faulttolerance;version=latest

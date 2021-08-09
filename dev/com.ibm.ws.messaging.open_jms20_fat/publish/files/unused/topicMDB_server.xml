@@ -1,0 +1,57 @@
+<server>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>jdbc-4.0</feature>
+    <feature>jmsMdb-3.2</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+  
+  <include optional="true" location="../fatTestPorts.xml"/>
+  
+  <variable name="onError" value="FAIL"/>
+  
+  <messagingEngine id="defaultME"/>
+  
+  <!-- Configurations for Pub/Sub BVT tests -->		
+  <jmsTopicConnectionFactory jndiName="jms/FAT_TCF" connectionManagerRef="ConMgr2">
+    <properties.wasJms/>
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr2"/>
+  
+  <jmsTopicConnectionFactory jndiName="jms/FAT_COMMS_TCF" connectionManagerRef="ConMgr3">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr3"/>
+  
+  <jmsTopic id="jms/FAT_TOPIC" jndiName="jms/FAT_TOPIC">
+    <properties.wasJms/>
+  </jmsTopic>
+  
+  <!-- Configurations for MDB BVT tests -->
+  
+  <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/>
+  
+  <jmsActivationSpec id="jmsapp/jmsmdb/FATTopic1MessageDrivenBean">
+    <properties.wasJms
+      destinationRef="jms/FAT_TOPIC"
+      destinationType="javax.jms.Topic"
+      subscriptionDurability="DurableShared"
+      clientId="cid"
+      subscriptionName="SID"/>
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="jmsapp/jmsmdb/FATTopic2MessageDrivenBean">
+    <properties.wasJms
+      destinationRef="jms/FAT_TOPIC"
+      destinationType="javax.jms.Topic"
+      subscriptionDurability="DurableShared"
+      clientId="cid"
+      subscriptionName="SID"/>
+  </jmsActivationSpec>
+
+</server>

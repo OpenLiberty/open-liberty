@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jndi.url.contexts/resources/com/ibm/ws/jndi/internal/url/contexts/resources/JNDIMessages.nlsprops
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Description
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Message numbers CWWKN1nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn:	com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn:	com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages 
+# -------------------------------------------------------------------------------------------------
+#
+JNDI_NON_JEE_THREAD_CWWKN0100E=CWWKN0100E: \ud604\uc7ac \uc2a4\ub808\ub4dc\uac00 Java Enterprise Edition \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\uc640 \uc5f0\uad00\ub418\uc9c0 \uc54a\uae30 \ub54c\ubb38\uc5d0 {0} JNDI \uc774\ub984\uc5d0 \ub300\ud55c \uc870\uc791\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc815\uc801 \ucf54\ub4dc \ube14\ub85d \ub0b4\uc5d0\uc11c \ub610\ub294 \uc11c\ubc84\uac00 \uad00\ub9ac\ud558\uc9c0 \uc54a\ub294 \uc2a4\ub808\ub4dc\uc5d0\uc11c JNDI \uc870\uc791\uc774 \ubc1c\uc0dd\ud558\uc9c0 \uc54a\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624.
+JNDI_NON_JEE_THREAD_CWWKN0100E.explanation=java: namespace\uc5d0 \ub300\ud55c JNDI \uc870\uc791\uc740 Java EE \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\uc758 \ucee8\ud14d\uc2a4\ud2b8 \ub0b4\uc5d0\uc11c\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4.
+JNDI_NON_JEE_THREAD_CWWKN0100E.useraction=Java EE \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\uc758 \ucee8\ud14d\uc2a4\ud2b8 \ub0b4\uc5d0\uc11c JNDI \uc870\uc791\uc774 \ubc1c\uc0dd\ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.

@@ -1,0 +1,10 @@
+version: 1
+dn: ou=ditStructureRules,cn=pwdpolicy,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 6529412a-44ff-442c-883b-bf6dff047ed3
+entryCSN: 20130919081859.051000Z#000001#000#000000
+entryParentId: 19934850-aebf-457f-a933-766ab4031709
+ou: ditstructurerules
+createTimestamp: 20130919081910.285Z

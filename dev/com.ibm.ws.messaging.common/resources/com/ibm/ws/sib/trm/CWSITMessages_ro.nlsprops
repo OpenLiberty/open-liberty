@@ -1,0 +1,1144 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+EXCP_DURING_INIT_CWSIT0000.explanation=MSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: A ap\u0103rut o eroare intern\u0103. Un null {0} a fost folosit pentru crearea instan\u0163ei {1} .
+NULL_USED_TO_CREATE_CWSIT0001.explanation=MSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: A ap\u0103rut o eroare intern\u0103. Un null {0} a trecut la apelul metodei {1}.
+NULL_USED_ON_CWSIT0002.explanation=MSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: Nicio proprietate {0} nu a fost g\u0103sit\u0103 \u00een propriet\u0103\u0163ile conexiunii.
+NULL_PROPERTY_CWSIT0003.explanation=O proprietate necesar\u0103 nu a fost g\u0103sit\u0103 \u00een propriet\u0103\u0163ile conexiunii c\u00e2nd s-a creat o conexiune client.
+NULL_PROPERTY_CWSIT0003.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea necesar\u0103 este corect specificat\u0103 la crearea conexiunii.
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa ClientConnectionFactory nu poate fi creat.
+NO_CCF_CWSIT0004.explanation=MSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa ClientConnection nu poate fi creat.
+NO_CC_CWSIT0005.explanation=MSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: Nu a fost posibil\u0103 contactarea niciunui server de bootstrap specificat. Verifica\u0163i excep\u0163ia imbricat\u0103 pentru mai multe detalii. Conexiunile de bootstrap au \u00eencercat s\u0103: {0}
+NO_BOOTSTRAP_CWSIT0006.explanation=Clientul nu se poate conecta la magistral\u0103. Aceast\u0103 situa\u0163ie poate fi din cauza problemelor de configurare, problemelor de re\u0163ea sau poate fi din cauz\u0103 c\u0103 nici unul dintre serverele de bootstrap necesar nu este disponibil.
+NO_BOOTSTRAP_CWSIT0006.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect si c\u0103 serverele de bootstrap necesare sunt disponibile. Verifica\u0163i Centrul de Informare pentru detalii despre configurarea unei conexiuni intr-un server de bootstrap.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: Nu este posibil\u0103 contactarea serverului de bootstrap la {0} datorit\u0103 excep\u0163iei: {1}.
+BOOTSTRAP_FAILED_CWSIT0007.explanation=Clientul nu poate stabili un contact cu serverul de bootstrap specificat. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de configurare, probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 serverul de bootstrap necesar este momentan indisponibil. Procesul de bootstrap al clientului va continua cu urm\u0103torul punct final furnizat din lista de puncte finale furnizate.
+BOOTSTRAP_FAILED_CWSIT0007.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 serverul de bootstrap necesar este disponibil. Serverul de bootstrap este specificat de c\u0103tre proprietatea Furnizorului Punct Final a fabricii de conexiune JMS. Adresa punctului final are formatul: host_name:port_number:chain_name (for example, localhost:7276:BootstrapBasicMessaging). Fabrica de conexiune trebuie s\u0103 specifice proprietatea Furnizorului Punct Final dac\u0103 un server bootstrap ne-implicit este folosit.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: O conexiune cu succes a fost f\u0103cut\u0103 cu serverul de bootstrap la {0} dar serverul a \u00eentors o condi\u0163ie de eroare: {1}
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=Clientul s-a conectat la o magistral\u0103 dar a int\u00e2mpinat o problem\u0103 folosind serviciul. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 serviciul necesar este momentan indisponibil.
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 serviciul necesar este disponibil. Verifica\u0163i Centrul de Informare pentru detalii despre configurarea unei conexiuni intr-un server de bootstrap.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: O conexiune client la magistrala {1} a e\u015fuat \u00een serverul de bootstrap cu punctul final {0} cu motivul: {2}.
+MIRRORED_FAILURE_CWSIT0009.explanation=O cerere de bootstrap de client a e\u015fuat din cauza unei probleme \u00een serverul de bootstrap. Motivul defec\u0163iunii din serverul de bootstrap este returnat. Procesul de bootstrap al clientului va continua cu urm\u0103torul punct final furnizat din lista de puncte finale furnizate.
+MIRRORED_FAILURE_CWSIT0009.useraction=Investiga\u0163i \u015fi rezolva\u0163i defec\u0163iunea descris\u0103 \u00een mesajul de eroare, apoi re\u00eencerca\u0163i opera\u0163ia. 
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: O cerere client pentru motorul de mesagerie {0} \u00een magistrala {1} a e\u015fuat cu motivul: {2}.
+MIRRORED_FAILURE_CWSIT0010.explanation=Un client a e\u015fuat s\u0103 se lege la magistral\u0103 din cauza unei defec\u0163iuni la server. Motivul defec\u0163iunii din server este returnat.
+MIRRORED_FAILURE_CWSIT0010.useraction=Investiga\u0163i \u015fi rezolva\u0163i defec\u0163iunea descris\u0103 \u00een mesajul de eroare, apoi re\u00eencerca\u0163i opera\u0163ia. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: Nu este posibil\u0103 ata\u015farea la motorul de mesagerie {0} \u00een magistrala {1}. Conexiunea a fost pierdut\u0103.
+ATTACH_FAILED_CWSIT0011.explanation=Clientul nu poate s\u0103 stabileasc\u0103 un contact cu motorul de mesagerie numit. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 motorul de mesagerie necesar este momentan indisponibil.
+ATTACH_FAILED_CWSIT0011.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie necesar este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: A ap\u0103rut o eroare intern\u0103. Un null {0} a fost folosit pentru crearea instan\u0163ei {1} .
+NULL_USED_TO_CREATE_CWSIT0012.explanation=MSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: A ap\u0103rut o eroare intern\u0103. Un null {0} a fost folosit pentru crearea instan\u0163ei {1} .
+NULL_USED_TO_CREATE_CWSIT0013.explanation=MSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: O cerere motor de mesagerie la motor de mesagerie a e\u015fuat \u00een motorul de mesagerie {0} \u00een magistrala {1}, punctul final {2}, cu motivul: {3}.
+MIRRORED_FAILURE_CWSIT0014.explanation=Un motor de mesagerie c\u0103tre cererea motorului de mesagerie a e\u015fuat din cauza unei defec\u0163iuni \u00een motorul de mesagerie de la distan\u0163\u0103.
+MIRRORED_FAILURE_CWSIT0014.useraction=Investiga\u0163i \u015fi rezolva\u0163i defec\u0163iunea descris\u0103 \u00een mesajul de eroare, apoi re\u00eencerca\u0163i opera\u0163ia. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: Nu este posibil\u0103 conectarea la motorul de mesagerie {0} \u00een magistrala {1}.
+CONNECT_FAILED_CWSIT0015.explanation=Motorul de mesagerie nu poate stabili un contact cu alt motor de mesagerie. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 motorul de mesagerie necesar este momentan indisponibil.
+CONNECT_FAILED_CWSIT0015.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie necesar este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: ID-ul utilizator {0} a e\u015fuat autentificarea \u00een magistrala {1}
+FAILED_AUTHENTICATION_CWSIT0016.explanation=ID-ul utilizatorului folosit pentru a creea o conexiune client cu un motor de mesagerie nu a putut s\u0103 fie autentificat de c\u0103tre motorul de mesagerie la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHENTICATION_CWSIT0016.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: Nu este posibil\u0103 crearea unei conexiuni \u00eentre magistrale la motorul de mesagerie {0} \u00een magistrala {1} pe gazda {2} portul {3} folosind lan\u0163ul de transport {4}.
+LINK_FAILED_CWSIT0017.explanation=Motorul de mesagerie nu poate stabili un contact cu alt motor de mesagerie. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 motorul de mesagerie necesar este momentan indisponibil.
+LINK_FAILED_CWSIT0017.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie necesar este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: Nu este posibil\u0103 crearea leg\u0103turii magistral\u0103 de integrare servicii {0} la motorul de mesagerie {1} \u00een magistrala {2} pe gazda {3} portul {4} folosind lan\u0163ul de transport {5}.
+BRIDGE_FAILED_CWSIT0018.explanation=Motorul de mesagerie nu poate stabili un contact cu alt motor de mesagerie. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 motorul de mesagerie necesar este momentan indisponibil.
+BRIDGE_FAILED_CWSIT0018.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie necesar este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: Niciun motor de mesagerie potrivit nu este disponibil pe magistrala {0} care s-a potrivit cu propriet\u0103\u0163ile conexiunii {1} specificate. Motivul defec\u0163iunii: {2}
+NO_SUITABLE_ME_CWSIT0019.explanation=Un client nu a putut fi legat la magistral\u0103 deoarece nici un motor de mesagerie dorit nu este disponibil acum care s\u0103 \u00eendeplineasc\u0103 criteriile ata\u015fate specificate de c\u0103tre propriet\u0103\u0163ile conexiunii.
+NO_SUITABLE_ME_CWSIT0019.useraction=Repeta\u0163i opera\u0163iunea. Dac\u0103 problema persist\u0103 ruga\u0163i administratorul de sistem s\u0103 verifice c\u0103 un motor de mesagerie dorit este disponibil. Alternativ l\u0103sa\u0163i criteriile de ata\u015fare specificate de c\u0103tre propriet\u0103\u0163ile conexiunii \u015fi repeta\u0163i opera\u0163iunea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: O excep\u0163ie nea\u015fteptat\u0103 a avut loc \u00een motorul de mesagerie {0} \u00een magistrala {1} la crearea unei conexiuni, excep\u0163ie: {2}
+EXCEPTION_CWSIT0020.explanation=MSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: Motorul de mesagerie necesar {0} \u00een magistrala {1} nu a fost g\u0103sit \u00een acest proces
+NOT_FOUND_CWSIT0021.explanation=Un client nu a putut fi legat la magistral\u0103 deoarece nici un motor de mesagerie dorit la care clientul s\u0103 se lege nu a fost g\u0103sit \u00een proces.
+NOT_FOUND_CWSIT0021.useraction=Aceast\u0103 eroare este deobicei cauzat\u0103 de c\u0103tre o condi\u0163ie tranzitorie ca e\u015fuarea unui server \u00een timpul unei redirec\u0163ion\u0103ri a clientului. Re\u00eencercarea opera\u0163iei ar trebui s\u0103 rezolve eroarea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: ID-ul utilizator {0} a e\u015fuat autentificarea \u00een magistrala {1}
+FAILED_AUTHENTICATION_CWSIT0022.explanation=ID-ul utilizatorului folosit pentru an creea o conexiune intra-bus cu un motor de mesagerie nu a putut s\u0103 fie autentificat de c\u0103tre motorul de mesagerie la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHENTICATION_CWSIT0022.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: Regulile de topologie nu permit conexiunile \u00eentre motoarele de mesagerie cu acela\u015fi nume
+NOT_ALLOWED_CWSIT0023.explanation=Un motor de mesagerie cu acela\u015fi nume a\u015fteapt\u0103 s\u0103 se conecteze la acest motor de mesagerie. Dou\u0103 motoare de mesagerie cu acelea\u015fi nume nu sunt permise \u00een aceea\u015fi magistral\u0103.
+NOT_ALLOWED_CWSIT0023.useraction=Verifica\u0163i topologia magistralei \u015fi numele motoarelor de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+EXCP_DURING_INIT_CWSIT0024.explanation=MSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: Motorul de mesagerie {0} \u00een magistrala {1} a \u00eencercat crearea unei leg\u0103turi magistral\u0103 de integrare servicii c\u0103tre motorul de mesagerie {2}
+NOT_ALLOWED_CWSIT0026.explanation=Un motor de mesagerie \u00een aceea\u015fi magistral\u0103 \u00eencearc\u0103 s\u0103 creeze o leg\u0103tur\u0103 de magistral\u0103 de integrare a serviciului la acest motor de mesagerie. Regulile de topologie nu permit leg\u0103turii de magistral\u0103 de integrare a serviciului \u00eentre motoarele de mesagerie din aceea\u015fi magistral\u0103.
+NOT_ALLOWED_CWSIT0026.useraction=Verifica\u0163i topologia magistralei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: Conexiunea pentru motorul de mesagerie {0} \u00een magistrala {1} la motorul de mesagerie {2} a pornit.
+INFO_CWSIT0028.explanation=O conexiune motor de mesagerie la motor de mesagerie a fost pornit\u0103.
+INFO_CWSIT0028.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: Conexiunea pentru motorul de mesagerie {0} \u00een magistrala {1} la motorul de mesagerie {2} s-a oprit.
+INFO_CWSIT0029.explanation=O conexiune motor de mesagerie la motor de mesagerie a fost oprit\u0103.
+INFO_CWSIT0029.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: Conexiunea \u00eentre magistrale pentru motorul de mesagerie {0} \u00een subre\u0163eaua {1} \u00een magistrala {2} la motorul de mesagerie {3} \u00een subre\u0163eaua {4} a pornit.
+INFO_CWSIT0030.explanation=O conexiune intra-magistral\u0103 motor de mesagerie la motor de mesagerie a fost pornit\u0103.
+INFO_CWSIT0030.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: Conexiunea \u00eentre magistrale pentru motorul de mesagerie {0} \u00een subre\u0163eaua {1} \u00een magistrala {2} la motorul de mesagerie {3} \u00een subre\u0163eaua {4} s-a oprit.
+INFO_CWSIT0031.explanation=O conexiune intra-magistral\u0103 motor de mesagerie la motor de mesagerie a fost oprit\u0103.
+INFO_CWSIT0031.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: Leg\u0103tura magistral\u0103 integrare de servicii {0} de la motorul de mesagerie {1} \u00een magistrala {2} la motorul de mesagerie {3} \u00een magistrala {4} a pornit.
+INFO_CWSIT0032.explanation=O leg\u0103tur\u0103 a magistralei de integrare a serviciului \u00eentre dou\u0103 motoare de mesagerie a fost pornit\u0103.
+INFO_CWSIT0032.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: Leg\u0103tura magistral\u0103 integrare de servicii {0} de la motorul de mesagerie {1} \u00een magistrala {2} la motorul de mesagerie {3} \u00een magistrala {4} s-a oprit.
+INFO_CWSIT0033.explanation=O leg\u0103tur\u0103 a magistralei de integrare a serviciului \u00eentre dou\u0103 motoare de mesagerie a fost oprit\u0103.
+INFO_CWSIT0033.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: O cerere motor de mesagerie la motor de mesagerie a e\u015fuat \u00een motorul de mesagerie {0} \u00een magistrala {1}, cu motivul: {2}.
+MIRRORED_FAILURE_CWSIT0034.explanation=O cerere motor de mesagerie la motor de mesagerie a e\u015fuat din cauza unei defec\u0163iuni \u00een motorul de mesagerie la distan\u0163\u0103. Motivul defec\u0163iunii din motorul de mesagerie la distan\u0163\u0103 este returnat.
+MIRRORED_FAILURE_CWSIT0034.useraction=Cere\u0163i administratorului de re\u0163ea s\u0103 investigheze istoricul pentru motorul de mesagerie de la distan\u0163\u0103 pentru a v\u0103 ajuta \u00een determinarea motivului problemei.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: ID-ul utilizator {0} a e\u015fuat autentificarea \u00een magistrala {1}
+FAILED_AUTHENTICATION_CWSIT0035.explanation=ID-ul utilizatorului folosit pentru an creea o conexiune intra-bus cu un motor de mesagerie nu a putut s\u0103 fie autentificat de c\u0103tre motorul de mesagerie la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHENTICATION_CWSIT0035.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol de client \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00eem magistrala {1}, tipul mesajului recep\u0163ionat este {2} dar tipul mesajului a\u015fteptat este {3}.
+PROTOCOL_ERROR_CWSIT0036.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol bootstrap a clientului \u00een timpul comunica\u0163iei cu un motor de mesagerie \u00een magistrala {0}, tipul mesajului primit este {1} dar tipul mesajului a\u015fteptat este {2}.
+PROTOCOL_ERROR_CWSIT0038.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol a conexiunii \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajului recep\u0163ionat este {2} dar tipul mesajului a\u015fteptat este {3}.
+PROTOCOL_ERROR_CWSIT0039.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol a conexiunii intra-magistral\u0103 \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajului recep\u0163ionat este {2} dar tipul mesajului a\u015fteptat este {3}.
+PROTOCOL_ERROR_CWSIT0040.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol a leg\u0103turii magistralei serviciului de integrare \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajul primit este {2} dar tipul mesajului asteptat este {3}.
+PROTOCOL_ERROR_CWSIT0041.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol de conectare \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajului primit este {2} dar tipul mesajului a\u015fteptat este {3}.
+PROTOCOL_ERROR_CWSIT0042.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol a conexiunii intra-magistral\u0103 \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajului recep\u0163ionat este {2} dar tipul mesajului a\u015fteptat este {3}.
+PROTOCOL_ERROR_CWSIT0043.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa MEConnectionFactory nu poate fi creat.
+NO_MCF_CWSIT0044.explanation=MSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa MEConnectionFactory nu poate fi creat.
+NO_MCF_CWSIT0045.explanation=MSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa MEConnectionFactory nu poate fi creat.
+NO_MCF_CWSIT0046.explanation=MSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa MEConnection nu poate fi creat.
+NO_MC_CWSIT0047.explanation=MSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa MEConnection nu poate fi creat.
+NO_MC_CWSIT0048.explanation=MSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: A ap\u0103rut o eroare intern\u0103. Un obiect din clasa MEConnection nu poate fi creat.
+NO_MC_CWSIT0049.explanation=MSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: A ap\u0103rut o eroare intern\u0103. Valoarea octetului a\u015fteptat\u0103 {0} nu a fost g\u0103sit\u0103, \u00een locul ei o valoare de octet de {1} a fost g\u0103sit\u0103.
+INVALID_BYTE_VALUE_CWSIT0053.explanation=MSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: A ap\u0103rut o eroare intern\u0103. Valoarea octetului a\u015fteptat\u0103 {0} nu a fost g\u0103sit\u0103, \u00een locul ei o valoare de octet de {1} a fost g\u0103sit\u0103.
+INVALID_BYTE_VALUE_CWSIT0054.explanation=MSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: A fost transmis\u0103 o valoare incorect\u0103 {0} pentru proprietatea conexiune {1}, valori valide sunt: {2}.
+INVALID_TARGET_TYPE_CWSIT0055.explanation=Aplica\u0163ia a furnizat o valoare a propriet\u0103\u0163ii de conectare care nu este corect\u0103, conexiunea nu a fost creat\u0103.
+INVALID_TARGET_TYPE_CWSIT0055.useraction=Folosi\u0163i o valoare valid\u0103 pentru proprietatea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: ID-ul utilizator {0} a e\u015fuat autentificarea \u00een magistrala {1}
+FAILED_AUTHENTICATION_CWSIT0056.explanation=ID-ul folosit la crearea unei leg\u0103turi de magistral\u0103 a serviciului de integrare a e\u015fuat la autentificarea motorului de mesagerie de la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHENTICATION_CWSIT0056.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: Leg\u0103tura magistral\u0103 de integrare servicii {0} a e\u015fuat \u00een motorul de mesagerie la distan\u0163\u0103 pe gazda {1} cu motivul: {2}.
+MIRRORED_FAILURE_CWSIT0057.explanation=O cerere a leg\u0103turii magistralei serviciului de integrare a e\u015fuat din cauza unei defec\u0163iuni \u00een motorul de mesagerie la distan\u0163\u0103.
+MIRRORED_FAILURE_CWSIT0057.useraction=Investiga\u0163i \u015fi rezolva\u0163i defec\u0163iunea descris\u0103 \u00een mesajul de eroare, apoi re\u00eencerca\u0163i opera\u0163ia. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: Nu este posibil\u0103 completarea leg\u0103turii magistral\u0103 de integrare servicii {0} deoarece magistrala la distan\u0163\u0103 {2} a \u00eentors un n ume de motor de mesagerie nea\u015fteptat {3}, numele a\u015fteptat al motorului de mesagerie era {1}.
+BRIDGE_FAILED_CWSIT0058.explanation=Leg\u0103turile magistralei serviciului de integrare necesit\u0103 ca numele motorului de mesagerie \u00een magistrala de la distan\u0163\u0103 s\u0103 se potriveasc\u0103 cu numele motorului de mesagerie configurat pentru leg\u0103tura magistralei serviciului de integrare.
+BRIDGE_FAILED_CWSIT0058.useraction=Verifica\u0163i configurarea leg\u0103turii magistralei serviciului de integrare pentru a v\u0103 asigura c\u0103 ambele magistrale au numele motorului de mesagerie configurat corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: Nu este posibil\u0103 stabilirea leg\u0103turii magistral\u0103 de integrare servicii {0} la motorul de mesagerie {1} \u00een magistrala {2}.
+BRIDGE_FAILED_CWSIT0059.explanation=Contactul nu poate fi f\u0103cut cu numele motorului de mesagerie. Aceast\u0103 situa\u0163ie poate fi din cauza unor probleme de re\u0163ea sau poate fi din cauz\u0103 c\u0103 motorul de mesagerie necesar este momentan indisponibil.
+BRIDGE_FAILED_CWSIT0059.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie necesar este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: ID-ul utilizator {0} nu este autorizat s\u0103 creeze o conexiune motor de mesagerie \u00eentre magistrale \u00een magistrala {1}
+FAILED_AUTHORISATION_CWSIT0060.explanation=ID-ul utilizatorului folosit la crearea unei conexiuni a motorului de mesagerie intra-magistral\u0103 nu este acela\u015fi ID de utilizator cu cel de motor de mesagerie de la distan\u0163\u0103 care a fost autorizat s\u0103 permit\u0103 crearea conexiunilor motorului de mesagerie intra-magistral\u0103.
+FAILED_AUTHORISATION_CWSIT0060.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele motoare de mesagerie au acela\u015fi ID de utilizatr configurat pentru conexiunile motorului de mesagerie intra-magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol a leg\u0103turii magistralei serviciului de integrare \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajul primit este {2} dar tipul mesajului asteptat este {3}.
+PROTOCOL_ERROR_CWSIT0061.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: A ap\u0103rut o eroare intern\u0103. Este o eroare de protocol a leg\u0103turii magistralei serviciului de integrare \u00een timpul comunic\u0103rii cu motorul de mesagerie {0} \u00een magistrala {1}, tipul mesajul primit este {2} dar tipul mesajului asteptat este {3}.
+PROTOCOL_ERROR_CWSIT0062.explanation=MSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: Motorul de mesagerie necesar {0} \u00een magistrala {1} nu a fost g\u0103sit \u00een acest proces
+NOT_FOUND_CWSIT0063.explanation=Motorul de mesagerie nu a putut comunica cu motorul de mesagerie vecin deoarece motorul de mesagerie vecin nu a putut fi g\u0103sit \u00een procesul la care s-a conectat acest motor de mesagerie.
+NOT_FOUND_CWSIT0063.useraction=Repeta\u0163i opera\u0163iunea. Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie cerut este disponibil la loca\u0163ia corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: Motorul de mesagerie necesar {0} \u00een magistrala {1} nu a fost g\u0103sit \u00een acest proces
+NOT_FOUND_CWSIT0064.explanation=Motorul de mesagerie nu a putut comunica cu motorul de mesagerie vecin deoarece motorul de mesagerie vecin nu a putut fi g\u0103sit \u00een procesul la care s-a conectat acest motor de mesagerie.
+NOT_FOUND_CWSIT0064.useraction=Repeta\u0163i opera\u0163iunea. Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie cerut este disponibil la loca\u0163ia corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: Motorul de mesagerie necesar {0} \u00een magistrala {1} nu a fost g\u0103sit \u00een acest proces
+NOT_FOUND_CWSIT0065.explanation=Motorul de mesagerie nu a putut comunica cu motorul de mesagerie vecin deoarece motorul de mesagerie vecin nu a putut fi g\u0103sit \u00een procesul la care s-a conectat acest motor de mesagerie.
+NOT_FOUND_CWSIT0065.useraction=Repeta\u0163i opera\u0163iunea. Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie cerut este disponibil la loca\u0163ia corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: Nu este posibil\u0103 completarea leg\u0103turii magistral\u0103 de integrare servicii {0} deoarece motorul de mesagerie din magistrala care face cererea {1} \u00eencearc\u0103 s\u0103 se conecteze la un motor de mesagerie pe aceea\u015fi magistral\u0103.
+INVALID_REQUEST_CWSIT0066.explanation=Un motor de mesagerie \u00eencearc\u0103 s\u0103 stabileasc\u0103 o leg\u0103tur\u0103 a magistralei serviciului de integrare c\u0103tre un motor de mesagerie din aceea\u015fi magistral\u0103. Leg\u0103turile magistralei serviciului de integrare dintre motoarele de mesagerie din aceea\u015fi magistral\u0103 nu sunt permise.
+INVALID_REQUEST_CWSIT0066.useraction=Verifica\u0163i configurarea leg\u0103turii magistralei serviciului de integrare pentru a v\u0103 asigura c\u0103 punctele finale bootstrap adreseaz\u0103 corect o magistral\u0103 la distan\u0163\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: Leg\u0103tura magistral\u0103 de integrare servicii {0} \u00een magistrala {1} nu este disponibil\u0103
+UNABLE_TO_FIND_CWSIT0067.explanation=O cerere de legatur\u0103 a magistralei de serviciu de integrare a fost primit\u0103 de la o alta magistral\u0103 dar nu este nici un motor de mesagerie disponibil s\u0103 accepte cererea \u00een magistrala destina\u0163ie.
+UNABLE_TO_FIND_CWSIT0067.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie configurat s\u0103 manipuleze leg\u0103tura magistralei serviciului de integrare este disponibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: O cerere de leg\u0103tura magistral\u0103 de integrare servicii a fost primit\u0103 pentru {0} de la magistrala {1} motorul de mesagerie {2} dar nicio defini\u0163ie de configurare potrivit\u0103 nu a fost g\u0103sit\u0103.
+UNABLE_TO_FIND_CWSIT0068.explanation=O cerere a leg\u0103turii magistralei serviciului de integrare a fost primit\u0103 de la alt\u0103 magistral\u0103 dar nici o defini\u0163ie a configur\u0103rii nu a fost g\u0103sit\u0103 care s\u0103 se potriveasc\u0103 cu aceast\u0103 cerere, cererea a fost refuzat\u0103.
+UNABLE_TO_FIND_CWSIT0068.useraction=Asigura\u0163i-v\u0103 c\u0103 configur\u0103rile leg\u0103turii magistralei serviciului de integrare \u00een ambele magistrale sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: Nicio configura\u0163ie de potrivire nu a fost g\u0103sit\u0103 pentru conexiunea leg\u0103turii magistral\u0103 de integrare servicii {0} \u00een magistrala {1}
+UNABLE_TO_FIND_CWSIT0069.explanation=O cerere a leg\u0103turii magistralei serviciului de integrare a fost respins\u0103 de c\u0103tre alt\u0103 magistral\u0103 deoarece nu a putut fi g\u0103sit\u0103 nici o defini\u0163ie a configura\u0163iei care s\u0103 se potriveasc\u0103 cu aceast\u0103 cerere.
+UNABLE_TO_FIND_CWSIT0069.useraction=Asigura\u0163i-v\u0103 c\u0103 configur\u0103rile leg\u0103turii magistralei serviciului de integrare \u00een ambele magistrale sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: O cerere de leg\u0103tura magistral\u0103 de integrare servicii a fost primit\u0103 pentru {0} de la magistrala {1} motorul de mesagerie {2} dar defini\u0163ia de configurare a\u015fteapt\u0103 motorul de mesagerie {3}.
+NOT_ALLOWED_CWSIT0070.explanation=O cerere a leg\u0103turii magistralei serviciului de integrare a fost primit\u0103 de la un motor de mesagerie \u00een alt\u0103 magistral\u0103 care nu este motorul de mesagerie numit \u00een defini\u0163ia configura\u0163iei \u00een aceast\u0103 magistral\u0103, cererea a fost respins\u0103.
+NOT_ALLOWED_CWSIT0070.useraction=Asigura\u0163i-v\u0103 c\u0103 configur\u0103rile leg\u0103turii magistralei serviciului de integrare \u00een ambele magistrale sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: Cererea leg\u0103turii magistral\u0103 de integrare servicii {0} a fost respins\u0103 de magistrala {1} deoarece motorul de mesagerie care a f\u0103cut cererea {2} nu s-a potrivit cu motorul de mesagerie a\u015fteptat {3}
+NOT_ALLOWED_CWSIT0071.explanation=Magistrala la distan\u0163\u0103 a detectat o inconsisten\u0163\u0103 \u00een numele motorului de mesagerie \u00een cererea magistralei serviciului de integrare f\u0103cut de c\u0103tre aceast\u0103 magistral\u0103 \u015fi propria sa defini\u0163ie a configura\u0163iei leg\u0103turii magistralei serviciului de integrare.
+NOT_ALLOWED_CWSIT0071.useraction=Asigura\u0163i-v\u0103 c\u0103 configur\u0103rile leg\u0103turii magistralei serviciului de integrare \u00een ambele magistrale sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: Nu se pot ob\u0163ine datele de autentificare de la aliasul de autentificare al motorului de mesagerie \u00eentre magistrale {0}.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=Dac\u0103 alias-ul de autentificare nu exist\u0103 sau este configurat incorect, nu va fi posibil s\u0103 se ob\u0163in\u0103 date de autentificare din el. Valorile implicite ale \u015firurilor goale vor fi asumate pentru datele de autentificare necesare pentru conexiunile motorului de mesagerie intra-magistral\u0103. Dac\u0103 securitatea este activat\u0103, aceast\u0103 problem\u0103 va \u00eempiedica conectarea motoarelor de mesagerie.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=Asigura\u0163i-v\u0103 c\u0103 aliasul autentific\u0103rii motorului de mesagerie intra-magistral\u0103 este corect configurat.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: Nu este configurat niciun alias de autentificare al motorului de mesagerie \u00eentre magistrale.
+NO_AUTHALIAS_CWSIT0073.explanation=C\u00e2nd nici un alias de autentificare a motorului de mesagerie intra-magistral\u0103 nu este configurat nici o verificare de autentificare nu va fi realizat\u0103 pentru conexiunile motorului de mesagerie intra-magistral\u0103. Pentru a autentifica conexiunile motorului de mesagerie intra-magistral\u0103 configura\u0163i un alias de autentificare a motorului de mesagerie intra-magistral\u0103.
+NO_AUTHALIAS_CWSIT0073.useraction=Configura\u0163i alias-ul de autentificare a motorului de mesagerie intra-magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: A ap\u0103rut o eroare intern\u0103. Leg\u0103tura UUID {0} este deja definit\u0103.
+ALREADY_DEFINED_CWSIT0074.explanation=MSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: A ap\u0103rut o eroare intern\u0103. Leg\u0103tura UUID {0} este deja definit\u0103.
+ALREADY_DEFINED_CWSIT0075.explanation=MSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: A ap\u0103rut o eroare intern\u0103. Leg\u0103tura UUID {0} nu a fost definit\u0103.
+UNDEFINED_CWSIT0076.explanation=MSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: A ap\u0103rut o eroare intern\u0103. Leg\u0103tura UUID {0} nu a fost definit\u0103.
+UNDEFINED_CWSIT0077.explanation=MSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: A ap\u0103rut o eroare intern\u0103. Leg\u0103tura UUID {0} nu poate fi declarat\u0103 deoarece leg\u0103tura nu este pornit\u0103.
+NOT_STARTED_CWSIT0078.explanation=MSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: A ap\u0103rut o eroare intern\u0103. Leg\u0103tura UUID {0} nu poate fi declarat\u0103 deoarece leg\u0103tura nu este activ\u0103.
+NOT_ACTIVE_CWSIT0079.explanation=MSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: Nu este posibil\u0103 stabilirea leg\u0103turii magistral\u0103 de servicii {0} de la magistrala {1} la magistrala {2} deoarece leg\u0103tura din magistrala {3} nu este pornit\u0103.
+NOT_STARTED_CWSIT0080.explanation=Leg\u0103tura magistralei serviciului de integrare este pornit\u0103 acum intr-o magistral\u0103 dar nu este pornit\u0103 \u00een cealalt\u0103 magistral\u0103; leg\u0103tura trebuie s\u0103 fie pornit\u0103 \u00een ambele magistrale \u00eenainte s\u0103 fie posibil\u0103 conectarea.
+NOT_STARTED_CWSIT0080.useraction=Opri\u0163i leg\u0103tura magistralei serviciului de integrare \u00een magistrala de origine sau porni\u0163i leg\u0103tura \u00een magistrala care prime\u015fte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: A ap\u0103rut o eroare intern\u0103. Podul vecin cu UUID {0} nu a fost g\u0103sit \u00een vecin\u0103tate.
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=MSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: A ap\u0103rut o eroare intern\u0103. Vecin cu UUID {0} nu a fost g\u0103sit \u00een vecin\u0103tate.
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=MSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: ID-ul utilizator {0} nu este autorizat s\u0103 creeze conexiunea leg\u0103tur\u0103 de integrare servicii {1} \u00eentre magistrala {2} \u015fi magistrala {3}
+FAILED_AUTHORISATION_CWSIT0085.explanation=ID-ul utilizatorului folosit la crearea unei conexiuni de leg\u0103tura a magistralei serviciului de integrare nu a fost acela\u015fi ID de utilizator ca cel care a fost autorizat de c\u0103tre motorul de mesagerie de la distan\u0163\u0103 s\u0103 permit\u0103 crearea conexiunilor leg\u0103turii magistralei serviciului de integrare.
+FAILED_AUTHORISATION_CWSIT0085.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele motoare de mesagerie au acela\u015fi ID de utilizatr configurat pentru leg\u0103tura magistralei serviciului de integrare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: Magistrala {0} nu a fost g\u0103sit\u0103
+BUS_NOT_FOUND_CWSIT0086.explanation=Magistrala cerut\u0103 nu este configurat\u0103 \u00een server de aceea nu este posibil\u0103 folosirea acestui server pentru a se conecta la magistrala cerut\u0103.
+BUS_NOT_FOUND_CWSIT0086.useraction=Asigura\u0163i-v\u0103 c\u0103 numele magistralei este corect \u015fi folosi\u0163i un server care are magistrala cerut\u0103 configurat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: O cerere de conexiune \u00eentre magistrale a fost primit\u0103 de la motorul de mesagerie {1} dar nicio defini\u0163ie de configurare de potrivire nu a fost g\u0103sit\u0103.
+UNABLE_TO_FIND_CWSIT0087.explanation=O cerere a leg\u0103turii magistralei serviciului de integrare a fost primit\u0103 de la alt motor de mesagerie dar nici o defini\u0163ie a configura\u0163iei nu a fost g\u0103sit\u0103 care s\u0103 se potriveasc\u0103 cu aceast\u0103 cerere, cererea a fost refuzat\u0103.
+UNABLE_TO_FIND_CWSIT0087.useraction=Asigura\u0163i-v\u0103 c\u0103 configur\u0103rile conexiunii intra-magistral\u0103 sunt corecte \u00een ambele motoare de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: Momentan nu ruleaz\u0103 niciun motor de mesagerie \u00een magistrala {0}. Informa\u0163ii suplimentare despre defec\u0163iune: {1}
+NO_MES_STARTED_CWSIT0088.explanation=Un client nu a putut fi legat la magistral\u0103 deoarece nu sunt motoare de mesagerie \u00een magistrala cerut\u0103 care s\u0103 ruleze acum.
+NO_MES_STARTED_CWSIT0088.useraction=Repeta\u0163i opera\u0163iunea. Porni\u0163i un motor de mesagerie \u00een magistrala cerut\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: ID-ul utilizator {0} a e\u015fuat autentificarea \u00een magistrala {1}
+FAILED_AUTHENTICATION_CWSIT0089.explanation=ID-ul utilizatorului folosit pentru a crea o conexiune client cu un motor de mesagerie nu a putut s\u0103 fie autentificat de c\u0103tre motorul de mesagerie la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHENTICATION_CWSIT0089.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: O cerere bootstrap a fost f\u0103cut\u0103 magistralei {0} folosind lan\u0163ul canal {1}. Folosirea acestui lan\u0163 nu este permis\u0103 de c\u0103tre magistrala {0}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=Un client a \u00eencercat s\u0103 trimit\u0103 o cerere bootstrap pentru a se conecta la magistral\u0103, dar magistrala nu permite cereri bootstrap folosind acel canal.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=Reconfigura\u0163i clientul astfel \u00eenc\u00e2t punctul final bootstrap s\u0103 foloseasc\u0103 un lan\u0163 permis.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: O conexiune leg\u0103tur\u0103 magistral\u0103 de integrare servicii a fost creat\u0103 cu succes la motorul de mesagerie {0} pe motorul de mesagerie {1} f\u0103r\u0103 specificarea unui alias de autentificare de leg\u0103tura magistral\u0103 de integrare servicii. Este recomandat s\u0103 configura\u0163i un alias de autentificare pentru motive de securitate.
+NO_AUTHALIAS_CWSIT0091.explanation=C\u00e2nd un alias de autentificare a magistralei serviciului de integrare nu este configurat pe o leg\u0103tura a magistralei serviciului de integrare este posibil s\u0103 crea\u0163i o leg\u0103tur\u0103 a magistralei serviciului de integrare \u00eentre o magistral\u0103 securizat\u0103 \u015fi una nesecurizat\u0103 f\u0103r\u0103 a face o verificare de autentificare.
+NO_AUTHALIAS_CWSIT0091.useraction=Configura\u0163i aliasul de autentificare al leg\u0103turii magistralei serviciului de integrare dac\u0103 dori\u0163i s\u0103 impune\u0163i o verificare a autentific\u0103rii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: S-a f\u0103cut o \u00eencercare de conectare la magistrala {0} folosind lan\u0163ul canal {1}. Folosirea acestui lan\u0163 nu este permis\u0103 de c\u0103tre magistrala {0}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=Un client a \u00eencercat s\u0103 trimit\u0103 o cerere pentru a se conecta la magistral\u0103, dar magistrala nu permite conexiuni care folosesc acel lan\u0163 de canal.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=Reconfigura\u0163i clientul astfel \u00eenc\u00e2t s\u0103 se conecteze folosind un lan\u0163 permis.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: Magistrala {0} a \u00eencercat crearea unei leg\u0103turi magistral\u0103 de integrare servicii pentru magistrala extern\u0103 {1} folosind lan\u0163ul de canal bootstrap {2}. Folosirea acestui lan\u0163 nu este permis\u0103 de c\u0103tre magistrala extern\u0103 {1}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=O magistral\u0103 \u00eencearc\u0103 s\u0103 foloseasc\u0103 un lan\u0163 de transport bootstrap care nu este suportat de c\u0103tre magistrala extern\u0103.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=Reconfigura\u0163i magistrala astfel \u00eenc\u00e2t punctul final bootstrap s\u0103 foloseasc\u0103 un lan\u0163 permis de c\u0103tre magistrala extern\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: Clientul nu a fost autorizat pentru conectarea la magistrala {0} folosind serverul de bootstrap cu punctul final {1}. Motiv: {2}.
+NOT_AUTHORIZED_CWSIT0094.explanation=ID-ul utilizatorului folosit la crearea unei conexiuni cu magistrala nu a fost autorizat s\u0103 se conecteze la ea.
+NOT_AUTHORIZED_CWSIT0094.useraction=Asigura\u0163i-v\u0103 c\u0103 id-ul utilizatorului are rolul de conector de magistral\u0103 pentru magistral\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: Motorul de mesagerie {0} \u00een magistrala {1} a \u00eencercat crearea unei leg\u0103turi magistral\u0103 de integrare servicii {2} \u00een magistrala extern\u0103 {3} folosind lan\u0163ul canal de intrare {4}. Folosirea acestui lan\u0163 nu este permis\u0103 de c\u0103tre magistrala extern\u0103 {3}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=O magistral\u0103 \u00eencearc\u0103 s\u0103 foloseasc\u0103 un lan\u0163 de transport de intrare care nu este suportat de c\u0103tre magistrala extern\u0103.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=Reconfigura\u0163i magistrala astfel \u00eenc\u00e2t s\u0103 se conecteze la un lan\u0163 permis de c\u0103tre magistrala extern\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: Motorul de mesagerie {0} \u00een magistrala {1} a \u00eencercat s\u0103 se conecteze la motorul de mesagerie {2} folosind lan\u0163ul canal de intrare {3}. Folosirea acestui lan\u0163 nu este permis\u0103 de c\u0103tre magistrala {1}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=Magistrala a fost configurat\u0103 s\u0103 foloseasc\u0103 un lan\u0163 de canal de transport care nu este permis pentru comunica\u0163ie \u00eentre motoare de mesagerie.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=Reconfigura\u0163i magistrala astfel \u00eenc\u0103t s\u0103 specifice un lan\u0163 permis ca lan\u0163ul de transport inter-motor. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: Motorul de mesagerie {0} \u00een subre\u0163eaua {1} a \u00eencercat s\u0103 se conecteze la motorul de mesagerie {2} \u00een subre\u0163eaua {3} folosind lan\u0163ul canal de intrare {4}. Folosirea acestui lan\u0163 nu este permis\u0103 de c\u0103tre magistrala {5}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=Magistrala \u00eencearc\u0103 s\u0103 foloseasc\u0103 un lan\u0163 de canal de transport care nu este permis.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=Reconfigura\u0163i magistrala astfel \u00eenc\u00e2t s\u0103 se conecteze la un lan\u0163 de canal de transport permis.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: O conexiune client la magistrala {0} folosind serverul de bootstrap cu punctul final {1} a e\u015fuat autentificarea cu motivul: {2}.
+FAILED_AUTHENTICATION_CWSIT0098.explanation=ID-ul utilizatorului folosit pentru a crea o conexiune client cu un motor de mesagerie nu a putut s\u0103 fie autentificat de c\u0103tre motorul de mesagerie la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHENTICATION_CWSIT0098.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: Clientul a contactat cu succes serverul de bootstrap la punctul final {0} \u015fi a fost redirec\u0163ionat la motorul de mesagerie {1} la punctul final {2}. \u00cencercarea de a contacta acest punct final a e\u015fuat din cauz\u0103 c\u0103: {3}.
+REDIRECT_FAILURE_CWSIT0099.explanation=Un client a e\u015fuat s\u0103 se lege la magistral\u0103 dup\u0103 o redirec\u0163ionare din cauza unei defec\u0163iuni la server. Motivul defec\u0163iunii din server este returnat.
+REDIRECT_FAILURE_CWSIT0099.useraction=Investiga\u0163i \u015fi rezolva\u0163i defec\u0163iunea descris\u0103 \u00een mesajul de eroare, apoi re\u00eencerca\u0163i opera\u0163ia. 
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: Se a\u015ftepta ob\u0163inerea unui CFEndpoint din Selec\u0163ie dar niciunul nu era prezent (eroare intern\u0103).
+BAD_SELECT_CWSIT0100.explanation=Cererea de rezolvare a motorului de mesagerie destina\u0163ie a e\u015fuat.
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: A fost \u00eent\u00e2lnit un parametru nevalid.
+INVALID_PARAMETER_CWSIT0101.explanation=Cererea de rezolvare a motorului de mesagerie destina\u0163ie a e\u015fuat.
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: O selec\u0163ie de motoare de mesagerie {0} a fost g\u0103sit\u0103 dar a trebuit ignorat\u0103 deoarece nu satisface restric\u0163ia de proximitate a conexiunii de {1} care a fost specificat\u0103 de aplica\u0163ie.
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=Cererea de rezolvare a motorului de mesagerie destina\u0163ie a e\u015fuat.
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=Dac\u0103 inten\u0163iona\u0163i ca conexiunea care este f\u0103cut\u0103 c\u0103tre motorul de mesagerie s\u0103 apar\u0103 \u00een mesajul de eroare, atunci trebuie s\u0103 sl\u0103bi\u0163i proximitatea conexiunii \u00een fabrica de conexiune sau s\u0103 activa\u0163i specifica\u0163iile \u015fi re\u00eencerca\u0163i opera\u0163ia.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: Nu a fost g\u0103sit niciun motor de mesagerie care s\u0103 se potriveasc\u0103 cu urm\u0103torii parametri: magistrala={0}, targetGroup={1}, targetType={2}, targetSignificance={3}, transportChain={4}, proximitate={5}.
+NULL_SELECTION_CWSIT0103.explanation=Cererea de rezolvare a motorului de mesagerie destina\u0163ie a e\u015fuat.
+NULL_SELECTION_CWSIT0103.useraction=Verifica\u0163i starea motorului de mesagerie la care vre\u0163i s\u0103 v\u0103 conecta\u0163i ca s\u0103 v\u0103 asigura\u0163i c\u0103 ruleaz\u0103. Alternativ, modifica\u0163i propriet\u0103\u0163ile conexiunii pentru a permite selec\u0163ia unui motor de mesagerie activ.
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: Clientul a \u00eencercat conectarea la motorul de mesagerie {0} pe magistrala {1} dar conexiunea nu a putut fi creat\u0103 deoarece motorul de mesagerie nu este pornit.
+ME_NOT_STARTED_CWSIT0104.explanation=Motorul de mesagerie exist\u0103 dar nu este pornit.
+ME_NOT_STARTED_CWSIT0104.useraction=Porni\u0163i motorul de mesagerie la care vre\u0163i s\u0103 v\u0103 conecta\u0163i, \u015fi re\u00eencerca\u0163i opera\u0163iunea.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: Aplica\u0163ia nu a specificat un ID utilizator la \u00eencercarea de autentificare cu magistrala {0}
+FAILED_AUTHENTICATION_CWSIT0105.explanation=Autentificarea cu motorul de mesagerie de la distan\u0163\u0103 a e\u015fuat deoarece aplica\u0163ia nu specific\u0103 un ID de utilizator.
+FAILED_AUTHENTICATION_CWSIT0105.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: Leg\u0103tura magistral\u0103 de integrare servicii {0} a fost creat\u0103 cu succes la motorul de mesagerie {1} \u00een magistrala {2} pe gazda {3} portul {4} folosind lan\u0163ul de transport {5}.
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=O punte a fost stabilit\u0103 cu alt motor de mesagerie \u00eentr-o magistral\u0103 diferit\u0103.
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: Portul specificat {0}, \u00een punctul final, a implicat folosirea lan\u0163ului de transport {1}. Acesta va rezulta \u00een trasmiterea parolei necriptate \u00eentre client \u015fi server. Aceasta nu este recomandat\u0103 din motive de securitate.
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=Portul implicit este selectat \u015fi numele lan\u0163ului nu a fost specificat \u00een punctul final al furnizorului. Aceste rezultate \u00eentr-un lan\u0163 de transport nesecurizat, \u015fi este recomandat s\u0103 specifica\u0163i securitatea pe aceast\u0103 conexiune.
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=Acest avertisment poate fi prevenit specificarea manual\u0103 a lan\u0163ului de transport necesar (fie el securizat sau nu) sau prin omiterea parolei c\u00e2nd se creeaz\u0103 o conexiune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: ID-ul utilizator {0} a e\u015fuat autorizarea \u00een magistrala {1}
+FAILED_AUTHORIZATION_CWSIT0108.explanation=ID-ul utilizatorului folosit pentru a crea o conexiune client cu un motor de mesagerie nu a putut s\u0103 fie autentificat de c\u0103tre motorul de mesagerie la distan\u0163\u0103. Defec\u0163iunea de autentificare a fost probabil din cauza unui ID de utilizator incorect sau a valorii parolei.
+FAILED_AUTHORIZATION_CWSIT0108.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: Aplica\u0163ia nu a specificat un ID utilizator la \u00eencercarea de autorizare cu magistrala {0}
+FAILED_AUTHORIZATION_CWSIT0109.explanation=Autentificarea cu motorul de mesagerie de la distan\u0163\u0103 a e\u015fuat deoarece aplica\u0163ia nu specific\u0103 un ID de utilizator.
+FAILED_AUTHORIZATION_CWSIT0109.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele, ID-ul de utilizator c\u00e2t \u015fi parola, sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: Token-ul de securitate furnizat de motorul de mesagerie {0} \u00een magistrala {1} a e\u015fuat autentificarea.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=Token-ul de securitate folosit la crearea unei conexiuni de motor de mesagerie intra-magistral\u0103 a e\u015fuat la autentificare.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: Informa\u0163iile de identitate furnizate de token-ul de securitate nu s-au potrivit cu datele din cererea de conexiune f\u0103cut\u0103  de motorul de mesagerie {0} \u00een magistrala {1}
+TOKEN_INCONSISTENT_CWSIT0111.explanation=Aceasta poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+TOKEN_INCONSISTENT_CWSIT0111.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: Tipul token-ului de securitate de {0} furnizat de motorul de mesagerie {1} \u00een magistrala {2} nu este suportat.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=Autentificarea motorului de mesagerie de la distan\u0163\u0103 nu poate fi efectuat\u0103 deoarece tipul tokenului de securitate nu este suportat.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: Cererea de conexiune de la motorul de mesagerie {0} \u00een magistrala {1} nu a specificat un tip de token de securitate.
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=Aceasta poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: Informa\u0163iile de identitate furnizate \u00een token-ul de securitate nu s-au potrivit cu datele din r\u0103spunsul de conexiune de la  motorul de mesagerie {0} \u00een magistrala {1}
+TOKEN_INCONSISTENT_CWSIT0115.explanation=Aceasta poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+TOKEN_INCONSISTENT_CWSIT0115.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: Tipul token-ului de securitate de {0} furnizat de motorul de mesagerie {1} \u00een magistrala {2} pentru autentificare mutual\u0103 nu este suportat.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=Autentificarea motorului de mesagerie de la distan\u0163\u0103 nu poate fi efectuat\u0103 deoarece tipul tokenului de securitate nu este suportat.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: R\u0103spunsul de conexiune de la motorul de mesagerie {0} \u00een magistrala {1} nu a specificat un tip de token de securitate.
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=Aceasta poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=Verifica\u0163i istoricele de erori de pe motorul de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: \u00cen timpul unei \u00eencerc\u0103ri de conectare la motorul de mesagerie {0} pe magistrala {1}, informa\u0163ii incomplete au \u00eensemnat c\u0103 nu a fost posibil\u0103 validarea identit\u0103\u0163ii motorului de mesagerie la distan\u0163\u0103
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=Aceasta poate fi din cauza unei probleme legate de timp, sau poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=A\u015ftepta\u0163i pentru ca o re\u00eencercare s\u0103 fie f\u0103cut\u0103, sau investiga\u0163i posibilitatea unui atac de securitate verific\u00e2nd istoricele de eroare \u015fi sistem asociate motorului de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: O \u00eencercare de conectare a fost f\u0103cut\u0103 de motorul de mesagerie la distan\u0163\u0103 {0} pe magistrala {1}, dar informa\u0163ii incomplete au \u00eensemnat c\u0103 nu a fost posibil\u0103 validarea identit\u0103\u0163ii motorului de mesagerie la distan\u0163\u0103
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=Aceasta poate fi din cauza unei probleme legate de timp, sau poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=A\u015ftepta\u0163i pentru ca o re\u00eencercare s\u0103 fie f\u0103cut\u0103, sau investiga\u0163i posibilitatea unui atac de securitate verific\u00e2nd istoricele de eroare \u015fi sistem asociate motorului de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: Nu a fost posibil\u0103 validarea identit\u0103\u0163ii motorului de mesagerie care se conecta {0} pe magistrala {1}
+TARGET_NOT_FOUND_CWSIT0120.explanation=Aceasta poate fi din cauza unei probleme legate de timp, sau poate indica faptul c\u0103 un utilizator neautorizat \u00eencearc\u0103 s\u0103 se conecteze la sistem.
+TARGET_NOT_FOUND_CWSIT0120.useraction=A\u015ftepta\u0163i pentru ca o re\u00eencercare s\u0103 fie f\u0103cut\u0103, sau investiga\u0163i posibilitatea unui atac de securitate verific\u00e2nd istoricele de eroare \u015fi sistem asociate motorului de mesagerie implicat \u00een \u00eencercarea de conectare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: O execp\u0163ie java.net.UnknownHostException a fost aruncat\u0103 la \u00eencercarea de rezolvare a numelui gazd\u0103 {0}
+INVALID_HOST_CWSIT0121.explanation=Aceasta poate fi cauzat\u0103 de numele gazdei client de primire care nu s-a rezolvat \u00een Domain Name System, DNS.
+INVALID_HOST_CWSIT0121.useraction=\u00cencerca\u0163i s\u0103 \u00eenregistra\u0163i numele gazdei \u00een Domain Name Server, sau s\u0103 ad\u0103uga\u0163i o \u00eenregistrare \u00een fi\u015fierul gazdei clientului, apoi re\u00eencerca\u0163i opera\u0163ia.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: Un tabel de rutare static este folosit pentru acest cluster - folosirea rut\u0103rii statice previne \u00een mod normal magistrala de integrare servicii de la a func\u0163iona corect \u015fi nu este recomandat\u0103.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=Activarea rut\u0103rii statice previne informa\u0163ii ca loca\u0163ia motorului de mesagerie s\u0103 fie \u00eemp\u0103r\u0163it\u0103 dinamic \u00een celul\u0103 f\u0103c\u00e2nd ca aplica\u0163ia s\u0103 nu poat\u0103 s\u0103 se conecteze la magistral\u0103.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=Dac\u0103 sunt \u00eent\u00e2lnite probleme \u00een timpul folosirii magistralei serviciului de integrare atunci tabela de rutare static\u0103 ar trebui \u015ftears\u0103 \u015fi serverul repornit pentru a reveni la comportamentul de rutare standard.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: Serverul nu este configurat s\u0103 permit\u0103 bootstrap pentru magistrala {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=Clientul a \u00eencercat sa bootstrap pe o magistral\u0103 folosind un server care nu a fost configurat s\u0103 permit\u0103 bootstrap pentru magistral\u0103. 
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=Reconfigura\u0163i magistrala astfel \u00eenc\u00e2t serverul s\u0103 poat\u0103 fi folosit pentru bootstrap, sau actualiza\u0163i punctele finale ale furnizorului de clien\u0163i s\u0103 foloseasc\u0103 un server diferit.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: Magistrala {0} a \u00eencercat s\u0103 localizeze magistrala extern\u0103 {1} folosind un server care nu este configurat s\u0103 permit \u0103 bootstrap pentru magistrala {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=Magistrala a \u00eencercat s\u0103 fac\u0103 bootstrap unei magistrale externe folosind un server care nu suport\u0103 bootstrap pentru magistrala extern\u0103.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=Reconfigura\u0163i magistrala astfel \u00eenc\u00e2t punctul final bootstrap s\u0103 foloseasc\u0103 un alt server, specific\u00e2nd o combina\u0163ie gazd\u0103-port diferit\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=Dac\u0103 mesajul nu furnizeaz\u0103 informa\u0163ii suficiente, pentru informa\u0163ii suplimentare verifica\u0163i orice mesaj de eroare \u00eenso\u0163itor.
+TEMPORARY_CWSIT9999.useraction=Pentru mai multe informa\u0163ii \u00een rezolvarea acestei erori, urm\u0103ri\u0163i informa\u0163iile de determinare a problemei pe pagina de WebApplication Server Support : http://www.ibm.com/software/webservers/appserv/was/support.
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: Conexiunea la motorul de mesagerie \u0163int\u0103 la {0} a avut succes, dar motorul de mesagerie a returnat o condi\u0163ie eroare: {1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=Clientul s-a conectat la motorul de mesagerie, dar este o problem\u0103 \u00een stabilirea cu succes a conexiunii cu motorul de mesagerie \u0163int\u0103. 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie \u0163int\u0103 este configurat corect \u015fi func\u0163ioneaz\u0103 corect pentru a accepta conexiunile de intrare la distan\u0163\u0103. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: Nu se pot contacta motoare de mesagerie \u0163int\u0103 specificate. Verifica\u0163i excep\u0163ia imbricat\u0103 pentru mai multe detalii. Conexiunile client au fost \u00eencercate la: {0}
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=Clientul nu se poate conecta. E posibil ca conexiunea s\u0103 fi e\u015fuat din cauza indisponibilit\u0103\u0163ii motorului de mesagerie \u0163int\u0103 sau din cauza unor probleme de configurare sau de re\u0163ea. 
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie \u0163int\u0103 este disponibil. Consulta\u0163i documenta\u0163ia produs pentru informa\u0163ii despre configurarea conexiunii pe motorul de mesagerie \u0163int\u0103. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: Autentificarea clientului pe motorul de mesagerie \u0163int\u0103 a e\u015fuat cu motivul: {2}
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=Motorul de mesagerie la distan\u0163\u0103 a e\u015fuat autentificarea ID-ului utilizator care este folosit pentru a stabili conexiunea client cu motorul de mesagerie \u0163int\u0103. E\u015fecul autentific\u0103rii e posibil s\u0103 se datoreze unui ID utilizator sau a unei parole incorecte.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=Asigura\u0163i-v\u0103 c\u0103 at\u00e2t ID-ul utilizator c\u00e2t \u015fi parola sunt corecte. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: Clientul nu a fost autorizat s\u0103 se conecteze pe motorul de mesagerie \u0163int\u0103. Motiv: {2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=Id-ul utilizator folosit pentru a crea o conexiune nu a fost autorizat s\u0103 se conecteze pe motorul de mesagerie \u0163int\u0103.
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=Asigura\u0163i-v\u0103 c\u0103 ID-ul utilizator are pesmisiunile necesare. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: O cerere de conexiune client pe motorul de mesagerie \u0163int\u0103 a e\u015fuat cu motivul: {2}
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=O cerere conexiune client a e\u015fuat din cauza unei probleme \u00een motorul de mesagerie \u0163int\u0103. Motivul pentru e\u015fecul \u00een motorul de mesagerie \u0163int\u0103 este returnat.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=Investiga\u0163i \u015fi rezolva\u0163i e\u015fecul descris \u00een mesajul de eroare, \u015fi apoi re\u00eencerca\u0163i opera\u0163iunea.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: Nu s-a putut conecta la motorul de mesagerie \u0163int\u0103 la {0} din cauza excep\u0163iei: {1}
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=Clientul nu poate stabili conexiunea cu motorul de mesagerie \u0163int\u0103. E posibil ca conexiunea s\u0103 fi e\u015fuat din cauza indisponibilit\u0103\u0163ii motorului de mesagerie \u0163int\u0103 sau din cauza unor probleme de configurare sau de re\u0163ea. 
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=Asigura\u0163i-v\u0103 c\u0103 re\u0163eaua func\u0163ioneaz\u0103 corect \u015fi c\u0103 motorul de mesagerie \u0163int\u0103 este disponibil. Motorul de mesagerie la distan\u0163\u0103 este specificat de proprietatea Remote Server Address a fabricii de conexiuni JMS. Adresa are forma host_name:port_number:chain_name (de exemplu, localhost:7276:BootstrapBasicMessaging).  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: Nu exist\u0103 motor de mesagerie local la care s\u0103 se fac\u0103 conectarea. Pentru a activa motorul de mesagerie local ad\u0103uga\u0163i caracteristica {0}.
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=Clientul nu poate stabili o conexiune cu motorul de mesagerie local. Acest lucru se poate datora faptului c\u0103 motorul de mesagerie nu este  configurat sau activ \u00een serverul de profil Liberty, sau pentru c\u0103 motorul de mesagerie nu poate accepta nicio conexiune.
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie ruleaz\u0103 \u00een serverul curent cu profil Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: Clientul nu a putut stabili o conexiune cu serverul \u0163int\u0103 la {0}, dar serverul a respins conexiunea.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=Clientul s-a conectat cu succes la serverul \u0163int\u0103, dar serverul \u0163int\u0103 a respins conexiunea deoarece motorul de mesagerie care ruleaz\u0103 pe serverul \u0163int\u0103 nu s-a potrivit cu propriet\u0103\u0163ile definite \u00een propriet\u0103\u0163ile fabricii de conexiune.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= Configura\u0163i propriet\u0103\u0163ile fabricii de conexiuni \u00een a\u015fa fel \u00eenc\u00e2t motorul de mesagerie care ruleaz\u0103 pe serverul \u0163int\u0103 s\u0103 se potriveasc\u0103 cu propriet\u0103\u0163ile fabricii de conexiuni configurate.
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: Nu s-a putut conecta la motorul de mesagerie local deoarece motorul de mesagerie nu a putut porni.
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=Clientul nu a putut stabili o conexiune cu motorul de mesagerie local. Aceasta din cauz\u0103 c\u0103 motorul de mesagerie este configurat \u00een serverul de profil Liberty curent, dar motorul de mesagerie a e\u015fuat la pornire.
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=Asigura\u0163i-v\u0103 c\u0103 motorul de mesagerie ruleaz\u0103 \u00een serverul curent cu profil Liberty. Verifica\u0163i \u00een istoricul de erori sau FFDC pentru a determina cauza problemei.

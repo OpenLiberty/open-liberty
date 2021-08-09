@@ -1,0 +1,60 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="microprofile-jwt-auth-BaseTCK" verbose="1" preserve-order="true" configfailurepolicy="continue" >
+
+    <!-- The required base JAX-RS and CDI based tests that all MP-JWT implementations
+    must pass.
+    -->
+    <test name="base-tests" verbose="10">
+        <groups>
+            <define name="base-groups">
+                <include name="arquillian" description="Arquillian internal"/>
+                <include name="utils" description="Utility tests"/>
+                <include name="jwt" description="Base JsonWebToken tests"/>
+                <include name="jaxrs" description="JAX-RS invocation tests"/>
+                <include name="cdi" description="Base CDI injection of ClaimValues"/>
+                <include name="cdi-json" description="CDI injection of JSON-P values"/>
+                <include name="cdi-provider" description="CDI injection of javax.inject.Provider values"/>
+                <include name="config" description="Validate configuration using MP-config"/>
+            </define>
+            <define name="excludes">
+                <include name="debug" description="Internal debugging tests" />
+            </define>
+            <run>
+                <include name="base-groups" />
+                <exclude name="excludes" />
+            </run>
+        </groups>
+        <classes>
+            <!-- MP JWT 1.1 tests - these all pass with empty server.xml and server.env, need audiences set -->
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMLocationTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMLocationURLTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKSTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsBase64JWKTest" />
+
+            <!-- Note: MP JWT 1.1 - This test is included in aud_noenv2 as it requires a different location URL setup -->
+            <!-- <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationURLTest" />  -->
+
+            <!-- MP JWT 1.1 tests - these two tests use a non-spec url form mp.jwt.verify.publickey.location=classpath:/signer-key4k.jwk -->
+            <!-- or mp.jwt.verify.publickey.location=classpath\:/signer-keyset4k.jwk -->
+            <!-- passes once location path is fixed in test. needs audiences  -->
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKSLocationTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsFileLocationURLTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsJWKLocationTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsPEMLocationTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsPEMTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.TokenAsCookieIgnoredTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.TokenAsCookieTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RsaKeySignatureTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.CookieTokenTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKClasspathTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKSClasspathTest" />
+            <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsPEMClasspathTest" />
+
+        </classes>
+    </test>
+
+</suite>

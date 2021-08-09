@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Impossible de trouver l''ID \u00e9l\u00e9ment de type ID sur le type avec l''URI [{0}] et le nom [{1}] .
+
+45001=Une erreur s''est produite lors du traitement de l''importation avec l''emplacement de sch\u00e9ma [{0}] et l''espace de nom [{1}] .
+
+45002=Une erreur s''est produite lors du traitement de l''inclusion avec l''emplacement de sch\u00e9ma [{0}] .
+
+45003=Une propri\u00e9t\u00e9 r\u00e9f\u00e9renc\u00e9e avec l''URI [{0}] et le nom [{1}] n''a pas \u00e9t\u00e9 trouv\u00e9e.
+
+45004=L''ancienne s\u00e9quence n''a pas \u00e9t\u00e9 trouv\u00e9e dans le r\u00e9capitulatif des modifications.
+
+45005=La valeur de propri\u00e9t\u00e9 nomm\u00e9e [{0}] doit \u00eatre un objet de donn\u00e9es
+
+45006=La s\u00e9quence ne peut pas \u00eatre nulle lorsque type.isSequenced() est d\u00e9fini sur true.
+
+45007=Un type n''a pas \u00e9t\u00e9 d\u00e9fini sur la propri\u00e9t\u00e9 avec le nom [{0}]
+
+45008=Une exception IOException s''est produite.
+
+45009=Type non trouv\u00e9 avec l''URI [{0}] et le nom [{1}]
+
+45010=Un type n''a pas pu \u00eatre trouv\u00e9 pour la classe d''interface [{0}]. Assurez-vous que le type est d\u00e9fini.  En outre, le chargeur de classe d''interface doit \u00eatre un membre de la hi\u00e9rarchie de chargeur de classe du contexte auxiliaire : il semble qu''il s''agisse de [{1}].
+
+45011=Impossible de cr\u00e9er un objet de donn\u00e9es pour le type avec l''URI [{0}] et le nom [{1}] car type.isAbstract() renvoie true.
+
+45012=Impossible de cr\u00e9er un objet de donn\u00e9es pour l''interface [{0}], tentative de cr\u00e9ation d''un objet de donn\u00e9es pour le type avec l''URI [{1}] et le nom [{2}] 
+
+45013=Impossible de rechercher des infos d''application pour un argument nul.
+
+45014=Impossible de d\u00e9finir le type.  Les types peuvent uniquement \u00eatre d\u00e9finis pour les \u00e9l\u00e9ments DataObjects avec Type d\u00e9fini sur commonj.sdo.Type
+
+45015=Impossible de d\u00e9finir le type avec un nom null.
+
+45016=Un attribut de r\u00e9f\u00e9rence est manquant dans un objet modifi\u00e9 dans le XML de r\u00e9capitulatif des modifications ou la valeur n''est pas sp\u00e9cifi\u00e9e.
+
+45017=Une erreur s''est produite lors du traitement de xpath [{0}] .
+
+45018=L''ajout d''une entr\u00e9e en double pour le param\u00e8tre unique complexe [{1}] dans une s\u00e9quence \u00e0 la position [{0}] n''est pas pris en charge.
+
+45019=L''ajout d''une propri\u00e9t\u00e9 d''attribut [{0}] \u00e0 une s\u00e9quence n''est pas pris en charge.
+
+45020=Aucune s\u00e9quence trouv\u00e9e pour le chemin [{0}].
+
+45021=Une erreur s''est produite lors de la tentative d''instanciation d''un objet de s\u00e9quence avec une zone d''instance d''objet de donn\u00e9es nulle.
+
+45022=Aucune s\u00e9quence n''est prise en charge pour la propri\u00e9t\u00e9 [{0}].
+
+45023=Impossible de d\u00e9finir une propri\u00e9t\u00e9 de type avec l''URI [{0}] et le nom [{1}] sur une valeur de classe [{2}]
+
+45024=Une erreur de conversion s''est produite.
+
+45025=Impossible de localiser la propri\u00e9t\u00e9 \u00e0 l''index [{0}]
+
+45026=Impossible d''ex\u00e9cuter l''op\u00e9ration [{0}] sur le param\u00e8tre NULL.
+
+45027=Impossible de trouver la classe du type avec l''URI [{0}] et le nom [{1}].
+
+45028=Un type ne peut pas \u00eatre d\u00e9fini pour ouvrir un type de donn\u00e9es.  Erreur pour le type avec l''URI [{0}] et le nom [{1}].
+
+45029=Index non valide [{0}] transmis \u00e0 la m\u00e9thode [{1}].
+
+45030=Une erreur s''est produite lors de l''appel du constructeur avec un argument de cha\u00eene sur la classe [{0}].
+
+45031=Impossible de d\u00e9finir un type cible non valide [{0}] sur la propri\u00e9t\u00e9 [{1}] car type.dataType est d\u00e9fini sur true.
+
+45032=Une exception XMLMarshalException s''est produite pour l''URI [{1}] et le nom local [{2}].  Exception : [{0}]
+
+45033=Une erreur s''est produite lors de la g\u00e9n\u00e9ration des types. Le composant de sch\u00e9ma XML avec le nom [{1}] et l''URI d''espace-noms [{0}] est r\u00e9f\u00e9renc\u00e9 mais jamais d\u00e9fini.  Une importation ou une inclusion de l''URI d''espace-noms [{0}] est peut-\u00eatre manquante dans le sch\u00e9ma XML.
+
+45034=La valeur du param\u00e8tre d''options doit \u00eatre un \u00e9l\u00e9ment DataObject de type avec l''URI [{0}] et le nom [{1}].
+
+45035=La valeur qui correspond \u00e0 la propri\u00e9t\u00e9 "type" doit \u00eatre un objet Type.
+
+45036=Une propri\u00e9t\u00e9 globale correspondant au noeud XML en cours de chargement est introuvable.
+
+45037=Le pr\u00e9fixe [{0}] est utilis\u00e9 mais il n''est pas not d\u00e9clar\u00e9 dans le sch\u00e9ma XML.
+
+45038=Impossible d''ex\u00e9cuter l''op\u00e9ration sur la propri\u00e9t\u00e9 [{0}] car elle n''est pas accessible depuis le chemin [{1}]. Le chemin n''est pas valide, ou un ou plusieurs objets de donn\u00e9es sur le chemin sont nuls.
+
+45039=Une erreur s''est produite lors de l''acc\u00e8s \u00e0 la zone externalizableDelegator [{0}] sur l''\u00e9l\u00e9ment DataObject.
+
+45040=Impossible d''ex\u00e9cuter l''op\u00e9ration [{0}] avec le param\u00e8tre nul [{1}].
+
+45041=La valeur [{0}] de la classe [{1}] n''est pas valide pour la propri\u00e9t\u00e9 [{2}] de type [{3}].
+
+45100=Une erreur s''est produite lors de la tentative de renvoi de l''\u00e9l\u00e9ment SDOHelperContext demand\u00e9.  Dans une instance WebLogic active, le nom d''application est requis pour les recherches de cache de contexte auxiliaire.  Le nom d''application n''a pas pu \u00eatre d\u00e9termin\u00e9 car la recherche {0} a \u00e9chou\u00e9.
+
+45101=Une erreur s''est produite lors de la tentative de renvoi de l''\u00e9l\u00e9ment SDOHelperContext demand\u00e9.  Dans une instance WebLogic active, le nom d''application est requis pour les recherches de cache de contexte auxiliaire.  Le nom d''application n''a pas pu \u00eatre d\u00e9termin\u00e9 car {0} n''a pas pu \u00eatre appel\u00e9 de mani\u00e8re r\u00e9flexive sur {1}.
+
+45102=Une erreur s''est produite lors de la tentative de renvoi de l''\u00e9l\u00e9ment SDOHelperContext demand\u00e9.  Dans une instance WebLogic active, le nom d''application est requis pour les recherches de cache de contexte auxiliaire.  Le nom d''application n''a pas pu \u00eatre d\u00e9termin\u00e9 car un nom d''objet n''a pas pu \u00eatre cr\u00e9\u00e9/retourn\u00e9 pour {0}.
+
+45103=Une erreur s''est produite lors de la tentative de renvoi de l''\u00e9l\u00e9ment SDOHelperContext demand\u00e9.  Dans une instance WebLogic active, le nom d''application est requis pour les recherches de cache de contexte auxiliaire.  Le nom d''application n''a pas pu \u00eatre d\u00e9termin\u00e9 car aucun contexte initial n''a pu \u00eatre instanci\u00e9.
+
+45200=SDO/JAXB - Un descripteur OXM n''a pas pu \u00eatre trouv\u00e9 qui corresponde au type SDO [{0}], v\u00e9rifiez qu''une classe Java est mapp\u00e9e au type XML [{1}].
+
+45201=SDO/JAXB - Un mappage OXM n''a pas pu \u00eatre trouv\u00e9 qui corresponde \u00e0 la propri\u00e9t\u00e9 SDO [{0}], v\u00e9rifiez qu''une propri\u00e9t\u00e9 Java est mapp\u00e9e au noeud XML [{1}].
+
+45202=SDO/JAXB - Un type SDO n''a pas pu \u00eatre trouv\u00e9 qui corresponde \u00e0 la classe Java [{0}].
+
+45203=SDO/JAXB - Une r\u00e9f\u00e9rence de sch\u00e9ma doit \u00eatre d\u00e9finie sur le descripteur pour la classe Java [{0}].
+
+45204=SDO/JAXB - Un contexte de sch\u00e9ma doit \u00eatre d\u00e9fini sur la r\u00e9f\u00e9rence de sch\u00e9ma sur le descripteur pour la classe Java [{0}].
+
+45205=SDO/JAXB - Un type SDO n''a pas pu \u00eatre trouv\u00e9 qui corresponde \u00e0 la classe Java [{0}], v\u00e9rifiez que un type SDO correspond au type XML [{1}].
+
+45206=SDO/JAXB - Une erreur s''est produite lors de la cr\u00e9ation d''un \u00e9l\u00e9ment JAXB Unmarshaller.
+
+45207=Une erreur s''est produite lors de la tentative de r\u00e9solution d''un sch\u00e9ma avec l''\u00e9l\u00e9ment SchemaResolver fourni.
+
+45208=Impossible de mapper la propri\u00e9t\u00e9 {0} du type {1}. Les packages javax.activation et javax.mail sont requis pour mapper les propri\u00e9t\u00e9s de type DataHandler. Assurez-vous que ces deux packages sont disponibles dans le chemin d''acc\u00e8s aux classes.
+
+45209=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour r\u00e9initialiser l''instance ApplicationResolver sur l''\u00e9l\u00e9ment SDOHelperContext.  Un seul ensemble est autoris\u00e9.
+
+45210=L''\u00e9l\u00e9ment DataObject en cours de conversion n''est pas du m\u00eame \u00e9l\u00e9ment HelperContext que XMLHelper.
+
+45211=Le type n''a pas pu \u00eatre d\u00e9fini avec le nom [{0}]. Le nom n''est pas un nom XML valide.
+
+45212=La propri\u00e9t\u00e9 n''a pas pu \u00eatre d\u00e9finie avec le nom [{0}]. Le nom n''est pas un nom XML valide.
+

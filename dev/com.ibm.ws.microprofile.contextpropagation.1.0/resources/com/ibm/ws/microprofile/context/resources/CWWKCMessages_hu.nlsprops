@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: Ugyanazt a(z) {0} sz\u00e1lkontextust\u00edpust t\u00f6bb, az alkalmaz\u00e1s sz\u00e1m\u00e1ra rendelkez\u00e9sre \u00e1ll\u00f3 sz\u00e1lkontextus szolg\u00e1ltat\u00f3 is biztos\u00edtja. Sz\u00e1lkontextus szolg\u00e1ltat\u00f3k: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=A MicroProfile kontextus terjeszt\u00e9si specifik\u00e1ci\u00f3 legfeljebb csak egy ThreadContextProvider szolg\u00e1ltat\u00f3t tesz lehet\u0151v\u00e9 az egyes kontextust\u00edpusokra vonatkoz\u00f3an.
+CWWKC1150.duplicate.context.useraction=Friss\u00edtse az el\u00e9rhet\u0151 alkalmaz\u00e1sokat, k\u00f6nyvt\u00e1rakat vagy mindkett\u0151t, hogy legfeljebb egy megadott t\u00edpus\u00fa ThreadContextProvider \u00e1lljon rendelkez\u00e9sre.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: A ManagedExecutor konfigur\u00e1ci\u00f3 az al\u00e1bbi sz\u00e1lkontextust\u00edpusokat tartalmazza, amelyek ki\u00fcr\u00edt\u00e9sre \u00e9s terjeszt\u00e9sre egyar\u00e1nt be vannak \u00e1ll\u00edtva: {0}.
+CWWKC1151.context.lists.overlap.explanation=Egy sz\u00e1lkontextust\u00edpus legfeljebb csak egy kateg\u00f3ri\u00e1ba sorolhat\u00f3 a ManagedExecutor szolg\u00e1ltat\u00e1s fel\u00e9p\u00edt\u00e9sekor vagy besz\u00far\u00e1sakor.
+CWWKC1151.context.lists.overlap.useraction=Vizsg\u00e1lja fel\u00fcl \u00e9s jav\u00edtsa a sz\u00e1lkontextust\u00edpusok oszt\u00e1lyba sorol\u00e1s\u00e1t a ManagedExecutor \u00f6ssze\u00e1ll\u00edt\u00f3ban vagy a ManagedExecutorConfig annot\u00e1ci\u00f3ban.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: Az al\u00e1bbi sz\u00e1lkontextust\u00edpusok egyn\u00e9l t\u00f6bb kateg\u00f3ri\u00e1ba (t\u00f6r\u00f6lt, terjesztett, m\u00f3dos\u00edtatlan) vannak be\u00e1ll\u00edtva:  {0}.
+CWWKC1152.context.lists.overlap.explanation=Egy sz\u00e1lkontextust\u00edpus legfeljebb csak egy kateg\u00f3ri\u00e1ba sorolhat\u00f3 a ThreadContext p\u00e9ld\u00e1ny fel\u00e9p\u00edt\u00e9sekor vagy besz\u00far\u00e1sakor.
+CWWKC1152.context.lists.overlap.useraction=Vizsg\u00e1lja fel\u00fcl \u00e9s jav\u00edtsa a sz\u00e1lkontextust\u00edpusok oszt\u00e1lyba sorol\u00e1s\u00e1t a ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3ban vagy a ThreadContextConfig annot\u00e1ci\u00f3ban.
+
+CWWKC1155.unknown.context=CWWKC1155E: A(z) {0} sz\u00e1lkontextust\u00edpusok t\u00f6rl\u00e9sre \u00e9s terjeszt\u00e9sre is be vannak \u00e1ll\u00edtva, de ezekre a t\u00edpusokra vonatkoz\u00f3an nem \u00e1ll az alkalmaz\u00e1s rendelkez\u00e9s\u00e9re sz\u00e1lkontextus szolg\u00e1ltat\u00f3. A rendelkez\u00e9sre \u00e1ll\u00f3 sz\u00e1lkontextust\u00edpusok: {1}.
+CWWKC1155.unknown.context.explanation=Az \u00f6sszes, nem a kiszolg\u00e1l\u00f3 \u00e1ltal biztos\u00edtott, be\u00e1ll\u00edtott sz\u00e1lkontextust\u00edpus eset\u00e9n rendelkez\u00e9sre kell \u00e1llnia egy sz\u00e1lkontextus szolg\u00e1ltat\u00f3nak az alkalmaz\u00e1s sz\u00e1lkontextus oszt\u00e1lybet\u00f6lt\u0151j\u00e9n. A kiszolg\u00e1l\u00f3 \u00e1ltal biztos\u00edtott sz\u00e1lkontextust\u00edpusok a k\u00f6vetkez\u0151k: Alkalmaz\u00e1s, CDI, Biztons\u00e1g, Tranzakci\u00f3.
+CWWKC1155.unknown.context.useraction=Friss\u00edtse az alkalmaz\u00e1st, a k\u00f6nyvt\u00e1rakat vagy mindkett\u0151t \u00fagy, hogy tartalmazzon sz\u00e1lkontextus szolg\u00e1ltat\u00f3t minden be\u00e1ll\u00edtott sz\u00e1lkontextust\u00edpus sz\u00e1mra, amelyet nem a kiszolg\u00e1l\u00f3 biztos\u00edt. Ennek alternat\u00edv\u00e1jak\u00e9nt friss\u00edtse az alkalmaz\u00e1st \u00fagy, hogy csak a rendelkez\u00e9sre \u00e1ll\u00f3 kontextust\u00edpusokat haszn\u00e1lja.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: A k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veletekre \u00e9s feladatokra t\u00f6rt\u00e9n\u0151 tranzakci\u00f3tov\u00e1bb\u00edt\u00e1s nem t\u00e1mogatott.
+CWWKC1157.cannot.propagate.tx.explanation=A tranzakci\u00f3kontextust tov\u00e1bb\u00edt\u00e1s\u00e1ra be\u00e1ll\u00edtott ManagedExecutor vagy ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3k csak \u00fcres tranzakci\u00f3kontextust tov\u00e1bb\u00edthatnak. Ez\u00e9rt a tranzakci\u00f3kban nem hozhat l\u00e9tre k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veleteket \u00e9s feladatokat.
+CWWKC1157.cannot.propagate.tx.useraction=Hozza l\u00e9tre a k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veletet vagy feladatot a tranzakci\u00f3kon k\u00edv\u00fcl. Ennek alternat\u00edv\u00e1jak\u00e9nt be\u00e1ll\u00edthatja a ManagedExecutor vagy ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3kat, hogy ne tov\u00e1bb\u00edtsa a tranzakci\u00f3 kontextus\u00e1t.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

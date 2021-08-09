@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: L'instance d'instrumentation Java n'est pas disponible, par cons\u00e9quent les fonctions de surveillance et de diagnostic ne fonctionnent pas. Configurez le fichier ws-javaagent.jar \u00e0 l'aide de l'option JVM -javaagent.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=L'instance d'instrumentation est requise pour transformer les classes par l'injection de code d'octet. L'injection de code d'octet est utilis\u00e9e par Liberty pour la g\u00e9n\u00e9ration d'informations de surveillance et de diagnostic.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=Des param\u00e8tres JVM suppl\u00e9mentaires sont requis pour activer l'instrumentation Java. Configurez le fichier ws-javaagent.jar \u00e0 l'aide de l'option JVM -javaagent. Le fichier ws-javaagent.jar se trouve dans le r\u00e9pertoire ${wlp.install.dir}/bin/tools de l'installation du profil Liberty.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Dur\u00e9e
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=Op\u00e9ration

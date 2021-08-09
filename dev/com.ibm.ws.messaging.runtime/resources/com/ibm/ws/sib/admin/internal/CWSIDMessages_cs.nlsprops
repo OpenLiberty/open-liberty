@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: Prob\u00edh\u00e1 inicializace stroje syst\u00e9mu zpr\u00e1v {0}.
+ME_INITIALIZING_SIAS0001.explanation=Byla spu\u0161t\u011bna inicializace ur\u010den\u00e9ho stroje syst\u00e9mu zpr\u00e1v.
+ME_INITIALIZING_SIAS0001.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: Do\u0161lo k intern\u00ed chyb\u011b; p\u0159\u00ed\u010dina: {0}
+INTERNAL_ERROR_SIAS0003.explanation=P\u0159i \u010dinnosti syst\u00e9mu do\u0161lo k intern\u00ed chyb\u011b.
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: C\u00edl {0} nelze vytvo\u0159it.
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=Zadan\u00e9 m\u00edsto ur\u010den\u00ed nebylo mo\u017en\u00e9 vytvo\u0159it. Pokud byly p\u0159i vytv\u00e1\u0159en\u00ed konfigurace pou\u017eity skripty JACL nebo vlastn\u00ed programy JMX, ov\u011b\u0159te, zda neobsahuj\u00ed chyby.
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: Nelze povolit objekt typu MBean JMX {0} s n\u00e1zvem {1}.
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=Objekt typu JMX MBean se zadan\u00fdm typem a n\u00e1zvem nelze povolit. A\u010dkoli tato chyba nezabr\u00e1n\u00ed spu\u0161t\u011bn\u00ed serveru syst\u00e9mu zpr\u00e1v, znamen\u00e1 to, \u017ee v\u0161echny administrativn\u00ed funkce, kter\u00e9 vy\u017eaduj\u00ed existenci tohoto objektu typu MBean, nebudou pravd\u011bpodobn\u011b pracovat o\u010dek\u00e1van\u00fdm zp\u016fsobem.
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: Nelze zak\u00e1zat objekt typu MBean JMX {0} s n\u00e1zvem {1}.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=Zadan\u00fd objekt typu JMX MBean nelze zak\u00e1zat.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: Nelze na\u010d\u00edst t\u0159\u00eddu {0}.
+CLASS_LOAD_FAILURE_SIAS0013.explanation=Zadanou t\u0159\u00eddu nelze na\u010d\u00edst.
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: Stroj syst\u00e9mu zpr\u00e1v {0} nelze restartovat, proto\u017ee byla ohl\u00e1\u0161ena z\u00e1va\u017en\u00e1 chyba.
+ME_RESTART_CHECK_SIAS0027.explanation=Byl proveden pokus o spu\u0161t\u011bn\u00ed ur\u010den\u00e9ho stroje syst\u00e9mu zpr\u00e1v, av\u0161ak byl ohl\u00e1\u0161en z\u00e1va\u017en\u00fd chybov\u00fd stav a stroj syst\u00e9mu zpr\u00e1v nebude restartov\u00e1n.
+ME_RESTART_CHECK_SIAS0027.useraction=Restartujte server nebo p\u0159esu\u0148te stroj syst\u00e9mu zpr\u00e1v do alternativn\u00edho serveru klastru.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: Stroj syst\u00e9mu zpr\u00e1v {0} nelze z aktu\u00e1ln\u00edho stavu {1} ukon\u010dit.
+ME_STATE_CHECK_SIAS0028.explanation=Byl proveden pokus o zastaven\u00ed ur\u010den\u00e9ho stroje syst\u00e9mu zpr\u00e1v, av\u0161ak pokud se stroj syst\u00e9mu zpr\u00e1v nach\u00e1z\u00ed v aktu\u00e1ln\u00edm stavu, nen\u00ed zastaven\u00ed platnou operac\u00ed.
+ME_STATE_CHECK_SIAS0028.useraction=Zkontrolujte stav stroje syst\u00e9mu zpr\u00e1v a pot\u00e9 spus\u0165te operaci znovu, jakmile bude platn\u00e1.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: Ve stroji syst\u00e9mu zpr\u00e1v {0} do\u0161lo k chyb\u011b obecn\u00e9ho re\u017eimu.
+ME_ERROR_REPORTED_SIAS0029.explanation=Stroj syst\u00e9mu zpr\u00e1v detekoval chybu, kter\u00e1 se pravd\u011bpodobn\u011b bude opakovat u alternativn\u00edho serveru, a proto nebude proveden pokus o p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed.
+ME_ERROR_REPORTED_SIAS0029.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: Ve stroji syst\u00e9mu zpr\u00e1v {0} do\u0161lo k chyb\u011b obecn\u00e9ho re\u017eimu. Stroj byl zastaven.
+ME_ERROR_STOPPED_SIAS0031.explanation=Stroj syst\u00e9mu zpr\u00e1v detekoval chybu obecn\u00e9ho re\u017eimu a jeho \u010dinnost byla automaticky zastavena. Nebude proveden pokus o p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed.
+ME_ERROR_STOPPED_SIAS0031.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: Stroj syst\u00e9mu zpr\u00e1v {0} nelze inicializovat; byla vyvol\u00e1na v\u00fdjimka: {1} {2}
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=P\u0159i inicializaci stroje do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: Stroj syst\u00e9mu zpr\u00e1v {0} nelze spustit; byla vyvol\u00e1na v\u00fdjimka: {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=P\u0159i inicializaci stroje do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b. F\u00e1ze spu\u0161t\u011bn\u00ed byla ukon\u010dena a \u010dinnost komponent stroje, kter\u00e9 ji\u017e byly spu\u0161t\u011bny, byla zastavena.
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: Stroj syst\u00e9mu zpr\u00e1v {0} nelze spustit; byla zaznamen\u00e1na chyba b\u011bhem zpracov\u00e1n\u00ed procesu: {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=Komponentu stroje syst\u00e9mu zpr\u00e1v nelze spustit. Nebudou spu\u0161t\u011bny \u017e\u00e1dn\u00e9 dal\u0161\u00ed komponenty stroje.
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: Stroj syst\u00e9mu zpr\u00e1v {0} zaznamenal v\u00fdjimku vyvolanou metodou {1} {2} p\u0159i vy\u010di\u0161t\u011bn\u00ed ne\u00fasp\u011b\u0161n\u00e9 operace spu\u0161t\u011bn\u00ed.
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=Ur\u010den\u00fd stroj syst\u00e9mu zpr\u00e1v nelze zastavit.
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: Stroj syst\u00e9mu zpr\u00e1v {0} zaznamenal v\u00fdjimku vyvolanou metodou {1} {2}.
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=Komponenta stroje zaznamenala chybu.
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=V protokolech vyhledejte chybu, opravte jej\u00ed p\u0159\u00ed\u010dinu a pak restartujte server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: Z objektu typu MBean JMX {0} s n\u00e1zvem {1} nelze odeslat upozorn\u011bn\u00ed na ud\u00e1lost.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=Nebylo mo\u017en\u00e9 odeslat upozorn\u011bn\u00ed na ud\u00e1lost z objektu typu JMX MBean se zadan\u00fdm typem a n\u00e1zvem. A\u010dkoli t\u00edm nen\u00ed zabr\u00e1n\u011bno v pokra\u010dov\u00e1n\u00ed \u010dinnosti serveru syst\u00e9mu zpr\u00e1v, znamen\u00e1 to, \u017ee objekt typu MBean nem\u016f\u017ee modul\u016fm listener odeslat upozorn\u011bn\u00ed na d\u016fle\u017eit\u00e9 ud\u00e1losti syst\u00e9mu zpr\u00e1v.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: Stroj syst\u00e9mu zpr\u00e1v {0} s identifik\u00e1torem UUID {1} byl spu\u0161t\u011bn.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=Stroj syst\u00e9mu zpr\u00e1v je p\u0159ipraven k pou\u017eit\u00ed.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: \u010cinnost stroje syst\u00e9mu zpr\u00e1v {0} s identifik\u00e1torem UUID {1} byla zastavena.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=Stroj syst\u00e9mu zpr\u00e1v ji\u017e nen\u00ed k dispozici.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: Stroj syst\u00e9mu zpr\u00e1v {0} detekoval chybu a v r\u00e1mci tohoto serveru ji\u017e nem\u016f\u017ee pokra\u010dovat v \u010dinnosti.
+ME_ERROR_LOCAL_SIAS0046.explanation=Stroj syst\u00e9mu zpr\u00e1v ohl\u00e1sil chybu spr\u00e1vci HAManager, kter\u00fd provede ukon\u010den\u00ed \u010dinnosti serveru. Server lze restartovat s pou\u017eit\u00edm aplika\u010dn\u00edho serveru verze Network Deployment, pokud prob\u00edh\u00e1 jeho sledov\u00e1n\u00ed agentem uzlu. P\u0159i pou\u017eit\u00ed klastru s verz\u00ed Network Deployment bude stroj syst\u00e9mu zpr\u00e1v p\u0159i selh\u00e1n\u00ed p\u0159eveden na alternativn\u00ed server klastru, pokud to konfigurovan\u00e9 z\u00e1sady umo\u017e\u0148uj\u00ed.
+ME_ERROR_LOCAL_SIAS0046.useraction=Zkontrolujte protokoly a ur\u010dete p\u0159\u00ed\u010dinu chyby a pot\u00e9 prove\u010fte opravu, aby se chyba nemohla opakovat. Restartujte server nebo (v p\u0159\u00edpad\u011b pou\u017eit\u00ed produktu Network Deployment) ov\u011b\u0159te, zda byla operace automatick\u00e9ho restartov\u00e1n\u00ed nebo p\u0159ekon\u00e1n\u00ed selh\u00e1n\u00ed \u00fasp\u011b\u0161n\u00e1 a zda je stroj syst\u00e9mu zpr\u00e1v spu\u0161t\u011bn.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: Atribut receiveExclusive pro m\u00edsto ur\u010den\u00ed {0} byl p\u0159eps\u00e1n na hodnotu "true".
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=M\u00edsto ur\u010den\u00ed je nastaveno tak, aby bylo zachov\u00e1no \u0159azen\u00ed zpr\u00e1v. Proto byl atribut receiveExclusive p\u0159eps\u00e1n na hodnotu true.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=Pokud se \u0159azen\u00ed nevy\u017eaduje, zaka\u017ete potla\u010den\u00ed atributu receiveExclusive zru\u0161en\u00edm nastaven\u00ed atributu maintainMessageOrder.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: Stroj syst\u00e9mu zpr\u00e1v {0} s identifik\u00e1torem UUID {1} je spou\u0161t\u011bn.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: Stroj syst\u00e9mu zpr\u00e1v {0} s identifik\u00e1torem UUID {1} je zastavov\u00e1n.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=Prob\u00edh\u00e1 zastavov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: Do\u0161lo k selh\u00e1n\u00ed p\u0159i zastaven\u00ed stroje syst\u00e9mu zpr\u00e1v {0} s identifik\u00e1torem UUID {1}.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=Nezda\u0159ilo se zastavit stroj syst\u00e9mu zpr\u00e1v.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: {0}
+TEMPORARY_SIAS9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed n\u00e1pov\u011bdu v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_SIAS9999.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: V konfigura\u010dn\u00edm souboru serveru nen\u00ed zad\u00e1no ID zna\u010dky messagingEngine. Bude se br\u00e1t v \u00favahu v\u00fdchoz\u00ed ID {0}.
+NO_ID_PROVIDED_SIAS0100.explanation=Nebylo zad\u00e1no ID zna\u010dky messagingEngine.
+NO_ID_PROVIDED_SIAS0100.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: V konfigura\u010dn\u00edm souboru serveru nen\u00ed definov\u00e1no \u017e\u00e1dn\u00e9 ID c\u00edle typu {0}. 
+NO_ID_PROVIDED_SIAS0102.explanation=Nen\u00ed zad\u00e1no ID c\u00edle, c\u00edl se proto nevytvo\u0159\u00ed. 
+NO_ID_PROVIDED_SIAS0102.useraction=Zadejte ID c\u00edle.
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  V konfigura\u010dn\u00edm souboru serveru nen\u00ed definov\u00e1na zna\u010dka fileStore, proto budou pou\u017eity v\u00fdchoz\u00ed hodnoty.
+NO_FILESTOR_DEFINED_SIAS0104.explanation=Nebyla poskytnuta zna\u010dka fileStore, tak\u017ee budou p\u0159i vytv\u00e1\u0159en\u00ed \u00falo\u017ei\u0161t\u011b soubor\u016f pou\u017eity v\u00fdchoz\u00ed hodnoty. 
+NO_FILESTOR_DEFINED_SIAS0104.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: Po spu\u0161t\u011bn\u00ed serveru nelze zm\u011bnit ID stroje syst\u00e9mu zpr\u00e1v.
+ME_ID_CHANGE_SIAS0105.explanation=ID stroje syst\u00e9mu zpr\u00e1v je jedine\u010dn\u00e9 pro dan\u00fd stroj syst\u00e9mu zpr\u00e1v a nelze ho zm\u011bnit, kdy\u017e je server aktivn\u00ed.
+ME_ID_CHANGE_SIAS0105.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: Prob\u00edh\u00e1 pokus o spu\u0161t\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v. 
+RESTART_ME_SIAS0106.explanation=Stroj syst\u00e9mu zpr\u00e1v nen\u00ed spu\u0161t\u011bn b\u011bhem vol\u00e1n\u00ed activate(). Proto\u017ee u\u017eivatel zm\u011bnil konfigura\u010dn\u00ed soubor serveru, dojde k pokusu o spu\u0161t\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v. 
+RESTART_ME_SIAS0106.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: Prob\u00edh\u00e1 spu\u0161t\u011bn\u00ed serveru JMS. 
+START_ME_SIAS0107.explanation=Inicializace spu\u0161t\u011bn\u00ed serveru JMS. 
+START_ME_SIAS0107.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: Server JMS byl spu\u0161t\u011bn. 
+ME_STARTED_SIAS0108.explanation=Spu\u0161t\u011bn\u00ed serveru slu\u017eby JMS bylo \u00fasp\u011b\u0161n\u011b dokon\u010deno. 
+ME_STARTED_SIAS0108.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: Do\u0161lo k intern\u00ed chyb\u011b syst\u00e9mu zpr\u00e1v. Nelze spustit server JMS.
+ME_STOPPED_SIAS0109.explanation=Nelze spustit server JMS. 
+ME_STOPPED_SIAS0109.useraction=Dal\u0161\u00ed informace viz p\u0159edchoz\u00ed chybov\u00e9 zpr\u00e1vy b\u011bhem spou\u0161t\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: Nebylo ur\u010deno c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed pro m\u00edsto ur\u010den\u00ed s aliasem {0}.
+INVALID_TARGET_DEST_SIAS0110.explanation=Pro m\u00edsto ur\u010den\u00ed s aliasem nebylo zad\u00e1no c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed.
+INVALID_TARGET_DEST_SIAS0110.useraction= V konfigura\u010dn\u00edm souboru serveru zadejte platn\u00e9 c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: B\u011bhem lokalizace m\u00edsta ur\u010den\u00ed {0} byla nalezena v\u00fdjimka.
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=B\u011bhem lokalizace m\u00edsta ur\u010den\u00ed byla nalezena v\u00fdjimka.
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=Viz p\u0159edchoz\u00ed zpr\u00e1va a stav stroje syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: Nelze naplnit m\u00edsto ur\u010den\u00ed {0} v mezipam\u011bti.
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=Nelze naplnit uveden\u00e9 m\u00edsto ur\u010den\u00ed v mezipam\u011bti.
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=Dal\u0161\u00ed informace viz p\u0159edchoz\u00ed zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: Do\u0161lo k intern\u00ed chyb\u011b, proto\u017ee nebyly p\u0159ijaty vlastnosti konfigurace stroje syst\u00e9mu zpr\u00e1v. Stroj syst\u00e9mu zpr\u00e1v proto nebude spu\u0161t\u011bn.
+NULL_SERVICE_PID_SIAS0115.explanation=Ze souboru server.xml nebyla p\u0159ijata konfigurace, proto\u017ee jeho registra\u010dn\u00ed vlastnost (service.pid) pou\u017e\u00edvan\u00e1 k identifikov\u00e1n\u00ed spravovan\u00e9 slu\u017eby nebo tov\u00e1rny spravovan\u00fdch slu\u017eeb u slu\u017eby administrace konfigurace m\u00e1 hodnotu Null, a bal\u00edk tedy nem\u016f\u017ee deklarovanou slu\u017ebu pou\u017e\u00edvat
+NULL_SERVICE_PID_SIAS0115.useraction=Informace o p\u0159\u00ed\u010din\u011b nemo\u017enosti spu\u0161t\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v viz doprovodn\u00e1 chybov\u00e1 zpr\u00e1va. 
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: Do\u0161lo k intern\u00ed chyb\u011b, proto\u017ee nebyly p\u0159ijaty vlastnosti konfigurace stroje syst\u00e9mu zpr\u00e1v. Proto nedojde k \u017e\u00e1dn\u00e9 \u00faprav\u011b stroje syst\u00e9mu zpr\u00e1v.
+NULL_SERVICE_PID_SIAS0116.explanation=Stroj syst\u00e9mu zpr\u00e1v je spu\u0161t\u011bn\u00fd, ale jeho zm\u011bny se nep\u0159ij\u00edmaj\u00ed, proto\u017ee vlastnost service.pid m\u00e1 hodnotu null. Proto nedoch\u00e1z\u00ed k vyvol\u00e1n\u00ed slu\u017eeb.
+NULL_SERVICE_PID_SIAS0116.useraction=Dal\u0161\u00ed informace naleznete v doprovodn\u00fdch chybov\u00fdch zpr\u00e1v\u00e1ch souvisej\u00edc\u00edch se spou\u0161t\u011bn\u00edm stroje syst\u00e9mu zpr\u00e1v. 
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: Po ne\u00fasp\u011b\u0161n\u00e9 zm\u011bn\u011b konfigurace stroje syst\u00e9mu zpr\u00e1v p\u0159ijal syst\u00e9m intern\u00ed chybu.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=Ne\u00fasp\u011b\u0161n\u00e9 proveden\u00ed aktualizace konfigurace stroje syst\u00e9mu zpr\u00e1v zp\u016fsobilo intern\u00ed chybu syst\u00e9mu.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. 
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: Hodnota zadan\u00e1 pro parametr defaultReliability je v\u011bt\u0161\u00ed ne\u017e hodnota zadan\u00e1 pro parametr maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=Hodnota zadan\u00e1 pro parametr defaultReliability mus\u00ed b\u00fdt men\u0161\u00ed nebo rovna hodnot\u011b zadan\u00e9 pro parametr maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=Spus\u0165te p\u0159\u00edkaz znovu a ur\u010dete hodnotu pro parametr defaultRreliability tak, aby byla men\u0161\u00ed nebo rovna hodnot\u011b zadan\u00e9 pro parametr maxReliability.
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: Cesta k \u00falo\u017ei\u0161ti soubor\u016f: {0}
+FILESTORE_PATH_SIAS0119.explanation=Zadan\u00e1 cesta k \u00falo\u017ei\u0161ti soubor\u016f.
+FILESTORE_PATH_SIAS0119.useraction=Tato zpr\u00e1va je pouze informativn\u00ed. Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: Stroj syst\u00e9mu zpr\u00e1v nelze spustit, proto\u017ee byla v konfigura\u010dn\u00edm souboru serveru ur\u010dena neplatn\u00e1 cesta k souboru {0}.
+INVALID_FS_PATH_SIAS0120.explanation=Aby mohl b\u00fdt stroj syst\u00e9mu zpr\u00e1v spu\u0161t\u011bn, je nutn\u00e9 nejprve v konfigura\u010dn\u00edm souboru serveru zadat platnou cestu k souboru.
+INVALID_FS_PATH_SIAS0120.useraction=Vytvo\u0159te cestu k souboru v konfigura\u010dn\u00edm souboru serveru.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: Server JMS byl zastaven. 
+ME_STOPPED_SIAS0121.explanation=Server JMS byl zastaven. 
+ME_STOPPED_SIAS0121.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: V konfigura\u010dn\u00edm souboru serveru nen\u00ed zad\u00e1no ID stroje syst\u00e9mu zpr\u00e1v. 
+NULL_ME_ID_SIAS0122.explanation=ID stroje syst\u00e9mu zpr\u00e1v bylo odebr\u00e1no b\u011bhem \u00faprav konfigura\u010dn\u00edho souboru serveru. Zm\u011bna ID stroje syst\u00e9mu zpr\u00e1v bude ignorov\u00e1na, kdy\u017e je stroj syst\u00e9mu zpr\u00e1v st\u00e1le aktivn\u00ed. 
+NULL_ME_ID_SIAS0122.useraction= Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: ID {0} se pou\u017e\u00edv\u00e1 pro v\u00edce c\u00edl\u016f.
+SAME_DEST_ID_SIAS0123.explanation=Stejn\u00e9 ID nelze pou\u017e\u00edt pro v\u00edce c\u00edl\u016f, nebudou vytvo\u0159eny duplicitn\u00ed c\u00edle. 
+SAME_DEST_ID_SIAS0123.useraction= Zadejte jedine\u010dn\u00e9 identifik\u00e1tory c\u00edle.
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: Velikost souboru protokolu, {0} megabajt\u016f, je men\u0161\u00ed ne\u017e polovina velikosti \u00falo\u017ei\u0161t\u011b soubor\u016f, {1} megabajt\u016f. Zvy\u0161te velikost \u00falo\u017ei\u0161t\u011b soubor\u016f nebo sni\u017ete velikost souboru protokolu.
+INVALID_FILE_SIZE_SIAS0124.explanation=Velikost souboru protokolu je vy\u0161\u0161\u00ed ne\u017e velikost permanentn\u00edho \u00falo\u017ei\u0161t\u011b soubor\u016f. Velikost \u00falo\u017ei\u0161t\u011b soubor\u016f p\u0159edstavuje velikost permanentn\u00edho a do\u010dasn\u00e9ho \u00falo\u017ei\u0161t\u011b v megabajtech dohromady. Velikost \u00falo\u017ei\u0161t\u011b soubor\u016f je rovnocenn\u011b rozd\u011blena mezi permanentn\u00ed a do\u010dasn\u00e9 \u00falo\u017ei\u0161t\u011b, a velikost souboru protokolu mus\u00ed b\u00fdt men\u0161\u00ed ne\u017e polovina velikosti \u00falo\u017ei\u0161t\u011b soubor\u016f.
+INVALID_FILE_SIZE_SIAS0124.useraction=Zvy\u0161te velikost \u00falo\u017ei\u0161t\u011b soubor\u016f nebo sni\u017ete velikost souboru protokolu.
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: ID m\u00edsta ur\u010den\u00ed s aliasem {0} ji\u017e je definov\u00e1no pro frontu nebo prostor t\u00e9matu, a proto c\u00edl s aliasem nebude vytvo\u0159en.
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=ID m\u00edsta ur\u010den\u00ed s aliasem mus\u00ed b\u00fdt jedine\u010dn\u00e9. 
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=Zajist\u011bte definov\u00e1n\u00ed jedine\u010dn\u00e9ho ID m\u00edsta ur\u010den\u00ed s aliasem. 

@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: \u73b0\u5728 CORBA \u540d\u79f0\u670d\u52a1\u5668\u5728 {0} \u5904\u53ef\u7528\u3002
+NAME_SERVER_AVAILABLE.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+NAME_SERVER_AVAILABLE.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: CORBA \u540d\u79f0\u670d\u52a1\u5668\u5728 {0} \u5904\u4e0d\u518d\u53ef\u7528\u3002
+NAME_SERVER_UNAVAILABLE.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+NAME_SERVER_UNAVAILABLE.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: \u5bf9 {0} \u4e3b\u673a\u4e0a\u7684\u5b89\u5168\u670d\u52a1\u5668\u53d1\u9001\u7684\u8bf7\u6c42\u5931\u8d25\uff0c\u56e0\u4e3a\u5f53\u524d\u914d\u7f6e\u8fd8\u672a\u542f\u7528\u5b89\u5168\u6027\u3002\u60a8\u5fc5\u987b\u914d\u7f6e\u5ba2\u6237\u7aef\uff08\u51fa\u7ad9\uff09\u516c\u5171\u5b89\u5168\u4e92\u64cd\u4f5c\u6027 V2 (CSIv2)\uff0c\u901a\u8fc7\u5305\u542b keyStore \u5143\u7d20\u5e76\u4e14\u5728\u670d\u52a1\u5668\u4e2d\u6dfb\u52a0\u76f8\u5e94\u7248\u672c\u7684 appSecurity \u529f\u80fd\u90e8\u4ef6\u6216\u5728\u5e94\u7528\u7a0b\u5e8f\u5ba2\u6237\u673a\u5bb9\u5668\u4e2d\u6dfb\u52a0\u76f8\u5e94\u7248\u672c\u7684 appSecurityClient \u529f\u80fd\u90e8\u4ef6\u6765\u8fdb\u884c\u914d\u7f6e\u3002
+PORT_ZERO.explanation= \u5bf9\u6307\u5b9a\u4e3b\u673a\u4e0a\u7684\u670d\u52a1\u5668\u53d1\u9001\u7684\u8bf7\u6c42\u5931\u8d25\u3002\u8be5\u8bf7\u6c42\u6240\u53d1\u9001\u5230\u670d\u52a1\u5668\u5df2\u542f\u7528 CSIv2 \u5b89\u5168\u6027\uff0c\u4f46\u662f\u5f53\u524d\u914d\u7f6e\u8fd8\u672a\u542f\u7528\u3002\u4e0e\u8be5\u670d\u52a1\u5668\u8fde\u63a5\u7684\u5ba2\u6237\u673a\u8fd8\u5fc5\u987b\u914d\u7f6e CSIv2 \u548c\u5b89\u5168\u5957\u63a5\u5b57\u5c42 (SSL) \u5b89\u5168\u6027\u3002
+PORT_ZERO.useraction= \u60a8\u5fc5\u987b\u914d\u7f6e\u5ba2\u6237\u7aef\uff08\u51fa\u7ad9\uff09\u516c\u5171\u5b89\u5168\u4e92\u64cd\u4f5c\u6027 V2 (CSIv2)\uff0c\u901a\u8fc7\u5305\u542b keyStore \u5143\u7d20\u5e76\u4e14\u5728\u670d\u52a1\u5668\u4e2d\u6dfb\u52a0\u76f8\u5e94\u7248\u672c\u7684 appSecurity \u529f\u80fd\u90e8\u4ef6\u6216\u5728\u5e94\u7528\u7a0b\u5e8f\u5ba2\u6237\u673a\u5bb9\u5668\u4e2d\u6dfb\u52a0\u76f8\u5e94\u7248\u672c\u7684 appSecurityClient \u529f\u80fd\u90e8\u4ef6\u6765\u8fdb\u884c\u914d\u7f6e\u3002\u53c2\u8003\u6587\u6863\u4ee5\u786e\u5b9a\u8981\u6dfb\u52a0\u5230\u60a8\u914d\u7f6e\u7684\u5f53\u524d\u7248\u672c\u7684 appSecurity \u6216 appSecurityClient \u529f\u80fd\u90e8\u4ef6\u4ee5\u53ca\u786e\u5b9a\u4efb\u4f55\u6240\u9700\u7684\u914d\u7f6e\u3002

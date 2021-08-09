@@ -1,0 +1,326 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+.oneui .gridxHeaderRow, .oneui .gridxMain {
+    border-left: none;
+    border-right: none;
+    height: 100%;
+    background: none;
+}
+
+/*.gridx {
+  height: 100%;
+}*/
+/*  background-image: url(../images/search-criteria-dropdown-indicator.png);*/
+.gridxHeaderMenuBtn {
+    background-image: none;
+    background-position: 0 0;
+    width: 27px;
+    height: 34px;
+    position: absolute;
+    border-left: 0px;
+}
+
+.oneui .gridxHeaderRow .gridxCell {
+    border-style: none;
+    border-color: #4178BE;
+    font-family: HelvNeueBold, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    color: #4178BE;
+    background-color: #ffffff;
+    padding: 8px 5px 5px 5px;
+    height: 29px;
+    vertical-align: middle;
+}
+
+.oneui .gridxRow .gridxCell {
+    border-right-style: none;
+    border-left-style: none;
+    font-size: 15px;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.oneui .gridxRow .gridxColumnSelected {
+    background-color: #dfdfdf;
+}
+
+.listViewTitleText {
+    font-size: 14px;
+    color: #404041;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.listViewTitleImage {
+    display: inline-block;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+}
+
+.listViewStateLabel {
+    vertical-align: middle;
+    padding-left: 6px;
+    font-size: 14px;
+    color: #404041;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.listViewAction {
+    margin-left: 10px;
+}
+
+.listViewActionIcon {
+    background-repeat: no-repeat;
+    background-color: transparent;
+    display: block;
+    position: absolute;
+    height: 32px;
+    width: 32px;
+    padding: 0;
+    overflow: visible;
+}
+
+.listViewActionDropDown {
+    position: relative;
+    display: inline;
+    z-Index: 5;
+    width: 22px;
+    height: 22px;
+    color: white;
+    outline: 0px;
+    text-align: right;
+    border: 2px solid transparent;
+}
+.listViewActionDropDownDisabled:hover,
+.listViewActionDropDownDisabled img:hover {
+    cursor: not-allowed;
+}
+
+.listViewGrid {
+    height: 100%;
+    width: 100%;
+}
+
+.listViewApps {
+    white-space: nowrap;
+    overflow: hidden;
+    color: #404041;
+}
+
+.listViewInstances {
+    color: #404041;
+    font-size: 14px;
+}
+
+.listViewTags {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.listViewHeaderMenuItem {
+    background-color: #404e56;
+    color: white;
+    border: none;
+    border-radius: 0px;
+    -webkit-box-shadow: none;
+    padding: 0px;
+}
+
+.listViewHeaderMenuItem_checked, .listViewHeaderMenuItem_unchecked {
+    width: 22px;
+    height: 22px;
+    background-size: 100%;
+    border: none;
+}
+
+.listViewHeaderMenuItem_checked {
+    background-image: url(../images/check-selected.png);
+}
+
+.listViewHeaderMenuItem_unchecked {
+    background-image: url(../images/check-deselected.png);
+}
+
+.listViewState svg {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+}
+
+.listViewGraphicStackBar svg {
+    display: inherit;
+    margin-top: 5px;
+}
+
+#searchView-SummaryPane {
+    color: #2f3030;
+    font-size: 18px;
+}
+
+#searchView .dijitTitlePaneTitle {
+    color: #404041;
+    font-size: 18px;
+    height: 44px;
+    background-color: #ededed;
+}
+
+.displayListViewInstances {
+    display: block;
+}
+
+.displayListViewInstancesNone {
+    display: none;
+}
+
+.gridAlert-Icon-SVG {
+    height: 22px;
+    width: 22px;
+    vertical-align: middle;
+}
+
+.gridMaintenanceMode-Icon-SVG {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+}
+
+.searchViewMetaDataButton {
+    display: inline-block;
+    font-size: 12px;
+    color: #404041;
+    text-align: center;
+    border-radius: 5px;
+    margin: 4px;
+    background-color: #F5F4F2;
+    border: solid 1px #D9D5CE;
+    padding: 2px 8px;
+}
+
+.searchViewMetaDataButton:hover {
+    background-color: #FFFFFF;
+    border: solid 1px #5A5A5A;
+}
+
+.gridxSortNode>svg {
+    height: 26px;
+    width: 26px;
+    vertical-align: middle;
+}
+
+.listViewSettings {
+    float: right;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.listViewSettingsIconClass {
+    height: 26px;
+    width: 26px;
+}
+
+.listViewSettings:hover {
+    cursor: pointer;
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    background-color: #C0E6FF;
+}
+
+.listViewMultiSelectUnchecked {
+    background-image: url(../images/action-multi-select-close.png);
+    height: 24px;
+    width: 42px;
+}
+
+.oneui .listViewMultiSelect .dijitButtonNode {
+    float: right;
+    border: 0px;
+    border-radius: 18px;
+    cursor: pointer;    
+    padding: 0px !important;
+    min-width: 42px;
+    outline: none;
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.oneui .listViewMultiSelect.dijitToggleButtonFocused .dijitButtonContents {
+    box-shadow: #7CC7FF 0px 0px 2px 1px;
+}
+
+.listViewMultiSelectChecked {
+    background-image: url(../images/action-multi-select-open.png);
+    height: 24px;
+    width: 42px;
+}
+
+.listViewMultiSelectDisabled {
+    background-image: url(../images/action-multi-select-disabled.png);
+    height: 24px;
+    width: 42px;
+}
+
+.listViewRowSelectUnchecked {
+    background-image: url(../images/list-selection-deselected.png);
+    height: 22px;
+    width: 22px;
+}
+
+.listViewMultiSelectDisabled:hover, 
+.listViewMultiSelectDisabled .listViewMultiSelectUnchecked:hover {
+    cursor: not-allowed;   
+}
+
+.oneui .listViewRowSelect .dijitButtonNode {
+	padding: 0px !important;
+	border: 0px;
+	min-width: 22px;
+	outline: none;
+	background-image: none;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+.listViewRowSelectChecked {
+    background-image: url(../images/list-selection-selected.png);
+    height: 22px;
+    width: 22px;
+}
+
+.listViewRowSelectChecked:hover {
+    background-image: url(../images/list-selection-deselected.png);
+}
+
+.listViewRowSelectUnchecked:hover {
+    background-image: url(../images/list-selection-selected.png);
+}
+
+.oneui .listViewRowSelect .dijitButtonContents {
+	outline: none;  /* no outline by default */
+}
+
+.oneui .listViewRowSelectKeyDown .dijitButtonContents {
+    outline: auto;  /* outline when using keyboard */
+}
+
+/* not working
+.gridxRow .gridxRowTable tr,
+    //background-color: #dfdfdf;
+    //background-color: blue;
+}
+
+.gridx .gridxRowSelected .gridxCell {
+    background-color: #ddf2f9
+}
+*/

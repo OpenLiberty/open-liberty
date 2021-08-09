@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# cmvc_en_version_level=
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} the application name
+#    {1} the exception message from trying to register the CDI extension
+# -----------------------------------------------------------------------
+UNABLE_TO_REGISTER_WITH_CDI=CWNBV0200W: Roz\u0161\u00ed\u0159en\u00ed Hibernate Validator CDI pro aplikaci {0} nelze zaregistrovat, tak\u017ee integrace CDI pro objekt typu Bean Validation nen\u00ed dostupn\u00e1 pro tuto aplikaci. P\u0159i registraci roz\u0161\u00ed\u0159en\u00ed CDI do\u0161lo k n\u00e1sleduj\u00edc\u00edmu probl\u00e9mu: {1}
+UNABLE_TO_REGISTER_WITH_CDI.explanation=Roz\u0161\u00ed\u0159en\u00ed CDI je poskytnuto pro vestav\u011bn\u00e9ho poskytovatele ov\u011b\u0159en\u00ed objektu typu Bean (Hibernate Validator), kter\u00fd je podporov\u00e1n pouze, kdy\u017e se pou\u017e\u00edv\u00e1 vestav\u011bn\u00fd poskytovatel ValidationProvider a kdy\u017e je soubor validation.xml pro aplikaci platn\u00fd. 
+UNABLE_TO_REGISTER_WITH_CDI.useraction=Viz ko\u0159enov\u00fd probl\u00e9m na konci zpr\u00e1vy. Pravd\u011bpodobn\u00e9 p\u0159\u00ed\u010diny jsou neplatn\u00fd obsah v souboru META-INF/validation.xml nebo jin\u00fd v\u00fdchoz\u00ed poskytovatel, <default-provider>, ne\u017e poskytovatel org.hibernate.validator.HibernateValidator.
+

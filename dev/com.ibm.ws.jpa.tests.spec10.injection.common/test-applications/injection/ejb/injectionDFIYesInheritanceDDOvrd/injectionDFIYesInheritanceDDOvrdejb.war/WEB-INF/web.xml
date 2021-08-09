@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<servlet>
+		<servlet-name>DFIPkgYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdEJBSLTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPriYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdEJBSLTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIProYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdEJBSLTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPubYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdEJBSLTestServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>DFIPkgYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdEJBSFTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPriYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdEJBSFTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIProYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdEJBSFTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPubYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdEJBSFTestServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>DFIPkgYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdEJBSFEXTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPriYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdEJBSFEXTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIProYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdEJBSFEXTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPubYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdEJBSFEXTestServlet</servlet-class>
+	</servlet>
+
+	
+	<servlet-mapping>
+		<servlet-name>DFIPkgYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<url-pattern>/DFIPkgYesInhDDOvrdEJBSLTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPriYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<url-pattern>/DFIPriYesInhDDOvrdEJBSLTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIProYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<url-pattern>/DFIProYesInhDDOvrdEJBSLTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPubYesInhDDOvrdEJBSLTestServlet</servlet-name>
+		<url-pattern>/DFIPubYesInhDDOvrdEJBSLTestServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DFIPkgYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<url-pattern>/DFIPkgYesInhDDOvrdEJBSFTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPriYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<url-pattern>/DFIPriYesInhDDOvrdEJBSFTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIProYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<url-pattern>/DFIProYesInhDDOvrdEJBSFTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPubYesInhDDOvrdEJBSFTestServlet</servlet-name>
+		<url-pattern>/DFIPubYesInhDDOvrdEJBSFTestServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DFIPkgYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<url-pattern>/DFIPkgYesInhDDOvrdEJBSFEXTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPriYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<url-pattern>/DFIPriYesInhDDOvrdEJBSFEXTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIProYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<url-pattern>/DFIProYesInhDDOvrdEJBSFEXTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPubYesInhDDOvrdEJBSFEXTestServlet</servlet-name>
+		<url-pattern>/DFIPubYesInhDDOvrdEJBSFEXTestServlet</url-pattern>
+	</servlet-mapping>
+			
+	<!-- EJB References -->
+	
+    <!--  Field Injection, Annotation Injection into SuperClass EJBs -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPkgYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIPkgYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPkgYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIPkgYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPriYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIPriYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPriYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIPriYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIProYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIProYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIProYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIProYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPubYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIPubYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPubYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIPubYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPkgYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIPkgYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPriYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIPriYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIProYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIProYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/ano/DFIPubYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIPubYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+
+    <!--  Field Injection, DD Injection into SuperClass EJBs & Override -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPkgYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIPkgYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPkgYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIPkgYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPriYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIPriYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPriYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIPriYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIProYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIProYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIProYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIProYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPubYesInhDDOvrdTestSFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSFEJBLocal</local>
+        <ejb-link>DFIPubYesInhDDOvrdTestSFEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPubYesInhDDOvrdTestSFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSFEXEJBLocal</local>
+        <ejb-link>DFIPubYesInhDDOvrdTestSFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPkgYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIPkgYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPriYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIPriYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIProYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIProYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/dfi/inh/dd/DFIPubYesInhDDOvrdTestSLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSLEJBLocal</local>
+        <ejb-link>DFIPubYesInhDDOvrdTestSLEJB</ejb-link>
+    </ejb-local-ref>
+    
+</web-app>

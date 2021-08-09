@@ -1,0 +1,77 @@
+
+#*******************************************************************************
+# Copyright (c) 2018, 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Security Audit
+Bundle-SymbolicName: com.ibm.ws.security.audit.source
+Bundle-Description: Security Audit: Security Audit Source; version=${bVersion}
+WS-TraceGroup: audit
+
+jakartaeeMe: true
+
+Export-Package: \
+	com.ibm.ws.security.audit.event,\
+	com.ibm.ws.security.audit.pipeline
+
+Private-Package: \
+   com.ibm.ws.security.audit.*
+   
+DynamicImport-Package: \
+  com.ibm.wsspi.request.probe.*, \
+  com.ibm.webcontainer.security.*
+
+Include-Resource: \
+   OSGI-INF=resources/OSGI-INF
+
+-dsannotations: \
+   com.ibm.ws.security.audit.source.AuditServiceImpl, \
+   com.ibm.ws.security.audit.utils.AuditUtils, \
+   com.ibm.ws.security.audit.pipeline.AuditJMXPipeline
+
+-buildpath: \
+	com.ibm.json4j;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.websphere.security.wim.base;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.collector.manager;version=latest,\
+	com.ibm.ws.collector;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.event;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	com.ibm.ws.messaging.comms.client;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.request.probes;version=latest,\
+	com.ibm.ws.security.audit.utils;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.session;version=latest
+
+	-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest
+
+
+	

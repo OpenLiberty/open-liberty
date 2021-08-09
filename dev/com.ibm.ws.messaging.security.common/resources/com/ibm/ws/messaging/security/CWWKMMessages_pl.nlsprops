@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 114580          06-11-13   balgirid Fixing username not displayed in FFDC for unsuccessful login
+#
+#
+# File com.ibm.ws.messaging.security.CWWKMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKM0000=CWWKM0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range CWWKM3001-CWWKM3101 belong to class com.ibm.ws.messaging.security
+# -------------------------------------------------------------------------------------------------
+#
+#CMVCPATHNAME New_File_For_Liberty
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Liberty Messaging Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+# -------------------------------------------------------------------------------------------------
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001=CWWKM3001E: Uwierzytelnianie u\u017cytkownika nie powiod\u0142o si\u0119.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.explanation=Wprowadzono niepoprawne dane - nazw\u0119 lub has\u0142o u\u017cytkownika.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.useraction=Okre\u015bl poprawn\u0105 nazw\u0119 i poprawne has\u0142o u\u017cytkownika.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Token Type
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002=CWWKM3002E:  Okre\u015blony typ znacznika {0} nie jest obs\u0142ugiwany.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.explanation= Typ znacznika okre\u015blony przez aplikacj\u0119 klienck\u0105 jest nieobs\u0142ugiwany.  Obs\u0142ugiwane s\u0105 tylko znaczniki LTPA.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.useraction=Okre\u015bl znacznik LTPA, poniewa\u017c tylko znaczniki LTPA s\u0105 obs\u0142ugiwane.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003=CWWKM3003E: Us\u0142uga administracyjna konfiguracji jest niedost\u0119pna.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.explanation=Us\u0142uga administracyjna konfiguracji jest niedost\u0119pna.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.useraction=Sprawd\u017a, czy us\u0142uga konfiguracji jest uruchomiona.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_SECURITY_SERVICE_MSE1004=CWWKM3004E: Us\u0142uga zabezpiecze\u0144 jest niedost\u0119pna.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.explanation=Us\u0142uga zabezpiecze\u0144 jest niedost\u0119pna.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.useraction=Sprawd\u017a, czy us\u0142uga zabezpiecze\u0144 jest uruchomiona.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_NOT_CONFIGURED_MSE1005=CWWKM3005E: Nie skonfigurowano rejestru u\u017cytkownik\u00f3w.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.explanation=Dla tego serwera musi by\u0107 skonfigurowany rejestr u\u017cytkownik\u00f3w.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.useraction=Skonfiguruj przynajmniej jeden rejestr u\u017cytkownik\u00f3w (np. LDAP, BasicUserRegistry lub QuickStartSecurity) dla serwera.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_EXCEPTION_MSE1006=CWWKM3006E: Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania dost\u0119pu do rejestru u\u017cytkownik\u00f3w.
+USER_REGISTRY_EXCEPTION_MSE1006.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania dost\u0119pu do rejestru u\u017cytkownik\u00f3w.
+USER_REGISTRY_EXCEPTION_MSE1006.useraction=Sprawd\u017a, czy rejestr u\u017cytkownik\u00f3w jest poprawnie skonfigurowany.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007=CWWKM3007E: Nie mo\u017cna znale\u017a\u0107 zdefiniowanego obiektu administracyjnego konfiguracji.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.explanation=Nie mo\u017cna znale\u017a\u0107 zdefiniowanego obiektu administracyjnego konfiguracji.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.useraction=Definicja w\u0142a\u015bciwo\u015bci mo\u017ce zawiera\u0107 b\u0142\u0105d. Sprawd\u017a, czy definicje w\u0142a\u015bciwo\u015bci w pliku konfiguracyjnym serwera s\u0105 poprawne.
+
+# -------------------------------------------------------------------------------------------------
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008=CWWKM3008E: Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas odczytu danych z pliku konfiguracyjnego.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.explanation=Wyst\u0105pi\u0142 wyj\u0105tek IOException podczas odczytu danych z pliku server.xml.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.useraction=Sprawd\u017a poprawno\u015b\u0107 konfiguracji okre\u015blonych w pliku server.xml.
+
+# -------------------------------------------------------------------------------------------------
+USER_NOT_AUTHENTICATED_MSE1009=CWWKM3009E: U\u017cytkownik {0} nie zosta\u0142 uwierzytelniony do dost\u0119pu do us\u0142ugi przesy\u0142ania komunikat\u00f3w serwera Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.explanation=U\u017cytkownik nie ma uprawnie\u0144 dost\u0119pu do us\u0142ugi przesy\u0142ania komunikat\u00f3w serwera Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.useraction=Okre\u015bl poprawn\u0105 nazw\u0119 u\u017cytkownika, kt\u00f3ry jest uwierzytelniony na potrzeby nawi\u0105zywania po\u0142\u0105cze\u0144 z us\u0142ug\u0105 przesy\u0142ania komunikat\u00f3w serwera Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+# {1} - Action Name
+# {2} - Destination
+USER_NOT_AUTHORIZED_MSE1010=CWWKM3010W: U\u017cytkownik {0} nie ma autoryzacji do wykonania czynno\u015bci {1} dla miejsca docelowego {2}.
+USER_NOT_AUTHORIZED_MSE1010.explanation=Podany u\u017cytkownik nie ma autoryzacji do wykonania okre\u015blonej czynno\u015bci dla wskazanego miejsca docelowego.
+USER_NOT_AUTHORIZED_MSE1010.useraction=Podaj u\u017cytkownika, kt\u00f3ry jest autoryzowany do wykonania okre\u015blonej czynno\u015bci dla danego miejsca docelowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011=CWWKM3011E: U\u017cytkownik nie ma uprawnienia do nawi\u0105zania po\u0142\u0105czenia z us\u0142ug\u0105 przesy\u0142ania komunikat\u00f3w serwera Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.explanation=U\u017cytkownik nie ma autoryzacji do nawi\u0105zania po\u0142\u0105czenia z us\u0142ugami przesy\u0142ania komunikat\u00f3w serwera Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.useraction=Podaj u\u017cytkownika, kt\u00f3ry jest autoryzowany do nawi\u0105zywania po\u0142\u0105cze\u0144 z us\u0142ug\u0105 przesy\u0142ania komunikat\u00f3w serwera Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Role name which has duplicate entry
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012=CWWKM3012W: Nazwa {0} jest ju\u017c u\u017cywana dla innej roli.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.explanation=Nazwa nie mo\u017ce by\u0107 u\u017cywana dla wielu r\u00f3l.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.useraction=Podaj inn\u0105 nazw\u0119, aby unikn\u0105\u0107 duplikowania pozycji dla roli.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Action Name
+# {1} - Destination
+USER_NOT_AUTHORIZED_MSE1013=CWWKM3013W: U\u017cytkownik nie ma autoryzacji do wykonania czynno\u015bci {0} dla miejsca docelowego {1}.
+USER_NOT_AUTHORIZED_MSE1013.explanation=U\u017cytkownik nie ma autoryzacji do wykonania okre\u015blonej czynno\u015bci dla wskazanego miejsca docelowego.
+USER_NOT_AUTHORIZED_MSE1013.useraction=Podaj u\u017cytkownika, kt\u00f3ry jest autoryzowany do wykonania okre\u015blonej czynno\u015bci dla danego miejsca docelowego.

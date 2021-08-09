@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+ 
+     <session>
+     
+       <ejb-name>Bad3Bean</ejb-name>
+       <ejb-class>com.ibm.bnd.lookupoverride.shared.Bad3Bean</ejb-class>
+       <session-type>Stateless</session-type>
+       
+       <!-- 6 -->
+       <ejb-local-ref>
+          <ejb-ref-name>T6</ejb-ref-name>
+          <local>com.ibm.bnd.lookupoverride.shared.TargetBean</local>
+          <lookup-name>ejblocal:com.ibm.bnd.lookupoverride.shared.TargetBean</lookup-name>
+          <ejb-link>FooBarBean</ejb-link>
+       </ejb-local-ref>
+       
+    </session>
+    
+<!--
+With this in place:
+
+    <session>
+       <ejb-name>Target</ejb-name>
+       <ejb-class>com.ibm.bnd.lookupoverride.shared.Target</ejb-class>
+       <session-type>Stateless</session-type>
+    </session>
+
+I get this:
+
+[3/11/10 20:26:11:906 CST] 0000001e AbstractEJBRu E   WSVR0040E: addEjbModule failed for DoaApp3EJB.jar
+com.ibm.ejs.container.EJBConfigurationException: The bean class 'com.ibm.bnd.lookupoverride.shared.Target' for EJB 'DoaApp3#DoaApp3EJB.jar#Target' is not found.
+	at com.ibm.ws.metadata.ComponentDataObject.getAnnotationsFromClass(ComponentDataObject.java:1063)
+
+-->
+    
+    <session>
+       <ejb-name>TargetBean</ejb-name>
+       <ejb-class>com.ibm.bnd.lookupoverride.shared.TargetBean</ejb-class>
+       <session-type>Stateless</session-type>
+    </session>
+   
+  </enterprise-beans>
+  
+</ejb-jar>

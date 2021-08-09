@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: Der logstash-Collector konnte keine Verbindung zum logstash-Server auf dem angegebenen Host {0} und am Port mit der Nummer {1} herstellen. 
+LOGSTASH_CONNECTION_FAILED.explanation=Die Verbindung zum logstash-Server ist fehlgeschlagen, weil der logstash-Server auf dem angegebenen Host nicht aktiv ist. Entweder sind die Konfigurationsdaten, wie z. B. der Hostname oder die Portnummer, nicht korrekt oder die lumberjack-Eingabe ist nicht im logstash-Server konfiguriert. 
+LOGSTASH_CONNECTION_FAILED.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationsdaten und starten Sie den logstash-Server auf dem angegebenen Host. Stellen Sie sicher, dass die lumberjack-Eingabe ordnungsgem\u00e4\u00df konfiguriert ist und dass die in der logstash-Collector-Konfiguration in der Datei server.xml angegebenen Werte f\u00fcr den Host und die Portnummer mit der entsprechenden logstash-Serverkonfiguration \u00fcbereinstimmen.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: Der logstash-Collector konnte keine Ereignisse an den logstash-Server senden. Damit Ereignisse gesendet werden k\u00f6nnen, muss eine Verbindung zum logstash-Server aufgebaut sein.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Es konnten keine Ereignisse gesendet werden, weil keine Verbindung zum logstash-Server verf\u00fcgbar ist. Die Verbindung wurde m\u00f6glicherweise zuvor aufgebaut, scheint aber jetzt getrennt zu sein. Das System setzt seine Versuche fort und stellt die Verbindung zum logstash-Server her, sobald er verf\u00fcgbar ist.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Stellen Sie sicher, dass der logstash-Server auf dem Host aktiv ist.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: Der logstash-Collector ist mit dem logstash-Server auf dem angegebenen Host {0} und am Port mit der Nummer {1} verbunden.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=Der logstash-Collector wurde erfolgreich mit dem logstash-Server verbunden.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Es ist keine Aktion erforderlich.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: Die Verbindung des logstash-Collectors zum logstash-Server wurde erfolgreich getrennt.
+LOGSTASH_CONNECTION_CLOSED.explanation=Der logstash-Collector schlie\u00dft die Verbindung zum logstash-Server und stellt sie anschlie\u00dfend wieder her, wenn die logstash-Collector-Konfiguration aktualisiert wird, z. B., wenn \u00c4nderungen am abh\u00e4ngigen SSL-Repertoire oder an der Keystore-Konfiguration vorgenommen werden. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Es ist keine Aktion erforderlich.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: Der logstash-Collector wird von der angegebenen Quelle {0} nicht erkannt.
+LOGSTASH_SOURCE_UNKNOWN.explanation=Die angegebene Quelle ist keine der von der Liberty-Laufzeitumgebung bereitgestellten Standardquellen. Die Quelle geh\u00f6rt m\u00f6glicherweise zu einem Liberty-Feature, das der Serverkonfiguration noch nicht hinzugef\u00fcgt wurde.
+LOGSTASH_SOURCE_UNKNOWN.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationsdaten. Stellen Sie sicher, dass Sie eine der unterst\u00fctzten Quellen f\u00fcr den Collector angeben.
+

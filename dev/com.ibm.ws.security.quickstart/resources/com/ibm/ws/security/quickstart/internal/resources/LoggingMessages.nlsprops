@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.quickstart/resources/com/ibm/ws/security/quickstart/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Quick Start Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0900 - CWWKS0999
+
+QUICK_START_SECURITY_MISSING_ATTIRBUTES=CWWKS0900E: The <quickStartSecurity> element is missing required attributes: {0}. Define the missing attributes.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.explanation=The <quickStartSecurity> element is missing the required attributes.
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.useraction=Define the required attributes.
+
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY=CWWKS0901E: The <quickStartSecurity> configuration will be ignored as another UserRegistry is configured.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.explanation=The <quickStartSecurity> configuration is only used when no other UserRegistry configuration is specified.
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.useraction=Use only one user registry configuration.
+
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION=CWWKS0902E: The <quickStartSecurity> configuration will be ignored as the management security authorization bindings are explicitly defined.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.explanation=The <quickStartSecurity> configuration is only used when no explicit management security authorization bindings are defined.
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.useraction=Use <quickStartSecurity> and remove the explicit management security authorization bindings, or configure a different user registry.

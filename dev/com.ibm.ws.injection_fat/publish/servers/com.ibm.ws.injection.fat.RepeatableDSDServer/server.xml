@@ -1,0 +1,30 @@
+<server>
+    <featureManager>
+		<feature>componenttest-1.0</feature>
+		<feature>ejbLite-3.2</feature>
+		<feature>jdbc-4.2</feature>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <library id="DerbyLib" filesetRef="DerbyFileset"/>
+    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+
+	<application type="ear" id="RepeatableDSDAnnTest" name="RepeatableDSDAnnTest" location="${server.config.dir}/apps/RepeatableDSDAnnTest.ear">
+        <classloader commonLibraryRef="DerbyLib,global"/>
+    </application>
+    
+    <application type="ear" id="RepeatableDSDMixTest" name="RepeatableDSDMixTest" location="${server.config.dir}/apps/RepeatableDSDMixTest.ear">
+        <classloader commonLibraryRef="DerbyLib,global"/>
+    </application>
+    
+    <application type="ear" id="RepeatableDSDXMLTest" name="RepeatableDSDXMLTest" location="${server.config.dir}/apps/RepeatableDSDXMLTest.ear">
+        <classloader commonLibraryRef="DerbyLib,global"/>
+    </application>
+	
+	<!-- Increased due to filesystem access on our poor build/test infrastructure taking more than the default 2 minutes -->
+  	<transaction totalTranLifetimeTimeout="30m"/>
+	
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

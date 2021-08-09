@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=Le nom ne doit pas \u00eatre null.
+empty.name=Le nom ne doit pas \u00eatre vide.
+
+jndi.entry.bad.name=CWWKN0001W: Impossible d''analyser le nom [{0}], l''exception [{1}] est g\u00e9n\u00e9r\u00e9e.
+jndi.entry.bad.name.explanation=Le nom n'est pas conforme \u00e0 la syntaxe requise.  Pour plus de d\u00e9tails, voir l'exception.
+jndi.entry.bad.name.useraction=R\u00e9solvez le nom afin qu'il soit conforme \u00e0 la syntaxe requise.
+
+jndi.entry.bad.value=CWWKN0002W: Impossible d''analyser la valeur [{0}] en tant que type [{1}].
+jndi.entry.bad.value.explanation=La valeur fournie n'est pas conforme \u00e0 son type indiqu\u00e9.
+jndi.entry.bad.value.useraction=Changez la valeur afin qu'elle corresponde au type ou changez le type afin qu'il corresponde \u00e0 la valeur.
+
+jndi.entry.bad.type=CWWKN0003W: L''entr\u00e9e JNDI n''a pas pu \u00eatre cr\u00e9\u00e9e car elle est configur\u00e9e avec un type non reconnu [{0}].
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=Le type doit \u00eatre une valeur attendue.  Les valeurs valides sont auto, boolean, byte, char, double, float, int, long, short ou string.
+jndi.entry.bad.type.useraction=Choisissez une sp\u00e9cification de type valide.
+
+jndi.entry.bind.failed=CWWKN0004W: L''appel de liaison de la valeur [{0}] au nom [{1}] a \u00e9chou\u00e9 et l''exception [{3}] a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e
+jndi.entry.bind.failed.explanation=Impossible d'effectuer l'op\u00e9ration de liaison. Pour plus de d\u00e9tails, voir l'exception.
+jndi.entry.bind.failed.useraction=V\u00e9rifiez si un autre \u00e9l\u00e9ment est li\u00e9 au m\u00eame nom ou \u00e0 un nom interm\u00e9diaire et r\u00e9solvez le conflit.
+
+jndi.osgi.bind.failed=CWWKN0005W: La liaison automatique d''un objet de registre au nom {0} a \u00e9chou\u00e9 et l''exception {1} a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e.
+jndi.osgi.bind.failed.explanation=Un \u00e9v\u00e9nement a emp\u00each\u00e9 l'objet de registre d'\u00eatre li\u00e9 au nom.
+jndi.osgi.bind.failed.useraction=Examinez l'exception afin de d\u00e9terminer la cause de l'erreur et corrigez cette derni\u00e8re.
+
+jndi.objectfactory.no.class=CWWKN0006E: Impossible de trouver la classe pour cr\u00e9er ObjectFactory {0} pour la classe {1}.
+jndi.objectfactory.no.class.explanation=L'\u00e9l\u00e9ment ObjectFactory sp\u00e9cifi\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 car la classe est introuvable.
+jndi.objectfactory.no.class.useraction=V\u00e9rifiez que l''\u00e9l\u00e9ment {0} est disponible dans l''environnement d''ex\u00e9cution WebSphere Application Server.
+
+jndi.objectfactory.create.failed=CWWKN0007E: Impossible de cr\u00e9er ObjectFactory {0} pour la classe {1}.
+jndi.objectfactory.create.failed.explanation=Pour plus de d\u00e9tails, voir l'exception.
+jndi.objectfactory.create.failed.useraction=Pour plus de d\u00e9tails, voir l'exception.
+
+jndi.servicereference.failed=CWWKN0008E: Un objet n''a pas pu \u00eatre obtenu pour le nom {0}.
+jndi.servicereference.failed.explanation=Une erreur s'est produite lors de l'obtention d'un objet pour le nom sp\u00e9cifi\u00e9.
+jndi.servicereference.failed.useraction=Pour plus de d\u00e9tails, voir les exceptions pr\u00e9c\u00e9dentes.
+
+jndi.objectfactory.create.exception=CWWKN0009E: Impossible de cr\u00e9er ObjectFactory pour la classe {0}. L''exception \u00e9tait : {1}
+jndi.objectfactory.create.exception.explanation=Pour plus de d\u00e9tails, voir l'exception.
+jndi.objectfactory.create.exception.useraction=Pour plus de d\u00e9tails, voir l'exception.
+
+jndi.url.create.exception=CWWKN0010E: Le syst\u00e8me ne peut pas cr\u00e9er la valeur java.net.URL \u00e0 partir de la cha\u00eene {0}. Cette URL est configur\u00e9e pour \u00eatre li\u00e9e au nom JNDI {1}. L''exception suivante a \u00e9t\u00e9 re\u00e7ue : {2}
+jndi.url.create.exception.explanation=La cha\u00eene d'URL sp\u00e9cifi\u00e9e dans la configuration pour le nom JNDI n'est pas valide et ne peut pas \u00eatre li\u00e9e dans l'espace de nom JNDI.
+jndi.url.create.exception.useraction=Entrez une valeur valide pour la cha\u00eene d'URL. L'erreur d'exception fournit des d\u00e9tails sur le nom JNDI non valide.
+
+jndi.decode.failed=CWWKN0011E: Une erreur s''est produite lors du d\u00e9codage du mot de passe {0}. V\u00e9rifiez que le mot de passe a \u00e9t\u00e9 cod\u00e9 correctement. Exception renvoy\u00e9e : {1}.
+jndi.decode.failed.explanation=Le mot de passe n'a pas \u00e9t\u00e9 cod\u00e9 correctement.
+jndi.decode.failed.useraction=V\u00e9rifiez que le mot de passe a \u00e9t\u00e9 cod\u00e9 correctement. Pour plus de d\u00e9tails, voir l'exception.

@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert={0} des Typs {1} kann nicht in {2} konvertiert werden.
+error.compare={0} kann nicht mit {1} verglichen werden.
+error.function=Probleme beim Aufruf der Funktion ''{0}''
+error.unreachable.base=Das Ziel ist nicht erreichbar. Die ID ''{0}'' wurde in null aufgel\u00f6st.
+error.unreachable.property=Das Ziel ist nicht erreichbar. ''{0}'' hat null zur\u00fcckgegeben.
+error.resolver.unhandled=ELResolver hat den Typ {0} mit der Eigenschaft ''{1}'' nicht verarbeitet.
+error.resolver.unhandled.null=ELResolver kann ein Nullbasisobjekt mit der ID ''{0}'' nicht verarbeiten.
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression ist ein Literal und nicht modifizierbar: {0}
+
+# ExpressionFactoryImpl
+error.null=Der Ausdruck darf nicht leer sein.
+error.mixed=Der Ausdruck darf ''#''{..}'' und ''$''{..}'' nicht zusammen enthalten: {0}
+error.method=MethodExpression nicht g\u00fcltig: {0}
+error.method.nullParms=Parametertypen d\u00fcrfen nicht null sein.
+error.value.expectedType=Der erwartete Typ darf nicht null sein.
+
+# ExpressionBuilder
+error.parseFail=Fehler beim Parsen des Ausdrucks [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Ung\u00fcltige Syntax f\u00fcr Set-Operation
+
+# ReflectionUtil
+error.method.notfound=Methode nicht gefunden: {0}.{1}({2})
+error.method.ambiguous=Es wurde keine eindeutige Methode gefunden: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=Der Ausdruck verwendet Funktionen, aber es wurde kein FunctionMapper angegeben.
+error.fnMapper.method=Die Funktion ''{0}'' wurde nicht gefunden.
+error.fnMapper.paramcount=Die Funktion ''{0}'' gibt {1} Parameter an, aber es wurden {2} deklariert.
+
+# ExpressionImpl
+error.context.null=ELContext ist null
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Es sind mehrere Parameters\u00e4tze f\u00fcr die Funktion [{0}]  angegeben.
+error.identifier.notjava=Die ID [{0}] ist gem\u00e4\u00df Abschnitt 1.19 der EL-Spezifikation (ID ::= Java-Sprachenkennung) keine g\u00fcltige Java-ID. Diese Pr\u00fcfung kann inaktiviert werden, indem die Systemeigenschaft org.apache.el.parser.SKIP_IDENTIFIER_CHECK auf true gesetzt wird.
+error.lambda.tooManyMethodParameterSets=Es mehr Methodenparameters\u00e4tze definiert, als verschachtelte Lambdaausdr\u00fccke angegeben sind.
+
+# Stream
+stream.compare.notComparable=Datenstromelemente m\u00fcssen Comparable implementieren
+stream.optional.empty=Es ist nicht zul\u00e4ssig, get() f\u00fcr eine leere optionale Klasse aufzurufen
+stream.optional.paramNotLambda=Der Parameter f\u00fcr die Methode [{0}] muss ein Lambdaausdruck sein.

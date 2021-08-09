@@ -1,0 +1,1792 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Help documentation for direct access to JMX REST connector</title>
+
+<script type="application/javascript">
+
+	var server = window.location.origin;
+
+	
+	function nav1_1() {
+		document.getElementById("main_content").innerHTML= "<img border=\"0\" src=\"url_map.jpg\">";	
+	}
+	
+	
+	function nav1_2() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Main entry point URL to the JMX REST connector." +
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/</p>" +
+			 "<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+					"{<br>" +
+					 "  \"version\" : Integer,<br>" +
+					 "  \"mbeans\" : URL, <br>" +
+					 "  \"createMBean\" : URL, <br>" +
+					 "  \"mbeanCount\" : URL, <br>" +
+					 "  \"defaultDomain\" : URL, <br>" +
+					 "  \"domains\" : URL, <br>" +
+					 "  \"notifications\" : URL, <br>" +
+					 "  \"instanceOf\" : URL <br>" +
+					 "  \"fileTransfer\" : URL <br>" +
+					 "  \"api\" : URL <br>" +
+					 "  \"graph\" : URL <br>" +				 
+					 "}" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" +
+			    "<td>" +
+				  "<p><b>Example:</b></p><pre>" +
+				  "{<br>" +
+				  "  \"version\":\"4\",<br>" +
+				  "  \"mbeans\":\"/IBMJMXConnectorREST/mbeans\",<br>" +
+				  "  \"createMBean\":\"/IBMJMXConnectorREST/mbeans/factory\",<br>" +
+				  "  \"mbeanCount\":\"/IBMJMXConnectorREST/mbeanCount\",<br>" +
+				  "  \"defaultDomain\":\"/IBMJMXConnectorREST/defaultDomain\",<br>" +
+				  "  \"domains\":\"/IBMJMXConnectorREST/domains\",<br>" +
+				  "  \"notifications\":\"/IBMJMXConnectorREST/notifications\",<br>" +
+				  "  \"instanceOf\":\"/IBMJMXConnectorREST/instanceOf\",<br>" +
+				  "  \"fileTransfer\":\"/IBMJMXConnectorREST/file\"<br>" +
+				  "  \"api\":\"/IBMJMXConnectorREST/api\"<br>" +
+				  "  \"graph\":\"/IBMJMXConnectorREST/graph\"<br>" +
+				  "}<br>" +
+				"</td>" +
+		      "</tr>" +
+			"</table>";
+
+	}	
+	
+	function nav1_3() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Returns the number of MBeans registered in the MBean server." +
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/mbeanCount</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ Integer ]<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}		
+
+	function nav1_4() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Returns the default domain used for naming the MBean." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/defaultDomain</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ String ]<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}		
+	
+	function nav1_5() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Returns the list of domains in which any MBean is currently registered." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/domains</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ String* ]<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";			 
+	}		
+		
+	function nav2_1() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Instantiates and registers an MBean in the MBean server." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/mbeans/factory</p>" +
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			    "<td style='border:1px solid black'><pre>" + 
+				  "{<br>" +
+				  "  \"className\" :  String , <br>" +
+			 	  "  \"loaderName\" : String,   //ObjectName <br>" +
+				  "  \"params\" : [ POJO* ],  <br>" +
+				  "  \"signature\" : [ String* ],  <br>" +
+				  "  \"useLoader\" : Boolean, <br>" +
+				  "  \"useSignature\" : Boolean <br>" +
+				  "}" +
+				 "</pre></td>" + 
+				 "<td width='100px'></td>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "{<br>" +
+				   "  \"objectName\" : String ,  //ObjectName  <br>" +
+				   "  \"className\" :  String ,  <br>" +
+				   "  \"URL\" :        URL,  <br>" +
+				  "}" +
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  			  "<tr>" +
+			    "<td>" +
+				  "<p>Request example that specifies a loader but params and signature are not provided:</p><pre>" +
+				  "{<br>" +
+				  "  \"className\":\"web.TestBean\",<br>" +
+				  "  \"loaderName\":\"web:name=ClassLoaderMBean\",<br>" +
+			      "  \"useLoader\":true,<br>" +
+				  "  \"useSignature\":false<br>" +
+				  "}<br>" +
+				"</td>" +
+		      "</tr>" +
+			"</table>";
+	}	
+	
+	function nav2_2() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Unregisters an MBean from the MBean server." + 
+			"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}</p>";
+	}
+	
+	function nav2_3() {
+			document.getElementById("main_content").innerHTML= 
+		    "<p>Returns true if the MBean specified is an instance of the specified class, false otherwise." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/instanceOf?objectName=X&className=Y</p>" + 
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ Boolean ]<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";		
+	}
+	
+	function nav2_4() {
+			document.getElementById("main_content").innerHTML= 
+		    "<p>Retrieve a list of MBeans that match the specified ObjectName and ClassName." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/mbeans[?objectName=X&className=Y]</p>" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"objectName\" : String ,  //ObjectName  <br>" +
+				   "    \"className\" :  String ,  <br>" +
+				   "    \"URL\" :        URL  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			"</table>";
+	}
+	
+	function nav2_5() {
+		document.getElementById("main_content").innerHTML= 
+		    "<p>Retrieve a list of MBeans that match the specified ObjectName and ClassName, and are filtered by the specified QueryExp." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/mbeans[?objectName=X&className=Y]</p>" +
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			    "<td style='border:1px solid black'><pre>" + 
+				  "{<br>" +
+				  "  \"queryExp\" : String   //base64 serialized <br>" +
+				  "}" +
+				 "</pre></td>" + 
+				 "<td width='100px'></td>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"objectName\" : String ,  //ObjectName  <br>" +
+				   "    \"className\" :  String ,  <br>" +
+				   "    \"URL\" :        URL  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			"</table>";
+	}	
+	
+	function nav2_6() {
+			document.getElementById("main_content").innerHTML= 
+		 	"<p>Returns all endpoints, such as attributes and operations, that an MBean exposes for management." +
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}</p>" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "{<br>" + 
+				   "  \"className\" : String, <br>" +
+				   "  \"description\" : String, <br>" +
+				   "  \"descriptor\" : Descriptor, <br>" +
+				   "  \"attributes\" : [ MBeanAttributeInfo* ], <br>" +
+				   "  \"attributes_URL\" : URL, <br>" +
+				   "  \"constructors\" : [ MBeanConstructorInfo* ], <br>" +
+				   "  \"notifications\" : [ MBeanNotificationInfo* ], <br>" +
+				   "  \"operations\" : [ MBeanOperationInfo* ] <br>" +
+				   "}" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" +
+			    "<td><pre><br>" +
+				"<p>...where Descriptor, MBeanAttributeInfo, MBeanConstructorInfo, <br> MBeanNotificationInfo and MBeanOperationInfo are represented by:</p>" + 
+			    "<p><b>Descriptor</b><br>" + 
+				"{ <br>" +
+			    "  \"names\" : [ String* ], <br>" +
+			    "  \"values\" : [ POJO* ] <br>" +
+				"} <br>" +
+				
+				"<p><b>MBeanAttributeInfo</b><br>" + 	 
+				"{ <br>" +
+			    "  \"name\" : String, <br>" +
+				"  \"type\" : String, <br>" +
+				"  \"description\" : String, <br>" +
+				"  \"descriptor\" : Descriptor, <br>" +
+				"  \"isIs\" : Boolean, <br>" +
+				"  \"isReadable\" : Boolean, <br>" +
+				"  \"isWritable\" : Boolean, <br>" +
+				"  \"URL\" : URL <br>" +
+				"} <br>" +
+
+				"<p><b>MBeanConstructorInfo</b><br>" + 
+				"{ <br>" +
+				"  \"name\" : String, <br>" +
+				"  \"description\" : String, <br>" +
+				"  \"descriptor\" : Descriptor, <br>" +
+				"  \"signature\" : [ MBeanParameterInfo* ] <br>" +
+				"} <br>" +
+
+				"<p><b>MBeanParameterInfo</b><br>" + 
+				"{ <br>" +
+				"  \"name\" : String, <br>" +
+				"  \"type\" : String, <br>" +
+				"  \"description\" : String, <br>" +
+				"  \"descriptor\" : Descriptor <br>" +
+				"} <br>" +		
+
+				"<p><b>MBeanNotificationInfo</b><br>" + 
+				"{ <br>" +
+				"  \"name\" : String, <br>" +
+				"  \"description\" : String, <br>" +
+				"  \"descriptor\" : Descriptor, <br>" +
+				"  \"notifTypes\" [ String* ] <br>" +
+				"} <br>" +
+
+				"<p><b>MBeanOperationInfo</b><br>" + 
+				"{ <br>" +
+				" \"name\" : String, <br>" +
+				" \"description\" : String, <br>" +
+				" \"descriptor\" : Descriptor, <br>" +
+				" \"impact\" : Integer, <br>" +
+				" \"returnType\" : String, <br>" +
+				" \"signature\" : [ MBeanParameterInfo* ], <br>" +
+				" \"URL\" : URL <br>" +
+				"} <br>" +	
+				 
+			    "</pre></td>" + 
+			  "</tr>" +
+			"</table>";
+	}
+	
+	function nav2_7() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Invokes an operation on an MBean." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}/operations/{operation}</p>" +
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			    "<td style='border:1px solid black'><pre>" + 
+				  "{<br>" +		  
+				  "  \"params\" :  [ POJO* ], <br>" +
+				  "  \"signature\" : [ String* ] <br>" +
+				  "}" +
+				 "</pre></td>" + 
+				 "<td width='100px'></td>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "POJO" +
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" + 
+			    "<td><pre><br>" + 
+				  "<p><b>Example 1: Operation with 0 params</b></p>" + 
+				  "{<br>" +		  
+				  "  \"params\" :  [], <br>" +
+				  "  \"signature\" : [] <br>" +
+				  "} <br>" +
+				  "...or simply { } " +
+				  "<p><b>Example 2: Operation with 1 param</b></p>" + 
+				  "{<br>" +		  
+				  "  \"params\":[ <br>" +
+				  "      {  <br>" +			  
+				  "        \"value\" : \"${server.output.dir}/server.xml\", <br>" +
+				  "        \"type\" : \"java.lang.String\" <br>" +
+				  "      } <br>" +
+			      "   ], <br>" +
+				  "  \"signature\":[ <br>" +
+				  "      \"java.lang.String\" <br>" +
+				  "   ] <br>" +
+				  "}" +
+				  
+				  "<p><b>Example 3: Operation with 3 params</b></p>" + 
+				  "{<br>" +		  
+				  "  \"params\":[ <br>" +
+				  "      {  <br>" +			  
+				  "        \"value\" : \"${server.output.dir}/server.xml\", <br>" +
+				  "        \"type\" : \"java.lang.String\" <br>" +
+				  "      }, <br>" +
+				  "      {  <br>" +			  
+				  "        \"value\" : \"true\", <br>" +
+				  "        \"type\" : \"java.lang.Boolean\" <br>" +
+				  "      }, <br>" +
+				  "      {  <br>" +			  
+				  "        \"value\" : \"abc\", <br>" +
+				  "        \"type\" : \"java.lang.String\" <br>" +
+				  "      } <br>" +				  
+			      "   ], <br>" +
+				  "  \"signature\":[ <br>" +
+				  "      \"java.lang.String\" <br>" +
+				  "      \"boolean\", <br>" +
+				  "      \"java.lang.String\" <br>" +
+				  "   ] <br>" +
+				  "}" +
+				  
+				 "</pre></td>" + 			
+			  "</tr>" + 			  
+			  
+			"</table>";
+
+	}	
+		
+	function nav3_1() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Retrieves the values of several attributes of a named MBean." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}/attributes[?attribute=X[&attribute=Z]*]</p>" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"name\" : String , <br>" +
+				   "    \"value\" :  POJO  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  
+			  "<tr>" +
+			    "<td>" +
+			      "<p>If there are no query parameters the returning list will include all attributes pertaining to this MBean." +
+				  "<p>Example that contains a list of strings (3 items) named \"ReadList\" and an empty list of string named \"WriteList\":</p><pre>" +
+				  "[<br>" +
+				  "  { <br>" +
+				  "    \"name\":\"ReadList\", <br>" +
+				  "    \"value\":{ <br>" +
+				  "      \"value\":[ <br>" +
+				  "        \"/Shared/wlp\", <br>" +
+				  "        \"/Shared/wlp/usr\", <br>" +
+				  "        \"/Shared/wlp/usr/servers/myServer\" <br>" +
+				  "        ], <br>" +
+				  "      \"type\":\"[Ljava.lang.String;\" <br>" +
+				  "     } <br>" +
+				  "  }, <br>" +
+				  "  { <br>" +
+				  "    \"name\":\"WriteList\", <br>" +
+				  "    \"value\":{ <br>" +
+				  "       \"value\":[], <br>" +
+				  "       \"type\":\"[Ljava.lang.String;\" <br>" +
+		          "    } <br>" +
+				  "  } <br>" +
+				  "]<br>" +
+				"</td>" +
+		      "</tr>" +  
+			"</table>";
+	}
+	
+	function nav3_2() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Sets the values of several attributes of a named MBean." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}/attributes</p>" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			  	   "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"name\" : String , <br>" +
+				   "    \"value\" :  POJO  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  	 "<td width='100px'></td>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"name\" : String , <br>" +
+				   "    \"value\" :  POJO  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			"</table>";
+	}
+	
+	function nav3_3() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Gets the value of a specific attribute of a named MBean." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}/attributes/{attribute}</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>POJO<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}
+	
+	function nav3_4() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Sets the value of a specific attribute of a named MBean." + 
+			"<p><b>PUT</b> " + server + "/IBMJMXConnectorREST/mbeans/{objectName}/attributes/{attribute}</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON request:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>POJO<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}
+	
+	function nav4_1() {
+			document.getElementById("main_content").innerHTML= 
+		    "<p>Instantiates a new notification registry.  The returned URLs specify the location for managing client-listener registrations, MBean-listener registrations, and client-listener notification inbox." + 
+			"<p>The deliveryInterval parameter determines the maximum amount of time (milliseconds) the server will hold onto polling requests if no notifications are available.  Smaller values (or 0) results in faster polling " +
+			"returns but may require more frequent polling if critical notifications are being monitored.  The inboxExpiry parameter determine the maximum amount of time (milliseconds) the server will wait in-between polls to its inbox.  Even if no " +
+			"client-listener registrations are present, the inbox must be polled within this time interval to avoid a notification registry timeout." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/notifications</p>" +
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			    "<td style='border:1px solid black'><pre>" + 
+				  "{<br>" +
+				  "  \"deliveryInterval\" : Integer, <br>" +
+				  "  \"inboxExpiry\" :  Integer <br>" +
+				  "}" +
+				 "</pre></td>" + 
+				 "<td width='100px'></td>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "{<br>" +
+				   "  \"registrations\" : URL, <br>" +
+				   "  \"serverRegistrations\" : URL, <br>" +
+				   "  \"inbox\" : URL <br>" +
+				  "}" +
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  
+			  "<tr>" + 
+			  "<td><pre>" + 			  
+			  "<p><b>Example:</b></p>" + 
+			  "{ <br>" + 
+			  "  \"deliveryInterval\":\"60000\", <br>" + 
+			  "  \"inboxExpiry\":\"3000000\" <br>" + 
+			  "} <br>" + 
+			  
+			  "</pre></td>" +
+			  "</tr>" + 
+			  
+			"</table>";
+	}
+	
+	function nav4_2() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Adds a client-listener to a registered MBean." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/registrations</p>" +
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			    "<td style='border:1px solid black'><pre>" + 
+				  "{<br>" +
+				  "  \"objectName\" : ObjectName, <br>" +
+				  "  \"filters\" :  [ NotificationFilter* ] <br>" +
+				  "}" +
+				 "</pre></td>" + 
+				 "<td width='100px'></td>" +
+			     "<td style='border:1px solid black'><pre><br>[ URL ]<br><br></pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where NotificationFilter must represent (in JSON), one of the following interfaces:<br>" +
+			  "   -javax.management.AttributeChangeNotificationFilter <br>" +
+			  "   -javax.management.relation.MBeanServerNotificationFilter <br>" + 
+			  "   -javax.management.NotificationFilterSupport <br><br>" + 
+			  
+			  "<p><b>AttributeChangeNotificationFilter:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+			  "  \"enabled\": [ String* ] <br>" + 
+			  "} <br>" + 
+
+			  "<p><b>MBeanServerNotificationFilter:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+			  "  \"enabled\":[ String* ], //ObjectName <br>" + 
+			  "  \"types\": [ String* ] <br>" + 
+			  "} <br>" + 
+
+		      "<p><b>NotificationFilterSupport:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+			  "  \"types\": [ String* ] <br>" + 
+			  "} <br>" + 
+			  
+			  "<p><b>Example:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+			  "  \"enabled\":[ \"attr1\" ] <br>" + 
+			  "} <br>" + 
+			  
+			  "</pre></td>" +
+			  "</tr>" + 
+			"</table>";
+	}
+	
+	
+	function nav4_3() {
+			document.getElementById("main_content").innerHTML= 
+		    "<p>Updates the filters currently being used by the client-listener of a registered MBean." + 
+			"<p><b>PUT</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/registrations/{objectName}</p>" +
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ NotificationFilter* ]<br><br></pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where NotificationFilter must represent (in JSON), one of the following interfaces:<br>" +
+			  "   -javax.management.AttributeChangeNotificationFilter <br>" +
+			  "   -javax.management.relation.MBeanServerNotificationFilter <br>" + 
+			  "   -javax.management.NotificationFilterSupport <br><br>" + 
+			  
+			  "<p><b>AttributeChangeNotificationFilter:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+			  "  \"enabled\": [ String* ] <br>" + 
+			  "} <br>" + 
+
+			  "<p><b>MBeanServerNotificationFilter:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+			  "  \"enabled\":[ String* ], //ObjectName <br>" + 
+			  "  \"types\": [ String* ] <br>" + 
+			  "} <br>" + 
+
+		      "<p><b>NotificationFilterSupport:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+			  "  \"types\": [ String* ] <br>" + 
+			  "} <br>" + 
+			  
+			  "<p><b>Example:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+			  "  \"enabled\":[ \"attr1\" ] <br>" + 
+			  "} <br>" + 
+			  
+			  "</pre></td>" +
+			  "</tr>" + 
+			"</table>";
+	}
+
+	function nav4_4() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Removes the client-listener from a registered MBean." + 
+			"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/registrations/{objectName}</p>";
+	}
+	
+	function nav4_16() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Removes all registered client-listeners." + 
+		"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/registrations</p>";
+}
+	
+	function nav4_5() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Poll for any notifications that have arrived into the registered client-listeners.  Consumed notifications are removed from the inbox immediately." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/inbox</p>" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				"<td style='border:1px solid black'><pre><br>[ NotificationRecord* ]<br><br></pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" + 
+			  "<td><pre>" + 			  
+		      "<p><b>... where NotificationRecord is defined as:</b></p> <br>" + 
+			  "{ <br>" + 			  
+			  "  \"className\": String ,<br>" +
+			  "  \"type\": String ,<br>" +
+			  "  \"source\": String , 			//ObjectName <br>" +
+			  "  \"sequenceNumber\": Long, <br>" +
+			  "  \"timeStamp\": Long,<br>" +
+			  "  \"message\": String,<br>" +
+			  "  \"hostName\" : String,			//only present if from a routed server <br>" +
+			  "  \"serverName\" : String,		//only present if from a routed server <br>" +
+			  "  \"serverUserDir\" : String		//only present if from a routed server <br>" +
+
+			  "  \"attributeName\": String,		//only  present if className = \"javax.management.AttributeChangeNotification\" <br>" +
+			  "  \"attributeType\": String,		//only  present if className = \"javax.management.AttributeChangeNotification\" <br>" +
+			  "  \"oldValue\": POJO,			//only  present if className = \"javax.management.AttributeChangeNotification\" <br>" +
+			  "  \"newValue\": POJO,			//only  present if className = \"javax.management.AttributeChangeNotification\" <br>" +
+         
+			  "  \"connectionId\" : String,		//only present if className = \" javax.management.remote.JMXConnectionNotification\"  <br>" +
+         
+			  "  \"mbeanName\" : String,			//ObjectName, only present if className = \"javax.management.MBeanServerNotification\" <br>" +
+
+			  "  \"relationId\" : String,		//only present if className = \"javax.management.relation.RelationNotification\" <br>" +
+			  "  \"relationTypeName\" : String,		//only present if className = \"javax.management.relation.RelationNotification\" <br>" +
+			  "  \"objectName\" : String,		//only present if className = \"javax.management.relation.RelationNotification\" <br>" +
+           	  "  \"mbeansToUnregister\" : [String*],	//ObjectNames, only present if className = \"javax.management.relation.RelationNotification\" and roleName == null <br>" +
+			  "  \"roleName\" : String,			//only present if className = \"javax.management.relation.RelationNotification\" and roleName != null <br>" +
+		      "  \"oldRoleValue\" : [String*],		//ObjectNames, only present if className = \"javax.management.relation.RelationNotification\" and roleName != null <br>" +
+			  "  \"newRoleValue\" : [String*],		//ObjectNames, only present if className = \"javax.management.relation.RelationNotification\" and roleName != null <br>" +
+
+			  "  \"notificationId\" : Int,		//only present if className = \"javax.management.timer.TimerNotification\" <br>" +
+
+			  "  \"serialized\" : Base64Serialization	//only present is className is not one of the classes mentioned above <br>" + 
+
+			  "} <br>" + 
+			  "</pre></td>" +
+			  "</tr>" + 
+			"</table>";
+  }
+  
+	function nav4_6() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Removes the notification registry, which will unregister any client-listener/MBean-listener registrations and also remove the client notification inbox.  Any further access to this clientID will result in an error." + 
+			"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}</p>" +
+			"<p>";
+	}
+	
+	function nav4_7() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Adds a new MBean-listener to a registered MBean." + 
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations</p>" + 
+			"<table>" + 
+			  "<tr>" + 
+			    "<td>" + 
+				  "<p><b>JSON request:</b></p>" +
+				"</td>" + 
+				"<td width='100px'></td>" +
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "{<br>" +
+				   "  \"objectName\" : String,  //ObjectName <br>" +
+				   "  \"listener\" : String, //ObjectName <br>" +
+				   "  \"filter\" : NotificationFilter, 		//could be null <br>" +
+				   "  \"handback\" : POJO 			//could be null <br>" +
+				   "}<br>" +
+				 "</pre></td>" + 
+				 "<td width='100px'></td>" +
+			     "<td style='border:1px solid black'><pre><br>[ URL ]<br><br></pre></td>" + 
+			  "</tr>" + 
+			  "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where NotificationFilter must represent (in JSON), one of the following interfaces:<br>" +
+			  "   -javax.management.AttributeChangeNotificationFilter <br>" +
+			  "   -javax.management.relation.MBeanServerNotificationFilter <br>" + 
+			  "   -javax.management.NotificationFilterSupport <br><br>" + 
+			  
+			  "<p><b>AttributeChangeNotificationFilter:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+			  "  \"enabled\": [ String* ] <br>" + 
+			  "} <br>" + 
+
+			  "<p><b>MBeanServerNotificationFilter:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+			  "  \"enabled\":[ String* ], //ObjectName <br>" + 
+			  "  \"types\": [ String* ] <br>" + 
+			  "} <br>" + 
+
+		      "<p><b>NotificationFilterSupport:</b></p> <br>" + 
+			  "{ <br>" + 
+			  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+			  "  \"types\": [ String* ] <br>" + 
+			  "} <br>" + 
+			  
+			  "<p><b>Example:</b></p> <br>" + 
+
+			  "{ <br>" + 
+			  "  \"objectName\":\"web:name=Notifier1\", <br>" + 
+			  "  \"listener\":\"web:name=Listener1\", <br>" + 
+			  "  \"filter\":{ <br>" + 
+			  "    \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+			  "    \"enabled\":[ \"attr1\", \"attr2\" ] <br>" + 
+			  "   }, <br>" + 
+			  "  \"handback\" : {  \"value\" : \"customHandback\" , \"type\" : \"java.lang.String\" } <br>" + 
+			  "} <br>" +   
+			  
+			  "</pre></td>" +
+			  "</tr>" + 
+			"</table>";
+	}
+	
+	function nav4_8() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Returns an array where each item represents the ObjectName of an MBean that we're listening for notifications." +
+		"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/registrations</p>" +
+		"<table>" + 
+		 "<tr>" +
+		  "<td><p><b>JSON response:</b></p></td>" +
+		 "</tr>" +
+		 "<tr>" +
+		  "<td style='border:1px solid black'><pre><br>[ String * ]<br><br></pre></td>" + 
+		 "</tr>" +  
+		"</table>";
+	}
+
+	function nav4_9() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Returns a list of filters being used by the client-listener to a registered MBean." + 
+		"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/registrations/{objectName}</p>" +
+		"<table>" + 
+		 "<tr>" +
+		  "<td><p><b>JSON response:</b></p></td>" +
+		 "</tr>" +
+		 "<tr>" +
+		  "<td style='border:1px solid black'><pre><br>[ NotificationFilter * ]<br><br></pre></td>" + 
+		 "</tr>" + 
+		  "<tr>" + 
+		  "<tr>" + 
+		  "<td><pre>" + 
+		  "<p>...where NotificationFilter represents (in JSON), one of the following interfaces:<br>" +
+		  "   -javax.management.AttributeChangeNotificationFilter <br>" +
+		  "   -javax.management.relation.MBeanServerNotificationFilter <br>" + 
+		  "   -javax.management.NotificationFilterSupport <br><br>" + 
+		  
+		  "<p><b>AttributeChangeNotificationFilter:</b></p> <br>" + 
+		  "{ <br>" + 
+		  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+		  "  \"enabled\": [ String* ] <br>" + 
+		  "} <br>" + 
+
+		  "<p><b>MBeanServerNotificationFilter:</b></p> <br>" + 
+		  "{ <br>" + 
+		  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+		  "  \"enabled\":[ String* ], //ObjectName <br>" + 
+		  "  \"types\": [ String* ] <br>" + 
+		  "} <br>" + 
+
+	      "<p><b>NotificationFilterSupport:</b></p> <br>" + 
+		  "{ <br>" + 
+		  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+		  "  \"types\": [ String* ] <br>" + 
+		  "} <br>" + 
+		  
+		   "</pre></td>" +
+		  "</tr>" + 
+		"</table>";
+	}
+	
+	function nav4_10() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Returns the filter and handback objects pertaining to a specific MBean-listener registration." + 
+		"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations/{source_objName}/listeners/{listener_objName}/ids/{registrationID}</p>" +
+		"<table>" + 
+		 "<tr>" +
+		  "<td><p><b>JSON response:</b></p></td>" +
+		 "</tr>" +
+		 "<tr>" +
+		 "<td style='border:1px solid black'><pre>" + 
+		   "{<br>" +
+		   "  \"filter\" : NotificationFilter, <br>" +
+		   "  \"handback\" : POJO <br>" +
+		   "}<br>" +
+		 "</pre></td>" + 
+		 "</tr>" + 
+		  "<tr>" + 
+		  "<tr>" + 
+		  "<td><pre>" + 
+		  "<p>...where NotificationFilter must represent (in JSON), one of the following interfaces:<br>" +
+		  "   -javax.management.AttributeChangeNotificationFilter <br>" +
+		  "   -javax.management.relation.MBeanServerNotificationFilter <br>" + 
+		  "   -javax.management.NotificationFilterSupport <br><br>" + 
+		  
+		  "<p><b>AttributeChangeNotificationFilter:</b></p> <br>" + 
+		  "{ <br>" + 
+		  "  \"className\":\"javax.management.AttributeChangeNotificationFilter\", <br>" + 
+		  "  \"enabled\": [ String* ] <br>" + 
+		  "} <br>" + 
+
+		  "<p><b>MBeanServerNotificationFilter:</b></p> <br>" + 
+		  "{ <br>" + 
+		  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+		  "  \"enabled\":[ String* ], //ObjectName <br>" + 
+		  "  \"types\": [ String* ] <br>" + 
+		  "} <br>" + 
+
+	      "<p><b>NotificationFilterSupport:</b></p> <br>" + 
+		  "{ <br>" + 
+		  "  \"className\":\"javax.management.relation.MBeanServerNotificationFilter\", <br>" + 
+		  "  \"types\": [ String* ] <br>" + 
+		  "} <br>" + 
+		  
+		   "</pre></td>" +
+		  "</tr>" + 
+		"</table>";
+	}
+		
+	function nav4_11() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Removes the specified MBean-listener registration." + 
+			"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations/{source_objName}/listeners/{listener_objName}/ids/{registrationID}</p>";
+	}
+	
+	function nav4_12() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Returns an array where each item represents the ID of a specific notification registration associated with that {source_objName} & {listener_objName} pair." +
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations/{source_objName}/listeners/{listener_objName}/ids</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ String* ]<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}		
+
+	function nav4_13() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Removes all MBean-listener registrations for that particular {source_objName} & {listener_objName} pair." + 
+		"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations/{source_objName}/listeners/{listener_objName}/ids</p>";
+	}
+	
+	function nav4_14() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Returns an array where each item represents the ObjectName of an MBean that is listening for notifications from that {source_objName}." +
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations/{source_objName}/listeners</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>[ String* ]<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}		
+	
+	function nav4_15() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Removes all the MBean-listeners currently registered with the specified {source_objName}." + 
+		"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations/{source_objName}/listeners</p>";
+	}
+
+	function nav4_17() {
+		document.getElementById("main_content").innerHTML= 
+		"<p>Removes all the MBean-listeners registered with this notification registry." + 
+		"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/{clientID}/serverRegistrations</p>";
+	}
+	
+	function nav5_1() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Download the contents of the specified remote file.  Set the Accept-Encoding header to 'gzip' if you wish to compress the file transfer." + 
+			"<p>Ensure the file is within the configurable read directory of the server." +
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/{filePath}[?startOffset=long&endOffset=long]</p>" +
+			"<table>" + 
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where startOffset and endOffset are optional query parameters indicating the byte ranges of the target file that should be downloaded, <br>" +
+			  "and where {filePath} is an UTF-8 URLEncoded absolute path or path containing a Liberty variable.  <br>" + 
+			  "If startOffset is absent the lower range becomes 0 and if endOffset is absent the upper range becomes the end of the file.<br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			 "<tr>" +
+			  "<td><p><b>Response</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>Input stream with file contents<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}
+	
+	function nav5_2() {
+			document.getElementById("main_content").innerHTML= 
+		    "<p>Upload content to a remote file.  <br>" +
+		    "<ul>" +
+		    "<li>Set the Content-Encoding header to 'gzip' if you are uploading a compressed output stream.</li>" + 
+		    "<li>The 'expandOnCompletion' flag can be used to extract archives either in the PAX format (set Content-Type header to 'application/pax') or ZIP-based formats (set Content-Type header to 'applicaton/zip'), such as zip, jar, war and ear. </li>" + 
+			"<li>When 'expandOnCompletion' is false or absent the file path will determine the name of the new file.  Therefore, uploading '.../file/myFile.txt' will create 'myFile.txt' with the uploaded contents. </li>" + 
+			"<li>If 'expandOnCompletion' is set to true then the file path will determine what directory the contents are expanded into.  Therefore, uploading '.../file/myArchiveTarget?expandOnCompletion=true' will extract the contents of the archive into the directory 'myArchiveTarget' (creating any sub-directories as needed)</li>" +
+			"</ul>" +
+			"<p>Ensure the target file path is within a configurable write directory of the server." +
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/file/{filePath}[?expandOnCompletion=boolean]</p>" +
+			"<table>" + 
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where expandOnCompletion is an optional (default=false) query parameter that toggles an automatic expansion of the uploaded archive,<br>" +
+			  "and {filePath} is an UTF-8 URLEncoded absolute path or path containing a Liberty variable.<br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			 "<tr>" +
+			  "<td><p><b>Request</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>Output stream with file contents<br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}
+	
+	function nav5_3() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>Delete the specified remote file or empty directory. To delete a non-empty directory, the recursiveDelete query parameter must be specified to \"true\"." + 
+			"<p>Ensure the file is within a configurable write directory of the server." +
+			"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/file/{filePath}[?recursiveDelete=boolean]</p>" +
+			 "<table>" + 
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where {filePath} is an UTF-8 URLEncoded absolute path or path containing a Liberty variable, <br>" +
+			  "and recursiveDelete is a query parameter that allows the deletion of non-empty directories."
+			  "</pre></td>" +
+			 "</tr>" + 
+			"</table>";
+	}
+	
+		function nav5_4() {
+			document.getElementById("main_content").innerHTML= 
+		    "<p>Delete multiple files within a single REST invocation.  <br>" +
+			"<p>Ensure the target file paths are within a configurable write directory of the server." +
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/file/collection</p>" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>Request</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre>" +
+			  "{ <br>" + 
+		  	  "  \"delete\" : [ String* ] <br>" + 
+		      "} <br>" + 
+			  "</pre></td>" + 
+			 "</tr>" + 
+			 "<tr><td><p>The JSON payload is a list of file paths to be deleted, where Liberty variables such as '${server.output.dir}', '${wlp.install.dir}', etc, may be used. <br></td></tr>" + 
+			"</table>";
+	}
+	
+	function nav6_1() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>This functionality is only available when an implementation of <b>com.ibm.wsspi.collective.plugins.CollectivePlugin</b> is present in the runtime.  A default implementation of this interface is available from the collectiveController-1.0 feature." + 		
+			"<p>Route any MBean-based action to a specific collective member." + 
+			"<p><b>GET | POST | DELETE</b> " + server + "/IBMJMXConnectorREST/*</p>" +
+			"<table>" + 
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where * is any URL supported by the server-side REST connector except for /file and /notifications.  <br>" + 
+			  "The request/response payloads and query params are the same as the non-routing counterpart.<br>" +
+			  "<p><b>Note:</b> Proper routing context must be set with the following options as HTTP headers:</b>" +
+			  
+			  "<p>Server-level routing <br>" + 
+			  "  com.ibm.websphere.jmx.connector.rest.routing.hostName=String <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.serverName=String <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.serverUserDir=String <br><br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			"</table>";
+	}
+
+	function nav6_2() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>This functionality is only available when an implementation of <b>com.ibm.wsspi.collective.plugins.CollectivePlugin</b> is present in the runtime.  A default implementation of this interface is available from the collectiveController-1.0 feature." + 		
+			"<p>Manage notifications from a collective member." + 
+			"<p><b>GET | POST | DELETE</b> " + server + "/IBMJMXConnectorREST/notifications/*</p>" +
+			"<table>" + 
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where * represents the same notification URLs used in the non-routing scenarios. </b>" +
+			  "<p><b>Note:</b> Proper routing context must be set with the following options as HTTP headers:</b>" +
+			  
+			  "<p>Server-level routing <br>" + 
+			  "  com.ibm.websphere.jmx.connector.rest.routing.hostName=String <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.serverName=String <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.serverUserDir=String <br><br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			"</table>";
+	}
+	
+	function nav6_3() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>This functionality is only available when an implementation of <b>com.ibm.wsspi.collective.plugins.CollectivePlugin</b> is present in the runtime.  A default implementation of this interface is available from the collectiveController-1.0 feature." + 		
+			"<p>Perform file transfer actions to a collective member or registered collective host." + 
+			"<p>Ensure the file is within the configurable read/write directories of the server if routing using server-level, or within configurable read/write directories of the host if routing using host-level." +
+			"<p><b>GET|POST|DELETE</b> " + server + "/IBMJMXConnectorREST/file/{filePath}</p>" +
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/file/collection</p>" +
+			"<table>" + 
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where all request and response artifacts are exactly the same as regular file transfer download (GET), upload (POST), delete (DELETE) or multiple-delete (POST).<br>" +
+			  "<p>Exceptions: " +
+			  "<ul>" + 
+			  "<li>if routing at a host-level, the {filePath} must be an absolute path and cannot contain Liberty variables.</li>" + 
+			  "<li>startOffset/endOffset are not applicable for routed downloads.</li>" +
+			  "</ul>" + 
+			  "</pre></td>" +
+			 "</tr>" + 
+			  "<tr>" + 
+			  "<td><pre>" + 
+			  "<p><b>Note:</b> Proper routing context (server or host level) must be set with the following options as HTTP headers:</b>" +
+			  
+			  "<p>(1) Server-level routing <br>" + 
+			  "  com.ibm.websphere.jmx.connector.rest.routing.hostName=String <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.serverName=String <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.serverUserDir=String <br><br>" +
+
+			  "  or <br>" + 
+
+			  "<p>(2) Host-level routing <br>" +
+			  "  com.ibm.websphere.jmx.connector.rest.routing.hostName=String <br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			"</table>";
+	}
+
+	function nav7_1() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>This functionality is only available when an implementation of <b>com.ibm.wsspi.collective.plugins.CollectivePlugin</b> and an implementation of <b>com.ibm.wsspi.collective.plugins.CollectiveExecutor</b> are present in the runtime.  A default implementation of these interfaces is available from the collectiveController-1.0 feature." + 		
+			"<p>Upload a file to multiple registered hosts within the collective.  Optionally, a set of post-transfer actions " + 
+			"can be requested.  Ensure the target location is within a configurable write directory of the hosts." +
+			"<p><b>POST</b> " + server + "/IBMJMXConnectorREST/file/{filePath}[?expandOnCompletion=boolean&local=boolean]</p>" +
+			
+			"<table>" + 
+			
+			 "<tr>" + 
+			  "<td colspan=\"3\"><pre>" + 
+			  "<p>...where expandOnCompletion is an optional query parameter (default=false) that toggles an automatic expansion of the uploaded archive,<br>" +
+			  "local is an optional query parameter (default=false) that specifies that the file to be uploaded is already in the controller, <br>" + 
+			  "and {filePath} is an UTF-8 URLEncoded absolute path.<br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			 
+			 "<tr>" +
+			  "<td><p><b>Request</b></p></td>" +
+			  "<td width='100px'></td>" +
+			  "<td><p><b>Response</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br>" +
+			  "If local=true, the payload contains the path of the file to be uploaded, where it could <br>" +
+			  "contain Liberty variables that will be resolved with respect to the controller.<br>" + 
+			  "Otherwise, the output stream will contain the file contents.<br><br></pre></td>" + 
+			  "<td width='100px'></td>" +
+			  "<td style='border:1px solid black'><pre>If in async mode, the JSON is: <br>" +
+			   "{<br>" +
+			   "  \"taskID\" : String, <br>" +
+			   "  \"taskURL\" : URL <br>" +
+			  "}<br>" +
+			  "...otherwise the JSON is: <br>" +
+			   "{<br>" +
+			   "  \"taskStatus\" : String, <br>" +
+			   "  \"taskID\" : String, <br>" +
+			   "  \"taskURL\" : URL <br>" +
+			  "}</pre></td>" + 
+			 "</tr>" + 
+			 "<tr>" + 
+			  "<td colspan=\"3\">" + 
+			    "<p><b>Required Headers:</b><br>" +
+			    "<ul>" +   
+			      "<li>com.ibm.websphere.collective.hostNames=String <br>" + 
+			      "<ul><li>A comma-separated list of target hosts.</li></ul></li>" +
+			    "</ul>" + 
+			    "<p><b>Optional Headers:</b><br>" +
+			    "<ul>" +   
+				      "<li>com.ibm.websphere.jmx.connector.rest.asyncExecution=boolean <br>" +
+				      "<ul><li>Toggles whether the upload and action execution should be done asynchronously.  Default is false.</li></ul></li><br>" +
+				      
+				      "<li>com.ibm.websphere.jmx.connector.rest.postTransferAction=String <br>" + 
+				      "<ul><li>Specifies a set of actions to be performed after the file upload is completed.  At this time, the only built-in action is \"com.ibm.websphere.jmx.connector.rest.postTransferAction.join\", <br>" +
+				      "which will join the enclosed Liberty servers (inside the incoming Liberty archive) to the collective.  Other custom actions can be also specified in this list, but to enable custom actions <br>" +
+				      "the following configuration must be present in the Collective Controller's server.xml: <br>" + 
+				      "<center>&lt;hostAccess enableCustomActions=\"true\" /&gt;</center>" + 
+				      "The delimiter of the list is a comma, so any custom actions specifying the comma character must be URL encoded.</li></ul></li><br>" +
+				      
+				      "<li>com.ibm.websphere.jmx.connector.rest.postTransferAction.options=String <br>" +
+				      "<ul><li>Specifies a list of options that are passed into the post-transfer actions.  This list of options must be either null or contain the same number of list items as the postTransferAction header list, <br>" + 
+				      "where the item index of each option must match the index of its corresponding action.  If the built-in action \"com.ibm.websphere.jmx.connector.rest.postTransferAction.join\" is specified, the corresponding option must be: " +
+				      "\"--user=adminUser --password=adminPw --keystorePassword=keystorePw [--rpcUser=rpcUser --rpcPassword=rpcPw]\".<br>" +
+				      "The delimiter of the list is a comma, so any custom action-options specifying the comma character must be URL encoded.</li></ul></li><br>" +
+
+				      "<li>com.ibm.websphere.jmx.connector.rest.transferCredentials=String <br>" +
+				      "<ul><li>This parameter represents the set of credentials to be used during the operation: upload, archive expansion and post-transfer-actions.  The payload of the header is a JSON object with the following possible keys and their corresponding values: rpcUser, rpcUserPassword, sshPrivateKey. <br> " +
+				      "Please note that either sshPrivateyKey or rpcUserPassword should be specified, but not both.</li></ul></li><br>" +
+				      
+				      "<li>com.ibm.websphere.jmx.connector.rest.transferEnvVars=String <br>" +
+				      "<ul><li>This parameter represents the set of environment variables to be set prior to the execution of the transfer actions.  The payload of the header is a JSON object where each JSON key is an environment variable and each JSON value is its corresponding value. <br> " +
+				      "If specifying system paths, forward slashes must be used.  </li></ul></li>" +
+			      "</ul>" + 			    
+			  "</td>" +
+			 "</tr>" + 
+			"</table>";
+	}
+
+	function nav7_8() {
+			document.getElementById("main_content").innerHTML= 
+			"<p>This functionality is only available when an implementation of <b>com.ibm.wsspi.collective.plugins.CollectivePlugin</b> and an implementation of <b>com.ibm.wsspi.collective.plugins.CollectiveExecutor</b> are present in the runtime.  A default implementation of these interfaces is available from the collectiveController-1.0 feature." + 		
+			"<p>Delete a file or directory from multiple registered hosts within the collective.  Optionally, a set of pre-transfer actions " + 
+			"can be requested.  Ensure the target location is within a configurable write directory of the hosts." +
+			"<p><b>DELETE</b> " + server + "/IBMJMXConnectorREST/file/{filePath}[?recursiveDelete=boolean]</p>" +
+			
+			"<table>" + 
+			
+			 "<tr>" + 
+			  "<td><pre>" + 
+			  "<p>...where recursiveDelete is an optional query parameter (default=false) that allows the deletion of non-empty directories, <br>" +
+			  "and {filePath} is an UTF-8 URLEncoded absolute path.<br>" +
+			  "</pre></td>" +
+			 "</tr>" + 
+			 "<tr>" +
+			  "<td><p><b>Response</b></p></td>" +
+			  "<td width='600px'></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre>If in async mode, the JSON is: <br>" +
+			   "{<br>" +
+			   "  \"taskID\" : String, <br>" +
+			   "  \"taskURL\" : URL <br>" +
+			  "}<br>" +
+			  "...otherwise the JSON is: <br>" +
+			   "{<br>" +
+			   "  \"taskStatus\" : String, <br>" +
+			   "  \"taskID\" : String, <br>" +
+			   "  \"taskURL\" : URL <br>" +
+			  "}</pre></td>" + 
+			  "<td width='600px'></td>" +			  
+			 "</tr>" + 
+			 "<tr>" + 
+			  "<td colspan='2'>" + 
+			    "<p><b>Required Headers:</b><br>" +
+			    "<ul>" +   
+			      "<li>com.ibm.websphere.collective.hostNames=String <br>" + 
+			      "<ul><li>A comma-separated list of target hosts.</li></ul></li>" +
+			    "</ul>" + 
+			    "<p><b>Optional Headers:</b><br>" +
+			    "<ul>" +   
+				      "<li>com.ibm.websphere.jmx.connector.rest.asyncExecution=boolean <br>" +
+				      "<ul><li>Toggles whether the delete and action execution should be done asynchronously.  Default is false.</li></ul></li><br>" +
+				      
+				      "<li>com.ibm.websphere.jmx.connector.rest.preTransferAction=String <br>" + 
+				      "<ul><li>Specifies a set of actions to be performed before the file deletion is completed.  At this time, the only built-in action is \"com.ibm.websphere.jmx.connector.rest.preTransferAction.remove\", <br>" +
+				      "which will remove the enclosed Liberty servers (inside the Liberty directory about to be delete) from the collective.  Other custom actions can be also specified in this list, but to enable custom actions <br>" +
+				      "the following configuration must be present in the Collective Controller's server.xml: <br>" + 
+				      "<center>&lt;hostAccess enableCustomActions=\"true\" /&gt;</center>" + 
+				      "The delimiter of the list is a comma, so any custom actions specifying the comma character must be URL encoded.</li></ul></li><br>" +
+				      
+				      "<li>com.ibm.websphere.jmx.connector.rest.preTransferAction.options=String <br>" +
+				      "<ul><li>Specifies a list of options that are passed into the pre-transfer actions.  This list of options must be either null or contain the same number of list items as the preTransferAction header list, <br>" + 
+				      "where the item index of each option must match the index of its corresponding action.  If the built-in action \"com.ibm.websphere.jmx.connector.rest.preTransferAction.remove\" is specified, the corresponding option must be:  " +
+				      "\"--user=adminUser --password=adminPw [--hostName=hostName --rpcUser=rpcUser --rpcPassword=rpcPw]\".<br>" +
+				      "The delimiter of the list is a comma, so any custom action-options specifying the comma character must be URL encoded.</li></ul></li><br>" +
+
+				      "<li>com.ibm.websphere.jmx.connector.rest.transferCredentials=String <br>" +
+				      "<ul><li>This parameter represents the set of credentials to be used during the operations: pre-transfer actions and delete.  The payload of the header is a JSON object with the following possible keys and their corresponding values: rpcUser, rpcUserPassword, sshPrivateKey. <br> " +
+				      "Please note that either sshPrivateyKey or rpcUserPassword should be specified, but not both.</li></ul></li><br>" +
+				      
+				      "<li>com.ibm.websphere.jmx.connector.rest.transferEnvVars=String <br>" +
+				      "<ul><li>This parameter represents the list of environment variables to be set prior to the execution of the transfer actions.  The payload of the header is a JSON object where each JSON key is an environment variable and each JSON value is its corresponding value. <br> " +
+				      "If specifying system paths, forward slashes must be used.  </li></ul></li>" +
+			      "</ul>" + 			    
+			  "</td>" +
+			 "</tr>" + 
+			"</table>";
+	}
+
+
+	function nav7_2() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Retrieves multiple status, with the option of filtering the results." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/status[?key=value]*" + 
+			"<p>...where \"key\" represents any task property that will be used as filter.  Multiple key=value pairs can be used as query filters." +
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"taskID\" : String , <br>" +
+				   "    \"taskStatus\" :  String,  <br>" +
+				   "    \"taskURL\" :  URL  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 
+			  
+			  "<tr>" +
+			    "<td>" +
+			      "<p><pre>Example:  GET " + server + "/IBMJMXConnectorREST/file/status?user=bob&status=succeeded <br>" +
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"taskID\" : \"c8a2b96b-5a6a-493c-ad0c-140df87d61cf\" , <br>" +
+				   "    \"taskStatus\" :  \"succeeded\",  <br>" +
+				   "    \"taskURL\" :  \"/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf\"  <br>" +
+				   "  }<br>" +
+				   "]</pre> <br>" + 
+				   
+			      "<p><pre>Example:  GET " + server + "/IBMJMXConnectorREST/file/status<br>" +
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"taskID\" : \"c8a2b96b-5a6a-493c-ad0c-140df87d61cf\" , <br>" +
+				   "    \"taskStatus\" :  \"succeeded\",  <br>" +
+				   "    \"taskURL\" :  \"/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf\"  <br>" +
+				   "  },<br>" +
+				   
+				   "  {<br>" +
+				   "    \"taskID\" : \"18c807ff-e7bb-4584-a988-278039d0aabd\" , <br>" +
+				   "    \"taskStatus\" :  \"failed\",  <br>" +
+				   "    \"taskURL\" :  \"/IBMJMXConnectorREST/file/status/18c807ff-e7bb-4584-a988-278039d0aabd\"  <br>" +
+				   "  }<br>" +				   
+				   "]</pre> <br>" + 				   
+				"</td>" +
+		      "</tr>" +  
+			"</table>";
+	}
+	
+	function nav7_3() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Retrieve status information about a specific task." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/status/{taskID}" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "{<br>" +
+				   "  \"taskStatus\" :  String,  <br>" +
+				   "  \"propertiesURL\" :  URL,  <br>" +
+				   "  \"hostsURL\" :  URL  <br>" +
+				   "}<br>" +
+				 "</pre></td>" + 
+			  "</tr>" + 		  
+			  "<tr>" +
+			    "<td>" +
+			      "<p><pre>Example:  GET " + server + "/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf <br>" +
+				   "{<br>" +
+				   "  \"taskStatus\" :  \"succeeded\",  <br>" +
+				   "  \"propertiesURL\" :  \"/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/properties\"  <br>" +
+				   "  \"hostsURL\" :  \"/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/hosts\"  <br>" +
+				   "}</pre>" +
+				"</td>" +
+		      "</tr>" +  
+			"</table>";
+	}
+	
+	function nav7_7() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Retrieves a list of available properties from a specific task." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/status/{taskID}/properties" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"key\" : String , <br>" +
+				   "    \"keyURL\" :  URL  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 		  
+			  "<tr>" +
+			    "<td>" +
+			      "<p><pre>Example:  GET " + server + "/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/properties<br>" +
+				   "[<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"controllerHost\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/controllerHost\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"completionTimestamp\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/completionTimestamp\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"uploadToDir\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/uploadToDir\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"controllerPort\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/controllerPort\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"uploadFromFile\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/uploadFromFile\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"isLocalFile\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/isLocalFile\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"creationTimestamp\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/creationTimestamp\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"postTransferActionOptions\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/postTransferActionOptions\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"user\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/user\" <br>" +
+					   "  },<br>" +
+					   "  {<br>" +
+					      "    \"key\":\"postTransferAction\", <br>" +
+					      "    \"keyURL\":\"/IBMJMXConnectorREST/file/status/662198bc-9b41-41c2-95cd-36baf32828c2/properties/postTransferAction\" <br>" +
+					   "  }<br>" +
+				   "]</pre> <br>" + 
+				"</td>" +
+		      "</tr>" +  
+			"</table>";
+	}
+	
+	function nav7_4() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Fetch the value of a property in a specific task." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/status/{taskID}/properties/{property}" +
+			"<table>" + 
+			 "<tr>" +
+			  "<td><p><b>JSON response:</b></p></td>" +
+			 "</tr>" +
+			 "<tr>" +
+			  "<td style='border:1px solid black'><pre><br><center>String</center><br><br></pre></td>" + 
+			 "</tr>" + 
+			"</table>";
+	}
+	
+	function nav7_5() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Retrieve status information about the hosts of a specific task." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/status/{taskID}/hosts" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"hostName\" : String , <br>" +
+				   "    \"hostStatus\" :  String,  <br>" +
+				   "    \"hostURL\" :  URL  <br>" +
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 		  
+			  "<tr>" +
+			    "<td>" +
+			      "<p><pre>Example:  GET " + server + "/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/hosts<br>" +
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"hostName\" : \"machineA.xyz.com\" , <br>" +
+				   "    \"hostStatus\" :  \"succeeded\",  <br>" +
+				   "    \"hostURL\" :  \"/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/machineA.xyz.com\"  <br>" +
+				   "  },<br>" +
+				   
+				   "  {<br>" +
+				   "    \"hostName\" : \"machineB.abc.com\" , <br>" +
+				   "    \"hostStatus\" :  \"failed\",  <br>" +
+				   "    \"hostURL\" :  \"/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/machineB.abc.com\"  <br>" +
+				   "  }<br>" +				   
+				   "]</pre> <br>" + 
+				"</td>" +
+		      "</tr>" +  
+			"</table>";
+	}
+	
+	function nav7_6() {
+		document.getElementById("main_content").innerHTML= 
+			"<p>Retrieve a list of step details that were taken within a specific host in a specific task." + 
+			"<p><b>GET</b> " + server + "/IBMJMXConnectorREST/file/status/{taskID}/hosts/{hostName}" + 
+			"<table>" + 
+			  "<tr>" + 
+				"<td>" + 
+				  "<p><b>JSON response:</b></p>" +
+				"</td>" + 
+			  "</tr>" +
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+				   "[<br>" +
+				   "  {<br>" +
+				   "    \"timestamp\" : long , <br>" +
+				   "    \"status\" :  String,  <br>" +
+				   "    \"description\" :  String,  <br>" +
+				   "    \"returnCode\" :  int,  <br>" +
+				   "    \"stdOut\" :  String or null,  <br>" +
+				   "    \"stdErr\" :  String or null  <br>" +
+
+				   "  }*<br>" +
+				   "]" + 
+				 "</pre></td>" + 
+			  "</tr>" + 			      
+			  "<tr>" +
+			    "<td>" +
+			      "<p><pre>Example:  GET " + server + "/IBMJMXConnectorREST/file/status/c8a2b96b-5a6a-493c-ad0c-140df87d61cf/hosts/machineA.xyz.com<br>" +
+				   "[<br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036770134, <br>" +
+				     "    \"status\":\"inProgress\", <br>" +
+				     "    \"description\":\"Started to upload file /Users/arthurdemagalhaes/Liberty/Liberty_85_Open/build.image/wlp/usr/servers/FileTransferRoutingController_3/workarea/wlp_85_original.jar\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036782913, <br>" +
+				     "    \"status\":\"succeeded\", <br>" +
+				     "    \"description\":\"Finished uploading file /Users/arthurdemagalhaes/Liberty/Liberty_85_Open/build.image/wlp/usr/servers/FileTransferRoutingController_3/workarea/wlp_85_original.jar\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036782992, <br>" +
+				     "    \"status\":\"inProgress\", <br>" +
+				     "    \"description\":\"Started to expand uploaded archive.\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036797390, <br>" +
+				     "    \"status\":\"succeeded\", <br>" +
+				     "    \"description\":\"Archive has been extracted to /Users/arthurdemagalhaes/Liberty/Liberty_85_Open/build.image/build/tmp/target/httpRouting/wlp_85.jar\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036797393, <br>" +
+				     "    \"status\":\"inProgress\", <br>" +
+				     "    \"description\":\"Deleting uploaded archive.\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036811351, <br>" +
+				     "    \"status\":\"succeeded\", <br>" +
+				     "    \"description\":\"Uploaded archive has been deleted.\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036811353, <br>" +
+				     "    \"status\":\"inProgress\", <br>" +
+				     "    \"description\":\"Starting postTransferAction com.ibm.websphere.jmx.connector.rest.postTransferAction.join\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":null, <br>" +
+				     "    \"stdErr\":null  <br>" +
+				   " }, <br>" +
+				   " { <br>" +
+				     "    \"timestamp\":1394036844249, <br>" +
+				     "    \"status\":\"succeeded\", <br>" +
+				     "    \"description\":\"Completed postTransferAction.\", <br>" +
+				     "    \"returnCode\":0, <br>" +
+				     "    \"stdOut\":\"NEW_JOINED_COLLECTIVE_MEMBERS = {member, member1, member2, member3} <br>" +
+				     "    \"stdErr\":\"\"  <br>" +
+				   " }  <br>" +				     		   
+				   "]</pre> <br>" + 
+				"</td>" +
+		      "</tr>" +  
+			"</table>";
+	}
+	
+	function nav7() {
+		document.getElementById("main_content").innerHTML= 	"<p>POJO is defined by the following JSON structure:</p><br>" +
+			  "<table>" + 
+			  "<tr>" +
+				 "<td style='border:1px solid black'><pre>" + 
+					"{<br>" +
+					"  value: Value, //defined below<br>" +
+					"  type: Type,  //defined below<br>" + 
+					"  serialized: Base64,  // Optional, see Note1 below <br>" +
+					"  openTypes: [ OpenType * ] //defined below <br>" +
+					"}<br>" +	
+				 "</pre></td>" + 
+			  "</tr>" + 
+			"</table><br>" + 
+			"<p><b>Note1:</b> the serialized field is only used for 2 scenarios:</p>" +
+			"<ol>" +
+			  "<li>if the Object does not match one of the natively supported classes (ie: MyCustomClass)</li>" +
+		      "<li>If the Object contains a pointer to itself somewhere within its structure (ie:   List myList;  <br>" +
+			   "myList.add(obj1);  myList.add(obj2);  myList.add(myList)).</li>" +
+			"</ol>" +
+			"<br><p><b>Value</b> can be one of:</p>" +
+			"<ol>" +
+			  "<li>For \"null\" value, or a value that's not expressible in JSON (unsupported class, and the actual value is Java serialized and stored in the \"serialized\" part):<br>" +  
+			  "<ul><li>null</li></ul></li>" +
+
+		      "<li>For a leaf (primitive, BigInteger/Decimal, Date, etc.):<br>" +
+			  "<ul><li>String</li></ul></li>" +
+
+			  "<li>For array or set, list, collection:<br>" +
+			  "<ul><li>[ Value* ]</li></ul></li>" +
+
+			  "<li>For map with simple key:<br>" +
+			  "<ul><li>{ String: Value * }</li></ul></li>" +
+
+			  "<li>For map with complex keys:<br>" +
+			  "<ul><li>[ {key: Value, value: Value}* ]</li></ul></li>" +
+  
+			  "<li>For CompositeData:<br>" +
+			  "<ul><li>{ String: Value *  // Key can't be null}</li></ul></li>" +
+
+			  "<li>TabularData:<br>" +
+			  "<ul><li>[ {keys: [Value*], value: Value}* ]</li></ul></li>" +
+			"</ol>" +
+
+			"<br><p><b>Type</b> can be one of:</p>" +
+			"<ol>" +
+			
+			"<li>For a leaf (primitive, array of primitive, BigInteger/Decimal, Date, \"null\" etc.)<br>" +
+			"<ul><li>String</li></ul></li>" +
+
+			"<li>For an array item that is itself an array:<br>" +
+		    "<ul><li>[ Type* ]</li></ul></li>" +
+
+
+			"<li>For array or set, list, collection classes:<br>" +
+			"<ul><li>{ \"className\": String, \"items\": [ Type* ] }</li></ul></li>" +
+
+			"<li>For map with simple keys:<br>" +
+			"<ul><li>{ \"className\": String, \"simpleKey\": true, \"entries\": [ {\"key\": String, \"keyType\" : Type, \"value\" : Type }*] }</li></ul></li>" +
+
+			"<li>For map with complex keys:<br>" +
+			"<ul><li>{ \"className\": String, \"simpleKey\": false,  \"entries\": [ { \"keyType\" : Type, \"value\" : Type }*]}</li></ul></li>" +
+  
+			"<li>For CompositeData and TabularData<br>" +
+			"<ul><li>{ \"className\": String, openType: Integer // Reference to the OpenType array in root Type} </li></ul></li>" +
+			
+			"</ol>" +
+
+			"<br><p><b>OpenType</b>, only present if representing a javax.management.openmbean.OpenType:</p>" +
+			"<ol>" +
+
+			"<li>For SimpleType instances:<br>" +
+			"<ul><li>{ String }</li></ul></li>" +
+
+			"<li>ArrayType:<br>" +
+			"<ul><li>{ \"openTypeClass\": String, \"className\": String, \"typeName\": String, \"description\": String,	\"dimension\": Integer,\"elementType\": Integer}</li></ul></li>" +
+
+			"<li>CompositeType:<br>" +
+			"<ul><li>{ \"openTypeClass\": String, \"className\": String, \"typeName\": String, \"description\": String, \"items\": [ { key: String, description: String, type: Integer } *]}</li></ul></li>" +
+
+			"<li>TabularType:<br>" +
+			"<ul><li>{ \"openTypeClass\": String, \"className\": String, \"typeName\": String, \"description\": String, \"rowType\": Integer, \"indexNames\": [String*]}</li></ul></li>" +
+
+			"<li>Unknown OpenTypes:<br>" +
+			"<ul><li>{ \"openTypeClass\": String, \"className\": String, \"typeName\": String, \"description\": String, \"serialized\": String }</li></ul></li>" +
+			"</ol>" +
+			
+			"<br><p><b>Example of a HashMap<String,String>:</b><br>" + 
+			"{\"value\":{\"myKey2\":\"myValue2\",\"myKey1\":\"myValue1\"},\"type\":{\"className\":\"java.util.HashMap\",\"simpleKey\":true,\"entries\":[{\"key\":\"myKey2\",\"keyType\":\"java.lang.String\",\"value\":\"java.lang.String\"},{\"key\":\"myKey1\",\"keyType\":\"java.lang.String\",\"value\":\"java.lang.String\"}]}}" +
+			
+			"<br><p><b>Example of an ArrayList<String>:</b><br>" + 
+			"{\"value\":[\"myValue1\",\"myValue2\"],\"type\":{\"className\":\"java.util.ArrayList\",\"items\":[\"java.lang.String\",\"java.lang.String\"]}}";
+	}
+	
+
+    window.onload = function() {
+		window["nav1_2"]();
+        var myOption = document.getElementById('main_menu');
+        myOption.onchange = function() {
+			window[myOption.value]();
+        }
+    }
+  </script>
+</head>
+<body>
+
+<div>
+    <select id="main_menu">
+       <!-- <option selected value="nav1_1">URL Map</option> -->
+       
+       <!--  General -->
+        <optgroup label="General">
+	        <option value="nav1_2" selected>Root</option>
+			<option value="nav7">JSON grammar for POJO</option>
+	        <option value="nav1_4">Default domain</option>
+	        <option value="nav1_5">Domains</option>
+        </optgroup>
+        
+        <!--  MBeans -->
+        <optgroup label="MBeans"> 
+        	<option value="nav1_3">MBean count</option>
+	        <option value="nav2_1">Create MBeans</option>
+	        <option value="nav2_2">Delete MBeans</option>
+	        <option value="nav2_3">MBean instanceOf query</option>
+	        <option value="nav2_4">Simple MBean query</option>
+	        <option value="nav2_5">Complex MBean query</option>
+	        <option value="nav2_6">MBean info</option>
+	        <option value="nav2_7">MBean operation invocation</option>
+        </optgroup>
+        
+        <!--  Attributes -->
+        <optgroup label="Attributes">   
+	        <option value="nav3_1">Query multiple attributes</option>
+	        <option value="nav3_2">Set multiple attributes</option>
+	        <option value="nav3_3">Query single attribute</option>
+	        <option value="nav3_4">Set single attribute</option>
+        </optgroup>
+        
+        <!--  General notifications -->
+        <optgroup label="Notification Registry">   
+	        <option value="nav4_1">Create notification registry</option>
+	        <option value="nav4_6">Delete notification registry</option>
+        </optgroup>
+        
+        <!-- Client-listener -->
+        <optgroup label="Client-Listener Notifications">   
+	        <option value="nav4_2">Create registration</option>
+	        <option value="nav4_3">Update registration</option>
+	        <option value="nav4_4">Delete specific registration</option>
+	        <option value="nav4_8">Fetch all registrations</option>
+	        <option value="nav4_9">Fetch specific registration</option>
+	        <option value="nav4_5">Poll notification inbox</option>
+	        <option value="nav4_16">Delete all registrations</option> 
+        </optgroup>
+        
+        <!-- MBean-listener -->
+        <optgroup label="MBean-Listener Notifications">   
+	        <option value="nav4_7">Create registration</option>
+	        <option value="nav4_10">Fetch specific registration</option> 
+	        <option value="nav4_11">Delete specific registration</option> 
+	        <option value="nav4_12">Fetch registrations</option> 
+	        <option value="nav4_13">Delete registrations</option> 
+	        <option value="nav4_14">Fetch listeners</option> 
+	        <option value="nav4_15">Delete listeners</option> 
+	        <option value="nav4_17">Delete all registrations</option> 
+        </optgroup>
+                                                   
+        <!--  File Transfer -->           
+        <optgroup label="File Transfer">             
+	        <option value="nav5_1">Download</option>
+	        <option value="nav5_2">Upload</option>
+	        <option value="nav5_3">Delete</option>
+	        <option value="nav5_4">Multi-Delete</option>
+        </optgroup>
+        
+        <!-- Routing -->
+        <optgroup label="Collective Routing">
+	        <option value="nav6_1">MBean</option>
+	        <option value="nav6_2">Notifications</option>
+	        <option value="nav6_3">File Transfer</option>
+        </optgroup>
+        
+        <!--  Collective multi-host upload -->
+        <optgroup label="Collective Multiple-Host Actions">
+	        <option value="nav7_1">Upload and post-transfer actions</option>
+	        <option value="nav7_8">Pre-transfer actions and delete</option>
+	        <option value="nav7_2">Tasks status</option>
+	        <option value="nav7_3">Specific task status</option>
+	        <option value="nav7_7">Task properties</option>      
+	        <option value="nav7_4">Specific task property</option>
+	        <option value="nav7_5">Task hosts</option>
+	        <option value="nav7_6">Specific task host</option>
+        </optgroup>
+
+    </select>
+	
+	<hr>
+</div>
+
+<div id="main_content"></div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+                           
+       default-init-method="initialize"
+       default-destroy-method="destroy">
+
+    <!-- Servlet context-relative path to wherever your implementation lives. -->
+    <bean id="shibboleth.intercept.externalPath" class="java.lang.String"
+        c:_0="contextRelative:intercept.jsp" />
+
+    <!--
+    Default is to always use the path in the bean above. If you want to determine it
+    dynamically, define a bean called "shibboleth.intercept.externalPathStrategy"
+    of type Function<ProfileRequestContext,String> that returns the path to use.
+    -->
+    
+</beans>

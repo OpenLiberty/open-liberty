@@ -1,0 +1,92 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Az alkalmaz\u00e1sn\u00e9v kikeres\u00e9se a JNDI-ben nem ad vissza \u00e9rt\u00e9ket. Az Opentracing szolg\u00e1ltat\u00e1sn\u00e9vhez az alap\u00e9rtelmezett n\u00e9v ker\u00fcl alkalmaz\u00e1sra.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=A szolg\u00e1ltat\u00e1s biztos\u00edtja az alkalmaz\u00e1snevet a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory megval\u00f3s\u00edt\u00e1shoz. Az alkalmaz\u00e1snevet a "java:app/AppName" JNDI kikeres\u00e9se nem tudja lek\u00e9rni. Alap\u00e9rtelmezett szolg\u00e1ltat\u00e1sn\u00e9v lett megadva.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=\u00c1llap\u00edtsa meg, hogy az alkalmaz\u00e1sn\u00e9v mi\u00e9rt nem \u00e9rhet\u0151 el a "java:app/AppName" JNDI kikeres\u00e9se sor\u00e1n.
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: A felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory.newInstance(...) met\u00f3dus megh\u00edv\u00e1sa kiv\u00e9tellel meghi\u00fasult. \u00dczenet = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus kiv\u00e9telt adott vissza.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza kiv\u00e9telt.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: A felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory.newInstance(...) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott vissza.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus null\u00e9rt\u00e9ket adott vissza.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza null\u00e9rt\u00e9ket.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Az OpenTracing nem tudja nyomon k\u00f6vetni a JAX-RS k\u00e9r\u00e9seket, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly.
+OPENTRACING_NO_TRACERFACTORY.explanation=Az OpenTracing nem fog megfelel\u0151en m\u0171k\u00f6dni, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly. A JAX-RS k\u00e9r\u00e9sek norm\u00e1lisan v\u00e9grehajt\u00e1sra ker\u00fclnek, de nem lesznek nyomon k\u00f6vetve.
+OPENTRACING_NO_TRACERFACTORY.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az OpenTracing osztott nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9t bemutat\u00f3 dokument\u00e1ci\u00f3t.
+
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Az OpenTracing kiv\u00e9tel lek\u00e9pez\u0151 \u00e9szlelve \u00e9s egy nem kezelt kiv\u00e9telt kezel a JAX-RS alkalmaz\u00e1sb\u00f3l.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=A JAX-RS alap\u00fa alkalmaz\u00e1sban az alkalmaz\u00e1son bel\u00fcl nem kezelt kiv\u00e9tel t\u00f6rt\u00e9nt. Az OpenTracing k\u00f3d ezt a kiv\u00e9tel verem nyomk\u00f6vet\u00e9s napl\u00f3z\u00e1s\u00e1val \u00e9s egy 500 Bels\u0151 kiszolg\u00e1l\u00f3 hiba v\u00e1lasz visszaad\u00e1s\u00e1val kezeli.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Ez a viselked\u00e9s elfogadhat\u00f3 lehet. A kiv\u00e9tel m\u00e1sfajta kezel\u00e9s\u00e9hez az alkalmaz\u00e1sfejleszt\u0151 hozz\u00e1adhat egy ExceptionMapper fel\u00fcletet, amely kezeli a kiv\u00e9telt \u00e9s egy elt\u00e9r\u0151 v\u00e1laszra k\u00e9pezi azt le.
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: Az OpenTracing nem tudja nyomon k\u00f6vetni a JAX-RS k\u00e9r\u00e9seket, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly vagy az nyomk\u00f6vet\u00e9si h\u00e1tt\u00e9r \u00fcgyf\u00e9l f\u00fcggv\u00e9nyt\u00e1rai nem szerepelnek az oszt\u00e1ly\u00fatvonalon.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=Lehet, hogy a JAX-RS k\u00e9r\u00e9sek norm\u00e1lisan lefutnak, de nem lesznek nyomon k\u00f6vetve.
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Tekintse meg a dokument\u00e1ci\u00f3ban, hogy hogyan enged\u00e9lyezheti \u00e9s konfigur\u00e1lhatja az OpenTracing osztott nyomk\u00f6vet\u00e9st. Ez a figyelmeztet\u00e9s biztons\u00e1gosan figyelmen k\u00edv\u00fcl hagyhat\u00f3, ha az OpenTracing nincs haszn\u00e1latban.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Opentracing API hiba t\u00f6rt\u00e9nt: {0}
+temporary.CWMOT9999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 Opentracing API hiba t\u00f6rt\u00e9nt.
+temporary.CWMOT9999E.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.

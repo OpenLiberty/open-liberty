@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenMessages.nlsprops
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere Server Config Schema 
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+## Message prefix block: CWWKG3001 - CWWKG3050
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Usage: {0} server
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Missing required argument: {0}.
+argument.unrecognized=Unrecognized argument: {0}.
+argument.unrecognized.expected=Unrecognized argument: {0}. Perhaps you meant: {1}.
+argument.invalid.value=Unacceptable value for argument: {0}={1}. Acceptable values: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKG3001E: The server named {0} was not found. It was expected to be at the following location: {1}. Ensure that you can find the server configuration in the directory provided by the message.
+server.not.found.explanation= The server specified on the serverSchemaGen command could not be found. You can find expected location of the directory for the server configuration in the message.
+server.not.found.useraction=Ensure that you can find the server configuration in the directory provided by the message.  If necessary, modify the WLP_USER_DIR or WLP_INSTALL_DIR variables so that the correct path is used to find the server configuration files.
+
+local.connector.not.found=CWWKG3002E: The server named {0} is not configured to accept local JMX requests. Ensure that the server configuration includes the localConnector feature, and that the server is started.
+local.connector.not.found.explanation=The server specified on the serverSchemaGen command is not configured to accept local JMX requests.
+local.connector.not.found.useraction=Ensure that the server configuration includes the localConnector feature, and that the server is started. The URL required to establish a local JMX connection to this server is located in the WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address file.
+
+local.connector.url.empty=CWWKG3003E: The server named {0} has a problem with its configuration of the localConnector feature.
+local.connector.url.empty.explanation=The server specified on the serverSchemaGen command is not configured to accept local JMX requests. The file containing the URL used to create a JMX connection to the server is empty.
+local.connector.url.empty.useraction=Ensure that the server configuration includes the localConnector feature, and that the server is started. The URL required to establish a local JMX connection to this server is located in the WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address file.
+
+mbean.null.result=CWWKG3004E: The Server Schema generation command did not return a result.
+mbean.null.result.explanation=The MBean that generates server schema was invoked, but no results were returned. The requested schema might not have been generated.
+mbean.null.result.useraction=Check the server logs and FFDC directory for a possible error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKG3005E: The Server Schema generation command indicated that a problem was reported during schema generation.
+mbean.bad.result.explanation=The MBean that generates server schema was invoked, but an error was reported while generating schema. The requested schema might not have been generated.
+mbean.bad.result.useraction=Check the server logs and FFDC directory for an error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKG3006E: The Server Schema generation command did not report whether it completed successfully.
+mbean.missing.result.explanation=The MBean that generates server schema was invoked, but no response code was returned in the result. The requested schema might not have been generated.
+mbean.missing.result.useraction=Check the server logs and FFDC directory for a possible error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKG3007E: The Server Schema generation command did not return an output directory name.
+mbean.missing.output.dir.explanation=The MBean which generates server schema was invoked, but the output directory used to write the schema was not provided in the response. The requested schema might not have been generated.
+mbean.missing.output.dir.useraction=Check the target server output directory for the generated schema. The output directory is specified in the server process by setting the WLP_OUTPUT_DIR variable. The schema is generated into a schemagen directory in the output directory. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKG3008I: The requested server schema was generated in the following directory: {0}
+mbean.output.dir.explanation=The requested server schema was generated and is located in the directory indicated in the message.
+mbean.output.dir.useraction=No user action is required.
+
+mbean.not.found=CWWKG3009W: The MBean that generates server schema is not active in server {0}.
+mbean.not.found.explanation=A JMX connection was established with the target server, but the server schema generation MBean was not found. 
+mbean.not.found.useraction=Check the server logs and FFDC directory for a possible error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKG3010E: An exception was thrown by the server schema generation command: {0}
+exception.catch.explanation=An unexpected exception was thrown by the server schema generation command. The exception stack trace is printed to the stderr log file. The utility will stop processing.
+exception.catch.useraction=If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKG3011E: The logs directory for the server named {0} was not found. It was expected to be at the following location: {1}. The value of the logs directory is computed using the WLP_OUTPUT_DIR variable. 
+server.output.logs.dir.not.found.explanation=The logs directory must be available for the command to be able to locate the server's JMX connection information. This error may occur if the value of the WLP_OUTPUT_DIR variable in the current environment is not the same as the value used by the server. 
+server.output.logs.dir.not.found.useraction=Ensure that the value of the WLP_OUTPUT_DIR variable matches the value used by the server and ensure that the logs directory exists. 
+

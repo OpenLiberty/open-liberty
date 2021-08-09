@@ -1,0 +1,285 @@
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:t="http://websphere.ibm.com/xml/ns/javaee">
+<element name='cache'>
+		<complexType>
+			<choice minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:display-name' minOccurs='0' maxOccurs='1' />
+				<element ref='t:description' minOccurs='0' maxOccurs='1' />
+				<element ref='t:cache-entry' minOccurs='0' maxOccurs='unbounded' />
+				<element ref='t:cache-instance' minOccurs='0' maxOccurs='unbounded' />
+				<element ref='t:group' minOccurs='0' maxOccurs='unbounded' />
+				<element ref='t:skip-cache-attribute' minOccurs='0'
+					maxOccurs='1' />
+			</choice>
+		</complexType>
+	</element>
+
+	<element name='cache-instance'>
+		<complexType>
+			<choice minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:cache-entry' minOccurs='0' maxOccurs='unbounded' />
+				<element ref='t:skip-cache-attribute' minOccurs='0'
+					maxOccurs='1' />
+			</choice>
+			<attribute name='name' type='string' use='required' />
+		</complexType>
+	</element>
+
+	<element name='skip-cache-attribute' type="string" />
+
+
+	<element name='cache-entry'>
+		<complexType>
+			<choice minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:cache-id' />
+				<element ref='t:class' />
+				<element ref='t:dependency-id' />
+				<element ref='t:invalidation' />
+				<element ref='t:name' />
+				<element ref='t:property' />
+				<element ref='t:sharing-policy' />
+			</choice>
+		</complexType>
+	</element>
+
+	<element name='cache-id'>
+		<complexType>
+			<sequence>
+				<element ref='t:display-name' minOccurs='0' maxOccurs='1' />
+				<choice minOccurs='0' maxOccurs='unbounded'>
+					<element ref='t:component' />
+					<element ref='t:idgenerator' />
+					<element ref='t:metadatagenerator' />
+					<element ref='t:priority' />
+					<element ref='t:property' />
+					<element ref='t:timeout' />
+					<element ref='t:inactivity' />
+				</choice>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name='class'>
+		<simpleType>
+			<restriction base="string">
+				<enumeration value='command'/>
+				<enumeration value='servlet'/>
+				<enumeration value='webservice'/>
+				<enumeration value='JAXRPCClient'/>
+				<enumeration value='static'/>
+				<enumeration value='portlet'/>		
+			</restriction>	
+		</simpleType>
+	</element>
+
+	<element name='component'>
+		<complexType>
+			<choice minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:field' />
+				<element ref='t:method' />
+				<element ref='t:not-value' />
+				<element ref='t:required' />
+				<element ref='t:value' />
+				<element ref='t:index' />
+			</choice>
+			<attribute name='id' type='string' use='optional' />
+			<attribute name='type' use='optional' >
+				<simpleType >
+					<restriction base="string">
+						<enumeration value="method"></enumeration>
+						<enumeration value="field"></enumeration>
+						<enumeration value="parameter"></enumeration>
+						<enumeration value="parameter-list"></enumeration>
+						<enumeration value="session"></enumeration>
+						<enumeration value="cookie"></enumeration>
+						<enumeration value="attribute"></enumeration>
+						<enumeration value="header"></enumeration>
+						<enumeration value="pathInfo"></enumeration>
+						<enumeration value="servletpath"></enumeration>
+						<enumeration value="locale"></enumeration>
+						<enumeration value="requestType"></enumeration>
+						<enumeration value="tiles_attribute"></enumeration>
+						<enumeration value="SOAPEnvelope"></enumeration>
+						<enumeration value="SOAPAction"></enumeration>
+						<enumeration value="serviceOperation"></enumeration>
+						<enumeration value="ServiceOperationParameter"></enumeration>
+						<enumeration value="operation"></enumeration>
+						<enumeration value="part"></enumeration>
+						<enumeration value="SOAPHeaderEntry"></enumeration>
+						<enumeration value="portletSession"></enumeration>
+						<enumeration value="portletWindowld"></enumeration>
+						<enumeration value="portletMode"></enumeration>
+						<enumeration value="portletWindowsState"></enumeration>
+						<enumeration value="sessionID"></enumeration>
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name='ignore-value' use='optional'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='true' />
+						<enumeration value='false' />
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name='multipleIDs' use='optional'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='true' />
+						<enumeration value='false' />
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name='dependency-id'>
+		<complexType mixed='true'>
+			<sequence minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:component' />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name='field'>
+		<complexType mixed='true'>
+			<choice minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:method' />
+				<element ref='t:field' />
+			</choice>
+		</complexType>
+	</element>
+
+	<element name='idgenerator' type="string" />
+
+	<element name='invalidation'>
+		<complexType mixed='true'>
+			<choice >
+				<element ref='t:component' minOccurs='0' maxOccurs='unbounded'/>
+				<element ref='t:invalidationgenerator' minOccurs='0' maxOccurs='1'/>
+			</choice>
+		</complexType>
+	</element>
+
+	<element name='metadatagenerator' type="string" />
+
+	<element name='method'>
+		<complexType mixed='true'>
+			<choice minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:field' />
+				<element ref='t:method' />
+			</choice>
+		</complexType>
+	</element>
+
+	<element name='name' type="string" />
+
+	<element name='not-value'>
+		<complexType mixed='true'>
+			<sequence minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:range' />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name='priority'>
+		<simpleType>
+			<restriction base="integer">
+				<minInclusive value="1" />
+				<maxInclusive value="16" />
+			</restriction>
+		</simpleType>
+	</element>
+
+	<element name='property'>
+		<complexType  mixed='true' >
+			<sequence >
+				<element ref='t:exclude' minOccurs='0' maxOccurs='unbounded'/>
+			</sequence>
+			<attribute name='name' use='required'>
+				<simpleType>
+					<restriction base='string'>
+						<enumeration value='do-not-consume' />
+						<enumeration value='consume-subfragments' />
+						<enumeration value='ApplicationName' />
+						<enumeration value='Edgeable' />
+						<enumeration value='EdgeCacheable' />
+						<enumeration value='Description' />
+						<enumeration value='ExternalCache' />
+						<enumeration value='alternate_url' />
+						<enumeration value='persist-to-disk' />
+						<enumeration value='save-attributes' />
+						<enumeration value='store-cookies' />
+						<enumeration value='delay-invalidations' />
+						<enumeration value='ignore-get-post' />
+						<enumeration value='ignore-char-encoding' />
+						<enumeration value='do-not-cache' />
+						<enumeration value='primary-storage' />
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name='exclude' type="string" />
+
+	<element name='required'>
+		<simpleType>
+			<restriction base='string'>
+				<enumeration value='true' />
+				<enumeration value='false' />
+			</restriction>
+		</simpleType>
+	</element>
+
+	<element name='sharing-policy'>
+		<simpleType>
+			<restriction base='string'>
+				<enumeration value="not-shared" />
+				<enumeration value="shared-push" />
+				<enumeration value="shared-pull" />
+				<enumeration value="shared-push-pull" />
+			</restriction>
+		</simpleType>
+	</element>
+
+	<element name='timeout' type="integer" />
+
+	<element name='inactivity' type="integer" />
+
+	<element name='invalidationgenerator' type="string" />
+
+	<element name='value'>
+		<complexType mixed='true'>
+			<sequence minOccurs='0' maxOccurs='unbounded'>
+				<element ref='t:range' />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name='index' type="integer" />
+
+	<element name='group'>
+		<complexType>
+			<sequence>
+				<element ref='t:description' />
+			</sequence>
+			<attribute name='name' type='string' use='required' />
+		</complexType>
+	</element>
+
+	<element name='description' type="string" />
+
+	<element name='display-name' type="string" />
+
+	<element name='range'>
+		<complexType>
+			<attribute name='high' type='string' />
+			<attribute name='low' type='string' />
+		</complexType>
+	</element>
+
+
+</schema>

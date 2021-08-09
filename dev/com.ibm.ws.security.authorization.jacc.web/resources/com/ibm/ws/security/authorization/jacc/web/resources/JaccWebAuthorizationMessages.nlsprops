@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc.web/resources/com/ibm/ws/security/authorization/jacc/web/resources/JaccWebAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2880 - CWWKS2889
+
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE=CWWKS2880E: The JACC service is unable to get the PolicyConfiguration object with the contextID {0}. The exception is {1}.
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE.explanation=The JACC service is unable to get the JACC provider PolicyConfiguration object. This might be a severe error in the JACC provider.
+JACC_WEB_GET_POLICYCONFIGURATION_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2881E: The JACC service is unable to propagate the Web security constraints with the contextID {0} to the JACC provider due to the exception {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=The JACC service is unable to propagate the Web security constraints to the JACC provider due to the unexpected exception.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_WEB_IMPLIES_FAILURE=CWWKS2882E: Authorization for the Web resource with the contextID {0} failed due to the exception {1}.
+JACC_WEB_IMPLIES_FAILURE.explanation=Authorization for the specified Web resource failed.
+JACC_WEB_IMPLIES_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_WEB_SPI_PARAMETER_ERROR=CWWKS2883E: The parameter object {0} of the method {1} is not valid. The expected object of the parameter is {2}.
+JACC_WEB_SPI_PARAMETER_ERROR.explanation=The JACC service cannot complete the request due to the object of the parameter not being valid. This is an internal error.
+JACC_WEB_SPI_PARAMETER_ERROR.useraction=This is an internal error. If the problem persists, see the problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/. 

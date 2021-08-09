@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: Wiele zasob\u00f3w ma nazw\u0119 {0}. Nie mo\u017cna okre\u015bli\u0107 strategii autoryzacji.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=Istnieje wiele zasob\u00f3w o tej samej nazwie, dlatego nie mo\u017cna okre\u015bli\u0107 poprawnej strategii autoryzacji. Nazwy zasob\u00f3w musz\u0105 by\u0107 unikalne.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=Zmie\u0144 nazw\u0119 jednego z zasob\u00f3w, aby wszystkie zasoby by\u0142y unikalne.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: Definicja roli jest niepoprawna: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=Sk\u0142adnia definiowania roli jest nast\u0119puj\u0105ca: <{1} name="..." />.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=Zmie\u0144 definicj\u0119 roli w konfiguracji.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: Znaleziono wiele element\u00f3w {0} o nazwie {1}
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=Dozwolona jest tylko jedna definicja okre\u015blonej roli
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=Usu\u0144 zduplikowane definicje roli z konfiguracji.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: U\u017cytkownik, grupa lub podmiot specjalny zosta\u0142y dodane do roli {0} wi\u0119cej ni\u017c raz
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=Dozwolona jest tylko jedna definicja elementu przypadaj\u0105ca na rol\u0119
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=Usu\u0144 zduplikowane definicje element\u00f3w roli z konfiguracji.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: Decyzja o autoryzacji dla zasob\u00f3w w aplikacji {0} zostanie podj\u0119ta przy u\u017cyciu nazw grup u\u017cytkownika, kt\u00f3re s\u0105 zgodne z nazwami r\u00f3l wymaganych do uzyskania dost\u0119pu do zasobu.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=Aplikacja nie ma zdefiniowanej \u017cadnej tabeli autoryzacji, dlatego nazwa roli wymaganej do uzyskania dost\u0119pu do zasobu b\u0119dzie traktowana jako nazwa grupy podczas sprawdzania dost\u0119pu. Gdy na przyk\u0142ad nazwa roli wymaganej do uzyskania dost\u0119pu do zasobu to Mened\u017cer, to je\u015bli uwierzytelniany u\u017cytkownik nale\u017cy do grupy Mened\u017cer, dost\u0119p zostanie nadany.  
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=Niejawne sprawdzenie autoryzacji mo\u017cna wy\u0142\u0105czy\u0107, ustawiaj\u0105c atrybut useGroupToRoleName elementu authorization na warto\u015b\u0107 false w pliku server.xml.   

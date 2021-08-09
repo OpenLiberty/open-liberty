@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2014, 2015 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.transport.iiop.security.IiopsOptions" name="%iiopsOptions" description="%iiopsOptions.desc" ibm:extends="com.ibm.ws.sslchannel.options">
+        <AD id="iiopsPort"  name="%iiopsOptions.iiopsPort"  description="%iiopsOptions.iiopsPort.desc" type="Integer" required="true"/> 
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.transport.iiop.security.IiopsOptions">
+        <Object ocdref="com.ibm.ws.transport.iiop.security.IiopsOptions"/>
+    </Designate>
+ 
+   
+<!--  CSIv2 Configuration -->
+    <OCD id="com.ibm.ws.security.csiv2.serverPolicyCSIV2" ibm:extends="com.ibm.ws.transport.iiop.AbstractServerPolicy" 
+    ibm:extendsAlias="csiv2"
+        name="%csiv2" description="%csiv2.desc">
+
+        <AD id="stateful" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false" />
+
+        <AD id="layers" name="%layers" description="%layers.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.serverPolicyLayers" ibm:flat="true"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.serverPolicyCSIV2">
+        <Object ocdref="com.ibm.ws.security.csiv2.serverPolicyCSIV2"/>
+    </Designate>
+
+<!--  End of CSIv2 Configuration -->
+    
+<!--  Layers Configuration -->
+    
+    <OCD id="com.ibm.ws.security.csiv2.serverPolicyLayers"
+        name="%layers" description="%layers.desc">
+
+        <AD id="attributeLayer" name="%attributeLayer" description="%attributeLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.attributeLayer" ibm:flat="true"
+            required="false" type="String"/>
+
+        <AD id="authenticationLayer" name="%authenticationLayer" description="%authenticationLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.authenticationLayer" ibm:flat="true"
+            required="false" type="String"/>
+
+        <AD id="transportLayer" name="%transportLayer" description="%transportLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.transportLayer" ibm:flat="true"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.serverPolicyLayers">
+        <Object ocdref="com.ibm.ws.security.csiv2.serverPolicyLayers"/>
+    </Designate>
+
+<!--  Layers Configuration -->
+
+<!--  Attribute Layer configuration -->
+    
+    <OCD id="com.ibm.ws.security.csiv2.attributeLayer"
+        name="%attributeLayer" description="%attributeLayer.desc">
+
+        <AD id="identityAssertionEnabled" name="%identityAssertionEnabled" description="%identityAssertionEnabled.desc"
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="identityAssertionTypes" name="%identityAssertionTypes" description="%identityAssertionTypes.desc"
+            required="false" type="String" cardinality="4" default="ITTAnonymous, ITTPrincipalName, ITTX509CertChain, ITTDistinguishedName">
+            <Option label="%anonymous" value="ITTAnonymous"/>
+        	<Option label="%principalName" value="ITTPrincipalName"/>
+           	<Option label="%x509CertChain" value="ITTX509CertChain"/>
+           	<Option label="%distinguishedName" value="ITTDistinguishedName"/>
+        </AD>
+
+        <AD id="trustedIdentities" name="%trustedIdentities" description="%trustedIdentities.desc"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.attributeLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.attributeLayer"/>
+    </Designate>
+ 
+<!--  End of Attribute Layer configuration -->
+
+<!--  Authentication Layer configuration -->
+    
+    <OCD id="com.ibm.ws.security.csiv2.authenticationLayer"
+        name="%authenticationLayer" description="%authenticationLayer.desc">
+
+        <AD id="establishTrustInClient" name="%establishTrustInClient" description="%establishTrustInClient.desc"
+            required="true" type="String" default="Required">
+            <Option label="%required" value="Required"/>
+            <Option label="%supported" value="Supported"/>
+            <Option label="%never" value="Never"/>
+        </AD>
+
+		<AD id="mechanisms" name="%mechanisms" description="%mechanisms.desc"
+            required="false" type="String" default="LTPA,GSSUP" cardinality="3"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.authenticationLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.authenticationLayer"/>
+    </Designate>
+ 
+<!--  End of Authentication Layer configuration -->
+
+<!--  Transport Layer configuration -->
+
+    <OCD id="com.ibm.ws.security.csiv2.transportLayer"
+        name="%transportLayer" description="%transportLayer.desc">
+
+        <AD id="sslEnabled" name="%sslEnabled" description="%sslEnabled.desc"
+            required="false" type="Boolean" default="true" />
+
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
+            required="false" type="String"  ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.transportLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.transportLayer"/>
+    </Designate>
+ 
+<!--  End of Attribute Layer configuration -->
+
+<!-- IIOP Client Policy -->
+
+    <OCD id="com.ibm.ws.security.csiv2.clientPolicyCSIV2" 
+    ibm:extends="com.ibm.ws.transport.iiop.AbstractClientPolicy" 
+    ibm:extendsAlias="csiv2"
+        name="%client.csiv2" description="%client.csiv2.desc">
+
+        <AD id="stateful" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>
+
+        <AD id="layers" name="%layers" description="%layers.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.clientPolicyLayers" ibm:flat="true"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientPolicyCSIV2">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientPolicyCSIV2"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.csiv2.clientPolicyLayers"
+        name="%layers" description="%layers.desc">
+
+        <AD id="attributeLayer" name="%attributeLayer" description="%clientPolicyAttributeLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.clientPolicyAttributeLayer" ibm:flat="true"
+            required="false" type="String"/>
+
+        <AD id="authenticationLayer" name="%authenticationLayer" description="%clientPolicyAuthenticationLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.clientPolicyAuthenticationLayer" ibm:flat="true"
+            required="false" type="String"/>
+
+        <AD id="transportLayer" name="%transportLayer" description="%transportLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.transportLayer" ibm:flat="true"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientPolicyLayers">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientPolicyLayers"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.csiv2.clientPolicyAttributeLayer"
+        name="%attributeLayer" description="%clientPolicyAttributeLayer.desc">
+
+        <AD id="identityAssertionEnabled" name="%identityAssertionEnabled" description="%identityAssertionEnabled.desc"
+            required="false" type="Boolean" default="false"/>
+
+        <AD id="identityAssertionTypes" name="%identityAssertionTypes" description="%identityAssertionTypes.desc"
+            required="false" type="String" cardinality="4" default="ITTAnonymous, ITTPrincipalName">
+            <Option label="%anonymous" value="ITTAnonymous"/>
+        	<Option label="%principalName" value="ITTPrincipalName"/>
+        	<Option label="%x509CertChain" value="ITTX509CertChain"/>
+           	<Option label="%distinguishedName" value="ITTDistinguishedName"/>
+        </AD>
+
+        <AD id="trustedIdentity" name="%trustedIdentity" description="%trustedIdentity.desc"
+            required="false" type="String"/>
+         
+        <AD id="trustedPassword" name="%trustedPassword" description="%trustedPassword.desc"
+            required="false" type="String" ibm:type="password"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientPolicyAttributeLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientPolicyAttributeLayer"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.csiv2.clientPolicyAuthenticationLayer"
+        name="%authenticationLayer" description="%clientPolicyAuthenticationLayer.desc">
+
+        <AD id="establishTrustInClient" name="%establishTrustInClient" description="%establishTrustInClient.desc"
+            required="true" type="String" default="Supported">
+            <Option label="%required" value="Required"/>
+            <Option label="%supported" value="Supported"/>
+            <Option label="%never" value="Never"/>
+        </AD>
+
+		<AD id="mechanisms" name="%mechanisms" description="%mechanisms.desc"
+            required="false" type="String" default="LTPA,GSSUP" cardinality="3"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientPolicyAuthenticationLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientPolicyAuthenticationLayer"/>
+    </Designate>
+<!-- End of IIOP Client policy -->
+
+</metatype:MetaData>

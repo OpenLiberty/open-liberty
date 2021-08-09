@@ -1,0 +1,391 @@
+###############################################################################
+# Copyright (c) 2007, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME ws/code/metadata/src/com/ibm/ws/injectionengine/injection.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+#CWNEN0001W=CWNEN0001W:
+#CWNEN0001W.explanation=
+#CWNEN0001W.useraction=
+
+# --------------------------------
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E=CWNEN0001E: Die Injektions-Engine hat die Ausnahme {0} abgefangen und hat den folgenden Fehler erzeugt: {1}.
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.explanation=
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.useraction=
+
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E=CWNEN0005E: Der Injektions-Engine-Service ist nicht verf\u00fcgbar.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.explanation=Der Injektions-Engine-Service f\u00fcr den angegebenen Server ist nicht verf\u00fcgbar.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.useraction=Der Injektions-Engine-Service wird auf allen Anwendungsserverprozessen als Singleton-Service gestartet. \u00dcberpr\u00fcfen Sie, ob der Anwendungsserver ohne Fehler gestartet wurde. 
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E=CWNEN0006E: Die Injektions-Engine kann die Injektionsprozessoren nicht registrieren, wenn der Injektions-Engine-Service nicht initialisiert ist.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.explanation=Die Injektions-Engine initialisiert beim Start eine Gruppe von Standardinjektionsprozessoren. Der Injektions-Engine-Service muss gestartet und initialisiert werden, bevor weitere Injektionsprozessoren bei der Injektions-Engine registriert werden k\u00f6nnen.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.useraction=Stellen Sie sicher, dass die Injektionsprozessoren registriert werden, nachdem der Anwendungsserver gestartet wurde.
+
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E=CWNEN0008E: Die Methode {0} muss eine Setter-Methode sein; die Annotation wird ignoriert.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.explanation=Die Methode f\u00fcr das Injektionsziel muss eine setter-Methode f\u00fcr Eigenschaften sein.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.useraction=Stellen Sie sicher, dass die Annotation oder die XML mit dem Injektionsziel die vorgesehene Methode angibt.
+
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E=CWNEN0009E: Die Injektionsengine konnte den XML-Code aus dem Implementierungsdeskriptor wegen des folgenden Fehlers nicht verarbeiten: {0}
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.explanation=Beim Verarbeiten der Metadaten im Implementierungsdeskriptor trat ein Fehler auf.
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.useraction=Stellen Sie sicher, dass die im Implementierungsdeskriptor enthaltene XML korrekt ist.
+
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E=CWNEN0010E: Die Injektions-Engine konnte die Annotation {0} oder {1} in der Klasse {2} nicht verarbeiten.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.explanation=Die Injektions-Engine konnte die Injektionsziele f\u00fcr die angegebene Klasse nicht ordnungsgem\u00e4\u00df festlegen.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.useraction=Stellen Sie sicher, dass die richtigen Annotationen in der Klasse und in der XML im Implementierungsdeskriptor enthalten sind.
+
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E=CWNEN0011E: Die Injektionsengine konnte Bindungen f\u00fcr die Metadaten wegen des folgenden Fehlers nicht verarbeiten: {0}
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.explanation=Die Bindungs- und Injektionsinformationen enthalten Fehler.
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.useraction=Stellen Sie sicher, dass die in der Klasse enthaltenen Annotationen und die im Implementierungsdeskriptor enthaltenen XML richtig sind.
+
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E=CWNEN0012E: Die Injektions-Engine konnte den Prozessor {0} nicht initialisieren.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.explanation=Der Prozessor konnte nicht initialisiert werden.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.useraction=Stellen Sie sicher, dass der Prozessor verf\u00fcgbar und ordnungsgem\u00e4\u00df mit der Injektions-Engine registriert ist.
+
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W=CWNEN0013W: Die folgende Ausnahme des Typs NumberFormatException trat auf, als die Injektions-Engine versuchte, den &lt;Namen_des_Umgebungseintrags&gt; {0} in den &lt;Wert_des_Umgebungseintrags&gt; {1} zu konvertieren: {2}
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.explanation=Der Container kann einen Umgebungseintrag aufgrund einer Ausnahme des Typs NumberFormatException nicht verarbeiten.
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.useraction=Vergewissern Sie sich, dass der Wert des Umgebungseintrags eine g\u00fcltige Zeichenfolge f\u00fcr den angegebenen Typ ist.
+
+INVALID_BOOLEAN_FORMAT_CWNEN0014W=CWNEN0014W: Der Umgebungseintrag des java:comp/env-Kontextes f\u00fcr die Enterprise-Bean {0} hat den Typ Boolean, ist aber nicht auf einen g\u00fcltigen Booleschen Wert gesetzt: {1}. Daher ist dem Eintrag der Wert "false" zugeordnet.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.explanation=Einem Umgebungseintrag des java:comp/env-Kontextes f\u00fcr eine Enterprise-Bean des Typs Boolean sollte entweder der Wert "true" oder der Wert "false" zugeordnet werden. Andere Werte haben den Wert "false" zur Folge, der aber auf ein Konfigurationsproblem hinweisen kann. Es ist m\u00f6glich, dass sich die Anwendung nicht wie erwartet verh\u00e4lt.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.useraction=\u00c4ndern Sie den Umgebungseintrag des java:comp/env-Kontextes mit dem Typ Boolean in den Wert "true" oder "false".
+
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W=CWNEN0015W: Beim Versuch, &lt;Name_des_Umgebungseintrags&gt; {0} &lt;Wert_des_Umgebungseintrags&gt; {1} zu erstellen, wurde folgende Ausnahme abgefangen: \n {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.explanation=Beim Versuch, einen java:comp/env-Eintrag zu erstellen, hat die Injektions-Engine eine Ausnahme empfangen.
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.useraction=F\u00fchren Sie die Ma\u00dfnahmen durch, die in der Nachricht zu dieser Ausnahme angegeben sind.
+
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W=CWNEN0016W: Der Typ {0}, der f\u00fcr den einfachen Umgebungseintrag {1} in der Komponente {2} des Moduls {3} angegeben wurde, ist nicht g\u00fcltig.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.explanation=Die Injektions-Engine hat einen Typ festgestellt, der f\u00fcr einen Umgebungseintrag nicht g\u00fcltig ist.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.useraction=Stellen Sie sicher, dass Sie einen der folgenden Umgebungseintragstypen verwenden: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class oder eine Unterklasse von Enum.
+
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E=CWNEN0017E: Die Injektions-Engine kann das Ziel der resource-ref-Deklaration {0} nicht in die zugeordnete Bindungsposition im globalen Namespace aufl\u00f6sen.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.explanation=Die Injektions-Engine kann keine Verbindung herstellen zwischen dem im Namespace java:comp/env deklarierten Namen und dem Namen der Zielressource im globalen JNDI-Namespace (Java Naming and Directory Interface).
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.useraction=Stellen Sie sicher, dass der mit Hilfe der Annotation @Resource oder der Deklaration resource-ref in der Injektion deklarierte Name mit dem Namen in der XML-Datei f\u00fcr Bindungen \u00fcbereinstimmt.
+
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E=CWNEN0018E: Das Injektionsziel {0} ist in einer Annotation angegeben, die im XML-Implementierungsdeskriptor nicht existiert.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.explanation=Folgende Informationen sind in den \u00dcberschreibungsregeln der EJB-Spezifikation angegeben: \n Wenn bereits ein Injektionsziel existiert und mittels XML angegeben wurde, muss das Injektionsziel in der Annotation dasselbe Feld oder dieselbe Eigenschaftsmethode festlegen.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.useraction=\u00c4ndern Sie das Injektionsziel in der Annotation in der Weise, dass es mit dem vorher in der XML definierten Injektionsziel desselben Feldes oder derselben Eigenschaftsmethode \u00fcbereinstimmt.
+
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E=CWNEN0019E: Das Feld f\u00fcr das Injektionsziel {0} darf nicht als "final" deklariert werden.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.explanation=Gem\u00e4\u00df der EJB-Spezifikation darf ein Feld f\u00fcr das Injektionsziel nicht als "final" deklariert werden.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.useraction=Korrigieren Sie entweder den Feldnamen oder die Feldsignatur, um eines der nicht privaten Klassenfelder festzulegen.
+
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E=CWNEN0020E: Beim Versuch, auf das Member {1} zuzugreifen, hat die Injektions-Engine folgende Sicherheitsausnahme abgefangen: {0}.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.explanation=Die Injektions-Engine verf\u00fcgte nicht \u00fcber die f\u00fcr den Zugriff auf das Member erforderlichen Sicherheitsberechtigungsnachweise.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.useraction=F\u00fchren Sie die Ma\u00dfnahmen durch, die in der Nachricht zu dieser Ausnahme aufgef\u00fchrt sind. 
+
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W=CWNEN0021W: Das Feld {0} ist als {1} deklariert, aber der angeforderte Injektionstyp f\u00fcr das Feld ist {2}.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.explanation=Der im Injektionsziel angegebene Feldtyp ist nicht richtig.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.useraction=Stellen Sie sicher, dass die Annotation oder die XML mit dem Injektionsziels das vorgesehene Feld angibt.
+
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E=CWNEN0022E: Ein Injektionsziel f\u00fcr die Referenz {0} kann nicht verarbeitet werden, weil weder die Methode {1} noch das Feld {2} in der Klasse {3} vorhanden ist.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.explanation=Die Klasse hat keine Methode und kein Feld mit dem konfigurierten Eigenschaftsnamen f\u00fcr das Injektionsziel.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.useraction=Stellen Sie sicher, dass der konfigurierte Eigenschaftsname f\u00fcr das Injektionsziel korrekt eingegeben wurde und dass die Klasse das entsprechende Feld bzw. die entsprechende Eigenschaftsmethode enth\u00e4lt.
+
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E=CWNEN0023E: Eines oder mehrere der folgenden Argumente sind null: {0} targetClass, {1} targetName, {2} injectionClass.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.explanation=Beim Versuch, die im XML-Code angegebenen Informationen zum Injektionsziel zu verwenden, trat ein Fehler bei der Injektions-Engine auf.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.useraction=Vergewissern Sie sich, dass die im Implementierungsdeskriptor enthaltene XML korrekt ist.
+
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E=CWNEN0024E: Die Injektions-Engine konnte die ObjectFactory-Klasse {0} nicht laden.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.explanation=die Injektions-Engine konnte die angegebene Objektklasse nicht laden und nicht instanziieren.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.useraction=Stellen Sie sicher, dass die Klasse verf\u00fcgbar ist und dass der Konstruktor sichtbar und zug\u00e4nglich ist.
+
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W=CWNEN0025W: Die Enterprise-Bean ist an eine leere Zeichenfolge im globalen JNDI-Namespace (Java Naming and Directory Interface) gebunden.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.explanation=Die Annotation f\u00fcr Information oder das Injektionsziel ist falsch oder unvollst\u00e4ndig.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.useraction=Stellen Sie sicher, dass die Annotation oder die XML mit dem Injektionsziel f\u00fcr die Enterprise-Bean richtig angegeben ist.
+
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E=CWNEN0026E: Die Elemente home und remote oder local-home und local der Enterprise-Bean {0} sind nicht vorhanden oder k\u00f6nnen nicht aufgel\u00f6st werden.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.explanation=Die Elemente home und remote oder local-home und local sind nicht vorhanden oder k\u00f6nnen nicht aufgel\u00f6st werden.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.useraction=Vergewissern Sie sich, dass die Tags &lt;ejb-ref&gt; bzw. &lt;ejb-local-ref&gt; im XML-Implementierungsdeskriptor richtig angegeben sind.
+
+
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E=CWNEN0027E: Beim Versuch, {1} in den globalen JNDI-Namespace (Java Naming and Directory Interface) einzubinden, hat die Injektions-Engine die folgende Ausnahme bez\u00fcglich der Benennung abgefangen: {0}
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.explanation=Die Injektions-Engine hat bei einem Bindungsversuch eine Ausnahme festgestellt.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.useraction=F\u00fchren Sie die Ma\u00dfnahmen durch, die in der Nachricht zu dieser Ausnahme angegeben sind.
+
+INJECTION_FAILED_CWNEN0028E=CWNEN0028E: Bei der Injektion von {0} in {1} hat die Injektionsengine den folgenden Fehler festgestellt: {2}
+INJECTION_FAILED_CWNEN0028E.explanation=Der angegebene Typ ist f\u00fcr eine Injektion in die angegebene Klasse nicht geeignet.
+INJECTION_FAILED_CWNEN0028E.useraction=Stellen Sie sicher, dass die Annotation oder die XML mit dem Injektionsziel f\u00fcr die Enterprise-Bean richtig angegeben ist.
+
+INJECTION_FAILED_CWNEN0029E=CWNEN0029E: Bei der Injektion von {0} in {1} hat die Injektions-Engine einen Fehler festgestellt. Der Typ {0} darf nur zur Injektion in eine Enterprise-Bean {1} verwendet werden.
+INJECTION_FAILED_CWNEN0029E.explanation=Nur EJBContext- oder TimerService-Objekte d\u00fcrfen mittels direkter Injektion in eine Enterprise-Bean eingef\u00fcgt werden.
+INJECTION_FAILED_CWNEN0029E.useraction=Vergewissern Sie sich, dass der angegebene Typ ein EJBContext- oder TimerService-Objekt ist.
+
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E=CWNEN0030E: Beim Abrufen der Objektinstanz des Bindungsobjekts {1} ist bei der Factory {0} ein Fehler aufgetreten. Ausnahmenachricht: {2}
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.explanation=Die angegebene Objektfactory ist f\u00fcr das Bindungsobjekt nicht geeignet.
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.useraction=Vergewissern Sie sich, dass ein Objekt ordnungsgem\u00e4\u00df in die Factory gebunden wurde.
+
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E=CWNEN0031E: Beim Erstellen der Referenz {0} des Typs {1} trat ein Fehler auf.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.explanation=Beim Erstellen einer Referenz im globalen JNDI-Namespace (Java Naming and Directory Interface) trat ein Fehler auf.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.useraction=Vergewissern Sie sich, dass die angegebene Referenz korrekt ist.
+
+FAILED_TO_PROCESS_XML_CWNEN0032E=CWNEN0032E: Die XML f\u00fcr {0} {1} konnte nicht verarbeitet werden.
+FAILED_TO_PROCESS_XML_CWNEN0032E.explanation=Die XML f\u00fcr die angegebene Referenz ist falsch oder unvollst\u00e4ndig.
+FAILED_TO_PROCESS_XML_CWNEN0032E.useraction=Vergewissern Sie sich, dass die im Implementierungsdeskriptor enthaltene XML korrekt ist.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W=CWNEN0033W: Die f\u00fcr die Tags &lt;ejb-ref&gt; bzw. &lt;ejb-local-ref&gt; angegebene Schnittstelle {0} wurde nicht gefunden.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.explanation=Die Schnittstellenklasse ist nicht vorhanden oder wurde nicht gefunden.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.useraction=Vergewissern Sie sich, dass die Tags &lt;ejb-ref&gt; bzw. &lt;ejb-local-ref&gt; im XML-Implementierungsdeskriptor richtig angegeben sind und dass die Klasse verf\u00fcgbar ist.
+
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E=CWNEN0034E: Der ejb-link/beanName wurde nicht ordnungsgem\u00e4\u00df angegeben. Der Name f\u00fcr Bean {0}: Modul {1} muss auf .jar oder .war enden.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.explanation=Die Annotation f\u00fcr Information oder das Injektionsziel ist falsch oder unvollst\u00e4ndig.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.useraction=Stellen Sie sicher, dass die Annotation oder die XML mit dem Injektionsziel f\u00fcr die Enterprise-Bean richtig angegeben ist.
+
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E=CWNEN0035E: Die Referenz {0} des Typs {1} f\u00fcr die Komponente {2} im Modul {3} der Anwendung {4} kann nicht aufgel\u00f6st werden.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.explanation=Die Anwendung deklariert eine Referenz auf ein Objekt, das nicht gefunden wurde.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.useraction=Suchen Sie nach einer fr\u00fcheren Nachricht, die einen Hinweis darauf enth\u00e4lt, warum das referenzierte Objekt nicht gefunden wurde, und stellen Sie sicher, dass die Konfiguration der Referenz g\u00fcltig ist.
+
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E=CWNEN0036E: Das Bindungsobjekt {0} ist keine Referenz.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.explanation=Das angegebene Objekt ist falsch.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.useraction=Vergewissern Sie sich, dass das Objekt den Typ "Reference" hat.
+
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E=CWNEN0037E: Die Factory {0} ist nicht f\u00fcr die Erstellung einer Referenz f\u00fcr das Bindungsobjekt {1} vorgesehen.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.explanation=Die Factory wurde nicht ordnungsgem\u00e4\u00df angegeben.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.useraction=Geben Sie eine Factory f\u00fcr das verwendete Bindungsobjekt an.
+
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E=CWNEN0038E: Die Adresse f\u00fcr die Referenz {0} ist leer (null).
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.explanation=F\u00fcr die Referenz wurde kein Name f\u00fcr die RefAddr angegeben.
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.useraction=Geben Sie eine RefAddr f\u00fcr die Referenz an.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E=CWNEN0039E: Die Schnittstelle {0}, das f\u00fcr die Tags &lt;ejb-ref&gt; bzw. &lt;ejb-local-ref&gt; angegeben ist, wurde nicht gefunden.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.explanation=Die Schnittstellenklasse ist nicht vorhanden oder wurde nicht gefunden.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.useraction=Vergewissern Sie sich, dass die Tags &lt;ejb-ref&gt; bzw. &lt;ejb-local-ref&gt; im XML-Implementierungsdeskriptor richtig angegeben sind und dass die Klasse verf\u00fcgbar ist.
+
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W=CWNEN0040W: Das Feld oder die Methode {0} wurde f\u00fcr mehrere Injektionsziele konfiguriert.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.explanation=Wenn mehrere Injektionsziele f\u00fcr dasselbe Feld oder dieselbe Methode konfiguriert sind, kann die Injektions-Engine nicht das Ziel f\u00fcr die Injektion bestimmen.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.useraction=Konfigurieren Sie nicht mehrere Injektionsziele f\u00fcr dasselbe Feld oder dieselbe Methode.
+
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E=CWNEN0041E: Die EJB-Referenz {0} im Modul {1} auf die Schnittstelle {2} der Enterprise-Bean {3} kann auf diesem Knoten nicht aufgel\u00f6st werden.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.explanation=Der Geltungsbereich f\u00fcr die AUTOLINK-Verbindung beschr\u00e4nkt sich auf die Anwendung mit der EJB-Referenz und auf Server, die nicht Member eines Anwendungs-Server-Clusters sind.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.useraction=Stellen Sie sicher, dass die Enterprise-Beans, die referenziert werden, in derselben Anwendung vorhanden sind.
+
+#Do no translate env-entry
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W=CWNEN0042W: Die env-entry-Anweisung {0} wurde bereits mit dem Typ {1} angegeben.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.explanation=Doppelte env-entry-Anweisungen mit demselben Namen sind nicht zul\u00e4ssig.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.useraction=Konfigurieren Sie keine env-entry-Anweisung mit demselben Namen.
+
+#Do no translate UserTransaction
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E=CWNEN0043E: Das Einf\u00fcgen einer UserTransaction-Schnittstelle in eine containerverwaltete Transaktions-Bean ist nicht zul\u00e4ssig.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.explanation=Die EJB-Spezifikation bedingt, dass die UserTransaction-Schnittstelle Enterprise-Beans mit containerverwalteter Transaktionsabgrenzung nicht zur Verf\u00fcgung steht.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.useraction=F\u00fcgen Sie keine UserTransaction-Schnittstelle in eine containerverwaltete Transaktions-Bean ein.
+
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E=CWNEN0044E: Es wurde keine Ressourcenreferenzenbindung f\u00fcr die Ressourcenreferenz {0} gefunden, die f\u00fcr die Komponente {1} definiert ist.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.explanation=M\u00f6glicherweise wurde keine Bindung f\u00fcr die Ressourcenreferenz angegeben, oder sie wurde falsch angegeben.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.useraction=Es wurde eine Ressourcenreferenz f\u00fcr eine Komponente mit der Annotation "@Resource" in einer Komponentenklassendatei oder in einer der folgenden XML-Zeilengruppen im Implementierungsdeskriptor definiert: resource-env-ref, resource-ref, message-destination-ref. Stellen Sie sicher, dass eine Bindung f\u00fcr die Ressourcenreferenz in der Datei "ibm-ejb-jar-bnd" f\u00fcr ein EJB-Modul, in der Datei "ibm-web-bnd" f\u00fcr ein Webanwendungsmodul bzw. in der Datei "ibm-application-client-bnd" f\u00fcr ein Clientmodul definiert ist.
+
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W=CWNEN0045W: F\u00fcr das env-entry-Element {0} f\u00fcr die Komponente {1} wurde kein Injektionsziel oder kein Wert angegeben.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.explanation=Es muss ein Wert f\u00fcr ein env-entry-Element angegeben werden, wenn der Wert f\u00fcr das Injektionsziel nicht definiert ist.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.useraction=Geben Sie einen Wert und/oder ein Injektionsziel f\u00fcr das env-entry-Element an.
+
+#-------------------------------------------------------------------------------
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W=CWNEN0046W: Der Typ {0}, der im resource-ref-, resource-env-ref- oder message-destination-ref-Element mit dem Namen {1} im Modul {2} angegeben wurde, konnte nicht geladen werden. Es wird keine Kompatibilit\u00e4tspr\u00fcfung des Typs f\u00fcr diese Ressourcenreferenz durchgef\u00fchrt.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.explanation=Der Typ der in der Ressourcenreferenzbindung angegebene Typ kann nicht auf Kompatibilit\u00e4t mit dem Typ gepr\u00fcft werden, der in einer der folgenden XML-Zeilengruppen im Implementierungsdeskriptor angegeben ist: resource-env-ref, resource-ref, message-destination-ref.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.useraction=\u00c4ndern Sie den f\u00fcr die Ressourcenreferenz im Implementierungsdeskriptor angegebenen Typ in einen Typ, der geladen werden kann.
+
+#-------------------------------------------------------------------------------
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W=CWNEN0047W: Ressourcenannotationen in den Feldern der Klasse {0} werden ignoriert. Die Annotationen k\u00f6nnen wegen der folgenden Ausnahme nicht abgerufen werden: {1}
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.explanation=Die Anwendung funktioniert nicht ordnungsgem\u00e4\u00df, wenn die angegebene Klasse verwendet wird.
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.useraction=Entfernen Sie die Klasse aus der Anwendung, oder beheben Sie die Ursache der Ausnahme.
+
+#-------------------------------------------------------------------------------
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W=CWNEN0048W: Ressourcenannotationen in den Feldern der Klasse {0} werden ignoriert. Die Klasse {0} wird auf Annotationen verarbeitet, weil sie von der Anwendungsklasse {1} referenziert wird. Die Annotationen k\u00f6nnen wegen der folgenden Ausnahme nicht abgerufen werden: {2}
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.explanation=Die Anwendung funktioniert nicht ordnungsgem\u00e4\u00df, wenn die angegebene Klasse verwendet wird.
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.useraction=Entfernen Sie die Klasse aus der Anwendung, oder beheben Sie die Ursache der Ausnahme.
+
+#-------------------------------------------------------------------------------
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W=CWNEN0049W: Ressourcenannotationen in den Methoden der Klasse {0} werden ignoriert. Die Annotationen k\u00f6nnen wegen der folgenden Ausnahme nicht abgerufen werden: {1}
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.explanation=Die Anwendung funktioniert nicht ordnungsgem\u00e4\u00df, wenn die angegebene Klasse verwendet wird.
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.useraction=Entfernen Sie die Klasse aus der Anwendung, oder beheben Sie die Ursache der Ausnahme.
+
+#-------------------------------------------------------------------------------
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W=CWNEN0050W: Ressourcenannotationen in den Methoden der Klasse {0} werden ignoriert. Die Klasse {0} wird auf Annotationen verarbeitet, weil sie von der Anwendungsklasse {1} referenziert wird. Die Annotationen k\u00f6nnen wegen der folgenden Ausnahme nicht abgerufen werden: {2}
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.explanation=Die Anwendung funktioniert nicht ordnungsgem\u00e4\u00df, wenn die angegebene Klasse verwendet wird.
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.useraction=Entfernen Sie die Klasse aus der Anwendung, oder beheben Sie die Ursache der Ausnahme.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_TYPES_CWNEN0051E=CWNEN0051E: Die Bean {0} im Modul {1} der Anwendung {2} enth\u00e4lt widerspr\u00fcchliche Konfigurationsdaten im XML-Implementierungsdeskriptor. Es sind widerspr\u00fcchliche Elementtypen mit demselben {3}-Elementwert vorhanden: {4}). Die widerspr\u00fcchlichen Elementtypen sind {5} und {6}.
+CONFLICTING_XML_TYPES_CWNEN0051E.explanation=Wenn mehrere Ressourcenreferenzen im XML-Implementierungsdeskriptor f\u00fcr denselben Komponenten-Namespace mit demselben Namen definiert sind, muss auch der Ressourcentyp identisch sein. Dieser Fehler tritt gew\u00f6hnlich auf, wenn Ressourcenreferenzen f\u00fcr eine EJB und f\u00fcr eine entsprechende Interceptor-Klasse definiert werden. EJB und Interceptor verwenden denselben Komponenten-Namespace. Deshalb m\u00fcssen auch die Ressourcenreferenzen zwischen den beiden Parteien denselben Typ haben.
+CONFLICTING_XML_TYPES_CWNEN0051E.useraction=\u00c4ndern Sie im XML-Implementierungsdeskriptor den Namen einer der Ressourcenreferenzen oder den Typ einer der Referenzen, so dass die Typangaben identisch sind.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWNEN0052E=CWNEN0052E: Die Bean {0} im Modul {1} der Anwendung {2} enth\u00e4lt widerspr\u00fcchliche Konfigurationsdaten im XML-Implementierungsdeskriptor. Es sind widerspr\u00fcchliche {3}-Elementwerte f\u00fcr mehrere {4}-Elemente mit demselben {5}-Elementwert vorhanden: {6}. Die widerspr\u00fcchlichen {3}-Elementwerte sind {7} und {8}.
+CONFLICTING_XML_VALUES_CWNEN0052E.explanation=Wenn mehrere Ressourcenreferenzen im XML-Implementierungsdeskriptor f\u00fcr denselben Komponenten-Namespace mit demselben Namen definiert sind, m\u00fcssen alle Attribute der Ressource identisch sein bzw. dem jeweils anderen Attribut zugeordnet werden k\u00f6nnen. Dieser Fehler tritt gew\u00f6hnlich auf, wenn Ressourcenreferenzen f\u00fcr eine EJB und f\u00fcr eine entsprechende Interceptor-Klasse definiert werden. EJB und Interceptor verwenden denselben Komponenten-Namespace. Deshalb m\u00fcssen auch die Ressourcenreferenzen zwischen den beiden Parteien kompatibel sein.
+CONFLICTING_XML_VALUES_CWNEN0052E.useraction=\u00c4ndern Sie im XML-Implementierungsdeskriptor den Namen einer der Ressourcenreferenzen, oder \u00e4ndern Sie einen der widerspr\u00fcchlichen Werte so, dass er dem anderen Wert zugeordnet werden kann.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E=CWNEN0053E: Die Konfigurationsdaten im XML-Implementierungsdeskriptor und in den Quellcodeannotationen der Bean {0} im Modul {1} der Anwendung {2} sind widerspr\u00fcchlich. Es sind widerspr\u00fcchliche {3}-Elementwerte oder {4}-Attributwerte f\u00fcr mehrere {5}-Elemente oder {6}-Annotationen mit demselben {7}-Elementwert bzw. {8}-Attributwert vorhanden: {9}. Die widerspr\u00fcchlichen {3}-Elementwerte bzw. {4}-Attributwerte sind {10} und {11}.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.explanation=Wenn mehrere Ressourcenreferenzen im XML-Implementierungsdeskriptor und in den Quellcodeannotationen f\u00fcr denselben Komponenten-Namespace mit demselben Namen definiert werden, m\u00fcssen einige Attribute der Ressource identisch sein oder einander zugeordnet werden k\u00f6nnen.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.useraction=\u00c4ndern Sie im XML-Implementierungsdeskriptor oder in den Quellcodeannotationen den Namen einer der Ressourcenreferenzen, oder \u00e4ndern Sie einen der widerspr\u00fcchlichen Werte so, dass er dem anderen Wert zugeordnet werden kann.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E=CWNEN0054E: Die Bean {0} im Modul {1} der Anwendung {2} enth\u00e4lt widerspr\u00fcchliche Konfigurationsdaten in den Quellcodeannotationen. Es sind widerspr\u00fcchliche {3}-Attributwerte f\u00fcr mehrere {4}-Annotationen mit demselben {5}-Attributwert vorhanden: {6}. Die widerspr\u00fcchlichen {3}-Attributwerte sind {7} und {8}.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.explanation=Wenn mehrere Ressourcenreferenzen in den Quellcodeannotationen f\u00fcr denselben Komponenten-Namespace mit demselben Namen definiert sind, m\u00fcssen alle Attribute der Ressource identisch sein bzw. dem jeweils anderen Attribut zugeordnet werden k\u00f6nnen.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.useraction=\u00c4ndern Sie in den Quellcodeannotationen den Namen einer der Ressourcenreferenzen, oder \u00e4ndern Sie einen der widerspr\u00fcchlichen Werte so, dass er dem anderen Wert zugeordnet werden kann.
+
+#-------------------------------------------------------------------------------
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E=CWNEN0055E: Das Nachrichtenziel {0} im Modul {1} der Anwendung {2} wurde nicht auf diesem Knoten gefunden.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.explanation=Der Geltungsbereich von AutoLink ist auf die Anwendung, in der das Nachrichtenziel referenziert wird, und auf die Server beschr\u00e4nkt, die keine Member eines Anwendungsservers sind.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.useraction=Stellen Sie sicher, dass das Nachrichtenziel, das referenziert wird, in dieser Anwendung vorhanden ist. Alternativ k\u00f6nnen Sie eine Bindung f\u00fcr das Nachrichtenziel definieren.
+
+#-------------------------------------------------------------------------------
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E=CWNEN0056E: Die Injektion der Ressource {0} wurde f\u00fcr eine Eigenschaftsinstanzvariable und die zugeh\u00f6rige Setter-Methode in der Klasse {1} des Moduls {2} der Anwendung {3} angegeben.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.explanation=Die Anforderung einer Injektion einer Ressource in die Instanzvariable einer Eigenschaft und in die zugeh\u00f6rige Setter-Methode ist ein Fehler.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.useraction=Entfernen Sie eine der Annotationen - aus dem Feld oder aus der Methode. Das Feld oder die Methode k\u00f6nnte die Injektion einer Ressource mit einem anderen (vom Standard abweichenden) Namen anfordern. Durch die explizite Angabe des JNDI-Namens einer Ressource kann die Injektion einer einzelnen Ressource in mehrere Felder oder Methoden mehrerer Klassen veranlasst werden.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W=CWNEN0057W: Das Injektionsziel {0}.{1} darf nicht als statisches Ziel deklariert werden.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.explanation=Gem\u00e4\u00df der EJB-Spezifikation darf ein Injektionsziel nur dann als statisches Ziel deklariert werden, wenn es im Clientcontainer enthalten ist.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.useraction=\u00c4ndern Sie den Code f\u00fcr das Injektionsziel so, dass es als nicht statisches Ziel deklariert wird, w\u00e4hlen Sie ein anderes Injektionsziel aus, oder entfernen Sie das Injektionsziel, und deklarieren Sie es manuell.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E=CWNEN0058E: Das Injektionsziel {0}.{1} muss im Clientcontainer als statisches Ziel deklariert werden.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.explanation=Gem\u00e4\u00df der EJB-Spezifikation muss ein Injektionsziel im Clientcontainer als statisches Ziel deklariert werden.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.useraction=\u00c4ndern Sie den Code f\u00fcr das Injektionsziel so, dass es als statisches Ziel deklariert wird, w\u00e4hlen Sie ein anderes Injektionsziel aus, oder entfernen Sie das Injektionsziel, und deklarieren Sie es manuell.
+
+#-------------------------------------------------------------------------------
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E=CWNEN0059E: Die Engine f\u00fcr Injektion konnte die Injektion des Bindungsobjekts {0} nicht in die EJB-Datei {1}:{2} nicht durchf\u00fchren, weil die versuchte Injektion rekursiv oder zyklisch ist.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.explanation=Eine zyklische oder rekursive Injektion findet statt, wenn die Injektion eines Objekts eine weitere Injektion desselben Objekts erfordert. Dieses Szenario kann beispielsweise auftreten, wenn eine Stateful-Session-Bean versucht, eine Injektion einer Instanz desselben Typs bei sich selbst durchzuf\u00fchren.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.useraction=\u00c4ndern Sie den Anwendungscode oder die Konfiguration so, dass Injektionsziele weder direkt noch indirekt von sich selbst abh\u00e4ngig sind.
+
+#--------------------------------------------------------------------------------
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E=CWNEN0060E: Die Injektion einer UserTransaction-Instanz in die Klasse {0}, die der Komponente {1} im Modul {2} der Anwendung {3} zugeordnet ist, ist nicht m\u00f6glich. Eine UserTransaction-Instanz kann nicht in diese Klasse injiziert werden, weil sie einer Bean-Komponente zugeordnet ist, die gem\u00e4\u00df ihrer Konfiguration keine Bean-managed Transactions zul\u00e4sst.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.explanation=Die Klasse wurde f\u00fcr die Injektion einer UserTransaction-Instanz konfiguriert, was nicht zul\u00e4ssig ist. Wenn die Klasse eine Bean ist, ist die Bean nicht f\u00fcr Bean-managed Transactions konfiguriert. Wenn die Klasse ein Interceptor oder ein Web-Service-Handler ist, wird sie von einer oder mehreren Beans verwendet, die nicht f\u00fcr Bean-managed Transactions konfiguriert sind.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.useraction=\u00c4ndern Sie die Klasse, um die Injektion einer UserTransaction-Instanz zu stoppen, oder \u00e4ndern Sie die Bean-Konfiguration, so dass Bean-managed Transactions zugelassen werden. Wenn diese Klasse ein Interceptor- oder Web-Service-Handler-Klasse ist, die von mehreren Beans verwendet wird, von denen einige f\u00fcr Bean-managed Transaction konfiguriert sind und andere nicht, erstellen Sie eine neue Interceptor- oder Web-Service-Handler-Klasse, die keine UserTransaction-Instanz injiziert, und verwenden Sie diese f\u00fcr Beans, die f\u00fcr Container-managed Transactions (CMP) konfiguriert sind.
+
+#--------------------------------------------------------------------------------
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E=CWNEN0061E: Der Eigenschaftsname {0} f\u00fcr das Injektionsziel der Referenz {1} ist in der Klasse {2} mehrdeutig. Die Methode {3} und die Methode {4} sind beide mit dem Typ {5} kompatibel.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.explanation=Die Klasse wurde f\u00fcr Methodeninjektion konfiguriert, aber es sind mehrere Methoden mit dem Typ des zu injizierenden Objekts kompatibel.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.useraction=\u00c4ndern Sie die Bean-Konfiguration so, dass der exakte Typ einer der Methoden angegeben wird, \u00e4ndern Sie die Klasse so, dass sie eine Methode mit einem Parametertyp enth\u00e4lt, der dem Typ der Injektionskonfiguration genau entspricht, oder \u00e4ndern Sie die Klasse, indem Sie eine der mehrdeutigen Methoden entfernen oder umbenennen.
+
+#--------------------------------------------------------------------------------
+CONFLICTING_REFERENCES_CWNEN0062E=CWNEN0062E: Die Komponente {0} und die Komponente {1} im Modul {2} der Anwendung {3} haben widerspr\u00fcchliche Werte f\u00fcr die Eigenschaft {4} der Referenz {5}. Die widerspr\u00fcchlichen Werte sind {6} und {7}.
+CONFLICTING_REFERENCES_CWNEN0062E.explanation=Wenn eine Referenz in mehreren Komponenten, die denselben Komponenten-Namespace nutzen, mit demselben Namen definiert ist, m\u00fcssen alle Bindungs- und Erweiterungseigenschaften der Referenz identisch sein.
+CONFLICTING_REFERENCES_CWNEN0062E.useraction=\u00c4ndern Sie in der Bindungs- bzw. Erweiterungsdatei des Moduls einen der widerspr\u00fcchlichen Werte, so dass beide Werte identisch sind.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Enum
+INVALID_ENUM_IDENTIFIER_CWNEN0063E=CWNEN0063E: Der einfache Umgebungseintrag {0} im Modul {1} der Anwendung {2}, der den Enum-Typ {3} hat, ist nicht auf eine g\u00fcltige Enum-Kennung gesetzt: {4}.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.explanation=Einem einfachen Umgebungseintrag f\u00fcr ein Unternehmensmodul des Typs Enum muss eine g\u00fcltige Enum-Kennung zugewiesen werden.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.useraction=Weisen Sie dem einfachen Umgebungseintrag des Typs Enum eine g\u00fcltige Enum-Kennung zu.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class, and  Enum
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E=CWNEN0064E: Es wurde ein nicht g\u00fcltiger Typ f\u00fcr den einfachen Umgebungseintrag {0} im Modul {1} der Anwendung {2} angegeben: {3}.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.explanation=Ein einfacher Umgebungseintrag f\u00fcr ein Unternehmensmodul kann einen der folgenden Java-Typen haben: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class oder eine Unterklasse von Enum.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.useraction=\u00c4ndern Sie den einfachen Umgebungseintrag in einen der unterst\u00fctzten Typen.
+
+#--------------------------------------------------------------------------------
+INVALID_REFERENCE_NAME_CWNEN0065E=CWNEN0065E: Die Referenz {0} f\u00fcr die Komponente {1} im Modul {2} der Anwendung {3} hat einen Namen, der nicht g\u00fcltig ist.
+INVALID_REFERENCE_NAME_CWNEN0065E.explanation=Referenznamen m\u00fcssen relativ zu java:comp/env angegeben werden oder mit java:global, java:app, java:module bzw. java:comp beginnen.
+INVALID_REFERENCE_NAME_CWNEN0065E.useraction=\u00c4ndern Sie den Referenznamen im Implementierungsdeskriptor und in den Quellcodeannotationen.
+
+#--------------------------------------------------------------------------------
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E=CWNEN0066E: Die Quellcodeannotation {0} mit dem Attribut {1} {2} f\u00fcr die Komponente {3} im Modul {4} der Anwendung {5} hat die folgenden Konfigurationsdaten f\u00fcr das Attribut properties, die nicht g\u00fcltig sind: {6}
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.explanation=Das Format f\u00fcr Eigenschaften, die in der Annotation angegeben werden, ist Name=Wert.
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.useraction=\u00c4ndern Sie das Attribut properties in der Quellcodeannotation so, dass es das Format Name=Wert hat.
+
+#--------------------------------------------------------------------------------
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E=CWNEN0067E: Die Quellcodeannotation @DataSourceDefinition mit dem Namensattribut {0} f\u00fcr die Komponente {1} im Modul {2} der Anwendung {3} hat die folgenden Konfigurationsdaten f\u00fcr das Attribut isolationLevel, die nicht g\u00fcltig sind: {4}
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.explanation=F\u00fcr isolationLevel muss eine der folgenden Konstanten aus der Klasse java.sql.Connection angegeben werden: TRANSACTION_NONE, TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ oder TRANSACTION_SERIALIZABLE.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.useraction=\u00c4ndern Sie das Attribut isolationLevel in der Quellcodeannotation in einen der g\u00fcltigen Werte.
+
+#--------------------------------------------------------------------------------
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E=CWNEN0068E: Die EJB-Referenz {0} im Modul {1} auf die Schnittstelle {2} einer Enterprise-Bean kann auf diesem Knoten nicht aufgel\u00f6st werden.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.explanation=Der Geltungsbereich f\u00fcr die AUTOLINK-Verbindung beschr\u00e4nkt sich auf die Anwendung mit der EJB-Referenz und auf Server, die nicht Member eines Anwendungs-Server-Clusters sind.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.useraction=Stellen Sie sicher, dass die Enterprise-Beans, die referenziert werden, in derselben Anwendung vorhanden sind.
+
+#--------------------------------------------------------------------------------
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E=CWNEN0069E: Die Injektionsmethode {0}.{1} muss mit einem einzigen Parameter und nicht mit {2} Parametern deklariert werden.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.explanation=Injektionsmethoden m\u00fcssen den Konventionen der Set-Methoden f\u00fcr JavaBeans-Eigenschaften folgen.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.useraction=\u00c4ndern Sie den Code der Injektionsmethode so, dass er einen einzigen Parameter enth\u00e4lt, w\u00e4hlen Sie ein anderes Injektionsziel aus, oder entfernen Sie das Injektionsziel, und tragen Sie den Wert manuell en.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W=CWNEN0070W: Die Annotationsklasse {0} wird nicht erkannt, weil sie von der Position {1} und nicht von einem Produktklassenladeprogramm geladen wurde.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.explanation=Das Klassenladeprogramm der Anwendung oder ein Klassenladeprogramm des Anwendungsservers hat eine Annotationsklasse geladen, die von einem Klassenladeprogramm des Produkts geladen werden muss. Dieser Fehler tritt auf, wenn ein Klassenladeprogramm so konfiguriert wurde, dass Klassen zuerst mit dem lokalen Klassenladeprogramm geladen werden (\u00fcbergeordnete zuletzt). Die Annotation wird nur erkannt, wenn sie von einem Klassenladeprogramm des Produkts geladen wird.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.useraction=Entfernen Sie die Annotationsklasse aus dem Klassenpfad der Anwendung bzw. des Anwendungsservers.
+
+#--------------------------------------------------------------------------------
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E=CWNEN0071E: Die Referenz {0} f\u00fcr die Komponente {1} im Modul {2} in der Anwendung {3} hat den Typ {4} und einen Wert f\u00fcr das Attribut {5}, das nicht g\u00fcltig ist: {6}
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.explanation=Das angegebene Attribut darf entweder nicht definiert werden, oder es muss den Standardwert haben.
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.useraction=Entfernen Sie das Attribut aus der Quellcodeannotation oder aus dem Implementierungsdeskriptor.
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E=CWNEN0072E: Die Referenz {0} enth\u00e4lt widerspr\u00fcchliche Werte f\u00fcr das Attribut {1}: {2} und {3}
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.explanation=Die Spezifikation Java Enterprise Edition legt fest, dass die Attribute aller Deklarationen konsistent sein m\u00fcssen, wenn mehrere Komponenten eine Referenz in einem gemeinsam genutzten Namespace deklarieren.
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.useraction=\u00c4ndern Sie die Attribute der Deklarationen so, dass sie konsistent sind.
+
+#--------------------------------------------------------------------------------
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E=CWNEN0073E: Die Annotation {0} auf Klassenebene in der Klasse {1} im Modul {2} der Anwendung {3} enth\u00e4lt keinen JNDI-Namen.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.explanation=F\u00fcr Annotationen auf Klassenebene muss ein JNDI-Name angegeben werden.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.useraction=Geben Sie einen JNDI-Namen in der Annotation auf Klassenebene im Quellcode an.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E=CWNEN0074E: Der Typ {0} der f\u00fcr die Referenz {1} abgerufenen Objektinstanz ist mit dem Typ des Members {2} nicht kompatibel.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.explanation=Eine f\u00fcr die Injektion verwendete Objektinstanz muss mit dem Typ des Felds bzw. Methodenparameters \u00fcbereinstimmen.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.useraction=Vergewissern Sie sich, dass die Referenzbindung f\u00fcr die Referenz korrekt ist.
+
+#--------------------------------------------------------------------------------
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E=CWNEN0075E: Beim Suchen in der Klasse {0} nach dem Injektionsziels {1} der Referenz {2} der Komponente {3} im Modul {4} der Anwendung {5} ist ein Fehler aufgetreten: {6}
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.explanation=Das Injektionsziel wurde nicht gefunden, weil ein Klassenladefehler beim Abrufen einer Liste mit Feldern oder Methoden f\u00fcr die Klasse aufgetreten ist.
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.useraction=Stellen Sie sicher, dass die Einstellungen f\u00fcr das Packen der Anwendung und das Klassenladeprogramm korrekt sind.
+
+#-------------------------------------------------------------------------------
+#
+# CWNEN1000 - CWNEN1999 are reserved for liberty...
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# For emergency use only....
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I=CWNEN8990I: This message is an English-only Informational message: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.explanation=This informational message is not translated.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.useraction=See message for details.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W=CWNEN8991W: This message is an English-only Warning message: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.explanation=This warning message is not translated.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.useraction=See message for details.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E=CWNEN8992E: This message is an English-only Error message: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.explanation=This error message is not translated.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.useraction=See message for details.
+
+#-------------------------------------------------------------------------------
+# CWNEN9000 and up are reserved for command line / gui messages...
+# Place all other messages above this point.
+#-------------------------------------------------------------------------------

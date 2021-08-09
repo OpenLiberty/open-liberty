@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OAuth Custom Consent Form</title>
+<script language="javascript">
+function init() {
+	var scope = oauthFormData.scope;
+	var scopeEle = document.getElementById("oauth_scope");
+	var ul = document.createElement("ul");
+	if(scope) {
+		for(var i=0; i < scope.length; i++) {
+			var n = document.createElement("li");
+			n.innerHTML = scope[i];
+			ul.appendChild(n);
+		}
+	}
+	scopeEle.appendChild(ul);
+	// set client name
+	var clientEle = document.getElementById("client_name");
+	clientEle.innerHTML = escapeHTML(oauthFormData.clientDisplayName);
+}
+
+function escapeHTML(str) {
+    var ele = document.createElement("div");
+    ele.innerText = ele.textContent = str;
+    return ele.innerHTML;
+}
+</script>
+</head>
+<body onload="init()">
+	<div>Do you want to allow client <span id=client_name style="font-weight:bold">xxxxxxx</span> to access your data?</div>
+	<div id="oauth_scope">
+	</div>
+	<div><input type="button" value="Yes" onclick="javascript:submitForm(oauthFormData);"/>
+	<input type="button" value="No, Thanks"/></div>
+</body>
+</html>

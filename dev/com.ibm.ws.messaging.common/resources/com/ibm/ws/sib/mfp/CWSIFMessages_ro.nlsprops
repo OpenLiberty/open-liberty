@@ -1,0 +1,948 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.mfp.CWSIFMessages.props
+#
+# SIB.mfp component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIF0001=CWSIF0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIF0001-CWSIF0010 belong to class com.ibm.ws.sib.mfp.JsMessageFactory & JsMessageFactoryImpl
+#   - Msgs in the range CWSIF0011-CWSIF0020 belong to class com.ibm.ws.sib.mfp.JsJmsMessageFactory
+#   - Msgs in the range CWSIF0021-CWSIF0030 belong to class com.ibm.ws.sib.mfp.trm.TrmMessageFactory
+#   - Msgs in the range CWSIF0031-CWSIF0040 belong to classes com.ibm.ws.sib.mfp.impl.JsMessageHandle*
+#   - Msgs in the range CWSIF0041-CWSIF0050 belong to class com.ibm.ws.sib.mfp.mp.ControlMessageFactory
+#   - Msgs in the range CWSIF0051-CWSIF0060 belong to class com.ibm.ws.sib.mfp.CompHandshakeFactory
+#   - Msgs in the range CWSIF0101-CWSIF0180 belong to class com.ibm.ws.sib.mfp.impl.JsMessageImpl
+#   - Msgs in the range CWSIF0181-CWSIF0190 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0191-CWSIF0199 belong to class com.ibm.ws.sib.mfp.impl.JsApiMessageImpl
+#   - Msgs in the range CWSIF0200-CWSIF0210 belong to class com.ibm.ws.sib.mfp.util.HexString
+#   - Msgs in the range CWSIF0211-CWSIF0220 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulation
+#   - Msgs in the range CWSIF0221-CWSIF0230 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulationManager
+#   - Msgs in the range CWSIF0231-CWSIF0240 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0241-CWSIF0250 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0251-CWSIF0260 belong to class com.ibm.ws.sib.mfp.sdo.mediators.BlobMediator
+#   - Msgs in the range CWSIF0271-CWSIF0280 belong to package com.ibm.ws.sib.mfp.sdo.soap
+#   - Msgs in the range CWSIF0281-CWSIF0290 belong to package com.ibm.ws.sib.mfp.sdo.soap.write
+#   - Msgs in the range CWSIF0291-CWSIF0310 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0311-CWSIF0320 belong to class com.ibm.ws.sib.mfp.sdo.mediators.JmfDataMediator
+#   - Msgs in the range CWSIF0321-CWSIF0350 belong to package com.ibm.ws.sib.mfp.sdo.bean
+#   - Msgs in the range CWSIF0351-CWSIF0360 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0361-CWSIF0370 belong to class com.ibm.ws.sib.mfp.sdo.DataGraphFactoryImpl
+#   - Msgs in the range CWSIF0371-CWSIF0380 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+#   - Msgs in the range CWSIF0381-CWSIF0390 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+#   - Msgs in the range CWSIF0391-CWSIF0410 are no longer allocated
+#   - Msgs in the range CWSIF0411-CWSIF0420 are no longer allocated
+#   - Msgs in the range CWSIF0421-CWSIF0430 are no longer allocated
+#   - Msgs in the range CWSIF0431-CWSIF0439 belong to package com.ibm.ws.sib.mfp.sdo.resource
+#   - Msgs in the range CWSIF0500-CWSIF0510 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0600-CWSIF0610 belong to class com.ibm.ws.sib.mfp.sdo.repository.WSDLMetaData
+#   - Msgs in the range CWSIF0700-CWSIF0710 belong to class com.ibm.ws.sib.mfp.mqimpl.MQJmsMapMessageEncapsulation
+#   - Msgs in the range CWSIF0711-CWSIF0720 belong to package com.ibm.ws.sib.mfp.sdo.jms
+#   - Msgs in the range CWSIF0721-CWSIF0730 belong to package com.ibm.ws.sib.mfp*
+#   - CWSIF9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/mfp/CWSIFMessages.nlsprops
+#COMPONENTPREFIX CWSIF
+#COMPONENTNAMEFOR CWSIF SIBus MFP
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIF0001=CWSIF0001E: O instan\u0163\u0103 JsMessageFactoryImpl nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+NO_DATASLICES_IN_LIST_CWSIF0002=CWSIF0002E: O list\u0103 goal\u0103 sau nul\u0103 DataSlice a fost transmis\u0103 la restaurarea mesajului.
+NO_DATASLICES_IN_LIST_CWSIF0002.explanation=CMSG0001
+NO_DATASLICES_IN_LIST_CWSIF0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011=CWSIF0011E: O instan\u0163\u0103 JsJmsMessageFactoryImpl nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.explanation=CMSG0001
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021=CWSIF0021E: O instan\u0163\u0103 TrmMessageFactoryImpl nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.explanation=CMSG0001
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031=CWSIF0031E: O instan\u0163\u0103 JsMessageHandleFactoryImpl nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.explanation=CMSG0001
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the type of bad data that was passed (NULL or Empty String)
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032=CWSIF0032E: {0} a fost transmis la SIMessageHandleRestorer.
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.explanation=CMSG0001
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033=CWSIF0033E: Datele transmise la SIMessageHandleRestorer.restoreFromBytes nu au o lungime valid\u0103.
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.explanation=CMSG0001
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034=CWSIF0034E: Datele transmise la SIMessageHandleRestorer.restoreFromBytes nu au o informa\u0163ii de versiune valide.
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.explanation=CMSG0001
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035=CWSIF0035E: Datele transmise la SIMessageHandleRestorer.restoreFromBytes nu au trecut verific\u0103rile interne de validare a lungimii.
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.explanation=CMSG0001
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041=CWSIF0041E: O instan\u0163\u0103 ControlMessageFactoryImpl nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.explanation=CMSG0001
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051=CWSIF0051E: O instan\u0163\u0103 CompHandshakeImpl nu poate fi creat\u0103: excep\u0163ie {0}.
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.explanation=CMSG0001
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the implementation class, {1} is the value of the Exception
+UNABLE_TO_CREATE_CWSIF0061=CWSIF0061E: O instan\u0163\u0103 {0} nu poate fi creat\u0103: excep\u0163ie {1}.
+UNABLE_TO_CREATE_CWSIF0061.explanation=CMSG0001
+UNABLE_TO_CREATE_CWSIF0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the system message id of the message.
+NOT_API_MESSAGE_CWSIF0101=CWSIF0101E: Selectorii de mesaje nu sunt disponibili pentru mesajul {0}.
+NOT_API_MESSAGE_CWSIF0101.explanation=Selectorii de mesaje sunt suporta\u0163i numai pentru mesajele API.
+NOT_API_MESSAGE_CWSIF0101.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia nu folose\u015fte selectori de mesaje pentu mesaje non-API.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message type found
+# {1} is the expected message type
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102=CWSIF0102E: Tipul de mesaj {1} era a\u015fteptat dar a fost g\u0103sit tipul de mesaj {0}.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.explanation=S-a f\u0103cut o \u00eencercare de conversie a mesajului dintr-un tip de mesaj \u00een alt tip de mesaj. Aceast\u0103 conversie nu este suportat\u0103.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181=CWSIF0181E: DataGraph SDO nu poate fi ob\u0163inut din sarcina util\u0103 a mesajului.
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.explanation=CMSG0001
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect class name
+INCORRECT_ENCAPSULATION_CWSIF0182=CWSIF0182E: Mesajul con\u0163ine o clas\u0103 de \u00eencapsulare incorect\u0103: {0}
+INCORRECT_ENCAPSULATION_CWSIF0182.explanation=CMSG0001
+INCORRECT_ENCAPSULATION_CWSIF0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# This is an almost exact copy of CWSIA0114E in file CWSIAJMSMessages.nlsprops
+# {0} is the property name
+# {1} is the expected type of the property value
+# {2} is thetype of the property value given
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183=CWSIF0183E: Proprietatea {0} ar trebui setat\u0103 folosind tipul {1}, nu {2}.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.explanation=Propriet\u0103\u0163ile JMS_IBM_MQMD_ trebuie setate folosind tipurile specifice de variabile.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.useraction=Corecta\u0163i codul aplica\u0163iei astfel \u00eenc\u00e2t s\u0103 folosesc\u0103 tipurile de variabile necesare pentru setarea acestei propriet\u0103\u0163i JMS_IBM_MQMD .
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0191=CWSIF0191E: \u015eirul hexazecimal {0} este formatat incorect pentru un ID de corelare.
+BAD_HEX_STRING_CWSIF0191.explanation=\u015eirul nu este o corelare ID hexazecimal\u0103 valid\u0103. Acesta trebuie s\u0103 fie de forma ID: urmat\u0103 numai de un num\u0103r par de caractere hexazecimale.
+BAD_HEX_STRING_CWSIF0191.useraction=Corecta\u0163i \u015firul pentru care conversia a e\u015fuat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0200=CWSIF0200E: \u015eirul hexazecimal {0} este formatat incorect.
+BAD_HEX_STRING_CWSIF0200.explanation=O \u00eencercare de conversie de la un \u015fir la o matrice de octe\u0163i a e\u015fuat din cauza \u015firului, care fie con\u0163ine caractere non-hexazecimale, fie un num\u0103r impar de caractere.
+BAD_HEX_STRING_CWSIF0200.useraction=Verifica\u0163i con\u0163inutul \u015firului pentru care conversia a e\u015fuat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+FORMAT_NOT_FOUND_CWSIF0211=CWSIF0211E: Formatul mesajului nu poate fi identificat: excep\u0163ie {0}
+FORMAT_NOT_FOUND_CWSIF0211.explanation=CMSG0001
+FORMAT_NOT_FOUND_CWSIF0211.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+GET_LENGTH_FAILED_CWSIF0212=CWSIF0212E: Lungimea mesajului nu poate fi calculat\u0103: excep\u0163ie {0}
+GET_LENGTH_FAILED_CWSIF0212.explanation=CMSG0001
+GET_LENGTH_FAILED_CWSIF0212.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+WRITE_FAILED_CWSIF0213=CWSIF0213E: Mesajul nu poate fi calculat: excep\u0163ie {0}
+WRITE_FAILED_CWSIF0213.explanation=CMSG0001
+WRITE_FAILED_CWSIF0213.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+UNASSEMBLE_FAILED_CWSIF0214=CWSIF0214E: Mesajul JMF nu poate fi dezasamblat: excep\u0163ie {0}
+UNASSEMBLE_FAILED_CWSIF0214.explanation=CMSG0001
+UNASSEMBLE_FAILED_CWSIF0214.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+SCHEMA_ID_ERROR_CWSIF0221=CWSIF0221E: Eroare ID schem\u0103 JMF: excep\u0163ie {0}
+SCHEMA_ID_ERROR_CWSIF0221.explanation=CMSG0001
+SCHEMA_ID_ERROR_CWSIF0221.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+PARSE_FAILED_CWSIF0222=CWSIF0222E: Mesajul nu poate fi parsat: excep\u0163ie {0}
+PARSE_FAILED_CWSIF0222.explanation=CMSG0001
+PARSE_FAILED_CWSIF0222.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_WSDL_CWSIF0232=CWSIF0232E: Nu se poate importa fi\u015fierul WSDL {0}: excep\u0163ie {1}
+INVALID_WSDL_CWSIF0232.explanation=Importatorul WSDL nu a putut s\u0103 importe fi\u015fierul.
+INVALID_WSDL_CWSIF0232.useraction=Asigura\u0163i-v\u0103 c\u0103 importa\u0163i fi\u015fiere WSDL valide \u015fi c\u0103 folosi\u0163i o versiune suportat\u0103 de standard WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+INVALID_WSDL_CWSIF0233=CWSIF0233E: Nu se poate localiza tipul: nume {0}, spa\u0163iu nume {1}.
+INVALID_WSDL_CWSIF0233.explanation=Importatorul WSDL nu a putut s\u0103 localizeze o defini\u0163ie de tip.
+INVALID_WSDL_CWSIF0233.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een sec\u0163iunea cu tipuri WSDL a\u0163i inclus o defini\u0163ie de schem\u0103 XML pentru acest tip.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the namespace
+INVALID_WSDL_CWSIF0234=CWSIF0234E: Nu se poate localiza elementul: nume {0}, spa\u0163iu nume {1}.
+INVALID_WSDL_CWSIF0234.explanation=Importatorul WSDL nu an putut s\u0103 localizeze o defini\u0163ie de element.
+INVALID_WSDL_CWSIF0234.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een sec\u0163iunea cu tipuri WSDL a\u0163i inclus o defini\u0163ie de schem\u0103 XML pentru acest element.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_INPUT_CWSIF0235=CWSIF0235E: Blocare acces la fluxul de intrare pentru URI: {0}.
+BLOCKED_INPUT_CWSIF0235.explanation=Mediul de execu\u0163ie a blocat accesul la URI-ul dat. Aceasta a fost cauzat\u0103 de o \u00eencercare de \u00eenc\u0103rcare a unei scheme XML care nu a fost implementat\u0103 \u00een magazia SDO.
+BLOCKED_INPUT_CWSIF0235.useraction=Asigura\u0163i-v\u0103 c\u0103 a\u0163i implementat \u00een magazia SDO fi\u015fierele schem\u0103 WSDL \u015fi XML corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_OUTPUT_CWSIF0236=CWSIF0236E: Blocare acces la fluxul de ie\u015fire pentru URI: {0}.
+BLOCKED_OUTPUT_CWSIF0236.explanation=CMSG0001
+BLOCKED_OUTPUT_CWSIF0236.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI, {1} is the exception
+NESTED_ERROR_CWSIF0237=CWSIF0237E: O excep\u0163ie a ap\u0103rut la \u00eenc\u0103rcarea resursei incluse. Resurse URI: {0}, excep\u0163ia: {1}.
+NESTED_ERROR_CWSIF0237.explanation=Fi\u015fierul include o resurs\u0103 imbricat\u0103, iar erorile au fost g\u0103site \u00een timpul \u00eenc\u0103rc\u0103rii resursei imbricate.
+NESTED_ERROR_CWSIF0237.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace, {1} is the location, {2} is the exception
+RESOURCE_ERROR_CWSIF0238=CWSIF0238E: O excep\u0163ie a ap\u0103rut la localizarea modelului Ecore. Spa\u0163iul nume destina\u0163ie {0}, indica\u0163ia loca\u0163iei {1}, excep\u0163ia {2}.
+RESOURCE_ERROR_CWSIF0238.explanation=S-a creat o excep\u0163ie \u00een timpul observ\u0103rii modelului Ecore.
+RESOURCE_ERROR_CWSIF0238.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WSDL defintion type (Message, Port Type, Binding or Operation), {1} is the name of the defintion, {2} is the location.
+INVALID_WSDL_CWSIF0240=CWSIF0240E: Nu se poate localiza WSDL {0} cu numele {1}. Defini\u0163ia a fost referit\u0103 \u00een cadrul fi\u015fierului {2}.
+INVALID_WSDL_CWSIF0240.explanation=Importatorul WSDL nu a putut s\u0103 localizeze o defini\u0163ie referit\u0103 \u00een cadrul WSDL.
+INVALID_WSDL_CWSIF0240.useraction=Asigura\u0163i-v\u0103 c\u0103 defini\u0163iile dumneavoastr\u0103 WSDL sunt finalizate \u015fi c\u0103 a\u0163i inclus toate fi\u015fierele WSDL referite.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_XSD_CWSIF0241=CWSIF0241E: Nu se poate importa fi\u015fierul Schem\u0103 XML {0}: excep\u0163ie {1}
+INVALID_XSD_CWSIF0241.explanation=Importatorul schemei XML nu a putut s\u0103 importe fi\u015fierul.
+INVALID_XSD_CWSIF0241.useraction=Asigura\u0163i-v\u0103 c\u0103 importa\u0163i fi\u015fiere schem\u0103 XML valide \u015fi c\u0103 folosi\u0163i o versiune suportat\u0103 de standard pentru schema XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error
+INVALID_XSD_CWSIF0242=CWSIF0242E: Eroare \u00eenc\u0103rcare Schem\u0103 XML: {0}
+INVALID_XSD_CWSIF0242.explanation=Importatorul schemei XML nu a putut s\u0103 \u00eencarce fi\u015fierul.
+INVALID_XSD_CWSIF0242.useraction=Asigura\u0163i-v\u0103 c\u0103 importa\u0163i fi\u015fiere schem\u0103 XML valide \u015fi c\u0103 folosi\u0163i o versiune suportat\u0103 de standard pentru schema XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error message
+XSD_ERROR_CWSIF0243=CWSIF0243E: ''{0}''
+XSD_ERROR_CWSIF0243.explanation=A fost raportat\u0103 o eroare \u00een timpul import\u0103rii unei scheme XML.
+XSD_ERROR_CWSIF0243.useraction=Pentru mai multe informa\u0163ii, analiza\u0163i mesajul de eroare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_PARSE_FAILURE_CWSIF0251=CWSIF0251E: Nu se poate parsa mesajul: excep\u0163ie {0}
+BLOB_PARSE_FAILURE_CWSIF0251.explanation=CMSG0001
+BLOB_PARSE_FAILURE_CWSIF0251.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_LENGTH_FAILURE_CWSIF0252=CWSIF0252E: Nu se poate calcula lungimea mesajului: excep\u0163ie {0}
+BLOB_LENGTH_FAILURE_CWSIF0252.explanation=CMSG0001
+BLOB_LENGTH_FAILURE_CWSIF0252.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_WRITE_FAILURE_CWSIF0253=CWSIF0253E: Nu se poate scrie mesajul: excep\u0163ie {0}
+BLOB_WRITE_FAILURE_CWSIF0253.explanation=CMSG0001
+BLOB_WRITE_FAILURE_CWSIF0253.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+BLOB_MODEL_FAILURE_CWSIF0254=CWSIF0254E: Model mesaj incorect: nume tip {0}, spa\u0163iu nume {1}.
+BLOB_MODEL_FAILURE_CWSIF0254.explanation=CMSG0001
+BLOB_MODEL_FAILURE_CWSIF0254.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_PARSE_FAILURE_CWSIF0271=CWSIF0271E: Nu se poate parsa mesajul: excep\u0163ie {0}
+SOAP_PARSE_FAILURE_CWSIF0271.explanation=A ap\u0103rut o eroare \u00een timpul pars\u0103rii unui mesaj Web Services.
+SOAP_PARSE_FAILURE_CWSIF0271.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_LENGTH_FAILURE_CWSIF0272=CWSIF0272E: Nu se poate calcula lungimea mesajului: excep\u0163ie {0}
+SOAP_LENGTH_FAILURE_CWSIF0272.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SOAP_LENGTH_FAILURE_CWSIF0272.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_WRITE_FAILURE_CWSIF0273=CWSIF0273E: Nu se poate scrie mesajul: excep\u0163ie {0}
+SOAP_WRITE_FAILURE_CWSIF0273.explanation=A ap\u0103rut o eroare \u00een timpul scrierii unui mesaj Web Services.
+SOAP_WRITE_FAILURE_CWSIF0273.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+SOAP_FORMAT_ERROR_CWSIF0274=CWSIF0274E: \u015eir format incorect: {0}
+SOAP_FORMAT_ERROR_CWSIF0274.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SOAP_FORMAT_ERROR_CWSIF0274.useraction=Asigura\u0163i-v\u0103 c\u0103 formatul mesajului respect\u0103 sintaxa corect\u0103 pentru un mesaj SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the buffer length, {1} is the start offset, {2} is the length
+SOAP_BUFFER_ERROR_CWSIF0275=CWSIF0275E: Offset buffer incorect: lungime buffer {0}, offset pornire {1}, lungime date {2}.
+SOAP_BUFFER_ERROR_CWSIF0275.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SOAP_BUFFER_ERROR_CWSIF0275.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_CREATE_FAILURE_CWSIF0276=CWSIF0276E: Nu se poate crea un DataGraph SDO nou: excep\u0163ie {0}
+SOAP_CREATE_FAILURE_CWSIF0276.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SOAP_CREATE_FAILURE_CWSIF0276.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of child nodes
+BAD_HEADER_CHILD_CWSIF0281=CWSIF0281E: Intrarea antet con\u0163ine un num\u0103r gre\u015fit de obiecte de date copil. Se a\u015ftepta 1, s-au g\u0103sit {0}.
+BAD_HEADER_CHILD_CWSIF0281.explanation=Obiectul de date reprezent\u00e2nd un header de intrare nu a con\u0163inut num\u0103rul corect de obiecte de date copil.
+BAD_HEADER_CHILD_CWSIF0281.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare header de intrare con\u0163ine exact un copil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error URI, {1} is the error code, {2} is the additional data
+SOAP_PARSE_ERROR_CWSIF0291=CWSIF0291E: Nu se poate parsa mesajul. Eroare URI {0}, cod de eroare {1}, date suplimentare {2}
+SOAP_PARSE_ERROR_CWSIF0291.explanation=Parserul XML a raportat o eroare \u00een timpul proces\u0103rii unui mesaj SOAP.
+SOAP_PARSE_ERROR_CWSIF0291.useraction=Asigura\u0163i-v\u0103 c\u0103 mesajul este corect formatat XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0293=CWSIF0293E: S-a g\u0103sit un element nea\u015fteptat. Nume element {0}, spa\u0163iu nume pentru element {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0293.explanation=Parserul SOAP a a\u015fteptat un element Plic SOAP, dar a \u00eent\u00e2lnit elementul de mai sus.
+ENVELOPE_PARSE_ERROR_CWSIF0293.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0294=CWSIF0294E: S-a g\u0103sit un element nea\u015fteptat. Nume element {0}, spa\u0163iu nume pentru element {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0294.explanation=Parserul SOAP a a\u015fteptat un header SOAP sau un element corp, dar a \u00eent\u00e2lnit elementul de mai sus.
+ENVELOPE_PARSE_ERROR_CWSIF0294.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the mustUnderstand value
+MUST_UNDERSTAND_ERROR_CWSIF0295=CWSIF0295E: S-a g\u0103sit o valoare mustUnderstand nea\u015fteptat\u0103. Nume element {0}, spa\u0163iu nume pentru element {1}, valoare mustUnderstand {2}.
+MUST_UNDERSTAND_ERROR_CWSIF0295.explanation=Parserul SOAP Parser a g\u0103sit un atribut SOAP mustUnderstand cu o valoare incorect\u0103.
+MUST_UNDERSTAND_ERROR_CWSIF0295.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+NON_ROOT_ERROR_CWSIF0296=CWSIF0296E: S-a g\u0103sit un element corp SOAP non-r\u0103d\u0103cin\u0103 incorect. Nume element {0}, spa\u0163iu nume pentru element {1}.
+NON_ROOT_ERROR_CWSIF0296.explanation=Parserul SOAP a g\u0103sit un element corp SOAP non-root, dar elementul nu este codat SOAP.
+NON_ROOT_ERROR_CWSIF0296.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute value
+NON_ROOT_ERROR_CWSIF0297=CWSIF0297E: S-a g\u0103sit un atribut r\u0103d\u0103cin\u0103 SOAP incorect. Nume element {0}, spa\u0163iu nume pentru element {1}, valoare atribut root SOAP {2}.
+NON_ROOT_ERROR_CWSIF0297.explanation=Parserul SOAP a g\u0103sit un element cu un atribut SOAP root incorect.
+NON_ROOT_ERROR_CWSIF0297.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+NIL_DATA_ERROR_CWSIF0298=CWSIF0298E: S-au g\u0103sit date \u00een elementul nil. Nume element {0}, spa\u0163iu nume pentru element {1}, valoare date {2}.
+NIL_DATA_ERROR_CWSIF0298.explanation=Parserul SOAP a \u00eent\u00e2lnit date \u00eentr-un element care avea un atribut xsi:nil="true".
+NIL_DATA_ERROR_CWSIF0298.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile schemei XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the nested element name, {3} is the nested element namespace
+NIL_ELEMENT_ERROR_CWSIF0299=CWSIF0299E: S-a g\u0103sit un element \u00een elementul nil. Nume element {0}, spa\u0163iu nume pentru element {1}, nume element imbricat {2}, spa\u0163iu nume pentru element imbricat {3}
+NIL_ELEMENT_ERROR_CWSIF0299.explanation=Parserul SOAP a \u00eent\u00e2lnit un element \u00eentr-un element care avea un atribut xsi:nil="true".
+NIL_ELEMENT_ERROR_CWSIF0299.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile schemei XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute name, {3} is the attribute namespace
+NIL_ATTR_ERROR_CWSIF0300=CWSIF0300E: Atribut g\u0103sit \u00een elementul nil. Nume element {0}, spa\u0163iu nume pentru element {1}, nume atribut {2}, spa\u0163iu nume pentru atribut {3}
+NIL_ATTR_ERROR_CWSIF0300.explanation=Parserul SOAP a \u00eent\u00e2lnit un atribut \u00eentr-un element care avea un atribut xsi:nil="true".
+NIL_ATTR_ERROR_CWSIF0300.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile schemei XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the type URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0301=CWSIF0301E: Nu se poate parsa o valoare \u00een mesaj. Nume tip {0}, spa\u0163iu nume pentru tip {1}, date {2}
+VALUE_PARSE_ERROR_CWSIF0301.explanation=Parseul SOAP nu a putut s\u0103 fac\u0103 conversia valorii \u00eentr-o instan\u0163\u0103 de tip.
+VALUE_PARSE_ERROR_CWSIF0301.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu tipurile modelate \u00een WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0302=CWSIF0302E: S-a g\u0103sit un text nea\u015fteptat. Nume element {0}, spa\u0163iu nume pentru element {1}, date {2}.
+VALUE_PARSE_ERROR_CWSIF0302.explanation=Elementul XML con\u0163ine un anumit text, dar modelul WSDL nu permite acestui element s\u0103 con\u0163in\u0103 date.
+VALUE_PARSE_ERROR_CWSIF0302.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu tipurile modelate \u00een WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the xsi:type value
+XSI_TYPE_ERROR_CWSIF0303=CWSIF0303E: Atribut xsi:type \u00eent\u00e2lnit la procesarea numelui de element {0}, spa\u0163iu nume {1}, valoare xsi:type {2}
+XSI_TYPE_ERROR_CWSIF0303.explanation=Elementul XML con\u0163inea un atribut xsi:type, dar valoarea atributului nu a putut fi procesat\u0103.
+XSI_TYPE_ERROR_CWSIF0303.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile schemei XML.
+
+# -------------------------------------------------------------------------------------------------
+BODY_WSDL_MISMATCH_CWSIF0304=CWSIF0304E: Corpul mesajului nu s-a potrivit cu nicio defini\u0163ie din WSDL
+BODY_WSDL_MISMATCH_CWSIF0304.explanation=Corpul mesajului din mesajul SOAP nu se potrive\u015fte cu nici una dintre defini\u0163iile din WSDL. Aceasta poate fi din cauz\u0103 c\u0103 mesajul SOAP este incorect sau c\u0103 \u015firul format a putut s\u0103 identifice un WSDL gre\u015fit.
+BODY_WSDL_MISMATCH_CWSIF0304.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu WSDL-ul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+ID_ATTR_NOT_FOUND_CWSIF0305=CWSIF0305E: Un atribut ID nu poate fi g\u0103sit pentru un element copri SOAP non-r\u0103d\u0103cin\u0103. Detaliile elementului: nume {0}, spa\u0163iu nume {1}.
+ID_ATTR_NOT_FOUND_CWSIF0305.explanation=Fiecare element de corp SOAP non-root trebuie sa aibe un id de atribut cu o valoare unic\u0103.
+ID_ATTR_NOT_FOUND_CWSIF0305.useraction=Asigura\u0163i-v\u0103 c\u0103 mesajul dumneavoastr\u0103 respect\u0103 regulile de codare SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the id attribute
+HREF_NOT_FOUND_CWSIF0306=CWSIF0306E: Nu se face referin\u0163\u0103 la un element cu valoarea atributului ID {0}.
+HREF_NOT_FOUND_CWSIF0306.explanation=Fiecare element de corp SOAP non-root trebuie s\u0103 fie referit de c\u0103tre orice alta parte din mesaj.
+HREF_NOT_FOUND_CWSIF0306.useraction=Asigura\u0163i-v\u0103 c\u0103 mesajul dumneavoastr\u0103 respect\u0103 regulile de codare SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the href value
+INVALID_HREF_CWSIF0307=CWSIF0307E: Nu poate fi g\u0103sit un element care se potrive\u015fte cu valoarea atributului href {0}.
+INVALID_HREF_CWSIF0307.explanation=Un element SOAP codat folose\u015fte un atribut href, dar uu poate fi g\u0103sit un element cu un id de atribut care s\u0103 se potriveasc\u0103.
+INVALID_HREF_CWSIF0307.useraction=Asigura\u0163i-v\u0103 c\u0103 mesajul dumneavoastr\u0103 respect\u0103 regulile de codare SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the processing instruction target
+PI_PARSE_ERROR_CWSIF0308=CWSIF0308E: S-au g\u0103sit instruc\u0163iuni de procesare nea\u015fteptate. Nume element {0}, spa\u0163iu nume pentru element {1}, destina\u0163ie {2}.
+PI_PARSE_ERROR_CWSIF0308.explanation=Elementul XML a con\u0163inut o instruc\u0163iune de procesare, dar SOAP nu permite ca elementele s\u0103 con\u0163in\u0103 instruc\u0163iuni de procesare.
+PI_PARSE_ERROR_CWSIF0308.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+SIMPLE_ELEMENT_ERROR_CWSIF0309=CWSIF0309E: S-a g\u0103sit un element nea\u015fteptat. Nume element {0}, spa\u0163iu nume pentru element {1}.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.explanation=Elementul XML a con\u0163inut o valoare simpl\u0103, dar valoarea nu se potrive\u015fte \u00een graficul de date.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu tipurile modelate \u00een WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the attribute name, {3} is the attribute namespace
+ATTRIBUTE_ERROR_CWSIF0310=CWSIF0310E: S-a g\u0103sit un atribut nea\u015fteptat. Nume element {0}, spa\u0163iu nume pentru element {1}, nume atribut {2}, spa\u0163iu nume pentru atribut {3}
+ATTRIBUTE_ERROR_CWSIF0310.explanation=Elementul XML an con\u0163inut un atribut, dar atributul nu se potrive\u015fte \u00een graficul de date.
+ATTRIBUTE_ERROR_CWSIF0310.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu tipurile modelate \u00een WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_PARSE_FAILURE_CWSIF0311=CWSIF0311E: Nu se poate parsa mesajul: excep\u0163ie {0}
+JMF_PARSE_FAILURE_CWSIF0311.explanation=CMSG0001
+JMF_PARSE_FAILURE_CWSIF0311.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_LENGTH_FAILURE_CWSIF0312=CWSIF0312E: Nu se poate calcula lungimea mesajului: excep\u0163ie {0}
+JMF_LENGTH_FAILURE_CWSIF0312.explanation=CMSG0001
+JMF_LENGTH_FAILURE_CWSIF0312.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_WRITE_FAILURE_CWSIF0313=CWSIF0313E: Nu se poate scrie mesajul: excep\u0163ie {0}
+JMF_WRITE_FAILURE_CWSIF0313.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0313.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect length
+# {1} is the expected length
+JMF_WRITE_FAILURE_CWSIF0314=CWSIF0314E: Lungimea mesajului {0} nu se potrive\u015fte cu lungimea a\u015fteptat\u0103 {1}
+JMF_WRITE_FAILURE_CWSIF0314.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0314.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+JMF_FORMAT_ERROR_CWSIF0315=CWSIF0315E: \u015eir format incorect: {0}
+JMF_FORMAT_ERROR_CWSIF0315.explanation=CMSG0001
+JMF_FORMAT_ERROR_CWSIF0315.useraction=Asigura\u0163i-v\u0103 c\u0103 formatul mesajului respect\u0103 sintaxa corect\u0103 pentru JMF Data Access Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0321=CWSIF0321E: Nu se poate parsa mesajul: excep\u0163ie {0}
+BEAN_PARSE_FAILURE_CWSIF0321.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_PARSE_FAILURE_CWSIF0321.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+BEAN_CREATE_FAILURE_CWSIF0322=CWSIF0322E: A e\u015fuat crearea DataObject: nume tip p\u0103rinte {2}, nume proprietate {0}, spa\u0163iu nume {1}.
+BEAN_CREATE_FAILURE_CWSIF0322.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_CREATE_FAILURE_CWSIF0322.useraction=Asigura\u0163i-v\u0103 c\u0103 a\u0163i importat defini\u0163iile de scheme WSDL sau XML pentru mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+BEAN_PARSE_FAILURE_CWSIF0323=CWSIF0323E: Nu se poate determina tipul bazei pentru tipul derivat din restric\u0163ie: nume tip {0}, spa\u0163iu nume {1}.
+BEAN_PARSE_FAILURE_CWSIF0323.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_PARSE_FAILURE_CWSIF0323.useraction=Asigura\u0163i-v\u0103 ca defini\u0163iile de scheme WSDL sau XML pentru mesaj sunt corecte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the accessor method name
+# {3} is the target Java class name
+BEAN_WRITE_FAILURE_CWSIF0324=CWSIF0324E: A e\u015fuat ob\u0163inerea \u015fi invocarea unei metode \u00een timpul introspect\u0103rii unui Obiect ce reprezint\u0103 un tip enumerat: nume tip {0}, spa\u0163iu nume {1}, nume metod\u0103 {2}, nume clas\u0103 destina\u0163ie {3}.
+BEAN_WRITE_FAILURE_CWSIF0324.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_WRITE_FAILURE_CWSIF0324.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectele livrate se potrivesc metodelor corespunz\u0103toare de accesorizare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0325=CWSIF0325E: Nu se poate scrie mesaj: excep\u0163ie {0}
+BEAN_WRITE_FAILURE_CWSIF0325.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_WRITE_FAILURE_CWSIF0325.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0326=CWSIF0326E: A e\u015fuat ob\u0163inerea \u015fi invocarea unei metode \u00een timpul introspect\u0103rii unui Obiect bean: nume tip p\u0103rinte {2}, nume proprietate {0}, spa\u0163iu nume {1}, nume metod\u0103 {3}, nume clas\u0103 destina\u0163ie {4}.
+GET_FIELD_FAILURE_CWSIF0326.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+GET_FIELD_FAILURE_CWSIF0326.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectele livrate se potrivesc metodelor corespunz\u0103toare de accesorizare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0327=CWSIF0327E: A e\u015fuat ob\u0163inerea \u015fi invocarea unei metode \u00een timpul introspect\u0103rii unui Obiect bean: nume tip p\u0103rinte {2}, nume proprietate {0}, spa\u0163iu nume {1}, nume metod\u0103 {3}, nume clas\u0103 destina\u0163ie {4}.
+SET_FIELD_FAILURE_CWSIF0327.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SET_FIELD_FAILURE_CWSIF0327.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectele livrate se potrivesc metodelor corespunz\u0103toare de accesorizare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0328=CWSIF0328E: A e\u015fuat ob\u0163inerea \u015fi invocarea unei metode \u00een timpul introspect\u0103rii unui Obiect bean: nume tip p\u0103rinte {2}, nume proprietate {0}, spa\u0163iu nume {1}, nume metod\u0103 {3}, nume clas\u0103 destina\u0163ie {4}.
+SET_FIELD_FAILURE_CWSIF0328.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SET_FIELD_FAILURE_CWSIF0328.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectele livrate se potrivesc metodelor corespunz\u0103toare de accesorizare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+MIME_PARSE_FAILURE_CWSIF0329=CWSIF0329E: A e\u015fuat parsarea ata\u015famentului MIME: tip con\u0163inut {0}.
+MIME_PARSE_FAILURE_CWSIF0329.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+MIME_PARSE_FAILURE_CWSIF0329.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectele livrate sunt corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the fault feature name
+# {1} is the namespace
+# {2} is the location
+FAULT_PARSE_FAILURE_CWSIF0330=CWSIF0330E: A e\u015fuat crearea DataObject pentru mesajul de eroare SOAP: nume caracteristic\u0103 defect\u0103 {0}, spa\u0163iu nume {1}, loca\u0163ie {2}.
+FAULT_PARSE_FAILURE_CWSIF0330.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+FAULT_PARSE_FAILURE_CWSIF0330.useraction=Asigura\u0163i-v\u0103 ca defini\u0163iile de scheme WSDL sau XML sunt disponibile pentru mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0331=CWSIF0331E: A e\u015fuat ob\u0163inerea \u015fi invocarea unei metode \u00een timpul introspect\u0103rii unui Obiect bean: nume tip p\u0103rinte {2}, nume proprietate {0}, spa\u0163iu nume {1}, nume metod\u0103 {3}, nume clas\u0103 destina\u0163ie {4}.
+GET_FIELD_FAILURE_CWSIF0331.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+GET_FIELD_FAILURE_CWSIF0331.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectele livrate se potrivesc metodelor corespunz\u0103toare de accesorizare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the Java class name
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332=CWSIF0332E: A e\u015fuat crearea unei instan\u0163e noi a unui Obiect bean: nume tip p\u0103rinte {2}, nume proprietate {0}, spa\u0163iu nume {1}, nume clas\u0103 {3}.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.useraction=Asigura\u0163i-v\u0103 c\u0103 Obiectul bean poate fi instan\u0163iat folosind Class.newInstance().
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333=CWSIF0333E: A e\u015fuat localizarea modelului pentru crearea DataObject ce reprezint\u0103 un mesaj matrice codificat\u0103 SOAP: spa\u0163iu nume {0}, loca\u0163ie {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.useraction=Asigura\u0163i-v\u0103 ca defini\u0163iile de scheme WSDL sau XML sunt disponibile pentru mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334=CWSIF0334E: A e\u015fuat localizarea modelului pentru crearea DataObject ce reprezint\u0103 un mesaj matrice codificat\u0103 SOAP: spa\u0163iu nume {0}, loca\u0163ie {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.useraction=Asigura\u0163i-v\u0103 ca defini\u0163iile de scheme WSDL sau XML sunt disponibile pentru mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+# {1} is the content transfer encoding
+# {2} is the content id
+MIME_WRITE_FAILURE_CWSIF0335=CWSIF0335E: A e\u015fuat scrierea ata\u015famentului MIME: tip con\u0163inut {0}, codare transfer con\u0163inut {1}, id con\u0163inut {2}.
+MIME_WRITE_FAILURE_CWSIF0335.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+MIME_WRITE_FAILURE_CWSIF0335.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu crearea p\u0103r\u0163ii corp MIME.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation name
+# {1} is the message name
+FAULT_WRITE_FAILURE_CWSIF0336=CWSIF0336E: A e\u015fuat scrierea mesajului de eroare: nume mesaj {0}, nume opera\u0163ie {1}.
+FAULT_WRITE_FAILURE_CWSIF0336.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+FAULT_WRITE_FAILURE_CWSIF0336.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu crearea Elementului detaliu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_CREATE_FAILURE_CWSIF0338=CWSIF0338E: Nu se poate crea un DataGraph SDO nou: excep\u0163ie {0}
+BEAN_CREATE_FAILURE_CWSIF0338.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_CREATE_FAILURE_CWSIF0338.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0341=CWSIF0341E: Nu se poate parsa mesajul: excep\u0163ie {0}
+BEAN_PARSE_FAILURE_CWSIF0341.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_PARSE_FAILURE_CWSIF0341.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0342=CWSIF0342E: Nu se poate scrie mesaj: excep\u0163ie {0}
+BEAN_WRITE_FAILURE_CWSIF0342.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_WRITE_FAILURE_CWSIF0342.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_LENGTH_FAILURE_CWSIF0343=CWSIF0343E: Nu se poate calcula lungimea mesajului: excep\u0163ie {0}
+BEAN_LENGTH_FAILURE_CWSIF0343.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_LENGTH_FAILURE_CWSIF0343.useraction=Pentru informa\u0163ii suplimentare, analiza\u0163i mesajele de eroare \u00eenso\u0163itoare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the attribute value
+TYPE_MAPPING_FAILURE_CWSIF0346=CWSIF0346E: A e\u015fuat procesarea valorii atributului: nume tip {0}, spa\u0163iu nume {1}, valoare atribut {2}.
+TYPE_MAPPING_FAILURE_CWSIF0346.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+TYPE_MAPPING_FAILURE_CWSIF0346.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea livrat\u0103 pentru atribut este a unui tip corespunz\u0103tor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0347=CWSIF0347E: A e\u015fuat maparea tipului de schem\u0103 la o Clas\u0103 Java: nume tip {0}, spa\u0163iu nume {1}.
+TYPE_MAPPING_FAILURE_CWSIF0347.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+TYPE_MAPPING_FAILURE_CWSIF0347.useraction=Asigura\u0163i-v\u0103 c\u0103 a fost furnizat\u0103 o mapare corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0348=CWSIF0348E: A e\u015fuat maparea tipului de schem\u0103 la o Clas\u0103 Java: nume tip {0}, spa\u0163iu nume {1}.
+TYPE_MAPPING_FAILURE_CWSIF0348.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+TYPE_MAPPING_FAILURE_CWSIF0348.useraction=Asigura\u0163i-v\u0103 c\u0103 a fost furnizat\u0103 o mapare corespunz\u0103toare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+BEAN_FORMAT_ERROR_CWSIF0350=CWSIF0350E: \u015eir format incorect: {0}
+BEAN_FORMAT_ERROR_CWSIF0350.explanation=A ap\u0103rut o eroare \u00een timpul proces\u0103rii unei cereri, unui r\u0103spuns, sau a unui defect Web Services.
+BEAN_FORMAT_ERROR_CWSIF0350.useraction=Asigura\u0163i-v\u0103 c\u0103 formatul mesajului respect\u0103 sintaxa corect\u0103 pentru Bean Data Access Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+MESSAGE_FEATURE_CWSIF0353=CWSIF0353E: A e\u015fuat localizarea metadatelor pentru mesaj. spa\u0163iu nume pentru serviciu {0}, nume serviciu {1}, nume port {2}, nume opera\u0163ie {3}, nume mesaj {4}.
+MESSAGE_FEATURE_CWSIF0353.explanation=Parserul SOAP nu a putut s\u0103 localizeze metadatele mesajului pentru mesajul dat.
+MESSAGE_FEATURE_CWSIF0353.useraction=Asigura\u0163i-v\u0103 c\u0103 a\u0163i importat defini\u0163iile WSDL pentru mesaj.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the element name, {2} is the element namespace
+MIME_ELEM_ERROR_CWSIF0354=CWSIF0354E: S-a g\u0103sit un element nea\u015fteptat \u00een partea de mesaj. Nume parte component\u0103 mesaj {0},nume element {1}, spa\u0163iu nume pentru element {2}.
+MIME_ELEM_ERROR_CWSIF0354.explanation=Parserul SOAP a procesat o parte component\u0103 de mesaj a c\u0103rui con\u0163inut este delegat c\u0103tre un ata\u015fament MIME, dar partea component\u0103 con\u0163ine de asemenea un element imbricat.
+MIME_ELEM_ERROR_CWSIF0354.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attribute name, {2} is the attribute namespace
+MIME_ATTR_ERROR_CWSIF0355=CWSIF0355E: S-a g\u0103sit un atribut nea\u015fteptat \u00een partea de mesaj. Nume parte component\u0103 mesaj {0},nume atribut {1}, spa\u0163iu nume pentru atribut {2}.
+MIME_ATTR_ERROR_CWSIF0355.explanation=Parserul SOAP a procesat o parte component\u0103 de mesaj a c\u0103rui con\u0163inut este delegat c\u0103tre un ata\u015fament MIME, dar partea component\u0103 con\u0163ine de asemenea un atribut nea\u015fteptat.
+MIME_ATTR_ERROR_CWSIF0355.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the exception
+MIME_REF_ERROR_CWSIF0356=CWSIF0356E: Nu se poate procesa ata\u015famentul MIME. Nume parte component\u0103 mesaj {0}, excep\u0163ie {1}.
+MIME_REF_ERROR_CWSIF0356.explanation=Parserul SOAP a \u00eent\u00e2lnit o excep\u0163ie \u00een timp ce se procesa un ata\u015fament MIME referit de c\u0103tre partea component\u0103 a mesajului.
+MIME_REF_ERROR_CWSIF0356.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attachment reference
+MIME_REF_NOT_FOUND_CWSIF0357=CWSIF0357E: Nu se poate localiza ata\u015famentul MIME. Nume parte component\u0103 mesaj {0}, referin\u0163\u0103 {1}.
+MIME_REF_NOT_FOUND_CWSIF0357.explanation=Parserul SOAP nu poate g\u0103si ata\u015famentul MIME referit de partea component\u0103 a mesajului.
+MIME_REF_NOT_FOUND_CWSIF0357.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content id, {1} is the content type, {2} is the exception.
+MIME_IO_ERROR_CWSIF0358=CWSIF0358E: Nu se poate procesa ata\u015famentul MIME. ID con\u0163inut {0}, tip con\u0163inut {1}, excep\u0163ie {2}.
+MIME_IO_ERROR_CWSIF0358.explanation=Parserul SOAP a \u00eent\u00e2lnit o IOException \u00een timp ce se procesa un ata\u015fament MIME cu id-ul de con\u0163inut \u015fi tipul date.
+MIME_IO_ERROR_CWSIF0358.useraction=Asigura\u0163i-v\u0103 c\u0103 datele din mesaj sunt compatibile cu specifica\u0163iile SOAP.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+NO_DATA_MEDIATOR_CWSIF0362=CWSIF0362E: Formatul mesajului {0} este incorect
+NO_DATA_MEDIATOR_CWSIF0362.explanation=Formatul mesajului furnizat nu se potrive\u015fte cu un formatul mesajului a\u015fteptat.
+NO_DATA_MEDIATOR_CWSIF0362.useraction=Asigura\u0163i-v\u0103 c\u0103 este furnizat un format corect de mesaj.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This message is cloned as INVALID_ARGUMENT_CWSIF0381.
+INVALID_ARGUMENT_CWSIF0371=CWSIF0371E: Valoarea furnizat\u0103 {0} nu este valid\u0103 pentru parametrul {1} al metodei {2}
+INVALID_ARGUMENT_CWSIF0371.explanation=A fost livrat\u0103 o valoare de parametru care nu este permis\u0103 pentru metoda definit\u0103.
+INVALID_ARGUMENT_CWSIF0371.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrii valizi sunt transmi\u015fi c\u0103tre metoda \u00een cauz\u0103.
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_CONTENT_CWSIF0372=CWSIF0372E: A avut loc o excep\u0163ie IOException la ob\u0163inerea con\u0163inutului elementului mesaj.
+UNABLE_TO_GET_CONTENT_CWSIF0372.explanation=Nu a fost posibil s\u0103 se deserializeze elementul mesajului din cauza IOException legate.
+UNABLE_TO_GET_CONTENT_CWSIF0372.useraction=Investiga\u0163i \u015fi rezolva\u0163i problema descris\u0103 \u00een IOException legat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_COPY_ERROR_CWSIF0373=CWSIF0373E: A avut loc o excep\u0163ie \u00een timpul copierii unui element mesaj: {0}.
+ELEMENT_COPY_ERROR_CWSIF0373.explanation=Nu a fost posibil s\u0103 se copieze elementul mesajului din cauza unei Exception legate.
+ELEMENT_COPY_ERROR_CWSIF0373.useraction=Investiga\u0163i \u015fi rezolva\u0163i problema descris\u0103 \u00een Exception legat\u0103.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This is a clone of INVALID_ARGUMENT_CWSIF0371.
+INVALID_ARGUMENT_CWSIF0381=CWSIF0381E: Valoarea furnizat\u0103 {0} nu este valid\u0103 pentru parametrul {1} al metodei {2}
+INVALID_ARGUMENT_CWSIF0381.explanation=A fost livrat\u0103 o valoare de parametru care nu este permis\u0103 pentru metoda definit\u0103.
+INVALID_ARGUMENT_CWSIF0381.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrii valizi sunt transmi\u015fi c\u0103tre metoda \u00een cauz\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method in which the error was found.
+UNABLE_TO_GET_CONTENT_CWSIF0382=CWSIF0382E: A avut loc o excep\u0163ie IOException \u00een timpul serializ\u0103rii sau deserializ\u0103rii mesajului \u00een metoda {0}
+UNABLE_TO_GET_CONTENT_CWSIF0382.explanation=Nu a fost posibil s\u0103 se serializeze sau s\u0103 se deserializeze elementul mesajului din cauza IOException legate.
+UNABLE_TO_GET_CONTENT_CWSIF0382.useraction=Investiga\u0163i \u015fi rezolva\u0163i problema descris\u0103 \u00een IOException legat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the class type of the element that was supplied.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383=CWSIF0383E: Lista MimeElementList suport\u0103 doar intr\u0103ri MimeElement. Parametrul livrat a fost de tipul {0}.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.explanation=MimeElementList este o list\u0103 specializat\u0103 de implementare care suport\u0103 numai intr\u0103ri MimeElement.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.useraction=Crea\u0163i un obiect MimeElement care s\u0103 con\u0163in\u0103 parametrul dinaintea \u00eencercarii de a-l ad\u0103uga \u00een list\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# multipart/related should not be translated
+# {0} is the class type of the element that was supplied.
+NON_MULTIPART_MESSAGE_CWSIF0384=CWSIF0384E: Mesajul furnizat este de tipul {0} \u015fi nu este de tipul necesar de multipart/related.
+NON_MULTIPART_MESSAGE_CWSIF0384.explanation=Implementarea nu suport\u0103 tipul de mesaj livrat.
+NON_MULTIPART_MESSAGE_CWSIF0384.useraction=Nu livra\u0163i c\u0103tre acest utilitar mesaje cu tipul specificat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of contentType headers that exist in the message.
+CONTENT_HEADER_CARDINALITY_CWSIF0385=CWSIF0385E: {0} Intr\u0103ri antet ContentType au fost g\u0103site \u00een mesaj.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.explanation=Implementarea suport\u0103 numai mesaje care con\u0163in exact un singur c\u00e2mp ContentType header.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.useraction=Nu livra\u0163i la acest utilitar mesaje con\u0163in\u00e2nd zero, sau mai mult dec\u00e2t un singur c\u00e2mp de tip con\u0163inut.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_LIST_COPY_ERROR_CWSIF0386=CWSIF0386E: A avut loc o excep\u0163ie \u00een timpul copierii unei liste de elemente mesaj: {0}.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.explanation=Nu este posibil s\u0103 se copieze o list\u0103 cu elemente de mesaj din cauza unei Exception legate.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.useraction=Investiga\u0163i \u015fi rezolva\u0163i problema descris\u0103 \u00een Exception legat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name
+# {1} is the containing message name
+NO_TYPE_FOR_PART_CWSIF0431=CWSIF0431E: Partea WSDL {0} din mesajul {1} nu este asociat\u0103 cu un tip sau element.
+NO_TYPE_FOR_PART_CWSIF0431.explanation=Fiecare parte component\u0103 dintr-un mesaj WSDL trebuie asociat\u0103 cu un tip de schem\u0103 XML sau cu un element.
+NO_TYPE_FOR_PART_CWSIF0431.useraction=Asigura\u0163i-v\u0103 c\u0103 defini\u0163ia fiec\u0103rei p\u0103r\u0163i componente din mesaj include fie atributul 'tip' fie atributul 'element'.
+
+# -------------------------------------------------------------------------------------------------
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500=CWSIF0500E: Un JMS Map Message nu poate fi accesat ca un DataGraph SDO.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.explanation=Nu este suportat\u0103 accesarea unui JMS Map Message prin SDO.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.useraction=Rescrie\u0163i aplica\u0163ia pentru a folosi func\u0163ia suportat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501=CWSIF0501E: A avut loc o eroare la \u00eencercarea de a accesa DataGraph-ul sarcinii utile a unui mesaj ca o matrice de octe\u0163i. Excep\u0163ia legat\u0103 este {0}.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.explanation=A e\u015fuat serializarea pentru partea util\u0103 din DataGraph.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502=CWSIF0502E: A avut loc o eroare la \u00eencercarea de a crea DataGraph-ul sarcinii utile a unui mesaj dintr-o matrice de octe\u0163i folosind formatul {0}. Excep\u0163ia legat\u0103 este {1}.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.explanation=A e\u015fuat parsarea matricii de octe\u0163i pentru crearea DataGraph-ului.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the DataGraph format of the current message
+# {1} is the DataGraph format that was passed in to change the current message to
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503=CWSIF0503E: Transcodarea din formatul {0} \u00een formatul {1} nu este suportat\u0103.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.explanation=Nu este suportat\u0103 transcodarea dintre formatul curent al DataGraph-ului mesajului SDO \u015fi noul format de DataGraph.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.useraction=Rescrie\u0163i aplica\u0163ia pentru a folosi func\u0163ia suportat\u0103.
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504=CWSIF0504E: A avut loc o eroare la \u00eencercarea de a crea DataGraph-ul sarcinii utile a unui mesaj dintr-un argument matrice de octe\u0163i nul,folosind formatul {0}. Excep\u0163ia legat\u0103 este {1}.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.explanation=Eset necesar\u0103 o matice de octe\u0163i ne-nul\u0103 pentru a construi un DataGraph cu acest format.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+WSDL_MISSING_CWSIF0600=CWSIF0600E: \u015eirul format a identificat un port numit {0} \u00eentr-un serviciu cu numele {1} \u015fi spa\u0163iu numele {2} la loca\u0163ia WSDL {3}. WSDL nu pote fi localizat.
+WSDL_MISSING_CWSIF0600.explanation=WSDL-ul identificat prin \u015firul format nu poate fi localizat. Aceasta poate fi din cauz\u0103 c\u0103 loca\u0163ia din format este incorect\u0103 sau din cauz\u0103 c\u0103 WSDL nu a fost implementat.
+WSDL_MISSING_CWSIF0600.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ia WSDL din \u015firul format este corect\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+SERVICE_MISSING_CWSIF0601=CWSIF0601E: \u015eirul format a identificat un port numit {0} \u00eentr-un serviciu cu numele {1} \u015fi spa\u0163iu numele {2} la loca\u0163ia WSDL {3}. WSDL-ul a fost localizat, dar nu con\u0163inea serviciul sepcificat.
+SERVICE_MISSING_CWSIF0601.explanation=\u015eirul format nu s-a potrivit cu defini\u0163iile din WSDL. Aceasta poate fi din cauz\u0103 c\u0103 numele serviciului sau spa\u0163iul nume din format este incorect\u0103 sau din cauz\u0103 c\u0103 a fost implementat un WSDL gre\u015fit.
+SERVICE_MISSING_CWSIF0601.useraction=Asigura\u0163i-v\u0103 c\u0103 numele serviciului \u015fi spa\u0163iul nume din \u015firul format se potrivesc cu defini\u0163iile din WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+PORT_MISSING_CWSIF0602=CWSIF0602E: \u015eirul format a identificat un port numit {0} \u00eentr-un serviciu cu numele {1} \u015fi spa\u0163iu numele {2} la loca\u0163ia WSDL {3}. Serviciul a fost localizat, dar nu con\u0163inea portul specificat.
+PORT_MISSING_CWSIF0602.explanation=\u015eirul format nu s-a potrivit cu defini\u0163iile din WSDL. Aceasta poate fi din cauz\u0103 c\u0103 numele portului din format este incorect\u0103 sau din cauz\u0103 c\u0103 a fost implementat un WSDL gre\u015fit.
+PORT_MISSING_CWSIF0602.useraction=Asigura\u0163i-v\u0103 c\u0103 numele portului din \u015firul format se potrive\u015fte cu defini\u0163ia din WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+BINDING_MISSING_CWSIF0603=CWSIF0603E: \u015eirul format a identificat un port numit {0} \u00eentr-un serviciu cu numele {1} \u015fi spa\u0163iu numele {2} la loca\u0163ia WSDL {3}. Portul a fost localizat, dar con\u0163inea o referin\u0163a c\u0103tre o leg\u0103tur\u0103.
+BINDING_MISSING_CWSIF0603.explanation=\u015eirul format nu s-a potrivit cu defini\u0163iile din WSDL. Aceasta poate fi din cauz\u0103 c\u0103 WSDL este incomplet sau din cauz\u0103 c\u0103 a fost implementat un WSDL gre\u015fit.
+BINDING_MISSING_CWSIF0603.useraction=Asigura\u0163i-v\u0103 c\u0103 portul este asociat cu o leg\u0103tur\u0103 \u00een WSDL.
+
+# -------------------------------------------------------------------------------------------------
+DIFFERENT_LENGTH_LISTS_CWSIF0700=CWSIF0700E: Mesajul de mapare nu are un num\u0103r egal de nume \u015fi valori
+DIFFERENT_LENGTH_LISTS_CWSIF0700.explanation=Lista cu nume de h\u0103r\u0163i \u015fi lista cu valori de h\u0103r\u0163i trebuie s\u0103 aibe acea\u015fi lungime.  \u00cempreun\u0103 ele reprezint\u0103 perechile de nume \u015fi valori ale mesajului hart\u0103.
+DIFFERENT_LENGTH_LISTS_CWSIF0700.useraction=Asigura\u0163i-v\u0103 c\u0103 ambele liste au acea\u015fi lungime.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+JMS_FORMAT_ERROR_CWSIF0711=CWSIF0711E: \u015eir format incorect: {0}
+JMS_FORMAT_ERROR_CWSIF0711.explanation=\u015eirul format nu se potrive\u015fte cu nici un \u015fir format recunoscut pentru mesajele JMS.
+JMS_FORMAT_ERROR_CWSIF0711.useraction=Asigura\u0163i-v\u0103 c\u0103 formatul de mesaj este corect pentru tipul de mesaj suportat pentru mesaje JMS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_WRITE_ERROR_CWSIF0712=CWSIF0712E: Mesajul JMS nu poate fi serializat, excep\u0163ie: {0}
+JMS_WRITE_ERROR_CWSIF0712.explanation=Programul \u00eencearc\u0103 s\u0103 serializeze un mesaj JMS \u015fi a e\u015fuat.
+JMS_WRITE_ERROR_CWSIF0712.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the existing elements type name
+JMS_BAD_MODEL_ERROR_CWSIF0713=CWSIF0713E: Un DataObject de tipul {0} nu este potrivit ca sarcina util\u0103 a unui mesaj JMS.
+JMS_BAD_MODEL_ERROR_CWSIF0713.explanation=Programul \u00eencearc\u0103 s\u0103 verifice c\u00e2t de potrivit este DataObject-ul livrat pentru a forma partea util\u0103 a unui mesaj JMS.
+JMS_BAD_MODEL_ERROR_CWSIF0713.useraction=Modifica\u0163i programul pentru a livra un DataObject cu un tip corespunz\u0103tor.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_PARSER_CONFIG_ERROR_CWSIF0714=CWSIF0714E: A avut loc o eroare \u00een timpul configur\u0103rii unui parser XML pentru a citi un mesaj flux JMS;  excep\u0163ie: {0}
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.explanation=A ap\u0103rut o eroare nea\u015fteptat\u0103 \u00een timp ce se configura un parser XML.
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_PARSE_ERROR_CWSIF0715=CWSIF0715E: A avut loc o eroare \u00een timpul pars\u0103rii sarcinii utile a unui mesaj flux JMS;  excep\u0163ie: {0}
+JMS_STREAM_PARSE_ERROR_CWSIF0715.explanation=Partea util\u0103 a unui mesaj de flux JMS nu este valid\u0103 XML.
+JMS_STREAM_PARSE_ERROR_CWSIF0715.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_READ_IO_ERROR_CWSIF0716=CWSIF0716E: O eroare de intrare/ie\u015fire a avut loc \u00een Serviciul JMS Data Access; excep\u0163ie: {0}
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.explanation=A survenit o eroare de intrare/ie\u015fire \u00een procesarea SAX \u00een timp ce se \u00eencerca parsarea p\u0103r\u0163ii utile a unui mesaj de flux JMS.
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717=CWSIF0717E: O eroare de intrare/ie\u015fire a avut loc \u00een Serviciul JMS Data Access; excep\u0163ie: {0}
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.explanation=A survenit o eroare de intrare/ie\u015fire \u00een timp ce se \u00eencerca scrierea p\u0103r\u0163ii utile a unui mesaj de flux JMS.
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_TYPE_ERROR_CWSIF0718=CWSIF0718E: A avut loc o eroare \u00een timpul \u00eencerc\u0103rii de a scrie un mesaj flux JMS ce con\u0163ine un element de tipul {0}.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.explanation=Tipul elementului \u00een cauz\u0103 nu este permis \u00eentr-un mesaj de flux JMS.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.useraction=Modifica\u0163i programul pentru a v\u0103 asigura c\u0103 obiectele de acest tip nu sunt inserate \u00een mesajul de flux.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_WRITE_ERROR_CWSIF0719=CWSIF0719E: A avut loc o eroare \u00een timpul scrierii sarcinii utile a unui mesaj flux JMS;  excep\u0163ie: {0}
+JMS_STREAM_WRITE_ERROR_CWSIF0719.explanation=A survenit o eroare nea\u015fteptat\u0103 \u00een timp ce se scria \u00een bi\u0163i partea util\u0103 a unui mesaj de flux JMS;
+JMS_STREAM_WRITE_ERROR_CWSIF0719.useraction=Analiza\u0163i excep\u0163ia legat\u0103, pentru a determina problema.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type of the supplied data
+# {1} is the supplied format
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720=CWSIF0720E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a verifica gradul de potrivire a unui DataOject furnizat, de tipul {0} pentru a forma sarcina util\u0103 a unui mesaj JMS cu formatul {1}.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.explanation=Tipul DataObject-ului livrat pentru partea util\u0103 a unui mesaj JMS trebuie s\u0103 fie compatibil\u0103 cu formatul acelui mesaj.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.useraction=Modifica\u0163i programul pentu a v\u0103 asigura c\u0103 DataObject-ul livrat formatul sunt compatibile.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721=CWSIF0721E: A ap\u0103rut o eroare la ini\u0163ializarea clasei, excep\u0163ie: {0}
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.explanation=CMSG0001
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIF9999=CWSIF9999E: ''{0}''
+TEMPORARY_CWSIF9999.explanation=Dac\u0103 acest mesaj nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele adiacente pentru ajutor suplimentar.
+TEMPORARY_CWSIF9999.useraction=Pentru mai multe informa\u0163ii, analiza\u0163i mesajele adiacente.

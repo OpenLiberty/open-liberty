@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: Serverul de nume CORBA este acum disponibil la {0}.
+NAME_SERVER_AVAILABLE.explanation=Acest mesaj este pur informativ.
+NAME_SERVER_AVAILABLE.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: Serverul de nume CORBA nu mai este disponibil la {0}.
+NAME_SERVER_UNAVAILABLE.explanation=Acest mesaj este pur informativ.
+NAME_SERVER_UNAVAILABLE.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: Cererea c\u0103tre serverul securizat de pe gazda {0} a e\u015fuat deoarece configura\u0163ia curent\u0103 nu are securitatea activat\u0103. Trebuie s\u0103 configura\u0163i CSIv2 (Common Secure Interoperability Version 2) pe partea client (ie\u015fire) prin includerea unui element keyStore \u015fi ad\u0103ugarea unei versiuni corespunz\u0103toare a caracteristicii appSecurity \u00eentr-un server sau versiunea corespunz\u0103toare a caracteristicii appSecurityClient \u00eentr-un container de client aplica\u0163ie. 
+PORT_ZERO.explanation= O cerere la un server pe gazda specificat\u0103 a e\u015fuat. Serverul c\u0103ruia i-a fost trimis\u0103 cererea are securitatea CSIv2 activat\u0103, dar configura\u0163ia curent\u0103 nu o are. Un client care se conecteaz\u0103 la acel server trebuie \u015fi el configurat cu securitate CSIv2 \u015fi SSL (Secure Sockets Layer).
+PORT_ZERO.useraction= Trebuie s\u0103 configura\u0163i CSIv2 (Common Secure Interoperability Version 2) pe partea client (ie\u015fire) prin includerea unui element keyStore \u015fi ad\u0103ugarea unei versiuni corespunz\u0103toare a caracteristicii appSecurity \u00eentr-un server sau versiunea corespunz\u0103toare a caracteristicii appSecurityClient \u00eentr-un container de client aplica\u0163ie. Consulta\u0163i documenta\u0163ia pentru a determina versiunea curent\u0103 a caracteristicilor appSecurity sau appSecurityClient de ad\u0103ugat la configura\u0163ia dumneavoastr\u0103 \u015fi configura\u0163ia necesar\u0103. 

@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Support for predefined JNDI name java:comp/InAppClientContainer
+Bundle-SymbolicName: com.ibm.ws.javaee.platform.v7.jndi
+Bundle-Description: JavaEE 7.0 service for predefined JNDI name java:comp/InAppClientContainer, version ${bVersion}
+
+Private-Package: \
+  com.ibm.ws.javaee.platform.v7.jndi.*
+    
+-dsannotations: \
+  com.ibm.ws.javaee.platform.v7.jndi.internal.InAppClientContainerNamingHelper    
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.container.service;version=latest

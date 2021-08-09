@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Could not convert the application {0} to a thin application because of the exception {1}.
+warning.could.not.thin.application.explanation=The application could not be converted to a thin application. The application will continue to run from the original JAR. 
+warning.could.not.thin.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application. 
+
+error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
+
+error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
+
+error.missing.servlet=CWWKC0254E: The application failed to start because it requires a servlet feature to be configured in the server.xml file.
+error.missing.servlet.explanation=The application is a web application, and it requires a servlet feature to be configured in the server.xml file.
+error.missing.servlet.useraction=Configure a servlet feature in the server.xml file.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. You cannot configure multiple Spring Boot applications in the same server configuration.
+error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
+error.multiple.applications.not.allowed.useraction=Configure only one Spring Boot application per server configuration.
+
+error.no.manifest.found=CWWKC0256E: No META-INF/MANIFEST.MF file found for the Spring Boot application {0}.
+error.no.manifest.found.explanation=Spring Boot applications must contain a META-INF/MANIFEST.MF file.
+error.no.manifest.found.useraction=Configure a valid Spring Boot application, which contains a META-INF/MANIFEST.MF file, with the server.
+
+error.no.spring.class.found=CWWKC0257E: The Spring Boot application META-INF/MANIFEST.MF file must specify a Start-Class header.
+error.no.spring.class.found.explanation=Spring Boot applications must contain a main class specified by the Start-Class manifest header.
+error.no.spring.class.found.useraction=Configure a valid Spring Boot application, which contains a Start-Class manifest header, with the server.
+
+error.missing.ssl=CWWKC0258E: The application failed to start because it requires an SSL feature to be configured in the server.xml file.
+error.missing.ssl.explanation=The application is a secure application, and it requires an SSL feature to be configured in the server.xml file.
+error.missing.ssl.useraction=Configure the transportSecurity-1.0 feature in the server.xml file.
+
+error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
+error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+# CWWKC0260E: GOT REMOVED
+
+warning.spring_config.ignored.compression=CWWKC0261W: Compression has been enabled by the application. Compression is not supported and the setting will be ignored.
+warning.spring_config.ignored.compression.explanation=Compression is not supported and the setting will be ignored, but the application will continue to function otherwise.
+warning.spring_config.ignored.compression.useraction=No user action is necessary.
+
+warning.spring_config.ignored.session=CWWKC0262W: Session timeout or session persistence has been configured by the application. These session settings must be configured in the server.xml file.
+warning.spring_config.ignored.session.explanation=Session timeout and session persistence must be configured in the server.xml file. These application session settings will be ignored.
+warning.spring_config.ignored.session.useraction=Configure session timeout and session persistence in the server.xml file.
+
+error.wrong.spring.boot.version=CWWKC0263E: The Spring Boot version {0} is not supported. A Spring Boot version within the range {1} is required.
+error.wrong.spring.boot.version.explanation=A Spring Boot version has been detected that is not supported by the server.
+error.wrong.spring.boot.version.useraction=Update the Spring Boot application to use a version of Spring Boot that is within the required version range.
+
+warning.application.started.event.timeout=CWWKC0264W: The {0} application did not issue the {1} event in {2} minutes.
+warning.application.started.event.timeout.explanation=The application did not issue the starting event in the expected time. The server might be overloaded or the application might be large. If the application is starting as part of server startup, the sever startup can finish without waiting for the application to start.
+warning.application.started.event.timeout.useraction=If the application eventually starts, then no action is required. If the application does not start, check the server logs to see whether other messages indicate a cause.
+
+warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: The application failed to start because the packaged Liberty server JAR file is not valid.
+error.invalid.packaged.liberty.jar.explanation=The packaged Liberty server JAR file is missing a Server-Name manifest header, entries for the server root, or entries for the lib.index.cache directory.
+error.invalid.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: The application failed to start because the Spring Boot application was not found inside the packaged Liberty Server JAR file.
+error.application.not.found.inside.packaged.liberty.jar.explanation=The packaged Liberty Server JAR file must contain a configured Spring Boot application.
+error.application.not.found.inside.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.

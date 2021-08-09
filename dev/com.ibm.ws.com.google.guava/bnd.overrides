@@ -1,0 +1,33 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: google.concurrent
+Bundle-Description: google.concurrent; version=30.1
+Bundle-SymbolicName: com.ibm.ws.com.google.guava
+
+Export-Package: \
+  com.google.common.annotations;version="30.1",\
+  com.google.common.base;version="30.1",\
+  com.google.common.cache;version="30.1",\
+  com.google.common.collect;version="30.1",\
+  com.google.common.escape;version="30.1",\
+  com.google.common.eventbus;version="30.1",\
+  com.google.common.graph;version="30.1",\
+  com.google.common.hash;version="30.1",\
+  com.google.common.html;version="30.1",\
+  com.google.common.io;version="30.1",\
+  com.google.common.math;version="30.1",\
+  com.google.common.net;version="30.1",\
+  com.google.common.primitives;version="30.1",\
+  com.google.common.reflect;version="30.1",\,
+  com.google.common.util.concurrent;version="30.1",\
+  com.google.common.xml;version="30.1"
+
+Private-Package: com.google.common.*
+
+# Mimic the Import-Package header from the original JAR.  However, the code
+# paths we use do require javax.inject, so make that non-optional.
+# making javax.inject optional since opensaml utilities need guava classes and do not have dependency on javax.inject
+Import-Package: javax.annotation; resolution:=optional, \
+  javax.inject; resolution:=optional, \
+  sun.misc; resolution:=optional

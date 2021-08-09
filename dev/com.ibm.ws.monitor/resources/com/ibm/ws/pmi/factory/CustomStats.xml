@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!DOCTYPE MBean SYSTEM "MbeanDescriptor.dtd">
+<MBean type="CustomStats"
+  version="5.0"
+  platform="dynamicproxy"
+  stateObjectClass="com.ibm.ws.pmi.dynamicproxy.MBeanStatsStateObject"
+  eventHandlerClass="com.ibm.ws.pmi.dynamicproxy.StatsAggregatorEventHandler"
+  aggregationHandlerClass="com.ibm.ws.pmi.dynamicproxy.MBeanStatsAggregationHandler"
+
+  description="Management interface for custom stats created using Custom PMI API.">
+
+  <parentType type="StatisticsProvider"/>
+</MBean>
+

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2012, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6" metadata-complete="false">
+  <resourceadapter>
+    <resourceadapter-class>fat.configpropsra.adapter.MapResourceAdapter</resourceadapter-class>
+
+    <!-- We don't currently support primitives. -->
+<!--
+    <config-property>
+      <config-property-name>propInt1RA_DD</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>1000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInt1RA_WLP</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>1000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInt1_Anno</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>1000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInt1_DD</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>1000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInt1_WLP</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>1000</config-property-value>
+    </config-property>
+-->
+
+    <config-property>
+      <config-property-name>propInteger2RA_DD</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>2000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInteger2RA_WLP</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>2000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInteger2_Anno</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>2000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInteger2_DD</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>2000</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propInteger2_WLP</config-property-name>
+      <config-property-type>java.lang.Integer</config-property-type>
+      <config-property-value>2000</config-property-value>
+    </config-property>
+
+    <config-property>
+      <config-property-name>propStringRA_DD</config-property-name>
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-value>RA Deployment Descriptor Default Value</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propStringRA_WLP</config-property-name>
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-value>RA Deployment Descriptor Default Value</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propString_Anno</config-property-name>
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-value>RA Deployment Descriptor Default Value</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propString_DD</config-property-name>
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-value>RA Deployment Descriptor Default Value</config-property-value>
+    </config-property>
+    <config-property>
+      <config-property-name>propString_WLP</config-property-name>
+      <config-property-type>java.lang.String</config-property-type>
+      <config-property-value>RA Deployment Descriptor Default Value</config-property-value>
+    </config-property>
+    
+    <outbound-resourceadapter>
+      <connection-definition>
+        <managedconnectionfactory-class>fat.configpropsra.adapter.MapManagedConnectionFactory</managedconnectionfactory-class>
+
+        <!-- We don't currently support primitives. -->
+<!--
+        <config-property>
+          <config-property-name>propInt1_DD</config-property-name>
+          <config-property-type>java.lang.Integer</config-property-type>
+          <config-property-value>1111</config-property-value>
+        </config-property>
+        <config-property>
+          <config-property-name>propInt1_WLP</config-property-name>
+          <config-property-type>java.lang.Integer</config-property-type>
+          <config-property-value>1111</config-property-value>
+        </config-property>
+-->
+
+        <config-property>
+          <config-property-name>propInteger2_DD</config-property-name>
+          <config-property-type>java.lang.Integer</config-property-type>
+          <config-property-value>2222</config-property-value>
+        </config-property>
+        <config-property>
+          <config-property-name>propInteger2_WLP</config-property-name>
+          <config-property-type>java.lang.Integer</config-property-type>
+          <config-property-value>2222</config-property-value>
+        </config-property>
+
+        <config-property>
+          <config-property-name>propString_DD</config-property-name>
+          <config-property-type>java.lang.String</config-property-type>
+          <config-property-value>MCF Deployment Descriptor Default Value</config-property-value>
+        </config-property>
+        <config-property>
+          <config-property-name>propString_WLP</config-property-name>
+          <config-property-type>java.lang.String</config-property-type>
+          <config-property-value>MCF Deployment Descriptor Default Value</config-property-value>
+        </config-property>
+
+        <connectionfactory-interface>java.util.Map</connectionfactory-interface> 
+        <connectionfactory-impl-class>java.util.TreeMap</connectionfactory-impl-class> 
+        <connection-interface>java.lang.Object</connection-interface> 
+        <connection-impl-class>java.lang.Object</connection-impl-class> 
+      </connection-definition> 
+    </outbound-resourceadapter>
+  </resourceadapter>
+</connector>

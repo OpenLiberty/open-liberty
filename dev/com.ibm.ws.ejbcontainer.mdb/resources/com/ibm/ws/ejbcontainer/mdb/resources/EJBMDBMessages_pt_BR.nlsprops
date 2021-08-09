@@ -1,0 +1,88 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: O terminal de mensagens para o bean acionado por mensagens {0} foi ativado e est\u00e1 pronto para aceitar mensagens. 
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=A especifica\u00e7\u00e3o de ativa\u00e7\u00e3o para o bean acionado por mensagens est\u00e1 dispon\u00edvel e o terminal de mensagens foi ativado e est\u00e1 pronto para aceitar mensagens.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: O terminal de mensagens para o bean acionado por mensagens {0} foi desativado e est\u00e1 indispon\u00edvel para aceitar mensagens.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=O bean acionado por mensagens est\u00e1 sendo removido ou a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o n\u00e3o est\u00e1 mais dispon\u00edvel. O terminal de mensagens n\u00e3o est\u00e1 mais dispon\u00edvel para aceitar mensagens.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: O terminal de mensagens para o bean acionado por mensagens {0} n\u00e3o pode ser ativado porque a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {1} n\u00e3o est\u00e1 dispon\u00edvel. O terminal de mensagens n\u00e3o receber\u00e1 mensagens at\u00e9 que a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o fique dispon\u00edvel.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=O servidor est\u00e1 iniciando o bean acionado por mensagens, mas n\u00e3o consegue ativar o terminal de mensagens porque a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o n\u00e3o p\u00f4de ser localizada. O terminal de mensagens n\u00e3o receber\u00e1 mensagens at\u00e9 que o terminal possa ser ativado.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verifique se uma especifica\u00e7\u00e3o de ativa\u00e7\u00e3o foi configurada com o nome especificado.  Se a configura\u00e7\u00e3o existir, aguarde a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o ficar dispon\u00edvel.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W:  O terminal de mensagem do bean acionado por mensagens {0} n\u00e3o pode ser ativado porque o destino {1} n\u00e3o est\u00e1 dispon\u00edvel. O terminal de mensagem n\u00e3o receber\u00e1 mensagens at\u00e9 que o destino esteja dispon\u00edvel.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation= O servidor est\u00e1 iniciando o bean acionado por mensagens, mas n\u00e3o conseguiu ativar o terminal de mensagem, porque o destino n\u00e3o foi localizado. O terminal de mensagens n\u00e3o receber\u00e1 mensagens at\u00e9 que o terminal possa ser ativado.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction= Verifique se um destino foi configurado com o nome especificado. Se a configura\u00e7\u00e3o existir, aguarde at\u00e9 que o destino se torne dispon\u00edvel.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: O terminal de mensagem para o bean acionado por mensagens {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o foi ativado porque a especifica\u00e7\u00e3o da ativa\u00e7\u00e3o {3} foi configurada com autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=O terminal de mensagem n\u00e3o foi ativado porque a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o foi configurada com autoStart=false.  O terminal de mensagem ser\u00e1 ativado quando for emitido um comando de continua\u00e7\u00e3o.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: A opera\u00e7\u00e3o de pausa n\u00e3o teve nenhum efeito porque o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} j\u00e1 est\u00e1 pausado.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=O terminal de mensagem s\u00f3 pode ser pausado quando ele est\u00e1 em estado ativo.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: A opera\u00e7\u00e3o de continua\u00e7\u00e3o n\u00e3o teve nenhum efeito porque o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} j\u00e1 est\u00e1 ativo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=O terminal de mensagem s\u00f3 pode ser retomado quando ele est\u00e1 em um estado inativo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: A solicita\u00e7\u00e3o para pausar o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o foi conclu\u00edda com sucesso porque o terminal n\u00e3o est\u00e1 ativo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=O terminal de mensagem s\u00f3 pode ser pausado quando ele est\u00e1 em estado ativo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Aguarde at\u00e9 que o terminal de mensagem esteja em um estado ativo antes de tentar pausar.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: A solicita\u00e7\u00e3o para continuar o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o foi conclu\u00edda com sucesso porque o terminal n\u00e3o est\u00e1 pausado.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=O terminal de mensagem s\u00f3 pode ser continuado quando ele est\u00e1 em um estado pausado.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Aguarde at\u00e9 que o terminal de mensagem esteja em um estado pausado antes de tentar continuar.

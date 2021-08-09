@@ -1,0 +1,322 @@
+###############################################################################
+# Copyright (c) 2001, 2004 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIMessages.nlsprops
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring Instrumentation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# Warning message when a null path is passed to PMI
+PMI0001W=CWPMI0001W: O cale nul\u0103 este transmis\u0103 la PMI: {0}
+PMI0001W.explanation=O cale care este nul\u0103 sau nevalid\u0103 este transmis\u0103 \u00een PMI (Performance Monitoring Infrastructure). PMI utilizeaz\u0103 identificatorul de cale pentru a aranja num\u0103r\u0103torii care sunt utiliza\u0163i pentru urm\u0103rirea statisticilor aplica\u0163iei.  PMI \u00eencepe cu o cale r\u0103d\u0103cin\u0103 \u015fi toate componentele \u015fi aplica\u0163iile WebSphere \u00ee\u015fi stocheaz\u0103 statisticile ca ramuri ale c\u0103ii r\u0103d\u0103cin\u0103.  C\u00e2nd se transmite o cale nul\u0103 la PMI, aceasta \u00eempiedic\u0103 PMI s\u0103 \u00eendeplineasc\u0103 cererea care se face din ea, deoarece nu poate localiza elementul care este specificat.
+PMI0001W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find a PMI module the mbean
+PMI0002W=CWPMI0002W: Nu poate g\u0103si un nume modul PMI pentru MBean: {0}
+PMI0002W.explanation=Numele Mbean (Bean gestionat) care este specificat de apelantul PMI (Performance Monitoring Infrastructure) nu poate fi potrivit cu un nume PMI intern.  \u00cen specifica\u0163ia JMX (Java Management Extensions), MBean-urile sunt obiecte java care reprezint\u0103 o resurs\u0103 gestionabil\u0103.  Resursele PMI sunt adresabile printr-o interfa\u0163\u0103 MBean.  Dac\u0103 numele specificat de MBean nu se potrive\u015fte unui nume PMI \u00eenc\u0103rcat momentan, se genereaz\u0103 avertismentul.  Cauza acestei probleme este o eroare f\u0103cut\u0103 de aplica\u0163ia apelant\u0103 sau de faptul c\u0103 aplica\u0163ia apelant\u0103 \u00eencearc\u0103 s\u0103 fac\u0103 referire la un nume PMI care nu este \u00eenc\u0103rcat de Serverul de aplica\u0163ii.
+PMI0002W.useraction=Primi\u0163i acest mesaj c\u00e2nd utiliza\u0163i o unealt\u0103 de monitorizare a performan\u0163ei de ter\u0163\u0103 parte pentru a vizualiza statisticile PMI. Verifica\u0163i configura\u0163ia c\u0103 este corect\u0103 pentru unealt\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when multiple ObjectNames are found but only a single is expected
+PMI0003W=CWPMI0003W: MultipleObjectNamesExistException: cheia MBean este: {0}
+PMI0003W.explanation=Numele Mbean (Bean gestionat) care este specificat de apelantul PMI (Performance Monitoring Infrastructure) este potrivit cu mai mult de un nume PMI. \u00cen specifica\u0163ia JMX (Java Management Extensions), MBean-urile sunt obiecte java care reprezint\u0103 o resurs\u0103 gestionabil\u0103.  Resursele PMI sunt adresabile printr-o interfa\u0163\u0103 MBean. Dac\u0103 numele MBean specificat se potrive\u015fte cu mai mult de un nume PMI, apare aceast\u0103 eroare.
+PMI0003W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to create AdminUtilImpl
+PMI0004W=CWPMI0004W: Excep\u0163ie la ob\u0163inerea AdminUtilImpl \u00een PmiJmxMapper: {0}
+PMI0004W.explanation=Clasa PmiJmxMapper nu poate crea o nou\u0103 clas\u0103 AdminUtil. Interfa\u0163a AdminUtil permite PMI s\u0103 acceseze obiectul administrativ, de care JMX (Java Management Extensions) are nevoie pentru conectivitate.
+PMI0004W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected null parameter is passed to PMI
+PMI0005W=CWPMI0005W: Parametrul nul este transmis la PMI: {0}
+PMI0005W.explanation=Acest eveniment este declan\u015fat c\u00e2nd PMI (Performance Monitoring Infrastructure) realizeaz\u0103 o actualizare \u015fi unul dintre parametrii care sunt trimi\u015fi de clientul PMI este nul.
+PMI0005W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot a mbean for the given data descriptor
+PMI0006W=CWPMI0006W: Nu poate g\u0103si un mbean pentru descriptorul de date PMI: {0}
+PMI0006W.explanation=PMI (Performance Monitoring Infrastructure) nu poate potrivi un nume PMI cu MBean-ul (Bean gestionat) s\u0103u asociat. \u00cen specifica\u0163ia JMX (Java Management Extensions), MBean-urile sunt obiecte java care reprezint\u0103 o resurs\u0103 gestionabil\u0103. Resursele PMI sunt adresabile printr-o interfa\u0163\u0103 MBean.
+PMI0006W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when the module config object is null
+PMI0007W=CWPMI0007W: Niciun config modul PMI g\u0103sit: {0}
+PMI0007W.explanation=Aceast\u0103 eroare identific\u0103 o condi\u0163ie \u00een care PMI (Performance Monitoring Infrastructure) nu poate localiza configura\u0163ia unui modul specificat.  Modulele sunt unitatea organiza\u0163ional\u0103 pe care PMI o utilizeaz\u0103 pentru a descompune componentele opera\u0163ionale din Serverul de aplica\u0163ii. 
+PMI0007W.useraction=Aceast\u0103 excep\u0163ie este nea\u015fteptat\u0103. Cauza nu este imediat cunoscut\u0103. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei pe pagina de suport WebSphere Application Server la http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an invalid data ID is using in PMI
+PMI0008W=CWPMI0008W: ID de date invalid: {0}
+PMI0008W.explanation=Un modul PMI (Performance Monitoring Infrastructure) nu poate identifica un obiect de date pe care \u00eel proceseaz\u0103 modulul. Fiecare modul PMI este configurat pentru un set finit de obiecte de date. Mesajul furnizeaz\u0103 identitatea datelor care nu sunt valide.
+PMI0008W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong parameter is passed to updateData method
+PMI0009W=CWPMI0009W: Parametru gre\u015fit transmis la metoda updateData \u00een PmiAbstractModule: {0}
+PMI0009W.explanation=Obiectul PmiAbstractModule este setat s\u0103 realizeze o func\u0163ie nedefinit\u0103 pe obiectul de date furnizat.
+PMI0009W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find the XML file to read
+PMI0010W=CWPMI0010W: Nu poate g\u0103si fi\u015fierul: {0}
+PMI0010W.explanation=PMI (Performance Monitoring Infrastructure) nu poate g\u0103si un fi\u015fier pentru procesarea sa intern\u0103 care are loc la ini\u0163ializarea PMI. Mesajul identific\u0103 numele de fi\u015fier care nu poate fi localizat.
+PMI0010W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when pmiSpec in WCCM config file is ill-formatted
+PMI0011W=CWPMI0011W: pmiSpec gre\u015fit \u00een PmiUtil: {0}
+PMI0011W.explanation=PMI (Performance Monitoring Infrastructure) seteaz\u0103 nivelul de monitorizare a performan\u0163ei la o valoare care nu este valid\u0103. PMI utilizeaz\u0103 nivelul de monitorizare a performan\u0163ei pentru a determina ce module, sub-module \u015fi statistici sunt incluse \u00een setul de monitorizare curent.
+PMI0011W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong number of parameters is passed to PmiFactory
+PMI0012W=CWPMI0012W: Num\u0103r gre\u015fit de parametrii transmi\u015fi la PmiFactory: {0}
+PMI0012W.explanation=PMI (Performance Monitoring Infrastructure) creeaz\u0103 un modul, dar parametrii transmi\u015fi \u00een PMI nu se potrivesc cerin\u0163elor modulului care este creat.
+PMI0012W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong type of parameters is passed to PmiFactory
+PMI0013W=CWPMI0013W: Tip gre\u015fit de parametrii transmi\u015fi la PmiFactory: {0}
+PMI0013W.explanation=PMI (Performance Monitoring Infrastructure) creeaz\u0103 un modul dar unul dintre parametrii transmi\u015fi la PMI nu este de tipul de obiect a\u015fteptat. 
+PMI0013W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI failed to create TransactionModule
+PMI0014W=CWPMI0014W: E\u015fuare PmiFactory la crearea TransactionModule: {0}
+PMI0014W.explanation=PMI (Performance Monitoring Infrastructure) nu poate crea obiectul care gestioneaz\u0103 statisticile de performan\u0163\u0103 ale Modulului de tranzac\u0163ii.
+PMI0014W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to connect to AdminClient or AdminService
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0015W=CWPMI0015W: AdminUtilImpl are excep\u0163ie la conectarea la AdminClient/AdminService: {0}
+PMI0015W.explanation=AdminUtilImpl a \u00eent\u00e2lnit o excep\u0163ie \u00een timp ce se conecta la AdminClient sau AdminService.
+PMI0015W.useraction=Aceast\u0103 excep\u0163ie este nea\u015fteptat\u0103. Cauza nu este cunoscut\u0103 imediat. CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to find the ObjectNames
+PMI0016W=CWPMI0016W: AdminUtilImpl are excep\u0163ie pentru a g\u0103si/lista ObjectNames: {0}
+PMI0016W.explanation=PMI (Performance Monitoring Infrastructure) nu poate potrivi un nume PMI cu numele MBean-ului (Bean gestionat) s\u0103u corespunz\u0103tor.  \u00cen specifica\u0163ia JMX (Java Management Extensions), MBean-urile sunt obiecte java care reprezint\u0103 o resurs\u0103 gestionabil\u0103.  O interfa\u0163\u0103 MBean adreseaz\u0103 resursele PMI.
+PMI0016W.useraction=Primi\u0163i acest mesaj c\u00e2nd utiliza\u0163i o unealt\u0103 de monitorizare a performan\u0163ei de ter\u0163\u0103 parte pentru a vizualiza statisticile PMI. Verifica\u0163i configura\u0163ia c\u0103 este corect\u0103 pentru unealt\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to get status from NodeAgent or AppServer
+PMI0017W=CWPMI0017W: AdminUtilImpl are excep\u0163ie la getAdminState: {0}
+PMI0017W.explanation=PMI nu poate comunica cu clientul administrativ. Se poate ca clientul administrativ s\u0103 nu mai fie capabil s\u0103 comunice cu agentul de noduri destina\u0163ie sau serverul de aplica\u0163ii.
+PMI0017W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when no ObjectName is returned from query
+PMI0018W=CWPMI0018W: AdminUtilImpl nu are niciun ObjectName \u00eentors din interogare: {0}
+PMI0018W.explanation= PMI (Performance Monitoring Infrastructure) a creat mesajul de avertisment c\u00e2nd nu a putut potrivi un nume PMI cu numele MBean-ului (Bean gestionat) s\u0103u corespunz\u0103tor. \u00cen specifica\u0163ia JMX (Java Management Extensions), MBean-urile sunt obiecte java care reprezint\u0103 o resurs\u0103 gestionabil\u0103.  O interfa\u0163\u0103 MBean adreseaz\u0103 resursele PMI. 
+PMI0018W.useraction=Primi\u0163i acest mesaj c\u00e2nd utiliza\u0163i o unealt\u0103 de monitorizare a performan\u0163ei de ter\u0163\u0103 parte pentru a vizualiza statisticile PMI. Verifica\u0163i configura\u0163ia c\u0103 este corect\u0103 pentru unealt\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected runtime config attribute name passed to PMI
+PMI0019W=CWPMI0019W: Nume atribut runtime config ne\u015fteptat: {0}
+PMI0019W.explanation=Un parametru de configurare care este specificat pentru modulul pool-ului de conexiuni nu este valid. Singurul parametru valid pentru aceast\u0103 op\u0163iune este 'PoolSize'
+PMI0019W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI counter is obviously wrong, e.g., a negative number
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0020W=CWPMI0020W: Num\u0103r\u0103torul este \u00een afara sync: {0}
+PMI0020W.explanation=Num\u0103r\u0103torul este \u00een afara sincroniz\u0103rii.
+PMI0020W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0021W=CWPMI0021W: Tip de date gre\u015fit: {0}
+PMI0021W.explanation=Acesta este un tip de date gre\u015fit.
+PMI0021W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0022W=CWPMI0022W: Nume modul duplicat: {0}
+PMI0022W.explanation=Acesta este un nume de modul duplicat.
+PMI0022W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0023W=CWPMI0023W: Nu poate s\u0103 \u00eenregistreze modulul PMI din cauza numelui duplicat: {0}
+PMI0023W.explanation=PMI (Performance Monitoring Infrastructure) nu poate \u00eenregistra un modul din cauza unui conflict de numire.  PMI urm\u0103re\u015fte toate modulele \u015fi sub-modulele prin intermediul unui nume unic din calea specificat\u0103.  Dac\u0103 se afi\u015feaz\u0103 acest mesaj, PMI nu poate realiza ad\u0103ugarea modulului pentru c\u0103 un modul cu acela\u015fi nume exist\u0103 deja.
+PMI0023W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0024W=CWPMI0024W: MBean la maparea modul PMI este suprascris pentru: {0}
+PMI0024W.explanation=Acest mesaj este afi\u015fat c\u00e2nd calea MBean (Bean gestionat) este stocat\u0103 pentru referin\u0163a care exist\u0103 deja \u00een cache.  \u00cen specifica\u0163ia JMX (Java Management Extensions), MBean-urile sunt obiecte java care reprezint\u0103 o resurs\u0103 gestionabil\u0103.  O interfa\u0163\u0103 MBean adreseaz\u0103 resursele PMI. \u00cen aceast\u0103 instan\u0163\u0103, PMI asociaz\u0103 o cale MBean la un obiect PMI intern existent.
+PMI0024W.useraction=Primi\u0163i acest mesaj c\u00e2nd utiliza\u0163i o unealt\u0103 de monitorizare a performan\u0163ei de ter\u0163\u0103 parte pentru a vizualiza statisticile PMI. Verifica\u0163i configura\u0163ia c\u0103 este corect\u0103 pentru unealt\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0025W=CWPMI0025W: Eroare \u00een timpul persist\u0103rii configura\u0163ie PMI la pmi-config.xml: {0}
+PMI0025W.explanation=A ap\u0103rut o eroare c\u00e2nd a\u0163i persistat configura\u0163ia PMI (Performance Monitoring Infrastructure) la fi\u015fierul pmi-config.xml.
+PMI0025W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0026W=CWPMI0026W: eroare \u00een timpul citirii configura\u0163iei PMI de la pmi-config.xml: {0}
+PMI0026W.explanation=PMI (Performance Monitoring Infrastructure) nu poate citi fi\u015fierul pmi-config.xml din loca\u0163ia sa a\u015fteptat\u0103.
+PMI0026W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0027W=CWPMI0027W: Eroare \u00een timpul persist\u0103rii configura\u0163ie PMI la server.xml: {0}
+PMI0027W.explanation=PMI (Performance Monitoring Infrastructure) e\u015fueaz\u0103 \u00een \u00eencercarea de a stoca informa\u0163iile de configurare PMI curente.  Defec\u0163iunea este o excep\u0163ie capturat\u0103 care este creat\u0103 c\u00e2nd PMI \u00eencearc\u0103 s\u0103 stocheze fizic informa\u0163iile.
+PMI0027W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0028W=CWPMI0028W: Eroare la ob\u0163inerea serviciului Config
+PMI0028W.explanation= PMI (Performance Monitoring Infrastructure) nu a putut localiza serviciul de configurare. PMI utilizeaz\u0103 serviciul de configurare pentru a interac\u0163iona cu informa\u0163iile de configurare.
+PMI0028W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0030W=CWPMI0030W: Eroare la \u00eenc\u0103rcarea bundle-ului resurs\u0103 PMI personalizat: {0}
+PMI0030W.explanation=PMI (Performance Monitoring Infrastructure) nu poate localiza un bundle de resurse localizat. Un bundle de resurse este un set de informa\u0163ii specific unui limbaj care este utilizat de PMI la comunicarea informa\u0163iilor la utilizatorii Serverului de aplica\u0163ii.
+PMI0030W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0031W=CWPMI0031W: Detectare ambele configura\u0163ii 5.0 \u015fi 6.0 PMI. Se porne\u015fte serviciul PMI utiliz\u00e2nd configura\u0163ia 6.0. Atributul initialSpecLevel din server.xml este depreciat \u00eencep\u00e2nd cu 6.0.
+PMI0031W.explanation=PMI (Performance Monitoring Infrastructure) este ini\u0163ializat pentru Serverul de aplica\u0163ii Versiunea 6.x, dar g\u0103se\u015fte parametrii de configurare din Versiunea 5.x.  Atributul initialSpecLevel din fi\u015fierul de configurare server.xml este depreciat \u00een Versiunea 6.0.
+PMI0031W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0032W=CWPMI0032W: PMI Service nu este disponibil \u00een procesul Deployment Manager.
+PMI0032W.explanation=PMI (Performance Monitoring Infrastructure) nu a putut fi ini\u0163ializat \u00een procesul managerului de implementare al unei configura\u0163ii de implementare re\u0163ea.  PMI nu func\u0163ioneaz\u0103 \u00een managerul de implementare, a\u015fadar orice \u00eencercare de a-l ini\u0163ializa va e\u015fua.
+PMI0032W.useraction=The: Serviciul PMI nu este disponibil \u00eem procesul Managerului de implementare.  Examina\u0163i fi\u015fierele de configurare ale managerului de implementare \u015fi opri\u0163i PMI.
+
+# ************* CUSTOM PMI MESSAGES *************
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0101W=CWPMI0101W: Nu poate crea MBean-ul pentru modulul PMI personalizat: {0}
+PMI0101W.explanation=Nu se poate crea MBean-ul (Bean gestionat) pentru modulul PMI (Performance Monitoring Infrastructure) personalizat.
+PMI0101W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0102W=CWPMI0102W: Nu paote citi configura\u0163ia modulului PMI personalizat\u0103: {0}
+PMI0102W.explanation=PMI (Performance Monitoring Infrastructure) nu poate citi fi\u015fierul XML surs\u0103 care este utilizat pentru configurarea unui modul PMI personalizat.  PMI personalizat este un API (interfa\u0163\u0103 de programare aplica\u0163ie) care este utilizat de furnizorii PMI pentru a \u00eenregistra un modul cu PMI.  C\u00e2nd un modul PMI personalizat este ini\u0163ializat, PMI cite\u015fte un fi\u015fier XML pentru a determina informa\u0163iile de configurare ale modulului.
+PMI0102W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0103W=CWPMI0103W: Nu poate s\u0103 \u00eenregistreze modulul PMI personalizat din cauza numelui duplicat sub acela\u015fi p\u0103rinte sau cale arbore PMI invalid\u0103: {0}
+PMI0103W.explanation=PMI (Performance Monitoring Infrastructure) creeaz\u0103 un modul nou sub o cale de p\u0103rinte care nu este valid\u0103 sau sub un p\u0103rinte care con\u0163ine un modul cu acela\u015fi nume.  Numele modulelor PMI trebuie s\u0103 fie unice pentru fiecare cale p\u0103rinte din arborele PMI.
+PMI0103W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0104W=CWPMI0104W: Nu poate localiza un MBean p\u0103rinte pentru modulul PMI personalizat: {0}
+PMI0104W.explanation=Nu se poate localiza un MBean (Bean gestionat) p\u0103rinte pentru modulul PMI (Performance Monitoring Infrastructure) personalizat.
+PMI0104W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0105W=CWPMI0105W: Nu poate localiza articolul modul PMI pentru: {0}
+PMI0105W.explanation=PMI (Performance Monitoring Infrastructure) nu poate localiza modulul identificat de calea care este afi\u015fat\u0103 \u00een mesajul de avertisment. PMI \u00eencearc\u0103 s\u0103 localizeze modulul pentru a putea realiza un task pe acel modul.
+PMI0105W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0106W=CWPMI0106W: Eroare \u00een timpul dezactiv\u0103rii PMI MBean personalizat: {0}
+PMI0106W.explanation=A ap\u0103rut o eroare la dezactivarea MBean-ului (Bean gestionat) PMI (Performance Monitoring Infrastructure) personalizat.
+PMI0106W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0107W=CWPMI0107W: Nu poate \u00eenregistra modulul PMI personalizat deoarece serviciul PMI nu este activat: {0}
+PMI0107W.explanation=PMI (Performance Monitoring Infrastructure) este dezactivat \u015fi o component\u0103 sau o aplica\u0163ie \u00eencearc\u0103 s\u0103 creeze un obiect PMI.  Acest mesaj informeaz\u0103 proprietarul clientului PMI de ce nu se poate finaliza cererea.
+PMI0107W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0108W=CWPMI0108W: Nu poate s\u0103 \u00eenregistreze modulul PMI personalizat din cauza ID-ului  statistic duplicat din grupul/instan\u0163a stare p\u0103rinte: ID={0}; ParentStats={1}
+PMI0108W.explanation=PMI (Performance Monitoring Infrastructure) a creat mesajul c\u00e2nd ini\u0163ializa un modul PMI personalizat.  PMI nu poate construi o identitate de statistic\u0103 pentru modulul PMI personalizat pentru c\u0103 identitatea statisticii care este furnizat\u0103 exist\u0103 deja pentru modul.  O eroare \u00een \u015fablonul XML PMI personalizat ar putea crea problema.
+PMI0108W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0201I=CWPMI0201I: Dezactivarea PMI MBean personalizat pentru: {0}
+PMI0201I.explanation=Se dezactiveaz\u0103 MBean-ul PMI personalizat.
+PMI0201I.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0001I=CWPMI1101I: G\u0103sit \u00een cache: {0}
+PMI0001I.explanation=G\u0103sit \u00een cache.
+PMI0001I.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0002I=CWPMI1102I: Neg\u0103sit \u00een cache: {0}
+PMI0002I.explanation=Nu s-a g\u0103sit \u00een cache.
+PMI0002I.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# Information
+PMI0001A=CWPMI1001I: PMI este activat
+PMI0001A.explanation=Acesta este un mesaj de auditare care confirm\u0103 c\u0103 PMI (Performance Monitoring Infrastructure) este activat \u015fi func\u0163ioneaz\u0103.
+PMI0001A.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+PMI0002A=CWPMI1002I: PMI este dezactivat
+PMI0002A.explanation=PMI (Performance Monitoring Infrastructure) este dezactivat.
+PMI0002A.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+# -------------------------------------------------------------------------------------------------
+# Indicates and internal error in PMI
+PMI9999E=CWPMI9999E: Eroare intern\u0103: {0}
+PMI9999E.explanation=PMI (Performance Monitoring Infrastructure) indic\u0103 o diversitate de probleme.  Natura unic\u0103 a problemei este indicat\u0103 \u00een corpul mesajului.
+PMI9999E.useraction=CMSG0002
+
+

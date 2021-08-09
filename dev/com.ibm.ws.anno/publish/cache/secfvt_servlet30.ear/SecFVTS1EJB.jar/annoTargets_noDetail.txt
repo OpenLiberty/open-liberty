@@ -1,0 +1,153 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: SecFVTS1EJB.jar
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB$4
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedExceptionAction
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTSLLocal
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB$1
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedAction
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB$ejbAction
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedAction
+Class-Seed: com.ibm.ws.secfvt.ejb.APITests
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+Class-Seed: com.ibm.ws.secfvt.ejb.APITestsHome
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.ws.secfvt.ejb.JAASMapping
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+Class-Seed: com.ibm.ws.secfvt.ejb.attrPropEJB
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+Class-Seed: com.ibm.ws.secfvt.ejb.APITestsBean
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB$3
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedAction
+Class-Seed: com.ibm.ws.secfvt.ejb.attrPropEJBBean
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB$5
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedExceptionAction
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTDPEJB
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1EJB$2
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedAction
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTSLEJB
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1Home
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.ws.secfvt.ejb.attrPropEJBHome
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.ws.secfvt.utils.Helper
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTDPHome
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTDP
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+Class-Seed: com.ibm.ws.secfvt.ejb.MyPermission
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.security.BasicPermission
+Class-Seed: com.ibm.ws.secfvt.ejb.JAASMappingBean
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.ws.secfvt.ejb.JAASMappingHome
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTSLLocalHome
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.ws.secfvt.ejb.NewThread
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.Runnable
+Class-Seed: com.ibm.ws.secfvt.ejb.SecFVTS1
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+Class-Excluded: java.lang.Runnable
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.security.Guard
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.security.PrivilegedExceptionAction
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.security.Permission
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+  Interface: java.security.Guard
+  Interface: java.io.Serializable
+Class-Excluded: java.io.Serializable
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: SecFVTS1EJB.jar
+Class-Excluded: java.security.BasicPermission
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.security.Permission
+  Interface: java.io.Serializable
+Class-Excluded: java.security.PrivilegedAction
+  ClassSource: SecFVTS1EJB.jar
+  Superclass: java.lang.Object
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+Class-Unresolved: javax.ejb.EJBObject
+Class-Unresolved: javax.ejb.SessionBean
+Class-Unresolved: javax.ejb.EJBLocalObject
+Class-Unresolved: javax.ejb.EJBHome
+Class-Unresolved: javax.ejb.EJBLocalHome
+# ============================================================

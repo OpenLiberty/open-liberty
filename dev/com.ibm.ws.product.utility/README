@@ -1,0 +1,5 @@
+
+To add a new task to the script:
+
+1. create a class in: com.ibm.ws.product.utility.module
+2. register it in the ProductUtility static block.

@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: Element konfiguracji {0} musi mie\u0107 unikalny identyfikator (id) lub nazw\u0119 JNDI (jndiName), aby mo\u017cna by\u0142o go przekszta\u0142ci\u0107 do postaci szeregowej.
+CWWKC1003.not.serializable.explanation=Aby przekszta\u0142cenie us\u0142ugi kontekstu do postaci szeregowej by\u0142o mo\u017cliwe, musi mie\u0107 ona unikalny atrybut identyfikatora (id) lub atrybut nazwy JNDI (jndiName).
+CWWKC1003.not.serializable.useraction=Dodaj atrybut id lub jndiName do konfiguracji us\u0142ugi kontekstu.
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: Dostawca kontekstu w\u0105tku {0} jest niedost\u0119pny.
+CWWKC1004.context.provider.unavailable.explanation=Serwer aplikacji nie mo\u017ce znale\u017a\u0107 dostawcy o okre\u015blonym typie kontekstu w\u0105tku.
+CWWKC1004.context.provider.unavailable.useraction=Upewnij si\u0119, \u017ce w\u0142\u0105czony zosta\u0142 sk\u0142adnik, kt\u00f3ry udost\u0119pnia okre\u015blony typ kontekstu w\u0105tku.
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: Element konfiguracji o unikalnym identyfikatorze lub atrybucie jndiName {0} nie zosta\u0142 znaleziony w konfiguracji serwera.
+CWWKC1010.context.service.unavailable.explanation=Us\u0142uga kontekstu o podanym identyfikatorze lub atrybucie jndiName nie zosta\u0142a znaleziona w konfiguracji.
+CWWKC1010.context.service.unavailable.useraction=Upewnij si\u0119, \u017ce us\u0142uga kontekstu o podanym identyfikatorze lub atrybucie jndiName istnieje w konfiguracji i jest poprawna.
+
+CWWKC1011.app.unavailable=CWWKC1011E: Nie mo\u017cna uruchomi\u0107 zadania {0}, poniewa\u017c aplikacja {1}, kt\u00f3ra je wprowadzi\u0142a, jest niedost\u0119pna.
+CWWKC1011.app.unavailable.explanation=Aby uruchomienie zadania by\u0142o mo\u017cliwe, aplikacja, kt\u00f3ra je wprowadzi\u0142a, musi by\u0107 dost\u0119pna.
+CWWKC1011.app.unavailable.useraction=Upewnij si\u0119, \u017ce aplikacja zosta\u0142a uruchomiona, i wprowad\u017a zadanie ponownie.
+
+CWWKC1012.module.unavailable=CWWKC1012E: Nie mo\u017cna uruchomi\u0107 zadania {0}, poniewa\u017c modu\u0142 {1} aplikacji {2}, kt\u00f3ry je wprowadzi\u0142, jest niedost\u0119pny.
+CWWKC1012.module.unavailable.explanation=Aby uruchomienie zadania by\u0142o mo\u017cliwe, modu\u0142, kt\u00f3ry je wprowadzi\u0142, musi by\u0107 dost\u0119pny.
+CWWKC1012.module.unavailable.useraction=Upewnij si\u0119, \u017ce modu\u0142 zosta\u0142 uruchomiony, i wprowad\u017a zadanie ponownie.
+
+CWWKC1013.component.unavailable=CWWKC1013E: Nie mo\u017cna uruchomi\u0107 zadania {0}, poniewa\u017c komponent {1} modu\u0142u {2} w aplikacji {3}, kt\u00f3ry je wprowadzi\u0142, jest niedost\u0119pny.
+CWWKC1013.component.unavailable.explanation=Aby uruchomienie zadania by\u0142o mo\u017cliwe, komponent aplikacji, kt\u00f3ry je wprowadzi\u0142, musi by\u0107 dost\u0119pny.
+CWWKC1013.component.unavailable.useraction=Upewnij si\u0119, \u017ce komponent aplikacji zosta\u0142 uruchomiony, i wprowad\u017a zadanie ponownie.
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

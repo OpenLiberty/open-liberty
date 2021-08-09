@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: Us\u0142uga kontroli jest uruchamiana.
+AUDIT_SERVICE_STARTING.explanation=Trwa proces uruchamiania us\u0142ugi kontroli. Mo\u017ce to potrwa\u0107 kilka minut, je\u015bli potrzebne jest przeprowadzenie jednokrotnego inicjowania.
+AUDIT_SERVICE_STARTING.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+AUDIT_SERVICE_READY=CWWKS5851I: Us\u0142uga kontroli jest gotowa.
+AUDIT_SERVICE_READY.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+AUDIT_SERVICE_READY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: Us\u0142uga kontroli zosta\u0142a zatrzymana.
+AUDIT_SERVICE_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+AUDIT_SERVICE_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: Nazwa zdarzenia kontroli {0} podana w konfiguracji zdarze\u0144 procedury obs\u0142ugi kontroli nie jest obs\u0142ugiwana, wi\u0119c us\u0142uga kontroli zosta\u0142a zatrzymana. Popraw nazw\u0119 zdarzenia w konfiguracji {2} procedury obs\u0142ugi kontroli na jedn\u0105 z nast\u0119puj\u0105cych nazw: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=Nazwa zdarzenia kontrolowanego podana w konfiguracji zdarzenia jest niepoprawna i us\u0142uga kontroli zostanie zatrzymana. Przeanalizuj wyj\u0105tek wspomniany w komunikacie i podaj poprawn\u0105 nazw\u0119 zdarzenia kontroli.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=W konfiguracji zdarzenia podaj poprawn\u0105 nazw\u0119 zdarzenia kontrolowanego.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: Nazwa wyniku kontroli {0} podana w konfiguracji zdarze\u0144 procedury obs\u0142ugi kontroli nie jest obs\u0142ugiwana, wi\u0119c us\u0142uga kontroli zosta\u0142a zatrzymana. Popraw nazw\u0119 wyniku w konfiguracji {2} procedury obs\u0142ugi kontroli na jedn\u0105 z nast\u0119puj\u0105cych nazw: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=Nazwa wyniku kontroli podana w konfiguracji zdarzenia jest niepoprawna i us\u0142uga kontroli zostanie zatrzymana. Przeanalizuj wyj\u0105tek wspomniany w komunikacie i podaj poprawn\u0105 nazw\u0119 wyniku kontroli.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=W konfiguracji zdarzenia podaj poprawn\u0105 nazw\u0119 wyniku kontroli.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: Konfiguracja zdarze\u0144 procedury obs\u0142ugi kontroli jest niekompletna, wi\u0119c us\u0142uga kontroli zosta\u0142a zatrzymana. W konfiguracji nale\u017cy poda\u0107 nazw\u0119 zdarzenia dla wyniku {0}. Popraw konfiguracj\u0119 {1} procedury obs\u0142ugi kontroli, aby zawiera\u0142a jedn\u0105 z nast\u0119puj\u0105cych nazw zdarzenia: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=Brakuje nazwy zdarzenia kontroli podanej w konfiguracji zdarzenia lub jest ona niepoprawna i us\u0142uga kontroli zostanie zatrzymana. Przeanalizuj wyj\u0105tek wspomniany w komunikacie i podaj poprawn\u0105 nazw\u0119 zdarzenia kontroli.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Razem z poprawnym typem wyniku podaj poprawn\u0105 nazw\u0119 zdarzenia.

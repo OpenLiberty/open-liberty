@@ -1,0 +1,188 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF API
+Bundle-Description: Apache CXF API, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.api.2.6.2
+
+
+DynamicImport-Package: \
+  com.sun.xml.*, \
+  javax.xml.ws, \
+  javax.xml.ws.*, \
+  org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)"
+
+Export-Package: \
+  !org.apache.cxf.internal, \
+  !schemas.configuration, \
+  !schemas.wsdl, \
+  org.apache.cxf;version="2.6.2", \
+  org.apache.cxf.annotations;version="2.6.2", \
+  org.apache.cxf.attachment;version="2.6.2", \
+  org.apache.cxf.binding;version="2.6.2", \
+  org.apache.cxf.buslifecycle;version="2.6.2", \
+  org.apache.cxf.common;version="2.6.2", \
+  org.apache.cxf.common.annotation;version="2.6.2", \
+  org.apache.cxf.common.classloader;version="2.6.2", \
+  org.apache.cxf.common.commands;version="2.6.2", \
+  org.apache.cxf.common.i18n;version="2.6.2", \
+  org.apache.cxf.common.injection;version="2.6.2", \
+  org.apache.cxf.common.jaxb;version="2.6.2", \
+  org.apache.cxf.common.logging;version="2.6.2", \
+  org.apache.cxf.common.security;version="2.6.2", \
+  org.apache.cxf.common.util;version="2.6.2", \
+  org.apache.cxf.common.xmlschema;version="2.6.2", \
+  org.apache.cxf.configuration;version="2.6.2", \
+  org.apache.cxf.configuration.jsse;version="2.6.2", \
+  org.apache.cxf.configuration.security;version="2.6.2", \
+  org.apache.cxf.configuration.spring;version="2.6.2", \
+  org.apache.cxf.continuations;version="2.6.2", \
+  org.apache.cxf.databinding;version="2.6.2", \
+  org.apache.cxf.endpoint;version="2.6.2", \
+  org.apache.cxf.extension;version="2.6.2", \
+  org.apache.cxf.feature;version="2.6.2", \
+  org.apache.cxf.headers;version="2.6.2", \
+  org.apache.cxf.helpers;version="2.6.2", \
+  org.apache.cxf.interceptor;version="2.6.2", \
+  org.apache.cxf.interceptor.transform;version="2.6.2", \
+  org.apache.cxf.io;version="2.6.2", \
+  org.apache.cxf.logging;version="2.6.2", \
+  org.apache.cxf.management;version="2.6.2", \
+  org.apache.cxf.management.annotation;version="2.6.2", \
+  org.apache.cxf.message;version="2.6.2", \
+  org.apache.cxf.phase;version="2.6.2", \
+  org.apache.cxf.policy;version="2.6.2", \
+  org.apache.cxf.resource;version="2.6.2", \
+  org.apache.cxf.security;version="2.6.2", \
+  org.apache.cxf.security.claims.authorization;version="2.6.2", \
+  org.apache.cxf.security.transport;version="2.6.2", \
+  org.apache.cxf.service;version="2.6.2", \
+  org.apache.cxf.service.invoker;version="2.6.2", \
+  org.apache.cxf.service.model;version="2.6.2", \
+  org.apache.cxf.staxutils;version="2.6.2", \
+  org.apache.cxf.staxutils.transform;version="2.6.2", \
+  org.apache.cxf.transport;version="2.6.2", \
+  org.apache.cxf.transports.http;version="2.6.2", \
+  org.apache.cxf.version;version="2.6.2", \
+  org.apache.cxf.workqueue;version="2.6.2", \
+  org.apache.cxf.ws.addressing;version="2.6.2", \
+  org.apache.cxf.ws.addressing.v200403;version="2.6.2", \
+  org.apache.cxf.ws.addressing.v200408;version="2.6.2", \
+  org.apache.cxf.ws.addressing.wsdl;version="2.6.2", \
+  org.apache.cxf.wsdl;version="2.6.2", \
+  org.apache.cxf.wsdl.http;version="2.6.2", \
+  org.apache.cxf.common;version="2.6.2", \
+  org.apache.cxf.attachment;thread-context=true;version="1.0.16"
+
+Import-Package: \
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  com.sun.xml.fastinfoset.stax;resolution:=optional, \
+  com.sun.xml.bind.marshaller, \
+  com.sun.xml.bind.api;resolution:=optional, \
+  com.sun.xml.bind.api.impl;resolution:=optional, \
+  com.sun.xml.internal.bind.api;resolution:=optional, \
+  com.sun.xml.internal.bind.api.impl;resolution:=optional, \
+  javax.activation, \
+  javax.annotation;version="[0.0,2)", \
+  javax.imageio, \
+  javax.imageio.stream, \
+  javax.mail, \
+  javax.mail.internet, \
+  javax.management, \
+  javax.net.ssl, \
+  javax.security.auth, \
+  javax.security.auth.x500, \
+  javax.wsdl, \
+  javax.wsdl.extensions, \
+  javax.wsdl.extensions.soap, \
+  javax.wsdl.factory, \
+  javax.wsdl.xml, \
+  javax.xml.bind;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.bind.annotation.adapters;version="[2.2,3)", \
+  javax.xml.bind.attachment;version="[2.2,3)", \
+  javax.xml.namespace, \
+  javax.xml.parsers, \
+  javax.xml.stream, \
+  javax.xml.stream.events, \
+  javax.xml.stream.util, \
+  javax.xml.transform, \
+  javax.xml.transform.dom, \
+  javax.xml.transform.sax, \
+  javax.xml.transform.stream, \
+  javax.xml.validation, \
+  javax.xml.xpath, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.annotations;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.attachment;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.annotation;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.classloader;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.jaxb;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.xmlschema;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.security;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.continuations;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.databinding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.extension;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.feature;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor.transform;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.io;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.annotation;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.resource;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.security;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.invoker;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.staxutils;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.staxutils.transform;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.workqueue;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing.v200403;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing.v200408;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing.wsdl;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl.http;version="[2.6.2,2.6.3)", \
+  org.apache.log4j;resolution:=optional, \
+  org.apache.log4j.spi;resolution:=optional, \
+  org.apache.ws.commons.schema, \
+  org.apache.ws.commons.schema.extensions, \
+  org.apache.ws.commons.schema.resolver, \
+  org.apache.ws.commons.schema.utils, \
+  org.objectweb.asm;resolution:=optional, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.slf4j;resolution:=optional;version="[1.5,2)", \
+  org.slf4j.spi;resolution:=optional;version="[1.5,2)", \
+  org.w3c.dom, \
+  org.w3c.dom.bootstrap, \
+  org.w3c.dom.ls, \
+  org.xml.sax, \
+  org.xml.sax.ext, \
+  org.xml.sax.helpers, \
+  net.sf.cglib.proxy;resolution:=optional;version="[2.1.3,3.0.0)"
+
+Private-Package: \
+  org.apache.cxf.internal, \
+  schemas.configuration, \
+  schemas.wsdl

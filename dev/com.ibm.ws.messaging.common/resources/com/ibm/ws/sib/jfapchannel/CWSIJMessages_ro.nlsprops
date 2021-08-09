@@ -1,0 +1,600 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 92072           2013-19-02 venugopv L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIJ0001=CWSIJ0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIJ0000-CWSIJ9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIJ0001-CWSIJ9998   com.ibm.ws.sib.jfapchannel
+#   CWSIJ9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.43,0,10/10/14,01:07:38
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/jfapchannel/CWSIJMessages.nlsprops
+#COMPONENTPREFIX CWSIJ
+#COMPONENTNAMEFOR CWSIJ Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: A ap\u0103rut o eroare intern\u0103.  Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+EXCP_DURING_INIT_SICJ0001.explanation=MSG0001
+EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: Metoda {0} din clasa {1} nu poate fi invocat\u0103 datorita excep\u0163iei: {2}
+EXCP_DURING_INIT_SICJ0002.explanation=MSG0001
+EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: A ap\u0103rut o eroare intern\u0103.  Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+EXCP_DURING_INIT_SICJ0003.explanation=MSG0001
+EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: Metoda {0} din clasa {1} nu poate fi invocat\u0103 datorita excep\u0163iei: {2}
+EXCP_DURING_INIT_SICJ0004.explanation=MSG0001
+EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: O instan\u0163\u0103 a serviciului cadru de lucru canal pentru folosirea la comunica\u0163ii nu poate fi g\u0103sit\u0103.
+CF_NOT_AVAILABLE_SICJ0005.explanation=O instan\u0163\u0103 a serviciului cadru de lucru canal nu a putut fi g\u0103sit\u0103.  Nu e posibil\u0103 nici o comunica\u0163ie \u00een re\u0163ea.
+CF_NOT_AVAILABLE_SICJ0005.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul destina\u0163ie este pornit \u015fi utilizeaz\u0103 portul implicit bootstrap 2809 pe ma\u015fina local\u0103. Dac\u0103 nu exist\u0103, se ruleaz\u0103 comanda launchClient din nou cu parametrul -CCBootstrapPort care specific\u0103 num\u0103rul de port corect, \u015fi parametrul -CCBootstrapHost specific\u00e2nd numele gazd\u0103 corect al serverului destina\u0163ie. Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+EXCP_CONN_FAIL_NO_CF_SICJ0007=CWSIJ0007E: Conexiunea \u00eencercat\u0103 a e\u015fuat datorit\u0103 componentei Communications, care nu a fost ini\u0163ializat\u0103.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.explanation=S-a \u00eencercat o conexiune de re\u0163ea care a e\u015fuat \u00eentruc\u00e2t componenta Communications nu a putu fi ini\u0163ializat\u0103 corect.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.useraction=Verifica\u0163i fi\u015fierele istorice pentru serverul dvs. de aplica\u0163ii pentru a determina de ce componenta Communications nu s-a ini\u0163ializat corect.  Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_OUTBOUND_SICJ0008=CWSIJ0008W: Lan\u0163ul de canale de mesagerie de ie\u015fire implicit {0} nu este definit la acest server de aplica\u0163ii.
+NO_DEFAULT_OUTBOUND_SICJ0008.explanation=Valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje nu este definit\u0103 pentru acest server de aplica\u0163ii.  Acest server de aplica\u0163ii s-ar putea s\u0103 nu poat\u0103 stabili conexiuni c\u0103tre motoare de mesagerie gatewaz la distan\u0163\u0103.
+NO_DEFAULT_OUTBOUND_SICJ0008.useraction=Defini\u0163i valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje pentru acest server de aplica\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009=CWSIJ0009W: Lan\u0163ul securizat de canale de mesagerie de ie\u015fire implicit {0} nu este definit la acest server de aplica\u0163ii.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.explanation=Valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje nu este definit\u0103 pentru acest server de aplica\u0163ii.  Acest server de aplica\u0163ii s-ar putea s\u0103 nu poat\u0103 stabili conexiuni c\u0103tre motoare de mesagerie gatewaz la distan\u0163\u0103.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.useraction=Defini\u0163i valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje pentru acest server de aplica\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010=CWSIJ0010W: Lan\u0163ul tunelat de canale de mesagerie de ie\u015fire implicit {0} nu este definit la acest server de aplica\u0163ii.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.explanation=Valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje nu este definit\u0103 pentru acest server de aplica\u0163ii.  Acest server de aplica\u0163ii s-ar putea s\u0103 nu poat\u0103 stabili conexiuni c\u0103tre motoare de mesagerie gatewaz la distan\u0163\u0103.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Defini\u0163i valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje pentru acest server de aplica\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: Lan\u0163ul securizat, tunneled de canale de mesagerie de ie\u015fire implicit {0} nu este definit la acest server de aplica\u0163ii.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Valoarea implicit\u0103, sigur\u0103, a lan\u0163ului de canale ie\u015fire mesaje nu este definit\u0103 pentru acest server de aplica\u0163ii.  Acest server de aplica\u0163ii s-ar putea s\u0103 nu poat\u0103 stabili conexiuni c\u0103tre motoare de mesagerie gatewaz la distan\u0163\u0103.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Defini\u0163i valoarea implicit\u0103 a lan\u0163ului de canale ie\u015fire mesaje pentru acest server de aplica\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the SSL properties file.
+NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Fi\u015fierul de propriet\u0103\u0163i ''{0}'' folosit pentru determinarea securit\u0103\u0163ii ini\u0163iale client la nivel transport mesagerie nu poate fi localizat.
+NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Fi\u015fierul de propriet\u0103\u0163i con\u0163in\u00e2nd informa\u0163ii folosite la stabilirea conexiunilor mesagerie sigur\u0103 client nu poate fi localizat\u0103.  Va fi propus un set de valori implicite.  E posibil s\u0103 nu se poat\u0103 stabili conexiuni sigure de mesagerie client.
+NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configura\u0163i fi\u015fierul de propriet\u0103\u0163i pentru nivelul de securitate de transport mesaje client.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: A ap\u0103rut o eroare intern\u0103.  O reprezentare a clasei {0} nu poate fi localizat\u0103.
+NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=MSG0001
+NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: A ap\u0103rut o eroare intern\u0103.  O reprezentare a clasei {0} nu poate fi localizat\u0103.
+NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=MSG0001
+NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: A ap\u0103rut o eroare intern\u0103.  O reprezentare a clasei {0} nu poate fi localizat\u0103.
+NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=MSG0001
+NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: A ap\u0103rut o eroare intern\u0103.  O reprezentare a clasei {0} nu poate fi localizat\u0103.
+NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=MSG0001
+NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: A ap\u0103rut o eroare intern\u0103.  O reprezentare a clasei {0} nu poate fi localizat\u0103.
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=MSG0001
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=MSG0001
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=MSG0001
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=MSG0001
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=MSG0001
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=MSG0001
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: Lan\u0163ul implicit de canale de mesagerie de ie\u015fire {0} nu poate fi creat datorit\u0103 excep\u0163iei: {1}.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=MSG0001
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: Lan\u0163ul securizat implicit de canale de mesagerie de ie\u015fire {0} nu poate fi creat datorit\u0103 excep\u0163iei: {1}.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=MSG0001
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: Lan\u0163ul tunneled de canale de mesagerie de ie\u015fire {0} nu poate fi creat datorit\u0103 excep\u0163iei: {1}.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=MSG0001
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: Lan\u0163ul securizat tunneled de canale de mesagerie de ie\u015fire {0} nu poate fi creat datorit\u0103 excep\u0163iei: {1}.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=MSG0001
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: Niciun lan\u0163 de canale de mesagerie de intrare nu poate fi pornit de pe acest server de aplica\u0163ii.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=Nici un lan\u0163 de canale de intrare mesagerie nu poate fi pornit, poten\u0163ial pentru c\u0103 nu a fost definit nici un canal pentru acest server de aplica\u0163ii.  E posibil ca clien\u0163ii de mesagerie sau alte motoare de mesagerie s\u0103 nu poat\u0103 stabili conexiuni la acest server.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.useraction=Defini\u0163i lan\u0163uri de canale de intrare suplimentare pe serverul de aplica\u0163ii pentru mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The minimum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028=CWSIJ0028W: Intervalul de puls al {0} configurat pentru canalul {1} este mai mic dec\u00e2t valoarea minim\u0103 {2}.  Utilizarea heartbeat-urilor a fost dezactivat\u0103.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.explanation=A fost specificat\u0103 o valoare incorect\u0103 pentru un atribut de configura\u0163ie canal .  Ca rezultat, utilizarea heartbeat-urilor pentru toate comunica\u0163iile pe lan\u0163ul de canale asociat a fost dezactivat.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.useraction=S-a specificat o valoare incorect\u0103 pentru intervalul heartbeat.  Modifica\u0163i aceast\u0103 valoare pentru a fi \u00een domeniul valorilor acceptabile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The maximum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029=CWSIJ0029W: Intervalul de puls al {0} configurat pentru canalul {1} este mai mare dec\u00e2t valoarea maxim\u0103 {2}.  Utilizarea heartbeat-urilor a fost dezactivat\u0103.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.explanation=A fost specificat\u0103 o valoare incorect\u0103 pentru un atribut de configura\u0163ie canal .  Ca rezultat, utilizarea heartbeat-urilor pentru toate comunica\u0163iile pe lan\u0163ul de canale asociat a fost dezactivat.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.useraction=S-a specificat o valoare incorect\u0103 pentru intervalul heartbeat.  Modifica\u0163i aceast\u0103 valoare pentru a fi \u00een domeniul valorilor acceptabile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030=CWSIJ0030W: Timeout-ul de puls al {0} configurat pentru canalul {1} este mai mic dec\u00e2t valoarea minim\u0103 {2}.  Utilizarea heartbeat-urilor a fost dezactivat\u0103.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.explanation=A fost specificat\u0103 o valoare incorect\u0103 pentru un atribut de configura\u0163ie canal .  Ca rezultat, utilizarea heartbeat-urilor pentru toate comunica\u0163iile pe lan\u0163ul de canale asociat a fost dezactivat.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.useraction=S-a specificat o valoare incorect\u0103 pentru intervalul heartbeat.  Modifica\u0163i aceast\u0103 valoare pentru a fi \u00een domeniul valorilor acceptabile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031=CWSIJ0031W: Timeout-ul de puls al {0} configurat pentru canalul {1} este mai mare dec\u00e2t valoarea maxim\u0103 {2}.  Utilizarea heartbeat-urilor a fost dezactivat\u0103.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.explanation=A fost specificat\u0103 o valoare incorect\u0103 pentru un atribut de configura\u0163ie canal .  Ca rezultat, utilizarea heartbeat-urilor pentru toate comunica\u0163iile pe lan\u0163ul de canale asociat a fost dezactivat.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=S-a specificat o valoare incorect\u0103 pentru intervalul heartbeat.  Modifica\u0163i aceast\u0103 valoare pentru a fi \u00een domeniul valorilor acceptabile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032=CWSIJ0032E: An internal error occurred.  An object of class {0} cannot be created because of exception: {1}.
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.explanation=CMSG0001
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: A ap\u0103rut o eroare intern\u0103.  Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+NO_NON_TSWITCH_IMPL_SICJ0033.explanation=MSG0001
+NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: A ap\u0103rut o eroare intern\u0103.  Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=MSG0001
+NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: Un motor de mesagerie, conectat anterior de la gazda {0} pe lan\u0163ul de transport {1}, s-a deconectat nea\u015fteptat.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.explanation=Un motor de mesagerie a fost deconentat de la acest server de aplica\u0163ii f\u0103r\u0103 respectarea protocoalelor de deconectare normale.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036=CWSIJ0036E: Un client, conectat anterior de la gazda {0} pe lan\u0163ul de transport {1}, s-a deconectat nea\u015fteptat.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.explanation=Un client s-a deconectat de la acest server de aplica\u0163ii f\u0103r\u0103 respectarea protocoalelor de deconectare normale.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_RECEIVED_SICJ0037=CWSIJ0037E: O conexiune motor de mesagerie stabilit\u0103 a fost terminat\u0103 datorit\u0103 primirii unor date nevalide de la gazda {0} pe lan\u0163ul de transport {1}.
+ME_BAD_DATA_RECEIVED_SICJ0037.explanation=O conexiune a motorului de mesagerie de la gazda specificat\u0103 a fost deconectat\u0103 pentru datele transmise care nu erau valide.
+ME_BAD_DATA_RECEIVED_SICJ0037.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_ON_CONNECT_SICJ0038=CWSIJ0038E: O conexiune motor de mesagerie a fost terminat\u0103 datorit\u0103 primirii unor date ini\u0163iale nevalide de la gazda {0} pe lan\u0163ul de transport {1}.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.explanation=O conexiune a motorului de mesagerie de la gazda specificat\u0103 a fost deconectat\u0103 pentru datele transmise care nu erau valide.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_RECEIVED_SICJ0039=CWSIJ0039E: O conexiune stabilit\u0103 a fost terminat\u0103 datorit\u0103 primirii unor date nevalide de la gazda {0} pe lan\u0163ul de transport {1}.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.explanation=O conexiune de la gazda specificat\u0103 a fost desf\u0103cut\u0103 pentru datele transmise care nu erau valide.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040=CWSIJ0040E: O conexiunea fost terminat\u0103 datorit\u0103 primirii unor date ini\u0163iale nevalide de la gazda {0} pe lan\u0163ul de transport {1}.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.explanation=O conexiune de la gazda specificat\u0103 a fost desf\u0103cut\u0103 pentru datele transmise care nu erau valide.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+ME_NOT_RESPONDING_SICJ0041=CWSIJ0041E: O conexiune motor de mesagerie de la gazda {0} pe lan\u0163ul de transport {1} a fost terminat\u0103 dup\u0103 ce nu a mai dat r\u0103spuns dup\u0103 o perioad\u0103 de {2} secunde.
+ME_NOT_RESPONDING_SICJ0041.explanation=O conexiune a motorului de mesagerie de la gazda specificat\u0103 a fost deconectat\u0103 pentru c\u0103 acceasta nu a mai r\u0103spuns.
+ME_NOT_RESPONDING_SICJ0041.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+CLIENT_NOT_RESPONDING_SICJ0042=CWSIJ0042E: O conexiune de la gazda {0} pe lan\u0163ul de transport {1} a fost terminat\u0103 dup\u0103 ce nu a mai dat r\u0103spuns dup\u0103 o perioad\u0103 de {2} secunde.
+CLIENT_NOT_RESPONDING_SICJ0042.explanation=O conexiune de la gazda specificat\u0103 a fost desf\u0103cut\u0103 deoarece aceasta nu a mai r\u0103spuns.
+CLIENT_NOT_RESPONDING_SICJ0042.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: A ap\u0103rut o eroare intern\u0103.
+CONNECTION_INTERNAL_SICJ0043.explanation=MSG0001
+CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: O opera\u0163iune a fost \u00eencercat\u0103 pe o conexiune care este deja \u00eenchis\u0103.
+CONNECTION_CLOSED_SICJ0044.explanation=A fost \u00eencercat\u0103 o opera\u0163ie pe o resurs\u0103 de conexiune care anterior a fost \u00eenchis\u0103.  Aceast\u0103 problem\u0103 poate proveni dintr-o eroare de programare a aplica\u0163iei sau pentru c\u0103 sistemul a \u00eenchis resursa de conexiune la detectarea unei erori.
+CONNECTION_CLOSED_SICJ0044.useraction=Verifica\u0163i fi\u015fierele istorice pentru serverul dvs. de aplica\u0163ii pentru a determina motivul pentru care conexiunea a fost oprit\u0103. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain
+CONVERSATIONIMPL_INVALIDATE_SICJ0045=CWSIJ0045E: O condi\u0163ie nea\u015fteptat\u0103 a cauzat ca o conexiune re\u0163ea de la gazda {0} folosind lan\u0163ul {1} s\u0103 fie \u00eenchis\u0103.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.explanation=Detectarea unei condi\u0163ii nea\u015fteptate a determinat \u00eenchiderea unei conexiuni de re\u0163ea.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=Analiza\u0163i orice excep\u0163ie imbricat\u0103 \u015fi fi\u015fierele cu istoricul evenimentelor corespunz\u0103toare aplica\u0163iei dumneavoastr\u0103 pentru a determina de ce conexiunea de re\u0163ea s-a \u00eenchis. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: A ap\u0103rut o eroare intern\u0103.
+CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=MSG0001
+CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: O opera\u0163iune a fost \u00eencercat\u0103 pe o conexiune care este deja \u00eenchis\u0103.
+CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=A fost \u00eencercat\u0103 o opera\u0163ie pe o resurs\u0103 de conexiune care anterior a fost \u00eenchis\u0103.  Aceast\u0103 problem\u0103 poate proveni dintr-o eroare de programare a aplica\u0163iei sau pentru c\u0103 sistemul a \u00eenchis resursa de conexiune la detectarea unei erori.
+CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=Verifica\u0163i fi\u015fierele istorice pentru serverul dvs. de aplica\u0163ii pentru a determina motivul pentru care conexiunea a fost oprit\u0103. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: A ap\u0103rut o eroare intern\u0103.
+CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=MSG0001
+CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: A ap\u0103rut o eroare intern\u0103.
+EXCHANGERL_INTERNAL_SICJ0049.explanation=MSG0001
+EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: A ap\u0103rut o eroare intern\u0103.
+IDTABLE_INTERNAL_SICJ0050.explanation=MSG0001
+IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name
+INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: O condi\u0163ie nea\u015fteptat\u0103 a cauzat ca o conexiune re\u0163ea de la gazda {0} folosind lan\u0163ul {1} s\u0103 fie \u00eenchis\u0103.
+INBOUNDCONV_INVALIDATE_SICJ0051.explanation=Detec\u0163ia unei condi\u0163ii nea\u015fteptate a cauzat \u00eenchiderea conexiunii de re\u0163ea.  Verifica\u0163i orice excep\u0163ie imbricat\u0103 pentru mai multe detalii.
+INBOUNDCONV_INVALIDATE_SICJ0051.useraction=Analiza\u0163i orice excep\u0163ie imbricat\u0103 \u015fi fi\u015fierele cu istoricul evenimentelor corespunz\u0103toare aplica\u0163iei dumneavoastr\u0103 pentru a determina de ce conexiunea de re\u0163ea s-a \u00eenchis. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: A ap\u0103rut o eroare intern\u0103.
+INBOUNDCONV_INTERNAL_SICJ0052.explanation=MSG0001
+INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name and {1} is the chain name.
+TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: O conexiune de re\u0163ea a fost terminat\u0103 dup\u0103 ce peer-ul a trimis informa\u0163ii formatate incorect.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.explanation=O conexiune de re\u0163ea de la gazd\u0103 pe canalul de transport a fost terminat\u0103 dup\u0103 ce au fost primite informa\u0163ii formatate incorect.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: A ap\u0103rut o eroare intern\u0103.
+TRANSPARSER_INTERNAL_SICJ0054.explanation=MSG0001
+TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: O insuficien\u0163\u0103 de resurse a f\u0103cut ca o nou\u0103 conexiune s\u0103 nu poat\u0103 fi stabilit\u0103.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=Nu se poate stabili o nou\u0103 conexiune datorit\u0103 insuficien\u0163ei resurselor necesare.  Aceast\u0103 problem\u0103 se datoreaz\u0103 unui num\u0103r mare de conexiuni active stabilite.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.useraction=Reduce\u0163i resursele care sunt folosite de aplica\u0163ii \u00eenchiz\u00e2nd orice conexiune care nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name
+OUTBOUNDCONV_INVALIDATE_SICJ0056=CWSIJ0056E: O condi\u0163ie nea\u015fteptat\u0103 a cauzat ca o conexiune re\u0163ea la gazda {0} pe portul {1} folosind lan\u0163ul {2} s\u0103 fie \u00eenchis\u0103.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.explanation=Detectarea unei condi\u0163ii nea\u015fteptate a determinat \u00eenchiderea unei conexiuni de re\u0163ea.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=Analiza\u0163i orice excep\u0163ie imbricat\u0103 \u015fi fi\u015fierele cu istoricul evenimentelor corespunz\u0103toare aplica\u0163iei dumneavoastr\u0103 pentru a determina de ce conexiunea de re\u0163ea s-a \u00eenchis. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: A ap\u0103rut o eroare intern\u0103.
+PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=MSG0001
+PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: A ap\u0103rut o eroare intern\u0103.
+REQIDTABLE_INTERNAL_SICJ0058.explanation=MSG0001
+REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: A ap\u0103rut o eroare intern\u0103.
+SVRCONNMGR_INTERNAL_SICJ0059.explanation=MSG0001
+SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: A ap\u0103rut o eroare intern\u0103.
+TRANSDATA_INTERNAL_SICJ0060.explanation=MSG0001
+TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: A ap\u0103rut o eroare intern\u0103.
+TRANSDATAIT_INTERNAL_SICJ0061.explanation=MSG0001
+TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: A ap\u0103rut o eroare intern\u0103.
+CONNDATAGROUP_INTERNAL_SICJ0062.explanation=MSG0001
+CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the hostname, {1} is the port.
+CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: O conexiune re\u0163ea la numele de gazd\u0103 {0}, portul {1} nu poate fi stabilit\u0103.
+CONNDATAGROUP_CONNFAILED_SICJ0063.explanation=Nu se poate stabili o conexiune de re\u0163ea la o anumit\u0103 gazd\u0103 \u015fi un an umit port.
+CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=Determina\u0163i dac\u0103 numele gazdei este valid \u015fi dac\u0103 procesul depinde de conexiunile la un port specificat. O problem\u0103 de conexiune a survenit utiliz\u00e2nd Thin Client pentru JMS cu WebSphere Application Server sau Resource Adapter pentru JMS cu WebSphere Application Server poate fi diagnosticat\u0103 mai u\u015for prin configurarea propriet\u0103\u0163ii sistemului javax.net.debug=all (Sun JSSE) or javax.net.debug=true (IBM JSSE) \u015fi re\u00eencercarea aplica\u0163iei clientului.
+
+# -------------------------------------------------------------------------------------------------
+OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: A ap\u0103rut o eroare intern\u0103.
+OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=MSG0001
+OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: A ap\u0103rut o eroare intern\u0103.
+CRLDRI_INTERNAL_SICJ0065.explanation=MSG0001
+CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nu se poate localiza un lan\u0163 de transport numit {0} de la care s\u0103 se poat\u0103 ob\u0163ine configura\u0163ia SSL care ar putea fi necesar\u0103 pentru a stabili conexiunea cu o gazd\u0103 de la distan\u0163\u0103 numit\u0103 {1}.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Informa\u0163iile necesare pentru a stabili o conexiune bazat\u0103 pe SSL cu un peer nu exist\u0103 in configura\u0163ia curent\u0103.  Aceast\u0103 informa\u0163ie este ob\u0163inut\u0103 \u00een mod obi\u015fnuit dintr-o defini\u0163ie convenabil\u0103 de lan\u0163 de transport. Aceast\u0103 defini\u0163ie de lan\u0163 are un nume care se potrive\u015fte cu cu un lan\u0163 existent la peer-ul la distan\u0163\u0103.  Un astfel de lan\u0163 de transport nu poate fi g\u0103sit.  E posibil s\u0103 nu se poat\u0103 stabili conexiunea.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Defini\u0163i lan\u0163uri de transport suplimentare.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: Lan\u0163ul de transport numit {0} nu con\u0163ine nicio configura\u0163ie SSL care ar putea fi necesar\u0103 pentru a stabili conexiunea cu o gazd\u0103 de la distan\u0163\u0103 numit\u0103 {1}.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Informa\u0163iile necesare pentru a stabili o conexiune bazat\u0103 pe SSL cu un peer nu exist\u0103 in configura\u0163ia curent\u0103.  Aceast\u0103 informa\u0163ie este ob\u0163inut\u0103 \u00een mod obi\u015fnuit dintr-o defini\u0163ie convenabil\u0103 de lan\u0163 de transport. Aceast\u0103 defini\u0163ie de lan\u0163 are un nume care se potrive\u015fte cu cu un lan\u0163 existent la peer-ul la distan\u0163\u0103.  Un astfel de lan\u0163 de transport nu poate fi g\u0103sit.  E posibil s\u0103 nu se poat\u0103 stabili conexiunea.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configura\u0163i canale suplimentare de transport SSL pentru lan\u0163ul de transport specificat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=MSG0001
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: A ap\u0103rut o eroare intern\u0103.  O instan\u0163\u0103 de canal {0} nu poate fi creat\u0103 din cauza excep\u0163iei : {1}.
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=MSG0001
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: O conexiune motor de mesagerie la gazda {0} pe portul {1} folosind lan\u0163ul de transport {2} a fost terminat\u0103 dup\u0103 ce nu a mai dat r\u0103spuns dup\u0103 o perioad\u0103 de {3} secunde.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.explanation=O conexiune a motorului de mesagerie de la gazda specificat\u0103 a fost deconectat\u0103 pentru c\u0103 acceasta nu a mai r\u0103spuns.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071=CWSIJ0071E: O conexiune la gazda {0} pe portul {1} folosind lan\u0163ul de transport {2} a fost terminat\u0103 dup\u0103 ce nu a mai dat r\u0103spuns dup\u0103 o perioad\u0103 de {3} secunde.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.explanation=O conexiune de la gazda specificat\u0103 a fost desf\u0103cut\u0103 deoarece aceasta nu a mai r\u0103spuns.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port and {2} is the chain
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072=CWSIJ0072E: O condi\u0163ie nea\u015fteptat\u0103 a cauzat ca o conexiune re\u0163ea la gazda {0} pe portul {1} folosind lan\u0163ul {2} s\u0103 fie \u00eenchis\u0103.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.explanation=Detectarea unei condi\u0163ii nea\u015fteptate a determinat \u00eenchiderea unei conexiuni de re\u0163ea.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=Examina\u0163i toate excep\u0163iile corelate \u015fi fi\u015fierele istorice ale severului dvs. de aplica\u0163ii pentru a determina de ce s-au \u00eenchis conexiunile de re\u0163ea. Observa\u0163i mesajele de eroare adiacente pentru mai multe informa\u0163ii \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+# *** ignore this message - it is no longer used in the code. ***
+# {0} is the host, {1} is the port and {2} is the transport chain name
+#OUTOFMEMORY_SICJ0073=CWSIJ0073E: The available heap memory was exhausted while attempting to allocate storage for a message received from host {0} on port {1} using chain {2}.
+#OUTOFMEMORY_SICJ0073.explanation=Insufficient heap memory was available to store message data received from the specified remote process.  The connection to the remote process was closed.
+#OUTOFMEMORY_SICJ0073.useraction=Investigate the message throughput, message size and load of your application server.  Consider reducing message throughput, message size, application server load or increasing the amount of heap allocated by your server process.
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: A ap\u0103rut o eroare intern\u0103.
+BUFFER_NOT_VALID_SICJ0074.explanation=MSG0001
+BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: A ap\u0103rut o eroare intern\u0103.
+BUFFER_NOT_PREPARED_SICJ0075.explanation=MSG0001
+BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: A ap\u0103rut o eroare intern\u0103.
+BUFFER_ALREADY_RELEASED_SICJ0076.explanation=MSG0001
+BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: O condi\u0163ie nea\u015fteptat\u0103 a cauzat ca o conexiune re\u0163ea s\u0103 fie \u00eenchis\u0103.
+PRIORITY_QUEUE_PURGED_SICJ0077.explanation=Detectarea unei condi\u0163ii nea\u015fteptate a determinat \u00eenchiderea unei conexiuni de re\u0163ea.
+PRIORITY_QUEUE_PURGED_SICJ0077.useraction=Analiza\u0163i orice excep\u0163ie imbricat\u0103 \u015fi fi\u015fierele cu istoricul evenimentelor corespunz\u0103toare aplica\u0163iei dumneavoastr\u0103 pentru a determina de ce conexiunea de re\u0163ea s-a \u00eenchis. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAIN_SICJ0078=CWSIJ0078E: O excep\u0163ie nea\u015fteptat\u0103 {0} a \u00eempiedicat lan\u0163ul de transport {1} din procesul de pornire.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.explanation=Transportul specificat nu poate fi pornit datorit\u0103 excep\u0163iei specificate.  Alte procese nu vor putea stabili conexiuni de re\u0163ea c\u0103tre acest server utiliz\u00e2nd lan\u0163ul de transport specificat.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.useraction=Examina\u0163i excep\u0163ia precizat\u0103 \u00een mesaj \u015fi determina\u0163i dac\u0103 aceasta con\u0163ine s uficiente informa\u0163ii pentru a rezolva problema. Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079=CWSIJ0079I: Lan\u0163ul de transport mesagerie {0} nu a fost pornit.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.explanation=Lan\u0163ul de transport nu a fost pornit \u00eentruc\u00e2t nici o magistral\u0103 definit\u0103 la celul\u0103 nu permite utilizarea lan\u0163ului.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.useraction=Revizui\u0163i transporturile permise de magistralele dvs.
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_CONNFAILED_SICJ0080=CWSIJ0080E: O conexiune cross-memory la procesul subordonat al regiunii de control nu poate fi pornit\u0103.
+CONNDATAGROUP_CONNFAILED_SICJ0080.explanation=O conexiune tip cross-memory nu poate fi stabilit\u0103, aceasta put\u00e2nd fi datorat\u0103 pornirii asincrone a proceselor serverului de aplica\u0163ii.
+CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=Nu va fi necesar\u0103 nici o ac\u0163iune dac\u0103 acest mesaj este rezultatul unei porniri asincrone a procesului serverului de aplica\u0163ii.  Dac\u0103 acest mesaj este generat cu insisten\u0163\u0103, contacta\u0163i service-ul IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: A ap\u0103rut o eroare intern\u0103.  Un obiect de clas\u0103 {0} nu poate fi creat din cauza excep\u0163iei : {1}.
+EXCP_DURING_INIT_SICJ0081.explanation=MSG0001
+EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: A ap\u0103rut o eroare intern\u0103.  Excep\u0163ia primit\u0103 a fost{0}.
+EXCP_DURING_INIT_SICJ0082.explanation=MSG0001
+EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+NETWORK_FAILURE_SICJ0083=CWSIJ0083E: O condi\u0163ie nea\u015fteptat\u0103 a cauzat ca o conexiune re\u0163ea s\u0103 fie \u00eenchis\u0103.
+NETWORK_FAILURE_SICJ0083.explanation=Detectarea unei condi\u0163ii nea\u015fteptate a determinat \u00eenchiderea unei conexiuni de re\u0163ea.
+NETWORK_FAILURE_SICJ0083.useraction=Analiza\u0163i orice excep\u0163ie imbricat\u0103 \u015fi fi\u015fierele cu istoricul evenimentelor corespunz\u0103toare aplica\u0163iei dumneavoastr\u0103 pentru a determina de ce conexiunea de re\u0163ea s-a \u00eenchis. Verifica\u0163i mesajele adiacente de eroare pentru informa\u0163ii suplimentare \u015fi corecta\u0163i problema dac\u0103 este posibil.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084=CWSIJ0084E: O excep\u0163ie nea\u015fteptat\u0103 {0} a \u00eempiedicat lan\u0163ul de transport {1} de la o oprire corespunz\u0103toare.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.explanation=Lan\u0163ul de transport specificat nu poate fi oprit corespunz\u0103tor datorit\u0103 excep\u0163iei specificate. Dac\u0103 lan\u0163ul de transport nu s-a putut opri, atunci alte procese ar putea stabili conexiuni de re\u0163ea la acest server utiliz\u00e2nd lan\u0163ul de transport specificat.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Examina\u0163i excep\u0163ia precizat\u0103 \u00een mesaj \u015fi determina\u0163i dac\u0103 aceasta con\u0163ine s uficiente informa\u0163ii pentru a rezolva problema. Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: Lan\u0163ul de transport mesagerie {0} a fost oprit.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=Lan\u0163ul de transport a fost oprit urm\u00e2nd o schimbare de configura\u0163ie de securitate ceea ce \u00eenseamn\u0103 c\u0103 nici o \u00eentruc\u00e2t nici o magistral\u0103 definit\u0103 la celul\u0103 nu mai permite utilizarea lan\u0163ului.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Nici o ac\u0163iune necesar\u0103.
+
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIJ9999=CWSIJ9999E: {0}
+TEMPORARY_CWSIJ9999.explanation=Dac\u0103 mesajul nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele de eroare care acompaniaz\u0103 acest mesaj pentru mai multe informa\u0163ii.
+TEMPORARY_CWSIJ9999.useraction=Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086=CWSIJ0086I: O excep\u0163ie nea\u015fteptat\u0103 {0} a \u00eempiedicat lan\u0163ul de transport {1} de la o oprire corespunz\u0103toare.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086.explanation=Lan\u0163ul de transport specificat nu poate fi oprit corespunz\u0103tor datorit\u0103 excep\u0163iei specificate. Dac\u0103 lan\u0163ul de transport nu s-a putut opri, atunci alte procese ar putea stabili conexiuni de re\u0163ea la acest server utiliz\u00e2nd lan\u0163ul de transport specificat.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086.useraction=Examina\u0163i excep\u0163ia precizat\u0103 \u00een mesaj \u015fi determina\u0163i dac\u0103 aceasta con\u0163ine s uficiente informa\u0163ii pentru a rezolva problema. Pentru informa\u0163ii suplimentare privind rezolvarea acestei erori, c\u0103uta\u0163i informa\u0163iile de determinare a problemei pe pagina web pentru suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+missingPorts.ChainDisabled=CWSIJ0086W: Lan\u0163ul de transport al mesageriei {0} a fost dezactivat.
+missingPorts.ChainDisabled.explanation=Lan\u0163ul de transport specificat a fost dezactivat deoarece portul configurat este ma pu\u0163in de 0.
+missingPorts.ChainDisabled.useraction=Corecta\u0163i portul alocat lan\u0163ului de transport \u00een configurarea comunic\u0103rii JMS pentru a fi mai mare sau egal cu 0.
+
+# -------------------------------------------------------------------------------------------------
+missingSslOptions.ChainNotStarted=CWSIJ0087W: Lan\u0163ul transport de mesagerie {0} nu poate fi pornit.
+missingSslOptions.ChainNotStarted.explanation=Lan\u0163ul de transport specificat nu poate fi pornit din cauza unei probleme \u00een cititul configur\u0103rii SSL.
+missingSslOptions.ChainNotStarted.useraction= Asigura\u0163i-v\u0103 c\u0103 configurarea SSL este f\u0103cut\u0103 corect.
+
+
+
+

@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Odmowa dost\u0119pu do \u015bcie\u017cki {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do \u015bcie\u017cki poza skonfigurowanym regionem odczytu/zapisu.
+SERVER_ACCESS_DENIED_ERROR.useraction=Popraw \u015bcie\u017ck\u0119, wskazuj\u0105c tak\u0105, kt\u00f3ra znajduje si\u0119 w skonfigurowanym regionie odczytu/zapisu.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Jest to wewn\u0119trzny b\u0142\u0105d serwera zg\u0142aszany w zwi\u0105zku z niedost\u0119pno\u015bci\u0105 okre\u015blonej us\u0142ugi.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: \u017b\u0105danie pobrania pliku {0} zako\u0144czy\u0142o si\u0119 powodzeniem.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=\u017b\u0105danie pobrania podanego pliku zako\u0144czy\u0142o si\u0119 powodzeniem.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: \u017b\u0105danie przes\u0142ania pliku {0} zako\u0144czy\u0142o si\u0119 powodzeniem.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=\u017b\u0105danie przes\u0142ania podanego pliku zako\u0144czy\u0142o si\u0119 powodzeniem.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: \u017b\u0105danie usuni\u0119cia pliku {0} zako\u0144czy\u0142o si\u0119 powodzeniem.
+DELETE_REQUEST_COMPLETE_INFO.explanation=\u017b\u0105danie usuni\u0119cia podanego pliku zako\u0144czy\u0142o si\u0119 powodzeniem.
+DELETE_REQUEST_COMPLETE_INFO.useraction=To jest komunikat informacyjny i nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: \u017b\u0105danie usuni\u0119cia pliku {0} nie mog\u0142o zosta\u0107 wykonane.
+DELETE_REQUEST_ERROR.explanation=\u017b\u0105danie usuni\u0119cia podanego pliku nie powiod\u0142o si\u0119. Plik mo\u017ce by\u0107 u\u017cywany przez inny proces.
+DELETE_REQUEST_ERROR.useraction=Sprawd\u017a, czy plik nie jest u\u017cywany przez inny proces, i \u017ce istniej\u0105 odpowiednie uprawnienia umo\u017cliwiaj\u0105ce usuni\u0119cie pliku.
+
+PATH_NOT_VALID=CWWKX0127E: \u015acie\u017cka {0} jest niepoprawna.
+PATH_NOT_VALID.explanation=Okre\u015blona \u015bcie\u017cka jest niepoprawna i nie mo\u017cna jej znale\u017a\u0107.
+PATH_NOT_VALID.useraction=Sprawd\u017a, czy zosta\u0142a podana poprawna \u015bcie\u017cka niezawieraj\u0105ca niepoprawnych znak\u00f3w lub warto\u015bci.
+
+NO_WRITE_LOCATION=CWWKX0128E: Brak skonfigurowanych miejsc zapisu na serwerze routingu.
+NO_WRITE_LOCATION.explanation=Brak skonfigurowanych miejsc zapisu na serwerze routingu.
+NO_WRITE_LOCATION.useraction=Upewnij si\u0119, \u017ce na serwerze routingu skonfigurowano przynajmniej jedno miejsce zapisu.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: Nie mo\u017cna rozwin\u0105\u0107 przes\u0142anego archiwum {0}.
+UPLOAD_EXPANSION_ERROR.explanation=Nie mo\u017cna zako\u0144czy\u0107 operacji rozwini\u0119cia okre\u015blonego przes\u0142anego archiwum.
+UPLOAD_EXPANSION_ERROR.useraction=Upewnij si\u0119, \u017ce archiwum nie jest uszkodzone.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: Nie mo\u017cna znale\u017a\u0107 programu narz\u0119dziowego rozszerzaj\u0105cego archiwum.
+ARCHIVE_EXPANDER_ERROR.explanation=Nie mo\u017cna znale\u017a\u0107 wymaganego programu narz\u0119dziowego rozszerzaj\u0105cego archiwum.
+ARCHIVE_EXPANDER_ERROR.useraction=Sprawd\u017a, czy katalog instalacyjny serwera Liberty nie jest uszkodzony.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: Nie znaleziono zadania o identyfikatorze {0}.
+UNKNOWN_TASK_ID_ERROR.explanation=Podany identyfikator nie jest zgodny z \u017cadnym zadaniem aktualnie przechowywanym w rejestrze zada\u0144.
+UNKNOWN_TASK_ID_ERROR.useraction=Wy\u015blij zapytanie dotycz\u0105ce poprawnego identyfikatora, kt\u00f3ry nie zosta\u0142 przetworzony wt\u00f3rnie.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: Opcje dzia\u0142a\u0144 wykonywanych po przes\u0142aniu {0} nie s\u0105 poprawne.
+INVALID_ACTION_OPTIONS.explanation=Opcje dzia\u0142a\u0144 wykonywanych po przes\u0142aniu musz\u0105 mie\u0107 warto\u015b\u0107 NULL lub pust\u0105 albo zawiera\u0107 rozdzielon\u0105 przecinkami list\u0119 o tej samej d\u0142ugo\u015bci co lista dzia\u0142a\u0144.
+INVALID_ACTION_OPTIONS.useraction=Sprawd\u017a, czy opcje dzia\u0142a\u0144 wykonywanych po przes\u0142aniu zawieraj\u0105 poprawn\u0105 warto\u015b\u0107.

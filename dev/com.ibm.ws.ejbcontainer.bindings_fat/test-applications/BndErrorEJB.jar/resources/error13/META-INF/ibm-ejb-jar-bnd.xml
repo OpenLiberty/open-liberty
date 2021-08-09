@@ -1,0 +1,11 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+<session name="TargetBean" simple-binding-name="MySimpleRemoteTargetBiz">
+  <interface class="com.incorrect.interface.name" binding-name="ejb/RemoteTargetBiz"/>
+</session>
+
+</ejb-jar-bnd>

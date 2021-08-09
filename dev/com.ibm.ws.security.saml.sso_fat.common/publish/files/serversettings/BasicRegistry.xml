@@ -1,0 +1,63 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="testuser"
+			password="testuserpwd" />
+		<user
+			name="testuser@ibm.com"
+			password="testuserpwd" />
+		<user
+			name="diffuser"
+			password="diffuserpwd" />
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+		<user
+			name="fimuser"
+			password="fimuser" />
+		<user
+			name="test_userIdentifier"
+			password="somePass" />
+		<user
+			name="test_userUniqueIdentifier"
+			password="somePass" />
+		<group name="group1">
+			<member name="user1" />
+			<member name="user2" />
+		</group>
+		<group name="test_groupIdentifier">
+			<member name="testuser" />
+			<member name="user1" />
+			<member name="user2" />
+			<member name="test_userIdentifier" />
+			<member name="test_userUniqueIdentifier" />
+		</group>
+		<group name="idpGroup">
+			<member name="fimuser" />
+		</group>
+	</basicRegistry>
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+</server>

@@ -1,0 +1,123 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: wssecurity
+Bundle-SymbolicName: com.ibm.ws.wssecurity
+Bundle-Description: IBM Web Service Security base on CXF wssecurity; version=${bVersion}
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: \
+  WSSecurity
+
+Export-Package: \
+ com.ibm.ws.wssecurity,\
+ com.ibm.ws.wssecurity.callback,\
+ com.ibm.ws.wssecurity.cxf.validator,\
+ com.ibm.ws.wssecurity.signature,\
+ com.ibm.ws.wssecurity.cxf.interceptor
+
+Include-Resource: \
+  @./resources!/META-INF/**, \
+  OSGI-INF=resources/OSGI-INF
+
+Private-Package:\
+ com.ibm.ws.wssecurity.internal.*,\
+ com.ibm.ws.wssecurity.caller.*,\
+ com.ibm.ws.wssecurity.token.*,\
+ com.ibm.ws.wssecurity.resources.*
+ 
+ -dsannotations:com.ibm.ws.wssecurity.internal.WSSecurityClientConfiguration
+ 
+Service-Component: \
+  com.ibm.ws.wssecurity.token.WSSecurityTokenServiceImpl; \
+    implementation:=com.ibm.ws.wssecurity.token.WSSecurityTokenServiceImpl; \
+    provide:=com.ibm.ws.security.sso.common.SsoService; \
+    configuration-policy:=ignore; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    ssoService=com.ibm.ws.security.sso.common.SsoService; \
+    userResolver='com.ibm.wsspi.security.saml2.UserCredentialResolver'; \
+    optional:='ssoService,userResolver'; \
+    greedy:='ssoService, securityService'; \
+    dynamic:='ssoService,userResolver,securityService'; \
+    multiple:="ssoService"; \
+    properties:="service.vendor=IBM,type=wssecurity", \
+  com.ibm.ws.wssecurity.config; \
+    implementation:=com.ibm.ws.wssecurity.internal.WSSecurityConfiguration; \
+    provide:='com.ibm.ws.wssecurity.internal.WSSecurityConfiguration,\
+              org.osgi.service.cm.ConfigurationListener'; \
+    configuration-policy:=require; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    configurationAdmin=org.osgi.service.cm.ConfigurationAdmin; \
+    securityService=com.ibm.ws.security.SecurityService; \
+    keyStoreService=com.ibm.ws.ssl.KeyStoreService; \
+    sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
+    optional:='keyStoreService,sslSupport'; \
+    dynamic:='configurationAdmin,securityService,keyStoreService,sslSupport'; \
+    properties:="service.vendor=IBM"
+
+instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
+	com.ibm.ws.org.apache.santuario.xmlsec.1.5.2;version=latest,\
+	com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\
+	com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3;version=latest,\
+	com.ibm.ws.org.apache.xml.resolver.1.2;version=latest,\
+	com.ibm.ws.org.joda.time.1.6.2;version=latest,\
+	com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest,\
+	com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.prereq.wsdl4j.1.6.2;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.sso.common;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

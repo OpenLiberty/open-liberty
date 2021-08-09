@@ -1,0 +1,65 @@
+<server>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+		<user
+			name="user3"
+			password="user3pwd" />
+		<user
+			name="testuser"
+			password="testuserpwd" />
+		<user
+			name="diffuser"
+			password="diffuserpwd" />
+
+		<group name="group1">
+			<member name="user1" />
+			<member name="user2" />
+			<member name="user3" />
+		</group>
+		<group name="group2">
+			<member name="testuser" />
+			<member name="diffuser" />
+			<member name="user3" />
+		</group>
+			<group name="group3">
+			<member name="testuser" />
+			<member name="user1" />
+		</group>
+	</basicRegistry>
+
+	<authorization-roles id="com.ibm.ws.security.oidc10">
+		<security-role name="authenticated">
+			<user name="testuser" />
+			<user name="diffuser" />
+			<group name="group1" />
+		</security-role>
+		<security-role name="clientManager">
+			<user name="testuser" />
+			<user name="diffuser" />
+			<group name="group1" />
+		</security-role>
+	</authorization-roles>
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<user name="diffuser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<user name="diffuser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+
+</server>

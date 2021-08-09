@@ -1,0 +1,91 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: A ap\u0103rut o eroare intern\u0103 \u00een Reactive Messaging Kafka Connector. Eroarea este: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=A ap\u0103rut o eroare intern\u0103 Reactive Messaging care \u00eempiedic\u0103 operarea normal\u0103.
+internal.kafka.connector.error.CWMRX1000E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: A ap\u0103rut o eroare la comiterea offset-urilor de citire la brokerul Kafka. Eroarea este: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=A ap\u0103rut o eroare \u00een Kafka Incoming Connector care \u00eempiedic\u0103 operarea normal\u0103 pentru Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: A ap\u0103rut o eroare la sondarea brokerului Kafka. Eroarea este: {0}.
+kafka.poll.error.CWMRX1002E.explanation=A ap\u0103rut o eroare \u00een Kafka Incoming Connector care \u00eempiedic\u0103 operarea normal\u0103 pentru Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: A ap\u0103rut o eroare la trimiterea unui mesaj la brokerul Kafka . Eroarea este: {0}.
+kafka.send.error.CWMRX1003E.explanation=A ap\u0103rut o eroare \u00een Kafka Outgoing Connector care \u00eempiedic\u0103 operarea normal\u0103 pentru Reactive Messaging.
+kafka.send.error.CWMRX1003E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Reactive Messaging Kafka Outgoing Connector a primit o eroare. Eroarea este {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=Kafka Outgoing Connector a primit un semnal de eroare care \u00eempiedic\u0103 operarea normal\u0103 pentru Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Proprietatea group.id nu a fost setat\u0103 \u00een configura\u0163ia pentru acest canal. Seta\u0163i proprietatea {0} \u00een una din sursele de configura\u0163ie MicroProfile pentru aceast\u0103 aplica\u0163ie.
+kafka.groupid.not.set.CWMRX1005E.explanation=Trebuie setat ID-ul de grup consumatori Kafka pentru a permite func\u0163ionarea corespunz\u0103toare pentru Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Seta\u0163i proprietatea \u00eentr-una din loca\u0163iile MicroProfile ConfigSource pentru aceast\u0103 aplica\u0163ie, de exemplu, fi\u015fierul microprofile-config.properties.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Clasele de la fi\u015fierul JAR kafka-clients nu pot fi \u00eenc\u0103rcate. Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul JAR kafka-clients \u015fi dependen\u0163ele sale sunt disponibile ca biblioteci pentru aplica\u0163ia dumneavoastr\u0103.
+kafka.library.not.present.CWMRX1006E.explanation=Aplica\u0163iile care folosesc Reactive Messaging Kafka Client trebuie s\u0103 furnizeze fi\u015fierul JAR kafka-clients \u015fi dependen\u0163ele sale. Pot furniza acest fi\u015fier \u015fi dependen\u0163ele sale fie prin \u00eempachetarea lui ca bibliotec\u0103 \u00een cadrul aplica\u0163iei sau prin furnizarea lui ca o bibliotec\u0103 partajat\u0103.
+kafka.library.not.present.CWMRX1006E.useraction=\u00cempacheta\u0163i fi\u015fierul JAR kafka-clients \u015fi dependen\u0163ele sale ca biblioteci \u00een aplica\u0163ia dumneavoastr\u0103 sau ca o bibliotec\u0103 partajat\u0103. Fi\u015fierul JAR kafka-clients poate fi desc\u0103rcat de la site-ul web Apache Kafka sau de la Maven Central.
+
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Nu poate fi creat un conector de intrare Kafka pentru canalul {0}. Eroarea este {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=O eroare care a survenit atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de intrare \u00eempiedic\u0103 func\u0163ionarea normal\u0103 a MicroProfile Reactive Messaging. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a identifica problema.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Nu poate fi creat un conector de ie\u015fire Kafka pentru canalul {0}. Eroarea este {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=O eroare care a survenit atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de ie\u015fire \u00eempiedic\u0103 func\u0163ionarea normal\u0103 a MicroProfile Reactive Messaging. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a identifica problema.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Nu poate fi creat un conector de intrare Kafka pentru canalul {0}, dar aceast\u0103 opera\u0163ie este re\u00eencercat\u0103. Eroarea este {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=A survenit o eroare atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de intrare. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a verifica dac\u0103 problema a fost tranzitorie sau a fost rezolvat\u0103 prin re\u00eencercarea set\u0103rii conectorului.
+
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Nu poate fi creat un conector de ie\u015fire Kafka pentru canalul {0}, dar aceast\u0103 opera\u0163ie este re\u00eencercat\u0103. Eroarea este {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=A survenit o eroare atunci c\u00e2nd conectorul Kafka a fost setat pentru un canal de mesagerie reactiv\u0103 de ie\u015fire. Aceasta poate fi cauzat\u0103 de o problem\u0103 cu configura\u0163ia de conector sau de o problem\u0103 la rezolvarea numelui de gazd\u0103 al brokerului Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a verifica dac\u0103 problema a fost tranzitorie sau a fost rezolvat\u0103 prin re\u00eencercarea set\u0103rii conectorului.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: A ap\u0103rut urm\u0103toarea eroare Reactive Messaging: {0}.
+temporary.CWMRX1999E.explanation=A ap\u0103rut o eroare intern\u0103 Reactive Messaging care \u00eempiedic\u0103 operarea normal\u0103.
+temporary.CWMRX1999E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.

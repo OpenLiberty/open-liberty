@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.4.45,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: bitStringMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.6
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.45
+m-name: x500UniqueIdentifier
+m-description: RFC2256: X.500 unique identifier
+m-obsolete: FALSE
+entryUUID: 6535c2ac-129b-4c89-a08c-e39ad4c3732b
+entryCSN: 20130919081858.584000Z#000000#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081908.247Z

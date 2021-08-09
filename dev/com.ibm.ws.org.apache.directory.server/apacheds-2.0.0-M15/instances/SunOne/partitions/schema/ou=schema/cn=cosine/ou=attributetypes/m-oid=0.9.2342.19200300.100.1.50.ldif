@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.1.50,ou=attributeTypes,cn=cosine,ou=schema
+m-collective: FALSE
+m-singlevalue: TRUE
+m-oid: 0.9.2342.19200300.100.1.50
+m-obsolete: FALSE
+m-description: RFC1274: Single Level Quality
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.13
+m-usage: USER_APPLICATIONS
+m-name: singleLevelQuality
+creatorsname: uid=admin,ou=system

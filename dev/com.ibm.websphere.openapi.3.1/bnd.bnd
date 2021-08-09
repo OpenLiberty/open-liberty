@@ -1,0 +1,24 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+# IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+
+Bundle-Name: OpenAPI v3 SPIs
+Bundle-SymbolicName: com.ibm.websphere.openapi.3.1
+Bundle-Description: SPIs for OpenAPI 3.1 Services; version=${bVersion}
+
+Export-Package: com.ibm.wsspi.openapi31
+
+-buildpath: \
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

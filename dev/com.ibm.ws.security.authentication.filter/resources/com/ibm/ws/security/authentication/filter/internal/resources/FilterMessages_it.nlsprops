@@ -1,0 +1,61 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Filter service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4350 - CWWKS4399
+AUTH_FILTER_INIT_NULL_STRING=CWWKS4350E: Una stringa null non \u00e8 una regola di filtro di autenticazione valida.
+AUTH_FILTER_INIT_NULL_STRING.explanation=Una stringa null \u00e8 stata specificata per il filtro di autenticazione nel file server.xml.
+AUTH_FILTER_INIT_NULL_STRING.useraction=Correggere la regola di filtro di autenticazione.
+
+AUTH_FILTER_MALFORMED_CONDITION=CWWKS4351E: La condizione di filtro non ha il formato corretto. s1 = {0};  s2 = {1}; s3 = {2}.
+AUTH_FILTER_MALFORMED_CONDITION.explanation=La condizione di filtro non ha il formato corretto, non \u00e8 possibile specificare pi\u00f9 di un valore.
+AUTH_FILTER_MALFORMED_CONDITION.useraction=Verificare il valore del filtro nel file server.xml.
+
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE=CWWKS4352E: Il tipo di filtro corrispondente deve essere uno dei seguenti: ==, !=, %=, > o <. \u00c8 stato utilizzato il tipo corrispondente {0}.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.explanation=Il tipo di filtro corrispondente deve essere uno dei seguenti ==, !=, %=, > o <.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.useraction=Verificare il tipo di filtro corrispondente nel file server.xml.
+
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE=CWWKS4353E: Il tipo di filtro corrispondente deve essere uno dei seguenti: equals, notContain, contains, greaterThan o lessThan. \u00c8 stato utilizzato il tipo corrispondente {0}.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.explanation=Il tipo di filtro corrispondente deve essere uno dei seguenti: equals, notContain, contains, greaterThan o lessThan.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.useraction=Verificare il tipo di filtro corrispondente nel file server.xml.
+
+AUTH_FILTER_MALFORMED_IP_RANGE=CWWKS4354E: \u00c8 stato specificato un intervallo di indirizzi IP non corretto.  Trovato {0} anzich\u00e9 un carattere jolly.
+AUTH_FILTER_MALFORMED_IP_RANGE.explanation=\u00c8 stato specificato un intervallo di indirizzi IP non valido.  L'intervallo di indirizzi IP deve contenere solo caratteri jolly dopo il primo intervallo.
+AUTH_FILTER_MALFORMED_IP_RANGE.useraction=Assicurarsi che tutto ci\u00f2 che \u00e8 presente dopo il primo intervallo specificato siano caratteri jolly.
+
+AUTH_FILTER_UNKNOWN_HOST=CWWKS4355E: Restituita un''eccezione host sconosciuto per l''indirizzo IP {0}.
+AUTH_FILTER_UNKNOWN_HOST.explanation=Impossibile ottenere un nome host per l'indirizzo IP specificato.
+AUTH_FILTER_UNKNOWN_HOST.useraction=Convalidare l'intervallo di indirizzi IP specificato.
+
+AUTH_FILTER_IP_STRING_CONVERT_ERROR=CWWKS4356E: Impossibile convertire il valore di attributo IP {0} in un indirizzo IP.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.explanation=Si \u00e8 verificato un errore di conversione durante la conversione del valore di attributo IP in un indirizzo IP.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.useraction=Convalidare l'attributo IP specificato nel file server.xml.
+
+AUTH_FILTER_NOT_CONFIG=CWWKS4357I: L'elemento authFilter non \u00e8 specificato nel file server.xml.
+AUTH_FILTER_NOT_CONFIG.explanation=L'elemento authFilter non \u00e8 specificato nel file server.xml.
+AUTH_FILTER_NOT_CONFIG.useraction=Assicurarsi che l'elemento authFilter sia specificato nel file server.xml.
+
+AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: La configurazione del filtro di autenticazione {0} \u00e8 stata elaborata correttamente.
+AUTH_FILTER_CONFIG_PROCESSED.explanation=La configurazione del filtro di autenticazione \u00e8 stata elaborata correttamente.
+AUTH_FILTER_CONFIG_PROCESSED.useraction=Nessuna azione richiesta.
+
+AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: La configurazione del filtro di autenticazione {0} \u00e8 stata modificata correttamente.
+AUTH_FILTER_CONFIG_MODIFIED.explanation=La configurazione del filtro di autenticazione \u00e8 stata modificata correttamente.
+AUTH_FILTER_CONFIG_MODIFIED.useraction=Nessuna azione richiesta.
+
+AUTH_FILTER_MISSING_ID=CWWKS4360E: All''elemento authFilter specificato nel file server.xml manca l''attributo id richiesto {0}
+AUTH_FILTER_MISSING_ID.explanation=All'elemento authFilter specificato nel file server.xml manca l'attributo id richiesto e, pertanto, questo elemento authFilter non verr\u00e0 utilizzato.
+AUTH_FILTER_MISSING_ID.useraction=Assicurarsi che l'elemento authFilter specificato nel file server.xml abbia l'attributo id.

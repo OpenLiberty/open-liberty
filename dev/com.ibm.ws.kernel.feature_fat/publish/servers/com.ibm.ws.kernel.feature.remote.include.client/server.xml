@@ -1,0 +1,9 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    <include location="http://localhost:${bvt.prop.HTTP_default}/static/server-include.xml"/>
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}">
+    </httpEndpoint>
+</server>

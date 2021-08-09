@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: Element {2} nie zawiera wymaganego atrybutu {3} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+required.attribute.missing.explanation=Brak wymaganego atrybutu w podanym elemencie.
+required.attribute.missing.useraction=Popraw deskryptor wdra\u017cania, dodaj\u0105c brakuj\u0105cy atrybut.
+
+invalid.root.element=CWWKC2252E: Niepoprawna nazwa lokalna elementu g\u0142\u00f3wnego {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+invalid.root.element.explanation=Element g\u0142\u00f3wny jest niepoprawny.
+invalid.root.element.useraction=Sprawd\u017a poprawno\u015b\u0107 pliku XML, aby upewni\u0107 si\u0119, \u017ce element g\u0142\u00f3wny jest poprawny.
+
+root.element.not.found=CWWKC2253E: Nie mo\u017cna znale\u017a\u0107 elementu g\u0142\u00f3wnego deskryptora wdra\u017cania {0} w wierszu {1}.
+root.element.not.found.explanation=Brak elementu g\u0142\u00f3wnego w deskryptorze wdra\u017cania.
+root.element.not.found.useraction=Popraw deskryptor wdra\u017cania.
+
+end.element.not.found=CWWKC2254E: Nie znaleziono znacznika elementu ko\u0144cowego elementu {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+end.element.not.found.explanation=Deskryptor wdra\u017cania nie jest poprawnym kodem XML.
+end.element.not.found.useraction=Popraw deskryptor wdra\u017cania.
+
+incorrect.id.attr.namespace=CWWKC2255E: Atrybut id elementu {2} mia\u0142 przestrze\u0144 nazw {3}, podczas gdy powinna to by\u0107 przestrze\u0144 nazw {4} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+incorrect.id.attr.namespace.explanation=Przestrzenie nazw element\u00f3w i atrybut\u00f3w w deskryptorze wdra\u017cania nie by\u0142y sp\u00f3jne.
+incorrect.id.attr.namespace.useraction=Popraw deskryptor wdra\u017cania.
+
+unexpected.attribute=CWWKC2256E: Napotkano nieoczekiwany atrybut {3} podczas analizowania elementu {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+unexpected.attribute.explanation=Napotkano atrybut, dla kt\u00f3rego nie zdefiniowano wyst\u0105pienia w deskryptorze wdra\u017cania.
+unexpected.attribute.useraction=Popraw deskryptor wdra\u017cania.
+
+unexpected.content=CWWKC2257E: Napotkano nieoczekiwan\u0105 tre\u015b\u0107 w elemencie {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+unexpected.content.explanation=Napotkano tre\u015b\u0107 tekstow\u0105, dla kt\u00f3rej nie zdefiniowano wyst\u0105pienia w deskryptorze wdra\u017cania.
+unexpected.content.useraction=Popraw deskryptor wdra\u017cania.
+
+incorrect.child.element.namespace=CWWKC2258E:  Przestrzeni\u0105 nazw elementu potomnego {3} elementu nadrz\u0119dnego {2} w deskryptorze wdra\u017cania {0} w wierszu {1} by\u0142a przestrze\u0144 nazw {4}, a nie {5}.
+incorrect.child.element.namespace.explanation=Przestrzenie nazw element\u00f3w i atrybut\u00f3w w deskryptorze wdra\u017cania nie by\u0142y sp\u00f3jne.
+incorrect.child.element.namespace.useraction=Popraw deskryptor wdra\u017cania.
+
+unexpected.child.element=CWWKC2259E: Napotkano nieoczekiwany element potomny {3} elementu nadrz\u0119dnego {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+unexpected.child.element.explanation=Napotkano element, dla kt\u00f3rego nie zdefiniowano wyst\u0105pienia w deskryptorze wdra\u017cania.
+unexpected.child.element.useraction=Popraw deskryptor wdra\u017cania.
+
+invalid.href.prefix=CWWKC2260E: Warto\u015b\u0107 atrybutu href elementu {2} w deskryptorze wdra\u017cania {0} w wierszu {1} nie rozpoczyna si\u0119 od \u015bcie\u017cki {3}.
+invalid.href.prefix.explanation=Atrybut href musi rozpoczyna\u0107 si\u0119 od poprawnej \u015bcie\u017cki do przywo\u0142ywanego deskryptora.
+invalid.href.prefix.useraction=Popraw deskryptor wdra\u017cania.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Podczas pr\u00f3by okre\u015blenia wersji deskryptora wdra\u017cania {0} wyst\u0105pi\u0142 b\u0142\u0105d.
+unknown.deployment.descriptor.version.explanation=Wersja lub przestrze\u0144 nazw by\u0142a niepoprawna lub nie zosta\u0142a okre\u015blona w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+unknown.deployment.descriptor.version.useraction=Sprawd\u017a i popraw wersj\u0119 lub przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E:  Serwer nie mo\u017ce przetworzy\u0107 wersji {3} i przestrzeni nazw {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+invalid.deployment.descriptor.namespace.explanation= Podana wersja i przestrze\u0144 nazw s\u0105 niepoprawne albo konfiguracja serwera nie zawiera sk\u0142adnika, kt\u00f3ry mo\u017ce przetworzy\u0107 wersj\u0119 i przestrze\u0144 nazw.
+invalid.deployment.descriptor.namespace.useraction=Sprawd\u017a i popraw wersj\u0119 lub przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania albo sprawd\u017a i popraw sk\u0142adniki w konfiguracji serwera.
+
+invalid.deployment.descriptor.version=CWWKC2263E:  Atrybut {2} wersji podany w deskryptorze wdra\u017cania {0} w wierszu {1} nie jest poprawny.
+invalid.deployment.descriptor.version.explanation=W elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania okre\u015blono niepoprawn\u0105 wersj\u0119.
+invalid.deployment.descriptor.version.useraction=Sprawd\u017a i popraw numer wersji w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+
+missing.deployment.descriptor.namespace=CWWKC2264E:  Podczas pr\u00f3by okre\u015blenia przestrzeni nazw deskryptora wdra\u017cania {0} w wierszu {1} wyst\u0105pi\u0142 b\u0142\u0105d.
+missing.deployment.descriptor.namespace.explanation=Okre\u015blono niepoprawn\u0105 przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+missing.deployment.descriptor.namespace.useraction=Sprawd\u017a i popraw przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+
+missing.deployment.descriptor.version=CWWKC2265E:  Podczas pr\u00f3by okre\u015blenia wersji deskryptora wdra\u017cania {0} w wierszu {1} wyst\u0105pi\u0142 b\u0142\u0105d.
+missing.deployment.descriptor.version.explanation=Wersja nie zosta\u0142a okre\u015blona w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+missing.deployment.descriptor.version.useraction=Sprawd\u017a i popraw wersj\u0119 w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+
+at.most.one.occurrence=CWWKC2266E: W deskryptorze wdra\u017cania {0} w wierszu {1} powinien istnie\u0107 co najwy\u017cej jeden element potomny {3} elementu nadrz\u0119dnego {2}.
+at.most.one.occurrence.explanation=Dla niekt\u00f3rych element\u00f3w dozwolone jest tylko jednokrotne wyst\u0105pienie w deskryptorze wdra\u017cania (je\u015bli dany element istnieje).
+at.most.one.occurrence.useraction=Popraw deskryptor wdra\u017cania.
+
+required.method.element.missing=CWWKC2267E: Element {2} musi zawiera\u0107 co najmniej jeden element potomny {3} zdefiniowany w deskryptorze wdra\u017cania {0} w wierszu {1}.
+required.method.element.missing.explanation=Brak wymaganego elementu potomnego w okre\u015blonym elemencie nadrz\u0119dnym.
+required.method.element.missing.useraction=Popraw deskryptor wdra\u017cania przez dodanie wymaganego elementu potomnego.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Je\u015bli atrybut mode elementu <run-as-mode> jest ustawiony na warto\u015b\u0107 SPECIFIED_IDENTITY w deskryptorze wdra\u017cania {0} w wierszu {1}, element potomny <specified-identity> musi by\u0107 zdefiniowany.
+runasmode.missing.specifiedID.element.explanation=Dla elementu <run-as-mode>, dla kt\u00f3rego ustawiono tryb SPECIFIED_IDENTITY, brakuje elementu potomnego <specified-identity>.
+runasmode.missing.specifiedID.element.useraction=Popraw deskryptor wdra\u017cania, dodaj\u0105c wymagany element potomny, lub zmie\u0144 tryb.
+
+found.duplicate.ejbname=CWWKC2269E: Atrybut name dla wszystkich komponent\u00f3w bean <session> i <message-driven> musi by\u0107 unikalny. Znaleziono zduplikowan\u0105 nazw\u0119 {1} w deskryptorze wdra\u017cania {0}.
+found.duplicate.ejbname.explanation=Wszystkie nazwy komponent\u00f3w bean sterowanych komunikatami i komponent\u00f3w bean sesji musz\u0105 by\u0107 unikalne. Okre\u015blona nazwa komponentu bean jest u\u017cywana wi\u0119cej ni\u017c raz.
+found.duplicate.ejbname.useraction=Popraw deskryptor wdra\u017cania, zmieniaj\u0105c nazwy wszystkich zduplikowanych komponent\u00f3w EJB.
+
+found.duplicate.attribute.value=CWWKC2270E: Atrybut {2} dla wszystkich element\u00f3w {1} musi by\u0107 unikalny. Znaleziono zduplikowan\u0105 nazw\u0119 {3} w deskryptorze wdra\u017cania {0}.
+found.duplicate.attribute.value.explanation=Warto\u015b\u0107 podanego atrybutu musi by\u0107 unikalna we wszystkich elementach tego samego typu.
+found.duplicate.attribute.value.useraction=Popraw deskryptor wdra\u017cania, zmieniaj\u0105c nazwy wszystkich zduplikowanych warto\u015bci atrybut\u00f3w.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Dla modu\u0142u {0} znaleziono plik validation.xml. Jednak plik validation.xml nie zosta\u0142 skonfigurowany pod k\u0105tem sprawdzania poprawno\u015bci, dlatego ten plik XML zostanie zignorowany.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=Us\u0142uga BeanValidationService nie mo\u017ce utworzy\u0107 klasy ValidatorFactory, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania pliku validation.xml przy u\u017cyciu pliku schematu validation-configuration-1.0.xsd. B\u0142\u0105d ten mo\u017ce wskazywa\u0107, \u017ce plik validation.xml nie jest przeznaczony do u\u017cytku w \u015brodowisku wykonawczym sprawdzania poprawno\u015bci komponent\u00f3w, dlatego ten plik XML zostanie zignorowany.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Je\u015bli plik validation.xml nie s\u0142u\u017cy do tworzenia instancji klasy ValidatorFactory, to zignoruj ten komunikat. Je\u015bli jednak plik validation.xml s\u0142u\u017cy do tworzenia instancji klasy ValidatorFactory, to istnieje problem.  W\u0142\u0105cz na serwerze aplikacji \u015bledzenie \u015brodowiska sprawdzania poprawno\u015bci komponent\u00f3w bean, zatrzymaj aplikacj\u0119, zrestartuj j\u0105 i poszukaj w pliku wyj\u015bciowym \u015bledzenia zdarze\u0144 takich jak: Nieoczekiwany wyj\u0105tek podczas pr\u00f3by to rozdzielenia element\u00f3w z pliku validation.xml. Sprawd\u017a stos wywo\u0142a\u0144 wyj\u0105tku w celu uzyskania asysty podczas debugowania.
+
+xml.error=CWWKC2272E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora wdra\u017cania {0} w wierszu {1}. Komunikat o b\u0142\u0119dzie: {2}
+xml.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora wdra\u017cania XML. Wi\u0119cej wyja\u015bnie\u0144 zawiera komunikat o b\u0142\u0119dzie.
+xml.error.useraction=Popraw deskryptor wdra\u017cania, aby usun\u0105\u0107 b\u0142\u0105d.
+
+invalid.enum.value=CWWKC2273E: Warto\u015b\u0107 {2} w deskryptorze wdra\u017cania {0} w wierszu {1} nie jest poprawna. Poprawne warto\u015bci to: {3}
+invalid.enum.value.explanation=W deskryptorze wdra\u017cania podano niepoprawn\u0105 warto\u015b\u0107.
+invalid.enum.value.useraction=Popraw deskryptor wdra\u017cania tak, aby by\u0142a u\u017cywana jedna z oczekiwanych warto\u015bci.
+
+invalid.int.value=CWWKC2274E: Warto\u015b\u0107 {2} w deskryptorze wdra\u017cania {0} w wierszu {1} nie jest poprawn\u0105 liczb\u0105 ca\u0142kowit\u0105.
+invalid.int.value.explanation=W deskryptorze wdra\u017cania podano warto\u015b\u0107, kt\u00f3ra nie jest liczb\u0105 z zakresu od -2147483648 do 2147483647.
+invalid.int.value.useraction=Popraw deskryptor wdra\u017cania tak, aby by\u0142a u\u017cywana poprawna liczby ca\u0142kowita.
+
+invalid.long.value=CWWKC2275E: Warto\u015b\u0107 {2} w deskryptorze wdra\u017cania {0} w wierszu {1} nie jest poprawn\u0105 liczb\u0105 typu long.
+invalid.long.value.explanation=W deskryptorze wdra\u017cania podano warto\u015b\u0107, kt\u00f3ra nie jest liczb\u0105 z zakresu od -9223372036854775808 do 9223372036854775807.
+invalid.long.value.useraction=Popraw deskryptor wdra\u017cania tak, aby by\u0142a u\u017cywana poprawna liczba typu long.
+
+module.name.not.specified=CWWKC2276E: Element {0} musi okre\u015bla\u0107 atrybut nazwy modu\u0142u.
+module.name.not.specified.explanation=Konfiguracja powi\u0105zania i rozszerzenia dla komponent\u00f3w EJB i modu\u0142\u00f3w WWW musi zawiera\u0107 atrybut moduleName okre\u015blaj\u0105cy modu\u0142, do kt\u00f3rego konfiguracja ma zastosowanie. 
+module.name.not.specified.useraction=Dodaj atrybut moduleName do elementu web-bnd, web-ext, ejb-bnd lub ejb-ext. 
+
+module.name.invalid=CWWKC2277E: Przynajmniej jedna nazwa modu\u0142u w elemencie {1} jest niepoprawna. Niepoprawne nazwy modu\u0142\u00f3w: {0}.
+module.name.invalid.explanation=Konfiguracja powi\u0105zania i rozszerzenia dla modu\u0142\u00f3w WWW musi okre\u015bla\u0107 poprawny atrybut moduleName. W co najmniej jednej konfiguracji okre\u015blono niepoprawn\u0105 nazw\u0119 modu\u0142u. Nazwa modu\u0142u musi by\u0107 nazw\u0105 pliku archiwum, kt\u00f3ry zawiera aplikacj\u0119 WWW lub EJB.
+module.name.invalid.useraction=Popraw atrybut moduleName w konfiguracji powi\u0105zania lub rozszerzenia. 

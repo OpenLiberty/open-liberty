@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=\uc624\ub958:  {0}
+error.inputConsoleNotAvailable=\uc785\ub825 \ucf58\uc194\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+error.missingIO=\uc624\ub958, I/O \ub514\ubc14\uc774\uc2a4 \ub204\ub77d: {0}.
+
+usage=\uc0ac\uc6a9\ubc95: {0}
+task.unknown=\uc54c \uc218 \uc5c6\ub294 \ud0dc\uc2a4\ud06c: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=\ub108\ubb34 \ub9ce\uc740 \uc778\uc218.
+insufficientArgs=\ubd80\uc871\ud55c \uc778\uc218.
+invalidArg=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc778\uc218 {0}.
+missingArg=\ub204\ub77d \uc778\uc218 {0}.
+missingValue=\uc778\uc218\uc758 \ub204\ub77d \uac12 {0}.
+missingArg2={0} \uc778\uc218 \ub610\ub294 {1} \uc778\uc218\ub97c \uc81c\uacf5\ud574\uc57c \ud569\ub2c8\ub2e4.
+exclusiveArg={0} \uc778\uc218 \ub610\ub294 {1} \uc778\uc218\ub97c \uc9c0\uc815\ud574\uc57c \ud558\uc9c0\ub9cc \ub458 \ub2e4 \uc9c0\uc815\ud574\uc11c\ub294 \uc548 \ub429\ub2c8\ub2e4.
+serverNotFound=\uc9c0\uc815\ub41c \uc11c\ubc84 {0}\uc744(\ub97c) \uc704\uce58 {1}\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+
+encode.enterText=\ud14d\uc2a4\ud2b8 \uc785\ub825:
+encode.reenterText=\ud14d\uc2a4\ud2b8 \uc7ac\uc785\ub825:
+encode.readError=\ud14d\uc2a4\ud2b8\ub97c \uc77d\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+encode.entriesDidNotMatch=\ud56d\ubaa9\uc774 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+
+password.enterText=\ube44\ubc00\ubc88\ud638 \uc785\ub825:
+password.reenterText=\ube44\ubc00\ubc88\ud638 \uc7ac\uc785\ub825:
+password.readError=\ube44\ubc00\ubc88\ud638\ub97c \uc77d\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+password.entriesDidNotMatch=\ube44\ubc00\ubc88\ud638\uac00 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+name=\uc774\ub984
+days=\uc77c
+
+sslCert.abort=\uc778\uc99d \uc791\uc131\uc744 \uc911\ub2e8\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
+sslCert.createFailed=\uae30\ubcf8 SSL \uc778\uc99d\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.\n\
+{0}
+sslCert.errorEncodePassword=\uc624\ub958 \uc778\ucf54\ub529 \ube44\ubc00\ubc88\ud638(\uc778\uc99d\uc774 \uc791\uc131\ub418\uc9c0 \uc54a\uc74c):\n\
+{0}
+sslCert.createKeyStore=\ud0a4 \uc800\uc7a5\uc18c {0}\uc744(\ub97c) \uc791\uc131\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.\n
+sslCert.oneType={0} \ubc0f {1} \uc778\uc218\ub294 \ub3d9\uc2dc\uc5d0 \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+sslCert.clientNotFound=\uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8 {0}\uc744(\ub97c) \uc704\uce58 {1}\uc5d0\uc11c \ucc3e\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=\uc11c\ubc84 {0}\uc5d0 \ub300\ud55c SSL \uc778\uc99d\uc11c\ub97c \uc791\uc131\ud588\uc2b5\ub2c8\ub2e4. \uc774 \uc778\uc99d\uc11c\ub294 {1}\uc744(\ub97c) \uc0ac\uc6a9\ud558\uc5ec SubjectDN\uc73c\ub85c \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\
+\n\
+SSL\uc744 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ud558\ub824\uba74 server.xml\uc5d0 \ub2e4\uc74c \ud589\uc744 \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=\ud074\ub77c\uc774\uc5b8\ud2b8 {0}\uc5d0 \ub300\ud55c SSL \uc778\uc99d\uc11c\ub97c \uc791\uc131\ud588\uc2b5\ub2c8\ub2e4. \uc774 \uc778\uc99d\uc11c\ub294 {1}\uc744(\ub97c) \uc0ac\uc6a9\ud558\uc5ec SubjectDN\uc73c\ub85c \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\
+\n\
+SSL\uc744 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ud558\ub824\uba74 client.xml\uc5d0 \ub2e4\uc74c \ud589\uc744 \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+fileUtility.failedDirCreate=\ub514\ub809\ud1a0\ub9ac {0}\uc744(\ub97c) \uc791\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+file.exists=\ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c {0}\uc774(\uac00) \uc774\ubbf8 \uc788\uc2b5\ub2c8\ub2e4. \ud574\ub2f9 \uc704\uce58\uc5d0\uc11c \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+file.requiredDirNotCreated={0}\uc744 \uc704\ud55c \ud544\uc218 \ub514\ub809\ud1a0\ub9ac \uad6c\uc870\ub97c \uc791\uc131\ud558\uc9c0 \ubabb\ud568
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\t\uc0ac\uc6a9\uc790 \uc815\uc758 \ube44\ubc00\ubc88\ud638 \uc554\ud638\ud654\ub3c4 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+encode.option-desc.custom.feature=\n\
+\t{0}\uc758 \uae30\ub2a5 \uc774\ub984\uc740 \ub2e4\uc74c\uacfc \uac19\uc2b5\ub2c8\ub2e4.\n\
+\t
+encode.option-desc.custom.description=\n\
+\t{0}\uc758 \uc124\uba85\uc740 \ub2e4\uc74c\uacfc \uac19\uc2b5\ub2c8\ub2e4.\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=\uc0ac\uc6a9\uc790 \uc815\uc758 \ube44\ubc00\ubc88\ud638 \uc554\ud638\ud654\uac00 \ubc1c\uacac\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=LTPA \ud0a4 \ud30c\uc77c \uc791\uc131\uc744 \uc911\ub2e8\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
+createLTPAKeys.fileExists={0} \ud30c\uc77c\uc774 \uc774\ubbf8 \uc788\uc2b5\ub2c8\ub2e4. \ud574\ub2f9 \uc704\uce58\uc5d0\uc11c LTPA \ud0a4 \ud30c\uc77c\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+createLTPAKeys.createdFile=LTPA \ud0a4 \ud30c\uc77c {0}\uc744(\ub97c) \uc791\uc131\ud588\uc2b5\ub2c8\ub2e4.\n\
+server.xml\uc5d0 \ub2e4\uc74c \uad6c\uc131\uc744 \ud3ec\ud568\ud558\uc2ed\uc2dc\uc624.\n\
+{1}\n

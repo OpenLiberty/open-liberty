@@ -1,0 +1,29 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="hibernateApp.war">
+<!--         <classloader commonLibraryRef="derbyLib"/> -->
+    </application>
+    
+    <dataSource jndiName="jdbc/derby" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="derbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:tx_jta_fat_hibernate"/>    
+    </dataSource>
+    
+    <library id="derbyLib">
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+    
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <!-- Give the app all permission because the hibernate lib it packages requires a lot of permissions -->
+    <javaPermission codebase="${server.config.dir}/apps/hibernateApp.war" className="java.security.AllPermission"/>
+    
+</server>

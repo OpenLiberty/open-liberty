@@ -1,0 +1,16 @@
+<server description="Server for testing multiple health checks with different application name.">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>mpHealth-2.0</feature>
+    </featureManager>
+	
+	<logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+
+	<application name="DifferentAppNameHealthCheckApp-2.0" type="war" location="DifferentAppNameHealthCheckApp.war" autoStart="true"></application>
+	
+</server>

@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=Nie mo\u017cna przekszta\u0142ci\u0107 elementu {0} typu {1} w {2}
+error.compare=Nie mo\u017cna por\u00f3wna\u0107 elementu {0} i elementu {1}
+error.function=Wyst\u0105pi\u0142y problemy podczas wywo\u0142ywania funkcji {0}
+error.unreachable.base=Cel nieosi\u0105galny, identyfikator {0} zosta\u0142 rozstrzygni\u0119ty na warto\u015b\u0107 NULL
+error.unreachable.property=Cel nieosi\u0105galny, element {0} zwr\u00f3ci\u0142 warto\u015b\u0107 NULL
+error.resolver.unhandled=Obiekt ELResolver nie obs\u0142u\u017cy\u0142 typu: {0} z w\u0142a\u015bciwo\u015bci\u0105 {1}
+error.resolver.unhandled.null=Obiekt ELResolver nie mo\u017ce obs\u0142u\u017cy\u0107 obiektu o podstawie NULL z identyfikatorem {0}
+
+# ValueExpressionLiteral
+error.value.literal.write=Wyra\u017cenie warto\u015bci jest litera\u0142em i nie jest dost\u0119pne do zapisu: {0}
+
+# ExpressionFactoryImpl
+error.null=Wyra\u017cenie nie mo\u017ce mie\u0107 warto\u015bci NULL
+error.mixed=Wyra\u017cenie nie mo\u017ce zawiera\u0107 warto\u015bci ''#''{..}'' ani ''$''{..}'': {0}
+error.method=To nie jest poprawne wyra\u017cenie metody: {0}
+error.method.nullParms=Typy parametr\u00f3w nie mog\u0105 mie\u0107 warto\u015bci NULL
+error.value.expectedType=Oczekiwany typ nie mo\u017ce mie\u0107 warto\u015bci NULL
+
+# ExpressionBuilder
+error.parseFail=Analizowanie wyra\u017cenia nie powiod\u0142o si\u0119 [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Niedozwolona sk\u0142adnia operacji ustawiania
+
+# ReflectionUtil
+error.method.notfound=Nie znaleziono metody: {0}.{1}({2})
+error.method.ambiguous=Nie mo\u017cna znale\u017a\u0107 jednoznacznej metody: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=Wyra\u017cenie u\u017cywa funkcji, ale nie udost\u0119pniono programu odwzorowuj\u0105cego funkcje
+error.fnMapper.method=Nie znaleziono funkcji {0}
+error.fnMapper.paramcount=Funkcja {0} okre\u015bla nast\u0119puj\u0105c\u0105 liczb\u0119 parametr\u00f3w: {1}, ale zadeklarowano nast\u0119puj\u0105c\u0105 liczb\u0119 parametr\u00f3w: {2}
+
+# ExpressionImpl
+error.context.null=Obiekt ELContext mia\u0142 warto\u015b\u0107 NULL
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Istnieje wiele zbior\u00f3w parametr\u00f3w okre\u015blonych dla funkcji [{0}]
+error.identifier.notjava=Identyfikator [{0}] nie jest poprawnym identyfikatorem j\u0119zyka Java zgodnie z wymaganiami okre\u015blonymi w sekcji 1.19 specyfikacji EL (Identyfikator ::= identyfikator j\u0119zyka Java). T\u0119 operacj\u0119 sprawdzania mo\u017cna wy\u0142\u0105czy\u0107, ustawiaj\u0105c w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 org.apache.el.parser.SKIP_IDENTIFIER_CHECK na warto\u015b\u0107 true.
+error.lambda.tooManyMethodParameterSets=Okre\u015blono wi\u0119cej zbior\u00f3w parametr\u00f3w metody ni\u017c liczba zagnie\u017cd\u017conych wyra\u017ce\u0144 lambda
+
+# Stream
+stream.compare.notComparable=Elementy strumienia musz\u0105 implementowa\u0107 operacj\u0119 por\u00f3wnywaln\u0105
+stream.optional.empty=Wywo\u0142ywanie operacji get() dla pustego elementu opcjonalnego jest niedozwolone
+stream.optional.paramNotLambda=Parametr dla metody [{0}] powinien by\u0107 wyra\u017ceniem lambda

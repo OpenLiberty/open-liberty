@@ -1,0 +1,25 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: exporting.metainf.services
+Bundle-SymbolicName: exporting.metainf.services
+Bundle-Description: This bundle provides a library for testing the exporting metainf services; version=${bVersion}
+
+#optional, should match the trace group used by Tr components (see sample package-info.java)
+#WS-TraceGroup: Exporting.metainf
+
+#
+Export-Package: \
+  com.ibm.ws.classloading.exporting.test;version=1.0
+
+# include the implementation packages
+Private-Package: \
+  com.ibm.ws.classloading.exporting.test.unavailable
+
+Import-Package: \
+  com.ibm.websphere.ras*, \
+  *
+
+# use the annotations to describe the services
+-dsannotations: \
+  com.ibm.ws.classloading.exporting.test.TestUser

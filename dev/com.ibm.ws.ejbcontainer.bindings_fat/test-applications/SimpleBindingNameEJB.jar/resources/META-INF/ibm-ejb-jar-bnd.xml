@@ -1,0 +1,24 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+        
+  <session name="SimpleBindingName1" 
+  	simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome1"/>
+  <session name="SimpleBindingName2" 
+  	simple-binding-name="ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome2"/>
+  	<session name="SimpleBindingName3" 
+  	simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome3"/>
+  <session name="SimpleBindingName4" 
+  	simple-binding-name="ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome4"/>
+  	<session name="SimpleBindingName5" 
+  	simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome5"/>
+  <session name="SimpleBindingName6" 
+  	simple-binding-name="ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome6"/>
+  	<session name="SimpleBindingName7" 
+  	simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome7"/>
+  <session name="SimpleBindingName8" 
+  	simple-binding-name="ejb/com/ibm/ejb3x/SimpleBindingName/ejb/SimpleBindingNameHome8"/>
+ 
+</ejb-jar-bnd>

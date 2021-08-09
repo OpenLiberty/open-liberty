@@ -1,0 +1,23 @@
+# x509.certificate.mapper.id=mapper1
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper1
+
+# x509.certificate.mapper.id=mapper2
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper2
+
+# x509.certificate.mapper.id=mapper3
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper3
+
+# x509.certificate.mapper.id=mapper4
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper4
+
+# x509.certificate.mapper.id=mapper5
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper5
+
+# x509.certificate.mapper.id=mapper6
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper6

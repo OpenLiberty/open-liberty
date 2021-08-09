@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 Manifest \ud074\ub798\uc2a4 \uacbd\ub85c {0}\uc774(\uac00) jar \ud30c\uc77c {1}\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=\ud074\ub798\uc2a4 \uacbd\ub85c\uac00 \uc62c\ubc14\ub974\uac8c \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. jar \ud30c\uc77c \ub610\ub294 \ud3f4\ub354\ub97c \uc9c0\uc2dc\ud558\ub294 \uc0c1\ub300 URI \ubb38\uc790\uc5f4\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=jar \ud30c\uc77c\uc758 MANIFEST.MF\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc5ec \uc62c\ubc14\ub978 \ud074\ub798\uc2a4 \uacbd\ub85c \uc815\uc758\ub97c \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Manifest \ud074\ub798\uc2a4 \uacbd\ub85c {0}\uc744(\ub97c) jar \ud30c\uc77c {1} \ub610\ub294 \ud574\ub2f9 \uc0c1\uc704\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Manifest \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c jar \ud30c\uc77c\uc744 \ud3ec\ud568\ud558\ub294 \uc544\uce74\uc774\ube0c \ub610\ub294 jar \ud30c\uc77c\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=\ud074\ub798\uc2a4 \uacbd\ub85c \ub300\uc0c1\uc744 \uc544\uce74\uc774\ube0c\uc5d0 \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: \uc0c1\ub300 \uc21c\uc11c \uc9c0\uc815 \uc0ac\uc6a9 \uc2dc \uc911\ubcf5 \uc774\ub984 {0}\uc774(\uac00) {1} \ubc0f {2}\uc758 web-fragment.xml \ud30c\uc77c\uc5d0\uc11c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=\uc0c1\ub300 \uc815\ub82c \uc21c\uc11c \uc9c0\uc815 \uc0ac\uc6a9 \uc2dc \uac01 web-fragment.xml \ud30c\uc77c\uc758 \uc694\uc18c\uc5d0 \uace0\uc720\ud55c \uc774\ub984\uc774 \ud544\uc694\ud569\ub2c8\ub2e4.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=web.xml \ud30c\uc77c\uc5d0\uc11c \uc808\ub300 \uc815\ub82c <absolute-ordering> \uc694\uc18c \uc0ac\uc6a9 \uad6c\uc131 \ub610\ub294 \uc0c1\ub300 \uc815\ub82c \uc21c\uc11c \uc9c0\uc815 \uc0ac\uc6a9 \uc2dc \uac01 web-fragment.xml\ub9c8\ub2e4 \uace0\uc720\ud55c \uc774\ub984\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+annotation.service.not.available.CWWKM0451E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0451E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+annotation.service.not.available.CWWKM0452E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0452E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+container.is.not.a.module.CWWKM0453E.explanation=CMSG0001
+container.is.not.a.module.CWWKM0453E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.module.class.source.CWWKM0454E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.module.class.source.CWWKM0455E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=CMSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+annotation.service.not.available.CWWKM0463E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0463E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+container.is.not.a.web.module.CWWKM0464E.explanation=CMSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.module.class.source.CWWKM0465E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=CMSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2} {3}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2} {3}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2} {3}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=CMSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=CMSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=CMSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+two.fragments.have.the.same.name.CWWKM0479E.explanation=CMSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1} {2}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+conflicting.relative.order.metadata.CWWKM0480E.explanation=CMSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+loop.found.in.list.CWWKM0481E.explanation=CMSG0001
+loop.found.in.list.CWWKM0481E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+

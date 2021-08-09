@@ -1,0 +1,11 @@
+com.ibm.ws.ejbcontainer.remote.client_fat
+com.ibm.ws.ejbcontainer.remote_fat
+com.ibm.ws.ejbcontainer.security.jacc_fat
+com.ibm.ws.ejbcontainer.security.jacc_fat.2
+com.ibm.ws.ejbcontainer.session.async_fat
+com.ibm.ws.ejbcontainer.session.passivation_fat
+com.ibm.ws.ejbcontainer.timer.auto_fat
+com.ibm.ws.ejbcontainer.timer.persistent_fat
+com.ibm.ws.ejbcontainer.tx_fat
+com.ibm.ws.injection_fat
+com.ibm.ws.managedbeans_fat

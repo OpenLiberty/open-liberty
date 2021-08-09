@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!DOCTYPE Stats SYSTEM "stats.dtd">
+
+<Stats type="com.ibm.ws.monitors.JVMMonitorStats">
+    <description>jvmRuntimeModule.desc</description>
+    <resourceBundle>com.ibm.ws.pmi.properties.PMIText</resourceBundle>
+
+    <BoundedRangeStatistic  ID="1" name="jvmRuntimeModule.totalMemory">
+        <level>high</level>
+	    <unit>unit.kbyte</unit>
+	    <description>jvmRuntimeModule.totalMemory.desc</description>
+		<updateOnRequest>true</updateOnRequest> 
+        <statisticSet>basic</statisticSet>                    
+    </BoundedRangeStatistic>
+
+    <CountStatistic name="jvmRuntimeModule.freeMemory" ID="2">
+        <level>low</level>
+        <unit>unit.kbyte</unit>
+	    <description>jvmRuntimeModule.freeMemory.desc</description>        
+		<updateOnRequest>true</updateOnRequest> 
+        <statisticSet>basic</statisticSet>                    
+    </CountStatistic>
+
+    <CountStatistic name="jvmRuntimeModule.usedMemory" ID="3">
+        <level>low</level>
+        <unit>unit.kbyte</unit>
+	    <description>jvmRuntimeModule.usedMemory.desc</description>        
+        <comment>Used memory in JVM runtime</comment>
+		<updateOnRequest>true</updateOnRequest> 
+        <statisticSet>basic</statisticSet>                    
+    </CountStatistic>
+    <CountStatistic name="jvmRuntimeModule.upTime" ID="4">
+        <level>low</level>
+        <unit>unit.second</unit>
+		<description>jvmRuntimeModule.upTime.desc</description>        
+        <comment>The amount of time in seconds the JVM has been running</comment>
+		<updateOnRequest>true</updateOnRequest> 
+        <statisticSet>basic</statisticSet>                    
+    </CountStatistic>
+    <DoubleStatistic name="jvmRuntimeModule.cpuUsage" ID="5">
+        <level>low</level>
+        <unit>unit.none</unit>
+	    <description>jvmRuntimeModule.cpuUsage.desc</description>
+        <comment>Average % busy for the Process CPU since last query</comment>        
+	    <resettable>false</resettable>
+        <statisticSet>basic</statisticSet>
+    </DoubleStatistic>
+    <CountStatistic ID="6" name="jvmRuntimeModule.numGcCalls">
+        <level>low</level>
+        <unit>unit.none</unit>
+        <description>jvmRuntimeModule.numGcCalls.desc</description> 
+        <comment>Number of garbage collection calls</comment>
+		<updateOnRequest>true</updateOnRequest> 
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="7" name="jvmRuntimeModule.avgGcDuration">
+        <level>low</level>
+        <unit>unit.ms</unit>                
+        <description>jvmRuntimeModule.avgGcDuration</description> 
+		<updateOnRequest>true</updateOnRequest> 
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+</Stats>

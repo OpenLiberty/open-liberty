@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=2.5.6.15,ou=objectClasses,cn=core,ou=schema
+m-must: userCertificate
+m-oid: 2.5.6.15
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2256: a strong authentication user
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: strongAuthenticationUser
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

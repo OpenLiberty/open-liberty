@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.109.114.2,ou=matchingRules,cn=system,ou=schema
+m-oid: 1.3.6.1.4.1.1466.109.114.2
+m-obsolete: FALSE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+objectclass: metaMatchingRule
+objectclass: metaTop
+objectclass: top
+m-name: caseIgnoreIA5Match
+creatorsname: uid=admin,ou=system

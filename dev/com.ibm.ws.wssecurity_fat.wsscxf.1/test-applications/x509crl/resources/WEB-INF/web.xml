@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   01/30/2013  chrisc         CRL tests
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>x509crl</display-name>
+
+    <servlet>
+        <servlet-name>crlNotInList</servlet-name>
+        <display-name>crlNotInList</display-name>
+        <description>X509 CRL test Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509crl.X509CrlNotInListSvc</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>crlNotInList</servlet-name>
+       <url-pattern>/X509CrlNotInListService</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>crlInList</servlet-name>
+        <display-name>crlInList</display-name>
+        <description>X509 CRL test Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509crl.X509CrlInListSvc</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>crlInList</servlet-name>
+       <url-pattern>/X509CrlInListService</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>crlInvCert</servlet-name>
+        <display-name>crlInvCert</display-name>
+        <description>X509 CRL test Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509crl.X509CrlInvCertSvc</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>crlInvCert</servlet-name>
+       <url-pattern>/X509CrlInvCertService</url-pattern>
+    </servlet-mapping>
+                                                                                         
+    <session-config>
+       <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

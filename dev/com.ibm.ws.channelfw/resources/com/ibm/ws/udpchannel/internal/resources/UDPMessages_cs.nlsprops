@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: Kan\u00e1l protokolu UDP {0} p\u0159ij\u00edm\u00e1 data v hostiteli {1} na portu {2}.
+CWUDP0001I.explanation=Kan\u00e1l UDP byl \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bn.
+CWUDP0001I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+CWUDP0002I=CWWKO0401I: Kan\u00e1l protokolu UDP {0} ukon\u010dil naslouch\u00e1n\u00ed v hostiteli {1} na portu {2}.
+CWUDP0002I.explanation=Kan\u00e1l UDP byl norm\u00e1ln\u011b zastaven.
+CWUDP0002I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+CWUDP0003W=CWWKO0402W: Kan\u00e1l UDP {0} byl sestaven s nespr\u00e1vnou hodnotou konfigura\u010dn\u00ed vlastnosti. N\u00e1zev: {1}  Hodnota: {2}.
+CWUDP0003W.explanation=Konfigura\u010dn\u00ed hodnoty jsou kan\u00e1lem protokolu UDP ignorov\u00e1ny.
+CWUDP0003W.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+CWUDP0004E=CWWKO0403E: Inicializace kan\u00e1lu UDP {0} nebyla \u00fasp\u011b\u0161n\u00e1. Hostitel {1} nebyl rozpozn\u00e1n.
+CWUDP0004E.explanation=Syst\u00e9m nem\u016f\u017ee vy\u0159e\u0161it konfigurovan\u00fd n\u00e1zev hostitele.
+CWUDP0004E.useraction=Ov\u011b\u0159te, \u017ee je konfigurace n\u00e1zvu hostitele spr\u00e1vn\u00e1.
+
+CWUDP0005E=CWWKO0404E: Inicializace kan\u00e1lu UDP {0} nebyla \u00fasp\u011b\u0161n\u00e1. Nepoda\u0159ilo se vytvo\u0159it vazbu soketu datagramu k hostiteli {1} a portu {2}.
+CWUDP0005E.explanation=Konfigurovan\u00fd port je pravd\u011bpodobn\u011b ji\u017e pou\u017e\u00edv\u00e1n.
+CWUDP0005E.useraction=Ov\u011b\u0159te, \u017ee je konfigurace portu spr\u00e1vn\u00e1.
+
+CWUDP0006I=CWWKO0405I: V r\u00e1mci kan\u00e1lu UDP do\u0161lo k selh\u00e1n\u00ed vyhled\u00e1v\u00e1n\u00ed DNS (Domain Name System) pro hostitele {0}. K ne\u00fasp\u011b\u0161n\u00e9mu vyhled\u00e1v\u00e1n\u00ed do\u0161lo {1}kr\u00e1t.
+CWUDP0006I.explanation=Kan\u00e1l UDP se pokusil o odesl\u00e1n\u00ed paketu hostiteli, n\u00e1zev hostitele v\u0161ak nelze rozpoznat. Server DNS mo\u017en\u00e1 nebyl spu\u0161t\u011bn nebo mohl b\u00fdt chybn\u011b konfigurov\u00e1n.
+CWUDP0006I.useraction=Ov\u011b\u0159te spr\u00e1vnost konfigurace DNS pro server.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: Do\u0161lo k intern\u00ed chyb\u011b. Slu\u017eba prov\u00e1d\u011bj\u00edc\u00edho modulu chyb\u00ed.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

@@ -1,0 +1,62 @@
+#*******************************************************************************
+# Copyright (c) 2019, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Import-Package: \
+	!*.internal.*,\
+	!com.ibm.ws.kernel.boot.cmdline,\
+	com.google.gson.*:resolution:=optional,\
+	org.jose4j.*;version="[0.6.5,1)", \
+	org.apache.commons.codec.binary,\
+	*
+
+src: \
+        fat/src, \
+		src, \
+        test-applications/jwtbuilderclient/src
+
+fat.project: true
+tested.features:\
+        jwt-1.0, jsonp-2.0, restfulwsclient-3.0, restfulws-3.0, pages-3.0, appsecurity-4.0
+
+
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+runtime.minimum.java.level: 1.8
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+-buildpath: \
+    com.unboundid:unboundid-ldapsdk;version=latest,\
+	com.ibm.ws.com.unboundid;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.javaee.servlet.3.1,\
+	javax.servlet-api,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	org.glassfish:javax.json;version=1.0,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+	net.sourceforge.htmlunit:webdriver;version=2.6,\
+    org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
+    org.brotli:dec;version=0.1.2,\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.appserver.api.json;version=latest

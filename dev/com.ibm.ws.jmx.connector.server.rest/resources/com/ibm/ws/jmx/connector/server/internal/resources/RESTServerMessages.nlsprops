@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RESTServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0100 - CWWKX0120
+
+jmx.connector.server.rest.notification.timeout.warning=CWWKX0101W: The notification client with id {0} did not make any requests within the allowed time and therefore has been disabled.
+jmx.connector.server.rest.notification.timeout.warning.explanation= Notification clients are required to make requests within the allowed time to avoid timeouts.
+jmx.connector.server.rest.notification.timeout.warning.useraction= Ensure the server is still accepting HTTP requests.
+
+jmx.connector.server.rest.notification.limit.warning=CWWKX0102W: The server has reached its limit of concurrent notification clients.
+jmx.connector.server.rest.notification.limit.warning.explanation= There is a limit on the number of concurrent clients that can sign up for notifications.
+jmx.connector.server.rest.notification.limit.warning.useraction= Ensure notification clients are authentic and required.  Restarting the server will reset all notification clients.
+
+JMX_REST_ADDRESS=CWWKX0103I: The JMX REST connector is running and is available at the following service URL: {0}
+JMX_REST_ADDRESS.explanation=The JMX REST connector is now ready to be accessed at the given service URL.
+JMX_REST_ADDRESS.useraction=No action is required.
+
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR=CWWKX0104W: The notification client with id {0} reached its limit of concurrent MBean listener registrations.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.explanation= The notification client has the maximum number of concurrent MBean listener registrations allowed.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.useraction= Ensure current MBean listener registrations are unique and required.  Remove unnecessary MBean listener registrations or create a new notification client.

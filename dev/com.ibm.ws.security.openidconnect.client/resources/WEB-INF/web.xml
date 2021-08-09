@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+	     xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	     id="WebApp_ID" version="2.4">
+	
+	<display-name>OpenID Connect Client Redirect Servlet</display-name>
+	
+	<servlet>
+		<description>OpenID Connect Client Redirect Servlet</description>
+		<display-name>OpenID Connect Client Redirect Servlet</display-name>
+		<servlet-name>OpenIdConnectClientRedirectServlet</servlet-name>
+		<servlet-class>com.ibm.ws.security.openidconnect.client.web.OidcRedirectServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>OpenIdConnectClientRedirectServlet</servlet-name>
+		<url-pattern>/redirect/*</url-pattern>
+	</servlet-mapping>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>OpenID Connect Client Redirect Servlet</web-resource-name>
+			<url-pattern>/redirect/*</url-pattern>
+			<http-method>*</http-method>
+		</web-resource-collection>
+	</security-constraint>
+
+	<servlet>
+		<description>Public Facing Error Servlet</description>
+		<display-name>PublicFacingErrorServlet</display-name>
+		<servlet-name>PublicFacingErrorServlet</servlet-name>
+		<servlet-class>com.ibm.ws.security.oauth20.web.PublicFacingErrorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PublicFacingErrorServlet</servlet-name>
+		<url-pattern>/publicError</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/publicError</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/publicError</location>
+	</error-page>
+</web-app>

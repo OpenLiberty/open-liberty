@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Sequ\u00eancia XPath inv\u00e1lida: {0}
+
+25002=Um \u00edndice de n\u00famero inteiro n\u00e3o p\u00f4de ser analisado desta sequ\u00eancia XPath: {0}
+
+25003=Ocorreu um erro ao serializar o objeto
+
+25004=Ocorreu um erro ao desserializar o documento
+
+25005=Ocorreu um erro ao validar o objeto
+
+25006=Um elemento raiz padr\u00e3o n\u00e3o foi especificado para o XMLDescriptor mapeado para {0}
+
+25007=Um descritor para a classe {0} n\u00e3o foi localizado no projeto.  Para JAXB, se o JAXBContext foi autoinicializado usando TypeMappingInfo[], deve-se chamar um m\u00e9todo de serializa\u00e7\u00e3o que aceite TypeMappingInfo como um par\u00e2metro de entrada.
+
+25008=Um descritor com o elemento raiz padr\u00e3o {0} n\u00e3o foi localizado no projeto
+
+25010=Uma refer\u00eancia de esquema n\u00e3o foi especificada para o XMLDescriptor mapeado para {0}
+
+25011=Um argumento nulo foi encontrado
+
+25012=Ocorreu um erro ao resolver o esquema XML.
+
+25013=Ocorreu um erro ao tentar configurar os esquemas.
+
+25014=Ocorreu um erro ao tentar instanciar a plataforma do esquema.
+
+25015=Ocorreu um erro ao tentar resolver o URI do namespace para {0}. Um resolvedor de namespace n\u00e3o foi especificado no descritor.
+
+25016=Um namespace para o prefixo {0} n\u00e3o foi localizado no resolvedor de namespace.
+
+25017=enumClass ou enumClassName deve ser configurado no JAXBTypesafeEnumConverter.
+
+25018=O m\u00e9todo fromString na classe de enumera\u00e7\u00e3o {0} n\u00e3o existe ou n\u00e3o p\u00f4de ser chamado.
+
+25019=A classe de enumera\u00e7\u00e3o especificada {0} n\u00e3o p\u00f4de ser localizada.
+
+25020=O m\u00e9todo "getResult()" n\u00e3o deve ser chamado antes da chamada do evento "endDocument()".
+
+25021=Classe {0} inv\u00e1lida para SwaRef. Deve ser javax.activation.DataHandler.
+
+25022=N\u00e3o \u00e9 poss\u00edvel serializar a imagem. Nenhum codificador dispon\u00edvel para mimeType {0}.
+
+25023=Nenhum descritor localizado ao desserializar o elemento mapeado para o atributo {0}.
+
+25024=Ocorreu um erro ao instanciar a classe UnmappedContentHandler {0}.
+
+25025=A classe UnmappedContentHandler {0} configurada no XMLUnmarshaller deve implementar org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=N\u00e3o \u00e9 poss\u00edvel atualizar o n\u00f3 [{0}], objeto n\u00e3o localizado no cache.
+
+25027=N\u00e3o \u00e9 poss\u00edvel recuperar anexo com cid {0} porque nenhum AttachmentUnmarshaller foi configurado.
+
+25028=Nenhum descritor de refer\u00eancia localizado para mapeamento {1} devido a um valor xsi:type desconhecido: {0}.
+
+25029=Para o prefixo [{0}] classe [{1}] tentou-se designar o URI de namespace [{2}], mas sua classe pai [{3}] j\u00e1 designou o URI de namespace [{4}].
+
+25030=Ocorreu um erro ao chamar o m\u00e9todo {0} no NamespacePrefixMapper customizado: {1}.
+
+25031=Ocorreu um erro ao processar o mapeador de prefixo de namespace: {1}. O m\u00e9todo {0} n\u00e3o foi localizado.
+
+25032=Ocorreu um erro ao chamar o m\u00e9todo {0} no CharacterEscapeHandler customizado: {1}.
+
+25033=Ocorreu um erro ao processar o CharacterEscapeHandler: {1}. O m\u00e9todo {0} n\u00e3o foi localizado.
+
+25034=Ocorreu um erro ao chamar o m\u00e9todo {0} no IDResolver customizado: {1}.
+
+25035=Ocorreu um erro ao processar o IDResolver: {1}. O m\u00e9todo {0} n\u00e3o foi localizado.
+
+25036=O IDResolver customizado {1} n\u00e3o suporta v\u00e1rios IDs XML {0}.  IDResolvers customizados devem ser subclasses org.eclipse.persistence.jaxb.IDResolver se v\u00e1rios IDs s\u00e3o usados.
+
+25037=Um ciclo foi detectado no gr\u00e1fico do objeto.  Isso causar\u00e1 um loop infinito: {0}
+
+25038=DOMPlatform n\u00e3o \u00e9 suportado com o tipo de m\u00eddia aplicativo/json.
+
+25039=Ocorreu um erro ao desserializar de {0}
+
+25040=Um objeto do tipo {0} com ID {1} n\u00e3o foi localizado.
+
+25041=O grupo de atributos especificado {0} n\u00e3o est\u00e1 definido para a classe {1}.
+
+25042=O valor da propriedade de vari\u00e1vel {0} na classe {1} n\u00e3o pode ser nulo.
+

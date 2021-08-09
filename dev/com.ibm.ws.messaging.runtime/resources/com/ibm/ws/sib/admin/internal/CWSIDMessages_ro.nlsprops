@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: Motorul de mesagerie {0} se ini\u0163ializeaz\u0103.
+ME_INITIALIZING_SIAS0001.explanation=Motorul de mesagerie specificat \u00eencepe ini\u0163ializarea.
+ME_INITIALIZING_SIAS0001.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: A avut loc o eroare intern\u0103; motivul: {0}
+INTERNAL_ERROR_SIAS0003.explanation=O eroare intern\u0103 nea\u015fteptat\u0103 a ap\u0103rut \u0103n timpul func\u0163ion\u0103rii sistemului.
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: Destina\u0163ia {0} nu poate fi creat\u0103.
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=Destinatia specificat\u0103 nu poate fi creat\u0103. Dac\u0103 scripturile JACL sau programele personalizate JMX sunt folosite pentru a creea configura\u0163ia, verifica\u0163i acestea pentru erori.
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: Nu este posibil\u0103 activarea MBean-ului {0} JMX numit {1}.
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=JMX MBean de un tip \u015fi nume specificat nu poate fi activat. De\u015fi aceasta nu \u00eempiedic\u0103 startarea serverului de mesaje, \u00eenseamn\u0103 c\u0103 oricare func\u0163ii administrative ce necesit\u0103 existen\u0163a acestui MBean, ar putea s\u0103 nu func\u0163ioneze conform a\u015ftept\u0103rilor.
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: Nu este posibil\u0103 dezactivarea MBean-ului {0} JMX numit {1}.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=JMX MBean specificat, nu poate fi dezactivat.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: Nu este posibil\u0103 \u00eenc\u0103rcarea clasei {0}.
+CLASS_LOAD_FAILURE_SIAS0013.explanation=Clasa specificat\u0103 nu poate fi \u00eenc\u0103rcat\u0103.
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: Motorul de mesagerie {0} nu poate fi repornit deoarece a fost raportat\u0103 o eroare grav\u0103.
+ME_RESTART_CHECK_SIAS0027.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a porni motorul de mesagerie specificat, dar o eroare de condi\u0163ie serioas\u0103 a fost raportat\u0103 anterior, deci motorul de mesagerie nu va fi reporni.
+ME_RESTART_CHECK_SIAS0027.useraction=Reporni\u0163i serverul sau muta\u0163i motorul de mesagerie pe un server cluster alternativ.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: Motorul de mesagerie {0} nu poate fi oprit din starea curent\u0103 {1}.
+ME_STATE_CHECK_SIAS0028.explanation=A fost f\u0103cut\u0103 o incercare de a opri motorul de mesagerie specificat, dar oprirea nu este o opera\u0163ie valid\u0103 atunci c\u00e2nd motorul de mesagerie este \u00een starea curent\u0103.
+ME_STATE_CHECK_SIAS0028.useraction=Verifica\u0163i starea motorului de mesagerie apoi relanseaz\u0103 opera\u0163ia c\u00e2nd este valid.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: Motorul de mesagerie {0} a suferit o eroare mod comun.
+ME_ERROR_REPORTED_SIAS0029.explanation=Motorul de mesagerie a detectat o eroare ce are care probabilitatea s\u0103 se repete pe un alt server a\u015fa c\u0103 preluarea la defecte nu va fi \u00eencercat\u0103.
+ME_ERROR_REPORTED_SIAS0029.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor apoi restarta\u0163i serverul.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: Motorul de mesagerie {0} a suferit o eroare mod comun \u015fi a fost oprit.
+ME_ERROR_STOPPED_SIAS0031.explanation=Motorul de mesagerie a detectat o eroare comun\u0103 \u015fi s-a oprit automat. Nu va fi \u00eencercat\u0103 nicio preluare la defect.
+ME_ERROR_STOPPED_SIAS0031.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor apoi restarta\u0163i serverul.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: Motorul de mesagerie {0} nu poate fi ini\u0163ializat; a fost prins\u0103 o excep\u0163ie aruncat\u0103 de {1} {2}
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=O eroare nea\u015fteptat\u0103 a ap\u0103rut \u00een timpul ini\u0163ializ\u0103rii motorului .
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor apoi restarta\u0163i serverul.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: Motorul de mesagerie {0} nu poate fi pornit: a fost prins\u0103 o excep\u0163ie aruncat\u0103 de {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=O eroare nea\u015fteptat\u0103 a ap\u0103rut \u00een timpul ini\u0163ializ\u0103rii motorului. Faza de start este finalizat\u0103 \u015fi componentele motorului ce au fost deja pornite sunt acum oprite.
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor apoi restarta\u0163i serverul.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: Motorul de mesagerie {0} nu poate fi pornit; a fost raportat\u0103 o eroare detectat\u0103 \u00een timpul {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=O component\u0103 a motorului de mesagerie nu poate fi pornit. Nici alte componente ale motorului nu vor fi pornite.
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor apoi reporni\u0163i serverul.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: Motorul de mesagerie {0} a prins o excep\u0163ie aruncat\u0103 de metoda {1} {2} \u00een timpul cur\u0103\u0163\u0103rii pornirii e\u015fuate
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=Motorul de mesagerie specificat nu poate fi oprit.
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor apoi reporni\u0163i serverul.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: Motorul de mesagerie {0} a prins o excep\u0163ie aruncat\u0103 de metoda {1} {2}
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=A fost detectat\u0103 o eroare de c\u0103tre o component\u0103 a motorului.
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=Verifica\u0163i istoricul pentru a determina erorile, corecta\u0163i cauzele erorilor, apoi reporni\u0163i serverul.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: Nu este posibil\u0103 trimiterea unei Notific\u0103ri de Eveniment de la MBean-ul {0} JMX numit {1}.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=O notificare eveniment nu poate fi trimis\u0103 din JMX MBean cu un tip si nume specificat. Alth_FAILED_SIAS0043.explanation=O notificare eveniment nu poate fi trimis\u0103 din JMX MBean cu un tip si nume specificat.De\u015fi aceasta nu \u00eempiedic\u0103 continuarea func\u0163ionarii serverului de mesagerie \u00eenseamn\u0103 c\u0103 acest MBean nu poate notifica ascult\u0103torii unor evenimente de sistem mesagerie importante.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: Motorul de Mesagerie {0} cu UUID {1} a fost pornit.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=Motorul de mesagerie este disponibil pentru a fi utilizat.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: Motorul de Mesagerie {0} cu UUID {1} s-a oprit.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=Motorul de mesagerie nu ma este disponibil pentru a fi utilizat.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: Motorul de mesagerie {0} a detectat o eroare \u015fi nu poate continua s\u0103 ruleze pe acest server.
+ME_ERROR_LOCAL_SIAS0046.explanation=Motorul de mesagerie raporteaz\u0103 o eroare c\u0103tre HAManager, ceea ce va opri serverul. Cu Application Server Network Deployment, serverul va fi repornit dac\u0103 \u00eel monitorizeaz\u0103 agentul de nod. Cu un cluster Network Deployment, motorul de mesagerie va fi prelua la defect de un alt server din cluster, dac\u0103 politica configurat\u0103 permite.
+ME_ERROR_LOCAL_SIAS0046.useraction=Verifica\u0163i istoricul pentru a determina cauza erorii, apoi corecta\u0163i-le astfel \u00eenc\u00e2t s\u0103 nu se mai repete. Fie reporni\u0163i serverul, fie (dac\u0103 utiliza\u0163i Network Deployment) verifica\u0163i dac\u0103 repornirea automat\u0103 sau preluarea la defect a reu\u015fit \u015fi dac\u0103 motorul de mesagerie ruleaz\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: Valoarea pentru atributul receiveExclusive a fost \u00eenlocuit\u0103 s\u0103 devin\u0103 "true" pentru destina\u0163ia {0}.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=Destina\u0163ia este setat\u0103 s\u0103 men\u0163in\u0103 ordonarea mesajelor. Prin urmare, valoarea pentru atributul receiveExclusive a fost \u00eenlocuit\u0103 s\u0103 devin\u0103 true.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=Dac\u0103 nu este necesar\u0103 comandarea, anula\u0163i stabilirea atributului maintainMessageOrder pentru a dezactiva \u00eenlocuirea atributului receiveExclusive.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: Motorul de Mesagerie {0} cu UUID {1} este \u00een curs de pornire.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=Motorul de mesagerie este in curs de pornire.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: Motorul de Mesagerie {0} cu UUID {1} este \u00een curs de oprire.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=Motorul de mesagerie este in curs de oprire.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: Motorul de Mesagerie {0} cu UUID {1} a e\u015fuat oprirea.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=Motorul de mesagerie a e\u015fuat oprirea.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: ''{0}''
+TEMPORARY_SIAS9999.explanation=Dac\u0103 acest mesaj nu v\u0103 d\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele anterioare pentru ajutor mai departe.
+TEMPORARY_SIAS9999.useraction=Verifica\u0163i mesajele de eroare \u00eenso\u0163itoare pentru mai multe informa\u0163ii.
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: Niciun ID furnizat pentru tagul messagingEngine \u00een fi\u015fierul de configurare al serverului. Va fi luat \u00een considerare ID-ul implicit {0}.
+NO_ID_PROVIDED_SIAS0100.explanation=ID-ul nu a fost furnizat pentru tagul messagingEngine.
+NO_ID_PROVIDED_SIAS0100.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: Nu este definit niciun ID \u00een fi\u015fierul de configurare al serverului pentru destinaia de tip {0}. 
+NO_ID_PROVIDED_SIAS0102.explanation=ID-ul nu este specificat pentru destina\u0163ie, iar de aici destina\u0163ia nu va fi creat\u0103.  
+NO_ID_PROVIDED_SIAS0102.useraction=Furniza\u0163i ID-ul pentru destina\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  Tagul fileStore nu a fost definit \u00een fi\u015fierul de configurare server, prin urmare se va folosi valoarea implicit\u0103
+NO_FILESTOR_DEFINED_SIAS0104.explanation=Tagul fileStore nu a fost furnizat deci valorile implicite vor fi folosite la crearea magaziei de fi\u015fiere.   
+NO_FILESTOR_DEFINED_SIAS0104.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: ID-ul motorului de mesagerie nu poate fi modificat dup\u0103 ce serverul este pornit.
+ME_ID_CHANGE_SIAS0105.explanation=ID-ul motorului de mesagerie este unic pentru un motor de mesagerie \u015fi nu poate fi modificat \u00een timp ce serverul este activ.
+ME_ID_CHANGE_SIAS0105.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: \u00cencercarea de a porni motorul de mesagerie. 
+RESTART_ME_SIAS0106.explanation=Motorul de mesagerie nu a fost pornit \u00een timpul apelului activat. Pentru c\u0103 utilizatorul a modificat fi\u015fierul de configurare server, se va face o \u00eencercare de a porni motorul de mesagerie.  
+RESTART_ME_SIAS0106.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: Pornirea serverului JMS. 
+START_ME_SIAS0107.explanation=Ini\u0163ializarea pornirii serverului JMS.  
+START_ME_SIAS0107.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: Serverul JMS a pornit.  
+ME_STARTED_SIAS0108.explanation=Pornirea serverului JMS a fost finalizat\u0103 cu succes.  
+ME_STARTED_SIAS0108.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: A avut loc o eroare intern\u0103 de mesagerie. Serverul JMS nu a putut fi pornit.
+ME_STOPPED_SIAS0109.explanation=Serverul JMS nu a putut fi pornit.  
+ME_STOPPED_SIAS0109.useraction=Consulta\u0163i mesajele de eroare anterioare din timpul pornirii Motor de mesagerie pentru informa\u0163ii suplimentare.
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: Nu s-a furnizat Destina\u0163ia \u0163int\u0103 pentru Destina\u0163ie alias {0}.
+INVALID_TARGET_DEST_SIAS0110.explanation=Nu s-a furnizat o destina\u0163ie \u0163int\u0103 pentru destina\u0163ia alias.
+INVALID_TARGET_DEST_SIAS0110.useraction= Furniza\u0163i o destina\u0163ie \u0163int\u0103 valid\u0103 \u00een fi\u015fierul de configurare server.
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: \u00cen timpul localiz\u0103rii destina\u0163iei {0} a fost g\u0103sit\u0103 o excep\u0163ie.
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=Excep\u0163ie g\u0103sit\u0103 \u00een timpul localiz\u0103rii destina\u0163iei.
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=Cnsulta\u0163i mesajele anterioare \u015fi starea motorului de mesagerie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: Destina\u0163ia {0} nu poate fi populat\u0103 \u00een cache.
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=Destina\u0163ia specificat\u0103 nu a putut fi populat\u0103 \u00een cache.
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=Consulta\u0163i mesajele anterioare pentru informa\u0163ii suplimentare.
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: A ap\u0103rut o eroare intern\u0103 deoarece propriet\u0103\u0163ile de configurare ale motorului de mesagerie nu au fost primite. De aici motorul de mesagerie nu va fi pornit.
+NULL_SERVICE_PID_SIAS0115.explanation=COnfigurarea nu a fost primit\u0103 de la fi\u015fierul server.xml deoarece proprietatea de \u00eenregistrare (service.pid), care este folosit\u0103 pentru a identifica Serviciu gestionat sau Fabric\u0103 serviciu gestionat pe serviciul Administrator Configurare, este nul\u0103 ceea ce \u00eenseamn\u0103 c\u0103 nundle nu poate folosi serviciile declarate.
+NULL_SERVICE_PID_SIAS0115.useraction=Consulta\u0163i mesajele de eroare care acompanieaz\u0103 pentru informa\u0163ii suplimentare despre motivul pentru care motorul de mesagerie nu poate fi pornit. 
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: A ap\u0103rut o eroare intern\u0103 deoarece propriet\u0103\u0163ile de configurare ale motorului de mesagerie nu au fost primite. De aici, nu va fi f\u0103cut\u0103 nicio modificare la motorul de mesagerie.
+NULL_SERVICE_PID_SIAS0116.explanation=Motorul de mesagerie a pornit dar modific\u0103rile la motorul de mesagerie nu sunt acceptate deoarece valoarea service.pid este nul\u0103. Prin urmare, serviciile nu sunt invocate.
+NULL_SERVICE_PID_SIAS0116.useraction=Consulta\u0163i mesajele de eroare legate de pornirea Motorului de mesagerie pentru informa\u0163ii suplimentare. 
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: Sistemul a primit un efort intern dup\u0103 ce nu s-a finalizat cu succes o modificare la configura\u0163ia motorului de mesagerie
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=Actualizarea configura\u0163iei motorului de mesagerie nu s-a finalizat cu succes \u015fi a determinat o eroare intern\u0103 de sistem.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=Verifica\u0163i mesajele de eroare adiacente pentru mai multe informa\u0163ii. 
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: Valoarea specificat\u0103 pentru defaultReliability este mai mare dec\u00e2t valoarea specificat\u0103 pentru maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=Valoarea specificat\u0103 pentru parametrul defaultReliability trebuie s\u0103 fie mai mic\u0103 sau egal\u0103 dec\u00e2t valoarea furnizat\u0103 pentru parametrul the maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=Rula\u0163i din nou comanda specificnd o valoare defaultReliability care este mai mic\u0103 sau egal\u0103 cu valoareamaxReliability .
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: Calea depozitului de fi\u015fiere : {0}
+FILESTORE_PATH_SIAS0119.explanation=Calea depozitului de fi\u015fiere specificat.
+FILESTORE_PATH_SIAS0119.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: Mtorul de mesagerie nu a putut fi pornit deoarece a fost specificat\u0103 o cale fi\u015fier {0} invalid\u0103 \u00een fi\u015fierul de configurare al serverului.
+INVALID_FS_PATH_SIAS0120.explanation=Este necesar\u0103 o cale fi\u015fier valid\u0103 \u00een fi\u015fierul de configurare server \u00eenainte de pornirea Motorului de mesagerie.
+INVALID_FS_PATH_SIAS0120.useraction=Corecta\u0163i calea fi\u015fierului \u00een fi\u015fierul de configurare server.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: Serverul JMS server s-a oprit.  
+ME_STOPPED_SIAS0121.explanation=Serverul JMS a pornit.  
+ME_STOPPED_SIAS0121.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: Nu este furnizat niciun ID motor de mesagerie \u00een fi\u015fierul de configurare al serverului.  
+NULL_ME_ID_SIAS0122.explanation=ID-ul de motor de mesagerie a fost \u00eenl\u0103turat \u00een timpul modific\u0103rii fi\u015fierului de configura\u0163ie server. Modificarea ID-ul de motor de mesagerie va fi ignorat\u0103, at\u00e2ta timp c\u00e2t Motorul de mesagerie este \u00eenc\u0103 activ.
+NULL_ME_ID_SIAS0122.useraction= Nu este necesar\u0103 nici o ac\u0163iune.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: {0} este folosit pentru destina\u0163ii multiple.
+SAME_DEST_ID_SIAS0123.explanation=Nu poate fi folosit acela\u015fi ID pentru destina\u0163ii multiple, destina\u0163ii duplicat nu vor fi create. 
+SAME_DEST_ID_SIAS0123.useraction= Specifica\u0163i identificatori unici de destina\u0163ie.
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: Dimensiunea fi\u015fierului istoric de {0} MB trebuie s\u0103 fie jum\u0103tate din dimensiunea depozitului de fi\u015fiere: {1} MB. Fie cre\u015fte\u0163i dimensiunea depozitului de fi\u015fiere, fie sc\u0103de\u0163i dimensiunea fi\u015fierului istoric.
+INVALID_FILE_SIZE_SIAS0124.explanation=Dimensiunea depozitului de fi\u015fiere este mai mare dec\u00e2t dimensiunea permanent\u0103 a depozitului de fi\u015fiere. Dimensiunea depozitului de fi\u015fiere reprezint\u0103 dimensiunea combinat\u0103 \u00een megaocte\u0163i pentru depozitele permanent \u015fi temporar. Dimensiunea depozitului de fi\u015fiere este \u00eemp\u0103r\u0163it\u0103 \u00een mod egel \u00eenztre depozitul permanent \u015fi cel temporar, de aceea dimensiunea fi\u015fierului istoric trebuie s\u0103 fie mai mic\u0103 dec\u00e2t jum\u0103tatea dimensiunii depozitului de fi\u015fiere.
+INVALID_FILE_SIZE_SIAS0124.useraction=Cre\u015fte\u0163i dimensiunea depozitului de fi\u015fiere sau sc\u0103de\u0163i dimensiunea fi\u015fierului istoric.
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: ID-ul destina\u0163iei alias {0} este deja definit pentru un Queue sau TopicSpace, prin urmare destina\u0163ia alias nu va fi creat\u0103.
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=Id-ul destina\u0163iei alias trebuie s\u0103 fie unic. 
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=Asigura\u0163i-v\u0103 c\u0103 defini\u0163i un ID unic pentru destina\u0163ia alias.  

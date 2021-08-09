@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+        targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:ext="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        version="1.1">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+			Copyright (c) 2010 IBM Corporation and others.
+			All rights reserved. This program and the accompanying materials
+			are made available under the terms of the Eclipse Public License v1.0
+			which accompanies this distribution, and is available at
+			http://www.eclipse.org/legal/epl-v10.html
+
+			Contributors:
+				IBM Corporation - initial API and implementation
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:include schemaLocation="ibm-common-ext_1_1.xsd" />
+
+        <!-- ******************************************************* -->
+
+        <xsd:element name="ejb-jar-ext" type="ejb-jar-extType">
+                <xsd:annotation>
+                        <xsd:documentation>
+
+                                The root of the ibm-ejb-jar-ext deployment descriptor.
+
+                        </xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:unique name="unique-ejb-names">
+                	<xsd:selector xpath="ext:session | ext:message-driven" />
+                	<xsd:field xpath="@name" />
+                </xsd:unique>
+        </xsd:element>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="ejb-jar-extType">
+
+                <xsd:sequence>
+                        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                                <xsd:element name="session" type="sessionType" />
+                                <xsd:element name="message-driven" type="message-drivenType" />                                
+                        </xsd:choice>                        
+                </xsd:sequence>
+
+                <xsd:attribute name="version" type="xsd:string" fixed="1.1" use="required" />
+                <xsd:attribute name="id" type="xsd:ID"/>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="enterprise-beanType">
+                <xsd:sequence>
+                        <xsd:element name="bean-cache" type="bean-cacheType"  minOccurs="0" maxOccurs="1" />
+                        <xsd:element name="global-transaction" type="global-transactionType"  minOccurs="0" maxOccurs="1" />                        
+                        <xsd:element name="local-transaction" type="local-transactionType" minOccurs="0" maxOccurs="1" />   
+                        <xsd:element name="resource-ref" type="resource-refType" minOccurs="0" maxOccurs="unbounded" />
+
+                        <xsd:element name="run-as-mode" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:complexContent>
+                                                <xsd:extension base="run-as-modeType">
+                                                        <xsd:sequence>
+                                                                <xsd:element name="method" type="methodType" minOccurs="1" maxOccurs="unbounded"/>
+                                                        </xsd:sequence>
+                                                </xsd:extension>
+                                        </xsd:complexContent>
+                                </xsd:complexType>
+                        </xsd:element>                        
+
+                        <xsd:element name="start-at-app-start" type="start-at-app-startType"  minOccurs="0" maxOccurs="1" />
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID"/>
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="message-drivenType">
+                <xsd:complexContent>
+                        <xsd:extension base="enterprise-beanType" />
+                </xsd:complexContent>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="sessionType">
+                <xsd:complexContent>
+                        <xsd:extension base="enterprise-beanType">  
+                             	<xsd:sequence>                                        
+	                              <xsd:element name="time-out" type="time-outType" minOccurs="0" maxOccurs="1" /> 
+					</xsd:sequence>                               
+                        </xsd:extension>
+                </xsd:complexContent>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="bean-cacheType">
+                <xsd:attribute name="activation-policy" type="activation-policyType" />
+
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:simpleType name="activation-policyType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="ONCE"/>
+                        <xsd:enumeration value="ACTIVITY_SESSION"/>
+                        <xsd:enumeration value="TRANSACTION"/>
+                </xsd:restriction>
+        </xsd:simpleType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="run-as-modeType">
+
+                <xsd:sequence>
+                        <!-- Specified-identity should only be used if the mode is SPECIFIED_IDENTITY  -->
+                        <xsd:element name="specified-identity" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="role" type="xsd:string" use="required"/>
+                                        <xsd:attribute name="description" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+                </xsd:sequence>
+
+                <xsd:attribute name="mode" use="required">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="CALLER_IDENTITY"/>
+                                        <xsd:enumeration value="SPECIFIED_IDENTITY"/>
+                                        <xsd:enumeration value="SYSTEM_IDENTITY"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+
+                <xsd:attribute name="description" type="xsd:string" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="start-at-app-startType">
+                <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="time-outType">
+                <xsd:attribute name="value" type="xsd:integer" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+
+</xsd:schema>

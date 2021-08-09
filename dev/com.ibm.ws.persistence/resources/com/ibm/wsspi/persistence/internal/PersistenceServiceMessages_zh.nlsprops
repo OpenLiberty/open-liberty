@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.persistence/resources/com/ibm/wsspi/persistence/internal/PersistenceServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD WebSphere Persistence Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+# Message   Range       Used by                         Notes
+# Prefix 
+# CWWKD     0100-0199   com.ibm.ws.persistence.utility  Persistence Service
+# CWWKD     0200-0299   com.ibm.ws.persistence          Persistence Service
+# CWWKD     0300-9999   Reserved for use by liberty
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: DatabaseStore \u524d\u7f00\u914d\u7f6e {1} \u5305\u542b\u975e\u6cd5\u5b57\u7b26\u3002
+ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=DatabaseStore \u524d\u7f00\u53ea\u80fd\u5305\u542b\u6570\u5b57\u3001\u5b57\u6bcd\u6216\u201c_\u201d\u7b26\u53f7\u3002
+ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=\u5fc5\u987b\u5c06 DatabaseStore \u524d\u7f00\u4fee\u6539\u4e3a\u53ea\u5305\u542b\u6570\u5b57\u3001\u5b57\u6bcd\u6216\u201c_\u201d\u7b26\u53f7\u3002
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: DatabaseStore \u6a21\u5f0f\u914d\u7f6e {1} \u5305\u542b\u975e\u6cd5\u5b57\u7b26\u3002
+ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=DatabaseStore \u6a21\u5f0f\u53ea\u80fd\u5305\u542b\u6570\u5b57\u3001\u5b57\u6bcd\u6216\u201c_\u201d\u7b26\u53f7\u3002
+ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=\u5fc5\u987b\u5c06 DatabaseStore \u6a21\u5f0f\u4fee\u6539\u4e3a\u53ea\u5305\u542b\u6570\u5b57\u3001\u5b57\u6bcd\u6216\u201c_\u201d\u7b26\u53f7\u3002
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+DEACTIVATED_CWWKD0202E=CWWKD0202E: \u5df2\u53d6\u6d88\u6fc0\u6d3b\u6b64 DatabaseStore\u3002
+DEACTIVATED_CWWKD0202E.explanation=\u5c1d\u8bd5\u5bf9\u5df2\u53d6\u6d88\u6fc0\u6d3b\u7684 DatabaseStore \u6267\u884c\u64cd\u4f5c\u3002
+DEACTIVATED_CWWKD0202E.useraction= \u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E=CWWKD0203E: \u5728 PreparedStatement String \u53c2\u6570\u4e2d\u68c0\u6d4b\u5230\u4e0d\u5141\u8bb8\u4f7f\u7528\u7684 Unicode \u5b57\u7b26\u3002
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E.explanation= \u5df2\u81ea\u52a8\u6216\u624b\u52a8\u5c06 DatabaseStore \u914d\u7f6e\u4e3a\u62d2\u7edd\u5728 PreparedStatement String \u53c2\u6570\u4e2d\u4f7f\u7528 Unicode \u5b57\u7b26\uff0c\u4f46\u662f\u5728 PreparedStatement String \u53c2\u6570\u4e2d\u627e\u5230\u4e86\u8fd9\u6837\u7684\u5b57\u7b26\u3002
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E.useraction=\u4ece String \u53c2\u6570\u4e2d\u79fb\u9664 Unicode \u5b57\u7b26\uff0c\u7136\u540e\u91cd\u8bd5\u3002
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+PROVIDER_WARNING_CWWKD0291W=CWWKD0291W: {0}
+PROVIDER_WARNING_CWWKD0291W.explanation=DatabaseStore \u5df2\u8bb0\u5f55\u6b64\u8b66\u544a\u6d88\u606f\u3002
+PROVIDER_WARNING_CWWKD0291W.useraction=\u8bf7\u67e5\u9605 DatabaseStore \u6587\u6863\u3002
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
+PROVIDER_ERROR_CWWKD0292E.explanation=DatabaseStore \u5df2\u8bb0\u5f55\u6b64\u9519\u8bef\u6d88\u606f\u3002
+PROVIDER_ERROR_CWWKD0292E.useraction=\u8bf7\u67e5\u9605 DatabaseStore \u6587\u6863\u3002
+

@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere File Monitor SPI
+Bundle-Description: WebSphere File Monitor SPI, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.kernel.filemonitor
+
+Import-Package: com.ibm.wsspi.kernel.filemonitor
+
+Export-Package: com.ibm.wsspi.kernel.filemonitor
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.kernel.filemonitor/pom.xml=com.ibm.websphere.appserver.spi.kernel.filemonitor.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.kernel.filemonitor;version=latest

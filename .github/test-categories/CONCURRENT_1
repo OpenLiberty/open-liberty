@@ -1,0 +1,13 @@
+com.ibm.ws.concurrent.mp.1.2_fat_tck
+com.ibm.ws.concurrent.mp_fat
+com.ibm.ws.concurrent.mp_fat_tck
+com.ibm.ws.concurrent.persistent_fat
+com.ibm.ws.concurrent.persistent_fat_auto_pollinterval
+com.ibm.ws.concurrent.persistent_fat_compat
+com.ibm.ws.concurrent.persistent_fat_compatibility
+com.ibm.ws.concurrent.persistent_fat_configupdate
+com.ibm.ws.concurrent.persistent_fat_configupdate_databasetaskstore
+com.ibm.ws.concurrent.persistent_fat_delayexec
+com.ibm.ws.concurrent.persistent_fat_demo
+com.ibm.ws.concurrent.persistent_fat_demo_timers
+com.ibm.ws.concurrent.persistent_fat_errorpaths

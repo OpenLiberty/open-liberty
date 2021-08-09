@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OAuth authorization form</title>
+<script language="javascript">
+function init() {
+	var scopes = oauthFormData.scope;
+	var scopeEle = document.getElementById("oauth_scope");
+	if (scopes) {
+		for (var i = 0; i < scopes.length; i++) {
+			var div = document.createElement("div");
+			var label = document.createElement("label");
+			var checkbox = document.createElement("input");
+			checkbox.id = scopes[i] + "_checkbox";
+			checkbox.type = "checkbox";
+			checkbox.name = scopes[i];
+			checkbox.value = scopes[i];
+			checkbox.checked = true;
+
+			div.style.padding = "5px";
+
+			label.appendChild(checkbox);
+			label.appendChild(document.createTextNode(scopes[i]));
+			div.appendChild(label);
+			scopeEle.appendChild(div);
+		}
+	}
+	
+	// set client name
+	var clientEle = document.getElementById("client_name");
+	clientEle.innerHTML = escapeHTML(oauthFormData.clientDisplayName);
+}
+
+function escapeHTML(str) {
+    var ele = document.createElement("div");
+    ele.innerText = ele.textContent = str;
+    return ele.innerHTML;
+}
+</script>
+</head>
+<body onload="init()">
+	<div>Allow client <span id=client_name style="font-weight:bold">xxxxxxx</span> to access the following data:</div>
+	<div id="oauth_scope">
+	</div>
+	<div>
+		<form action="javascript:submitForm(oauthFormData);">
+			<input type="submit" value="Allow, remember my decision" onclick="javascript:oauthFormData.prompt = 'none';"/>
+			<input type="submit" value="Allow once" onclick="javascript:oauthFormData.prompt = 'consent';"/>
+			<input type="button" value="Cancel" onclick="javascript:cancel(oauthFormData);"/>
+		</form>
+	</div>
+</body>
+</html>

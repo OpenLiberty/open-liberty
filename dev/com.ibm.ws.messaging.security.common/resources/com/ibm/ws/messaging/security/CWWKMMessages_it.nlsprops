@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 114580          06-11-13   balgirid Fixing username not displayed in FFDC for unsuccessful login
+#
+#
+# File com.ibm.ws.messaging.security.CWWKMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKM0000=CWWKM0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range CWWKM3001-CWWKM3101 belong to class com.ibm.ws.messaging.security
+# -------------------------------------------------------------------------------------------------
+#
+#CMVCPATHNAME New_File_For_Liberty
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Liberty Messaging Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+# -------------------------------------------------------------------------------------------------
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001=CWWKM3001E: L'autenticazione dell'utente non \u00e8 riuscita.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.explanation=Il nome utente o la password immessi non sono corretti.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.useraction=Specificare un nome utente e una password validi.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Token Type
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002=CWWKM3002E: Il tipo di token specificato {0} non \u00e8 supportato.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.explanation=Il tipo di token specificato dall'applicazione client non \u00e8 supportato. Sono supportati solo i token LTPA.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.useraction=Specificare un token LTPA, perch\u00e9 sono supportati solo i token LTPA.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003=CWWKM3003E: Il servizio amministrativo di configurazione non \u00e8 disponibile.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.explanation=Il servizio amministrativo di configurazione non \u00e8 disponibile.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.useraction=Verificare se il servizio di configurazione \u00e8 in esecuzione.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_SECURITY_SERVICE_MSE1004=CWWKM3004E: Il servizio di sicurezza non \u00e8 disponibile.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.explanation=Il servizio di sicurezza non \u00e8 disponibile. 
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.useraction=Verificare se il servizio di sicurezza \u00e8 in esecuzione.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_NOT_CONFIGURED_MSE1005=CWWKM3005E: Il registro utente non \u00e8 configurato.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.explanation=\u00c8 necessario configurare un registro utente per questo server.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.useraction=Configurare almeno un registro utente (ad, esempio LDAP, BasicUserRegistry o QuickStartSecurity) per il server.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_EXCEPTION_MSE1006=CWWKM3006E: Si \u00e8 verificata un'eccezione durante l'accesso al registro utente.
+USER_REGISTRY_EXCEPTION_MSE1006.explanation=Si \u00e8 verificata un'eccezione durante l'accesso al registro utente.
+USER_REGISTRY_EXCEPTION_MSE1006.useraction=Assicurarsi che il registro utente sia configurato correttamente.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007=CWWKM3007E: Impossibile trovare l'oggetto amministrativo di configurazione definito.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.explanation=Non \u00e8 possibile trovare l'oggetto amministrativo di configurazione definito.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.useraction=La definizione di propriet\u00e0 potrebbe contenere un errore. Verificare che le definizioni delle propriet\u00e0 nel file di configurazione del server siano corrette.
+
+# -------------------------------------------------------------------------------------------------
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008=CWWKM3008E: Si \u00e8 verificata un'eccezione IO durante la lettura dei dati dal file di configurazione.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.explanation=Si \u00e8 verificata un'eccezione IO durante la lettura dei dati dal file server.xml.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.useraction=Convalidare le configurazioni specificate nel file server.xml.
+
+# -------------------------------------------------------------------------------------------------
+USER_NOT_AUTHENTICATED_MSE1009=CWWKM3009E: L''utente {0} non \u00e8 autenticato per l''accesso al servizio di messaggistica Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.explanation=L'utente non dispone dell'autorizzazione per accedere al servizio di messaggistica Liberty.
+USER_NOT_AUTHENTICATED_MSE1009.useraction=Specificare un nome utente valido che sia autenticato per la connessione al servizio di messaggistica Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+# {1} - Action Name
+# {2} - Destination
+USER_NOT_AUTHORIZED_MSE1010=CWWKM3010W: L''utente {0} non \u00e8 autorizzato ad eseguire l''azione {1} sulla destinazione {2}.
+USER_NOT_AUTHORIZED_MSE1010.explanation=L'utente specificato non \u00e8 autorizzato ad eseguire l'azione indicata sulla destinazione riportata.
+USER_NOT_AUTHORIZED_MSE1010.useraction=Specificare un utente che sia autorizzato ad eseguire l'azione specificata sulla destinazione indicata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011=CWWKM3011E: L'utente non dispone dell'autorizzazione per connettersi al servizio di messaggistica Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.explanation=L'utente non \u00e8 autorizzato a connettersi ai servizi di messaggistica Liberty.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.useraction=Specificare un utente che sia autorizzato a connettersi al servizio di messaggistica Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Role name which has duplicate entry
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012=CWWKM3012W: Il nome {0} \u00e8 gi\u00e0 in uso per un altro ruolo.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.explanation=Un nome non pu\u00f2 essere utilizzato per pi\u00f9 ruoli.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.useraction=Fornire un nome differente per evitare voci duplicate per un ruolo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Action Name
+# {1} - Destination
+USER_NOT_AUTHORIZED_MSE1013=CWWKM3013W: L''utente non \u00e8 autorizzato ad eseguire l''azione {0} sulla destinazione {1}.
+USER_NOT_AUTHORIZED_MSE1013.explanation=L'utente non \u00e8 autorizzato ad eseguire l'azione specificata sulla destinazione indicata.
+USER_NOT_AUTHORIZED_MSE1013.useraction=Fornire un utente che sia autorizzato ad eseguire l'azione specificata sulla destinazione indicata.

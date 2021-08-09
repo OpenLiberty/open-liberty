@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.6.8,ou=objectClasses,cn=dhcp,ou=schema
+m-must: cn
+m-oid: 2.16.840.1.113719.1.203.6.8
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Represents information about a collection of related classes.
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: dhcpSubClass
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: dhcpClassData
+m-may: dhcpOptionsDN
+m-may: dhcpStatements

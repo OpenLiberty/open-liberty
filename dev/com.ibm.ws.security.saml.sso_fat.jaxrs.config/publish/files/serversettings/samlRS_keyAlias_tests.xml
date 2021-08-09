@@ -1,0 +1,200 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<samlWebSso20
+		id="sp_keyAlias_notSpecified_emptyKeystore"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_notSpecified_emptyKeystore"
+		keyStoreRef="emptyKeystore" />
+	<authFilter id="authFilter_keyAlias_notSpecified_emptyKeystore">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_notSpecified_emptyKeystore"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_notSpecified_oneKeyInKeystore_invalid"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_notSpecified_oneKeyInKeystore_invalid"
+		keyStoreRef="singleKey_invalid" />
+	<authFilter id="authFilter_keyAlias_notSpecified_oneKeyInKeystore_invalid">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_notSpecified_oneKeyInKeystore_invalid"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_notSpecified_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_notSpecified_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+		keyStoreRef="singleKey_valid_nonDefaultAlias" />
+	<authFilter
+		id="authFilter_keyAlias_notSpecified_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_notSpecified_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToNonDefaultAlias"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToNonDefaultAlias"
+		keyStoreRef="multiKey_valid_mappedToNonDefaultAlias" />
+	<authFilter
+		id="authFilter_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToNonDefaultAlias"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToNonDefaultAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+		keyStoreRef="multiKey_valid_mappedToDefaultAlias" />
+	<authFilter
+		id="authFilter_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_empty_emptyKeystore"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_empty_emptyKeystore"
+		keyAlias=""
+		keyStoreRef="emptyKeystore" />
+	<authFilter id="authFilter_keyAlias_empty_emptyKeystore">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_empty_emptyKeystore"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_empty_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_empty_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+		keyAlias=""
+		keyStoreRef="singleKey_valid_nonDefaultAlias" />
+	<authFilter
+		id="authFilter_keyAlias_empty_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_empty_oneKeyInKeystore_valid_certMappedToNonDefaultAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_empty_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_empty_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+		keyAlias=""
+		keyStoreRef="multiKey_valid_mappedToDefaultAlias" />
+	<authFilter
+		id="authFilter_keyAlias_empty_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_empty_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_nonExistentKey"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_nonExistentKey"
+		keyAlias="nonExistentKey"
+		keyStoreRef="singleKey_valid_nonDefaultAlias" />
+	<authFilter id="authFilter_keyAlias_nonExistentKey">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_nonExistentKey"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_valid_oneKeyInKeystore"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_valid_oneKeyInKeystore"
+		keyAlias="sslspservercert"
+		keyStoreRef="singleKey_valid_nonDefaultAlias" />
+	<authFilter id="authFilter_keyAlias_valid_oneKeyInKeystore">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_valid_oneKeyInKeystore"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_valid_multipleKeysInKeystore"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_valid_multipleKeysInKeystore"
+		keyAlias="anothersamlsp"
+		keyStoreRef="multiKey_valid_mappedToNonDefaultAlias" />
+	<authFilter id="authFilter_keyAlias_valid_multipleKeysInKeystore">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_valid_multipleKeysInKeystore"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp_keyAlias_invalid_multipleKeysInKeystore"
+		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
+		headerName="saml_token"
+		authFilterRef="authFilter_keyAlias_invalid_multipleKeysInKeystore"
+		keyAlias="invalidKey"
+		keyStoreRef="multiKey_valid_mappedToDefaultAlias" />
+	<authFilter id="authFilter_keyAlias_invalid_multipleKeysInKeystore">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/helloworld_keyAlias_invalid_multipleKeysInKeystore"
+			matchType="contains" />
+	</authFilter>
+
+</server>

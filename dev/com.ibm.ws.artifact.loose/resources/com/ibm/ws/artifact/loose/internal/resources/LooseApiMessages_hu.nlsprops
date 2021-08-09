@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: A(z) {0} helyen l\u00e9v\u0151 XML f\u00e1jl nem tal\u00e1lhat\u00f3.
+XML_NOT_FOUND.explanation=A megadott XML f\u00e1jl nem tal\u00e1lhat\u00f3.
+XML_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl a megfelel\u0151 helyen van, \u00e9s nem lett elt\u00e1vol\u00edtva.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: A(z) {0} helyen l\u00e9v\u0151 XML f\u00e1jl nem olvashat\u00f3.
+XML_STREAM_ERROR.explanation=A megadott XML f\u00e1jl nem olvashat\u00f3.
+XML_STREAM_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl XML form\u00e1z\u00e1sa megfelel\u0151.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: A munkater\u00fclet alkalmaz\u00e1sban deklar\u00e1lt XML f\u00e1jl egy {0} helyen tal\u00e1lhat\u00f3 f\u00e1jlra hivatkozik, \u00e9s tartalmaz egy "excludes" (kiz\u00e1r\u00e1sok) attrib\u00fatumot, amely \u00e9rv\u00e9nytelen. 
+EXCLUDES_ON_FILE.explanation=Az XML file elem egy \u00e9rv\u00e9nytelen "excludes" attrib\u00fatumot tartalmaz. Az attrib\u00fatum figyelmen k\u00edv\u00fcl marad.
+EXCLUDES_ON_FILE.useraction=T\u00e1vol\u00edtsa el az "excludes" attrib\u00fatumot az elemb\u0151l.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: A munkater\u00fclet alkalmaz\u00e1sban deklar\u00e1lt XML f\u00e1jl egy {0} nev\u0171 arch\u00edvumra hivatkozik, \u00e9s tartalmaz egy "excludes" (kiz\u00e1rl\u00e1sok) attrib\u00fatumot, amely \u00e9rv\u00e9nytelen. 
+EXCLUDES_ON_ARCHIVE.explanation=Az XML archive elem egy \u00e9rv\u00e9nytelen "excludes" attrib\u00fatumot tartalmaz. Az attrib\u00fatum figyelmen k\u00edv\u00fcl marad.
+EXCLUDES_ON_ARCHIVE.useraction=T\u00e1vol\u00edtsa el az "excludes" attrib\u00fatumot az elemb\u0151l.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: A munkater\u00fclet alkalmaz\u00e1sban deklar\u00e1lt XML f\u00e1jl egy \u00e9rv\u00e9nytelen "excludes" attrib\u00fatumot tartalmaz: {0}
+INVALID_EXCLUDE_PATTERN.explanation=Az "excludes" attrib\u00fatum \u00e9rv\u00e9nytelen \u00e9s nem \u00e9rtelmezhet\u0151.
+INVALID_EXCLUDE_PATTERN.useraction=M\u00f3dos\u00edtsa az attrib\u00fatumot a helyes szintaxisra, vagy t\u00e1vol\u00edtsa el, ha nincs r\u00e1 sz\u00fcks\u00e9g.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: A munkater\u00fclet alkalmaz\u00e1sban deklar\u00e1lt XML egy {0} f\u00e1jlra hivatkozik, ami nem tal\u00e1lhat\u00f3.
+DECLARED_FILE_NOT_FOUND.explanation=A munkater\u00fclet alkalmaz\u00e1shoz deklar\u00e1lt f\u00e1jl nem tal\u00e1lhat\u00f3.
+DECLARED_FILE_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl a hivatkozott helyen tal\u00e1lhat\u00f3, vagy a hivatkozott hely megfelel a f\u00e1jl hely\u00e9nek.

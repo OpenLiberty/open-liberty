@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:head>
+        <title>flow 1 page 1</title>
+    </h:head>
+    <h:body>
+        Current flow ID: #{empty facesContext.application.flowHandler.currentFlow.id ? "no flow ID" : facesContext.application.flowHandler.currentFlow.id}<br/>
+        Current flowscope value: #{empty flowScope.testValue ? "no flowscope value" : flowScope.testValue}<br/><br/>
+        <h:form prependId="false" id="form">
+            Value: <h:inputText id="inputValue" value="#{flowScope.testValue}" />
+            <h:commandButton id="page2" value="page 2" action="flow1-2"/>
+            <h:commandButton id="index" value="index" action="goIndex"/>
+        </h:form>
+    </h:body>
+</html>

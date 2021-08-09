@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator.jca/resources/com/ibm/ws/rest/handler/validator/jca/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1560 to CWWKO1569
+
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: No se proporciona validaci\u00f3n para la f\u00e1brica de conexiones {0}, que implementa {1}.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.explanation=La validaci\u00f3n s\u00f3lo es posible para las f\u00e1bricas de conexiones del adaptador de recursos que son f\u00e1bricas de conexiones JMS o implementan javax.resource.cci.ConnectionFactory o javax.sql.DataSource.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.useraction=No intente validar este tipo de f\u00e1brica de conexiones.
+
+CWWKO1561_JMS_NOT_ENABLED=CWWKO1561E: El adaptador de recursos requiere JMS, pero una caracter\u00edstica que habilita JMS no est\u00e1 presente en la configuraci\u00f3n del servidor.
+CWWKO1561_JMS_NOT_ENABLED.explanation=Para este elemento de configuraci\u00f3n se requiere una caracter\u00edstica que habilite JMS.
+CWWKO1561_JMS_NOT_ENABLED.useraction=Incluya una caracter\u00edstica que habilite JMS en la configuraci\u00f3n del servidor.
+
+CWWKO1562_NO_CONSPEC=CWWKO1562E: No se puede realizar la validaci\u00f3n con el usuario y la contrase\u00f1a especificados porque no hay ninguna forma est\u00e1ndar de localizar la implementaci\u00f3n ConnectionSpec adecuada.
+CWWKO1562_NO_CONSPEC.explanation=El punto final REST de validaci\u00f3n no ha podido determinar el nombre de la implementaci\u00f3n ConnectionSpec, por lo que no hay ninguna forma de proporcionar el nombre de usuario y la contrase\u00f1a especificados en la f\u00e1brica de conexiones.
+CWWKO1562_NO_CONSPEC.useraction=Omita los par\u00e1metros de usuario y contrase\u00f1a al solicitar la validaci\u00f3n de esta f\u00e1brica de conexiones.

@@ -1,0 +1,4 @@
+Require-Bundle: com.ibm.ws.crypto.util.custom; version="[1,1.0.100)"; location="usr/extension/lib/"
+IBM-ImplementationClass: com.ibm.ws.crypto.util.custom.SimpleCustomEncryption
+IBM-CustomPasswordEncryptionName: customSample
+

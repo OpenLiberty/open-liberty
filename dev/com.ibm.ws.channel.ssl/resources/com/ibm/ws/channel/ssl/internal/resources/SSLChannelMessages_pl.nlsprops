@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Nie mo\u017cna uruchomi\u0107 kana\u0142u SSL z powodu nast\u0119puj\u0105cych niepoprawnych ustawie\u0144:\n \ {0}
+invalid.security.properties.explanation=Co najmniej jedno ustawienie zabezpiecze\u0144 w kanale SSL nie jest poprawne.
+invalid.security.properties.useraction=Zmie\u0144 warto\u015bci ustawie\u0144 zabezpiecze\u0144 kana\u0142u SSL na poprawne.
+
+handshake.failure=CWWKO0801E: Nie mo\u017cna zainicjowa\u0107 po\u0142\u0105czenia SSL. Odm\u00f3wiono dost\u0119pu bez uprawnie\u0144 lub ustawienia zabezpiecze\u0144 utraci\u0142y wa\u017cno\u015b\u0107. Wyj\u0105tek: {0}.
+handshake.failure.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba uzgodnienia zabezpiecze\u0144 przez nowe po\u0142\u0105czenie.
+handshake.failure.useraction=Sprawd\u017a ustawienia zabezpiecze\u0144.  By\u0107 mo\u017ce brakuje certyfikatu lub utraci\u0142 on wa\u017cno\u015b\u0107. Inn\u0105 przyczyn\u0105 mo\u017ce by\u0107 odmowa nieautoryzowanego po\u0142\u0105czenia z klientem.  Aby wy\u0142\u0105czy\u0107 te komunikaty, ustaw warto\u015b\u0107 parametru suppressHandshakeErrors w konfiguracji sslOptions na true.
+
+init.failure=CWWKO0802E: Nie mo\u017cna zainicjowa\u0107 pakunku SSL. Wyj\u0105tek: {0}.
+init.failure.explanation=Napotkano b\u0142\u0105d podczas pr\u00f3by zainicjowania pakunku SSL. Jest to prawdopodobnie spowodowane niepowodzeniem dotycz\u0105cym zale\u017cno\u015bci.
+init.failure.useraction=Poszukaj w dziennikach proces\u00f3w informacji o elementach, kt\u00f3rych uruchomienie nie powiod\u0142o si\u0119.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Nie mo\u017cna utworzy\u0107 konfiguracji domy\u015blnej kana\u0142u SSL. Wyj\u0105tek: {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Napotkano b\u0142\u0105d podczas tworzenia konfiguracji domy\u015blnej dla kana\u0142\u00f3w SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Informacje opisuj\u0105ce niepowodzenie operacji tworzenia mo\u017cna znale\u017a\u0107 w wyj\u0105tku.
+
+handshake.failure.stop.logging=CWWKO0804I: Osi\u0105gni\u0119to maksymaln\u0105 liczb\u0119 niepowodze\u0144 uzgadniania SSL. Te komunikaty nie b\u0119d\u0105 ju\u017c rejestrowane.
+handshake.failure.stop.logging.explanation=Liczba rejestrowanych niepowodze\u0144 uzgadniania SSL jest ograniczona, aby zapobiec rejestrowaniu nadmiernej liczby pozycji dziennika.
+handshake.failure.stop.logging.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

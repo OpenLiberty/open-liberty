@@ -1,0 +1,130 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+#
+
+global.description=Opis:
+global.options=Opcje:
+global.usage=Sk\u0142adnia:
+global.options.statement=\tU\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
+help.usage.options=\t{0} help [nazwa_akcji]
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+version.desc=\tWy\u015bwietl informacje o produkcie, na przyk\u0142ad nazw\u0119 i wersj\u0119 produktu.
+version.usage.options=\t{0} version [opcje]
+version.option-key.output=\ \ \ \ --output="\u015bcie\u017cka do pliku wyj\u015bciowego"
+version.option-desc.output=\t\u015acie\u017cka do pliku zawieraj\u0105cego wyj\u015bcie komendy. Ta opcja    \n\
+\tnie jest wymagana. Warto\u015b\u0107 domy\u015blna to STDOUT.
+version.option-key.verbose=\ \ \ \ --verbose
+version.option-desc.verbose=\tWy\u015bwietl ca\u0142\u0105 tre\u015b\u0107 ka\u017cdego pliku w\u0142a\u015bciwo\u015bci.
+version.option-key.ifixes=\ \ \ \ --ifixes
+version.option-desc.ifixes=\tW przypadku podania tego parametru wyprowadzana jest r\u00f3wnie\u017c lista zainstalowanych poprawek iFix.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseAgreement.desc=\tWy\u015bwietla umow\u0119 licencyjn\u0105 dla zainstalowanej edycji profilu Liberty.
+viewLicenseAgreement.usage.options=\t{0} viewLicenseAgreement
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseInfo.desc=\tWy\u015bwietla informacje licencyjne dla zainstalowanej edycji profilu Liberty.
+viewLicenseInfo.usage.options=\t{0} viewLicenseInfo
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+featureInfo.desc=\tWy\u015bwietl list\u0119 wszystkich zainstalowanych sk\u0142adnik\u00f3w.
+featureInfo.usage.options=\t{0} featureInfo [opcje]
+featureInfo.option-key.output=\ \ \ \ --output="\u015bcie\u017cka do pliku wyj\u015bciowego"
+featureInfo.option-desc.output=\t\u015acie\u017cka do pliku zawieraj\u0105cego wyj\u015bcie komendy. Ta opcja    \n\
+\tnie jest wymagana. Warto\u015b\u0107 domy\u015blna to STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+validate.desc=\tSprawd\u017a poprawno\u015b\u0107 instalacji produkcyjnej wzgl\u0119dem pliku sum kontrolnych produktu.
+validate.usage.options=\t{0} validate [opcje]
+validate.option-key.checksumfile=\ \ \ \ --checksumfile="\u015bcie\u017cka do pliku sum kontrolnych"
+validate.option-desc.checksumfile=\tOkre\u015bl plik zawieraj\u0105cy sumy kontrolne instalowanych \n\
+\tplik\u00f3w *.mf i *.blst. Ta opcja nie jest wymagana. Warto\u015bci\u0105 domy\u015bln\u0105 jest plik    \n\
+\tlib/version/productChecksums.cs
+validate.option-key.output=\ \ \ \ --output="\u015bcie\u017cka do pliku wyj\u015bciowego"
+validate.option-desc.output=\t\u015acie\u017cka do pliku zawieraj\u0105cego wyj\u015bcie komendy. Ta opcja    \n\
+\tnie jest wymagana. Warto\u015b\u0107 domy\u015blna to STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+compare.desc=\tPor\u00f3wnaj poprawki iFix zastosowane do bie\u017c\u0105cej instalacji z nowym pakietem\n\
+\tpoprawek i wy\u015bwietl list\u0119 wszystkich poprawek iFix nieznajduj\u0105cych si\u0119 w pakiecie poprawek lub por\u00f3wnaj z \n\
+\tdostarczon\u0105 list\u0105 poprawek iFix i wy\u015bwietl list\u0119 z informacjami o tym, czy s\u0105 one      \n\
+\tdo\u0142\u0105czone do bie\u017c\u0105cej wersji.
+compare.usage.options=\t{0} compare [opcje]
+compare.option-key.target=\ \ \ \ --target="\u015bcie\u017cka do katalogu lub pliku archiwum"
+compare.option-desc.target=\tOkre\u015bl plik docelowy do por\u00f3wnania z bie\u017c\u0105c\u0105 instalacj\u0105. Celem     \n\
+\tmo\u017ce by\u0107 katalog lub plik archiwum, ale musi to by\u0107 poprawne miejsce instalacji\n\
+\tprofilu WebSphere Application Server Liberty.
+compare.option-key.apars=\ \ \ \ --apars="rozdzielana przecinkami lista identyfikator\u00f3w pakiet\u00f3w APAR"
+compare.option-desc.apars=\tNarz\u0119dzie do por\u00f3wnywania sprawdza bie\u017c\u0105c\u0105 instalacj\u0119 wzgl\u0119dem tej rozdzielanej  \n\
+\tprzecinkami listy identyfikator\u00f3w pakiet\u00f3w APAR, aby okre\u015bli\u0107, czy instalacja zawiera te pakiety, a nast\u0119pnie\n\
+\twy\u015bwietla list\u0119 wszystkich pakiet\u00f3w APAR, kt\u00f3re nie zosta\u0142y do\u0142\u0105czone.
+compare.option-key.output=\ \ \ \ --output="\u015bcie\u017cka do pliku wyj\u015bciowego"
+compare.option-desc.output=\t\u015acie\u017cka do pliku zawieraj\u0105cego wyj\u015bcie komendy. Ta opcja    \n\
+\tnie jest wymagana. Warto\u015b\u0107 domy\u015blna to STDOUT.
+compare.option-key.verbose=\ \ \ \ --verbose
+compare.option-desc.verbose=\tWy\u015bwietl szczeg\u00f3\u0142owe komunikaty \
+o b\u0142\u0119dach po wyst\u0105pieniu b\u0142\u0119du.
+compare.option.addon=Nale\u017cy okre\u015bli\u0107 argument --target lub --apars.

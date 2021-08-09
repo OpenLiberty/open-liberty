@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Impossible de d\u00e9marrer le canal SSL en raison des param\u00e8tres incorrects suivants : \n \ {0}
+invalid.security.properties.explanation=Un ou plusieurs param\u00e8tres de s\u00e9curit\u00e9 du canal SSL ne sont pas valides.
+invalid.security.properties.useraction=Affectez aux param\u00e8tres de s\u00e9curit\u00e9 du canal SSL les valeurs qui conviennent.
+
+handshake.failure=CWWKO0801E: Impossible d''initialiser la connexion SSL. L''acc\u00e8s a \u00e9t\u00e9 refus\u00e9 ou les param\u00e8tres de s\u00e9curit\u00e9 ont expir\u00e9. Exception : {0}.
+handshake.failure.explanation=Une nouvelle tentative de connexion n'a pas r\u00e9ussi \u00e0 ex\u00e9cuter l'\u00e9change de protocoles.
+handshake.failure.useraction=V\u00e9rifiez les param\u00e8tres de s\u00e9curit\u00e9.  Le certificat est peut-\u00eatre arriv\u00e9 \u00e0 expiration ou manquant. Il est \u00e9galement possible qu'une tentative de connexion d'un client non autoris\u00e9 ait \u00e9t\u00e9 rejet\u00e9e.  Pour d\u00e9sactiver ces messages, associez le param\u00e8tre suppressHandshakeErrors de la configuration sslOptions \u00e0 la valeur true.
+
+init.failure=CWWKO0802E: Impossible d''initialiser le module SSL. Exception : {0}.
+init.failure.explanation=Une erreur s'est produite lors de l'initialisation du module SSL. Cet \u00e9chec est probablement li\u00e9 \u00e0 une d\u00e9faillance d'une d\u00e9pendance.
+init.failure.useraction=Reportez-vous aux fichiers journaux du processus pour plus d'informations sur cet \u00e9chec.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Impossible de cr\u00e9er une configuration de canaux SSL par d\u00e9faut. L''exception est {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation de la configuration par d\u00e9faut pour les canaux SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Examinez l'exception pour d\u00e9terminer ce qui a provoqu\u00e9 cet \u00e9chec.
+
+handshake.failure.stop.logging=CWWKO0804I: Le nombre maximum d'\u00e9checs d'\u00e9tablissement de liaison SSL est atteint. Ces messages ne seront plus consign\u00e9s.
+handshake.failure.stop.logging.explanation=Le nombre d'\u00e9checs d'\u00e9tablissement de liaison SSL qui sont consign\u00e9s est limit\u00e9 afin d'\u00e9viter un trop grand nombre d'entr\u00e9es de journal.
+handshake.failure.stop.logging.useraction=Aucune action n'est requise. 

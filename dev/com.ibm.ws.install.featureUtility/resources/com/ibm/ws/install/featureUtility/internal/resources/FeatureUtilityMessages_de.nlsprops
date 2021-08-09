@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=featureUtility-Einstellungen
+MSG_PROPERTIES_FILE_NOT_FOUND=Es wurde keine Benutzerkonfiguration gefunden. Das Maven-Central-Repository ist das Standardasset-Repository.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Zum Anpassen der featureUtility-Einstellungen erstellen Sie eine Datei featureUtility.properties an der folgenden Position: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Verwenden Sie das folgende Beispiel als Vorlage, um eine eigene featureUtility.properties-Datei zu erstellen. Entfernen Sie das Kommentarzeichen aus den Zeilen, die mit einem einzelnen Nummernzeichen (#) markiert sind, und ersetzen Sie die Werte durch Ihre eigenen angepassten Werte.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Zum Anpassen der installUtility-Einstellungen erstellen Sie eine Datei repositories.properties an der folgenden Position: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Verwenden Sie das folgende Beispiel als Vorlage f\u00fcr die Erstellung Ihrer eigenen Datei repositories.properties. Entfernen Sie das Kommentarzeichen aus den Zeilen, die mit einem einzelnen Nummernzeichen (#) markiert sind, und ersetzen Sie die Werte durch Ihre eigenen angepassten Werte.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=Standardrepository verwenden:
+MSG_DEFAULT_REPO_NAME_LABEL=Standard-Asset-Repository:
+MSG_DEFAULT_REPO_NAME=Maven-Central-Repository
+MSG_CONFIG_REPO_LABEL=Konfigurierte Repositorys
+MSG_MAVEN_LOCAL_REPO=Lokales Maven-Repository
+MSG_NO_CONFIG_REPO=Keine Repositorys konfiguriert
+MSG_UNSPECIFIED=<Nicht angegeben>
+MSG_PASSWORD_NOT_ENCODED_PROXY=Das Kennwort f\u00fcr diesen Proxy ist nicht verschl\u00fcsselt. F\u00fchren Sie zum Codieren des Kennworts die securityUtility-Codierungsaktion mit der Option --encoding aus, die auf einen unterst\u00fctzten Codierungstyp gesetzt ist. Die unterst\u00fctzten Typen sind xor (Standardeinstellung), aes und hash.
+MSG_PROXY_LABEL=Proxy-Einstellungen
+MSG_NO_CONFIG_PROXY=Keine Proxys konfiguriert
+MSG_REPO_FILE_NOT_FOUND=Es wurde keine Benutzerkonfiguration gefunden. IBM WebSphere Liberty Repository ist das Standardasset-Repository.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Zum Anpassen der installUtility-Einstellungen erstellen Sie eine Datei repositories.properties an der folgenden Position: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Verwenden Sie das folgende Beispiel als Vorlage f\u00fcr die Erstellung Ihrer eigenen Datei repositories.properties. Entfernen Sie das Kommentarzeichen aus den Zeilen, die mit einem einzelnen Nummernzeichen (#) markiert sind, und ersetzen Sie die Werte durch Ihre eigenen angepassten Werte.
+MSG_VALIDATION_SUCCESSFUL=Die Validierung der Eigenschaftendatei war erfolgreich.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Die Validierung der Eigenschaftendatei ist fehlgeschlagen. Verwenden Sie die Option --viewValidationMessages, um detaillierte Validierungsnachrichten anzuzeigen.
+MSG_VALIDATION_NUM_OF_ERRORS=Anzahl der Fehler: {0}
+MSG_VALIDATION_MESSAGES=Validierung der Eigenschaftendatei
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Name: {0}
+FIELD_REPO_LOCATION=Position: {0}
+FIELD_REPO_STATUS=Status: {0}
+FIELD_REPO_REASON=Ursache: {0}
+FIELD_REPO_WARNING=Warnung: {0}
+FIELD_NAME=Name:
+FIELD_PORT=Port:
+FIELD_LOCATION=Position:
+FIELD_PROXY_SERVER=Proxy-Server:
+FIELD_USER=Benutzername:
+FIELD_PASS=Kennwort:
+FIELD_PROPS_FILE=Eigenschaftendatei: {0}
+FIELD_REPO=Repository-Server: {0} ({1})
+FIELD_PROXY=Proxy-Server: {0}
+FIELD_VALIDATION_RESULTS=Validierungsergebnisse: {0}
+FIELD_VALIDATION_LINE=Zeile: {0}

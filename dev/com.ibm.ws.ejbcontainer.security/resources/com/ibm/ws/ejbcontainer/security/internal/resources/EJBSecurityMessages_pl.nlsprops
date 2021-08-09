@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.security/resources/com/ibm/ws/ejbcontainer/security/internal/resources/EjbSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server EJB Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9400- CWWKS9499
+EJB_AUTHZ_FAILED=CWWKS9400A: Nie powiod\u0142a si\u0119 autoryzacja dla u\u017cytkownika {0} podczas wywo\u0142ywania ({1}) {2}. U\u017cytkownikowi nie nadano dost\u0119pu do \u017cadnej z wymaganych r\u00f3l: {3}.
+EJB_AUTHZ_FAILED.explanation=U\u017cytkownik nie ma wymaganych uprawnie\u0144 dost\u0119pu do tego zasobu.
+EJB_AUTHZ_FAILED.useraction=Je\u015bli wymagany jest dost\u0119p do zasobu chronionego, sprawd\u017a, czy u\u017cytkownik jest odwzorowany na jedn\u0105 z r\u00f3l chroni\u0105cych zas\u00f3b.
+EJB_AUTHZ_PRECLUDED=CWWKS9401A: Nie powiod\u0142a si\u0119 autoryzacja dla u\u017cytkownika {0} podczas wywo\u0142ywania ({1}) {2}. Okre\u015blono ograniczenie uwierzytelniania, ale nie istniej\u0105 role zezwalaj\u0105ce na dost\u0119p do zasobu chronionego.
+EJB_AUTHZ_PRECLUDED.explanation=Nast\u0105pi\u0142a odmowa dost\u0119pu, poniewa\u017c nie okre\u015blono r\u00f3l pozwalaj\u0105cych na uzyskanie dost\u0119pu do zasobu chronionego.
+EJB_AUTHZ_PRECLUDED.useraction=Sprawd\u017a, czy istnieje co najmniej jedna rola chroni\u0105ca zas\u00f3b.
+EJB_AUTHZ_EXCLUDED=CWWKS9402A: Nie powiod\u0142a si\u0119 pr\u00f3ba przeprowadzenia autoryzacji u\u017cytkownika {0} podczas wywo\u0142ywania metody {1} w {2}, poniewa\u017c metadane zabezpiecze\u0144 metody jawnie wykluczaj\u0105 dost\u0119p dla wszystkich r\u00f3l zabezpiecze\u0144.
+EJB_AUTHZ_EXCLUDED.explanation=U\u017cytkownik nie ma uprawnie\u0144 do uzyskania dost\u0119pu do zasobu, poniewa\u017c deskryptor wdra\u017cania lub adnotacje jawnie okre\u015blaj\u0105, \u017ce nie istniej\u0105 role zabezpiecze\u0144, kt\u00f3re maj\u0105 zezwolenie na wywo\u0142anie metody.
+EJB_AUTHZ_EXCLUDED.useraction=Je\u015bli wymagany jest dost\u0119p do zasobu chronionego, zmie\u0144 metadane zabezpiecze\u0144 metody w deskryptorze wdra\u017cania lub adnotacji.
+EJB_AUTHZ_SERVICE_NOTFOUND=CWWKS9403E: Us\u0142uga autoryzacji serwera nie dzia\u0142a. W wyniku tego u\u017cytkownik {0} nie ma autoryzacji do wywo\u0142ania {1} w {2}.
+EJB_AUTHZ_SERVICE_NOTFOUND.explanation=U\u017cytkownik nie ma autoryzacji do uzyskania dost\u0119pu do zasobu, poniewa\u017c us\u0142uga autoryzacji nie dzia\u0142a.
+EJB_AUTHZ_SERVICE_NOTFOUND.useraction=Przejrzyj konfiguracj\u0119 zabezpiecze\u0144 i dzienniki pod k\u0105tem komunikat\u00f3w CWWKS, aby upewni\u0107 si\u0119, \u017ce us\u0142uga autoryzacji zosta\u0142a zarejestrowana i uruchomiona.
+EJB_SECURITY_CONFIGURATION_UPDATED=CWWKS9404A: Ustawienia wsp\u00f3\u0142pracownika zabezpiecze\u0144 EJB w pliku server.xml uleg\u0142y zmianie. Zmodyfikowano nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci: {0}
+EJB_SECURITY_CONFIGURATION_UPDATED.explanation=Ustawienia wsp\u00f3\u0142pracownika zabezpiecze\u0144 EJB w pliku server.xml zosta\u0142y zmodyfikowane. Nowe warto\u015bci w\u0142a\u015bciwo\u015bci znajduj\u0105 si\u0119 w komunikacie.
+EJB_SECURITY_CONFIGURATION_UPDATED.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+EJB_RUNAS_SYSTEM_NOT_SUPPORTED=CWWKS9405E: Nie powiod\u0142a si\u0119 autoryzacja metody komponentu EJB {0} w aplikacji {1}. Tryb Run-As SYSTEM_IDENTITY, kt\u00f3ry zosta\u0142 okre\u015blony w pliku ibm-ejb-jar-ext.xml, nie jest obs\u0142ugiwany i musi zosta\u0107 usuni\u0119ty lub zast\u0105piony.
+EJB_RUNAS_SYSTEM_NOT_SUPPORTED.explanation=Tryb Run-As SYSTEM_IDENTITY nie jest obs\u0142ugiwany. Nale\u017cy zmodyfikowa\u0107 plik ibm-ejb-jar-ext.xml danej aplikacji, aby usun\u0105\u0107 lub zast\u0105pi\u0107 specyfikacj\u0119 SYSTEM_IDENTITY.
+EJB_RUNAS_SYSTEM_NOT_SUPPORTED.useraction=Zmie\u0144 metadane zabezpiecze\u0144 w pliku ibm-ejb-jar-ext.xml dla aplikacji, aby usun\u0105\u0107 lub zast\u0105pi\u0107 specyfikacj\u0119 trybu Run-As SYSTEM_IDENTITY, poniewa\u017c specyfikacja SYSTEM_IDENTITY nie jest obs\u0142ugiwana. Obs\u0142ugiwane specyfikacje trybu Run-As to CALLER_IDENTITY lub SPECIFIED_IDENTITY.
+EJB_JACC_AUTHZ_FAILED=CWWKS9406A: Nie powiod\u0142a si\u0119 autoryzacja przez dostawc\u0119 JACC dla u\u017cytkownika {0} podczas wywo\u0142ywania ({1}) {2}. U\u017cytkownikowi nie nadano dost\u0119pu do \u017cadnej z wymaganych r\u00f3l.
+EJB_JACC_AUTHZ_FAILED.explanation=U\u017cytkownik nie ma wymaganych uprawnie\u0144 dost\u0119pu do tego zasobu.
+EJB_JACC_AUTHZ_FAILED.useraction=Je\u015bli wymagany jest dost\u0119p do zasobu chronionego, sprawd\u017a, czy u\u017cytkownik jest odwzorowany na jedn\u0105 z r\u00f3l chroni\u0105cych zas\u00f3b przez dostawc\u0119 JACC.

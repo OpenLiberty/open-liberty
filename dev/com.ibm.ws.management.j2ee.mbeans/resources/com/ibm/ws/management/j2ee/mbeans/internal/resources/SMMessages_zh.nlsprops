@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: \u4ea7\u54c1\u65e0\u6cd5\u786e\u5b9a\u4e3b\u673a\u7684\u6807\u51c6\u57df\u540d\u3002\u4e3b\u673a\u540d\u5c06\u7f3a\u7701\u4e3a {0}\u3002\u9519\u8bef\u4e3a\uff1a{1}
+DETERMINE_HOST_ERROR.explanation=\u65e0\u6cd5\u786e\u5b9a\u670d\u52a1\u5668\u7684 IP \u5730\u5740\u6216\u4e3b\u673a\u540d\u3002
+DETERMINE_HOST_ERROR.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u7684\u7f51\u7edc\u914d\u7f6e\uff0c\u5e76\u4f7f\u7528 --clean \u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: OSGi \u670d\u52a1 {0} \u4e0d\u53ef\u7528\u3002\u8bf7\u5c1d\u8bd5\u4f7f\u7528 --clean \u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+OSGI_SERVICE_ERROR.explanation=\u6240\u6307\u5b9a\u7684\u670d\u52a1\u4e0d\u53ef\u7528\uff0c\u4ece\u800c\u5bfc\u81f4\u6b64\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u3002
+OSGI_SERVICE_ERROR.useraction=\u8bf7\u4f7f\u7528 --clean \u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002

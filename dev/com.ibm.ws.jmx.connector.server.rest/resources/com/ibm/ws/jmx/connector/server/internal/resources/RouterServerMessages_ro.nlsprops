@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: Controlerul colectiv nu a putut crea contextul SSL c\u00e2nd s-a \u00eencercat rutarea conexiunii jmx la {0}.  Excep\u0163ia este: {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=Nu s-a putut crea un context SSL cu certificatul SSL al serverului. 
+jmx.connector.server.rest.router.ssl.exception.useraction=Verifica\u0163i configura\u0163ia SSL a serverului \u015fi \u00eenregistra\u0163i din nou serverul la controlerul colectiv.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: Informa\u0163iile de autentificare JMX nu sunt disponibile \u00een magazia controlerului colectiv pentru serverul \u0163int\u0103 {0} pe gazda {1} \u00een directorul {2}. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=Informa\u0163iile de autentificare JMX sunt necesare pentru a face o conexiune JMX la serverul \u0163int\u0103 specificat.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=Verifica\u0163i dac\u0103 serverul \u0163int\u0103 are bootstrap cu succes la controlerul colectiv.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E: Proprietatea nume gazd\u0103 a informa\u0163iilor de autentificare JMX nu este disponibil\u0103 \u00een magazia controlerului colectiv pentru serverul \u0163int\u0103 {0} pe gazda {1} \u00een directorul {2}.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=Proprietatea nume gazd\u0103 a informa\u0163iilor de autentificare JMX este necesar\u0103 pentru a face o conexiune JMX la serverul \u0163int\u0103 specificat.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=Verifica\u0163i dac\u0103 serverul \u0163int\u0103 are bootstrap cu succes la controlerul colectiv.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: Proprietatea port a informa\u0163iilor de autentificare JMX nu este disponibil\u0103 \u00een magazia controlerului colectiv pentru serverul \u0163int\u0103 {0} pe gazda {1} \u00een directorul {2}.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=Num\u0103rul de port al informa\u0163iilor de autentificare JMX este necesar pentru a face o conexiune JMX la serverul \u0163int\u0103 specificat.
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=Verifica\u0163i dac\u0103 serverul \u0163int\u0103 are bootstrap cu succes la controlerul colectiv.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: Depozitul de chei necesar {0} nu este configurat.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=Depozitul de chei necesar pentru rutarea JMX nu este configurat.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Asigura\u0163i-v\u0103 c\u0103 depozitul de chei este specificat \u00een fi\u015fierul server.xml.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: Cititorul magaziei controlerului colectiv nu este disponibil.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=Cititorul magaziei controlerului colectiv necesar nu este pornit.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=Verifica\u0163i configura\u0163ia serverului pentru a v\u0103 asigura c\u0103 sunt prezente caracteristicile necesare pentru rutarea JMX.

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.805,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.805
+m-name: ads-replEventLog
+m-description: class to hold a replication consumer event log details
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-base
+m-must: ads-dsReplicaId
+m-must: ads-replAliasDerefMode
+m-must: ads-searchBaseDN
+m-must: ads-replSearchScope
+m-must: ads-replSearchFilter
+m-must: ads-replRefreshNPersist
+m-must: ads-replLogMaxIdle
+m-must: ads-replLogPurgeThresholdCount
+m-may: ads-replLastSentCsn
+m-may: ads-replCookie
+creatorsname: uid=admin,ou=system

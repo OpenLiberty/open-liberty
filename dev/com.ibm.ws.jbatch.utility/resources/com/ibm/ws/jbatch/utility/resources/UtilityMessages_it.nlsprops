@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Errore: {0}
+error.inputConsoleNotAvailable=La console di input non \u00e8 disponibile.
+error.missingIO=Errore; manca l''unit\u00e0 I/O: {0}.
+
+usage=Utilizzo:  {0}
+task.unknown=Attivit\u00e0 sconosciuta: {0}
+for.task.usage=Per la descrizione e l''utilizzo dell''attivit\u00e0: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argomento obbligatorio mancante: {0}.
+argument.unrecognized=Argomento non riconosciuto: {0}.
+argument.unrecognized.expected=Argomento non riconosciuto: {0}. Forse si intendeva: {1}.
+argument.invalid.value=Valore inaccettabile per l''argomento: {0}={1}. Valori accettabili: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Il lavoro {0} con ID istanza {1} \u00e8 stato inoltrato.
+job.submitted.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.submitted.useraction=Non sono richieste azioni.
+
+job.restarted=CWWKY0102I: Una richiesta di riavvio \u00e8 stata inoltrata per il lavoro {0} con ID istanza {1}.
+job.restarted.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.restarted.useraction=Non sono richieste azioni.
+
+job.stopped=CWWKY0103I: Il lavoro {0} con ID istanza {1} \u00e8 stato arrestato. Stato batch: {2}. Stato uscita: {3}
+job.stopped.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.stopped.useraction=Non sono richieste azioni.
+
+job.stop.submitted=CWWKY0104I: \u00c8 stata inoltrata una richiesta di arresto per il lavoro {0} con ID istanza {1}.
+job.stop.submitted.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.stop.submitted.useraction=Non sono richieste azioni.
+
+job.finished=CWWKY0105I: Il lavoro {0} con ID istanza {1} \u00e8 terminato. Stato batch: {2}. Stato uscita: {3}
+job.finished.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.finished.useraction=Non sono richieste azioni.
+
+job.instance.record=CWWKY0106I: Istanza lavoro: {0}
+job.instance.record.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.instance.record.useraction=Non sono richieste azioni.
+
+job.execution.record=CWWKY0107I: Esecuzione lavoro: {0}
+job.execution.record.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.execution.record.useraction=Non sono richieste azioni.
+
+waiting.for.termination=CWWKY0108I: In attesa della terminazione dell''esecuzione lavoro: {0}
+waiting.for.termination.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+waiting.for.termination.useraction=Non sono richieste azioni.
+
+waiting.for.latest.job.execution=CWWKY0109I: In attesa dell''esecuzione lavoro pi\u00f9 recente per il lavoro con ID istanza {0}
+waiting.for.latest.job.execution.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+waiting.for.latest.job.execution.useraction=Non sono richieste azioni.
+
+waiting.for.next.job.execution=CWWKY0110I: In attesa dell''esecuzione lavoro successiva dopo l''esecuzione lavoro: {0}
+waiting.for.next.job.execution.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+waiting.for.next.job.execution.useraction=Non sono richieste azioni.
+
+joblog.to.file=CWWKY0111I: Il log lavori \u00e8 stato scritto nel file {0}
+joblog.to.file.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+joblog.to.file.useraction=Non sono richieste azioni.
+
+failover.to.next.target=CWWKY0112I: Una richiesta per il gestore batch in {0} ha avuto esito negativo. Viene inoltrata la richiesta al gestore batch in {1}. L''errore era: {2}
+failover.to.next.target.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+failover.to.next.target.useraction=Non sono richieste azioni.
+
+joblog.location=CWWKY0113I: Il log lavori per il lavoro {0} con ID istanza {1} verr\u00e0 scaricato al completamento del lavoro. \
+Nel frattempo \u00e8 possibile visualizzare il log lavori seguendo i link qui: {2}
+joblog.location.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+joblog.location.useraction=Non sono richieste azioni.
+
+joblog.download=CWWKY0114I: Il log lavori per il lavoro {0} con ID istanza {1} viene scaricato tramite {2}.
+joblog.download.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+joblog.download.useraction=Non sono richieste azioni.
+
+job.purged=CWWKY0115I: Il lavoro {0} con ID istanza {1} \u00e8 stato eliminato.
+job.purged.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.purged.useraction=Non sono richieste azioni.
+
+shutdown.hook=CWWKY0116I: L''utility client \u00e8 stata arrestata mentre era in attesa del completamento del lavoro {0} con ID istanza {1}.
+shutdown.hook.explanation=Questo messaggio viene emesso quando l'utility della riga comandi viene arrestata in modo forzato mentre attendeva il completamento di un lavoro. \
+In risposta, l'utility tenta di arrestare il lavoro inoltrando una richiesta di arresto.
+shutdown.hook.useraction=Non sono richieste azioni.
+
+job.purged.multi=CWWKY0117I: Il tentativo di eliminare il lavoro con id istanza {0} ha restituito lo stato: {1}. Messaggio: {2} RedirectUrl: {3}
+job.purged.multi.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.purged.multi.useraction=Non sono richieste azioni.
+
+job.parms.vals=CWWKY0118I: L''insieme finale dei parametri lavoro \u00e8 {0}
+job.parms.vals.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+job.parms.vals.useraction=Non sono richieste azioni.
+
+control.props.vals=CWWKY0119I: L''insieme finale delle propriet\u00e0\u00a0 di controllo \u00e8 {0}
+control.props.vals.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+control.props.vals.useraction=Non sono richieste azioni.
+
+control.props.file.warning=CWWKY0120W: La propriet\u00e0\u00a0{0} non pu\u00f2 essere utilizzata in un file delle propriet\u00e0\u00a0di controllo e verr\u00e0 \
+ignorata. La propriet\u00e0\u00a0{0} pu\u00f2 essere utilizzata solo sulla riga comandi.
+control.props.file.warning.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+control.props.file.warning.useraction=Non sono richieste azioni.
+
+

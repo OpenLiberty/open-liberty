@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.912,ou=attributeTypes,cn=adsconfig,ou=schema
+m-equality: integerMatch
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.912
+m-name: ads-pwdMaxFailure
+entryUUID: 88b1c9fa-b0f5-4fd3-85b8-b271fa8f553e
+entryCSN: 20130919065344.705000Z#000001#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065353.965Z

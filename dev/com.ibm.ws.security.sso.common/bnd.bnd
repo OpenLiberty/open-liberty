@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: SSO Common Project
+Bundle-SymbolicName: com.ibm.ws.security.sso.common
+Bundle-Description: sso common project: ; version=${bVersion}
+
+WS-TraceGroup: SAML20
+
+Export-Package: \
+	com.ibm.websphere.security.saml2.*,\
+	!com.ibm.ws.security.sso.common.internal.*, \
+	com.ibm.ws.security.sso.common.*,\
+	com.ibm.wsspi.security.saml2.*
+
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Private-Package: \
+        com.ibm.ws.security.sso.common.internal.*
+
+instrument.classesExcludes: com/ibm/ws/security/sso/common/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.websphere.security;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

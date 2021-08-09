@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: Kana\u0142 UDP {0} nas\u0142uchuje na ho\u015bcie {1} (port: {2}).
+CWUDP0001I.explanation=Kana\u0142 UDP zosta\u0142 uruchomiony pomy\u015blnie.
+CWUDP0001I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWUDP0002I=CWWKO0401I: Kana\u0142 UDP {0} przesta\u0142 nas\u0142uchiwa\u0107 na ho\u015bcie {1} (port: {2}).
+CWUDP0002I.explanation=Kana\u0142 UDP zosta\u0142 zako\u0144czony normalnie.
+CWUDP0002I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWUDP0003W=CWWKO0402W: Utworzono kana\u0142 UDP {0}, u\u017cywaj\u0105c niepoprawnej warto\u015bci w\u0142a\u015bciwo\u015bci konfiguracyjnej. Nazwa: {1}, warto\u015b\u0107: {2}
+CWUDP0003W.explanation=Warto\u015bci konfiguracyjne s\u0105 ignorowane przez kana\u0142 UDP.
+CWUDP0003W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWUDP0004E=CWWKO0403E: Zainicjowanie kana\u0142u UDP {0} nie powiod\u0142o si\u0119. Nie mo\u017cna rozstrzygn\u0105\u0107 hosta {1}.
+CWUDP0004E.explanation=System nie mo\u017ce rozstrzygn\u0105\u0107 skonfigurowanej nazwy hosta.
+CWUDP0004E.useraction=Sprawd\u017a, czy konfiguracja nazwy hosta jest poprawna.
+
+CWUDP0005E=CWWKO0404E: Zainicjowanie kana\u0142u UDP {0} nie powiod\u0142o si\u0119. Powi\u0105zanie gniazda datagram\u00f3w dla hosta {1} i portu {2} nie powiod\u0142o si\u0119.
+CWUDP0005E.explanation=Skonfigurowany port mo\u017ce by\u0107 ju\u017c u\u017cywany.
+CWUDP0005E.useraction=Sprawd\u017a, czy konfiguracja portu jest poprawna.
+
+CWUDP0006I=CWWKO0405I: W przypadku kana\u0142u UDP wyst\u0105pi\u0142o zako\u0144czone niepowodzeniem wyszukiwanie w systemie nazw domen (DNS) dla hosta {0}. Liczba wyst\u0105pie\u0144 zako\u0144czonego niepowodzeniem wyszukiwania: {1}.
+CWUDP0006I.explanation=Kana\u0142 UDP podj\u0105\u0142 pr\u00f3b\u0119 wys\u0142ania pakietu do hosta, kt\u00f3rego nazwa nie mo\u017ce zosta\u0107 rozstrzygni\u0119ta. By\u0107 mo\u017ce serwer DNS nie dzia\u0142a lub jest niepoprawnie skonfigurowany.
+CWUDP0006I.useraction=Sprawd\u017a, czy konfiguracja DNS dla serwera jest poprawna.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Brak us\u0142ugi wykonawcy.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

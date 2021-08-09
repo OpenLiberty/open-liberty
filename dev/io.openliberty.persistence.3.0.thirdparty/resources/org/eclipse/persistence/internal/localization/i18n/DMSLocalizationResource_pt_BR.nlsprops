@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Inclui o tempo gasto na manuten\u00e7\u00e3o do mecanismo de n\u00famero de sequ\u00eancia e na defini\u00e7\u00e3o do n\u00famero de sequ\u00eancia em objetos
+
+cache_hits=O n\u00famero de vezes que o objeto foi localizado no cache
+
+cache_misses=O n\u00famero de vezes que o objeto n\u00e3o foi localizado no cache
+
+caching=Inclui tempo gasto incluindo, procurando e removendo objetos no cache
+
+change_set_not_processed=O n\u00famero de ObjectChangeSets descartados porque o objeto N\u00c3O foi localizado no cache
+
+change_set_processed=O n\u00famero de ObjectChangeSets que foram localizados no cache
+
+client_session_count=O n\u00famero de ClientSession registradas em
+
+connect_call=N\u00famero total de chamadas de conex\u00e3o feitas
+
+connection=Tempo gasto gerenciando conex\u00f5es incluindo conectar, reconectar, e desconectar a partir de uma origem de dados
+
+connection_in_used=N\u00famero de conex\u00f5es em uso por conjunto para qualquer ConnectionPool exclusivo (Write, ExclusiveRead)
+
+connection_ping=Tempo gasto testando a conex\u00e3o do banco de dados para determinar se ele pode ser usado.
+
+database_execute=Tempo gasto em chamadas para a Instru\u00e7\u00e3o JDBC, inclui o tempo gasto em chamadas para: fechar, executeUpdate, e executeQuery
+
+deleted_object=O objeto precisar ser removido de identityMap de ObjectChangeSet
+
+descriptor_event=Tempo gasto ao executar DescriptorEvent
+
+disconnect_call=N\u00famero total de chamadas de desconex\u00e3o feitas
+
+distributed_merge=Tempo gasto mesclando altera\u00e7\u00f5es de transa\u00e7\u00e3o remota para o cache local compartilhado. Aparece quando sincroniza\u00e7\u00e3o de cache \u00e9 usada
+
+jts_aftercompletion=Tempo gasto no m\u00e9todo JTS afterCompletion(Object status)
+
+jts_beforecompletion=Tempo gasto no m\u00e9todo beforeCompletion JTS ()
+
+logging=Tempo gasto nas atividades de cria\u00e7\u00e3o de log TopLink
+
+merge_time=Tempo gasto mesclando altera\u00e7\u00f5es no cache compartilhado.
+
+object_building=Tempo gasto construindo objetos persistentes a partir de linhas do banco de dados
+
+optimistic_lock=N\u00famero de exce\u00e7\u00f5es de bloqueio otimista que foram lan\u00e7adas
+
+query=Tempo total gasto na opera\u00e7\u00e3o: {0}
+
+query_misc=Tempo total gasto na opera\u00e7\u00e3o: {0}.  Isto \u00e9 para opera\u00e7\u00f5es especiais n\u00e3o inclu\u00eddas em quaisquer nomes de consulta, como a grava\u00e7\u00e3o em lote.
+
+query_prepareation=Tempo para preparar a consulta
+
+rcm_message_received=N\u00famero de mensagens que foram recebidas por meio de RCM
+
+rcm_message_sent=O n\u00famero de mensagens que foram enviadas por meio de RCM
+
+rcm_status=Uma de [n\u00e3o configuradas, iniciadas, paradas]
+
+remote_change_set=N\u00famero de conjuntos de mudan\u00e7as recebidos a partir de m\u00e1quinas remotas e processados
+
+row_fetch=Tempo gasto para construir objetos de Registro a partir do ResultSet jdbc. Inclui chamadas SQL regulares e chamadas de procedimento armazenado
+
+session_event=Tempo gasto na execu\u00e7\u00e3o do SessionEvent
+
+session_login_time=Tempo de log in da sess\u00e3o
+
+session_name=O nome da sess\u00e3o
+
+sql_generation=Tempo gasto gerando SQL. No caso de express\u00f5es TopLink, o tempo gasto para converter a Express\u00e3o para SQL
+
+sql_prepare=Tempo gasto no JDBC preparando a Instru\u00e7\u00e3o. Tamb\u00e9m inclui o tempo gasto no EIS criando uma Intera\u00e7\u00e3o associada a uma conex\u00e3o, e a cria\u00e7\u00e3o de objetos de Registro de entrada e sa\u00edda
+
+unitofwork_commit=Mede o processo de confirma\u00e7\u00e3o do UnitOfWork
+
+unitofwork_commits=N\u00famero de confirma\u00e7\u00f5es UnitOfWork
+
+unitofwork_count=Contagem de n\u00famero total de objetos UnitOfWork criados
+
+unitofwork_register=Inclui tempo gasto em registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=N\u00famero de confirma\u00e7\u00f5es UnitOfWork que foram retrocedidas
+
+wrapping=Tempo gasto agrupando ambos os beans CMP e BMP
+

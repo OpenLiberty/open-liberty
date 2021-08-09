@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A k\u00e9rt {0} t\u00edpus\u00fa TokenService p\u00e9ld\u00e1ny nem tal\u00e1lhat\u00f3.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Minden TokenService megval\u00f3s\u00edt\u00e1s k\u00f6teg meghat\u00e1rozza a biztos\u00edtott t\u00edpus\u00e1t.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Adjon meg egy t\u00e1mogatott t\u00edpust, vagy telep\u00edtse a k\u00f6teget, amely a k\u00e9rt t\u00edpus\u00fa TokenService p\u00e9ld\u00e1nyt biztos\u00edtja.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: A biztons\u00e1gi token nem \u00e9rv\u00e9nyes\u00edthet\u0151. Ennek az al\u00e1bbi okai lehetnek:\n\
+1. A biztons\u00e1gi token m\u00e1sik kiszolg\u00e1l\u00f3n lett el\u0151\u00e1ll\u00edtva elt\u00e9r\u0151 kulcsok haszn\u00e1lat\u00e1val.\n\
+2. A token konfigur\u00e1ci\u00f3 vagy a tokent l\u00e9trehoz\u00f3 tokenszolg\u00e1ltat\u00e1s biztons\u00e1gi kulcsai megv\u00e1ltoztak.\n\
+3. A tokent l\u00e9trehoz\u00f3 tokenszolg\u00e1ltat\u00e1s m\u00e1r nem \u00e9rhet\u0151 el.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=A token nem hozhat\u00f3 l\u00e9tre \u00fajra a jelenleg be\u00e1ll\u00edtott tokenszolg\u00e1ltat\u00e1sokkal.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=A token \u00fajb\u00f3li l\u00e9trehoz\u00e1s\u00e1hoz ellen\u0151rizze, hogy legal\u00e1bb egy \u00f6sszetev\u0151 tartalmaz olyan tokenszolg\u00e1ltat\u00e1st, ami megfelel\u0151en be van \u00e1ll\u00edtva.
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: A biztons\u00e1gi token nem \u00e9rv\u00e9nyes\u00edthet\u0151. Ennek az al\u00e1bbi okai lehetnek:\n\
+1. A biztons\u00e1gi token m\u00e1sik kiszolg\u00e1l\u00f3n lett el\u0151\u00e1ll\u00edtva elt\u00e9r\u0151 kulcsok haszn\u00e1lat\u00e1val.\n\
+2. A token konfigur\u00e1ci\u00f3 vagy a tokent l\u00e9trehoz\u00f3 tokenszolg\u00e1ltat\u00e1s biztons\u00e1gi kulcsai megv\u00e1ltoztak.\n\
+3. A tokent l\u00e9trehoz\u00f3 tokenszolg\u00e1ltat\u00e1s m\u00e1r nem \u00e9rhet\u0151 el.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=A token nem hozhat\u00f3 l\u00e9tre \u00fajra a jelenleg be\u00e1ll\u00edtott tokenszolg\u00e1ltat\u00e1sokkal.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=A token \u00fajb\u00f3li l\u00e9trehoz\u00e1s\u00e1hoz ellen\u0151rizze, hogy legal\u00e1bb egy \u00f6sszetev\u0151 tartalmaz olyan tokenszolg\u00e1ltat\u00e1st, ami megfelel\u0151en be van \u00e1ll\u00edtva.
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: A korl\u00e1tozott meghatalmaz\u00e1s (S4U2self \u00e9s S4U2proxy) API legal\u00e1bb JavaSE 1.8 v\u00e1ltozat\u00fa Java fut\u00e1si k\u00f6rnyezetet k\u00f6vetel meg.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=A korl\u00e1tozott meghatalmaz\u00e1s (S4U2self \u00e9s S4U2proxy) API-k legal\u00e1bb IBM JavaSE 1.8 v\u00e1ltozat\u00fa Java fut\u00e1si k\u00f6rnyezetet k\u00f6vetelnek meg.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Gondoskodjon arr\u00f3l, hogy IBM JavaSE 1.8 v\u00e1ltozat\u00fa Java fut\u00e1si k\u00f6rnyezetet haszn\u00e1ljon.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: A korl\u00e1tozott meghatalmaz\u00e1s {0} OSGi szolg\u00e1ltat\u00e1sa nem \u00e9rhet\u0151 el.
+KRB_OSGI_SERVICE_ERROR.explanation=A megadott OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+KRB_OSGI_SERVICE_ERROR.useraction=Gondoskodjon arr\u00f3l, hogy a korl\u00e1tozott meghatalmaz\u00e1si szolg\u00e1ltat\u00e1s enged\u00e9lyezve legyen, \u00e9s IBM JavaSE 1.8 v\u00e1ltozat\u00fa Java fut\u00e1si k\u00f6rnyezetet haszn\u00e1ljon. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.

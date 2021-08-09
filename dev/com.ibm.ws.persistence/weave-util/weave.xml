@@ -1,0 +1,56 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- This script assumes the calling script will either import [public_imports/fat_imports.xml or public_imports/standard_imports.xml] 
+    If you are using an orm.xml mapping file, you will need to provide a persistence.xml file that refers to your mapping file(s) 
+    via the persistencexml attribute on the weave macro. These files must be placed in ${weavedir}/META-INF. -->
+<project name="weave">
+    <property name="eclipselink.home" value="${basedir}/../com.ibm.websphere.appserver.thirdparty.eclipselink/lib" />
+    <!-- OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST -->
+    <condition property="weave.log" value="OFF">
+        <not>
+            <isset property="weave.log" />
+        </not>
+    </condition>
+
+    <macrodef name="weave">
+        <!-- directory of compiled classes to be scanned for Entities that need to be woven -->
+        <attribute name="weavedir" />
+        <!-- Use an empty pu for weaving if consumer isn't using an orm.xml -->
+        <attribute name="persistencexml" default="${basedir}/weave-util/persistence.xml" />
+        <sequential>
+            <antcall target="weave-internal">
+                <param name="classes.dir" value="@{weavedir}" />
+                <param name="persistenceinfo" value="@{persistencexml}" />
+            </antcall>
+        </sequential>
+
+    </macrodef>
+
+    <target name="weave-internal">
+        <!-- This is somewhat gross but EclipseLink doesn't properly handle passing a p.xml that isn't located under the src dir-->
+        <mkdir dir="${classes.dir}/META-INF/"/>
+        <property name="temp.pxml" value="${classes.dir}/META-INF/persistence.xml"/>
+        <copy file="${persistenceinfo}" tofile="${temp.pxml}"/>
+        <weavetask source="${classes.dir}" target="${classes.dir}" loglevel="${weave.log}">
+            <classpath>
+                <path refid="project.class.path" /> 
+            </classpath>
+        </weavetask>
+        <delete file="${temp.pxml}"/>
+    </target>
+
+    <taskdef name="weavetask" classname="org.eclipse.persistence.tools.weaving.jpa.StaticWeaveAntTask">
+        <classpath>
+            <path refid="project.class.path" />
+            <fileset dir="${eclipselink.home}" />
+        </classpath>
+    </taskdef>
+</project>

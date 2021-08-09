@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=\u4f7f\u7528\u6cd5: java [JVM \u30aa\u30d7\u30b7\u30e7\u30f3] -jar {0} [\u30aa\u30d7\u30b7\u30e7\u30f3]  
+
+use.options=\u30aa\u30d7\u30b7\u30e7\u30f3:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.schemaversion=--schemaversion
+option-desc.schemaversion=\u30b9\u30ad\u30fc\u30de\u751f\u6210\u306b\u4f7f\u7528\u3059\u308b XSD \u30d0\u30fc\u30b8\u30e7\u30f3
+option-key.outputversion=--outputversion
+option-desc.outputversion=\u751f\u6210\u3055\u308c\u305f\u30b9\u30ad\u30fc\u30de\u306e\u51fa\u529b\u30d0\u30fc\u30b8\u30e7\u30f3
+option-key.encoding=--encoding
+option-desc.encoding=\u51fa\u529b\u306b\u4f7f\u7528\u3059\u308b\u6587\u5b57\u30a8\u30f3\u30b3\u30fc\u30c9
+option-key.locale=--locale
+option-desc.locale=\u51fa\u529b\u306b\u4f7f\u7528\u3059\u308b\u30ed\u30b1\u30fc\u30eb

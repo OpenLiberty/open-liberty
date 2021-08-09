@@ -1,0 +1,40 @@
+#/*******************************************************************************
+# * Copyright (c) 2016, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: Sk\u0142adniki logstashCollector i bluemixLogCollector mog\u0105 u\u017cywa\u0107 znacznik\u00f3w, kt\u00f3re zawieraj\u0105 pojedyncze s\u0142owo sk\u0142adaj\u0105ce si\u0119 z liter i cyfr. Zostan\u0105 zignorowane nast\u0119puj\u0105ce znaczniki: {0}.
+TAGS_FILTERING_WARNING.explanation= Ignorowane znaczniki zawieraj\u0105 znak spacji, my\u015blnik lub uko\u015bnik odwrotny.
+TAGS_FILTERING_WARNING.userAction= Usu\u0144 znaki spacji, my\u015blniki i uko\u015bniki odwrotne z tych znacznik\u00f3w.
+
+SSLREF_NOTFOUND=TRAS4302E: Nie okre\u015blono atrybutu sslRef elementu logstashCollector lub bluemixLogCollector albo nie mo\u017cna znale\u017a\u0107 identyfikatora atrybutu sslRef.
+SSLREF_NOTFOUND.explanation=Nie znaleziono konfiguracji protoko\u0142u SSL dla funkcji logstashCollector lub bluemixLogCollector.
+SSLREF_NOTFOUND.userAction=Utw\u00f3rz konfiguracj\u0119 protoko\u0142u SSL i okre\u015bl identyfikator przy u\u017cyciu atrybutu sslRef w elemencie logstashCollector lub elemencie bluemixLogCollector.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: Funkcje logstashCollector i bluemixLogCollector mog\u0105 u\u017cywa\u0107 parametru maxEvents, kt\u00f3rego warto\u015bci\u0105 jest liczba ca\u0142kowita z zakresu od 0 do 2147483647. Podana warto\u015b\u0107 parametru maxEvents jest ignorowana: {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= Warto\u015b\u0107 parametru maxEvents jest poza zakresem. Nie jest ona poprawn\u0105 liczb\u0105 ca\u0142kowit\u0105 z zakresu od 0 do 2147483647.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= Popraw warto\u015b\u0107 parametru maxEvents. W przeciwnym razie nie wyst\u0105pi przyt\u0142umianie.
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Szybko\u015b\u0107 tworzenia zdarze\u0144 przekracza maksymaln\u0105 szybko\u015b\u0107 obs\u0142ugi w w\u0105tku {0}. Do czasu wyczyszczenia kolejki zdarze\u0144 b\u0119dzie obs\u0142ugiwana nast\u0119puj\u0105ca liczba zdarze\u0144 na sekund\u0119: {1}.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= Liczba zdarze\u0144 do przetworzenia przekracza podany wsp\u00f3\u0142czynnik maxEvents na sekund\u0119.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= Aby zmieni\u0107 szybko\u015b\u0107 obs\u0142ugi zdarze\u0144, nale\u017cy zmieni\u0107 konfiguracj\u0119 parametru maxEvents w pliku server.xml.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: Kolejka zdarze\u0144 zosta\u0142a wyczyszczona. Nowe zdarzenia b\u0119d\u0105 obs\u0142ugiwane bez op\u00f3\u017anienia.
+MAXEVENTS_NOTEXCEED_RATE.explanation= Zako\u0144czono przetwarzanie zdarze\u0144 z maksymaln\u0105 szybko\u015bci\u0105 obs\u0142ugi.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  Nie jest wymagana \u017cadna czynno\u015b\u0107.

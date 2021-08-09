@@ -1,0 +1,8 @@
+#IBM WebSphere Application Server key file
+#Tue Sep 11 16:15:40 EDT 2007
+com.ibm.websphere.CreationDate=Tue Sep 11 16\:15\:40 EDT 2007
+com.ibm.websphere.ltpa.version=1.0
+com.ibm.websphere.ltpa.3DESKey=YJ8ARFn0k2S5S5LONNdZG/mLvfYxa4gH3/cGjIn+mR4\=
+com.ibm.websphere.CreationHost=host1
+com.ibm.websphere.ltpa.Realm=SecureRealm
+com.ibm.websphere.ltpa.PublicKey=ANKHjHZGY0Ry2jG6kWAOOdGFr8IDhP3igXAAtKNRjhz1SuHcgLq0ZF+mA50pfRBFuFWGxa8WEPthfMyx/xEncHMcoakGXJH1woLL3Bp+LYd/HlYYOHnLtmcWYQOPseqn638nkRWVpVsayIWx9jonjFJx+vbsi5ah3volxurVWZe/AQAB

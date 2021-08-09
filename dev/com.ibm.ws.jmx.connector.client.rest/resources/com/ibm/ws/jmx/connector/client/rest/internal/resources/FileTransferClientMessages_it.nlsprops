@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Un nuovo client di trasferimento file si \u00e8 connesso con l''identificativo di connessione {0}.
+filetransfer.client.init.explanation=Un nuovo client di trasferimento file si \u00e8 connesso con l'identificativo di connessione specificato.
+filetransfer.client.init.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+filetransfer.client.error=CWWKX7952E: Si \u00e8 verificato un messaggio di errore lato client "{0}" per la connessione {1}.
+filetransfer.client.error.explanation=Il connettore REST JMX lato client ha rilevato un errore ed \u00e8 stato generato il messaggio specificato.
+filetransfer.client.error.useraction=Utilizzare il messaggio di errore generato per identificare e risolvere il problema che ha causato questo errore ed eseguire di nuovo l'operazione.
+
+filetransfer.server.error=CWWKX7953E: Si \u00e8 verificato un messaggio di errore lato server "{0}" per la connessione {1}.
+filetransfer.server.error.explanation=Il connettore REST JMX lato server ha rilevato un errore ed \u00e8 stato generato il messaggio specificato.
+filetransfer.server.error.useraction=Utilizzare il messaggio di errore generato per identificare e risolvere il problema che ha causato questo errore ed eseguire di nuovo l'operazione.
+
+filetransfer.client.bad.credentials=CWWKX7954E: Il nome utente o la password specificati non sono autorizzati. Il server ha risposto con il codice {0} e il messaggio "{1}" per la connessione {2}.
+filetransfer.client.bad.credentials.explanation=Le credenziali fornite durante il tentativo di ottenere la connessione non sono corrette. Probabilmente l'utente non esiste, non dispone dell'autorizzazione per accedere al server oppure la password non \u00e8 corretta.
+filetransfer.client.bad.credentials.useraction=Correggere il nome utente o la password, quindi ottenere la connessione.
+
+filetransfer.response.code.error=CWWKX7955E: Il client di trasferimento file ha ricevuto il codice di risposta {0} con il messaggio "{1}" per la connessione {2}.
+filetransfer.response.code.error.explanation=Il client di trasferimento file ha ricevuto un codice di risposta imprevisto dal server.
+filetransfer.response.code.error.useraction=Utilizzare il codice di risposta del client per identificare e risolvere la causa di questo problema, ed eseguire di nuovo l'operazione.
+
+filetransfer.download.file=CWWKX7956I: La richiesta di scaricamento del file {0} \u00e8 riuscita e il suo contenuto \u00e8 stato scritto nel file {1} utilizzando la connessione {2}.
+filetransfer.download.file.explanation=La richiesta di scaricamento del file specificato \u00e8 riuscita.
+filetransfer.download.file.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+filetransfer.unsupported.operation=CWWKX7957E: L''operazione {0} non \u00e8 supportata dal client di trasferimento file per la connessione {1}.
+filetransfer.unsupported.operation.explanation=L'operazione specificata non \u00e8 supportata dal client di trasferimento file.
+filetransfer.unsupported.operation.useraction=Richiedere un'operazione supportata dal client di trasferimento file.
+
+filetransfer.upload.file=CWWKX7958I: La richiesta di caricamento del file {0} \u00e8 riuscita e il suo contenuto \u00e8 stato scritto nel file {1} utilizzando la connessione {2}.
+filetransfer.upload.file.explanation=La richiesta di caricamento del file specificato \u00e8 riuscita.
+filetransfer.upload.file.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+filetransfer.delete.file=CWWKX7959I: La richiesta di eliminazione del file {0} \u00e8 riuscita utilizzando la connessione {1}.
+filetransfer.delete.file.explanation=La richiesta di eliminazione del file specificato \u00e8 riuscita.
+filetransfer.delete.file.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.
+
+filetransfer.delete.all=CWWKX7960I: Richiesta di eliminazione di tutti i file e cartelle dalla raccolta {0} riuscita con la connessione {1}.
+filetransfer.delete.all.explanation=La richiesta di eliminazione della raccolta specificata \u00e8 riuscita.
+filetransfer.delete.all.useraction=Si tratta di un messaggio informativo, non \u00e8 richiesta alcuna azione.

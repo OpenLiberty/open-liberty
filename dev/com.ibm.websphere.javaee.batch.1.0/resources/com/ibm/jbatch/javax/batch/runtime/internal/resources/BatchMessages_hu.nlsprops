@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME javax.batch-1.0/resources/com/ibm/jbatch/javax/batch/runtime/internal/resources/BatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0350 - 0399: javax.batch
+# 
+
+batch.container.unavailable=CWWKY0350E: A k\u00f6tegelt t\u00e1rol\u00f3 nincs aktiv\u00e1lva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6tegelt perzisztencia a(z) {0} konfigur\u00e1ci\u00f3s elemen kereszt\u00fcl ker\u00fclt be\u00e1ll\u00edt\u00e1sra.
+batch.container.unavailable.explanation=A k\u00f6tegelt t\u00e1rol\u00f3 el\u00e9r\u00e9s\u00e9re ir\u00e1nyul\u00f3 k\u00eds\u00e9rlet sikertelen, mivel a k\u00f6tegelt t\u00e1rol\u00f3 nincs aktiv\u00e1lva. Ez \u00e1ltal\u00e1ban a hi\u00e1nyz\u00f3 konfigur\u00e1ci\u00f3 miatt k\u00f6vetkezik be. 
+batch.container.unavailable.useraction=Gondoskodj\u00e9k r\u00f3la, hogy be\u00e1ll\u00edt\u00e1sra ker\u00fclj\u00f6n a k\u00f6tegelt perzisztencia.
+ 
+
+ 

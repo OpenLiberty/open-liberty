@@ -1,0 +1,35 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="authn.abstract">
+
+    <!-- This is a login flow for external authentication handled outside the webflow engine. -->
+    
+    <view-state id="ExternalTransfer" view="externalRedirect:#{T(net.shibboleth.idp.authn.ExternalAuthentication).getExternalRedirect(flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.authn.External.externalAuthnPathStrategy').apply(opensamlProfileRequestContext), flowExecutionContext.getKey().toString())}">
+        <on-render>
+            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).addSubcontext(new net.shibboleth.idp.authn.context.ExternalAuthenticationContext(), true).setFlowExecutionUrl(flowExecutionUrl + '&amp;_eventId_proceed=1')" />
+            <evaluate expression="externalContext.getNativeRequest().getSession().setAttribute('conversation' + flowExecutionContext.getKey().toString(), new net.shibboleth.idp.authn.impl.ExternalAuthenticationImpl(opensamlProfileRequestContext, calledAsExtendedFlow?:false))" />
+        </on-render>
+        <transition to="ValidateExternalAuthentication" />
+    </view-state>
+    
+    <action-state id="ValidateExternalAuthentication">
+        <evaluate expression="ValidateExternalAuthentication" />
+        <evaluate expression="PopulateSubjectCanonicalizationContext" />
+        <evaluate expression="'proceed'" />
+
+        <transition on="proceed" to="CallSubjectCanonicalization" />
+    </action-state>
+
+    <!-- This runs a c14n step on the result of the authentication. -->
+    <subflow-state id="CallSubjectCanonicalization" subflow="c14n">
+        <input name="calledAsSubflow" value="true" />
+        <transition on="proceed" to="proceed" />
+        
+        <!-- This shouldn't generally happen, but if c14n fails, it's allowable to fall through. -->
+        <transition on="SubjectCanonicalizationError" to="ReselectFlow" />
+    </subflow-state>
+
+    <bean-import resource="external-authn-beans.xml" />
+
+</flow>

@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.5322.10.2.3,ou=objectClasses,cn=krb5kdc,ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+m-oid: 1.3.6.1.4.1.5322.10.2.3
+m-name: krb5Realm
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: krb5RealmName
+entryUUID: c6ce31d5-a84f-459d-ab2e-42c23baf803b
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.367000Z#000001#000#000000
+entryParentId: 206f948c-9214-4143-96e0-efd7fa31c288
+createTimestamp: 20130919065352.269Z

@@ -1,0 +1,297 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.spnego.internal;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import com.ibm.ws.security.krb5.Krb5Common;
+import com.ibm.ws.security.spnego.internal.Krb5DefaultFile.OS;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.location.WsResource;
+
+import test.common.SharedOutputManager;
+
+public class Krb5DefaultFileTest {
+
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    @Rule
+    public TestRule managerRule = outputMgr;
+
+    private final Mockery mock = new JUnit4Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    private final WsLocationAdmin locationAdmin = mock.mock(WsLocationAdmin.class);
+    private final WsResource wsResource = mock.mock(WsResource.class);
+    final WsResource wsResourceNt = mock.mock(WsResource.class, "wsResourceNt");
+
+    @Test
+    public void testKrb5DefaultFile_windows_found() throws Exception {
+        final String methodName = "testKrb5DefaultFile_windows_found";
+        mockWindows();
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResourceNt).exists();
+                    will(returnValue(false));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "win");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertEquals("Windows default kerberos configuration file should be " + Krb5DefaultFile.WINDOWS_INI, Krb5DefaultFile.WINDOWS_INI, df.getDefaultKrb5ConfigFile());
+            assertEquals("Windows default kerberos keytab file should be " + Krb5DefaultFile.WINDOWS_KEYTAB, Krb5DefaultFile.WINDOWS_KEYTAB, df.getDefaultKrb5KeytabFile());
+
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4302I:"));
+
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4304I:"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_windows_notFound() throws Exception {
+        final String methodName = "testKrb5DefaultFile_windows_notFound";
+        mockWindows();
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResourceNt).exists();
+                    will(returnValue(false));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(false));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "win");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertNull("Windows default kerberos configuration file should be null" + Krb5DefaultFile.WINDOWS_INI, df.getDefaultKrb5ConfigFile());
+            assertNull("Windows default kerberos keytab file should be null" + Krb5DefaultFile.WINDOWS_KEYTAB, df.getDefaultKrb5KeytabFile());
+
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4312E:"));
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4313E:"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_linux_notFound() throws Exception {
+        final String methodName = "testKrb5DefaultFile_linux_notFound";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.LINUX_CONF);
+                    will(returnValue(wsResource));
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.LINUX_KEYTAB);
+                    will(returnValue(wsResource));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(false));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "linux");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertNull("Linux default kerberos configuration file should be null", df.getDefaultKrb5ConfigFile());
+            assertNull("Linux default kerberos keytab file should be null", df.getDefaultKrb5KeytabFile());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_linux_Found() throws Exception {
+        final String methodName = "testKrb5DefaultFile_linux_Found";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.LINUX_CONF);
+                    will(returnValue(wsResource));
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.LINUX_KEYTAB);
+                    will(returnValue(wsResource));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "linux");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertEquals("Linux default kerberos configuration file should be " + Krb5DefaultFile.LINUX_CONF, Krb5DefaultFile.LINUX_CONF, df.getDefaultKrb5ConfigFile());
+            assertEquals("Linux default kerberos keytab file should be " + Krb5DefaultFile.LINUX_KEYTAB, Krb5DefaultFile.LINUX_KEYTAB, df.getDefaultKrb5KeytabFile());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_iSeries_notFound() throws Exception {
+        final String methodName = "testKrb5DefaultFile_iSeries_notFound";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ISERIES_CONF);
+                    will(returnValue(wsResource));
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ISERIES_KEYTAB);
+                    will(returnValue(wsResource));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(false));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "400");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertNull("iSeries default kerberos configuration file should be null", df.getDefaultKrb5ConfigFile());
+            assertNull("iSeries default kerberos keytab file should be null", df.getDefaultKrb5KeytabFile());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_iSeries_Found() throws Exception {
+        final String methodName = "testKrb5DefaultFile_iSeries_Found";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ISERIES_CONF);
+                    will(returnValue(wsResource));
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ISERIES_KEYTAB);
+                    will(returnValue(wsResource));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "400");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertEquals("iSeries default kerberos configuration file should be " + Krb5DefaultFile.ISERIES_CONF, Krb5DefaultFile.ISERIES_CONF, df.getDefaultKrb5ConfigFile());
+            assertEquals("iSeries default kerberos keytab file should be " + Krb5DefaultFile.ISERIES_KEYTAB, Krb5DefaultFile.ISERIES_KEYTAB, df.getDefaultKrb5KeytabFile());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_zOS_notFound() throws Exception {
+        final String methodName = "testKrb5DefaultFile_zOS_notFound";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ZOS_AND_OTHER_UNIX_CONF);
+                    will(returnValue(wsResource));
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ZOS_AND_OTHER_UNIX_KEYTAB);
+                    will(returnValue(wsResource));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(false));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "zOS");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertNull("zOS default kerberos configuration file should be null", df.getDefaultKrb5ConfigFile());
+            assertNull("zOS default kerberos keytab file should be null", df.getDefaultKrb5KeytabFile());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testKrb5DefaultFile_zOS_Found() throws Exception {
+        final String methodName = "testKrb5DefaultFile_zOS_Found";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ZOS_AND_OTHER_UNIX_CONF);
+                    will(returnValue(wsResource));
+                    allowing(locationAdmin).resolveResource(Krb5DefaultFile.ZOS_AND_OTHER_UNIX_KEYTAB);
+                    will(returnValue(wsResource));
+
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+
+                }
+            });
+            Krb5Common.setSystemProperty("os.name", "zOS");
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertEquals("zOS default kerberos configuration file should be " + Krb5DefaultFile.ZOS_AND_OTHER_UNIX_CONF, Krb5DefaultFile.ZOS_AND_OTHER_UNIX_CONF,
+                         df.getDefaultKrb5ConfigFile());
+            assertEquals("zOS default kerberos keytab file should be " + Krb5DefaultFile.ZOS_AND_OTHER_UNIX_KEYTAB, Krb5DefaultFile.ZOS_AND_OTHER_UNIX_KEYTAB,
+                         df.getDefaultKrb5KeytabFile());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testResolvePlatform() throws Exception {
+        final String methodName = "testResolvePlatform";
+        try {
+            Krb5DefaultFile df = new Krb5DefaultFile(locationAdmin);
+            assertEquals("platform should be aix", OS.AIX, df.resolvePlatform("aix"));
+            assertEquals("platform should be hp", OS.HP, df.resolvePlatform("hp"));
+            assertEquals("platform should be solaris", OS.SOLARIS, df.resolvePlatform("solaris"));
+            assertEquals("platform should be mac", OS.MAC, df.resolvePlatform("mac os"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    public void mockWindows() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINDOWS_INI);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINDOWS_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINNT_INI);
+                will(returnValue(wsResourceNt));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINNT_KEYTAB);
+                will(returnValue(wsResourceNt));
+            }
+        });
+    }
+}

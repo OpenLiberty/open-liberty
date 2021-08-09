@@ -1,0 +1,105 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCI4.jar
+Class-Source: SCIAbsolute.war.unpacked
+Class-Source: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCIWithListener.jar
+Class-Source: SCIAbsolute.war.unpacked classes
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.ws.servletContainerInitializer.SCIImpl3Servlet
+  ClassSource: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCIWithListener.jar
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.servletContainerInitializer.SCIParentServlet
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.servletContainerInitializer.ChildInterface
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.servletContainerInitializer.ParentInterface
+Class-Seed: com.ibm.ws.servletContainerInitializer.ChildImplementingParentInterface
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.servletContainerInitializer.ParentInterface
+Class-Seed: com.ibm.ws.servletContainerInitializer.ServletContainerInitializerImpl3
+  ClassSource: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCIWithListener.jar
+  Superclass: com.ibm.ws.servletContainerInitializer.SCIParentImpl
+  Interface: javax.servlet.ServletContainerInitializer
+  ClassAnnotation: javax.servlet.annotation.HandlesTypes
+Class-Seed: com.ibm.ws.servletContainerInitializer.ChildClass2
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: com.ibm.ws.servletContainerInitializer.ParentClass
+Class-Seed: com.ibm.ws.servletContainerInitializer.ParentClass
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.servletContainerInitializer.SCIServletAbsolute
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: com.ibm.ws.servletContainerInitializer.SCIParentServlet
+Class-Seed: com.ibm.ws.servletContainerInitializer.SCIParentImpl
+  ClassSource: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCI4.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.servletContainerInitializer.ServletContainerInitializerImpl4
+  ClassSource: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCI4.jar
+  Superclass: com.ibm.ws.servletContainerInitializer.SCIParentImpl
+  Interface: javax.servlet.ServletContainerInitializer
+Class-Seed: com.ibm.ws.servletContainerInitializer.ChildClass
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: com.ibm.ws.servletContainerInitializer.ParentClass
+Class-Seed: com.ibm.ws.servletContainerInitializer.ListenerImpl
+  ClassSource: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCIWithListener.jar
+  Superclass: java.lang.Object
+  Interface: javax.servlet.ServletContextListener
+Class-Seed: com.ibm.ws.servletContainerInitializer.SCIImpl4Servlet
+  ClassSource: publish/files/data/anno_tests/SCITest.ear.unpacked/SCIAbsolute.war.unpacked/WEB-INF/lib/SCI4.jar
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.servletContainerInitializer.ParentInterface
+  ClassSource: SCIAbsolute.war.unpacked classes
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.annotation.HandlesTypes
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.io.Serializable
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.util.EventListener
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.ServletContainerInitializer
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.ServletContextListener
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.util.EventListener
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: SCIAbsolute.war.unpacked
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: SCIAbsolute.war.unpacked
+  Superclass: java.lang.Object
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+# ============================================================

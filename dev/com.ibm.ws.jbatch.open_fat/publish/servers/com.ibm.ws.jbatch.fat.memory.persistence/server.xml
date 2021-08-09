@@ -1,0 +1,35 @@
+<server>
+
+        <include location="../fatTestPorts.xml" />
+
+        <featureManager>
+                <feature>batchManagement-1.0</feature>
+                <feature>servlet-3.1</feature>
+                <feature>jsonp-1.0</feature>
+        </featureManager>
+<!--
+    <logging traceSpecification="*=info:com.ibm.ws.batch.JobLogger=finest:batch.fat.*=all:com.ibm.jbatch.container.persistence.jpa.*=all:com.ibm.jbatch.container.services.impl.MemoryPersistenceManager.impl=all:com.ibm.jbatch.container.controller.impl.BaseStepControllerImpl=all:com.ibm.jbatch.container.controller.impl.PartitionedStepControllerImpl=all" />
+
+-->
+
+        <!-- ssl keystore to enable SSL port for batch rest connector -->
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
+
+    <!-- users authorized to the batch rest connector (ibm/api realm) -->
+    <basicRegistry id="basic" realm="ibm/api">
+        <user name="bob" password="bobpwd" />
+        <user name="jane" password="janepwd" />
+    </basicRegistry>
+
+    <!-- Everyone is a batch admin for non security related tests -->
+        <authorization-roles id="com.ibm.ws.batch">
+                <security-role name="batchAdmin">
+                        <user name="bob" />
+                        <user name="jane" />
+                </security-role>
+        </authorization-roles>
+
+  	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+  	<javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
+
+</server>

@@ -1,0 +1,871 @@
+###############################################################################
+# Copyright (c) 2002, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  02-11-18  irobins               Initial creation from seriousMessages
+#  02-12-05  awilkins      1442    Server quiesce - tx marked rollback only
+#  02-12-16  awilkins  LIDB1673.17 Embedded RAR recovery
+#  03-01-13  irobins   156517      390-specific message range reserved
+#  20/01/03  gareth    LIDB1673.1  JTA2 new messages
+#  28/02/03  hursdlg   LIDB1673.19.1 Add full exception for sync msgs
+#  14/03/03  mallam    160995      New message for inactivity timeout
+#  03/04/03  hursdlg   LIDB1673.22 Update messages 63/64
+#  14/04/03  hursdlg   163015      Fix duplicate message WTRN0068
+#  14/04/03  hursdlg   163130      Add new messages WTRN0081      
+#  15/07/03  hursdlg   170422      Add new messages WTRN0082      
+#  18/07/03  hursdlg   172027      Add new messages WTRN0083
+#  25/07/03  hursdlg   172471      Add new messages WTRN0084
+#  19/08/03  johawkes  174593      Add new messages WTRN0085
+#  18/09/03  johawkes  169114      Add new messages WTRN0086-90
+#  23/09/03  johawkes  177208      Add new messages WTRN0091
+#  09/12/03  mallam    184693      New message for quiesce WTRN0092
+#  04/02/04  hursdlg   189567      New messages for heuristic completion
+#  18/02/04  hursdlg   191317      Add new message WTRN0102
+#  18/05/04  hursdlg   191317.1    Fix punctuation and merge z/OS msgs
+#                                  from pok defect MD19484
+#  16/06/04  mallam    209935      New message for clean shutdown
+#  25/06/04  johawkes  210807      Indicate JTA demarcation disabled in client
+#  02/02/05  hursdlg   252732      New msgs 107-113
+#  17/01/05  mallam    LIDB3645    Recovery-mode restart
+#  20/04/05  hursdlg   266988      WSAT CFW message
+#  25/07/05  kaczyns   LI3187      Add z/OS BBOT messages
+#  18/10/05  mezarin   314369      z/OS messages temp fix
+#  11/11/05  hursdlg   311071      Add msg WTRN0116/117
+#  03/02/06  hursdlg   342682      Add msg WTRN0118
+#  26/02/07  awilkins  422999      Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163      Message review: improve contact IBM support user action
+#  07-04-27  awilkins  416102      Move z/OS BBOT messages into separate file
+#  07-05-03  mallam    422072      Migrate PK38831 to WASX
+#  25-07-07  mallam    453651      New message for log low on space
+#  22/10/07  mallam    476740      Improvements to out of space message 
+#  21/11/07  awilkins  481738      Output stack of thread when tx times out 
+#  06/12/07  hursdlg   467618      Commit priority validation messages
+#  18/12/07  johawkes  LIDB2778-12.10 WS-TX WS-Policy
+#  11/01/08  hursdlg   491762.1    WSTX 1.1 validation messages
+#  11/02/08  mallam    496337      PII additions
+#  25/02/08  johawkes  499078      Fix WTRN0080 user action wording
+#  29-02-08  johawkes  501807      Style changes
+#  29/01/09  jstidder  PK76761     Clarify WTRN0027/WTRN0028
+#  11/11/09  hursdlg   F923-4347.2 Add WTRN0130/131
+#  17/03/10  hursdlg   PM07874     New msgs WTRN0132-151
+#  13/05/10  hursdlg   649934      Further PM07874 changes
+#  12/10/10  johawkes  672987      Fix validation errors
+#  19/01/11  jstidder  PM30478     Clarify/expand WTRN0122
+#  10/07/12  johawkes  628170.3    Users of HA manager need proper log/error when HA not working
+#-----------------------------------------------------------------------
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined. 
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided. 
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table. 
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.15,0,02/08/23,04:09:52
+#
+#CMVCPATHNAME SERV1/ws/code/transaction.impl/src/com/ibm/ws/Transaction/resources/TransactionMsgs.nlsprops
+#COMPONENTPREFIX WTRN
+#COMPONENTNAMEFOR WTRN WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+WTRN0000_ERR_INT_ERROR=WTRN0000E: Se ha producido un error interno en el m\u00e9todo {0} de clase {1}; el rastreo de pila de excepciones es el siguiente: {2}.
+WTRN0000_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0000_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0001_ERR_INT_ERROR=WTRN0001E: Se ha producido un error interno en el m\u00e9todo {0} de clase {1};
+WTRN0001_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0001_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS=WTRN0002W: El servicio de transacciones no ha podido encontrar la clase del recurso {0}.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.explanation=El servicio de transacciones no ha podido encontrar la clase de recurso XA identificada en el mensaje.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.useraction=Aseg\u00farese de que el proveedor de recursos XA asociado est\u00e9 configurado y reinicie el servidor. A continuaci\u00f3n podr\u00e1 desconfigurar el recurso y cerrar el servidor.
+
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: No se ha podido encontrar un archivo JAR necesario durante la recuperaci\u00f3n. La v\u00eda de acceso utilizada para localizarlo es {0}.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=No se ha podido encontrar un archivo JAR necesario durante la recuperaci\u00f3n en la que est\u00e1 implicado un archivo RAR incorporado. Sin este archivo JAR, no puede completarse la recuperaci\u00f3n de la transacci\u00f3n.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=Ninguna. Este es un error interno del sistema.
+
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: No se puede crear XAResourceFactory. El nombre de clase XAResourceFactory era {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=Durante la recuperaci\u00f3n del servidor, no se ha encontrado la f\u00e1brica identificada para crear objetos XAResource. Este es un error interno del sistema.
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
+
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: El objeto XAResource de un participante de la transacci\u00f3n no se ha podido volver a crear y puede que la recuperaci\u00f3n de la transacci\u00f3n no se lleve a cabo correctamente. El recurso era {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE.explanation=Durante la recuperaci\u00f3n del servidor, la f\u00e1brica correspondiente no ha podido volver a crear un objeto XAResource.
+WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
+
+WTRN0006_TRANSACTION_HAS_TIMED_OUT=WTRN0006W: La transacci\u00f3n {0} ha excedido el tiempo de espera despu\u00e9s de {1} segundos.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.explanation=El servicio de transacciones ha excedido el tiempo de espera de la transacci\u00f3n identificada en el mensaje (la ha retrotra\u00eddo).
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.useraction=Para que en futuras ocasiones no se exceda el tiempo de espera con tanta frecuencia, aumente los valores de tiempo de espera de las transacciones.
+
+WTRN0007_CANT_IMPORT_NULL_CONTEXT=WTRN0007W: El servicio de transacciones no puede importar una transacci\u00f3n con un contexto nulo o no v\u00e1lido.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.explanation=Se ha importado un contexto en el servidor sin datos de transacci\u00f3n o con datos de transacci\u00f3n no v\u00e1lidos, por lo que no puede iniciarse la transacci\u00f3n.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.useraction=CMSG0002
+
+WTRN0008_CANT_IMPORT_NESTED_TRAN=WTRN0008W: El servicio de transacciones no puede importar una transacci\u00f3n anidada {0}
+WTRN0008_CANT_IMPORT_NESTED_TRAN.explanation=Un servidor remoto ha intentado importar una transacci\u00f3n anidada. Esta acci\u00f3n no est\u00e1 soportada.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.useraction=CMSG0002
+
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT=WTRN0009E: No hay ning\u00fan globalTID para el recurso de coordinador.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.explanation=No se ha suministrado ning\u00fan ID de transacci\u00f3n global en el contexto de transacci\u00f3n importado.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.useraction=CMSG0002
+
+WTRN0010_EXC_AT_COORD_REG=WTRN0010E: La transacci\u00f3n se ha retrotra\u00eddo debido a una excepci\u00f3n en el coordinador de registro con superior {0}
+WTRN0010_EXC_AT_COORD_REG.explanation=Se ha producido un problema al importar una transacci\u00f3n remota al servidor, por lo que la transacci\u00f3n se ha retrotra\u00eddo.
+WTRN0010_EXC_AT_COORD_REG.useraction=CMSG0002
+
+WTRN0011_FACTORY_BIND_FAILURE=WTRN0011E: No se puede registrar la f\u00e1brica de transacciones en el espacio de nombres JNDI.
+WTRN0011_FACTORY_BIND_FAILURE.explanation=Se ha producido un error inesperado durante la inicializaci\u00f3n del servicio de transacciones.
+WTRN0011_FACTORY_BIND_FAILURE.useraction=CMSG0002
+
+WTRN0012_UNEXP_FACTORY_REG_FAILURE=WTRN0012E: Se ha producido una anomal\u00eda inesperada durante el registro de la f\u00e1brica de transacciones.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.explanation=Se ha producido un error inesperado durante la inicializaci\u00f3n del servicio de transacciones.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.useraction=CMSG0002
+
+WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: No se ha especificado ning\u00fan archivo de anotaciones cronol\u00f3gicas de transacciones, se est\u00e1 registrando cronol\u00f3gicamente en memoria.
+WTRN0013_LOGGING_IN_MEMORY.explanation=El servicio de transacciones est\u00e1 configurado para no escribir anotaciones cronol\u00f3gicas en un almacenamiento permanente. Esto puede causar problemas de integridad de los datos o el bloqueo de los recursos (por ejemplo, tablas de bases de datos) si existen transacciones de compromiso de dos fases pendientes en ejecuci\u00f3n cuando se detenga el servidor.
+WTRN0013_LOGGING_IN_MEMORY.useraction=Si precisa la recuperaci\u00f3n de transacciones, vuelva a configurar el servicio de transacciones para utilizar el registro cronol\u00f3gico y reinicie el servidor.
+
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: El servicio de transacciones ha detectado una serie de configuraci\u00f3n del archivo de anotaciones cronol\u00f3gicas no v\u00e1lida. El servicio de transacciones continuar\u00e1 sin el registro cronol\u00f3gico de recuperaci\u00f3n.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=El nombre de directorio del archivo de anotaciones cronol\u00f3gicas de transacciones, establecido en el campo de directorio de anotaciones cronol\u00f3gicas de transacciones, no es v\u00e1lido. El formato deber\u00eda ser un directorio de archivo de anotaciones cronol\u00f3gicas plenamente cualificado, seguido opcionalmente por un punto y coma (';') y el tama\u00f1o del archivo de anotaciones cronol\u00f3gicas, donde M despu\u00e9s del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas indica megabytes y K indica kilobytes. El valor m\u00ednimo y por omisi\u00f3n del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas es 1 M.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Corrija la configuraci\u00f3n del directorio de anotaciones cronol\u00f3gicas de transacciones. Compruebe que se reinicie el servidor para habilitar el registro cronol\u00f3gico de recuperaci\u00f3n de transacciones.
+
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: Se ha especificado un tama\u00f1o de archivo de anotaciones cronol\u00f3gicas de transacciones no v\u00e1lido: {0}. El valor por omisi\u00f3n del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas del servicio de transacciones ser\u00e1 de 1 M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=El tama\u00f1o de archivo del archivo de anotaciones cronol\u00f3gicas de transacciones, establecido en el campo de directorio de anotaciones cronol\u00f3gicas de transacciones, no es v\u00e1lido. El formato deber\u00eda ser un directorio de archivo de anotaciones cronol\u00f3gicas plenamente cualificado, seguido opcionalmente por un punto y coma (';') y el tama\u00f1o del archivo de anotaciones cronol\u00f3gicas, donde M despu\u00e9s del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas indica megabytes y K indica kilobytes. El valor m\u00ednimo y por omisi\u00f3n del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas es 1 M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Corrija la configuraci\u00f3n del directorio de anotaciones cronol\u00f3gicas de transacciones. 
+
+WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: Se ha capturado una excepci\u00f3n durante la recuperaci\u00f3n del servicio de transacciones {0}
+WTRN0016_EXC_DURING_RECOVERY.explanation=Se ha detectado una excepci\u00f3n mientras el servicio de transacciones intentaba recuperarse de una anomal\u00eda anterior del servidor.
+WTRN0016_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION=WTRN0017W: No se puede iniciar ninguna transacci\u00f3n anidada. Las transacciones anidadas no tienen soporte.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.explanation=Este error indica que se ha intentado iniciar una transacci\u00f3n anidada, pero que no se les da soporte.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.useraction=Aseg\u00farese de que no se intente iniciar ninguna transacci\u00f3n cuando otra transacci\u00f3n ya est\u00e9 activa en la hebra.
+
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT=WTRN0018W: El recurso de una fase no soporta compromiso
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.explanation=Un recurso que s\u00f3lo da soporte a un compromiso optimizado de una fase se ha incluido en el servicio de transacciones y se ha llamado para procesar una operaci\u00f3n est\u00e1ndar de compromiso de dos fases. Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.useraction=CMSG0002
+
+WTRN0019_LOGFILE_CORRUPTED=WTRN0019E: El archivo de anotaciones cronol\u00f3gicas del servicio de transacciones {0} est\u00e1 da\u00f1ado.
+WTRN0019_LOGFILE_CORRUPTED.explanation=El archivo de anotaciones cronol\u00f3gicas del servicio de transacciones est\u00e1 da\u00f1ado y, a consecuencia de ello, el servidor no ha arrancado correctamente.
+WTRN0019_LOGFILE_CORRUPTED.useraction=Para iniciar el servidor en fr\u00edo, suprima los archivos de anotaciones cronol\u00f3gicas de transacciones y vuelva a iniciar el servidor. Debe finalizar manualmente todas las transacciones que estuviesen pendientes en los gestores de recursos asociados.
+
+WTRN0020_RECOVERING_TRANSACTIONS=WTRN0020W: Se est\u00e1n recuperando las transacciones del servidor {0} en este servidor.
+WTRN0020_RECOVERING_TRANSACTIONS.explanation=Este servidor est\u00e1 recuperando anotaciones cronol\u00f3gicas de transacciones de otro servidor. Si los recursos configurados en este servidor no coinciden con los configurados en el servidor para el que se crearon los archivos de anotaciones cronol\u00f3gicas, es posible que la recuperaci\u00f3n no finalice.
+WTRN0020_RECOVERING_TRANSACTIONS.useraction=Compruebe si se emite alg\u00fan mensaje de error durante la recuperaci\u00f3n y lleve a cabo las acciones necesarias.
+
+WTRN0021_TMRESUME_NOT_SUPPORTED=WTRN0021W: No se da soporte a TMRESUME.
+WTRN0021_TMRESUME_NOT_SUPPORTED.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0021_TMRESUME_NOT_SUPPORTED.useraction=CMSG0002
+
+WTRN0022_UNKNOWN_XARESOURCE_STATE=WTRN0022W: Estado de XAResource desconocido.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.explanation=El estado de XAResource no era el esperado. Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.useraction=CMSG0002
+
+WTRN0023_INVALID_XAEND_FLAG=WTRN0023W: Distintivo de finalizaci\u00f3n XA no v\u00e1lido: {0}
+WTRN0023_INVALID_XAEND_FLAG.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0023_INVALID_XAEND_FLAG.useraction=CMSG0002
+
+WTRN0024_INCONSISTENT_LOGS=WTRN0024E: Anotaciones cronol\u00f3gicas de recuperaci\u00f3n de la transacci\u00f3n y del recurso XA no coherentes.
+WTRN0024_INCONSISTENT_LOGS.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0024_INCONSISTENT_LOGS.useraction=CMSG0002
+
+WTRN0025_TRAN_RECOVERY_FAILED=WTRN0025E: Se ha producido un error en la recuperaci\u00f3n de la transacci\u00f3n {0}
+WTRN0025_TRAN_RECOVERY_FAILED.explanation=Se ha producido una excepci\u00f3n mientras se intentaba recuperar una transacci\u00f3n.
+WTRN0025_TRAN_RECOVERY_FAILED.useraction=CMSG0002
+
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY=WTRN0026E: Se ha capturado una excepci\u00f3n durante un punto clave despu\u00e9s de la recuperaci\u00f3n {0}
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.useraction=CMSG0002
+
+WTRN0027_RECOVERING_TXN=WTRN0027I: El servicio de transacciones est\u00e1 recuperando una transacci\u00f3n.
+WTRN0027_RECOVERING_TXN.explanation=El servicio de transacciones ha detectado que todav\u00eda hab\u00eda una transacci\u00f3n en ejecuci\u00f3n cuando se detuvo el servidor por \u00faltima vez y ahora el servicio de transacciones la est\u00e1 recuperando. Pueden aparecer mensajes de auditor\u00eda posteriores indicando el progreso del proceso de recuperaci\u00f3n.
+WTRN0027_RECOVERING_TXN.useraction=No se requiere ninguna acci\u00f3n del usuario.
+WTRN0028_RECOVERING_TXNS=WTRN0028I: El servicio de transacciones est\u00e1 recuperando {0} transacciones.
+WTRN0028_RECOVERING_TXNS.explanation=El servicio de transacciones ha detectado que todav\u00eda hab\u00eda transacciones en ejecuci\u00f3n cuando se detuvo el servidor por \u00faltima vez y ahora el servicio de transacciones las est\u00e1 recuperando. Pueden aparecer mensajes de auditor\u00eda posteriores indicando el progreso del proceso de recuperaci\u00f3n.
+WTRN0028_RECOVERING_TXNS.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN=WTRN0029E: Error al cerrar las anotaciones cronol\u00f3gicas al concluir.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.explanation=El servicio de transacciones ha encontrado un error mientras cerraba sus anotaciones cronol\u00f3gicas de recuperaci\u00f3n durante la conclusi\u00f3n del servidor.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.useraction=CMSG0002
+
+WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Se ha producido un error al recuperar los datos XAResource {0}
+WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
+
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: Se ha producido un error en una operaci\u00f3n xa_rollback en un recurso de transacci\u00f3n. La transacci\u00f3n global era {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0031_XA_ROLLBACK_FAILED.explanation=Se ha producido una excepci\u00f3n cuando el servicio de transacciones ha llamado a la operaci\u00f3n xa_rollback en un recurso incluido en la transacci\u00f3n global identificada en el mensaje.
+WTRN0031_XA_ROLLBACK_FAILED.useraction=Puede que la transacci\u00f3n haya finalizado con resultado heur\u00edstico. Si este es el caso, corrija los problemas de datos de la aplicaci\u00f3n causados por el resultado heur\u00edstico.
+
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND=WTRN0032E: Se ha recibido un contexto de transacci\u00f3n espec\u00edfico de implementaci\u00f3n en la petici\u00f3n entrante.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.useraction=CMSG0002
+
+WTRN0033_TRANSACTION_FACTORY_CREATE=WTRN0033E: Se ha capturado la excepci\u00f3n {0} al crear la f\u00e1brica de transacciones
+WTRN0033_TRANSACTION_FACTORY_CREATE.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0033_TRANSACTION_FACTORY_CREATE.useraction=CMSG0002
+
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED=WTRN0034W: Durante la fase de inmovilizaci\u00f3n del servidor, se ha encontrado la transacci\u00f3n {0}. El intento de retrotraer la transacci\u00f3n ha sido satisfactorio.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.explanation=Durante la fase de inmovilizaci\u00f3n del servidor se ha encontrado una transacci\u00f3n pendiente. Esta transacci\u00f3n se ha retrotra\u00eddo correctamente.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED=WTRN0035W: Durante la fase de inmovilizaci\u00f3n del servidor, se ha encontrado la transacci\u00f3n {0}. Se ha producido un error en el intento de retrotraer la transacci\u00f3n.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.explanation=Durante la fase de inmovilizaci\u00f3n del servidor se ha encontrado una transacci\u00f3n pendiente. La transacci\u00f3n no se ha retrotra\u00eddo correctamente.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.useraction=No se requiere ninguna acci\u00f3n. Esta transacci\u00f3n se recuperar\u00e1 cuando se vuelva a iniciar el servidor.
+
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: Durante la fase de inmovilizaci\u00f3n del servidor, se ha encontrado la transacci\u00f3n {0}. La transacci\u00f3n se ha marcado como s\u00f3lo de retrotracci\u00f3n.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=Durante la fase de inmovilizaci\u00f3n del servidor se ha encontrado una transacci\u00f3n pendiente. Esta transacci\u00f3n se ha marcado como s\u00f3lo de retrotracci\u00f3n.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=No se requiere ninguna acci\u00f3n. La transacci\u00f3n se retrotraer\u00e1 durante la conclusi\u00f3n del servidor, o se recuperar\u00e1 cuando se reinicie el servidor.
+
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: El servicio de transacciones ha encontrado un error en una operaci\u00f3n xa_recover. El recurso era {0}. El c\u00f3digo de error era {1}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {2}
+WTRN0037_XA_RECOVER_ERROR.explanation=Se ha producido un error en el servicio de transacciones al llamar a xa_recover en un recurso para determinar las transacciones preparadas en el gestor de recursos correspondiente. Se volver\u00e1 a intentar la operaci\u00f3n.
+WTRN0037_XA_RECOVER_ERROR.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: Se ha producido una excepci\u00f3n al destruir un recurso XA. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {0}
+WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=El servicio de transacciones no ha podido destruir un recurso XA.
+WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=No se precisa ninguna acci\u00f3n, puesto que esto no debe afectar al servicio de transacciones.
+
+WTRN0039_SERIALIZE_FAILED=WTRN0039E: No se ha podido serializar un objeto al formato de bytes.
+WTRN0039_SERIALIZE_FAILED.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0039_SERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0040_OBJECT_DESERIALIZE_FAILED=WTRN0040W: El objeto no puede deserializarse. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {0}
+WTRN0040_OBJECT_DESERIALIZE_FAILED.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0040_OBJECT_DESERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0041_TXN_ROLLED_BACK=WTRN0041I: La transacci\u00f3n {0} se ha retrotra\u00eddo. 
+WTRN0041_TXN_ROLLED_BACK.explanation=Una transacci\u00f3n se marc\u00f3 previamente como rollbackOnly y ahora se ha retrotra\u00eddo. Esto puede deberse a que se ha superado el tiempo de espera de la transacci\u00f3n o a una decisi\u00f3n de la aplicaci\u00f3n de marcar la transacci\u00f3n como rollbackOnly.                             
+WTRN0041_TXN_ROLLED_BACK.useraction=No se requiere ninguna acci\u00f3n del usuario a menos que no desee retrotraer y ocurra debido a un tiempo de espera excedido de la transacci\u00f3n. En ese caso, determine por qu\u00e9 la transacci\u00f3n tarda m\u00e1s en completarse que el periodo de tiempo de espera y considere incrementar los valores de tiempo de espera de la transacci\u00f3n para el servidor.
+
+WTRN0042_GLOBAL_TRAN_ROLLBACK=WTRN0042I: GlobalTransaction se ha retrotra\u00eddo debido a un tiempo de espera excedido o setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.explanation=Se ha retrotra\u00eddo una transacci\u00f3n global porque ha alcanzado un valor de tiempo de espera o se ha invocado el m\u00e9todo setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.useraction=Si el valor de tiempo de espera es demasiado corto o largo, utilice la consola administrativa para modificarlo.
+
+WTRN0043_LOCAL_TRAN_ROLLBACK=WTRN0043I: LocalTransaction se ha retrotra\u00eddo debido a setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.explanation=Se ha retrotra\u00eddo una transacci\u00f3n local porque se ha invocado el m\u00e9todo setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.useraction=No se requiere ninguna acci\u00f3n.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: Puede que se haya producido una condici\u00f3n heur\u00edstica para la transacci\u00f3n {0}.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=El servicio de transacciones ha detectado que la transacci\u00f3n especificada ha mezclado recursos con capacidad de una y dos fases. El servicio de transacciones ha pasado una petici\u00f3n de compromiso de una fase al \u00fanico recurso con capacidad de una fase, pero se ha producido un error en el servidor antes de que el compromiso terminase. Se desconoce si el recurso se ha comprometido correctamente.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=Se retrotraer\u00e1n los recursos con capacidad de dos fases. Si el recurso con capacidad de una fase ha efectuado el compromiso correctamente, se habr\u00e1n producido da\u00f1os heur\u00edsticos y deber\u00e1 corregir todos los problemas de datos de aplicaci\u00f3n que haya causado el resultado heur\u00edstico.
+
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: El servicio de transacciones no puede recuperar el recurso {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=Se ha producido un error interno del sistema cuando el servicio de transacciones ha intentado reconstruir un participante de la transacci\u00f3n durante la recuperaci\u00f3n. Probablemente esto se debe a una anomal\u00eda anterior.
+WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
+
+WTRN0046_PREPARE_FAILED=WTRN0046E: Se ha producido un error como consecuencia de un intento del gestor de transacciones para efectuar una llamada de preparaci\u00f3n en un recurso de transacci\u00f3n. El c\u00f3digo de error era {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0046_PREPARE_FAILED.explanation=Se ha producido un error en el recurso de transacci\u00f3n cuando se le ha pedido que procesara una llamada de preparaci\u00f3n. La anomal\u00eda se considerar\u00e1 como un voto de retrotracci\u00f3n.
+WTRN0046_PREPARE_FAILED.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: Se ha producido un error XAER_RMERR al comprometer el trabajo en una ramificaci\u00f3n de la transacci\u00f3n. El recurso era: {0}
+WTRN0047_XAER_RMERR_ON_COMMIT.explanation=Se ha detectado una anomal\u00eda durante el proceso de compromiso de una transacci\u00f3n.
+WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido esta anomal\u00eda.
+
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: Se ha producido un error XAER_RMFAIL como consecuencia de un intento del gestor de transacciones para efectuar una llamada de compromiso en un recurso de transacci\u00f3n. El recurso era {0}
+WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=La llamada de compromiso en un recurso de transacci\u00f3n no ha sido correcta porque el gestor de recursos no estaba disponible. Se volver\u00e1 a intentar a intervalos regulares.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Compruebe que el gestor de recursos est\u00e9 disponible.
+
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: Se ha producido un error XAER_RMFAIL como consecuencia de un intento del gestor de transacciones para efectuar una llamada de retrotracci\u00f3n en un recurso de transacci\u00f3n. El recurso era {0}
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=La llamada de retrotracci\u00f3n en un recurso de transacci\u00f3n no ha sido correcta porque el gestor de recursos no estaba disponible. La llamada de retrotracci\u00f3n se volver\u00e1 a intentar a intervalos regulares.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Compruebe que el gestor de recursos est\u00e9 disponible.
+
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: Se ha producido un error no esperado como consecuencia de un intento del gestor de transacciones para efectuar una llamada de compromiso en un recurso de transacci\u00f3n. El c\u00f3digo de error XA era {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=La llamada de compromiso en un recurso de transacci\u00f3n no ha sido correcta debido a una anomal\u00eda inesperada. Se volver\u00e1 a intentar a intervalos regulares.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: Se ha producido un error no esperado como consecuencia de un intento del gestor de transacciones para efectuar una llamada de retrotracci\u00f3n en un recurso de transacci\u00f3n. El c\u00f3digo de error XA era {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=La llamada de retrotracci\u00f3n en un recurso de transacci\u00f3n no ha sido correcta debido a una anomal\u00eda inesperada. La llamada de retrotracci\u00f3n se volver\u00e1 a intentar a intervalos regulares.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: Se ha producido un error XAER_RMFAIL como consecuencia de un intento del gestor de transacciones para efectuar una llamada de compromiso de una fase en un recurso de transacci\u00f3n. El recurso era {0}
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=La llamada de compromiso de una fase en un recurso de transacci\u00f3n no ha sido correcta porque el gestor de recursos no estaba disponible.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=La transacci\u00f3n se retrotraer\u00e1.
+
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: Se ha producido un error no esperado como consecuencia de un intento del gestor de transacciones para efectuar una llamada de compromiso de una fase en un recurso de transacci\u00f3n. El c\u00f3digo de error XA era {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=La llamada de compromiso de una fase en un recurso de transacci\u00f3n no ha sido correcta debido a una anomal\u00eda inesperada.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=El gestor de transacciones intentar\u00e1 retrotraer la transacci\u00f3n.
+
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: Se ha producido una excepci\u00f3n en una operaci\u00f3n xa_forget en un recurso de transacci\u00f3n. El c\u00f3digo de error era {0}.  A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0054_XA_FORGET_ERROR.explanation=Se ha producido una excepci\u00f3n cuando el servicio de transacciones ha llamado a la operaci\u00f3n xa_forget en un recurso.
+WTRN0054_XA_FORGET_ERROR.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY=WTRN0055W: Abandonando entrega de resultado para la transacci\u00f3n {0}.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.explanation=El servicio de transacciones no ha podido entregar los resultados de compromiso o retrotracci\u00f3n a un participante de la transacci\u00f3n.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido esta anomal\u00eda.
+
+WTRN0056_TRAN_RESYNC_FAILURE=WTRN0056I: Se ha producido un error de resincronizaci\u00f3n de la transacci\u00f3n {0} desde el emisor, reintentando....
+WTRN0056_TRAN_RESYNC_FAILURE.explanation=La transacci\u00f3n no se ha resincronizado durante la recuperaci\u00f3n y se desconoce el resultado, por lo que el servidor seguir\u00e1 intent\u00e1ndolo.
+WTRN0056_TRAN_RESYNC_FAILURE.useraction=No se requiere ninguna acci\u00f3n.
+
+WTRN0057_HEURISTIC_ON_SUBORDINATE=WTRN0057E: Se ha producido un error heur\u00edstico con prepare/commit_one_phase sobre una subordinada.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.explanation=Una transacci\u00f3n subordinada ha intentado optimizar utilizando un compromiso de una fase durante prepare y se ha producido un error heur\u00edstico.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.useraction=CMSG0002
+
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT=WTRN0058E: Se ha capturado una excepci\u00f3n de la operaci\u00f3n de compromiso durante la recuperaci\u00f3n de la transacci\u00f3n {0}: {1}
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.explanation=Se ha detectado una excepci\u00f3n al intentar recuperar una transacci\u00f3n.
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.useraction=CMSG0002
+
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK=WTRN0059E: Se ha capturado una excepci\u00f3n de la operaci\u00f3n de retrotracci\u00f3n durante la recuperaci\u00f3n de la transacci\u00f3n {0}: {1}
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.explanation=Se ha detectado una excepci\u00f3n al intentar recuperar una transacci\u00f3n.
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.useraction=CMSG0002
+
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET=WTRN0060E: Se ha capturado una excepci\u00f3n de la operaci\u00f3n de olvido durante la recuperaci\u00f3n de la transacci\u00f3n {0}: {1}
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.explanation=Se ha detectado una excepci\u00f3n al intentar recuperar una transacci\u00f3n.
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.useraction=CMSG0002
+
+WTRN0061_ERR_CREATING_JTAXARESOURCE=WTRN0061E: Se ha producido un error al construir un objeto JTAXAResource
+WTRN0061_ERR_CREATING_JTAXARESOURCE.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.useraction=CMSG0002
+
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES=WTRN0062E: Se ha producido un intento no permitido de utilizar varios recursos que tienen s\u00f3lo capacidad de una fase dentro de una transacci\u00f3n global.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.explanation=S\u00f3lo un recurso \u00fanico que tiene una capacidad limitada a una fase puede incluirse en una transacci\u00f3n global. Este error se produce si se utilizan dentro de una transacci\u00f3n global varios gestores de recursos que s\u00f3lo tienen posibilidad de una fase o si se utilizan dentro de una transacci\u00f3n global varias conexiones no compartidas de un solo gestor de recursos de este tipo.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.useraction=Modifique la aplicaci\u00f3n para que utilice un solo recurso que tiene una capacidad limitada a una fase o para que utilice recursos XAResources con capacidad de dos fases.
+
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE=WTRN0063E: Se ha producido un intento no permitido de comprometer un recurso con capacidad de una fase en recursos con capacidad de dos fases.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.explanation=El servicio de transacciones ha rechazado un intento de comprometer un recurso con capacidad de una fase con una transacci\u00f3n que ya implica otros recursos con capacidad de dos fases. El soporte del \u00faltimo participante (LPS) no est\u00e1 disponible o si lo est\u00e1, la aplicaci\u00f3n no acepta el riesgo heur\u00edstico que esto implicar\u00eda.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.useraction=Aseg\u00farese de que los recursos con capacidad de dos fases y de una fase no est\u00e9n relacionados en la misma transacci\u00f3n, o si LPS est\u00e1 disponible, vuelva a configurar la aplicaci\u00f3n para que acepte el riesgo de decisi\u00f3n heur\u00edstica que ello conllevar\u00eda.
+
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: Se ha producido un intento no permitido de comprometer un recurso con capacidad de una fase en una ramificaci\u00f3n de la transacci\u00f3n subordinada.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=El servicio de transacciones ha rechazado un intento de comprometer un recurso con capacidad de una fase en una ramificaci\u00f3n de la transacci\u00f3n subordinada distribuida. La transacci\u00f3n se retrotraer\u00e1.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Aseg\u00farese de que los recursos con capacidad de una fase no est\u00e9n involucrados en una ramificaci\u00f3n subordinada de una transacci\u00f3n distribuida.
+
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: No se conoce XAResource en esta transacci\u00f3n. El recurso era: {0}
+WTRN0065_XARESOURCE_NOT_KNOWN.explanation=El gestor de transacciones no ha podido extraer el objeto XAResource de la transacci\u00f3n activa porque no se hab\u00eda incluido anteriormente. Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
+
+WTRN0066_LOG_WRITE_ERROR=WTRN0066W: Se ha producido una excepci\u00f3n durante la operaci\u00f3n de grabaci\u00f3n en el archivo de anotaciones cronol\u00f3gicas de transacciones. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {0}
+WTRN0066_LOG_WRITE_ERROR.explanation=Se ha producido un error al grabar datos en el archivo de anotaciones cronol\u00f3gicas de transacciones. La transacci\u00f3n se retrotraer\u00e1.
+WTRN0066_LOG_WRITE_ERROR.useraction=Probablemente se trate de una anomal\u00eda de E/S. Examine el rastreo de pilas de la excepci\u00f3n para determinar la causa del problema.
+
+WTRN0067_PROG_MODEL_EXCEEDED=WTRN0067W: El servicio de transacci\u00f3n ha detectado un uso que excede el modelo de programaci\u00f3n de WebSphere Application
+WTRN0067_PROG_MODEL_EXCEEDED.explanation=Una aplicaci\u00f3n que se est\u00e1 ejecutando en este servidor est\u00e1 utilizando una funci\u00f3n del servicio de transacciones que no forma parte del modelo de programaci\u00f3n de aplicaciones.
+WTRN0067_PROG_MODEL_EXCEEDED.useraction=Considere si la aplicaci\u00f3n puede modificarse para utilizar s\u00f3lo la funcionalidad de transacciones que est\u00e1 soportada en el modelo de programaci\u00f3n de aplicaciones.
+
+WTRN0068_COMMIT_FAILED=WTRN0068E: Se ha producido un error de compromiso con la excepci\u00f3n {0}
+WTRN0068_COMMIT_FAILED.explanation=Se ha producido una excepci\u00f3n mientras se compromet\u00eda la transacci\u00f3n.
+WTRN0068_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0069_COMMIT_BAD_STATE=WTRN0069E: Se ha recibido el compromiso con un estado de transacci\u00f3n incorrecto {0}
+WTRN0069_COMMIT_BAD_STATE.explanation=La transacci\u00f3n no estaba en un estado v\u00e1lido cuando se ha solicitado realizar el proceso de compromiso.
+WTRN0069_COMMIT_BAD_STATE.useraction=CMSG0002
+
+WTRN0070_ONE_PHASE_COMMIT_FAILED=WTRN0070E: Se ha producido un error de compromiso de una fase con la excepci\u00f3n {0}
+WTRN0070_ONE_PHASE_COMMIT_FAILED.explanation=Se ha producido una excepci\u00f3n mientras se compromet\u00eda la transacci\u00f3n utilizando el protocolo de compromiso de una fase.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0071_ROLLBACK_FAILED=WTRN0071E: Se ha producido un error de retrotracci\u00f3n con la excepci\u00f3n {0}
+WTRN0071_ROLLBACK_FAILED.explanation=Se ha producido una excepci\u00f3n mientras se retrotra\u00eda la transacci\u00f3n.
+WTRN0071_ROLLBACK_FAILED.useraction=CMSG0002
+
+WTRN0072_ROLLBACK_BAD_STATE=WTRN0072E: Se ha recibido la retrotracci\u00f3n con un estado de transacci\u00f3n incorrecto {0}
+WTRN0072_ROLLBACK_BAD_STATE.explanation=La transacci\u00f3n no estaba en un estado v\u00e1lido cuando se ha solicitado realizar el proceso de retrotracci\u00f3n.
+WTRN0072_ROLLBACK_BAD_STATE.useraction=CMSG0002
+
+WTRN0073_FORGET_BAD_STATE=WTRN0073E: Se ha recibido el olvido con un estado de transacci\u00f3n incorrecto {0}
+WTRN0073_FORGET_BAD_STATE.explanation=La transacci\u00f3n no estaba en un estado v\u00e1lido cuando se ha solicitado realizar el proceso de olvido.
+WTRN0073_FORGET_BAD_STATE.useraction=CMSG0002
+
+WTRN0074_SYNCHRONIZATION_EXCEPTION=WTRN0074E: Se ha capturado una excepci\u00f3n de la operaci\u00f3n de sincronizaci\u00f3n {0}: {1}
+WTRN0074_SYNCHRONIZATION_EXCEPTION.explanation=Un objeto de sincronizaci\u00f3n ha creado una excepci\u00f3n cuando ha sido informado del estado actual de finalizaci\u00f3n de la transacci\u00f3n.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.useraction=CMSG0002
+
+WTRN0075_HEURISTIC_ON_COMMIT=WTRN0075W: La transacci\u00f3n {0} ha recibido una excepci\u00f3n heur\u00edstica al comprometer un recurso.
+WTRN0075_HEURISTIC_ON_COMMIT.explanation=El servicio de transacciones ha recibido una respuesta heur\u00edstica al distribuir el resultado del compromiso a un participante de la transacci\u00f3n.
+WTRN0075_HEURISTIC_ON_COMMIT.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido el resultado heur\u00edstico.
+
+WTRN0076_HEURISTIC_ON_ROLLBACK=WTRN0076W: La transacci\u00f3n {0} ha recibido una excepci\u00f3n heur\u00edstica al retrotraer un recurso.
+WTRN0076_HEURISTIC_ON_ROLLBACK.explanation=El servicio de transacciones ha recibido una respuesta heur\u00edstica al distribuir el resultado de la retrotracci\u00f3n a un participante de la transacci\u00f3n.
+WTRN0076_HEURISTIC_ON_ROLLBACK.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido el resultado heur\u00edstico.
+
+WTRN0077_OPERATOR_CANCELLED=WTRN0077W: Transacci\u00f3n {0} cancelada por el operador.
+WTRN0077_OPERATOR_CANCELLED.explanation=La entrega de resultado de la transacci\u00f3n identificada en el mensaje se ha abandonado a petici\u00f3n del operador.
+WTRN0077_OPERATOR_CANCELLED.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido esta anomal\u00eda.
+
+WTRN0078_START_FAILED=WTRN0078E: Se ha producido un error como consecuencia de un intento del gestor de transacciones para efectuar una llamada de inicio en un recurso de transacci\u00f3n. El c\u00f3digo de error era {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0078_START_FAILED.explanation=Se ha producido un error en el recurso de transacci\u00f3n cuando se le ha pedido que procesara una llamada de inicio. La transacci\u00f3n se retrotraer\u00e1.
+WTRN0078_START_FAILED.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0079_END_FAILED=WTRN0079E: Se ha producido un error como consecuencia de un intento del gestor de transacciones para efectuar una llamada de finalizaci\u00f3n en un recurso de transacci\u00f3n. El c\u00f3digo de error era {0}. A continuaci\u00f3n se indica el rastreo de pilas de la excepci\u00f3n: {1}
+WTRN0079_END_FAILED.explanation=Se ha producido un error en el recurso de transacci\u00f3n cuando se le ha pedido que procesara una llamada de finalizaci\u00f3n. La transacci\u00f3n se retrotraer\u00e1.
+WTRN0079_END_FAILED.useraction=Examine el c\u00f3digo de error para determinar la causa del problema.
+
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT=WTRN0080W: La transacci\u00f3n {0} ha excedido el tiempo de espera debido a la falta de actividad del cliente durante m\u00e1s de {1} segundos.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.explanation=El cliente ha estado inactivo durante m\u00e1s tiempo del establecido por el valor de tiempo de espera de inactividad.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.useraction=Descarte este mensaje si el cliente se ha desactivado dejando una transacci\u00f3n activa. Si el cliente sigue activo, determine si tiene que cambiar el valor de tiempo de espera de inactividad del cliente.
+
+WTRN0081_NULL_JTSXARESOURCE=WTRN0081W: El objeto JTAXAResource es nulo.
+WTRN0081_NULL_JTSXARESOURCE.explanation=Este es un error interno del sistema y est\u00e1 causado probablemente por una anomal\u00eda anterior.
+WTRN0081_NULL_JTSXARESOURCE.useraction=CMSG0002
+
+WTRN0082_OPERATOR_ROLLBACK=WTRN0082W: Transacci\u00f3n {0} retrotra\u00edda por el operador.
+WTRN0082_OPERATOR_ROLLBACK.explanation=La transacci\u00f3n identificada en el mensaje se ha retrotra\u00eddo por solicitud del operador.
+WTRN0082_OPERATOR_ROLLBACK.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido esta anomal\u00eda.
+
+WTRN0083_LOG_FULL_ERROR=WTRN0083W: Las anotaciones cronol\u00f3gicas de transacciones est\u00e1n llenas. Transacci\u00f3n {0} retrotra\u00edda.
+WTRN0083_LOG_FULL_ERROR.explanation=Los archivos de anotaciones cronol\u00f3gicas de transacciones est\u00e1n llenos de registros de las transacciones activas. Se retrotraer\u00e1n las transacciones adicionales de compromiso de dos fases.  Debe reiniciar el servidor para que contin\u00fae el trabajo adicional de compromiso de dos fases.
+WTRN0083_LOG_FULL_ERROR.useraction=Si este problema ocurre con frecuencia, reinicie el servidor con un tama\u00f1o de archivo mayor para el archivo de anotaciones cronol\u00f3gicas de transacciones.
+
+WTRN0084_RESOURCE_ENDING=WTRN0084W: Se ha producido un error de inclusi\u00f3n debido a la terminaci\u00f3n del adaptador de recursos.
+WTRN0084_RESOURCE_ENDING.explanation=Se ha rechazado la petici\u00f3n de incluir un recurso dentro de una transacci\u00f3n porque se va a cerrar el servidor o el adaptador de recursos.
+WTRN0084_RESOURCE_ENDING.useraction=Vuelva a ejecutar la transacci\u00f3n cuando est\u00e9 disponible el adaptador de recursos.
+
+WTRN0085_BAD_DISSOCIATE=WTRN0085E: No se ha encontrado una transacci\u00f3n de la que disociarse.
+WTRN0085_BAD_DISSOCIATE.explanation=Este es un error interno del sistema.
+WTRN0085_BAD_DISSOCIATE.useraction=CMSG0002
+
+
+WTRN0086_PREPARE_DIAG=WTRN0086I: Se ha encontrado una XAException durante la fase de preparaci\u00f3n de la transacci\u00f3n {0}. A continuaci\u00f3n encontrar\u00e1 los recursos locales.
+WTRN0086_PREPARE_DIAG.explanation=Este mensaje s\u00f3lo es s\u00f3lo informativo.
+WTRN0086_PREPARE_DIAG.useraction=Los administradores del sistema pueden utilizar esta informaci\u00f3n para recuperarse manualmente despu\u00e9s de los errores de transacci\u00f3n.
+
+WTRN0087_COMPLETION_DIAG=WTRN0087I: Se ha encontrado una XAException durante la fase de finalizaci\u00f3n de la transacci\u00f3n {0}. A continuaci\u00f3n encontrar\u00e1 los recursos locales.
+WTRN0087_COMPLETION_DIAG.explanation=Este mensaje s\u00f3lo es s\u00f3lo informativo.
+WTRN0087_COMPLETION_DIAG.useraction=Los administradores del sistema pueden utilizar esta informaci\u00f3n para recuperarse manualmente despu\u00e9s de los errores de transacci\u00f3n.
+
+WTRN0088_EXCEPTION_DIAG=WTRN0088I: {0} ha encontrado XAException con el c\u00f3digo de error {1}.
+WTRN0088_EXCEPTION_DIAG.explanation=Este mensaje s\u00f3lo es s\u00f3lo informativo.
+WTRN0088_EXCEPTION_DIAG.useraction=Los administradores del sistema pueden utilizar esta informaci\u00f3n para recuperarse manualmente despu\u00e9s de los errores de transacci\u00f3n.
+
+WTRN0089_PREPARED=WTRN0089I: {0}: Voto: {1}.
+WTRN0089_PREPARED.explanation=Este mensaje s\u00f3lo es s\u00f3lo informativo.
+WTRN0089_PREPARED.useraction=Los administradores del sistema pueden utilizar esta informaci\u00f3n para recuperarse manualmente despu\u00e9s de los errores de transacci\u00f3n.
+
+WTRN0090_COMPLETED=WTRN0090I: {0}: Voto: {1}. \
+Resultado: {2}.
+WTRN0090_COMPLETED.explanation=Este mensaje s\u00f3lo es s\u00f3lo informativo.
+WTRN0090_COMPLETED.useraction=Los administradores del sistema pueden utilizar esta informaci\u00f3n para recuperarse manualmente despu\u00e9s de los errores de transacci\u00f3n.
+
+WTRN0091_ASSOCIATE_FAILED=WTRN0091E: No se ha podido asociar el contexto de ejecuci\u00f3n. Xid: {0}, tiempo de espera {1}.
+WTRN0091_ASSOCIATE_FAILED.explanation=Este es un error interno del sistema.
+WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
+
+WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: Se ha encontrado una transacci\u00f3n incompleta (localid={0}) durante la fase de inmovilizaci\u00f3n del servidor; el servicio de transacci\u00f3n esperar\u00e1.
+WTRN0092_QUIESCE_UNFINISHED.explanation=El trabajo transaccional de entrada todav\u00eda no se ha completado. El servicio de transacci\u00f3n retardar\u00e1 la conclusi\u00f3n del servidor para que el originador pueda intentar completar la transacci\u00f3n.
+WTRN0092_QUIESCE_UNFINISHED.useraction=No se requiere ninguna acci\u00f3n.
+
+WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: El resultado no est\u00e1 disponible para la transacci\u00f3n subordinada {0}. La transacci\u00f3n se compromete heur\u00edsticamente.
+WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=El servicio de transacci\u00f3n no ha podido obtener el resultado de la transacci\u00f3n de su superior en el per\u00edodo de reintento configurado. La transacci\u00f3n se comprometer\u00e1 heur\u00edsticamente.
+WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido el resultado heur\u00edstico.
+
+WTRN0094_ROLLBACK_REPLAY_COMPLETION=WTRN0094W: El resultado no est\u00e1 disponible para la transacci\u00f3n subordinada {0}. La transacci\u00f3n se retrotrae heur\u00edsticamente.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.explanation=El servicio de transacci\u00f3n no ha podido obtener el resultado de la transacci\u00f3n de su superior en el per\u00edodo de reintento configurado. La transacci\u00f3n se retrotraer\u00e1 heur\u00edsticamente.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido el resultado heur\u00edstico.
+
+WTRN0095_MANUAL_REPLAY_COMPLETION=WTRN0095W: El resultado no est\u00e1 disponible para la transacci\u00f3n subordinada {0}. La transacci\u00f3n est\u00e1 esperando la intervenci\u00f3n del administrador para determinar su resultado.
+WTRN0095_MANUAL_REPLAY_COMPLETION.explanation=El servicio de transacci\u00f3n no ha podido obtener el resultado de la transacci\u00f3n de su superior en el per\u00edodo de reintento configurado. La transacci\u00f3n ahora est\u00e1 esperando a que el administrador establezca manualmente el resultado de la transacci\u00f3n.
+WTRN0095_MANUAL_REPLAY_COMPLETION.useraction=Determine si la transacci\u00f3n superior se ha realizado o no satisfactoriamente y, a continuaci\u00f3n, establezca manualmente el resultado de la transacci\u00f3n. Esto asegura que no se produzca da\u00f1o heur\u00edstico y que todos los datos de la aplicaci\u00f3n sean correctos.
+
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED=WTRN0096W: Puede que se haya producido una condici\u00f3n heur\u00edstica para la transacci\u00f3n {0}. La transacci\u00f3n se compromete heur\u00edsticamente.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.explanation=El servicio de transacciones ha detectado que la transacci\u00f3n especificada ha mezclado recursos con capacidad de una y dos fases. El servicio de transacciones ha pasado una petici\u00f3n de compromiso de una fase al \u00fanico recurso con capacidad de una fase, pero se ha producido un error en el servidor antes de que el compromiso terminase. Se desconoce si el recurso se ha comprometido correctamente.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.useraction=Se comprometer\u00e1n los recursos con capacidad de dos fases. Si el recurso con capacidad de una fase no ha podido procesar el compromiso, se habr\u00e1n producido da\u00f1os heur\u00edsticos y debe corregir todos los problemas de datos de aplicaci\u00f3n que hayan causado los resultados heur\u00edsticos.
+
+WTRN0097_HEURISTIC_MANUAL_COMPLETION=WTRN0097W: Se ha producido un resultado desconocido para la transacci\u00f3n {0}.  La transacci\u00f3n est\u00e1 esperando la intervenci\u00f3n del administrador para determinar su resultado.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.explanation=El servicio de transacciones ha detectado que la transacci\u00f3n especificada ha mezclado recursos con capacidad de una y dos fases. El servicio de transacciones ha pasado una petici\u00f3n de compromiso de una fase al \u00fanico recurso con capacidad de una fase, pero se ha producido un error en el servidor antes de que el compromiso terminase. Se desconoce si el recurso se ha comprometido correctamente.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.useraction=Determine si la petici\u00f3n de compromiso de una fase se ha realizado o no satisfactoriamente y, a continuaci\u00f3n, establezca manualmente el resultado de la transacci\u00f3n. Esto garantiza que no se produzcan da\u00f1os heur\u00edsticos y que todos los datos de la aplicaci\u00f3n sean correctos.
+
+WTRN0098_COMMIT_RA_UNINSTALLED=WTRN0098W: El resultado no est\u00e1 disponible para la transacci\u00f3n {0} porque se ha desinstalado el adaptador de recursos {1}. La transacci\u00f3n se compromete heur\u00edsticamente.
+WTRN0098_COMMIT_RA_UNINSTALLED.explanation=El servicio de transacci\u00f3n no ha podido obtener el resultado de la transacci\u00f3n del adaptador de recursos porque \u00e9ste se ha desinstalado. La transacci\u00f3n se comprometer\u00e1 heur\u00edsticamente.
+WTRN0098_COMMIT_RA_UNINSTALLED.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido el resultado heur\u00edstico.
+
+WTRN0099_ROLLBACK_RA_UNINSTALLED=WTRN0099W: El resultado no est\u00e1 disponible para la transacci\u00f3n {0} porque se ha desinstalado el adaptador de recursos {1}. La transacci\u00f3n se retrotrae heur\u00edsticamente.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.explanation=El servicio de transacci\u00f3n no ha podido obtener el resultado de la transacci\u00f3n del adaptador de recursos porque \u00e9ste se ha desinstalado. La transacci\u00f3n se retrotraer\u00e1 heur\u00edsticamente.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.useraction=Corrija los problemas de datos de la aplicaci\u00f3n que haya producido el resultado heur\u00edstico.
+
+WTRN0100_GENERIC_ERROR=WTRN0100E: {0}
+WTRN0100_GENERIC_ERROR.explanation=Este c\u00f3digo de mensaje se utiliza en los mensajes a los que todav\u00eda no se ha asignado un c\u00f3digo propio.
+WTRN0100_GENERIC_ERROR.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el texto del mensaje.
+
+WTRN0101_MANUAL_RA_UNINSTALLED=WTRN0101W: El resultado no est\u00e1 disponible para la transacci\u00f3n {0} porque se ha desinstalado el adaptador de recursos {1}. La transacci\u00f3n est\u00e1 esperando la intervenci\u00f3n del administrador para determinar su resultado.
+WTRN0101_MANUAL_RA_UNINSTALLED.explanation=El servicio de transacci\u00f3n no ha podido obtener el resultado de la transacci\u00f3n del adaptador de recursos porque \u00e9ste se ha desinstalado.
+WTRN0101_MANUAL_RA_UNINSTALLED.useraction=Determine si la transacci\u00f3n desde el originador de la transacci\u00f3n del adaptador de recursos se ha realizado o no satisfactoriamente y, a continuaci\u00f3n, establezca manualmente el resultado de la transacci\u00f3n. Esto asegura que no se produzca da\u00f1o heur\u00edstico y que todos los datos de la aplicaci\u00f3n sean correctos.
+
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED=WTRN0102W: Puede que se haya producido una condici\u00f3n heur\u00edstica para la transacci\u00f3n {0}. La transacci\u00f3n se retrotrae heur\u00edsticamente.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.explanation=El servicio de transacciones ha detectado que la transacci\u00f3n especificada ha mezclado recursos con capacidad de una y dos fases. El servicio de transacciones ha pasado una petici\u00f3n de compromiso de una fase al \u00fanico recurso con capacidad de una fase, pero se ha producido un error en el servidor antes de que el compromiso terminase. Se desconoce si el recurso se ha comprometido correctamente.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.useraction=Se retrotraer\u00e1n los recursos con capacidad de dos fases. Si el recurso con capacidad de una fase ha efectuado el compromiso correctamente, se habr\u00e1n producido da\u00f1os heur\u00edsticos y deber\u00e1 corregir todos los problemas de datos de aplicaci\u00f3n que haya causado el resultado heur\u00edstico.
+
+# Msgs 103 and 104 added by pok defect MD19484 for V5.1
+
+WTRN0103_RECOVERY_LOG_FAILED=WTRN0103E: El archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n se marcar\u00e1 como err\u00f3neo. [ {0} {1} ]
+WTRN0103_RECOVERY_LOG_FAILED.explanation=Se ha producido un error en el archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n y no se puede volver acceder a \u00e9l. El componente y la excepci\u00f3n vienen indicados en el mensaje.
+WTRN0103_RECOVERY_LOG_FAILED.useraction=Es necesario reiniciar el servidor para poder reparar el archivo de anotaciones cronol\u00f3gicas. Intente corregir las condiciones indicadas por la excepci\u00f3n en el mensaje.
+
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL=WTRN0104E: Detalles del error del archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n: {0}
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.explanation=Este mensaje se emite con el mensaje WTRN0103E para indicar los detalles del error del archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.useraction=Utilice la informaci\u00f3n de este mensaje junto con el mensaje WTRN0103E para corregir la condici\u00f3n que ha hecho que falle el archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+
+WTRN0105_CLEAN_SHUTDOWN=WTRN0105I: El servicio de transacciones se ha concluido satisfactoriamente sin ninguna transacci\u00f3n que necesite recuperaci\u00f3n.
+WTRN0105_CLEAN_SHUTDOWN.explanation=Es un suceso normal. Este mensaje s\u00f3lo es s\u00f3lo informativo.
+WTRN0105_CLEAN_SHUTDOWN.useraction=No se requiere ninguna acci\u00f3n.
+
+WTRN0106_JTADEMARCATION_DISALLOWED=WTRN0106I: No se permite la demarcaci\u00f3n JTA del cliente.
+WTRN0106_JTADEMARCATION_DISALLOWED.explanation=La demarcaci\u00f3n JTA se ha configurado como no permitida para esta aplicaci\u00f3n cliente.
+WTRN0106_JTADEMARCATION_DISALLOWED.useraction=Para permitir la demarcaci\u00f3n JTA, utilice el kit de herramientas del servidor de aplicaciones para establecer la propiedad que permite la demarcaci\u00f3n JTA en el descriptor de despliegue de cliente.
+
+WTRN0107_GENERIC_WARNING=WTRN0107W: {0}
+WTRN0107_GENERIC_WARNING.explanation=Este c\u00f3digo de mensaje se utiliza en los mensajes a los que todav\u00eda no se ha asignado su propio c\u00f3digo de mensaje.
+WTRN0107_GENERIC_WARNING.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el texto del mensaje.
+
+WTRN0108_GENERIC_INFOMSG=WTRN0108I: {0}
+WTRN0108_GENERIC_INFOMSG.explanation=Este c\u00f3digo de mensaje se utiliza en los mensajes a los que todav\u00eda no se ha asignado su propio c\u00f3digo de mensaje.
+WTRN0108_GENERIC_INFOMSG.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el texto del mensaje.
+
+WTRN0109_MBEAN_ACTIVATE=WTRN0109W: Se ha encontrado una excepci\u00f3n al activar el JMX MBean de transacciones: {0}
+WTRN0109_MBEAN_ACTIVATE.explanation=Se ha producido un error al intentar activa un JMX MBean para el servicio de transacciones. Aunque esto no impide que se inicie el servicio de transacciones, las funciones administrativas que necesiten acceder al servicio de transacciones dar\u00e1n error.
+WTRN0109_MBEAN_ACTIVATE.useraction=CMSG0002
+
+
+WTRN0110_BAD_CUSTOM_PROPERTY=WTRN0110W: {0} no es una propiedad personalizada v\u00e1lida del servicio de transacciones
+WTRN0110_BAD_CUSTOM_PROPERTY.explanation=Una propiedad personalizada que se ha especificado en la configuraci\u00f3n del servicio de transacciones para este servidor no es v\u00e1lida y se ha ignorado.
+WTRN0110_BAD_CUSTOM_PROPERTY.useraction=Corrija la configuraci\u00f3n de propiedades personalizadas del servicio de transacciones.
+
+WTRN0111_LOG_ALLOCATION=WTRN0111E: No se puede acceder o crear el archivo de anotaciones de recuperaci\u00f3n.  La configuraci\u00f3n de anotaciones cronol\u00f3gicas era {0}
+WTRN0111_LOG_ALLOCATION.explanation=El servicio de transacciones no ha podido acceder o crear las anotaciones cronol\u00f3gicas de recuperaci\u00f3n. Si las anotaciones cronol\u00f3gicas de recuperaci\u00f3n son para el servidor local, el servidor se detendr\u00e1. Si las anotaciones cronol\u00f3gicas de recuperaci\u00f3n son para un servidor recuperado de igual, la recuperaci\u00f3n se detendr\u00e1 y se asignar\u00e1 a otro servidor, y el servidor informante proseguir\u00e1 de forma normal.
+WTRN0111_LOG_ALLOCATION.useraction=Examine los mensajes relacionados para determinar la causa del problema. Aseg\u00farese de que el servidor pueda acceder a las anotaciones cronol\u00f3gicas de recuperaci\u00f3n o, si a\u00fan no se han creado, compruebe que hay suficiente espacio en disco disponible y que el servidor tiene los permisos de acceso correctos a los archivos y directorios especificados en los mensajes.
+
+WTRN0112_LOG_OPEN_FAILURE=WTRN0112E: Se ha producido un error inesperado al abrir las anotaciones cronol\u00f3gicas de recuperaci\u00f3n. La configuraci\u00f3n de anotaciones cronol\u00f3gicas era {0}
+WTRN0112_LOG_OPEN_FAILURE.explanation=El servicio de transacciones no ha podido abrir las anotaciones cronol\u00f3gicas de recuperaci\u00f3n. Si las anotaciones cronol\u00f3gicas de recuperaci\u00f3n son para el servidor local, el servidor se detendr\u00e1. Si las anotaciones cronol\u00f3gicas de recuperaci\u00f3n son para un servidor recuperado de igual, la recuperaci\u00f3n se detendr\u00e1 y se asignar\u00e1 a otro servidor, y el servidor informante proseguir\u00e1 de forma normal.
+WTRN0112_LOG_OPEN_FAILURE.useraction=Examine los mensajes relacionados para determinar la causa del problema. 
+
+WTRN0113_LOG_DOWNLEVEL=WTRN0113W: No es posible realizar el proceso de recuperaci\u00f3n de un servidor WebSphere igual de versiones anteriores y se ha detenido ({0})
+WTRN0113_LOG_DOWNLEVEL.explanation=El servicio de transacciones no ha podido recuperar el igual del servidor de aplicaciones especificado porque el formato de las anotaciones cronol\u00f3gicas es de un release anterior del producto que es incompatible con este servidor. Esta instancia de recuperaci\u00f3n de igual se detendr\u00e1 y asignar\u00e1 a otro servidor, y el servidor informante proseguir\u00e1 de forma normal. 
+WTRN0113_LOG_DOWNLEVEL.useraction=No se requiere ninguna acci\u00f3n del usuario. Dependiendo de la configuraci\u00f3n del cl\u00faster, si existe un \u00fanico miembro en un nivel de release concreto, la recuperaci\u00f3n de igual para ese release de servidor puede no ser posible si el formato de las anotaciones cronol\u00f3gicas se ha convertido en incompatible entre releases.
+
+WTRN0114_TRAN_RETRY_NEEDED=WTRN0114I: La transacci\u00f3n {0} no ha podido notificar a todos los recursos de su resultado.  Se volver\u00e1 a intentar en {1} segundos.
+WTRN0114_TRAN_RETRY_NEEDED.explanation=No se ha podido contactar con un gestor de recursos remoto durante el reinicio de la recuperaci\u00f3n. La operaci\u00f3n se seguir\u00e1 intentando a intervalos regulares.
+WTRN0114_TRAN_RETRY_NEEDED.useraction=Compruebe que el gestor de recursos est\u00e9 disponible.
+
+WTRN0115_NO_CFW_AVAILABLE=WTRN0115E: La configuraci\u00f3n de Channel Framework no est\u00e1 definida o no es v\u00e1lida para el soporte de WebServices Atomic Transactions (WSAT).
+WTRN0115_NO_CFW_AVAILABLE.explanation=El contenedor Web no est\u00e1 definido para utilizar Channel Framework o no se ha definido correctamente. WS-AT necesita utilizar Channel Framework para transferir contexto de transacciones entre servicios Web.
+WTRN0115_NO_CFW_AVAILABLE.useraction=Corrija o defina la configuraci\u00f3n de Channel Framework para el contenedor Web.
+
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: Se ha especificado una serie de configuraci\u00f3n de archivo de anotaciones cronol\u00f3gicas de transacci\u00f3n no v\u00e1lida {0}. El servicio de transacciones continuar\u00e1 sin el registro cronol\u00f3gico de recuperaci\u00f3n para el servidor WebSphere ({1}).
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=El nombre de directorio del archivo de anotaciones cronol\u00f3gicas de transacciones, establecido en el campo de directorio de anotaciones cronol\u00f3gicas de transacciones, no es v\u00e1lido. El formato deber\u00eda ser un directorio de archivo de anotaciones cronol\u00f3gicas plenamente cualificado, seguido opcionalmente por un punto y coma (';') y el tama\u00f1o del archivo de anotaciones cronol\u00f3gicas, donde M despu\u00e9s del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas indica megabytes y K indica kilobytes. El valor m\u00ednimo y por omisi\u00f3n del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas es 1 M.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Corrija la configuraci\u00f3n del directorio de anotaciones cronol\u00f3gicas de transacciones. Compruebe que se reinicie el servidor para habilitar el registro cronol\u00f3gico de recuperaci\u00f3n de transacciones.
+
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: Se ha especificado un tama\u00f1o de archivo de anotaciones cronol\u00f3gicas de transacciones no v\u00e1lido: {0}. El servicio de transacciones utilizar\u00e1 el tama\u00f1o de las anotaciones cronol\u00f3gicas por omisi\u00f3n de 1M para el servidor WebSphere ({1}).
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=El tama\u00f1o de archivo del archivo de anotaciones cronol\u00f3gicas de transacciones, establecido en el campo de directorio de anotaciones cronol\u00f3gicas de transacciones, no es v\u00e1lido. El formato deber\u00eda ser un directorio de archivo de anotaciones cronol\u00f3gicas plenamente cualificado, seguido opcionalmente por un punto y coma (';') y el tama\u00f1o del archivo de anotaciones cronol\u00f3gicas, donde M despu\u00e9s del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas indica megabytes y K indica kilobytes. El valor m\u00ednimo y por omisi\u00f3n del tama\u00f1o del archivo de anotaciones cronol\u00f3gicas es 1 M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Corrija la configuraci\u00f3n del directorio de anotaciones cronol\u00f3gicas de transacciones.
+
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: La propiedad personalizada obsoleta del servicio de transacciones {0} se ha encontrado en la configuraci\u00f3n del servicio de transacciones. 
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.explanation=Se ha especificado una propiedad personalizada obsoleta en la configuraci\u00f3n del servicio de transacciones de este servidor. La propiedad alterar\u00e1 temporalmente una propiedad general del servicio de transacciones correspondiente en la configuraci\u00f3n. La propiedad personalizada obsoleta se eliminar\u00e1 en un release futuro del producto.
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.useraction=Elimine de la configuraci\u00f3n la propiedad personalizada rechazada del servicio de transacciones y utilice el valor de propiedad general correspondiente, utilizando la consola administrativa.
+
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT=WTRN0119W: N\u00famero de mensajes de protocolo WS-TX que han fallado la autorizaci\u00f3n: {0}
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.explanation=Se ha recibido el n\u00famero de mensajes de protocolo WS-AT (Web Services Atomic Transactions) y WS-BA (Web Service Business Activities) indicado (por ejemplo, un mensaje de preparaci\u00f3n) sin las credenciales de seguridad esperadas.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.useraction=Aseg\u00farese de que el servidor est\u00e9 configurado correctamente para WS-AT y WS-BA en un entorno seguro.
+
+WTRN0120_INVALID_HA_LOGNAME=WTRN0120W: La especificaci\u00f3n del directorio de anotaciones de transacciones ;0 para el servidor {1} no es v\u00e1lida porque el servidor est\u00e1 en un cl\u00faster {0} que est\u00e1 habilitado para la alta disponibilidad (HA).
+WTRN0120_INVALID_HA_LOGNAME.explanation=Debe especificar una v\u00eda de acceso de directorio de anotaciones de transacciones v\u00e1lida para cada servidor en un cl\u00faster cuando el cl\u00faster est\u00e9 habilitado para la alta disponibilidad.
+WTRN0120_INVALID_HA_LOGNAME.useraction=Cambie el valor del archivo de anotaciones de transacciones por una ubicaci\u00f3n v\u00e1lida en el sistema de archivos.
+
+WTRN0121_INVALID_HA_CONFIG=WTRN0121E: La configuraci\u00f3n de alta disponibilidad (HA) no es v\u00e1lida. El servidor se detendr\u00e1.
+WTRN0121_INVALID_HA_CONFIG.explanation=Uno o varios servidores en un cl\u00faster que est\u00e1 habilitado para la alta disponibilidad no tienen definido un directorio de anotaciones de transacciones v\u00e1lido.
+WTRN0121_INVALID_HA_CONFIG.useraction=Examine los mensajes adjuntos para obtener informaci\u00f3n sobre los servidores afectados. Corrija los directorios de anotaciones de transacciones de estos servidores y, a continuaci\u00f3n, reinicie el cl\u00faster.
+
+WTRN0122_LOG_FREE_SPACE=WTRN0122W: El archivo de anotaciones de servicio de transacciones {0} ha utilizado {1} bytes de un total de {2}. Puede que deba aumentar el tama\u00f1o del archivo de anotaciones.
+WTRN0122_LOG_FREE_SPACE.explanation=Despu\u00e9s de una operaci\u00f3n de punto clave completada satisfactoriamente (durante la cual se eliminan entradas eliminadas y completadas de un archivo de anotaciones que ha alcanzado la m\u00e1xima capacidad), se ha detectado que el archivo de anotaciones sigue siendo mayor que el 75% de capacidad debido a la carga de trabajo transaccional activa actualmente. Si el archivo de anotaciones se llena, deber\u00e1 reiniciarse el servidor. \
+Tenga en cuenta que este mensajes s\u00f3lo aparecer despu\u00e9s de completarse satisfactoriamente una operaci\u00f3n de punto clave sobre un archivo de anotaciones; s\u00f3lo entonces puede calcularse la capacidad de las anotaciones actualmente en uso.
+WTRN0122_LOG_FREE_SPACE.useraction=Aumente el tama\u00f1o del archivo de anotaciones de transacciones.
+
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: Se ha especificado un prefijo URL de WS-Transaction HTTP(S) externo incorrecto: {0}
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.explanation=El prefijo URL de WS-Transaction HTTP(S) externo debe ser un URI v\u00e1lido.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.useraction=Especifique un prefijo URL de WS-Transaction HTTP(S) externo v\u00e1lido.
+
+WTRN0124_TIMED_OUT_TRANSACTION_STACK=WTRN0124I: Cuando se excede el tiempo de espera, la hebra con la que la transacci\u00f3n est\u00e1 asociada (o lo estaba recientemente) es {0}. El rastreo de pila de esta hebra cuando se excedi\u00f3 el tiempo de espera era: {1}
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.explanation=La pila, capturada cuando se excedi\u00f3 el tiempo de espera, se proporciona para ayudar en el diagn\u00f3stico y la depuraci\u00f3n de tiempos de espera de transacci\u00f3n.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.useraction=Examine el rastreo de pila para determinar qu\u00e9 proceso estaba en progreso cuando se excedi\u00f3 el tiempo de espera de la transacci\u00f3n.
+
+WTRN0125_COMMIT_PRIORITY=WTRN0125W: No se puede apuntar al m\u00f3dulo {0} en el nodo {1} porque el m\u00f3dulo especifica el soporte de Orden de compromisos de recursos, que no est\u00e1 soportado en el nodo
+WTRN0125_COMMIT_PRIORITY.explanation=El soporte de orden de compromisos de recursos s\u00f3lo est\u00e1 disponible en los nodos que tengan el release 7.0 o posterior.
+WTRN0125_COMMIT_PRIORITY.useraction=Instale el m\u00f3dulo en un servidor de aplicaciones con el release 7.0 (o posterior) o utilice el editor del descriptor de despliegue de la aplicaci\u00f3n en la herramienta de desarrollo de aplicaciones para eliminar los valores de Orden de compromisos de recursos antes de instalar el m\u00f3dulo.  Para ello, despl\u00e1cese a la secci\u00f3n Orden de compromisos de las extensiones de WebSphere y desestablezca la propiedad de compromiso de cada recurso transaccional.
+
+WTRN0126_COMMIT_PRIORITY_CLUSTER=WTRN0126W: No se puede desplegar la aplicaci\u00f3n {0} en el nodo {1} del cl\u00faster {2} porque la aplicaci\u00f3n especifica el soporte de Orden de compromisos de recursos, que no est\u00e1 soportado en el nodo
+WTRN0126_COMMIT_PRIORITY_CLUSTER.explanation=El soporte de orden de compromisos de recursos s\u00f3lo est\u00e1 disponible en los nodos que tengan el release 7.0 o posterior.  El nodo no se a\u00f1adir\u00e1 al cl\u00faster.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.useraction=Cree miembros de cl\u00faster en nodos que tengan instalado un servidor de aplicaciones con el release 7.0 (o posterior) o utilice el editor del descriptor de despliegue de la aplicaci\u00f3n en la herramienta de desarrollo de aplicaciones para eliminar los valores de Orden de compromisos de recursos antes de crear el miembro de cl\u00faster.   Para ello, despl\u00e1cese a la secci\u00f3n Orden de compromisos de las extensiones de WebSphere y desestablezca la propiedad de compromiso de cada recurso transaccional.
+
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION=WTRN0127E: Operaci\u00f3n bloqueada por la configuraci\u00f3n del tipo de pol\u00edtica.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.explanation=La operaci\u00f3n se ha bloqueado de acuerdo con la configuraci\u00f3n del tipo de pol\u00edtica en vigor.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.useraction=Aseg\u00farese de que la configuraci\u00f3n del tipo de pol\u00edtica sea adecuada para esta operaci\u00f3n.
+
+WTRN0128_WSTX_APP_START_FAILURE=WTRN0128E: No se puede iniciar la aplicaci\u00f3n {0} porque la aplicaci\u00f3n requiere especificaciones de WS Transaction que no est\u00e1n soportadas en todos los servidores del cl\u00faster.
+WTRN0128_WSTX_APP_START_FAILURE.explanation=La aplicaci\u00f3n est\u00e1 configurada con una pol\u00edtica de WebService que especifica especificaciones de WS Transaction que no est\u00e1n soportadas en todos los servidores del cl\u00faster.  Las peticiones de aplicaci\u00f3n o su recuperaci\u00f3n pueden dirigirse a cualquier servidor del cl\u00faster, para que todas las aplicaciones deban utilizar caracter\u00edsticas soportadas en todos los servidores.
+WTRN0128_WSTX_APP_START_FAILURE.useraction=Desinstale la aplicaci\u00f3n o modifique la configuraci\u00f3n de la pol\u00edtica de WS Transaction para que la aplicaci\u00f3n utilice caracter\u00edsticas soportadas.  O bien, actualice todos los nodos del cl\u00faster al release 7.0 o posterior.
+
+WTRN0129_WSTX_APP_START_FAILURE=WTRN0129W: El valor por omisi\u00f3n del nivel de especificaci\u00f3n de WS Transaction no es el adecuado para un cl\u00faster de varias versiones
+WTRN0129_WSTX_APP_START_FAILURE.explanation=El valor por omisi\u00f3n del nivel de especificaci\u00f3n de WS Transaction configurado para el servidor puede generar problemas de ejecuci\u00f3n, ya que no todos los servidores del cl\u00faster tienen el mismo release de Application Server.  Todos los servidores del cl\u00faster deben dar soporta al mismo nivel de especificaci\u00f3n, ya que las peticiones de aplicaci\u00f3n o su recuperaci\u00f3n pueden dirigirse a cualquier servidor.  Si los servidores dan soporte a distintos niveles de especificaci\u00f3n, el comportamiento de las aplicaciones puede cambiar dependiendo de qu\u00e9 servidor ejecuten.
+WTRN0129_WSTX_APP_START_FAILURE.useraction=Establezca el nivel de especificaci\u00f3n de WS Transaction por omisi\u00f3n en un valor que sea com\u00fan para todos los servidores del cl\u00faster.
+
+WTRN0130_BRANCH_COUPLING=WTRN0130W: No se puede apuntar al m\u00f3dulo {0} en el nodo {1} porque el m\u00f3dulo especifica el soporte de Acoplamiento de ramificaciones de recursos, que no est\u00e1 soportado en el nodo
+WTRN0130_BRANCH_COUPLING.explanation=El soporte de acoplamiento de ramificaciones de recursos s\u00f3lo est\u00e1 disponible en los nodos que tengan el release 8.0 o posterior.
+WTRN0130_BRANCH_COUPLING.useraction=Instale el m\u00f3dulo en un servidor de aplicaciones con el release 8.0 (o posterior) o utilice el editor del descriptor de despliegue de la aplicaci\u00f3n en la herramienta de desarrollo de aplicaciones para eliminar los valores de Acoplamiento de ramificaciones de recursos antes de instalar el m\u00f3dulo.  Para ello, despl\u00e1cese a la secci\u00f3n de acoplamiento de ramificaciones de las extensiones de WebSphere y desestablezca el acoplamiento de ramificaciones de cada recurso transaccional.
+
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: No se puede desplegar la aplicaci\u00f3n {0} en el nodo {1} del cl\u00faster {2} porque la aplicaci\u00f3n especifica el soporte de Acoplamiento de ramificaciones de recursos, que no est\u00e1 soportado en el nodo
+WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=El soporte de acoplamiento de ramificaciones de recursos s\u00f3lo est\u00e1 disponible en los nodos que tengan el release 8.0 o posterior. El nodo no se a\u00f1adir\u00e1 al cl\u00faster.
+WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Cree miembros de cl\u00faster en nodos que tengan instalado un servidor de aplicaciones con el release 8.0 (o posterior) o utilice el editor del descriptor de despliegue de la aplicaci\u00f3n en la herramienta de desarrollo de aplicaciones para eliminar los valores de Acoplamiento de ramificaciones de recursos antes de crear el miembro de cl\u00faster. Para ello, despl\u00e1cese a la secci\u00f3n de acoplamiento de ramificaciones de las extensiones de WebSphere y desestablezca el acoplamiento de ramificaciones de cada recurso transaccional.
+
+# 0 - servername
+# 1 - server uuid or server long name (zos)
+# 2 - server restart epoch value
+WTRN0132_RECOVERY_INITIATED=WTRN0132I: La recuperaci\u00f3n de la transacci\u00f3n para {0} se ha iniciado en el uuid de servidor {1} y el valor epoch de reinicio {2}
+WTRN0132_RECOVERY_INITIATED.explanation=El proceso de recuperaci\u00f3n de transacci\u00f3n se inicia para el servidor. Se informa del uuid del servidor y del valor de lectura a partir de los registros de transacciones existentes. Estos valores se utilizan para identificar los XID dudosos de los gestores de recursos xa que se pueden haber originado de instancias previas de este servidor. Si los registros de transacciones no exist\u00edan en el inicio del servidor, los valores de uuid y de salida de epoch son los que se escriben en los registros y son utilizados en el futuro por el servidor.
+WTRN0132_RECOVERY_INITIATED.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+WTRN0133_RECOVERY_COMPLETE=WTRN0133I: Se ha completado el proceso de recuperaci\u00f3n de transacci\u00f3n para este servidor
+WTRN0133_RECOVERY_COMPLETE.explanation=Se ha completado el proceso de recuperaci\u00f3n de transacci\u00f3n para este servidor. Se elimina de los registros toda la informaci\u00f3n de transacciones y gestores de recursos xa de instancias previas del servidor.
+WTRN0133_RECOVERY_COMPLETE.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - number of resource managers
+WTRN0134_RECOVERING_XARMS=WTRN0134I: Recuperando gestores de recursos XA {0} de los registros asociados de transacci\u00f3n
+WTRN0134_RECOVERING_XARMS.explanation=El servicio de transacci\u00f3n ha detectado que el servidor podr\u00eda haber terminado previamente con transacciones dudosas y el n\u00famero especificado de gestores de recursos XA anotados se contactar\u00e1n como parte del proceso de recuperaci\u00f3n.
+WTRN0134_RECOVERING_XARMS.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+WTRN0135_RECOVERING_NOTXNS=WTRN0135I: El servicio de transacci\u00f3n no est\u00e1 recuperando transacciones.
+WTRN0135_RECOVERING_NOTXNS.explanation=El servicio de transacci\u00f3n ha procesado los registros de recuperaci\u00f3n de transacci\u00f3n y ha determinado que no hay transacciones que requieran la recuperaci\u00f3n. Los recursos XA dudosos que se originan a partir de este servidor se retrotraen.
+WTRN0135_RECOVERING_NOTXNS.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction xid
+# 1 - transaction id
+# 2 - transaction status
+WTRN0136_RECOVERING_TRAN=WTRN0136I: Transacci\u00f3n recuperada del proceso {0} (tid={1}) con {2}
+WTRN0136_RECOVERING_TRAN.explanation=El servicio de transacci\u00f3n recupera la transacci\u00f3n determinada. El mensaje tambi\u00e9n indica el estado actual de la transacci\u00f3n durante la recuperaci\u00f3n. El valor tid se utiliza en otros mensajes de recuperaci\u00f3n y la consola de administraci\u00f3n para consultar la transacci\u00f3n.
+WTRN0136_RECOVERING_TRAN.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name 
+WTRN0137_REC_TXN_COMMIT=WTRN0137I: Transacci\u00f3n recuperada (tid={0}) al confirmar XID {1} con {2}
+WTRN0137_REC_TXN_COMMIT.explanation=El servicio de transacci\u00f3n recupera la transacci\u00f3n determinada y emite una confirmaci\u00f3n a un gestor de recursos.
+WTRN0137_REC_TXN_COMMIT.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0138_REC_TXN_ROLLBACK=WTRN0138I: Transacci\u00f3n recuperada (tid={0}) XID de retrotracci\u00f3n {1} con {2}
+WTRN0138_REC_TXN_ROLLBACK.explanation=El servicio de transacci\u00f3n est\u00e1 recuperando la transacci\u00f3n determinada y est\u00e1 emitiendo una retrotracci\u00f3n a un gestor de recursos.
+WTRN0138_REC_TXN_ROLLBACK.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0139_REC_TXN_FORGET=WTRN0139I: Transacci\u00f3n recuperada (tid={0}) al olvidar XID {1} con {2}
+WTRN0139_REC_TXN_FORGET.explanation=El servicio de transacci\u00f3n est\u00e1 recuperando la transacci\u00f3n determinada y est\u00e1 emitiendo un olvido a un gestor de recursos.
+WTRN0139_REC_TXN_FORGET.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0140_REC_TXN_COMMITED=WTRN0140I: Transacci\u00f3n recuperada (tid={0}) se ha confirmado el XID {1} correctamente con {2}
+WTRN0140_REC_TXN_COMMITED.explanation=El servicio de transacciones est\u00e1 recuperando la transacci\u00f3n determinada y ha confirmado correctamente un recurso.
+WTRN0140_REC_TXN_COMMITED.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0141_REC_TXN_COMMITERR=WTRN0141I: La confirmaci\u00f3n de la transacci\u00f3n recuperada (tid={0}) del xid {1} con {2} ha generado {3}
+WTRN0141_REC_TXN_COMMITERR.explanation=El servicio de transacci\u00f3n recupera la transacci\u00f3n determinada y al confirmar un recurso ha recibido el c\u00f3digo de respuesta tal cual se proporciona en el mensaje.
+WTRN0141_REC_TXN_COMMITERR.useraction=Examine el c\u00f3digo de respuesta para determinar si la confirmaci\u00f3n ha fallado y emprenda la acci\u00f3n apropiada. Si el c\u00f3digo indica un resultado heur\u00edstico, corrija los problemas de datos que se puedan haber producido.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0142_REC_TXN_ROLLED=WTRN0142I: La retrotracci\u00f3n de la transacci\u00f3n recuperada (tid={0}) de xid {1} se ha producido correctamente con {2}
+WTRN0142_REC_TXN_ROLLED.explanation=El servicio de transacci\u00f3n est\u00e1 recuperando la transacci\u00f3n determinada y ha retrotra\u00eddo correctamente un recurso.
+WTRN0142_REC_TXN_ROLLED.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0143_REC_TXN_ROLLEDERR=WTRN0143I: La retrotracci\u00f3n de la transacci\u00f3n recuperada (tid={0}) del xid {1} con {2} ha generado {3}
+WTRN0143_REC_TXN_ROLLEDERR.explanation=El servicio de transacci\u00f3n recupera la transacci\u00f3n determinada y al retrotraer un recurso ha recibido el c\u00f3digo de respuesta tal cual se proporciona en el mensaje.
+WTRN0143_REC_TXN_ROLLEDERR.useraction=Examine el c\u00f3digo de respuesta para determinar si la retrotracci\u00f3n ha fallado y emprenda la acci\u00f3n apropiada. Si el c\u00f3digo indica un resultado heur\u00edstico, corrija los problemas de datos que se puedan haber producido.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0144_REC_TXN_FORGOT=WTRN0144I: La transacci\u00f3n recuperada (tid={0}) ha olvidado el xid {1} correctamente con {2}
+WTRN0144_REC_TXN_FORGOT.explanation=El servicio de transacci\u00f3n recupera la transacci\u00f3n determinada y ha olvidado correctamente un recurso.
+WTRN0144_REC_TXN_FORGOT.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0145_REC_TXN_FORGETERR=WTRN0145I: El olvido de la transacci\u00f3n recuperada (tid={0}) de xid {1} con {2} ha generado {3}
+WTRN0145_REC_TXN_FORGETERR.explanation=El servicio de transacci\u00f3n recupera la transacci\u00f3n determinada y al olvidar un recurso ha recibido el c\u00f3digo de respuesta tal cual aparece en el mensaje.
+WTRN0145_REC_TXN_FORGETERR.useraction=Examine el c\u00f3digo de respuesta para determinar si ha fallado el olvido y emprenda la acci\u00f3n apropiada.
+
+# 0 - number of xids
+# 1 - resource manager name
+# 2 - number of xids
+WTRN0146_REC_XA_RECOVERED=WTRN0146I: Se han obtenido {0} xid de una recuperaci\u00f3n xa en {1} de los cuales {2} ser\u00e1n procesados por este servidor
+WTRN0146_REC_XA_RECOVERED.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado.
+WTRN0146_REC_XA_RECOVERED.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - restart epoch value
+WTRN0147_REC_XID_LATE=WTRN0147W: El xid recuperado {0} de {1} procede de una instancia de servidor reiniciado anteriormente con el valor de epoch {2}
+WTRN0147_REC_XID_LATE.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que se debe haber recuperado en el reinicio de servidor anterior. El valor de epoch indica la instancia de servidor cuando se asoci\u00f3 el xid originalmente con una transacci\u00f3n.
+WTRN0147_REC_XID_LATE.useraction=Examine el valor de epoch de este mensaje y comp\u00e1relo con el valor de epoch de reinicio del servidor actual en el mensaje WTRN0132.   Si se han reiniciado correctamente el servidor que interviene, compruebe los registros de las instancias previas de servidor junto con los registros actuales para determinar por qu\u00e9 no se ha procesado este xid durante la recuperaci\u00f3n. Por ejemplo, el gestor de recursos podr\u00eda no haber estado disponible cuando se ha reiniciado el servidor anteriormente.
+
+# 0 - xid
+# 1 - resource manager name
+WTRN0148_REC_XA_ROLLBACK=WTRN0148I: EL xid recuperado {0} de {1} - xid no tiene ninguna transacci\u00f3n asociada y se retrotraer\u00e1
+WTRN0148_REC_XA_ROLLBACK.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que no corresponde a una transacci\u00f3n anotada. El servicio de transacci\u00f3n retrotraer\u00e1 el XID como parte del proceso de recuperaci\u00f3n.
+WTRN0148_REC_XA_ROLLBACK.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - transaction id
+# 3 - transaction state
+WTRN0149_REC_XA_TRAN=WTRN0149I: El xid recuperado {0} de {1} - xid tiene la transacci\u00f3n asociada (tid={2}) con el estado anotado {3}
+WTRN0149_REC_XA_TRAN.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que corresponde a una transacci\u00f3n anotada. El servicio de transacci\u00f3n completar\u00e1 la transacci\u00f3n como parte del proceso de recuperaci\u00f3n.
+WTRN0149_REC_XA_TRAN.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - error code
+WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: La respuesta de la retrotracci\u00f3n ha recuperado el xid {0} de {1} - {2}
+WTRN0150_REC_XA_ROLLEDBACK.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que no corresponde a una transacci\u00f3n anotada. El servicio de transacci\u00f3n ha intentado retrotraer el xid como parte del proceso de recuperaci\u00f3n.
+WTRN0150_REC_XA_ROLLEDBACK.useraction=Examine el c\u00f3digo de error para determinar si ha fallado la retrotracci\u00f3n.
+
+# 0 - resource manager name
+WTRN0151_REC_XA_RECOVER=WTRN0151I: Preparando la llamada de una recuperaci\u00f3n xa en {0}
+WTRN0151_REC_XA_RECOVER.explanation=El servicio de transacci\u00f3n est\u00e1 preparando la llamada de una recuperaci\u00f3n xa en un gestor de recursos anotado abriendo una conexi\u00f3n y obteniendo un recurso xa. Si se ha obtenido correctamente un recurso xa, seguir\u00e1 otro mensaje que indica el n\u00famero de xids devueltos de una recuperaci\u00f3n xa. Si se produce un error al obtener una conexi\u00f3n o un recurso xa, habr\u00e1 mensajes adicionales que indicar\u00e1n el motivo.
+WTRN0151_REC_XA_RECOVER.useraction=Si algunos mensajes posteriores indican una anomal\u00eda al obtener una conexi\u00f3n o un recurso xa, determine la causa y emprenda la acci\u00f3n apropiada.
+
+WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Se ha detectado una configuraci\u00f3n de HA inusual.
+WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA est\u00e1 habilitado para este cl\u00faster, pero el gestor de HA est\u00e1 inhabilitado.
+WTRN0152_UNUSUAL_HA_CONFIG.useraction=No es necesario realizar ninguna acci\u00f3n si esta es la configuraci\u00f3n deseada. En caso contrario, corrija la configuraci\u00f1on de HA.
+
+# --------------------------------
+# WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

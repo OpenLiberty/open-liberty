@@ -1,0 +1,205 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.common/resources/com/ibm/ws/jaxws/internal/resources/JaxWsCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS Common Code
+#RANGE 0000 - 0099
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Deployment Descriptor validation messages ------------------------
+
+warn.service.ref.dd.service.interface.not.set=CWWKW0000W: A telep\u00edt\u00e9si le\u00edr\u00f3 megadja a(z) {0} service-ref elemet, ami nem tartalmazza a service-interface elemet. \u00cdgy a szolg\u00e1ltat\u00e1shivatkoz\u00e1s figyelmen k\u00edv\u00fcl marad.
+warn.service.ref.dd.service.interface.not.set.explanation=A service-ref elemnek  tartalmaznia kell service-interface elemet.
+warn.service.ref.dd.service.interface.not.set.useraction=Vegye fel a service-interface elemet, \u00e9s telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+warn.service.ref.dd.service.interface.class.not.found=CWWKW0001W: A telep\u00edt\u00e9si le\u00edr\u00f3 megadja a(z) {0} service-ref elemet, de a service-interface elemben megadott {1} oszt\u00e1ly nem tal\u00e1lhat\u00f3. \u00cdgy a szolg\u00e1ltat\u00e1shivatkoz\u00e1s figyelmen k\u00edv\u00fcl marad.
+warn.service.ref.dd.service.interface.class.not.found.explanation=A service-interface elem olyan oszt\u00e1lyt ad meg, ami nem tal\u00e1lhat\u00f3 vagy nem t\u00f6lthet\u0151 be.
+warn.service.ref.dd.service.interface.class.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly megtal\u00e1lhat\u00f3 az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1n.
+
+warn.service.ref.dd.service.interface.wrong.value=CWWKW0002W: A telep\u00edt\u00e9si le\u00edr\u00f3 megadja a(z) {0} service-ref elemet, de a service-interface elemben megadott {1} oszt\u00e1ly nem a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1lya. \u00cdgy a szolg\u00e1ltat\u00e1shivatkoz\u00e1s figyelmen k\u00edv\u00fcl marad.
+warn.service.ref.dd.service.interface.wrong.value.explanation=A service-interface elemnek a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t kell megadnia.
+warn.service.ref.dd.service.interface.wrong.value.useraction=A javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t adja meg a service-interface elemben.
+
+# Merge mismatch check messages ------------------------------------
+
+error.service.interface.mismatch.for.member=CWWKW0003E: A(z) {2} oszt\u00e1ly {1} tagj\u00e1nak {0} szolg\u00e1ltat\u00e1shivatkoz\u00e1sa a(z) {3} service-interface oszt\u00e1lyt adja meg. Azonban tov\u00e1bbi metaadatok is l\u00e9teznek a szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz, amelyek a(z) {4} service-interface oszt\u00e1lyt adj\u00e1k meg.
+error.service.interface.mismatch.for.member.explanation=Az azonos szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz tartoz\u00f3, de t\u00f6bb helyen deklar\u00e1lt service-interface oszt\u00e1lynak ugyanannak kell lennie. 
+error.service.interface.mismatch.for.member.useraction=Jav\u00edtsa a szolg\u00e1ltat\u00e1shivatkoz\u00e1st, hogy ugyanazt a service-interface oszt\u00e1lyt azonos\u00edtsa.
+
+error.service.interface.mismatch.for.class=CWWKW0004E: A(z) {0} oszt\u00e1ly szint\u0171 hivatkoz\u00e1s a(z) {1} service-interface oszt\u00e1lyt adja meg. Azonban tov\u00e1bbi metaadatok is l\u00e9teznek a szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz, amelyek a(z) {2} service-interface oszt\u00e1lyt adj\u00e1k meg.
+error.service.interface.mismatch.for.class.explanation=Az azonos szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz tartoz\u00f3, de t\u00f6bb helyen deklar\u00e1lt service-interface oszt\u00e1lynak ugyanannak kell lennie. 
+error.service.interface.mismatch.for.class.useraction=Jav\u00edtsa a szolg\u00e1ltat\u00e1shivatkoz\u00e1st, hogy ugyanazt a service-interface oszt\u00e1lyt azonos\u00edtsa.
+
+error.service.ref.type.mismatch.for.member=CWWKW0005E: A(z) {2} oszt\u00e1ly {1} tagj\u00e1nak {0} szolg\u00e1ltat\u00e1shivatkoz\u00e1sa a(z) {3} service-ref-type oszt\u00e1lyt adja meg. Azonban tov\u00e1bbi metaadatok is l\u00e9teznek a szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz, amelyek a(z) {4} service-ref-type oszt\u00e1lyt adj\u00e1k meg.
+error.service.ref.type.mismatch.for.member.explanation=Az azonos szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz tartoz\u00f3, de t\u00f6bb helyen deklar\u00e1lt service-ref-type oszt\u00e1lynak ugyanannak kell lennie. 
+error.service.ref.type.mismatch.for.member.useraction=Jav\u00edtsa a szolg\u00e1ltat\u00e1shivatkoz\u00e1st, hogy ugyanazt a service-ref-type oszt\u00e1lyt azonos\u00edtsa.
+
+error.service.ref.type.mismatch.for.class=CWWKW0006E: A(z) {0} oszt\u00e1ly szint\u0171 hivatkoz\u00e1s a(z) {1} service-ref-type oszt\u00e1lyt adja meg. Azonban tov\u00e1bbi metaadatok is l\u00e9teznek a szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz, amelyek a(z) {2} service-ref-type oszt\u00e1lyt adj\u00e1k meg.
+error.service.ref.type.mismatch.for.class.explanation=Az azonos szolg\u00e1ltat\u00e1shivatkoz\u00e1shoz tartoz\u00f3, de t\u00f6bb helyen deklar\u00e1lt service-ref-type oszt\u00e1lynak ugyanannak kell lennie. 
+error.service.ref.type.mismatch.for.class.useraction=Jav\u00edtsa a szolg\u00e1ltat\u00e1shivatkoz\u00e1st, hogy ugyanazt a service-ref-type oszt\u00e1lyt azonos\u00edtsa.
+
+# Merge validation messages ------------------------------------------
+
+error.service.ref.class.level.merge.service.ref.type.absent=CWWKW0007E: A @WebServiceRef vagy a @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban, de a type attrib\u00fatum nem azonos\u00edthat\u00f3. 
+error.service.ref.class.level.merge.service.ref.type.absent.explanation=Ha megtal\u00e1lhat\u00f3 a @WebServiceRef vagy a @Resource annot\u00e1ci\u00f3 az oszt\u00e1ly szintj\u00e9n, akkor azonos\u00edtani kell a type attrib\u00fatumot. Ez megadhat\u00f3 a @WebServiceRef annot\u00e1ci\u00f3n bel\u00fcl vagy a service-ref-type elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.class.level.merge.service.ref.type.absent.useraction=Adja meg a hi\u00e1nyz\u00f3 type attrib\u00fatumot.
+
+error.service.ref.class.level.merge.service.interface.wrong.value=CWWKW0008E: A @WebServiceRef vagy a @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban, de az azonos\u00edtott value attrib\u00fatum a(z) {1} oszt\u00e1ly, ami nem a javax.xml.ws.Service aloszt\u00e1lya. 
+error.service.ref.class.level.merge.service.interface.wrong.value.explanation=A value attrib\u00fatumnak a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1nak kell lennie, kiv\u00e9ve, ha az azonos\u00edtott type attrib\u00fatum Service Endpoint Interface (SEI) besz\u00far\u00e1st jelez. A value attrib\u00fatum megadhat\u00f3 az annot\u00e1ci\u00f3n bel\u00fcl vagy a service-interface elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.class.level.merge.service.interface.wrong.value.useraction=A javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t adja meg.
+
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0009E: A @WebServiceRef vagy az @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban, de az azonos\u00edtott type \u00e9s value attrib\u00fatum nem ugyanaz az oszt\u00e1ly. 
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=Ha az annot\u00e1ci\u00f3 szolg\u00e1ltat\u00e1st\u00edpus besz\u00far\u00e1st jelez \u00e9s a value attrib\u00fatum nem a javax.xml.ws.Service oszt\u00e1lyt adja meg, akkor a type \u00e9s a value attrib\u00fatumnak ugyanannak az oszt\u00e1lynak kell lennie. A value attrib\u00fatum megadhat\u00f3 az annot\u00e1ci\u00f3n bel\u00fcl vagy a service-interface elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban, a type attrib\u00fatum pedig a @WebServiceRef annot\u00e1ci\u00f3n bel\u00fcl vagy a service-ref-type elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=Ugyanazt az oszt\u00e1lyt adja meg a value \u00e9s a type attrib\u00fatumban.
+
+error.service.ref.member.level.merge.service.ref.type.not.inferred=CWWKW0010E: A @WebServiceRef vagy a @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de a besz\u00far\u00e1s t\u00edpusa nem  \u00e1llap\u00edthat\u00f3 meg az oszt\u00e1lytag t\u00edpus\u00e1b\u00f3l vagy a type attrib\u00fatumb\u00f3l. 
+error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=Ha az oszt\u00e1lytag t\u00edpusa Object, akkor a type attrib\u00fatum megad\u00e1sa k\u00f6telez\u0151 \u00e9s nem lehet Object. Az oszt\u00e1lytag t\u00edpusa megadhat\u00f3 a @WebServiceRef annot\u00e1ci\u00f3n bel\u00fcl vagy a service-ref-type elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=Az Object-t\u0151l elt\u00e9r\u0151 type attrib\u00fatumot adjon meg.
+
+error.service.ref.member.level.merge.service.ref.type.not.compatible=CWWKW0011E: A @WebServiceRef vagy a @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de az azonos\u00edtott type attrib\u00fatum a(z) {2} oszt\u00e1ly, amely nem kompatibilis az annot\u00e1lt tag {3} oszt\u00e1ly\u00e1val. 
+error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=A type attrib\u00fatumnak kompatibilisnek kell lennie az oszt\u00e1lytag t\u00edpus\u00e1val. A type attrib\u00fatum megadhat\u00f3 a @WebServiceRef annot\u00e1ci\u00f3n bel\u00fcl vagy a service-ref-type elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=Megfelel\u0151 type attrib\u00fatumot adjon meg, ami kompatibilis az oszt\u00e1lytag t\u00edpus\u00e1val.
+
+error.service.ref.member.level.merge.service.interface.wrong.value=CWWKW0012E: A @WebServiceRef vagy a @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de az azonos\u00edtott value attrib\u00fatum a(z) {2} oszt\u00e1ly, ami nem a javax.xml.ws.Service aloszt\u00e1lya.
+error.service.ref.member.level.merge.service.interface.wrong.value.explanation=A value attrib\u00fatumnak a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1nak kell lennie, kiv\u00e9ve, ha az azonos\u00edtott type attrib\u00fatum Service Endpoint Interface (SEI) besz\u00far\u00e1st jelez. A value attrib\u00fatum megadhat\u00f3 az annot\u00e1ci\u00f3n bel\u00fcl vagy a service-interface elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.member.level.merge.service.interface.wrong.value.useraction=A javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t adja meg.
+
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0013E: A @WebServiceRef vagy az @Resource annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de az azonos\u00edtott type \u00e9s value attrib\u00fatum nem ugyanaz az oszt\u00e1ly. 
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=Ha az annot\u00e1ci\u00f3 szolg\u00e1ltat\u00e1st\u00edpus besz\u00far\u00e1st jelez \u00e9s a value attrib\u00fatum nem a javax.xml.ws.Service oszt\u00e1lyt adja meg, akkor a type \u00e9s a value attrib\u00fatumnak ugyanannak az oszt\u00e1lynak kell lennie. A value attrib\u00fatum megadhat\u00f3 az annot\u00e1ci\u00f3n bel\u00fcl vagy a service-interface elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban, a type attrib\u00fatum pedig a @WebServiceRef annot\u00e1ci\u00f3n bel\u00fcl vagy a service-ref-type elemmel a telep\u00edt\u00e9si le\u00edr\u00f3ban.
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=Ugyanazt az oszt\u00e1lyt adja meg a value \u00e9s a type attrib\u00fatumban.
+
+# Annotation validation messages ----------------------------------------
+
+error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: A @WebServiceRef annot\u00e1ci\u00f3 hib\u00e1san adta meg a lookup attrib\u00fatumot m\u00e1s attrib\u00fatumok mellett.
+error.service.ref.annotation.lookup.redundant.attributes.explanation=Ha a @WebServiceRef annot\u00e1ci\u00f3ban meg van adva a lookup attrib\u00fatum, akkor tov\u00e1bbi attrib\u00fatumok nem megengedettek.
+error.service.ref.annotation.lookup.redundant.attributes.useraction=T\u00e1vol\u00edtsa el vagy a lookup attrib\u00fatumot, vagy a t\u00f6bbi attrib\u00fatumot.
+
+error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: A @WebServiceRef annot\u00e1ci\u00f3 a(z) {0} oszt\u00e1lyban nem ad meg \u00e9rt\u00e9ket a name vagy a type attrib\u00fatumnak. 
+error.service.ref.class.level.annotation.name.or.type.absent.explanation=Ha a @WebServiceRef annot\u00e1ci\u00f3 az oszt\u00e1ly szintj\u00e9n tal\u00e1lhat\u00f3, akkor meg kell adni a name \u00e9s a type attrib\u00fatumot.
+error.service.ref.class.level.annotation.name.or.type.absent.useraction=Adja meg a hi\u00e1nyz\u00f3 name vagy type attrib\u00fatumot.
+
+error.service.ref.class.level.annotation.wrong.value=CWWKW0016E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban. A value attrib\u00fatum azonban vagy nincs megadva, vagy a(z) {1} oszt\u00e1lyban van megadva, ami nem a javax.xml.ws.Service aloszt\u00e1lya. 
+error.service.ref.class.level.annotation.wrong.value.explanation=A @WebServiceRef annot\u00e1ci\u00f3 value attrib\u00fatum\u00e1nak a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t kell megadnia, kiv\u00e9ve, ha az azonos\u00edtott type attrib\u00fatum Service Endpoint Interface (SEI) besz\u00far\u00e1st jelez.
+error.service.ref.class.level.annotation.wrong.value.useraction=A javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t adja meg a value attrib\u00fatumban.
+
+error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {0} oszt\u00e1lyban, de a type \u00e9s a value attrib\u00fatum nem ugyanazt az oszt\u00e1lyt adja meg.
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Ha a @WebServiceRef annot\u00e1ci\u00f3 egy szolg\u00e1ltat\u00e1s t\u00edpus\u00fa besz\u00far\u00e1st jel\u00f6l, \u00e9s a 'value' attrib\u00fatum nem a javax.xml.ws.Service oszt\u00e1lyt adja meg, akkor a type \u00e9s a value attrib\u00fatum \u00e1ltal megadott oszt\u00e1lyoknak egyezni\u00fck kell.
+error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Ugyanazt az oszt\u00e1lyt adja meg a value \u00e9s a type attrib\u00fatumban.
+
+error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} met\u00f3dus\u00e1ban, de a met\u00f3dus neve nem k\u00f6veti a szabv\u00e1ny JavaBean meg\u00e1llapod\u00e1sokat.
+error.service.ref.member.level.annotation.wrong.method.name.explanation=JAX-WS szolg\u00e1ltat\u00e1shivatkoz\u00e1sok eset\u00e9n ha meg van adva a @WebServiceRef annot\u00e1ci\u00f3 egy met\u00f3dusban, akkor a met\u00f3dus nev\u00e9nek k\u00f6vetnie kell a szabv\u00e1ny JavaBean meg\u00e1llapod\u00e1sokat, p\u00e9ld\u00e1ul: setHelloWorld vagy getHelloWorld.
+error.service.ref.member.level.annotation.wrong.method.name.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a met\u00f3dus neve k\u00f6vesse a szabv\u00e1ny JavaBean meg\u00e1llapod\u00e1sokat.
+
+error.service.ref.member.level.annotation.type.not.inferred=CWWKW0019E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de a besz\u00far\u00e1s t\u00edpusa nem \u00e1llap\u00edthat\u00f3 meg a type attrib\u00fatumb\u00f3l vagy az oszt\u00e1lytag t\u00edpus\u00e1b\u00f3l.
+error.service.ref.member.level.annotation.type.not.inferred.explanation=Ha az oszt\u00e1lytag t\u00edpusa Object, akkor a @WebServiceRef annot\u00e1ci\u00f3 type attrib\u00fatum\u00e1nak megad\u00e1sa k\u00f6telez\u0151 \u00e9s nem lehet Object.
+error.service.ref.member.level.annotation.type.not.inferred.useraction=Az Object-t\u0151l elt\u00e9r\u0151 type attrib\u00fatumot adjon meg.
+
+error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de a type attrib\u00fatumban megadott {2} oszt\u00e1ly nem kompatibilis az annot\u00e1lt tag {3} oszt\u00e1ly\u00e1val.
+error.service.ref.member.level.annotation.type.not.compatible.explanation=A type attrib\u00fatumnak kompatibilisnek kell lennie az oszt\u00e1lytag t\u00edpus\u00e1val.
+error.service.ref.member.level.annotation.type.not.compatible.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a type attrib\u00fatum kompatibilis legyen az oszt\u00e1lytag t\u00edpus\u00e1val.
+
+error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban. A value attrib\u00fatum azonban vagy nincs megadva, vagy a(z) {2} oszt\u00e1lyban van megadva, ami nem a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1lya. 
+error.service.ref.member.level.annotation.wrong.value.explanation=A @WebServiceRef annot\u00e1ci\u00f3 value attrib\u00fatum\u00e1nak a javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t kell megadnia, kiv\u00e9ve, ha az azonos\u00edtott type attrib\u00fatum Service Endpoint Interface (SEI) besz\u00far\u00e1st jelez.
+error.service.ref.member.level.annotation.wrong.value.useraction=A javax.xml.ws.Service oszt\u00e1ly aloszt\u00e1ly\u00e1t adja meg a value attrib\u00fatumban.
+
+error.service.ref.member.level.annotation.value.and.type.not.same=CWWKW0022E: A @WebServiceRef annot\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} tagj\u00e1ban, de a type \u00e9s a value attrib\u00fatum nem ugyanazt az oszt\u00e1lyt adja meg.
+error.service.ref.member.level.annotation.value.and.type.not.same.explanation=Ha a @WebServiceRef annot\u00e1ci\u00f3 egy szolg\u00e1ltat\u00e1s t\u00edpus\u00fa besz\u00far\u00e1st jel\u00f6l, \u00e9s a value attrib\u00fatum nem a javax.xml.ws.Service oszt\u00e1lyt adja meg, akkor a type \u00e9s a value attrib\u00fatum \u00e1ltal megadott oszt\u00e1lyoknak egyezni\u00fck kell.
+error.service.ref.member.level.annotation.value.and.type.not.same.useraction=Ugyanazt az oszt\u00e1lyt adja meg a value \u00e9s a type attrib\u00fatumban.
+
+
+#{0}=handlerChain file name
+error.no.handlerChainFile.found=CWWKW0030E: A(z) {0} kezel\u0151l\u00e1nc-meghat\u00e1roz\u00e1s f\u00e1jl nem tal\u00e1lhat\u00f3.
+error.no.handlerChainFile.found.explanation=Nem siker\u00fclt megtal\u00e1lni a kezel\u0151l\u00e1nc-meghat\u00e1roz\u00e1s f\u00e1jlt a handlerChain annot\u00e1ci\u00f3 file attrib\u00fatum\u00e1b\u00f3l.
+error.no.handlerChainFile.found.useraction=L\u00e9tez\u0151 kezel\u0151l\u00e1nc-meghat\u00e1roz\u00e1s f\u00e1jl el\u00e9r\u00e9si \u00fatj\u00e1t adja meg. Az el\u00e9r\u00e9si \u00fat lehet abszol\u00fat f\u00e1jl el\u00e9r\u00e9si \u00fat vagy a handlerChain annot\u00e1ci\u00f3val rendelkez\u0151 oszt\u00e1lyhoz k\u00e9pest relat\u00edv.
+
+#{0}=handlerChain file content
+error.invalid.handlerChainFile.content=CWWKW0031E: A handlerChain f\u00e1jl gy\u00f6k\u00e9releme nem \u00e9rv\u00e9nyes: {0}.
+error.invalid.handlerChainFile.content.explanation=A gy\u00f6k\u00e9relem n\u00e9vtartom\u00e1nya nem "http://java.sun.com/xml/ns/javaee" vagy a gy\u00f6k\u00e9relem helyi neve nem "handler-chain".
+error.invalid.handlerChainFile.content.useraction=M\u00f3dos\u00edtsa a gy\u00f6k\u00e9relem n\u00e9vtartom\u00e1ny\u00e1t a "http://java.sun.com/xml/ns/javaee" \u00e9rt\u00e9kre vagy a gy\u00f6k\u00e9relem helyi nev\u00e9t a "handler-chain" \u00e9rt\u00e9kre, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+#{0}=the unknown exception
+error.unknown.exception=CWWKW0032E: A kezel\u0151l\u00e1nc-f\u00e1jl nem \u00e9rtelmezhet\u0151 az al\u00e1bbi kiv\u00e9tel miatt: {0}.
+error.unknown.exception.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a kezel\u0151l\u00e1nc-f\u00e1jl \u00e9rtelmez\u00e9sekor.
+error.unknown.exception.useraction=Ellen\u0151rizze, hogy a kezel\u0151f\u00e1jl form\u00e1tuma helyes, valamint tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg az FFDC napl\u00f3t a kiszolg\u00e1l\u00f3 megfelel\u0151 logs/ffdc k\u00f6nyvt\u00e1r\u00e1ban.
+
+#{0}=the qualified name of the class which the handlerChain annotation is on.
+error.handlerChain.annotation.without.file=CWWKW0033E: A(z) {0} oszt\u00e1ly handlerChain annot\u00e1ci\u00f3ja nem rendelkezik file tulajdons\u00e1ggal.
+error.handlerChain.annotation.without.file.explanation=A file tulajdons\u00e1g k\u00f6telez\u0151 a handlerChain annot\u00e1ci\u00f3ban.
+error.handlerChain.annotation.without.file.useraction=Adja meg a  f\u00e1jlnevet a handlerChain annot\u00e1ci\u00f3ban.
+
+#{0}=the IOException exception
+warn.catalog.load.exception=CWWKW0034E: A JAX-WS katal\u00f3gusf\u00e1jl nem t\u00f6lthet\u0151 be az al\u00e1bbi kiv\u00e9tel miatt: {0}.
+warn.catalog.load.exception.explanation=I/O kiv\u00e9tel t\u00f6rt\u00e9nt a katal\u00f3gusf\u00e1jl bet\u00f6lt\u00e9sekor.
+warn.catalog.load.exception.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JAX-WS katal\u00f3gusf\u00e1jl l\u00e9tezik \u00e9s szintaxisa megfelel az XML Catalog specifik\u00e1ci\u00f3nak.
+
+#{0}=service impl class
+warn.no.wsdl.generate=CWWKW0035E: A(z) {0} megval\u00f3s\u00edt\u00e1si oszt\u00e1ly nem tartalmaz wsdlLocation elemet vagy SOAP/1.1 annot\u00e1ci\u00f3t. Ez\u00e9rt nem \u00e1ll\u00edthat\u00f3 el\u0151 WSDL meghat\u00e1roz\u00e1s.
+warn.no.wsdl.generate.explanation=A webszolg\u00e1ltat\u00e1s nem tartalmaz wsdlLocation elemet vagy SOAP/1.1 annot\u00e1ci\u00f3t.
+warn.no.wsdl.generate.useraction=Adjon meg vagy wsdlLocation elemet, vagy SOAP/1.1 annot\u00e1ci\u00f3t a webszolg\u00e1ltat\u00e1snak.
+
+#{0}=IOException_message
+error.write.wsdl.stream=CWWKW0036E: Az al\u00e1bbi ok miatt nem lehet ki\u00edrni a teljes WSDL meghat\u00e1roz\u00e1st az adatfolyamba: {0}.
+error.write.wsdl.stream.explanation=I/O kiv\u00e9tel t\u00f6rt\u00e9nt a teljes WSDL meghat\u00e1roz\u00e1s adatfolyamba t\u00f6rt\u00e9n\u0151 ki\u00edr\u00e1sakor.
+error.write.wsdl.stream.useraction=Adjon meg vagy wsdlLocation elemet, vagy SOAP/1.1 annot\u00e1ci\u00f3t a webszolg\u00e1ltat\u00e1snak. 
+
+error.no.wsdl.per.specification=CWWKW0037E: Nem \u00e1ll\u00edthat\u00f3 el\u0151 a JAX-WS 2.2 szabv\u00e1nynak megfelel\u0151 WSDL.
+error.no.wsdl.per.specification.explanation=A webszolg\u00e1ltat\u00e1s nem tartalmaz wsdlLocation elemet vagy SOAP/1.1 annot\u00e1ci\u00f3t.
+error.no.wsdl.per.specification.useraction=Adjon meg wsdlLocation elemet vagy SOAP/1.1 annot\u00e1ci\u00f3t a webszolg\u00e1ltat\u00e1snak.
+
+#reuse CWWKW0038~50!
+
+#{0}=the exception message
+warn.could.not.create.handler=CWWKW0051W: A kezel\u0151 nem hozhat\u00f3 l\u00e9tre az al\u00e1bbi ok miatt: {0}.
+warn.could.not.create.handler.explanation=A kezel\u0151 nem hozhat\u00f3 l\u00e9tre vagy nem inicializ\u00e1lhat\u00f3.
+warn.could.not.create.handler.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kezel\u0151oszt\u00e1ly az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1n tal\u00e1lhat\u00f3, vagy pedig a kezel\u0151oszt\u00e1ly biztos\u00edt \u00fcres konstruktort.
+
+#{0}=the handler class name
+#{1}=the exception message
+warn.invoke.handler.predestory=CWWKW0052W: A(z) {0} kezel\u0151 preDestory met\u00f3dus\u00e1nak megh\u00edv\u00e1sa az al\u00e1bbi ok miatt meghi\u00fasult: {1}.
+warn.invoke.handler.predestory.explanation=A preDestory met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa void kell, hogy legyen, \u00e9s a kezel\u0151 \u00e1ltal haszn\u00e1lt er\u0151forr\u00e1sokat fel kell szabad\u00edtani.
+warn.invoke.handler.predestory.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a preDestory met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa void legyen, valamint hogy a kezel\u0151 \u00e1ltal haszn\u00e1lt \u00f6sszes er\u0151forr\u00e1s fel legyen szabad\u00edtva. Tov\u00e1bbi r\u00e9szleteket a kiszolg\u00e1l\u00f3_neve/logs/ffdc k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3 napl\u00f3f\u00e1jl tartalmaz.
+
+#{0}=service class name
+err.unable.set.serviceclass=CWWKW0053E: A(z) {0} szolg\u00e1ltat\u00e1soszt\u00e1ly nincs helyesen be\u00e1ll\u00edtva.
+err.unable.set.serviceclass.explanation=A szolg\u00e1ltat\u00e1soszt\u00e1ly nem tal\u00e1lhat\u00f3 az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1n.
+err.unable.set.serviceclass.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1soszt\u00e1ly az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1n tal\u00e1lhat\u00f3.
+
+#reuse CWWKW0054~55!
+
+#{0}=the Web service implement class name
+#{1}=the WSDL location
+warn.endpoint.absolute.wsdllocation=CWWKW0056W: A(z) {0} webszolg\u00e1ltat\u00e1s megval\u00f3s\u00edt\u00e1si oszt\u00e1ly a(z) {1} abszol\u00fat WSDL helyre mutat annot\u00e1ci\u00f3kon vagy telep\u00edt\u00e9si terveken kereszt\u00fcl. A JAX-WS specifik\u00e1ci\u00f3 szerint abszol\u00fat WSDL hivatkoz\u00e1sok nem enged\u00e9lyezettek a @WebService vagy @WebServiceProvider jegyzetekben.
+warn.endpoint.absolute.wsdllocation.explanation=Relat\u00edv URL c\u00edmet kell haszn\u00e1lni WSDL helyhez, ami nem k\u00e9nyszer\u00edti a JAX-WS megval\u00f3s\u00edt\u00e1st t\u00e1voli helyek lek\u00e9r\u00e9s\u00e9re. 
+warn.endpoint.absolute.wsdllocation.useraction=Friss\u00edtse a WSDL helyet relat\u00edv URL c\u00edmmel annot\u00e1ci\u00f3kon vagy telep\u00edt\u00e9si terveken kereszt\u00fcl. 
+
+#{0}=the value of wsdlLocation 
+#{1}=the implementation class
+error.no.wsdl.find=CWWKW0057E: A(z) {1} megval\u00f3s\u00edt\u00e1si oszt\u00e1ly sz\u00e1m\u00e1ra megadott {0} WSDL f\u00e1jl nem tal\u00e1lhat\u00f3.
+error.no.wsdl.find.explanation=A megval\u00f3s\u00edt\u00e1si oszt\u00e1ly sz\u00e1m\u00e1ra megadott WSDL f\u00e1jl nem tal\u00e1lhat\u00f3.
+error.no.wsdl.find.useraction=Adjon meg megl\u00e9v\u0151 WSDL f\u00e1jlt a webszolg\u00e1ltat\u00e1shoz.
+
+#{0}=the specified binding type
+#{1}=the port component name
+#{2}=the WSDL document
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: A megadott {0} k\u00f6t\u00e9si t\u00edpus nem felel meg a(z) {1} WSDL f\u00e1jlban megadottnak.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Ha a k\u00f6t\u00e9si t\u00edpus BindingType annot\u00e1ci\u00f3val vagy telep\u00edt\u00e9si le\u00edr\u00f3b\u00f3l van megadva, akkor az \u00e9rt\u00e9k\u00e9nek meg kell egyeznie a WSDL dokumentumban szerepl\u0151 \u00e9rt\u00e9kkel.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Friss\u00edtse a k\u00f6t\u00e9si t\u00edpus \u00e9rt\u00e9k\u00e9t, hogy megegyezzen a WSDL dokumentumban szerepl\u0151 \u00e9rt\u00e9kkel.
+
+#{0}=name of JMX operation
+err.unsupported.jmx.operation=CWWKW0059E: A(z) {0} m\u0171velet nem t\u00e1mogatott.
+err.unsupported.jmx.operation.explanation=A k\u00e9rt m\u0171velet v\u00e9grehajt\u00e1sa nem enged\u00e9lyezett.
+err.unsupported.jmx.operation.useraction=Ne futtasson nem t\u00e1mogatott m\u0171veletet.

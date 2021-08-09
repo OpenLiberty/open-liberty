@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: \u00cen timpul pornirii aplica\u0163iei, pornirea aplica\u0163iei a e\u015fuat deoarece au fost g\u0103site multiple aplica\u0163ii cu numele de {0}. Politicile de autorizare securitate au nevoie ca numele s\u0103 fie unice. Examina\u0163i configurarea serverului \u00een server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Numele aplica\u0163iilor trebuie s\u0103 fie unice pentru ca politica de autoriza\u0163ie de securitate s\u0103 fie aplicat\u0103.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Revede\u0163i configurarea pentru a verifica faptul c\u0103 aplica\u0163iile au nume unice, \u015fi reporni\u0163i aplica\u0163ia.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: A survenit o eroare intern\u0103 \u00een timpul pornirii aplica\u0163iei. Tabelul de autorizare pentru aplica\u0163ia {0} nu a putut fi creat \u015fi prin urmare niciun utilizator nu va fi autorizat pe resursele protejate.
+AUTHZ_TABLE_NOT_CREATED.explanation=Tabelul de autorizare pentru o aplica\u0163ie nu a fost creat \u015fi drept urmare niciun utilizator nu va avea autorizare pentru resursele protejate.
+AUTHZ_TABLE_NOT_CREATED.useraction=Examina\u0163i configurarea autoriz\u0103rii aplica\u0163iei pentru a determina de ce anume nu a fost creat tabelul de autorizare.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Configura\u0163ie run-as invalid\u0103 pentru numele security-role {0} din aplica\u0163ia {1}. Verifica\u0163i configura\u0163ia pentru run-as \u015fi confirma\u0163i c\u0103 ID-ul de utilizator \u015fi parola sunte configurate corect. Identitatea ini\u0163ial\u0103 a apelantului va fi folosit\u0103 pentru autorizare pentru c\u0103 rolul runAs nu a putut fi aplicat.
+RUNAS_INVALID_CONFIG.explanation= Configura\u0163ia run-as pentru numele security-role este invalid\u0103 pentru aplica\u0163ie. Verifica\u0163i configura\u0163ia run-as \u015fi asigura\u0163i-v\u0103 c\u0103 userid \u015fi parola sunt configurate corect.
+RUNAS_INVALID_CONFIG.useraction=Examina\u0163i configura\u0163ia run-as a aplica\u0163iei pentru numele security-role pentru a v\u0103 asigura c\u0103 sunt configurate corect numele de utilizator \u015fi parola.

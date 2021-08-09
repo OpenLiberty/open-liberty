@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application-client
+  PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"
+         "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd"
+>
+<application-client id="Application-client_ID">
+  <display-name>MessageListenerClient</display-name>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_JMS_BASE_QCF</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_JMS_BASE_QCF1</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF1</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_JMS_BASE_QCF2</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF2</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_QUEUE_ONE</res-ref-name>
+    <res-type>javax.jms.Queue</res-type>
+    <lookup-name>jndi_QUEUE_ONE</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/jndi_QUEUE_TWO</res-ref-name>
+    <res-type>javax.jms.Queue</res-type>
+    <lookup-name>jndi_QUEUE_TWO</lookup-name>
+  </resource-ref>
+
+</application-client>

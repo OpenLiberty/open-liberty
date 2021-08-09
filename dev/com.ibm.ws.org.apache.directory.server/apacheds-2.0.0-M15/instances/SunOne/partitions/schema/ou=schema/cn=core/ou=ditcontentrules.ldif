@@ -1,0 +1,6 @@
+version: 1
+dn: ou=ditContentRules,cn=core,ou=schema
+ou: ditcontentrules
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

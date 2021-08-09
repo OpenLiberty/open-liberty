@@ -1,0 +1,32 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>componenttest-1.0</feature>
+        
+    </featureManager>
+ 
+ 	<basicRegistry id="basic" realm="WebRealm">
+		<user name="user1" password="user1pwd" />
+		<user name="user2" password="user2pwd" />
+		<user name="user1a" password="user1pwd" />
+		<user name="user2a" password="user2pwd" />
+		<group name="Role1">
+			<member name="user1"/>
+		</group>
+		<group name="Role2">
+			<member name="user2"/>
+		</group>
+	</basicRegistry>
+	
+    <application type="war" id="security" name="security" location="${server.config.dir}/apps/security.war" />
+    
+    <application type="war" id="securityNoWebXml" name="securityNoWebXml" location="${server.config.dir}/apps/securityNoWebXml.war" />
+
+  	<httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}" />
+                  
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+
+</server>

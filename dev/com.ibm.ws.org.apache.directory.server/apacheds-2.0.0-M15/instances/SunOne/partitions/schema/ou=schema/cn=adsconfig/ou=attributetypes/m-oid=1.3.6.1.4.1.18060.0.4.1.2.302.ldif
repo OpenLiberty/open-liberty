@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.302,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: integerOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.302
+m-description: The maximum number of entries to return
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-name: ads-maxSizeLimit
+creatorsname: uid=admin,ou=system
+m-equality: integerMatch
+m-length: 0

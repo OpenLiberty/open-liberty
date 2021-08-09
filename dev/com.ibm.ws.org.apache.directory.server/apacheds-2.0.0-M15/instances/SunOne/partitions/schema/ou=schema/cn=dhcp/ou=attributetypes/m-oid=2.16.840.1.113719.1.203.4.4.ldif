@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.4,ou=attributeTypes,cn=dhcp,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 2.16.840.1.113719.1.203.4.4
+m-obsolete: FALSE
+m-description: The starting & ending IP Addresses in the range (inclusive), separated by a hyphen; if the rang
+ e only contains one address, then just the address can be specified with no hyphen.  Each range is defined as
+  a separate value.
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-usage: USER_APPLICATIONS
+m-name: dhcpRange
+creatorsname: uid=admin,ou=system
+m-equality: caseIgnoreIA5Match

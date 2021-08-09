@@ -1,0 +1,1194 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.ra.CWSIVMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIV0001=CWSIV0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIV0001-CWSIV0049 belong to class com.ibm.ws.sib.ra.recovery.impl.SibRaXaResourceInfo
+#   - Msgs in the range CWSIV0050-CWSIV0099 belong to class com.ibm.ws.sib.ra.SibRaFactory
+#   - Msgs in the range CWSIV0100-CWSIV0149 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionFactory
+#   - Msgs in the range CWSIV0150-CWSIV0199 belong to class com.ibm.ws.sib.ra.impl.SibRaConnection
+#   - Msgs in the range CWSIV0200-CWSIV0249 belong to class com.ibm.ws.sib.ra.impl.SibRaDestinationSession
+#   - Msgs in the range CWSIV0250-CWSIV0299 belong to class com.ibm.ws.sib.ra.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0300-CWSIV0349 belong to class com.ibm.ws.sib.ra.impl.SibRaConnectionInfo
+#   - Msgs in the range CWSIV0350-CWSIV0399 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnectionFactory
+#   - Msgs in the range CWSIV0400-CWSIV0449 belong to class com.ibm.ws.sib.ra.impl.SibRaManagedConnection
+#   - Msgs in the range CWSIV0450-CWSIV0499 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+#   - Msgs in the range CWSIV0500-CWSIV0549 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaActivationSpecImpl
+#   - Msgs in the range CWSIV0550-CWSIV0599 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointActivation
+#   - Msgs in the range CWSIV0600-CWSIV0649 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatcher
+#   - Msgs in the range CWSIV0650-CWSIV0699 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaTransactionalDispatcher
+#   - Msgs in the range CWSIV0700-CWSIV0749 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaConsumerSession
+#   - Msgs in the range CWSIV0750-CWSIV0799 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaStaticDestinationEndpointActivation
+#   - Msgs in the range CWSIV0800-CWSIV0849 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDynamicDestinationEndpointActivation
+#   - Msgs in the range CWSIV0850-CWSIV0899 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaEndpointInvokerImpl
+#   - Msgs in the range CWSIV0900-CWSIV0949 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaListener
+#   - Msgs in the range CWSIV0950-CWSIV0999 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMessagingEngineConnection
+#   - Msgs in the range CWSIV1000-CWSIV1049 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchEndpointActivation
+#   - Msgs in the range CWSIV1050-CWSIV1099 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaDispatchTarget
+#   - Msgs in the range CWSIV1100-CWSIV1149 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSingleProcessListener
+#   - Msgs in the range CWSIV1150-CWSIV1199 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaMultiProcessListener
+#   - Msgs in the range CWSIV1200-CWSIV1249 belong to class com.ibm.ws.sib.ra.inbound.impl.SibRaSynchronizedDispatcher
+#   - CWSIV9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.29,0,05/04/28,09:28:22
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/ra/CWSIVMessages.nlsprops
+#COMPONENTPREFIX CWSIV
+#COMPONENTNAMEFOR CWSIV SIBus Resource Adapter
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the security alias that could not be resolved
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001=CWSIV0001W: Failed to resolve the security alias {0} during recovery processing.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.explanation=A security alias was specified on the resource for which recovery processing is taking place and could not be resolved.  Processing will continue with a null user name and password.
+RECOVERY_ALIAS_NOT_RESOLVED_CWSIV0001.useraction=Ensure that the specified alias is defined for the application server in which recovery processing is taking place.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was received
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050=CWSIV0050E: An internal error occurred. The exception {0} was received from the JCA runtime while attempting to obtain a connection factory.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.explanation=While attempting to obtain an SICoreConnectionFactory through the JCA runtime, an unexpected exception was received.
+CONNECTION_FACTORY_EXCEPTION_CWSIV0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection factory that was returned
+INCORRECT_FACTORY_TYPE_CWSIV0051=CWSIV0051E: An internal error occurred. The connection factory returned from the JCA runtime {0} does not implement SICoreConnectionFactory.
+INCORRECT_FACTORY_TYPE_CWSIV0051.explanation=The connection factory returned from the JCA runtime did not implement SICoreConnectionFactory as expected.
+INCORRECT_FACTORY_TYPE_CWSIV0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0052=CWSIV0052E: The value {0} is not valid for the connection factory property {1}. Valid values are {2} and {3}.
+INVALID_PROPERTY_CWSIV0052.explanation=The property map passed to the getConnectionFactory method on SICoreConnectionFactorySelector contained an incorrect value for the given property.
+INVALID_PROPERTY_CWSIV0052.useraction=Ensure that the set of properties passed to the getConnectionFactory method on SICoreConnectionFactorySelector is valid.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the property
+# {1} the required type
+INVALID_PROPERTY_TYPE_CWSIV0053=CWSIV0053E: The connection factory property {0} is not of the required type {1}.
+INVALID_PROPERTY_TYPE_CWSIV0053.explanation=The property map passed to the getConnectionFactory method on SICoreConnectionFactorySelector contained a value for the given property that was not of the required type.
+INVALID_PROPERTY_TYPE_CWSIV0053.useraction=Ensure that the set of properties passed to the getConnectionFactory method on SICoreConnectionFactorySelector is valid.
+
+# -------------------------------------------------------------------------------------------------
+ALIAS_REQUIRED_CWSIV0054=CWSIV0054E: Connection factory properties must contain a value for CONTAINER_AUTHENTICATION_ALIAS.
+ALIAS_REQUIRED_CWSIV0054.explanation=The property map passed to the getConnectionFactory method on SICoreConnectionFactorySelector requested that the container provide credentials using the default principal mapping but did not specify a container authentication alias.
+ALIAS_REQUIRED_CWSIV0054.useraction=Ensure that the set of properties passed to the getConnectionFactory method on SICoreConnectionFactorySelector contains a value for CONTAINER_AUTHENTICATION_ALIAS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid value
+# {1} the name of the property
+# {2} the first valid value
+# {3} the second valid value
+INVALID_PROPERTY_CWSIV0055=CWSIV0055E: The value {0} is not valid for the connection factory property {1}. Valid values are {2} and {3}.
+INVALID_PROPERTY_CWSIV0055.explanation=The property map passed to the getConnectionFactory method on SICoreConnectionFactorySelector contained an incorrect value for the given property.
+INVALID_PROPERTY_CWSIV0055.useraction=Ensure that the set of properties passed to the getConnectionFactory method on SICoreConnectionFactorySelector is valid.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection that was returned
+# {1} the expected type for the connection
+INCORRECT_CONNECTION_TYPE_CWSIV0101=CWSIV0101E: An internal error occurred. The JCA connection manager returned a connection {0} that was not of the expected type {1}.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.explanation=While attempting to obtain a connection through the JCA connection manager a connection of an unexpected type was returned.
+INCORRECT_CONNECTION_TYPE_CWSIV0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0150=CWSIV0150E: An existing SIUncoordinatedTransaction has not been completed.
+ACTIVE_LOCAL_TRAN_CWSIV0150.explanation=An attempt has been made to create a new SIUncoordinatedTransaction when the current one has not been completed.
+ACTIVE_LOCAL_TRAN_CWSIV0150.useraction=Ensure commit or rollback is called on the current SIUncoordinatedTransaction before creating a new one.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_CONTAINER_TRAN_CWSIV0151=CWSIV0151E: There is a container-managed transaction on the thread.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.explanation=An attempt has been made to create a new SIUncoordinatedTransaction while there is a container-managed transaction on the thread.
+ACTIVE_CONTAINER_TRAN_CWSIV0151.useraction=Modify the application so that the call is made in an environment where there is no container-managed transaction on the thread.
+
+# -------------------------------------------------------------------------------------------------
+XARESOURCE_NOT_SUPPORTED_CWSIV0152=CWSIV0152E: The creation of an SIXAResource is not supported.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.explanation=The creation of an SIXAResource is not supported when using the RA_CONNECTION implementation of the Platform Messaging core SPI because global transactions are handled by the resource adapter.
+XARESOURCE_NOT_SUPPORTED_CWSIV0152.useraction=If the application must handle global transactions explicitly then use a different implementation of the Platform Messaging core SPI, otherwise remove the call to getSIXAResource.
+
+# -------------------------------------------------------------------------------------------------
+CLONE_NOT_SUPPORTED_CWSIV0153=CWSIV0153E: The cloning of a connection is not supported.
+CLONE_NOT_SUPPORTED_CWSIV0153.explanation=The cloning of a connection is not supported when using the RA_CONNECTION implementation of the core SPI.
+CLONE_NOT_SUPPORTED_CWSIV0153.useraction=Consider whether cloning of a connection is required or whether simply creating another connection would suffice.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection manager
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154=CWSIV0154E: An internal error occurred. The connection manager {0} does not support lazy enlistment.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.explanation=The current connection has been dissociated from its managed connection but the connection manager does not support lazy enlistment for the re-association to take place.
+LAZY_ENLIST_NOT_SUPPORTED_CWSIV0154.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+REASSOCIATION_FAILED_CWSIV0155=CWSIV0155E: An internal error occurred. The exception {0} was thrown while attempting to re-associate with a managed connection.
+REASSOCIATION_FAILED_CWSIV0155.explanation=The current connection has been dissociated from its managed connection and the exception was received while attempting to re-associate.
+REASSOCIATION_FAILED_CWSIV0155.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_CONNECTION_CWSIV0156=CWSIV0156E: The connection has been invalidated.
+INVALID_CONNECTION_CWSIV0156.explanation=A previous error has caused the connection to be no longer valid.
+INVALID_CONNECTION_CWSIV0156.useraction=Check error logs to determine cause of previous error.  The application should create a new connection.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_TRAN_CWSIV0157=CWSIV0157E: An internal error occurred.  The exception {0} was thrown while attempt to obtain the current container transaction.
+CONTAINER_TRAN_CWSIV0157.explanation=While attempting to obtain the current container transaction an exception was received.
+CONTAINER_TRAN_CWSIV0157.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0158=CWSIV0158E: There is an active SIUncoordinatedTransaction associated with this connection.
+ACTIVE_LOCAL_TRAN_CWSIV0158.explanation=An attempt has been made to use a transaction parameter of null when there is still an active SIUncoordinatedTransaction associated with this connection.
+ACTIVE_LOCAL_TRAN_CWSIV0158.useraction=Either pass the active SIUncoordinatedTransaction as the transaction parameter, or call commit/rollback on it first before passing null.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_LOCAL_TRAN_CWSIV0159=CWSIV0159E: The active SIUncoordinatedTransaction associated with this connection was not passed.
+INCORRECT_LOCAL_TRAN_CWSIV0159.explanation=An attempt has been made to use an SIUncoordinatedTransaction as the transaction parameter when there is a different active SIUncoordinatedTransaction associated with this connection.
+INCORRECT_LOCAL_TRAN_CWSIV0159.useraction=Ensure that the application is passing the current active SIUncoordinatedTransaction associated with the connection or null if the operation should be performed outside of the transaction.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_XARESOURCE_CWSIV0160=CWSIV0160E: An SIXAResource is not a valid transaction parameter.
+INVALID_XARESOURCE_CWSIV0160.explanation=The use of an SIXAResource as the transaction parameter is not supported when using the RA_CONNECTION implementation of the Platform Messaging core SPI because global transactions are handled by the resource adapter.
+INVALID_XARESOURCE_CWSIV0160.useraction=If the application must handle global transactions explicitly then use a different implementation of the Platform Messaging core SPI, otherwise pass null as the transaction parameter.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction parameter
+UNRECOGNISED_TRAN_CWSIV0161=CWSIV0161E: The transaction parameter {0} was not of a recognized type.
+UNRECOGNISED_TRAN_CWSIV0161.explanation=The object passed as the transaction parameter was not of a recognized type.
+UNRECOGNISED_TRAN_CWSIV0161.useraction=Ensure that the transaction parameter is either null, an SIUncoordinatedTransaction obtained from this connection or an SibRaAutoCommitTransaction.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_COMMIT_FAILED_CWSIV0162=CWSIV0162E: An internal error occurred.  The exception {0} was thrown while the container was attempting to commit an application local transaction.
+CONTAINER_COMMIT_FAILED_CWSIV0162.explanation=The container has detected an outstanding application local transaction at the end of a sharing scope and an exception was created while attempting to commit it.
+CONTAINER_COMMIT_FAILED_CWSIV0162.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONTAINER_ROLLBACK_FAILED_CWSIV0163=CWSIV0163E: An internal error occurred.  The exception {0} was thrown while the container was attempting to roll back an application local transaction.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.explanation=The container has detected an outstanding application local transaction at the end of a sharing scope and an exception was created while attempting to roll it back.
+CONTAINER_ROLLBACK_FAILED_CWSIV0163.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSIV0200=CWSIV0200E: The connection from which this session was created has been invalidated.
+INVALID_SESSION_CWSIV0200.explanation=A previous error has caused the connection to be no longer valid.
+INVALID_SESSION_CWSIV0200.useraction=Check error logs to determine cause of previous error.  The application should create a new connection and session.
+
+# -------------------------------------------------------------------------------------------------
+ASYNCHRONOUS_METHOD_CWSIV0250=CWSIV0250E: Methods relating to asynchronous message receipt are not supported.
+ASYNCHRONOUS_METHOD_CWSIV0250.explanation=The use of ConsumerSession methods relating to the asynchronous receipt of messages are not supported when using the RA_CONNECTION implementation of the Platform Messaging core SPI.
+ASYNCHRONOUS_METHOD_CWSIV0250.useraction=If asynchronous receipt of messages is required, use a different implementation of the Platform Messaging core SPI.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CREATION_CWSIV0300=CWSIV0300E: An internal error occurred. The exception {0} was thrown while attempting to create a connection to the messaging engine.
+CONNECTION_CREATION_CWSIV0300.explanation=An exception was received while attempting to create a connection to the messaging engine.
+CONNECTION_CREATION_CWSIV0300.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_FACTORY_ERROR_CWSIV0350=CWSIV0350E: An internal error occurred. The exception {0} was thrown while attempting to create a core SPI connection factory.
+CONNECTION_FACTORY_ERROR_CWSIV0350.explanation=An exception was created while attempting to create a core SPI connection factory using the factory type TRM_CONNECTION.
+CONNECTION_FACTORY_ERROR_CWSIV0350.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+NON_MANAGED_ENVIRONMENT_CWSIV0351=CWSIV0351E: Creation of a connection factory in a non-managed environment is not supported.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.explanation=The creation of a connection factory is not supported in a non-managed environment when using the RA_CONNECTION implementation of the core SPI because a connection manager is required to provide container transaction support.
+NON_MANAGED_ENVIRONMENT_CWSIV0351.useraction=In a non-managed environment create a connection factory using the SICoreConnectionFactorySelector with a FactoryType other than RA_CONNECTION.
+
+# -------------------------------------------------------------------------------------------------
+NULL_REQUEST_INFO_CWSIV0352=CWSIV0352E: An internal error occurred. Connection request information is required to create a managed connection.
+NULL_REQUEST_INFO_CWSIV0352.explanation=The connection manager has attempted to create a managed connection without specifying any connection request information.
+NULL_REQUEST_INFO_CWSIV0352.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLONE_CWSIV0353=CWSIV0353E: An internal error occurred. The exception {0} was thrown while attempting to clone a connection to the messaging engine.
+CONNECTION_CLONE_CWSIV0353.explanation=An exception was created while attempting to clone a connection to the messaging engine during the creation of a managed connection.
+CONNECTION_CLONE_CWSIV0353.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0354=CWSIV0354E: An internal error occurred. The connection request information object {0} was not of the expected type {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.explanation=The object passed as the connection request information parameter was not of the expected type.
+UNRECOGNISED_REQUEST_INFO_CWSIV0354.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CREATE_MANAGED_CONNECTION_CWSIV0355=CWSIV0355E: An internal error occurred. Whilst creating the managed connection the following exception was thrown: {0}
+CREATE_MANAGED_CONNECTION_CWSIV0355.explanation=An exception was created while attempting to create a managed connection.
+CREATE_MANAGED_CONNECTION_CWSIV0355.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSIV0356=CWSIV0356W: The following JCA Connection error has occurred when trying to get the connection. The retrieving of the connection will be retried. The exception is {0}.
+CONNECTION_ERROR_RETRY_CWSIV0356.explanation=An error has been caught whilst obtaining a connection. The system will purge the connection then attempt to obtain another one.
+CONNECTION_ERROR_RETRY_CWSIV0356.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection request information object passed
+# {1} the expected type for the object
+UNRECOGNISED_REQUEST_INFO_CWSIV0401=CWSIV0401E: An internal error occurred. The connection request information object {0} was not of the expected type {1}.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.explanation=The object passed as the connection request information parameter was not of the expected type.
+UNRECOGNISED_REQUEST_INFO_CWSIV0401.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+CONNECTION_CLOSE_CWSIV0402=CWSIV0402E: An internal error occurred. The exception {0} was thrown while attempting to close a connection to the messaging engine.
+CONNECTION_CLOSE_CWSIV0402.explanation=An exception was created while attempting to close a connection to the messaging engine.
+CONNECTION_CLOSE_CWSIV0402.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection object passed
+# {1} the expected type for the object
+UNRECOGNISED_CONNECTION_CWSIV0403=CWSIV0403E: An internal error occurred. The connection object {0} was not of the expected type {1}.
+UNRECOGNISED_CONNECTION_CWSIV0403.explanation=The object passed as the connection parameter was not of the type expected by this resource adapter.
+UNRECOGNISED_CONNECTION_CWSIV0403.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+ACTIVE_LOCAL_TRAN_CWSIV0404=CWSIV0404E: An internal error occurred. There is already an active container local transaction.
+ACTIVE_LOCAL_TRAN_CWSIV0404.explanation=The container is attempting to begin a local transaction when there is already one active.
+ACTIVE_LOCAL_TRAN_CWSIV0404.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_BEGIN_CWSIV0405=CWSIV0405E: An internal error occurred. The exception {0} was thrown while the container was attempting to begin a local transaction.
+LOCAL_TRAN_BEGIN_CWSIV0405.explanation=An exception was created while the container was attempting to begin a local transaction.
+LOCAL_TRAN_BEGIN_CWSIV0405.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_COMMIT_CWSIV0406=CWSIV0406E: An internal error occurred. The exception {0} was thrown while the container was attempting to commit a local transaction.
+LOCAL_TRAN_COMMIT_CWSIV0406.explanation=An exception was created while the container was attempting to commit a local transaction.
+LOCAL_TRAN_COMMIT_CWSIV0406.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+LOCAL_TRAN_ROLLBACK_CWSIV0407=CWSIV0407E: An internal error occurred. The exception {0} was thrown while the container was attempting to roll back a local transaction.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.explanation=An exception was created while the container was attempting to roll back a local transaction.
+LOCAL_TRAN_ROLLBACK_CWSIV0407.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception that was thrown
+XARESOURCE_CREATE_CWSIV0408=CWSIV0408E: An internal error occurred. The exception {0} was thrown while attempting to obtain an SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.explanation=An exception was created while attempting to obtain an SIXAResource.
+XARESOURCE_CREATE_CWSIV0408.useraction=See the linked exception for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the unexpected activation specification
+# {1} the expected type
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451=CWSIV0451E: An internal error occurred. The activation specification {0} passed on endpoint activation was not of the expected type {1}.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.explanation=The activation specification passed on endpoint activation was not of the type expected by the resource adapter.
+UNEXPECTED_ACTIVATION_SPEC_CWSIV0451.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the exception thrown during validation
+INVALID_ACTIVATION_SPEC_CWSIV0452=CWSIV0452E: The exception {1} was thrown while attempting to validate the activation specification {0} during endpoint activation.
+INVALID_ACTIVATION_SPEC_CWSIV0452.explanation=During the activation of an endpoint the given activation specification was determined to be incorrect.
+INVALID_ACTIVATION_SPEC_CWSIV0452.useraction=See linked exception for incorrect properties and correct values in administered activation specification or message-driven bean's deployment descriptor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the invalid activation specification
+# {1} the list of messages showing invalid properties
+INVALID_PROPERTIES_CWSIV0501=CWSIV0501E: The following problems were found when validating the properties defined on the activation specification. The problems are {1}. The activation specification is : {0}
+INVALID_PROPERTIES_CWSIV0501.explanation=During validation of the given activation specification one or more properties were determined to be incorrect.
+INVALID_PROPERTIES_CWSIV0501.useraction=Correct the values for the given properties in the administered activation specification, or in the message-driven bean's activation configuration, then start the application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+DEST_FACTORY_CWSIV0502=CWSIV0502E: An internal error.  The following exception was thrown while attempting to obtain an SIDestinationAddressFactory: {0}.
+DEST_FACTORY_CWSIV0502.explanation=During endpoint activation the core SPI resource adapter was attempting to obtain an SIDestinationAddressFactory and an unexpected exception was received.
+DEST_FACTORY_CWSIV0502.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSIV0503=CWSIV0503E: An internal error has occurred during the registration of the WLM classifier for the core SPI resource adapter: {0}.
+WLM_CLASSIFIER_REG_CWSIV0503.explanation=During the registration of the WLM classifier for the core SPI resource adapter with the handler registry an unexpected exception was received.
+WLM_CLASSIFIER_REG_CWSIV0503.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSIV0504=CWSIV0504E: The bus name on a Core SPI activation specification must be given a value
+INVALID_PROPERTY_BUSNAME_CWSIV0504.explanation=During validation of the properties configured on a Core SPI activation specification the bus name was found not to be valid.
+INVALID_PROPERTY_BUSNAME_CWSIV0504.useraction=Correct the value of the bus name property on the activation specification then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is another allowed value
+# {4} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505=CWSIV0505E: The following destination type on a Core SPI activation specification is invalid [{4}]. The values [{0}] or [{1}] or [{2}] or [{3}] are expected.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.explanation=During validation of the properties configured on a Core SPI activation specification the destination type was found not to be valid.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0505.useraction=Correct the value of the destination type property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506=CWSIV0506E: The following share durable subscription field on a Core SPI activation specification is invalid [{3}]. The values [{0}], [{1}] or [{2}] are expected.
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.explanation=During validation of the properties configured on a Core SPI activation specification the share durable subscription was found not to be valid
+INVALID_PROPERTY_SHARE_DURSUB_CWSIV0506.useraction=Correct the value of the share durable subscription property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507=CWSIV0507E: The durable subscription home on a Core SPI activation specification must have a value when using durable subscriptions.
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.explanation=During validation of the properties configured on a Core SPI activation specification the durable subscription home was found not to be valid
+INVALID_PROPERTY_DURSUBHOME_CWSIV0507.useraction=Correct the value of the durable subscription home property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508=CWSIV0508E: The following destination type on a Core SPI activation specification is invalid [{3}]. The values [{0}] or [{1}] or [{2}] are expected.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.explanation=During validation of the properties configured on a Core SPI activation specification the destination type was found not to be valid. Since no destination name is supplied Topics are not permitted
+INVALID_PROPERTY_DESTINATION_TYPE_CWSIV0508.useraction=Correct the value of the destination type property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSIV0509=CWSIV0509E: The maximum batch size on a Core SPI activation specification must be given a positive value
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.explanation=During validation of the properties configured on a Core SPI activation specification the maximum batch size was found not to be valid
+INVALID_PROPERTY_MAXBATCH_CWSIV0509.useraction=Correct the value of the maximum batch size property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the deletion mode
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510=CWSIV0510E: The following deletion mode on a Core SPI activation specification is invalid [{3}]. The values [{0}] or [{1}] or [{2}] are expected.
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.explanation=During validation of the properties configured on a Core SPI activation specification the deletion mode was found not to be valid
+INVALID_PROPERTY_DELETION_MODE_CWSIV0510.useraction=Correct the value of the deletion mode property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSIV0511=CWSIV0511E: The maximum concurrency on a Core SPI activation specification must be given a positive value
+INVALID_PROPERTY_MAXCONC_CWSIV0511.explanation=During validation of the properties configured on a Core SPI activation specification the maximum concurrency was found not to be valid.
+INVALID_PROPERTY_MAXCONC_CWSIV0511.useraction=Correct the value of the maximum concurrency property on the activation specification then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512=CWSIV0512E: The following target type field on a Core SPI activation specification is invalid [{3}]. The values [{0}], [{1}] or [{2}] are expected.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.explanation=During validation of the properties configured on a Core SPI activation specification the target type was found not to be valid.
+INVALID_PROPERTY_TARGET_TYPE_CWSIV0512.useraction=Correct the value of the target type property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513=CWSIV0513E: The following target significance field on a Core SPI activation specification is invalid [{2}]. The values [{0}] or [{1}] are expected.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.explanation=During validation of the properties configured on a Core SPI activation specification the target significance was found not to be valid
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSIV0513.useraction=Correct the value of the target significance property on the activation specification then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the provider endpoints
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514=CWSIV0514E: The provider endpoints were set to {0} on a Core SPI activation specification. Provider endpoints are not supported when the property "use server subject" is set.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.explanation=During validation of the properties configured on a Core SPI activation specification, the provider endpoint was found not to be valid because the use server subject property is set.
+INVALID_PROPERTY_PROVIDER_ENDPOINTS_CWSIV0514.useraction=Please ensure that provider endpoints property is not set if use server subject is set. Correct the value of the property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515=CWSIV0515E: The "use destination wildcard" property was set on a Core SPI activation specification whilst using a Topic Space. The property "use destination wildcard" is not supported when a Topic Space is used.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.explanation=During validation of the properties configured on a Core SPI activation specification, the "use destination wildcard" was found not to be valid because a Topic Space is being used.
+INVALID_PROPERTY_USEDESTWILDCARD_CWSIV0515.useraction=Ensure that "use destination wildcard" property is not set when using a Topic Space. Correct the value of the property on the activation specification, then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory throwing the exception
+# {1} the exception thrown
+NO_METHOD_CWSIV0550=CWSIV0550E: An internal error occurred. The exception {1} was thrown by the message endpoint factory {0} when attempting to determine whether the onMessage method is transacted.
+NO_METHOD_CWSIV0550.explanation=The endpoint activation received an exception from the message endpoint factory indicating that there is no onMessage for this endpoint when trying to determine its transactionality.
+NO_METHOD_CWSIV0550.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the MDB that had the problem
+# {1} the max concurrency on the MDB
+# {2} the max pool size JCA is using
+# {3} the new max concurrency to use
+MAX_CONCURRENCY_CWSIV0551=CWSIV0551W: The maximum concurrency for the MDB {0} was set to {1} in it''s activation specification. This is higher than the JCA maximum pool size of {2} and so the MDB''s maximum concurrency has been lowered to {3}
+MAX_CONCURRENCY_CWSIV0551.explanation=The configuration of the maximum concurrency on the activation specification was set to high or the maximum concurrency on the JCA's maximum pool size was set too low. This should not cause a problem because Platform Messaging will lower the maximum concurrency on the activation specification but a warning is issued to the user to let the user know that the maximum concurrency they have configured will not be used.
+MAX_CONCURRENCY_CWSIV0551.useraction=This warning will continue to be shown whenever the message-driven bean is started. To remove this warning message lower the activation specifications maximum concurrency or raise the maximum pool size of the JCA's endpoint pool (using the JVM system property com.ibm.websphere.ejbcontainer.poolSize)
+
+# -------------------------------------------------------------------------------------------------
+# {0} the messaging engine UUID
+# {1} the bus name
+# {2} the endpoint
+ENDPOINT_DEACTIVATED_CWSIV0554=CWSIV0554E: An internal error occurred. An attempt was made to obtain a connection to the messaging engine with UUID {0} on bus {1} after the endpoint {2} has been deactivated.
+ENDPOINT_DEACTIVATED_CWSIV0554.explanation=A request was made for a connection to the given messaging engine but the endpoint activation has been deactivated.
+ENDPOINT_DEACTIVATED_CWSIV0554.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+# {3} the endpoint activation
+MESSAGING_ENGINE_STARTING_CWSIV0555=CWSIV0555E: The exception {0} was thrown when processing the startup of messaging engine {1} on bus {2} for endpoint activation {3}.
+MESSAGING_ENGINE_STARTING_CWSIV0555.explanation=The inbound resource adapter was attempting to process the given messaging engine when it received an exception.  Messages from destinations localized on that messaging engine will not be received by the message-driven bean. If the linked exception is an authentication exception then ensure that the activation specification has been associated with a valid authentication alias.
+MESSAGING_ENGINE_STARTING_CWSIV0555.useraction=See the linked exception for further information.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Activation Specification ID
+# {1} Destination Name
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556=CWSIV0556I: Connection to the Messaging Engine was successful. The message-driven bean with activation specification {0} will now be able to receive the messages from destination {1}.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.explanation=The JMS resource adapter was successfully able to establish the connection with the messaging engine. This allows the message-driven bean to receive the message from the destination.
+TARGETTED_CONNECTION_SUCCESSFUL_CWSIV0556.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+# {0} the exception thrown
+# {1} the list of messages
+UNLOCK_EXCEPTION_CWSIV0601=CWSIV0601E: An internal error occurred. The exception {0} was received when attempting to unlock the messages {1}.
+UNLOCK_EXCEPTION_CWSIV0601.explanation=The resource adapter received an exception when attempting to unlock a set of messages.
+UNLOCK_EXCEPTION_CWSIV0601.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the message being deleted
+# {2} the transaction under which the message was being deleted
+DELETE_EXCEPTION_CWSIV0602=CWSIV0602E: An internal error occurred. The exception {0} was received when attempting to delete the message {1} under transaction {2}.
+DELETE_EXCEPTION_CWSIV0602.explanation=The resource adapter received an exception when attempting to delete a message under the given transaction.
+DELETE_EXCEPTION_CWSIV0602.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messages being deleted
+# {2} the transaction under which the messages were being deleted
+DELETE_SET_EXCEPTION_CWSIV0603=CWSIV0603E: An internal error occurred. The exception {0} was received when attempting to delete the messages {1} under transaction {2}.
+DELETE_SET_EXCEPTION_CWSIV0603.explanation=The resource adapter received an exception when attempting to delete messages under the given transaction.
+DELETE_SET_EXCEPTION_CWSIV0603.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+REQUEST_METRICS_CWSIV0604=CWSIV0604E: An internal error occurred. The exception {0} was received when attempting to obtain the request metrics instance.
+REQUEST_METRICS_CWSIV0604.explanation=The resource adapter received an exception when attempting to obtain the request metrics instance.
+REQUEST_METRICS_CWSIV0604.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the destination the message endpoint is attached to
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605=CWSIV0605W: The Message Endpoint {0} that was listening to the destination {1} should be deactivated as the the maximum number of sequential failures was reached.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.explanation=The System has determined that there is a possible problem with the MDB associated with the message endpoint.
+MESSAGE_ENDPOINT_SHOULD_BE_DEACTIVATED_CWSIV0605.useraction=Investigate possible problems with the MDB that could cause sequential failures. The message endpoint can be deactivated to stop further errors occurring, use the Message Endpoint MBean passing the endpoint name in this message to deactivate the endpoint or stop the application that contains the Message Driven Bean.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the message handle
+# {2} the transaction
+# {3} the bifurcated consumer session class name
+INVALID_SESSION_CWSIV0606=CWSIV0606E: An internal error occurred. When attempting to delete the message handle {1} under transaction {2}, the session {0} was not of the required type {3}
+INVALID_SESSION_CWSIV0606.explanation=The resource adapter encountered a problem while attempting to delete a message handle
+INVALID_SESSION_CWSIV0606.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the number of messagesin the list
+# {1} the message list
+# {2} the handle
+# {3} the transaction
+MESSAGE_LIST_INCORRECT_CWSIV0607=CWSIV0607E: An internal error occurred. When attempting to delete the message handle {2} under transaction {3}, the list of messages {1} was expected to contain 1 message but instead contained {0} messages
+MESSAGE_LIST_INCORRECT_CWSIV0607.explanation=The resource adapter encountered a problem while attempting to delete a message handle
+MESSAGE_LIST_INCORRECT_CWSIV0607.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the message handle
+# {2} the transaction
+DELETE_EXCEPTION_CWSIV0608=CWSIV0608E: An internal error occurred. When attempting to delete the message handle {1} under transaction {2}, the following exception was thrown {0}
+DELETE_EXCEPTION_CWSIV0608.explanation=The resource adapter encountered a problem while attempting to delete a message handle
+DELETE_EXCEPTION_CWSIV0608.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection throwing the exception
+XARESOURCE_EXCEPTION_CWSIV0650=CWSIV0650E: An internal error occurred. The exception {0} was received when attempting to obtain the XAResource from connection {1}.
+XARESOURCE_EXCEPTION_CWSIV0650.explanation=The resource adapter received an exception when attempting to obtain the XAResource from a connection in order to pass it on endpoint creation.
+XARESOURCE_EXCEPTION_CWSIV0650.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV0651=CWSIV0651E: An internal error occurred. The exception {0} was received when attempting to invoke beforeDelivery on endpoint {1}.
+BEFORE_DELIVERY_CWSIV0651.explanation=The resource adapter received an exception when attempting to invoke beforeDelivery on an endpoint prior to calling onMessage.
+BEFORE_DELIVERY_CWSIV0651.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSIV0652=CWSIV0652E: A specific messaging engine must be specified to use JMS resources within a transaction. The connection property {0} must be set to {1}.
+ME_NAME_REQUIRED_CWSIV0652.explanation=To permit the recovery of transactions it is necessary that a connection factory target a specific messaging engine in the bus.
+ME_NAME_REQUIRED_CWSIV0652.useraction=Change the connection factory properties 'targetGroup' to 'the name of a messaging engine in the bus', 'targetType' to 'ME' and 'targetSignificance' to 'Required'.
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ConsumerSession whose parent connection is throwing the exception
+CLONE_EXCEPTION_CWSIV0700=CWSIV0700E: An internal error occurred. The exception {0} was received when attempting to clone the parent connection for session {1}.
+CLONE_EXCEPTION_CWSIV0700.explanation=The resource adapter received an exception when attempting to clone a connection that would be returned from getConnection on the session to be passed to the endpoint.
+CLONE_EXCEPTION_CWSIV0700.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that is not supported
+NOT_SUPPORTED_CWSIV0701=CWSIV0701E: Use of the method {0} is not supported.
+NOT_SUPPORTED_CWSIV0701.explanation=The given method cannot be invoked on the session passed to the onMessage method of a Platform Messaging core SPI message-driven bean.
+NOT_SUPPORTED_CWSIV0701.useraction=Remove the offending call and, if required, create a separate Platform Messaging core SPI session.
+
+# -------------------------------------------------------------------------------------------------
+OUT_OF_SCOPE_CWSIV0702=CWSIV0702E: The session is no longer in scope.
+OUT_OF_SCOPE_CWSIV0702.explanation=The session passed to the onMessage method of a Platform Messaging core SPI message-driven bean cannot be used once the method has completed.
+OUT_OF_SCOPE_CWSIV0702.useraction=Remove the offending call and, if required, create a separate Platform Messaging core SPI session.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination UUID
+DESTINATION_LOCALITY_CWSIV0753=CWSIV0753E: An internal error occurred. The following exception was thrown when attempting to determine the set of queue points for the destination {1}: {0}.
+DESTINATION_LOCALITY_CWSIV0753.explanation=An unexpected exception was received when attempting to determine the set of messaging engines with queue points for the given destination.
+DESTINATION_LOCALITY_CWSIV0753.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+FOREIGN_DESTINATION_CWSIV0754=CWSIV0754E: The destination {0} on bus {1} is not defined as a queue point on the bus to which the message-driven bean is connected
+FOREIGN_DESTINATION_CWSIV0754.explanation=A message-driven bean must be connected to the bus that hosts the destination from which the bean consumes.  Foreign buses are not supported.
+FOREIGN_DESTINATION_CWSIV0754.useraction=Modify the activation specification for the message-driven bean so that it connects to the required bus or move the destination to the bus to which the message-driven bean is connecting.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the required destination type
+# {3} the actual destination type
+INCORRECT_TYPE_CWSIV0755=CWSIV0755E: The destination {0} on bus {1} is of the type {3} not the required type {2}.
+INCORRECT_TYPE_CWSIV0755.explanation=The destination type defined on the message-driven bean's activation specification does not match the type of the configured destination.
+INCORRECT_TYPE_CWSIV0755.useraction=Check that the message-driven bean's activation specification is configured with the correct destination, type or both.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+UNKNOWN_TYPE_CWSIV0756=CWSIV0756E: An internal error occurred. The destination {0} on bus {1} has a definition of an unexpected type.
+UNKNOWN_TYPE_CWSIV0756.explanation=The given destination was not a local, a foreign or an alias destination.
+UNKNOWN_TYPE_CWSIV0756.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+NOT_FOUND_CWSIV0757=CWSIV0757E: The destination {0} on bus {1} was not found.
+NOT_FOUND_CWSIV0757.explanation=The destination configured on the message-driven bean does not exist in the given bus.
+NOT_FOUND_CWSIV0757.useraction=Check the definition of the destination on the message-driven bean's activation specification or bindings.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the exception
+UNEXPECTED_EXCEPTION_CWSIV0758=CWSIV0758E: An internal error occurred. The following exception was thrown when attempting to obtain the definition of destination {0} on bus {1}: {2}.
+UNEXPECTED_EXCEPTION_CWSIV0758.explanation=An unexpected exception was received when attempting to obtain the definition of the given destination.
+UNEXPECTED_EXCEPTION_CWSIV0758.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+NO_ACTIVE_MES_CWSIV0759=CWSIV0759W: During activation of a message-driven bean, no suitable active messaging engines were found in the local server on the bus {0}.
+NO_ACTIVE_MES_CWSIV0759.explanation=A message-driven bean was configured to connect to the given bus but there are no suitable active messaging engines within the local server.  Message consumption will begin when a suitable local messaging engine becomes active.
+NO_ACTIVE_MES_CWSIV0759.useraction=Ensure that a suitable messaging engine is started. A message is displayed when a successful connection is made.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the bus
+# {1} the name of the messaging engine
+# {2} the name of the destination
+NEW_CONSUMER_CWSIV0764=CWSIV0764I: A consumer has been created for a message-driven bean against destination {2} on bus {0} following the activation of messaging engine {1}.
+NEW_CONSUMER_CWSIV0764.explanation=The activation of a messaging engine on the required bus has led to the creation of a new consumer for the given destination.
+NEW_CONSUMER_CWSIV0764.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+MESSAGING_ENGINE_STOPPING_CWSIV0765=CWSIV0765E: The exception {0} was thrown when attempting to create a connection to another messaging engine during the stopping of messaging engine {1} on bus {2}.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.explanation=During the stopping of the given messaging engine the resource adapter received an exception when attempting to connect to an alternative messaging engine.
+MESSAGING_ENGINE_STOPPING_CWSIV0765.useraction=See the linked exception for further information.  After resolving issue, restart messaging engine or resource adapter.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0766=CWSIV0766E: The exception {0} was thrown to the consumer for destination {1} on messaging engine {2} on bus {3} for endpoint activation {4}.
+SESSION_ERROR_CWSIV0766.explanation=An asynchronous exception was received for the given consumer.  The corresponding message-driven bean will be deactivated and will receive no further messages.
+SESSION_ERROR_CWSIV0766.useraction=See exception for cause.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0767=CWSIV0767E: The exception {0} was thrown on a connection to messaging engine {1} for endpoint activation {2}.
+CONNECTION_ERROR_CWSIV0767.explanation=An exception was received for the given connection.  The corresponding message-driven bean will be deactivated and will receive no further messages.
+CONNECTION_ERROR_CWSIV0767.useraction=See exception for cause.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+LAST_ME_CWSIV0768=CWSIV0768I: The last local messaging engine {0} on bus {1} used by endpoint activation {2} is stopping.
+LAST_ME_CWSIV0768.explanation=The given endpoint activation was using a messaging engine that has now been stopped.  There are no other active messaging engines to connect to.  The associated message-driven bean will start to receive messages again when a suitable messaging engine becomes available.
+LAST_ME_CWSIV0768.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+ATTACH_FAILED_CWSIV0769=CWSIV0769W: The creation of a consumer for remote destination {0} on bus {1} for endpoint activation {2} failed with exception {3}.
+ATTACH_FAILED_CWSIV0769.explanation=The inbound resource adapter successfully connected to a local messaging engine but then received an exception when attempting to create a consumer on a remote queue point.
+ATTACH_FAILED_CWSIV0769.useraction=Ensure that a messaging engine with a queue point for the given destination is available.  The resource adapter will automatically re-attempt the creation of the consumer periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONSUMER_FAILED_CWSIV0770=CWSIV0770W: A consumer for remote destination {0} on bus {1} for endpoint activation {2} failed with exception {3}.
+CONSUMER_FAILED_CWSIV0770.explanation=The inbound resource adapter received an exception for an existing consumer on a remote queue point.
+CONSUMER_FAILED_CWSIV0770.useraction=Ensure that a messaging engine with a queue point for the given destination is available.  The resource adapter will automatically re-attempt to recreate the consumer periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the messaging engine
+# {2} the name of the bus
+# {3} the endpoint activation
+RELOAD_FAILED_CWSIV0773=CWSIV0773E: The exception {0} was thrown when processing the updated configuration for messaging engine {1} on bus {2} for endpoint activation {3}.
+RELOAD_FAILED_CWSIV0773.explanation=When processing the updated configuration for the given messaging engine an exception was received.  Messages for the queue point on that messaging engine cannot be received by the corresponding message-driven bean.
+RELOAD_FAILED_CWSIV0773.useraction=See the exception for the cause.  After resolving the issue, restart the messaging engine, resource adapter, or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the name of the destination
+# {2} the name of the messaging engine
+# {3} the name of the bus
+# {4} the endpoint activation
+FAILURE_DURING_RELOAD_CWSIV0774=CWSIV0774W: The exception {0} was thrown to the consumer for destination {1} on messaging engine {2} on bus {3} for endpoint activation {4} while the messaging engine was reloading its configuration.
+FAILURE_DURING_RELOAD_CWSIV0774.explanation=The given exception was received for a consumer while the corresponding messaging engine was reloading its configuration.
+FAILURE_DURING_RELOAD_CWSIV0774.useraction=This warning can be ignored if the queue point to which the consumer was attached has deliberately been deleted as part of the configuration updates. If a replacement queue point has been defined, then a new consumer will be created when the update has completed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0775=CWSIV0775W: The creation of a connection for destination {0} on bus {1} for endpoint activation {2} failed with exception {3}.
+CONNECT_FAILED_CWSIV0775.explanation=The inbound resource adapter received an exception when attempting to connect to a remote messaging engine.
+CONNECT_FAILED_CWSIV0775.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically attempts to connect to the bus periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECTION_ERROR_CWSIV0776=CWSIV0776W: A connection to remote messaging engine {0} on bus {1} for endpoint activation {2} failed with exception {3}.
+CONNECTION_ERROR_CWSIV0776.explanation=The inbound resource adapter received an exception for an existing connection to a  messaging engine.
+CONNECTION_ERROR_CWSIV0776.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically attempts to connect to the bus periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the destination
+# {2} the name of the bus
+CONNECTED_CWSIV0777=CWSIV0777I: A connection to messaging engine {0} for destination {1} on bus {2} has been successfully created.
+CONNECTED_CWSIV0777.explanation=The inbound resource adapter successfully created a connection to a messaging engine for the given endpoint activation.
+CONNECTED_CWSIV0777.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_INITIALIZING_CWSIV0778=CWSIV0778I: The local messaging engine {0} for bus {1} that is required by endpoint activation {2} is now available.
+ME_INITIALIZING_CWSIV0778.explanation=The given endpoint activation was connecting remotely because no local messaging engines were enabled.  All remote connections are now closed.  When the local messaging engine is active, a new connection is attempted.
+ME_INITIALIZING_CWSIV0778.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_DESTROYED_CWSIV0779=CWSIV0779I: The last local messaging engine {0} for bus {1} has been destroyed.
+ME_DESTROYED_CWSIV0779.explanation=The given endpoint activation was connecting locally, but no remaining local messaging engines are enabled.  The resource adapter is attempting to connect to a remote messaging engine.
+ME_DESTROYED_CWSIV0779.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_TERMINATED_CWSIV0780=CWSIV0780W: The remote messaging engine {0} on bus {1} to which endpoint activation {2} was connected has terminated.
+ME_TERMINATED_CWSIV0780.explanation=The inbound resource adapter received notification that the remote messaging engine to which it was connected has terminated.
+ME_TERMINATED_CWSIV0780.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically attempts to connect to the bus periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+# {2} the endpoint activation
+ME_QUIESCING_CWSIV0781=CWSIV0781W: The remote messaging engine {0} on bus {1} to which endpoint activation {2} was connected is quiescing.
+ME_QUIESCING_CWSIV0781.explanation=The inbound resource adapter received notification that the remote messaging engine to which it was connected is quiescing and has disconnected.
+ME_QUIESCING_CWSIV0781.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically attempts to connect to the bus periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0782=CWSIV0782W: The creation of a connection for destination {0} on bus {1} for endpoint activation {2} failed with exception {3}. Please review the endpoint activation specification {2}.
+CONNECT_FAILED_CWSIV0782.explanation=The inbound resource adapter received an exception when connecting to a messaging engine.
+CONNECT_FAILED_CWSIV0782.useraction=Ensure that a messaging engine on the given bus is available.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the bus
+# {2} the endpoint activation
+# {3} the exception
+CONNECT_FAILED_CWSIV0783=CWSIV0783E: The creation of a connection for destination {0} on bus {1} for endpoint activation {2} failed with exception {3}.
+CONNECT_FAILED_CWSIV0783.explanation=The inbound resource adapter received an exception when attempting to connect to a messaging engine.  The corresponding message-driven bean is deactivating and cannot receive further messages.
+CONNECT_FAILED_CWSIV0783.useraction=See the exception to determine the cause.  After resolving the issue, restart the resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_STOPPING_CWSIV0784=CWSIV0784I: The local messaging engine {0} on bus {1} is stopping.
+ME_STOPPING_CWSIV0784.explanation=The given endpoint activation was using a messaging engine that has now been stopped. The resource adapter will attempt to connect to a different messaging engine.
+ME_STOPPING_CWSIV0784.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_QUIESCING_CWSIV0785=CWSIV0785I: The messaging engine {0} on bus {1} is quiescing.
+ME_QUIESCING_CWSIV0785.explanation=The inbound resource adapter received notification that the messaging engine to which it was connected is quiescing and has disconnected.
+ME_QUIESCING_CWSIV0785.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically attempts to connect to the bus periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine
+# {1} the name of the bus
+ME_TERMINATED_CWSIV0786=CWSIV0786I: The messaging engine {0} on bus {1} has terminated.
+ME_TERMINATED_CWSIV0786.explanation=The inbound resource adapter received notification that the messaging engine to which it was connected has terminated.
+ME_TERMINATED_CWSIV0786.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically attempts to connect to the bus periodically.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the target type
+# {1} the target significance
+# {2} the target
+# {3} the busname
+TARGETTED_CONNECTION_FAILED_CWSIV0787=CWSIV0787I: Failed to create a connection to a messaging engine when specifying a target to connect to. The target was of type {0} had a significance of {1} and was named {2}. The target bus was {3}
+TARGETTED_CONNECTION_FAILED_CWSIV0787.explanation=The system failed to connect to a messaging engine when given a set of target information. This may be a temporary connection problem if no \
+           messaging engine that matches the target data is available or this may be a configuration issue with the activation specification being used.
+TARGETTED_CONNECTION_FAILED_CWSIV0787.useraction=Ensure that a messaging engine on the given bus that matches the supplied target information is available.  The resource adapter automatically \
+           attempts to connect to the bus periodically. If the messaging engine is available then check the activation config settings are correct, particularly the busname and the  \
+           target information.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+CONNECTION_FAILED_CWSIV0788=CWSIV0788I: Failed to create a connection to a messaging engine. The target bus was {0}
+CONNECTION_FAILED_CWSIV0788.explanation=The system failed to connect to a messaging engine. This may be a temporary connection problem if no \
+           messaging engine is available in the bus or this may be a configuration issue with the activation specification being used.
+CONNECTION_FAILED_CWSIV0788.useraction=Ensure that a messaging engine on the given bus is available.  The resource adapter automatically \
+           attempts to connect to the bus periodically. If the messaging engine is available then check the activation config settings are correct, \
+           particularly the busname.
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the busname
+# {1} the durable subscription home
+DURSUB_CONNECTION_FAILED_CWSIV0789=CWSIV0789I: Failed to create a connection to a messaging engine that hosts the durable subscription. The target bus was {0} and the durable subscrption home was {1}
+DURSUB_CONNECTION_FAILED_CWSIV0789.explanation=The system failed to connect to the messaging engine that hosts the durable subscription home. This may be a \
+           temporary connection problem if the messaging engine is unavailable in the bus or this may be a configuration issue with the activation specification being used.
+DURSUB_CONNECTION_FAILED_CWSIV0789.useraction=Ensure that the messaging engine that host the durable subscription home on the given bus is available.  The resource adapter automatically \
+           attempts to connect to the bus periodically. If the messaging engine is available then check the activation config settings are correct, \
+           particularly the busname and durable subscription home
+           
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+CREATE_CONNECTION_FAILED_CWSIV0801=CWSIV0801E: The exception {0} was thrown during the creation of a connection to messaging engine {1} on bus {2}.
+CREATE_CONNECTION_FAILED_CWSIV0801.explanation=The inbound core SPI resource adapter was attempting to create a connection for the given messaging engine when it received an exception.  Messages from destinations localized on that messaging engine will not be received by the message-driven bean.
+CREATE_CONNECTION_FAILED_CWSIV0801.useraction=See the linked exception for further information.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0803=CWSIV0803E: The exception {0} was thrown during the creation of a consumer for the destination {1} on messaging engine {2} on bus {3}.
+CREATE_LISTENER_FAILED_CWSIV0803.explanation=The inbound resource adapter was attempting to create a consumer for the given destination when it received an exception.  Messages from that destination localization will not be received by the message-driven bean.
+CREATE_LISTENER_FAILED_CWSIV0803.useraction=See the linked exception for further information.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the ME name
+# (2) the bus name
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804=CWSIV0804E: The exception {0} was thrown during the addition of a destination listener for messaging engine {1} on bus {2}.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.explanation=The inbound resource adapter was attempting to add a destination listener for the given messaging engine when it received an exception.  Messages from queue points on that messaging engine will not be received by the message-driven bean.
+ADD_DESTINATION_LISTENER_FAILED_CWSIV0804.useraction=See the linked exception for the cause.  After resolving the issue, restart the messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the ME name
+# (3) the bus name
+CREATE_LISTENER_FAILED_CWSIV0805=CWSIV0805E: The exception {0} was thrown during the creation of a consumer for the new destination {1} on messaging engine {2} on bus {3}.
+CREATE_LISTENER_FAILED_CWSIV0805.explanation=The inbound resource adapter was attempting to create a consumer for the given new destination when it received an exception.  Messages from that queue point will not be received by the message-driven bean.
+CREATE_LISTENER_FAILED_CWSIV0805.useraction=See the linked exception for the cause.  After resolving the issue, restart the messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the destination
+# {2} the messaging engine name
+# {3} the bus name
+# {4} the endpoint activation
+SESSION_ERROR_CWSIV0806=CWSIV0806E: The exception {0} was thrown to the consumer for destination {1} on messaging engine {2} on bus {3} for endpoint activation {4}.
+SESSION_ERROR_CWSIV0806.explanation=An asynchronous exception was received for the given consumer.  The corresponding message-driven bean will be deactivated and will receive no further messages.
+SESSION_ERROR_CWSIV0806.useraction=See exception for cause.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception
+# {1} the messaging engine name
+# {2} the endpoint activation
+CONNECTION_ERROR_CWSIV0807=CWSIV0807E: The exception {0} was thrown on a connection to messaging engine {1} for endpoint activation {2}.
+CONNECTION_ERROR_CWSIV0807.explanation=An exception was received for the given connection.  The corresponding message-driven bean will be deactivated and will receive no further messages.
+CONNECTION_ERROR_CWSIV0807.useraction=See exception for cause.  After resolving issue, restart messaging engine, resource adapter or application.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the messaging engine name
+# {2} the bus name
+# {3} the exception
+SESSION_DROPPED_CWSIV0808=CWSIV0808W: Consumption of messages from the destination {0} on messaging engine {1} on bus {2} has stopped because the session was dropped. The exception was {3}
+SESSION_DROPPED_CWSIV0808.explanation=The session was dropped for the reason stated in the exception. This might be because the specified destination has been deleted or marked as send-only.  The corresponding message-driven bean will be deactivated and will receive no further messages.
+SESSION_DROPPED_CWSIV0808.useraction=If this warning was not expected, resolve the issue then restart the application, resource adapter or messaging engine as appropriate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination wildcard string
+# {1} the messaging engine name
+# {2} the bus name
+NO_LISTENERS_CREATED_CWSIV0809=CWSIV0809W: The wildcard destination name {0} matched zero destinations that are available for consumption of messages on messaging engine {1} on bus {2}
+NO_LISTENERS_CREATED_CWSIV0809.explanation=The activation specification contains a wildcard destination name in order to consume messages from multiple destinations, however the wildcard name matches zero available destinations
+NO_LISTENERS_CREATED_CWSIV0809.useraction=Ensure that the activation specification should be using wildcarding destination name, that the destination wildcarded name will match some destinations and that the specifed user details are allowed to consume from the destinations.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSIV0850=CWSIV0850E: An internal error occurred. The message endpoint {0} does not implement the expected interface {1}.
+UNEXPECTED_ENDPOINT_CWSIV0850.explanation=The message endpoint factory has returned a message endpoint that does not implement the SibRaMessageListener interface as expected.
+UNEXPECTED_ENDPOINT_CWSIV0850.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSIV0851=CWSIV0851E: An internal error occurred. The exception {0} was thrown while attempting to obtain an instance of the onMessage method.
+ON_MESSAGE_CWSIV0851.explanation=An exception was created during the attempt to obtain an instance of the onMessage method.
+ON_MESSAGE_CWSIV0851.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the destination name
+# {2} the bus name
+# {3} the connection
+LISTENER_CREATION_CWSIV0900=CWSIV0900E: The exception {0} was thrown while attempting to create a listener for destination {1} on bus {2} using connection {3}.
+LISTENER_CREATION_CWSIV0900.explanation=An exception was created whilst the inbound resource adapter was attempting to create a listener for the given destination.
+LISTENER_CREATION_CWSIV0900.useraction=See the linked exception for further information.  Resolve the issue then restart the application, resource adapter or messaging engine as appropriate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+SELECTION_FACTORY_CWSIV0901=CWSIV0901E: An internal error occurred. The exception {0} was thrown while attempting to obtain an instance of the SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.explanation=An exception was created during the attempt to obtain an instance of the SelectionCriteriaFactory.
+SELECTION_FACTORY_CWSIV0901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902=CWSIV0902W: The Message Endpoint {0} that was listening to the destination {1} has been paused by the system.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.explanation=The system paused the message endpoint because it detected a problem with the message-driven bean's message endpoint.
+MESSAGE_ENDPOINT_PAUSED_AUTONOMICALLY_CWSIV0902.useraction=Investigate possible problems with the message-driven bean that could cause sequential errors. When you are ready to resume the message endpoint, use the administrative console. Alternatively, use the message endpoint MBean to resume the endpoint, passing to it the endpoint name in this message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+# {2} the exception thrown from the invoke
+INVOKE_MBEAN_EXCEPTION__CWSIV0903=CWSIV0903W: The Message Endpoint {0} that was listening to the destination {1} was attempted to be paused but the invoke of the MBean failed with the following exception {2}.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.explanation=The system detected a problem with a message endpoint's message-driven bean but the attempt to pause the message endpoint failed.
+INVOKE_MBEAN_EXCEPTION__CWSIV0903.useraction=Check the status of the message endpoint using wsadmin scripting or the administrative console. If the message endpoint is active, pause the endpoint and investigate possible problems with the message-driven bean. Resume the endpoint when you are ready.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+NO_MBEAN_EXCEPTION_CWSIV0904=CWSIV0904W: During an attempt to stop an MDB there were zero Message Endpoints that could be located for endpoint {0} which was listening to the destination {1}. 
+NO_MBEAN_EXCEPTION_CWSIV0904.explanation=The system cannot locate a message endpoint.
+NO_MBEAN_EXCEPTION_CWSIV0904.useraction=Check the status of the message endpoint using wsadmin scripting or the administrative console. If the message endpoint is active, pause the endpoint and investigate possible problems with the message-driven bean. Resume the endpoint when you are ready.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the message endpoint
+# {1} the destination the message endpoint was listening too
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905=CWSIV0905W: During an attempt to stop an MDB there were multiple Message Endpoint that were found endpoint {0} which was listening to the destination {1}. Only one endpoint should exist. The MDB will not be stopped. 
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.explanation=The system detected multiple message endpoints. It was unable to identify which message endpoint to pause.
+MULTIPLE_MBEAN_EXCEPTION_CWSIV0905.useraction=Check the status of all the message endpoints on this message-driven bean using wsadmin scripting or the administrative console. If a message endpoint is active, pause the endpoint and investigate possible problems with the message-driven bean. Resume the endpoint when you are ready.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906=CWSIV0906W: The MDB maximum sequential message failure configuration value has been changed from the value {0} to {1}.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.explanation=The maximum sequential message failure value has changed because strict message ordering has been turned on.
+MAXSEQUENTIALMESSAGEFAILURE_CONFIG_VALUE_CHANGED_CWSIV0906.useraction=No action is necessary unless you require the sequential message failure function. If you require the sequential message failure function, turn off strict message ordering.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value 
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907=CWSIV0907W: The MDB maximum sequential message failure configuration value has been changed from the value {0} to {1}.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.explanation=The maximum sequential message failure value has changed because no exception destination is defined for the destination on which the message-driven bean is listening.
+MAXSEQUENTIALMESSAGEFAILURE_EXCEPTION_DESTINATION_CWSIV0907.useraction=No action is necessary unless you require the sequential message failure function. If you require the sequential message failure function, configure an exception destination for the destination.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0950=CWSIV0950E: An internal error occurred. The exception {0} was thrown while attempting to create a connection on factory {1}.
+CREATE_CONNECTION_CWSIV0950.explanation=The inbound resource adapter was attempting to create a connection when an unexpected exception was received.
+CREATE_CONNECTION_CWSIV0950.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0951=CWSIV0951E: An internal error occurred. The exception {0} was thrown while attempting to create a connection to messaging engine {1}.
+CREATE_CONNECTION_CWSIV0951.explanation=The inbound resource adapter was attempting to create a connection when an unexpected exception was received.
+CREATE_CONNECTION_CWSIV0951.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0952=CWSIV0952E: An internal error occurred. An attempt was made to create a listener on a connection that has been closed.
+LISTENER_CLOSED_CWSIV0952.explanation=The messaging engine connection received a request to create a listener but has already been closed.
+LISTENER_CLOSED_CWSIV0952.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+LISTENER_CLOSED_CWSIV0953=CWSIV0953E: An internal error occurred. An attempt was made to create a dispatcher on a connection that has been closed.
+LISTENER_CLOSED_CWSIV0953.explanation=The messaging engine connection received a request to create a dispatcher but has already been closed.
+LISTENER_CLOSED_CWSIV0953.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the connection factory
+CREATE_CONNECTION_CWSIV0954=CWSIV0954E: The authentication exception {0} was thrown while attempting to create a connection on factory {1}.
+CREATE_CONNECTION_CWSIV0954.explanation=The inbound resource adapter was attempting to create a connection when an authentication exception was received.
+CREATE_CONNECTION_CWSIV0954.useraction=Ensure that the correct user name and password are supplied on the ActivationSpec that the message-driven bean is configured to use
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+CREATE_CONNECTION_CWSIV0955=CWSIV0955E: The authentication exception {0} was thrown while attempting to create a connection to messaging engine {1}.
+CREATE_CONNECTION_CWSIV0955.explanation=The inbound resource adapter was attempting to create a connection when an authentication exception was received.
+CREATE_CONNECTION_CWSIV0955.useraction=Ensure that the correct user name and password are supplied on the ActivationSpec that the message-driven bean is configured to use
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_CONNECTION_CWSIV0957=CWSIV0957E: The authentication exception {0} was thrown while attempting to get the WebSphere Application Server Subject.
+CREATE_CONNECTION_CWSIV0957.explanation=The inbound resource adapter was attempting to create a connection using the server subject, but couldn't get the subject.
+CREATE_CONNECTION_CWSIV0957.useraction=Check Application Server security settings are configured correctly.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0958=CWSIV0958E: The authorization exception {0} was thrown while attempting to create a connection to messaging engine {1} using the activation specification {2}.
+CREATE_CONNECTION_CWSIV0958.explanation=The inbound resource adapter was attempting to create a connection when an authorization exception was received.
+CREATE_CONNECTION_CWSIV0958.useraction=Ensure that a correct authentication alias is setup on the activation specification that the message-driven bean is configured to use.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the messaging engine UUID
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0959=CWSIV0959E: The authorization exception {0} was thrown while attempting to create a connection to messaging engine {1} using the activation specification {2}.
+CREATE_CONNECTION_CWSIV0959.explanation=The inbound resource adapter was attempting to create a connection when an authorization exception was received.
+CREATE_CONNECTION_CWSIV0959.useraction=Check that the authentication alias on the activation specification, that the message-driven bean is configured to use, is authorized to connect to the messaging engine.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specification
+CREATE_CONNECTION_CWSIV0960=CWSIV0960E: The authorization exception {0} was thrown while attempting to create a connection to the bus {1} using the activation specification {2}.
+CREATE_CONNECTION_CWSIV0960.explanation=The inbound resource adapter was attempting to create a connection when an authorization exception was received.
+CREATE_CONNECTION_CWSIV0960.useraction=Ensure that a correct authentication alias is setup on the activation specification that the message-driven bean is configured to use.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0961=CWSIV0961E: The authorization exception {0} was thrown while attempting to create a connection to the bus {1} using the activation specification {2}.
+CREATE_CONNECTION_CWSIV0961.explanation=The inbound resource adapter was attempting to create a connection when an authorization exception was received.
+CREATE_CONNECTION_CWSIV0961.useraction=Check that the authentication alias on the activation specification, that the message-driven bean is configured to use, is authorized to connect to bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the bus name
+# {2} the activation specifcation
+CREATE_CONNECTION_CWSIV0962=CWSIV0962E: The authentication exception {0} occurred while attempting to create a connection to the bus {1} using the activation specification {2}.
+CREATE_CONNECTION_CWSIV0962.explanation=The inbound resource adapter was attempting to create a connection when an authentication exception was received.
+CREATE_CONNECTION_CWSIV0962.useraction=Ensure that the authentication alias on the activation specification, which the message-driven bean is configured to use, is authenticated to connect to bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1000=CWSIV1000E: An internal error occurred. The message endpoint factory {0} passed to the resource adapter did not implement the expected interface {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1000.explanation=The inbound resource adapter requires the message endpoint factory to implement the given interface in order to obtain the unique name of the message-driven bean.
+WAS_ENDPOINT_FACTORY_CWSIV1000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the request object passed
+# {1} the expected interface
+MSG_TOKEN_CWSIV1050=CWSIV1050E: An internal error occurred. The request object {0} passed to the resource adapter did not implement the expected interface {1}.
+MSG_TOKEN_CWSIV1050.explanation=The inbound resource adapter dispatch target received a request object that was not of the expected type.
+MSG_TOKEN_CWSIV1050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the messages
+READ_SET_CWSIV1051=CWSIV1051E: An internal error occurred. The array of messages {3} returned for the message handle {2} from the session {0} on messaging engine {1} did not contain a single message.
+READ_SET_CWSIV1051.explanation=The inbound resource adapter dispatch target did not receive back a single message in exchange for the given message handle.
+READ_SET_CWSIV1051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session ID
+# {1} the messaging engine UUID
+# {2} the message handle
+# {3} the exception thrown
+EXCEPTION_CWSIV1052=CWSIV1052W: The inbound resource adapter received the exception {3} when processing the message handle {2} from the session {0} on messaging engine {1}.
+EXCEPTION_CWSIV1052.explanation=The inbound resource adapter was unable to process the given message handle received from the control region adjunct.
+EXCEPTION_CWSIV1052.useraction=See exception details for cause.  Message delivery will be reattempted once the message lock has expired.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the j2eeName (MDB Name)
+NO_POOL_CWSIV1053=CWSIV1053E: An internal error occurred. The inbound resource adapter failed to locate an endpoint activation pool for {0} so was unable to retreive an endpoint activation
+NO_POOL_CWSIV1053.explanation=The inbound resource adapter could not get an endpoint activation from the pool because it could not locate the pool
+NO_POOL_CWSIV1053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1100=CWSIV1100E: An internal error occurred. The exception {0} was thrown while attempting to obtain messages from the enumeration {1}.
+RETRIEVE_MESSAGES_CWSIV1100.explanation=The inbound resource adapter was attempting to retrieve the messages from an enumeration when an unexpected exception was received.
+RETRIEVE_MESSAGES_CWSIV1100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the value it used to be
+# {1} the new value
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101=CWSIV1101W: The MDB maximum concurrency configuration value has been changed from the value {0} to {1}.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.explanation=The maximum concurrency value has changed because strict message ordering has been turned on.
+MAXCONCURRENCY_CONFIG_VALUE_CHANGED_CWSIV1101.useraction=No action is required unless concurrent message-driven beans are required. If so then turn off strict message ordering.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the locked message enumeration
+RETRIEVE_MESSAGES_CWSIV1150=CWSIV1150E: An internal error occurred. The exception {0} was thrown while attempting to obtain messages from the enumeration {1}.
+RETRIEVE_MESSAGES_CWSIV1150.explanation=The inbound resource adapter was attempting to retrieve the messages from an enumeration when an unexpected exception was received.
+RETRIEVE_MESSAGES_CWSIV1150.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the session
+# {1} the connection
+GET_ID_CWSIV1151=CWSIV1151E: An internal error occurred. The exception {0} was thrown while attempting to obtain the identifier for the session {0} created from connection {1}.
+GET_ID_CWSIV1151.explanation=The inbound resource adapter was attempting to obtain the identifier for a session when an unexpected exception was received.
+GET_ID_CWSIV1151.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint factory passed
+# {1} the expected interface
+WAS_ENDPOINT_FACTORY_CWSIV1152=CWSIV1152E: An internal error occurred. The message endpoint factory {0} passed to the resource adapter did not implement the expected interface {1}.
+WAS_ENDPOINT_FACTORY_CWSIV1152.explanation=The inbound resource adapter requires the message endpoint factory to implement the given interface in order to obtain the unique name of the message-driven bean.
+WAS_ENDPOINT_FACTORY_CWSIV1152.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The default value for message lock expiry.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153=CWSIV1153W: Unable to read the custom property MessageLockExpiry as Platform Messaging was unable to locate the server. The default value of {0} will be used
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.explanation=The inbound resource adapter could not find the server so the property MessageLockExpiry was assigned a default value.
+UNABLE_TO_LOCATE_SERVER_CWSIV1153.useraction=CMSG0002
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154=CWSIV1154W: The value for the MessageLockExpiry appears to be {0}, this can not be converted to an integer. The default value of {1} will be used.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.explanation=When reading the value for MessageLockExpiry it was unable to convert the value to an integer.
+INVALID_MESSAGELOCKEXPIRY_CWSIV1154.useraction=Check the value assigned to the custom property MessageLockExpiry is an integer, restart the server for the changes to take effect.
+
+#
+# {0} The value the message lock expiry was set to
+# {1} The default value for message lock expiry.
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155=CWSIV1155W: The value for the MessageLockExpiry appears to be {0}, this value can not be negative. The default of {1} will be used
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.explanation=Negative values are not allowed for the message lock expiry time
+NEGATIVE_MESSAGELOCKEXPIRY_CWSIV1155.useraction=Check the value assigned to the custom property MessageLockExpiry is either positive or zero, then restart the server for the changes to take effect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+# {1} the endpoint on which beforeDelivery is being invoked
+BEFORE_DELIVERY_CWSIV1200=CWSIV1200E: An internal error occurred. The exception {0} was received when attempting to invoke beforeDelivery on endpoint {1}.
+BEFORE_DELIVERY_CWSIV1200.explanation=The resource adapter received an exception when attempting to invoke beforeDelivery on an endpoint prior to calling onMessage.
+BEFORE_DELIVERY_CWSIV1200.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the connection on which the create was attempted
+# {1} the exception thrown
+UNCOORD_TRAN_CWSIV1201=CWSIV1201E: An internal error occurred. The exception {1} was received when attempting to create an uncoordinated transaction on connection {0}.
+UNCOORD_TRAN_CWSIV1201.explanation=The resource adapter received an exception when attempting to create an uncoordinated transaction on the given connection.
+UNCOORD_TRAN_CWSIV1201.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the synchronization that was being registered
+# {1} the exception thrown
+REGISTER_SYNC_CWSIV1202=CWSIV1202E: An internal error occurred. The exception {1} was received when attempting to register the synchronization {0}.
+REGISTER_SYNC_CWSIV1202.explanation=The resource adapter received an exception when attempting to register the given synchronization with the transaction manager.
+REGISTER_SYNC_CWSIV1202.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the transaction
+# {1} the expected interface
+SYNC_CWSIV1203=CWSIV1203E: The transaction {0} returned from the connection did not implement the expected interface {1}.
+SYNC_CWSIV1203.explanation=The inbound resource adapter requires the uncoordinated transaction to implement the given interface in order to perform the one-phase commit optimization.
+SYNC_CWSIV1203.useraction=Ensure that the system is correctly configured in order to take advantage of the one-phase commit optimization between a messaging engine and a database when also using entity beans that use container managed persistence.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The object name
+# {1} The method name
+NULL_XA_RESOURCE_CWSIV1210=CWSIV1210E: An internal error occured, a null was passed in to the method {1} on object {0}. A valid XAResource must be passed in.
+NULL_XA_RESOURCE_CWSIV1210.explanation=CMSG0001
+NULL_XA_RESOURCE_CWSIV1210.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIV9999=CWSIV9999E: {0}
+TEMPORARY_CWSIV9999.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+TEMPORARY_CWSIV9999.useraction=See the accompanying error messages for further information.
+

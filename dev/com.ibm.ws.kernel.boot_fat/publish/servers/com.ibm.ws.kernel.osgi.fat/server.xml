@@ -1,0 +1,9 @@
+<server>
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <webApplication id="osgiEmbedManager" location="osgiEmbedManager.war" name="osgiEmbedManager" />
+</server>

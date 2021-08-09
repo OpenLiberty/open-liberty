@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.taglibs.standard
+Bundle-Description: JSTL Impl Version 1.2
+
+Fragment-Host: com.ibm.ws.jsp
+
+Import-Package: \
+   !org.apache.xml.*,\
+   !org.apache.xerces*, \
+   *
+
+Export-Package: \
+  org.apache.taglibs.standard.tlv;thread-context=true;version=1.2, \
+  org.apache.taglibs.standard.tei;thread-context=true;version=1.2, \
+  org.apache.taglibs*;version=1.2
+
+Include-Resource: \
+   @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}!/META-INF/*.tld,\
+   @${repo;com.ibm.ws.org.apache:xalan;2.7.2}!/!META-INF/*
+
+-buildpath: \
+  com.ibm.ws.javax.j2ee:jsp.tld.standard;version=1.2

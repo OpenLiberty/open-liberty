@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: \uc774 \ud074\ub798\uc2a4\uc5d0\ub294 \uc778\uc218\uac00 \uc5c6\ub294 \uc0dd\uc131\uc790\uac00 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=\uc774 \ud074\ub798\uc2a4\uc5d0\ub294 \uc778\uc218\uac00 \uc5c6\ub294 \uc0dd\uc131\uc790\uac00 \uc788\uc5b4\uc57c \ud558\uba70 javax.security.auth.callback.CallbackHandler \uc778\ud130\ud398\uc774\uc2a4\ub97c \uad6c\ud604\ud574\uc57c \ud569\ub2c8\ub2e4.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=\ucf5c\ubc31 \ud578\ub4e4\ub7ec \ud074\ub798\uc2a4\uc5d0 \uc778\uc218\uac00 \uc5c6\ub294 \uc0dd\uc131\uc790\ub97c \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: PostConstruct \uba54\uc18c\ub4dc \ucc98\ub9ac \uc911 \ub2e4\uc74c \uc778\uc81d\uc158 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=\ucee8\ud14c\uc774\ub108\uac00 PostConstruct \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4. 
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=PostConstruct \uba54\uc18c\ub4dc\uac00 \ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130\uc5d0 \uc62c\ubc14\ub974\uac8c \uc815\uc758\ub418\uc5c8\uac70\ub098 \ud074\ub798\uc2a4\uc5d0\uc11c \uc8fc\uc11d\uc774 \uc62c\ubc14\ub974\uac8c \ub2ec\ub838\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: PreDestroy \uba54\uc18c\ub4dc \ucc98\ub9ac \uc911 \ub2e4\uc74c \uc778\uc81d\uc158 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=\ucee8\ud14c\uc774\ub108\uac00 PreDestroy \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=PreDestroy \uba54\uc18c\ub4dc\uac00 \ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130\uc5d0 \uc62c\ubc14\ub974\uac8c \uc815\uc758\ub418\uc5c8\uac70\ub098 \ud074\ub798\uc2a4\uc5d0\uc11c \uc8fc\uc11d\uc774 \uc62c\ubc14\ub974\uac8c \ub2ec\ub838\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: \ub458 \uc774\uc0c1\uc758 PostConstruct \ub610\ub294 PreDestroy \uba54\uc18c\ub4dc\uac00 {1} \ud074\ub798\uc2a4\uc5d0 \uc788\uc2b5\ub2c8\ub2e4. \ucee8\ud14c\uc774\ub108\uac00 {0} PostConstruct \ub610\ub294 PreDestroy \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=\ub458 \uc774\uc0c1\uc758 PostConstruct \uba54\uc18c\ub4dc \ub610\ub294 PreDestroy \uba54\uc18c\ub4dc\uac00 \ud074\ub798\uc2a4\uc5d0\uc11c \uc120\uc5b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ucee8\ud14c\uc774\ub108\uac00 \uccab \ubc88\uc9f8 \uba54\uc18c\ub4dc\ub97c \ubc1c\uacac\ud558\uc5ec \ud638\ucd9c\ud569\ub2c8\ub2e4. 

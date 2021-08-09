@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:ns1="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
+	name="RegistrationPortType" targetNamespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06">
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
+			xmlns:ns1="http://www.w3.org/2005/08/addressing" elementFormDefault="qualified"
+			targetNamespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06"
+			version="1.0">
+			<xs:import namespace="http://www.w3.org/2005/08/addressing"
+				schemaLocation="ws-addr.xsd"></xs:import>
+			<xs:element name="Register" type="tns:RegisterType"></xs:element>
+			<xs:element name="RegisterResponse" type="tns:RegisterResponseType"></xs:element>
+			<xs:complexType name="RegisterType">
+				<xs:sequence>
+					<xs:element name="ProtocolIdentifier" type="xs:anyURI"></xs:element>
+					<xs:element name="ParticipantProtocolService" type="ns1:EndpointReferenceType"></xs:element>
+					<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other"
+						processContents="lax"></xs:any>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="skip"></xs:anyAttribute>
+			</xs:complexType>
+			<xs:complexType name="RegisterResponseType">
+				<xs:sequence>
+					<xs:element name="CoordinatorProtocolService" type="ns1:EndpointReferenceType"></xs:element>
+					<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other"
+						processContents="lax"></xs:any>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="skip"></xs:anyAttribute>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://www.w3.org/2005/08/addressing" blockDefault="#all"
+			elementFormDefault="qualified" targetNamespace="http://www.w3.org/2005/08/addressing">
+
+			<!-- Constructs from the WS-Addressing Core -->
+
+			<xs:element name="EndpointReference" type="tns:EndpointReferenceType"></xs:element>
+			<xs:complexType name="EndpointReferenceType">
+				<xs:sequence>
+					<xs:element name="Address" type="tns:AttributedURIType"></xs:element>
+					<xs:element minOccurs="0" name="ReferenceParameters"
+						type="tns:ReferenceParametersType"></xs:element>
+					<xs:element minOccurs="0" ref="tns:Metadata"></xs:element>
+					<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other"
+						processContents="lax"></xs:any>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="lax"></xs:anyAttribute>
+			</xs:complexType>
+
+			<xs:complexType name="ReferenceParametersType">
+				<xs:sequence>
+					<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##any"
+						processContents="lax"></xs:any>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="lax"></xs:anyAttribute>
+			</xs:complexType>
+
+			<xs:element name="Metadata" type="tns:MetadataType"></xs:element>
+			<xs:complexType name="MetadataType">
+				<xs:sequence>
+					<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##any"
+						processContents="lax"></xs:any>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="lax"></xs:anyAttribute>
+			</xs:complexType>
+
+			<xs:element name="MessageID" type="tns:AttributedURIType"></xs:element>
+			<xs:element name="RelatesTo" type="tns:RelatesToType"></xs:element>
+			<xs:complexType name="RelatesToType">
+				<xs:simpleContent>
+					<xs:extension base="xs:anyURI">
+						<xs:attribute default="http://www.w3.org/2005/08/addressing/reply"
+							name="RelationshipType" type="tns:RelationshipTypeOpenEnum" use="optional"></xs:attribute>
+						<xs:anyAttribute namespace="##other"
+							processContents="lax"></xs:anyAttribute>
+					</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+
+			<xs:simpleType name="RelationshipTypeOpenEnum">
+				<xs:union memberTypes="tns:RelationshipType xs:anyURI"></xs:union>
+			</xs:simpleType>
+
+			<xs:simpleType name="RelationshipType">
+				<xs:restriction base="xs:anyURI">
+					<xs:enumeration value="http://www.w3.org/2005/08/addressing/reply"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:element name="ReplyTo" type="tns:EndpointReferenceType"></xs:element>
+			<xs:element name="From" type="tns:EndpointReferenceType"></xs:element>
+			<xs:element name="FaultTo" type="tns:EndpointReferenceType"></xs:element>
+			<xs:element name="To" type="tns:AttributedURIType"></xs:element>
+			<xs:element name="Action" type="tns:AttributedURIType"></xs:element>
+
+			<xs:complexType name="AttributedURIType">
+				<xs:simpleContent>
+					<xs:extension base="xs:anyURI">
+						<xs:anyAttribute namespace="##other"
+							processContents="lax"></xs:anyAttribute>
+					</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+
+			<!-- Constructs from the WS-Addressing SOAP binding -->
+
+			<xs:attribute name="IsReferenceParameter" type="xs:boolean"></xs:attribute>
+
+			<xs:simpleType name="FaultCodesOpenEnumType">
+				<xs:union memberTypes="tns:FaultCodesType xs:QName"></xs:union>
+			</xs:simpleType>
+
+			<xs:simpleType name="FaultCodesType">
+				<xs:restriction base="xs:QName">
+					<xs:enumeration value="tns:InvalidAddressingHeader"></xs:enumeration>
+					<xs:enumeration value="tns:InvalidAddress"></xs:enumeration>
+					<xs:enumeration value="tns:InvalidEPR"></xs:enumeration>
+					<xs:enumeration value="tns:InvalidCardinality"></xs:enumeration>
+					<xs:enumeration value="tns:MissingAddressInEPR"></xs:enumeration>
+					<xs:enumeration value="tns:DuplicateMessageID"></xs:enumeration>
+					<xs:enumeration value="tns:ActionMismatch"></xs:enumeration>
+					<xs:enumeration value="tns:MessageAddressingHeaderRequired"></xs:enumeration>
+					<xs:enumeration value="tns:DestinationUnreachable"></xs:enumeration>
+					<xs:enumeration value="tns:ActionNotSupported"></xs:enumeration>
+					<xs:enumeration value="tns:EndpointUnavailable"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:element name="RetryAfter" type="tns:AttributedUnsignedLongType"></xs:element>
+			<xs:complexType name="AttributedUnsignedLongType">
+				<xs:simpleContent>
+					<xs:extension base="xs:unsignedLong">
+						<xs:anyAttribute namespace="##other"
+							processContents="lax"></xs:anyAttribute>
+					</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+
+			<xs:element name="ProblemHeaderQName" type="tns:AttributedQNameType"></xs:element>
+			<xs:complexType name="AttributedQNameType">
+				<xs:simpleContent>
+					<xs:extension base="xs:QName">
+						<xs:anyAttribute namespace="##other"
+							processContents="lax"></xs:anyAttribute>
+					</xs:extension>
+				</xs:simpleContent>
+			</xs:complexType>
+
+			<xs:element name="ProblemHeader" type="tns:AttributedAnyType"></xs:element>
+			<xs:complexType name="AttributedAnyType">
+				<xs:sequence>
+					<xs:any namespace="##any" processContents="lax"></xs:any>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="lax"></xs:anyAttribute>
+			</xs:complexType>
+
+			<xs:element name="ProblemIRI" type="tns:AttributedURIType"></xs:element>
+
+			<xs:element name="ProblemAction" type="tns:ProblemActionType"></xs:element>
+			<xs:complexType name="ProblemActionType">
+				<xs:sequence>
+					<xs:element minOccurs="0" ref="tns:Action"></xs:element>
+					<xs:element minOccurs="0" name="SoapAction" type="xs:anyURI"></xs:element>
+				</xs:sequence>
+				<xs:anyAttribute namespace="##other"
+					processContents="lax"></xs:anyAttribute>
+			</xs:complexType>
+
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="RegisterOperationResponse">
+		<wsdl:part element="ns1:RegisterResponse" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="RegisterOperation">
+		<wsdl:part element="ns1:Register" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="RegistrationPortType">
+		<wsdl:operation name="RegisterOperation">
+			<wsdl:input message="ns1:RegisterOperation" name="RegisterOperation"
+				wsam:Action="http://docs.oasis-open.org/ws-tx/wscoor/2006/06/Register"
+				wsaw:Action="http://docs.oasis-open.org/ws-tx/wscoor/2006/06/Register">
+			</wsdl:input>
+			<wsdl:output message="ns1:RegisterOperationResponse"
+				name="RegisterOperationResponse"
+				wsam:Action="http://docs.oasis-open.org/ws-tx/wscoor/2006/06/RegisterResponse"
+				wsaw:Action="http://docs.oasis-open.org/ws-tx/wscoor/2006/06/RegisterResponse">
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,44 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+releaseTypeGA=true
+
+libertyBaseVersion=21.0.0
+libertyFixpackVersion=8
+libertyServiceVersion=${libertyBaseVersion}.${libertyFixpackVersion}
+libertyBetaVersion=2021.8.0.0
+libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
+
+libertyBundleMicroVersion=55
+copyrightBuildYear=2020
+buildID=${libertyRelease}-${buildLabel}
+productEdition=BASE_ILAN
+productLicenseType=ILAN
+productID=com.ibm.websphere.appserver
+
+gaOrBeta=${if;${releaseTypeGA};ga;beta}
+philOrCord=${if;${releaseTypeGA};phil;cord}
+
+libertyInfocenterLink=http://www14.software.ibm.com/webapp/wsbroker/redirect?version=${philOrCord}&product=was-nd-mp&topic=cwlp_about
+libertyLatestVersionUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp_${gaOrBeta}_latestversion.js
+libertyWelcomePageProductName=WebSphere Application Server ${if;${releaseTypeGA};V${libertyServiceVersion};Beta}
+libertyWelcomePageProductVersion=${libertyRelease}
+libertyWelcomePageJsEnhancementsUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/adminCenter-welcome.js
+libertyWelcomePageCssEnhancementsUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/adminCenter-welcome.css
+
+mfProductEdition=${if;${releaseTypeGA}; productEdition="@PRODUCT_EDITION@";}
+mfProductEditionRestricted=${if;${releaseTypeGA}; productEdition="@PRODUCT_EDITION_RESTRICTED@";}
+mfProductEditionZOs=${if;${releaseTypeGA};productEdition="@PRODUCT_EDITION_ZOS@";}
+mfProductEditionLibertyCore=${if;${releaseTypeGA}; productEdition="@PRODUCT_EDITION_LIBERTY_CORE@";}
+mfProductVersion=productVersion="${libertyRelease}"
+mfLicenseInfoSpecial=${if;${releaseTypeGA};@IBM_LI_SPECIAL@;}
+mfFeatureTermsRestricted=http://www.ibm.com/licenses/wlp-featureterms-${if;${releaseTypeGA};@FEATURE_TERMS_RESTRICTED_V1@;v1}
+mfFeatureTermsRestricted=http://www.ibm.com/licenses/${if;${releaseTypeGA};@FEATURE_TERMS_SPECIAL@;wlp-featureterms-v1}

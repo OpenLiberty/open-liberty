@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="3.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    metadata-complete="true">
+
+  <display-name>TestServlet40-MetadataComplete</display-name>
+    
+  <servlet>
+    <servlet-name>testservlet40.war.servlets.MyServlet</servlet-name>
+    <servlet-class>testservlet40.war.servlets.MyServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>testservlet40.jar.servlets.SimpleTestServlet</servlet-name>
+    <servlet-class>testservlet40.jar.servlets.SimpleTestServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>testservlet40.war.servlets.MyServlet</servlet-name>
+    <url-pattern>/MyServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>testservlet40.jar.servlets.SimpleTestServlet</servlet-name>
+    <url-pattern>/SimpleTestServlet</url-pattern>
+  </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=Nu se poate converti {0} de tipul {1} la {2}
+error.compare=Nu se poate compara {0} cu {1}
+error.function=Probleme la apelarea func\u0163iei ''{0}''
+error.unreachable.base=\u0162int\u0103 de neatins, identificatorul ''{0}'' rezolvat la nul
+error.unreachable.property=\u0162int\u0103 de neatins, ''{0}'' a returnat nul
+error.resolver.unhandled=ELResolver nu a manipulat tipul: {0} cu proprietatea ''{1}''
+error.resolver.unhandled.null=ELResolver nu poate manipula un Obiect de baz\u0103 nul cu identificatorul ''{0}''
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression este literal \u015fi nu este inscriptibil: {0}
+
+# ExpressionFactoryImpl
+error.null=Expresia nu poate fi nul\u0103
+error.mixed=Expresia nu poate con\u0163ine \u015fi ''#''{..}'' \u015fi ''$''{..}'' : {0}
+error.method=Nu este o MethodExpression valid\u0103 : {0}
+error.method.nullParms=Tipurile de parametri nu pot fi nule
+error.value.expectedType=Tipul a\u015fteptat nu poate fi nul
+
+# ExpressionBuilder
+error.parseFail=A e\u015fuat parsarea expresiei [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Sintax\u0103 ilegal\u0103 pentru Setarea opera\u0163iei
+
+# ReflectionUtil
+error.method.notfound=Nu s-a g\u0103sit metoda: {0}.{1}({2})
+error.method.ambiguous=Nu se poate g\u0103si metoda f\u0103r\u0103 ambiguit\u0103\u0163i: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=Expresia utilizeaz\u0103 func\u0163ii dar nu a fost furnizat niciun FunctionMapper
+error.fnMapper.method=Func\u0163ia ''{0}'' nu s-a g\u0103sit
+error.fnMapper.paramcount=Func\u0163ia ''{0}'' specific\u0103 {1} parametri, dar au fost declara\u0163i {2}
+
+# ExpressionImpl
+error.context.null=ELContext a fost nul
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Exist\u0103 multiple seturi de parametri specificate pentru func\u0163ia [{0}]
+error.identifier.notjava=Identificatorul [{0}] nu este un identificator valid Java a\u015fa cum este cerut de sec\u0163iunea 1.19 a specifica\u0163iei EL (Identificator ::= Identificator de limbaj Java). Aceast\u0103 verificare poate fi dezactivat\u0103 prin setarea propriet\u0103\u0163ii de sistem org.apache.el.parser.SKIP_IDENTIFIER_CHECK la true.
+error.lambda.tooManyMethodParameterSets=Exist\u0103 mai multe seturi de parametri de metod\u0103 specifica\u0163i dec\u00e2t exist\u0103 expresii lambda imbricate
+
+# Stream
+stream.compare.notComparable=Elementele de flux trebuie implementate Comparabil
+stream.optional.empty=Este ilegal\u0103 apelarea get() pe un op\u0163ional gol
+stream.optional.paramNotLambda=Parametrul pentru metoda [{0}] ar trebui s\u0103 fie o expresie lambda

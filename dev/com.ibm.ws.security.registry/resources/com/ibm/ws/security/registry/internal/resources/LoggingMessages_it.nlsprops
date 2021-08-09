@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry/resources/com/ibm/ws/security/registry/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3000 - CWWKS3099
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID=CWWKS3000E: Si \u00e8 verificata un'eccezione di configurazione. Non \u00e8 presente alcun parametro refId configurato per la configurazione di userRegistry.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.explanation=L'elemento di configurazione userRegistry fa riferimento ad istanze specifiche di UserRegistry mediante i relativi valori ID.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.useraction=Specificare un parametro refId nella configurazione di userRegistry.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID=CWWKS3001E: Si \u00e8 verificata un''eccezione di configurazione. Impossibile trovare l''istanza di UserRegistry richiesta con ID {0}.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.explanation=Ciascuna configurazione di UserRegistry specifica un parametro id.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.useraction=Specificare il parametro id per un elemento configurato o creare la configurazione richiesta.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE=CWWKS3002E: Si \u00e8 verificata un''eccezione di configurazione. Impossibile trovare il factory UserRegistry richiesto di tipo {0}.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.explanation=Ciascun bundle di implementazione UserRegistry specifica il proprio tipo fornito.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.useraction=Specificare un tipo supportato o installare il bundle che fornisce l'istanza di UserRegistry del tipo richiesto.
+
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID=CWWKS3003E: Si \u00e8 verificata un''eccezione di configurazione. Una configurazione per il tipo di registro {0} non definisce un ID.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.explanation=La configurazione per il tipo di registro non definisce un ID.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.useraction=Definire un ID per la configurazione del tipo di registro.
+
+USER_REGISTRY_SERVICE_WITHOUT_TYPE=CWWKS3004E: Si \u00e8 verificata un''eccezione interna. Il servizio {0} non definisce il tipo di registro che implementa.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.explanation=Il servizio non definisce la propriet\u00e0 com.ibm.ws.security.registry.type.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.useraction=Definire la propriet\u00e0\u00a0com.ibm.ws.security.registry.type per il servizio.
+
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE=CWWKS3005E: Si \u00e8 verificata un'eccezione di configurazione. Non \u00e8 disponibile alcun servizio di implementazione UserRegistry.  Assicurarsi di avere un registro utenti configurato.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.explanation=Non \u00e8 disponibile alcuna implementazione UserRegistry mediante il registro del servizio OSGi.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.useraction=Specificare una funzione di implementazione UserRegistry.
+
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE=CWWKS3006E: Si \u00e8 verificata un'eccezione di configurazione. Sono disponibili pi\u00f9 servizi di implementazione UserRegistry; il sistema non \u00e8 in grado di determinare quale utilizzare.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.explanation=Sono disponibili pi\u00f9 implementazioni UserRegistry mediante il registro del servizio OSGi.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.useraction=Specificare una sola funzione di implementazione UserRegistry. Se si selezionano pi\u00f9 userRegistry, \u00e8 necessario includere la funzione di federazione per la federazione dei registri utente.
+
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE=CWWKS3007E: Si \u00e8 verificata un''eccezione di configurazione. Una configurazione di tipo {0} con ID {1} \u00e8 in conflitto con la configurazione di tipo {2} con ID {3}. La configurazione di tipo {0} con ID {1} verr\u00e0 ignorata.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.explanation=Pi\u00f9 configurazioni del registro definiscono lo stesso ID. Ci\u00f2 non \u00e8 supportato.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.useraction=Modificare l'ID di una delle configurazioni del registro in conflitto, in modo che sia univoco.
+
+FEDERATING_REGISTRY=CWWKS3008I: Il registro utenti con ID {0} \u00e8 federato.
+FEDERATING_REGISTRY.explanation=La federazione del registro utente \u00e8 abilitata e il registro utente configurato \u00e8 federato.
+FEDERATING_REGISTRY.useraction=Se la federazione del repository non \u00e8 richiesta, aggiornare la configurazione nel file server.xml per disabilitare la federazione
+
+REMOVE_FEDERATED_REGISTRY=CWWKS3009I: Il registro utenti con ID {0} \u00e8 rimosso dalla federazione.
+REMOVE_FEDERATED_REGISTRY.explanation=La federazione del registro utente \u00e8 abilitata e il registro utente configurato \u00e8 federato, quello precedentemente federato viene rimosso dalla federazione.
+REMOVE_FEDERATED_REGISTRY.useraction=Se la federazione del repository non \u00e8 richiesta, aggiornare la configurazione nel file server.xml per disabilitare la federazione
+
+USER_REGISTRY_SERVICE_FEDERATION_FAILED=CWWKS3010E: Si \u00e8 verificata un''eccezione non prevista durante la federazione dei registri utenti: {0}.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.explanation=\u00c8 stato effettuato un tentativo di federare i registri utenti, ma non \u00e8 riuscito.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support

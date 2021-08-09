@@ -1,0 +1,39 @@
+<server>
+    <featureManager>
+        <feature>jaxb-2.2</feature>
+        <feature>jaxrs-2.1</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+ 	<basicRegistry id="basic" realm="WebRealm">
+		<user name="user1" password="user1pwd" />
+		<user name="user2" password="user2pwd" />
+	</basicRegistry>
+
+
+    <application type="war" id="jaxrs21security" name="jaxrs21security" location="${server.config.dir}/apps/jaxrs21security.war">
+      <application-bnd>
+        <security-role name="Role1">
+            <user name="user1" />
+        </security-role>
+        <security-role name="Role2">
+            <user name="user2" />
+        </security-role>
+        <security-role name="AuthenticationRole">
+            <user name="user1" />
+            <user name="user2" />
+        </security-role>
+        <!-- Don't think we need but leave commented out just in case -->
+        <security-role name="AllAuthenticated">
+			<special-subject type="ALL_AUTHENTICATED_USERS" />
+		</security-role>
+      </application-bnd>
+    </application>
+    <keyStore id="defaultKeyStore" password="{xor}BC8+LCwoby07Ag=="/>
+
+   <include location="../fatTestPorts.xml"/>
+
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+
+
+</server>

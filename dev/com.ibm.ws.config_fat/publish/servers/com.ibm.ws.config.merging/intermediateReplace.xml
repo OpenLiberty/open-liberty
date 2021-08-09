@@ -1,0 +1,28 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<topLevelElement id="a">
+		<child.a attrA1="intermediate" />
+	</topLevelElement>
+
+	<topLevelElement id="b">
+		<child.b attrB1="intermediate" />
+		<child.b attrB2="intermediate" />
+	</topLevelElement>
+
+	<topLevelElement id="c" />
+
+	<top.d attrD1="intermediate" />
+	<top.d attrD1="intermediate" />
+
+	<include location="conflict.xml" onConflict="REPLACE"/>
+</server>

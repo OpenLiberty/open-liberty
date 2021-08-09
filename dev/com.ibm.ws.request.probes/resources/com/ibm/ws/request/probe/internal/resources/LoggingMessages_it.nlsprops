@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: Istanza di strumentazione Java non disponibile, quindi le capability di monitoraggio e diagnostica non funzionano. Configurare il file ws-javaagent.jar con l'opzione JVM -javaagent.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=L'istanza di strumentazione \u00e8 richiesta per la trasformazione delle classi tramite injection di codice byte. L'injection di codice byte viene utilizzata da Liberty per la generazione delle informazioni di monitoraggio e diagnostica.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=Sono richieste impostazioni JVM aggiuntive per l'abilitazione della strumentazione Java. Configurare il file ws-javaagent.jar con l'opzione JVM -javaagent. Il file ws-javaagent.jar \u00e8 nella directory ${wlp.install.dir}/bin/tools dell'installazione di Liberty Profile.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Durata
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=Operazione

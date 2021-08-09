@@ -1,0 +1,5 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+</server>

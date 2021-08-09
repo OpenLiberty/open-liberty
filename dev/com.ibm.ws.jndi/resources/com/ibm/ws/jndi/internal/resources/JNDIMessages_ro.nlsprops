@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=Numele nu trebuie s\u0103 fie nul.
+empty.name=Numele nu trebuie s\u0103 fie gol.
+
+jndi.entry.bad.name=CWWKN0001W: Numele [{0}] nu poate fi parsat, e\u015fu\u00e2nd cu excep\u0163ia [{1}].
+jndi.entry.bad.name.explanation=Numele nu este conform cu sintaxa necesar\u0103.  Vede\u0163i excep\u0163ia pentru detalii.
+jndi.entry.bad.name.useraction=Corecta\u0163i numele pentru a fi conform cu sintaxa necesar\u0103.
+
+jndi.entry.bad.value=CWWKN0002W: Valoarea [{0}] nu poate fi parsat\u0103 ca tipul [{1}].
+jndi.entry.bad.value.explanation=Valoarea furnizat\u0103 nu este conform\u0103 cu tipul s\u0103u de stare.
+jndi.entry.bad.value.useraction=Fie modifica\u0163i valoarea pentru a se potrivi tipului fie modifica\u0163i tipul pentru a se potrivi valorii.
+
+jndi.entry.bad.type=CWWKN0003W: Intrarea JNDI nu poate fi creat\u0103 deoarece ste configurat\u0103 cu un tip nerecunoscut [{0}].
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=Tipul necesit\u0103 s\u0103 fie o valoare a\u015fteptat\u0103.  Valorile valide sunt auto, boolean, byte, char, double, float, int, long, short sau string.
+jndi.entry.bad.type.useraction=Alege\u0163i o specifica\u0163ie tip valid\u0103.
+
+jndi.entry.bind.failed=CWWKN0004W: Apelarea pentru a lega valoarea [{0}] la numele [{1}] a e\u015fuat cu excep\u0163ia [{3}]
+jndi.entry.bind.failed.explanation=opera\u0163ia de legare nu poate fi procesat\u0103. Vede\u0163i excep\u0163ia pentru detalii
+jndi.entry.bind.failed.useraction=Verifica\u0163i dac\u0103 altceva este legat la acela\u015fi sau nume intermediar \u015fi rezolva\u0163i conflictul.
+
+jndi.osgi.bind.failed=CWWKN0005W: Legarea automat\u0103 a obiectului registru la numele {0} a e\u015fuat cu excep\u0163ia {1}.
+jndi.osgi.bind.failed.explanation=Ceva a \u00eempiedicat obiectul registru de a fi legat la nume.
+jndi.osgi.bind.failed.useraction=Examina\u0163i excep\u0163ia pentru a determina cuza e\u015fecului \u015fi repara\u0163i-o.
+
+jndi.objectfactory.no.class=CWWKN0006E: Nu se poate g\u0103si clasa pentru a crea ObjectFactory {0} pentru clasa {1}.
+jndi.objectfactory.no.class.explanation=ObjectFactory specificat nu poate fi creat, pentru c\u0103 nu se poate g\u0103si clasa.
+jndi.objectfactory.no.class.useraction=Asigura\u0163i-v\u0103 c\u0103 {0} este disponibil \u00een mediul runtime WebSphere Application Server.
+
+jndi.objectfactory.create.failed=CWWKN0007E: Nu se poate crea ObjectFactory {0} pentru clasa {1}.
+jndi.objectfactory.create.failed.explanation=Vede\u0163i excep\u0163ia pentru detalii.
+jndi.objectfactory.create.failed.useraction=Vede\u0163i excep\u0163ia pentru detalii.
+
+jndi.servicereference.failed=CWWKN0008E: Nu s-a putut ob\u0163ine un obiect pentru numele {0}.
+jndi.servicereference.failed.explanation=A ap\u0103rut o eroare la ob\u0163inerea unui obiect pentru numele specificat.
+jndi.servicereference.failed.useraction=Vede\u0163i excep\u0163iile anterioare pentru detalii.
+
+jndi.objectfactory.create.exception=CWWKN0009E: Nu se poate crea ObjectFactory pentru clasa {0}. Excep\u0163ia a fost: {1}
+jndi.objectfactory.create.exception.explanation=Vede\u0163i excep\u0163ia pentru detalii.
+jndi.objectfactory.create.exception.useraction=Vede\u0163i excep\u0163ia pentru detalii.
+
+jndi.url.create.exception=CWWKN0010E: Sistemul nu poate crea valoarea java.net.URL din \u015firul {0}. Acest URL este configurat pentru a fi legat la numele JNDI {1}. A fost primit\u0103 excep\u0163ia urm\u0103toare: {2}
+jndi.url.create.exception.explanation=\u015eirul URL care este specificat \u00een configura\u0163ia pentru numele JNDI nu este valid \u015fi nu poate fi legat de spa\u0163iul de nume JNDI.
+jndi.url.create.exception.useraction=Specifica\u0163i o valoare valid\u0103 pentru \u015firul URL. Eroarea excep\u0163iei furnizeaz\u0103 detalii privind numele JNDI invalid.
+
+jndi.decode.failed=CWWKN0011E: A ap\u0103rut o eroare \u00een timpul decodific\u0103rii parolei {0}. Verifica\u0163i c\u0103 parola de date este codificat\u0103 corect. Excep\u0163ia a fost: {1}.
+jndi.decode.failed.explanation=Parola nu este codificat\u0103 corect.
+jndi.decode.failed.useraction=Verifica\u0163i c\u0103 parola de date este codificat\u0103 corect. Vede\u0163i excep\u0163ia pentru detalii

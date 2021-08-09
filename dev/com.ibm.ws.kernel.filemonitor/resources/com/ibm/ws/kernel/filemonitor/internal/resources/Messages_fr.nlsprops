@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: Le param\u00e8tre indiqu\u00e9 ne sp\u00e9cifie pas de filtre de nom de fichier valide. {0} = {1}
+badFilter.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'est pas ou n'a pas pu \u00eatre \
+convertie en une donn\u00e9e de type String (cha\u00eene).
+badFilter.useraction=V\u00e9rifiez la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur.
+
+badInterval=CWWKE0401W: Le param\u00e8tre sp\u00e9cifi\u00e9 ne repr\u00e9sente pas un intervalle de surveillance valide. {0} = {1}
+badInterval.explanation=La valeur du param\u00e8tre de configuration sp\u00e9cifi\u00e9 n'a pas pu \u00eatre interpr\u00e9t\u00e9e comme \
+un intervalle de surveillance.
+badInterval.useraction=V\u00e9rifiez la valeur sp\u00e9cifi\u00e9e dans la configuration du serveur et assurez-vous qu'il s'agit \
+d'un intervalle de surveillance valide. \
+Par exemple, 1s pour une seconde. \
+Les abr\u00e9viations d'unit\u00e9 de temps admises sont ms (millisecondes), s (secondes), m (minutes), h (heures).
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: L''emplacement de cache sp\u00e9cifi\u00e9 n''a pas pu \u00eatre allou\u00e9, \
+si bien que toutes les informations sur les fichiers surveill\u00e9s seront stock\u00e9es en m\u00e9moire. {0} = {1}
+badDiskCache.explanation=Le service n'a pas pu cr\u00e9er d'emplacement de cache pour un ensemble \
+de ressources surveill\u00e9es.
+badDiskCache.useraction=V\u00e9rifiez que vous disposez d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire du serveur et \u00e0 son sous-r\u00e9pertoire workarea.
+
+createMonitorException=CWWKE0403W: Une exception s''est produite lors de la cr\u00e9ation d''un moniteur pour {0}. La surveillance de cette ressource est d\u00e9sactiv\u00e9e. Le message d''exception \u00e9tait : {1}
+createMonitorException.explanation=Une exception inattendue s'est produite lors de la cr\u00e9ation d'un moniteur pour la ressource sp\u00e9cifi\u00e9e. La ressource ne sera pas surveill\u00e9e. 
+createMonitorException.useraction=V\u00e9rifiez que vous disposez d'un acc\u00e8s en lecture \u00e0 la ressource sp\u00e9cifi\u00e9e. Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: Le fichier de cache {0} n''a pas pu \u00eatre supprim\u00e9.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=Le service n'a pas pu supprimer l'emplacement de cache r\u00e9serv\u00e9 \u00e0 un ensemble \
+de ressources surveill\u00e9es.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=V\u00e9rifiez que vous disposez d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire du serveur et \u00e0 son sous-r\u00e9pertoire workarea.
+
+fileMonitorException=CWWKE0405W: Une exception s''est produite lors de la notification \u00e0 un moniteur des cr\u00e9ations, modifications et suppressions de fichier : {0}, {1}, {2}. La classe de moniteur est {3}. Le message d''exception \u00e9tait : {4}
+fileMonitorException.explanation=Une exception inattendue s'est produite lors de la cr\u00e9ation d'un moniteur pour la ressource sp\u00e9cifi\u00e9e. 
+fileMonitorException.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
+
+fileMonitorDisabled=CWWKE0406W: Plus de {0} exceptions se sont produites lors de la notification de modifications \u00e0 un moniteur. La classe de moniteur est {1}. Cet \u00e9l\u00e9ment FileMonitor est maintenant d\u00e9sactiv\u00e9. 
+fileMonitorDisabled.explanation=Le nombre d'exceptions cons\u00e9cutives survenues lors de la notification de la ressource sp\u00e9cifi\u00e9e \u00e0 un moniteur est trop \u00e9lev\u00e9. La ressource ne sera plus surveill\u00e9e. 
+fileMonitorDisabled.useraction=Pour plus d'informations, voir les exceptions et les messages FFDC associ\u00e9s.

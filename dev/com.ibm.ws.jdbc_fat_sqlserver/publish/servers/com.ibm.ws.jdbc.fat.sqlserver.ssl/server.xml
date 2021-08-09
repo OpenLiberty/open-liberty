@@ -1,0 +1,46 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>servlet-4.0</feature>
+  </featureManager>
+    
+  <include location="../fatTestPorts.xml"/>
+  
+  <application location="sqlserversslfat.war" />
+  
+  <authData id="dbAuth" user="${env.USER}" password="${env.PASSWORD}"/>
+  <jdbcDriver id="sqlServerDriver">
+    <library>
+    	<fileset dir="${shared.resource.dir}/sqlserver" includes="mssql-jdbc.jar"/>
+  	</library>
+  </jdbcDriver>
+  
+  <dataSource jndiName="jdbc/sqlserver-ssl-unsecure" jdbcDriverRef="sqlServerDriver" containerAuthDataRef="dbAuth">
+    <properties.microsoft.sqlserver databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"
+                SSLProtocol="TLSv1.2" encrypt="true" trustServerCertificate="true"/>
+  </dataSource>
+  
+    <dataSource jndiName="jdbc/sqlserver-ssl-secure" jdbcDriverRef="sqlServerDriver" containerAuthDataRef="dbAuth">
+    <properties.microsoft.sqlserver databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"
+                SSLProtocol="TLSv1.2" encrypt="true" hostNameInCertificate="localhost"
+                trustStore="security/truststore.p12" trustStorePassword="${TRUSTSTORE_PASS}"/>
+  </dataSource>
+
+  <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/sqlserver/mssql-jdbc.jar" className="java.security.AllPermission"/>
+ 
+  <!-- SQLServer JDBC test requirement -->
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+</server>

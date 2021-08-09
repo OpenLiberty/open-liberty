@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+    	<feature>jaxws-2.2</feature>
+    	<feature>servlet-3.1</feature>
+    	<feature>mpMetrics-1.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    <include location="serverConfig.xml"/>
+</server>

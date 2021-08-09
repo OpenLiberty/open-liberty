@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<connector xmlns="http://websphere.ibm.com/xml/ns/javaee">
+  <resourceadapter>
+    <config-property config-property-name="loginTimeout" type="duration(s)" default="2m"/>
+  </resourceadapter>
+</connector>

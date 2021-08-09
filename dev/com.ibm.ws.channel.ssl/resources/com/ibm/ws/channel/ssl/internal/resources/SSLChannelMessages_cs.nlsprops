@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Kan\u00e1l SSL nelze spustit v d\u016fsledku n\u00e1sleduj\u00edc\u00edho nespr\u00e1vn\u00e9ho nastaven\u00ed:\n {0}
+invalid.security.properties.explanation=Minim\u00e1ln\u011b jedno nastaven\u00ed zabezpe\u010den\u00ed v kan\u00e1lu SSL nebylo platn\u00e9.
+invalid.security.properties.useraction=Nastaven\u00ed zabezpe\u010den\u00ed kan\u00e1lu SSL by m\u011blo b\u00fdt zm\u011bn\u011bno na spr\u00e1vn\u00e9 hodnoty.
+
+handshake.failure=CWWKO0801E: P\u0159ipojen\u00ed s pou\u017eit\u00edm zabezpe\u010den\u00ed SSL nelze inicializovat. Byl odep\u0159en neautorizovan\u00fd p\u0159\u00edstup nebo vypr\u0161ela platnost nastaven\u00ed zabezpe\u010den\u00ed. V\u00fdjimka: {0}.
+handshake.failure.explanation=Pro nov\u00e9 p\u0159ipojen\u00ed se nezda\u0159ilo \u00fasp\u011b\u0161n\u011b dokon\u010dit proces zabezpe\u010den\u00e9 komunikace v\u00fdm\u011bnou potvrzen\u00ed.
+handshake.failure.useraction=Zkontrolujte nastaven\u00ed zabezpe\u010den\u00ed. Je mo\u017en\u00e9, \u017ee certifik\u00e1toru vypr\u0161ela platnost nebo chyb\u00ed. Je tak\u00e9 mo\u017en\u00e9, \u017ee bylo odep\u0159eno p\u0159ipojen\u00ed neautorizovan\u00e9ho klienta. Chcete-li zak\u00e1zat tyto zpr\u00e1vy, nastavte parametr suppressHandshakeErrors konfigurace sslOptions na true.
+
+init.failure=CWWKO0802E: Nelze inicializovat bal\u00edk SSL. V\u00fdjimka: {0}.
+init.failure.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o inicializaci bal\u00edku SSL. Pravd\u011bpodobn\u011b je tomu tak v d\u016fsledku selh\u00e1n\u00ed z\u00e1vislosti.
+init.failure.useraction=Zkontrolujte protokoly procesu, kde najdete informace o tom, co se nezda\u0159ilo spustit.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Nelze vytvo\u0159it v\u00fdchoz\u00ed konfiguraci kan\u00e1lu SSL. V\u00fdjimka: {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Byla rozpozn\u00e1na chyba p\u0159i vytv\u00e1\u0159en\u00ed v\u00fdchoz\u00ed konfigurace pro kan\u00e1ly SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Zkontrolujte ve v\u00fdjimce informace o tom, jak se vytv\u00e1\u0159en\u00ed nezda\u0159ilo.
+
+handshake.failure.stop.logging=CWWKO0804I: Bylo dosa\u017eeno maxim\u00e1ln\u00edho po\u010dtu selh\u00e1n\u00ed nav\u00e1z\u00e1n\u00ed komunikace SSL pro p\u0159ihl\u00e1\u0161en\u00ed. Tyto zpr\u00e1vy ji\u017e nebudou protokolov\u00e1ny.
+handshake.failure.stop.logging.explanation=Po\u010det protokolovan\u00fdch selh\u00e1n\u00ed nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL je omezen, aby se zabr\u00e1nilo nadm\u011brn\u00e9mu mno\u017estv\u00ed polo\u017eek v protokolu.
+handshake.failure.stop.logging.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

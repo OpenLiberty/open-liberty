@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.3,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-must: ipServicePort
+m-must: ipServiceProtocol
+m-oid: 1.3.6.1.1.1.2.3
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Abstraction an Internet Protocol service
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: ipService
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: description

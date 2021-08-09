@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is an EXAMPLE policy file. While the policy presented in this 
+	example file is illustrative of some simple cases, it relies on the names 
+	of non-existent example services and the example attributes demonstrated 
+	in the default attribute-resolver.xml file. Deployers should refer to the 
+	documentation for a complete list of components and their options. -->
+<AttributeFilterPolicyGroup id="ShibbolethFilterPolicy"
+	xmlns="urn:mace:shibboleth:2.0:afp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+
+	<AttributeFilterPolicy id="our-sp">
+		<PolicyRequirementRule xsi:type="Requester"
+			value="http://localhost:xxx_SpSecurePort_xxx/" />
+		<AttributeRule attributeID="mail">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="displayName">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="surname">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="givenName">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="uid">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+	</AttributeFilterPolicy>
+	<!-- <AttributeFilterPolicy id="testingAny"> <PolicyRequirementRule xsi:type="OR"> 
+		<Rule xsi:type="Requester" value="https://localhost:8022/formlogin/SimpleServlet" 
+		/> <Rule xsi:type="Requester" value="https://localhost:8022/testpage" /> 
+		<AttributeRule attributeID="mail"> <PermitValueRule xsi:type="ANY"/> </AttributeRule> 
+		<AttributeRule attributeID="displayName"> <PermitValueRule xsi:type="ANY"/> 
+		</AttributeRule> <AttributeRule attributeID="surname"> <PermitValueRule xsi:type="ANY"/> 
+		</AttributeRule> <AttributeRule attributeID="givenName"> <PermitValueRule 
+		xsi:type="ANY"/> </AttributeRule> </AttributeFilterPolicy> -->
+
+	<AttributeFilterPolicy id="anyone">
+		<PolicyRequirementRule xsi:type="ANY" />
+		<AttributeRule attributeID="uid">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="email">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="mail">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="emailAddress">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="realmname">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="groupHack">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="group">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="X509SubjectNameNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="WindowsDomainNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="KerberosNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="EntityNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="PersistentNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="TransientNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="EncryptedNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="CustomizeNameIdValue">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="userIdentifier">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="groupIdentifier">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="userUniqueIdentifier">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+		<AttributeRule attributeID="realmIdentifier">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+
+	</AttributeFilterPolicy>
+
+	<!-- <AttributeFilterPolicy id="releasePersistentIdToAnyone"> <PolicyRequirementRule 
+		xsi:type="basic:ANY" /> <AttributeRule attributeID="persistentId"> <PermitValueRule 
+		xsi:type="basic:ANY" /> </AttributeRule> </AttributeFilterPolicy> -->
+	<!-- Release some attributes to an SP. -->
+	<AttributeFilterPolicy id="example1">
+		<PolicyRequirementRule xsi:type="Requester"
+			value="https://sp.example.org" />
+
+		<AttributeRule attributeID="eduPersonPrincipalName">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+
+		<AttributeRule attributeID="uid">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+
+		<AttributeRule attributeID="mail">
+			<PermitValueRule xsi:type="ANY" />
+		</AttributeRule>
+	</AttributeFilterPolicy>
+
+	<!-- Release eduPersonAffiliation to two specific SPs. -->
+	<AttributeFilterPolicy id="example2">
+		<PolicyRequirementRule xsi:type="OR">
+			<Rule xsi:type="Requester" value="https://sp.example.org" />
+            <Rule xsi:type="Requester" value="https://another.example.org/shibboleth" />
+        </PolicyRequirementRule>
+
+        <AttributeRule attributeID="eduPersonScopedAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>

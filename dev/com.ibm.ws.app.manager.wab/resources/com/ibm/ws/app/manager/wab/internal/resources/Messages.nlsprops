@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: An error occurred initializing the WAB installer.
+bundle.tracker.init.fail.explanation=The server could not initialize the Web Application Bundle (WAB) installer, so WABs have not been installed.
+bundle.tracker.init.fail.useraction=See the log and FFDC files for further information.
+
+wab.install.fail=CWWKZ0202E: Unable to install bundle {0} with context root {1} into the web container.
+wab.install.fail.explanation=The server could not install the Web Application Bundle (WAB) into the web container.
+wab.install.fail.useraction=See the log and FFDC files for further information.
+
+wab.install.fail.adapt=CWWKZ0203E: Unable to install bundle {0} with context root {1} into the web container.
+wab.install.fail.adapt.explanation=The server could not install the Web Application Bundle (WAB) into the web container.
+wab.install.fail.adapt.useraction=See the log and FFDC files for further information.
+
+wab.install.fail.overlay=CWWKZ0204E: Unable to install bundle {0} with context root {1} into the web container.
+wab.install.fail.overlay.explanation=The server could not install the Web Application Bundle (WAB) into the web container.
+wab.install.fail.overlay.useraction=See the log and FFDC files for further information.
+
+wab.install.fail.cache=CWWKZ0205E: Unable to install bundle {0} with context root {1} into the web container.
+wab.install.fail.cache.explanation=The server could not install the Web Application Bundle (WAB) into the web container.
+wab.install.fail.cache.useraction=See the log and FFDC files for further information.
+
+wab.install.fail.container=CWWKZ0206E: Unable to install bundle {0} with context root {1} into the web container.
+wab.install.fail.container.explanation=The server could not install the Web Application Bundle (WAB) into the web container.
+wab.install.fail.container.useraction=See the log and FFDC files for further information.
+
+wab.install.fail.wiring=CWWKZ0207E: Unable to install bundle {0} with context root {1} into the web container.
+wab.install.fail.wiring.explanation=The server could not install the Web Application Bundle (WAB) into the web container.
+wab.install.fail.wiring.useraction=See the log and FFDC files for further information.
+
+wab.install.fail.clash=CWWKZ0208E: Bundle {0} with context root {1} cannot be installed into the web container because it has the same context root as the following bundles: {2}
+wab.install.fail.clash.explanation=The context root of each Web Application Bundle (WAB) in the web container must be unique. The server cannot install the WAB into the web container because its context root is the same as another bundle that is deployed.
+wab.install.fail.clash.useraction=Use a different context root.

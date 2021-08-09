@@ -1,0 +1,18 @@
+You may use or redistribute the files or modules contained in this jar subject to the following terms:  
+
+The WebSphere Application Server files or modules contained in this jar 
+may be redistrubuted as provided by IBM to you, and only as part of Your 
+application distribution.  
+
+You may not use IBM's name or trademarks in connection with the marketing 
+of Your applications without IBM's prior written consent.  
+
+IBM PROVIDES THESE FILES OR MODULES ON AN "AS IS" BASIS AND IBM DISCLAIMS 
+ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE 
+WARRANTY OF NON-INFRINGEMENT AND THE IMPLIED WARRANTIES OF MERCHANTABILITY 
+OR FITNESS FOR A PARTICULAR PURPOSE.  IBM SHALL NOT BE LIABLE FOR ANY 
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT 
+OF THE USE OR OPERATION OF THE FILES OR MODULES .  IBM HAS NO OBLIGATION 
+TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS OR MODIFICATIONS TO 
+THE FILES OR MODULES .  
+

@@ -1,0 +1,23 @@
+<server>
+    <featureManager>
+    	<feature>jsp-2.3</feature>
+        <feature>servlet-4.0</feature>
+        <feature>timedexit-1.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+    
+    <!-- use the shared/common keystore pwd: Liberty, expires 1/4/2099 -->
+    <!-- keystore is in build.sharedResources and is copied into wlp image before tests are run -->
+    <!--keyStore id="defaultKeyStore" password="Liberty" type="jks" location="${shared.resource.dir}/security/key.jks"/-->
+    <keyStore id="defaultKeyStore" password="yourPassword" />
+
+    <javaPermission className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+
+    <!-- FAT framework expects to start with the usual port  -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}">
+        <tcpOptions soReuseAddr="true" />
+    </httpEndpoint>   
+</server>

@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Um tipo de entidade {0} com ID {1} n\u00e3o p\u00f4de ser localizado na unidade de persist\u00eancia {2}.
+
+61001=A entidade referida pelo link n\u00e3o existe, tipo de entidade {0}, ID {1}.
+
+61002=Configura\u00e7\u00e3o inv\u00e1lida.
+
+61003=Um tipo de entidade {0} na unidade de persist\u00eancia {1} est\u00e1 sendo criado com um PUT, mas a entidade n\u00e3o \u00e9 idempotente, devido \u00e0 gera\u00e7\u00e3o de sequ\u00eancia ou de cascata.
+
+61004=O contexto de persist\u00eancia {0} n\u00e3o p\u00f4de ser autoinicializado.
+
+61005=A classe ou o descritor de classe n\u00e3o p\u00f4de ser localizado para o tipo de entidade {0} na unidade de persist\u00eancia {1}.
+
+61006=O mapeamento de banco de dados adequado n\u00e3o p\u00f4de ser localizado para o atributo {0} para o tipo de entidade {1} e ID {2} na unidade de persist\u00eancia {3}.
+
+61007=O atributo {0} para o tipo de entidade {1} e ID {2} n\u00e3o p\u00f4de ser localizado na unidade de persist\u00eancia {3}.
+
+61008=A consulta de sele\u00e7\u00e3o para o atributo {0}, para o tipo de entidade {1} e ID {2} n\u00e3o p\u00f4de ser localizada na unidade de persist\u00eancia {3}.
+
+61009=Par\u00e2metro(s) inv\u00e1lido(s) na URL da solicita\u00e7\u00e3o de pagina\u00e7\u00e3o.
+
+61010=O atributo {0} para o tipo de entidade {1} e ID {2} na unidade de persist\u00eancia {3} n\u00e3o p\u00f4de ser atualizado.
+
+61011=Par\u00e2metro(s) inv\u00e1lido(s) na URL da solicita\u00e7\u00e3o de remo\u00e7\u00e3o do atributo para o atributo {0} para o tipo de entidade {1} e ID {2} na unidade de persist\u00eancia {3}.
+
+61012=A resposta para a solicita\u00e7\u00e3o de localiza\u00e7\u00e3o para o atributo {0} para o tipo de entidade {1} e ID {2} na unidade de persist\u00eancia {3} n\u00e3o p\u00f4de ser constru\u00edda com sucesso.
+
+61013=A consulta do bean de sess\u00e3o com nome JNDI {0} falhou.
+
+61014=A resposta para a solicita\u00e7\u00e3o da consulta nomeada de localiza\u00e7\u00e3o para a consulta {0} na unidade de persist\u00eancia {1} n\u00e3o p\u00f4de ser constru\u00edda com sucesso.
+
+61015=Vers\u00e3o do servi\u00e7o {0} inv\u00e1lida na solicita\u00e7\u00e3o.
+
+61016=O par\u00e2metro de consulta da pagina\u00e7\u00e3o (limite ou deslocamento) usado para o recurso de n\u00e3o pagina\u00e7\u00e3o.
+
+61017=Ambos "fields" e "excludeFields" n\u00e3o podem ser localizados na mesma solicita\u00e7\u00e3o.
+
+61018=Valor do par\u00e2metro inv\u00e1lido ("{0}" = "{1}").
+
+61999={0} ocorreu.
+

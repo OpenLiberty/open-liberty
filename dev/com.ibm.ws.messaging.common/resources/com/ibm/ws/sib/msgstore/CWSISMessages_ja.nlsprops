@@ -1,0 +1,726 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 93022           2013-27-02 kavitha new message added for Invalid XID 
+# 
+# -------------------------------------------------------------------------------------------------
+
+# File com.ibm.ws.sib.example.CWSISMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0001=CWSIS0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0001.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0001.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+# I have allocated ranges of message ids (500 messages each) so we can avoid tripping over each other.
+# If you need a new range - just allocate it (but check no-one has it already).
+#
+#   - Msgs in the range CWSIS0000-CWSIS0499 belong to the interface stuff (eg PTvL)
+#   - Msgs in the range CWSIS0500-CWSIS0999 belong to the core implementation stuff (eg PTvL)
+#   - Msgs in the range CWSIS1000-CWSIS1499 belong to the transaction stuff (eg GB)
+#   - Msgs in the range CWSIS1500-CWSIS1999 belong to the persistence stuff (eg BTD)
+#   - Msgs in the range CWSIS2000-CWSIS2499 belong to the expiry stuff (eg KC)
+#
+#   - CWSIS9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.4,0,03/04/23,08:38:27
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/msgstore/CWSISMessages.nlsprops
+#COMPONENTPREFIX CWSIS
+#COMPONENTNAMEFOR CWSIS MessageStore
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Interface
+# -------------------------------------------------------------------------------------------------
+
+
+# {0} is the text of the exception thrown
+INVALID_ITEM_CONSTRUCTOR_SIMS0001=CWSIS0001E: \u9805\u76ee\u306b\u30a2\u30af\u30bb\u30b9\u53ef\u80fd\u306a (public \u306e) \u30c7\u30d5\u30a9\u30eb\u30c8\u30fb\u30b3\u30f3\u30b9\u30c8\u30e9\u30af\u30bf\u30fc {0} \u304c\u3042\u308a\u307e\u305b\u3093\u3002
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.explanation=\u9069\u5207\u306a\u30b3\u30f3\u30b9\u30c8\u30e9\u30af\u30bf\u30fc\u306e\u306a\u3044\u9805\u76ee\u304c\u30c7\u30fc\u30bf\u30fb\u30b9\u30c8\u30a2\u306b\u8ffd\u52a0\u3055\u308c\u307e\u3057\u305f\u3002
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+STARTUP_EXCEPTION_SIMS0002=CWSIS0002E: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u3001\u958b\u59cb\u4e2d\u306b\u4f8b\u5916\u3092\u691c\u51fa\u3057\u307e\u3057\u305f\u3002 \u4f8b\u5916: {0}
+STARTUP_EXCEPTION_SIMS0002.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u60c5\u5831\u3060\u3051\u3067\u306f\u4e0d\u5341\u5206\u306a\u5834\u5408\u3001\u8a73\u7d30\u306b\u3064\u3044\u3066\u306f\u4ed8\u968f\u3059\u308b\u30a8\u30e9\u30fc\u30fb\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+STARTUP_EXCEPTION_SIMS0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REFERENCE_CONSISTENCY_SIMS0003=CWSIS0003E: \u53c2\u7167 {0} \u306b\u306f\u53c2\u7167\u3055\u308c\u308b\u9805\u76ee\u304c\u306a\u304f\u3001{1} \u306b\u8ffd\u52a0\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+REFERENCE_CONSISTENCY_SIMS0003.explanation=\u7279\u5b9a\u306e\u53c2\u7167\u3092\u53c2\u7167\u30b9\u30c8\u30ea\u30fc\u30e0\u306b\u8ffd\u52a0\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u8ffd\u52a0\u3059\u308b\u3068\u6574\u5408\u6027\u5236\u7d04\u306b\u9055\u53cd\u3059\u308b\u3053\u3068\u306b\u306a\u308a\u307e\u3059\u3002
+REFERENCE_CONSISTENCY_SIMS0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#STREAM_NOT_STORED_SIMS0004=CWSIS0004E: It is not possible to add {0} to {1} because it is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.explanation=An attempt was made to add an item to a stream that is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_ADD_CONFLICT_SIMS0005=CWSIS0005E: {0} \u3092\u30b9\u30c8\u30ea\u30fc\u30e0 {1} \u306b\u8ffd\u52a0\u3059\u308b\u3068\u3001\u6240\u5c5e\u30b9\u30c8\u30ea\u30fc\u30e0\u304c 2 \u3064\u306b\u306a\u308a\u3001\u3053\u308c\u306f\u8a31\u53ef\u3067\u304d\u307e\u305b\u3093\u3002
+STREAM_ADD_CONFLICT_SIMS0005.explanation=\u9805\u76ee\u3092\u30b9\u30c8\u30ea\u30fc\u30e0\u306b\u8ffd\u52a0\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u3053\u306e\u9805\u76ee\u306f\u65e2\u306b\u5225\u306e\u30b9\u30c8\u30ea\u30fc\u30e0\u5185\u306b\u3042\u308a\u307e\u3057\u305f\u3002
+STREAM_ADD_CONFLICT_SIMS0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_WRONG_STATE_SIMS0006=CWSIS0006E: \u30b9\u30c8\u30ea\u30fc\u30e0 {0} \u306f {1} \u306e\u72b6\u614b\u306b\u3042\u308a\u3001\u8ffd\u52a0\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+STREAM_WRONG_STATE_SIMS0006.explanation=\u9805\u76ee\u3092\u30b9\u30c8\u30ea\u30fc\u30e0\u306b\u8ffd\u52a0\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u3053\u306e\u30b9\u30c8\u30ea\u30fc\u30e0\u306f\u4e0d\u9069\u5207\u306a\u72b6\u614b\u306b\u3042\u308a\u307e\u3057\u305f\u3002
+STREAM_WRONG_STATE_SIMS0006.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Implementation
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+STREAM_STORAGE_MISMATCH_SIMS0500=CWSIS0500E: \u9805\u76ee\u306e\u30b9\u30c8\u30ec\u30fc\u30b8\u30fb\u30b9\u30c8\u30e9\u30c6\u30b8\u30fc {0} \u304c\u3001\u6240\u6709\u3057\u3066\u3044\u308b\u30b9\u30c8\u30ea\u30fc\u30e0\u306e\u30b9\u30c8\u30ec\u30fc\u30b8\u30fb\u30b9\u30c8\u30e9\u30c6\u30b8\u30fc {1} \u3092\u8d85\u3048\u3066\u3044\u307e\u3059\u3002
+STREAM_STORAGE_MISMATCH_SIMS0500.explanation=\u9805\u76ee\u3092\u30b9\u30c8\u30ea\u30fc\u30e0\u306b\u8ffd\u52a0\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u3053\u306e\u9805\u76ee\u306e\u30b9\u30c8\u30ec\u30fc\u30b8\u30fb\u30b9\u30c8\u30e9\u30c6\u30b8\u30fc\u306f\u3001\u30b9\u30c8\u30ea\u30fc\u30e0\u306e\u30b9\u30c8\u30e9\u30c6\u30b8\u30fc\u3088\u308a\u9ad8\u3044\u30b9\u30c8\u30e9\u30c6\u30b8\u30fc\u306b\u306a\u3063\u3066\u3044\u307e\u3059\u3002
+STREAM_STORAGE_MISMATCH_SIMS0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_NOT_EMPTY_SIMS0501=CWSIS0501E: \u7a7a\u3067\u306a\u3044\u30b9\u30c8\u30ea\u30fc\u30e0\u3092\u524a\u9664\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+STREAM_NOT_EMPTY_SIMS0501.explanation=\u7a7a\u3067\u306a\u3044\u30b9\u30c8\u30ea\u30fc\u30e0\u3092\u524a\u9664\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+STREAM_NOT_EMPTY_SIMS0501.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORING_ITEM_SIMS0502=CWSIS0502E: \u9805\u76ee\u306e\u5fa9\u5143\u4e2d\u306b\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+RESTORING_ITEM_SIMS0502.explanation=\u9805\u76ee\u3092\u5fa9\u5143\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u5931\u6557\u3057\u307e\u3057\u305f\u3002
+RESTORING_ITEM_SIMS0502.useraction=CMSG0002
+
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503=CWSIS0503E: Configuration information for the data store is not available.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.explanation=The data store did not receive its configuration.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.useraction=CMSG0002
+
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504=CWSIS0504E: \u30eb\u30fc\u30c8\u6301\u7d9a\u53ef\u80fd\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3002
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.explanation=\u30eb\u30fc\u30c8\u6301\u7d9a\u53ef\u80fd\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u304c\u4f5c\u6210\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.useraction=CMSG0002
+
+INVALID_MSGSTORE_STATE_SIMS0505=CWSIS0505E: \u30e1\u30c3\u30bb\u30fc\u30b8\u30fb\u30b9\u30c8\u30a2\u304c\u7121\u52b9\u306a\u72b6\u614b {0} \u3067\u3059\u3002
+INVALID_MSGSTORE_STATE_SIMS0505.explanation=\u30c7\u30fc\u30bf\u30fb\u30b9\u30c8\u30a2\u304c\u3001\u8981\u6c42\u3055\u308c\u305f\u64cd\u4f5c\u3092\u5b9f\u884c\u3059\u308b\u305f\u3081\u306e\u9069\u5207\u306a\u72b6\u614b\u306b\u306a\u3063\u3066\u3044\u307e\u305b\u3093\u3002
+INVALID_MSGSTORE_STATE_SIMS0505.useraction=CMSG0002
+
+#INVALID_AUTHENTICATION_DATA_SIMS0506=CWSIS0506E: The authentication data associated with the alias, {0}, is invalid.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.explanation=The authentication data provided cannot be used to access the database containing the data store.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.useraction=Provide an alternate authentication alias and try again.
+
+STREAM_NOT_EMPTY_SIMS0507=CWSIS0507E: \u7a7a\u3067\u306a\u3044\u30b9\u30c8\u30ea\u30fc\u30e0\u3092\u524a\u9664\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002 \u30b9\u30c8\u30ea\u30fc\u30e0\u306e\u9805\u76ee={0}\u3002 \u30b9\u30c8\u30ea\u30fc\u30e0\u30fb\u30af\u30e9\u30b9={1}
+STREAM_NOT_EMPTY_SIMS0507.explanation=\u7a7a\u3067\u306a\u3044\u30b9\u30c8\u30ea\u30fc\u30e0\u3092\u524a\u9664\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002 \
+\u3053\u306e\u64cd\u4f5c\u304c\u8a66\u884c\u3055\u308c\u305f\u7406\u7531\u3092\u5224\u5225\u3067\u304d\u308b\u3088\u3046\u306b\u3001\u30b9\u30c8\u30ea\u30fc\u30e0\u306b\u6b8b\u3063\u3066\u3044\u308b\u9805\u76ee\u306e\u6570\u3068\u30b9\u30c8\u30ea\u30fc\u30e0\u306e\u30bf\u30a4\u30d7\u304c\u30e1\u30c3\u30bb\u30fc\u30b8\u306b\u793a\u3055\u308c\u307e\u3059\u3002
+STREAM_NOT_EMPTY_SIMS0507.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Transaction messages
+# -------------------------------------------------------------------------------------------------
+
+XA_PROTOCOL_ERROR_SIMS1000=CWSIS1000E: \u8981\u6c42\u3055\u308c\u305f\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u3001XA \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u30fb\u30d7\u30ed\u30c8\u30b3\u30eb\u306b\u6e96\u62e0\u3057\u3066\u3044\u306a\u3044\u305f\u3081\u3001\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+XA_PROTOCOL_ERROR_SIMS1000.explanation=\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002XA \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u30fb\u30d7\u30ed\u30c8\u30b3\u30eb\u304c\u6b63\u3057\u304f\u5b88\u3089\u308c\u3066\u3044\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+XA_PROTOCOL_ERROR_SIMS1000.useraction=CMSG0002
+
+TRAN_PROTOCOL_ERROR_SIMS1001=CWSIS1001E: \u8981\u6c42\u3055\u308c\u305f\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u3001\u30ea\u30bd\u30fc\u30b9\u30fb\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u306e\u5185\u90e8\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u30fb\u30d7\u30ed\u30c8\u30b3\u30eb\u306b\u6e96\u62e0\u3057\u3066\u3044\u306a\u3044\u305f\u3081\u3001\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+TRAN_PROTOCOL_ERROR_SIMS1001.explanation=\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002\u30ea\u30bd\u30fc\u30b9\u30fb\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u306e\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u30fb\u30d7\u30ed\u30c8\u30b3\u30eb\u304c\u6b63\u3057\u304f\u5b88\u3089\u308c\u3066\u3044\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+TRAN_PROTOCOL_ERROR_SIMS1001.useraction=CMSG0002
+
+COMPLETION_EXCEPTION_SIMS1002=CWSIS1002E: \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u306e\u5b8c\u4e86\u6642\u306b\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916\u3092\u30ad\u30e3\u30c3\u30c1\u3057\u307e\u3057\u305f\u3002 \u4f8b\u5916: {0}
+COMPLETION_EXCEPTION_SIMS1002.explanation=\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002\u30ea\u30bd\u30fc\u30b9\u30fb\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u304c\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u306e\u4f5c\u696d\u7d42\u4e86\u3092\u8981\u6c42\u3055\u308c\u305f\u3068\u304d\u306b\u3001\u305d\u306e\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u51e6\u7406\u304c\u5931\u6557\u3057\u307e\u3057\u305f\u3002
+COMPLETION_EXCEPTION_SIMS1002.useraction=CMSG0002
+
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003=CWSIS1003E: WebSphere \u6a5f\u80fd\u306f WebSphere \u5916\u3067\u306f\u4f7f\u7528\u3067\u304d\u307e\u305b\u3093\u3002
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.explanation=WebSphere \u30e9\u30f3\u30bf\u30a4\u30e0\u74b0\u5883\u3067\u306a\u3044\u306b\u3082\u304b\u304b\u308f\u3089\u305a\u3001WebSphere \u56fa\u6709\u306e\u6a5f\u80fd\u3092\u4f7f\u7528\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.useraction=CMSG0002
+
+CANNOT_COMMIT_COMPLETE_SIMS1004=CWSIS1004E: \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u3092\u30b3\u30df\u30c3\u30c8\u3067\u304d\u307e\u305b\u3093\u3002 \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u306f\u3001\u5b8c\u4e86\u307e\u305f\u306f\u5b8c\u4e86\u4e2d\u3067\u3059\u3002
+CANNOT_COMMIT_COMPLETE_SIMS1004.explanation=\u65e2\u306b\u5b8c\u4e86\u3057\u3066\u3044\u308b\u3001\u307e\u305f\u306f\u5b8c\u4e86\u51e6\u7406\u4e2d\u306e\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u3092\u30b3\u30df\u30c3\u30c8\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+CANNOT_COMMIT_COMPLETE_SIMS1004.useraction=CMSG0002
+
+CANNOT_ROLLBACK_COMPLETE_SIMS1005=CWSIS1005E: \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u3092\u30ed\u30fc\u30eb\u30d0\u30c3\u30af\u3067\u304d\u307e\u305b\u3093\u3002 \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u306f\u3001\u5b8c\u4e86\u307e\u305f\u306f\u5b8c\u4e86\u4e2d\u3067\u3059\u3002
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.explanation=\u65e2\u306b\u5b8c\u4e86\u3057\u3066\u3044\u308b\u3001\u307e\u305f\u306f\u5b8c\u4e86\u51e6\u7406\u4e2d\u306e\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u3092\u30ed\u30fc\u30eb\u30d0\u30c3\u30af\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.useraction=CMSG0002
+
+HEURISTIC_HAZARD_SIMS1006=CWSIS1006E: \u30e1\u30c3\u30bb\u30fc\u30b8\u30fb\u30b9\u30c8\u30a2\u306e\u5185\u5bb9\u3092\u5909\u66f4\u3059\u308b\u305f\u3081\u306b\u4f7f\u7528\u3055\u308c\u308b\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u306e\u7d50\u679c\u3092\u5224\u5225\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002 \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u3001\u30c7\u30fc\u30bf\u640d\u5931\u306e\u767a\u751f\u3092\u56de\u907f\u3059\u308b\u305f\u3081\u306b\u505c\u6b62\u3057\u307e\u3059\u3002
+HEURISTIC_HAZARD_SIMS1006.explanation=\u30d2\u30e5\u30fc\u30ea\u30b9\u30c6\u30a3\u30c3\u30af\u969c\u5bb3\u304c\u691c\u51fa\u3055\u308c\u307e\u3057\u305f\u3002 \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u540c\u671f\u3057\u3066\u3044\u306a\u3044\u53ef\u80fd\u6027\u304c\u3042\u308b\u305f\u3081\u3001\u305d\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30fb\u30b9\u30c8\u30a2\u3078\u306e\u5909\u66f4\u304c\u6210\u529f\u3057\u305f\u304b\u3069\u3046\u304b\u3092\u5224\u5225\u3059\u308b\u305f\u3081\u306b\u518d\u59cb\u52d5\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002
+HEURISTIC_HAZARD_SIMS1006.useraction=CMSG0002
+
+XID_NOT_RECOGNISED_SIMS1007=CWSIS1007E: \u6307\u5b9a\u3055\u308c\u305f XID \u306f\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3067\u8a8d\u8b58\u3055\u308c\u3066\u3044\u306a\u3044\u305f\u3081\u3001{0} \u30a2\u30af\u30b7\u30e7\u30f3\u3092\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3002XID: {1}
+XID_NOT_RECOGNISED_SIMS1007.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u3001\u6307\u5b9a\u3055\u308c\u305f XID \u5024\u3092\u8a8d\u8b58\u3057\u3066\u3044\u306a\u3044\u305f\u3081\u3001\u8981\u6c42\u3055\u308c\u305f\u30a2\u30af\u30b7\u30e7\u30f3\u3092\u5b8c\u4e86\u3067\u304d\u307e\u305b\u3093\u3002\
+\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u4ee5\u524d\u304b\u3089\u3053\u306e XID \u3092\u78ba\u8a8d\u3067\u304d\u3066\u3044\u306a\u3044\u304b\u3001\u3042\u308b\u3044\u306f\u3053\u306e XID \u304c\u7121\u52b9\u306a\u72b6\u614b\u306b\u3042\u308b\u5834\u5408\u306b\u3001\u3053\u308c\u304c\u767a\u751f\u3059\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002
+XID_NOT_RECOGNISED_SIMS1007.useraction=CMSG0002
+
+XID_STILL_ASSOCIATED_SIMS1008=CWSIS1008E: \u6307\u5b9a\u3055\u308c\u305f XID \u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3068 XID \u9593\u306e\u95a2\u9023\u4ed8\u3051\u3092\u7d42\u4e86\u3059\u308b\u305f\u3081\u306b\u307e\u3060\u547c\u3073\u51fa\u3055\u308c\u3066\u3044\u306a\u3044\u305f\u3081\u3001{0} \u30a2\u30af\u30b7\u30e7\u30f3\u3092\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3002XID: {1}
+XID_STILL_ASSOCIATED_SIMS1008.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u3001\u6307\u5b9a\u3055\u308c\u305f XID \u306b\u307e\u3060\u95a2\u9023\u4ed8\u3051\u3089\u308c\u3066\u3044\u308b\u305f\u3081\u3001\u8981\u6c42\u3055\u308c\u305f\u30a2\u30af\u30b7\u30e7\u30f3\u3092\u5b8c\u4e86\u3067\u304d\u307e\u305b\u3093\u3002\
+\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u30fb\u30d6\u30e9\u30f3\u30c1\u3092\u5b8c\u4e86\u3059\u308b\u524d\u306b XA \u306e\u7d42\u4e86\u30e1\u30bd\u30c3\u30c9\u3092\u547c\u3073\u51fa\u3057\u3066\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304b\u3089\u3053\u306e XID \u306e\u95a2\u9023\u4ed8\u3051\u3092\u89e3\u9664\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+XID_STILL_ASSOCIATED_SIMS1008.useraction=CMSG0002
+
+XID_ALREADY_ASSOCIATED_SIMS1009=CWSIS1009E: \u6307\u5b9a\u3055\u308c\u305f XID \u306f\u3001\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306b\u65e2\u306b\u95a2\u9023\u4ed8\u3051\u3089\u308c\u3066\u3044\u308b\u305f\u3081\u3001{0} \u30a2\u30af\u30b7\u30e7\u30f3\u3092\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3002XID: {1}
+XID_ALREADY_ASSOCIATED_SIMS1009.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u3001\u6307\u5b9a\u3055\u308c\u305f XID \u306b\u65e2\u306b\u95a2\u9023\u4ed8\u3051\u3089\u308c\u3066\u3044\u308b\u305f\u3081\u3001\u8981\u6c42\u3055\u308c\u305f\u30a2\u30af\u30b7\u30e7\u30f3\u3092\u5b8c\u4e86\u3067\u304d\u307e\u305b\u3093\u3002
+XID_ALREADY_ASSOCIATED_SIMS1009.useraction=CMSG0002
+
+INVALID_XID_STRING_SIMS1010=CWSIS1010E: \u30b3\u30df\u30c3\u30c8\u307e\u305f\u306f\u30ed\u30fc\u30eb\u30d0\u30c3\u30af\u64cd\u4f5c\u306b\u3001\u7121\u52b9\u306a XID \u30b9\u30c8\u30ea\u30f3\u30b0\u304c\u6e21\u3055\u308c\u307e\u3057\u305f\u3002
+INVALID_XID_STRING_SIMS1010.explanation=\u793a\u3055\u308c\u305f XID \u30b9\u30c8\u30ea\u30f3\u30b0\u3092\u4f7f\u7528\u3057\u3066\u3001\u30b3\u30df\u30c3\u30c8\u307e\u305f\u306f\u30ed\u30fc\u30eb\u30d0\u30c3\u30af\u64cd\u4f5c\u3092\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+INVALID_XID_STRING_SIMS1010.useraction= \u6709\u52b9\u306a XID \u30b9\u30c8\u30ea\u30f3\u30b0\u3092\u6307\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+UNEXPECTED_EXCEPTION_SIMS1099=CWSIS1099E: \u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \u4f8b\u5916: {0}
+UNEXPECTED_EXCEPTION_SIMS1099.explanation=\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \u4f8b\u5916\u60c5\u5831\u3067\u30a8\u30e9\u30fc\u306e\u539f\u56e0\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+UNEXPECTED_EXCEPTION_SIMS1099.useraction=CMSG0002
+
+# ------------------------------------------------- Unrecoverable Messages ------------------------------------------------- #
+
+UNRECOVERABLE_ERROR_SIMS1499=CWSIS1499E: \u56de\u5fa9\u4e0d\u80fd\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u305f\u3081\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3092\u7d9a\u884c\u3067\u304d\u307e\u305b\u3093\u3002
+UNRECOVERABLE_ERROR_SIMS1499.explanation=\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+UNRECOVERABLE_ERROR_SIMS1499.useraction=CMSG0002
+
+
+
+# -------------------------------------------------------------------------------------------------
+# Persistence
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500=CWSIS1500E: \u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.explanation=\u3053\u306e\u524d\u306b\u767a\u751f\u3057\u305f\u30c7\u30fc\u30bf\u30fb\u30b9\u30c8\u30a2\u30fb\u30a8\u30e9\u30fc\u306e\u305f\u3081\u3001\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u8ffd\u52a0\u306e\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.useraction=CMSG0002
+
+DATASOURCE_EXCEPTION_SIMS1501=CWSIS1501E: \u30c7\u30fc\u30bf\u30fb\u30bd\u30fc\u30b9\u304c\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916 {0} \u3092\u5f15\u304d\u8d77\u3053\u3057\u307e\u3057\u305f\u3002
+DATASOURCE_EXCEPTION_SIMS1501.explanation=\u30c7\u30fc\u30bf\u30fb\u30b9\u30c8\u30a2\u7528\u306b\u69cb\u6210\u3055\u308c\u305f\u30c7\u30fc\u30bf\u30fb\u30bd\u30fc\u30b9\u304c\u4f8b\u5916\u3092\u5f15\u304d\u8d77\u3053\u3057\u307e\u3057\u305f\u3002
+DATASOURCE_EXCEPTION_SIMS1501.useraction=CMSG0002
+
+INVALID_TUPLE_TYPE_SIMS1502=CWSIS1502E: \u30bf\u30d7\u30eb\u30fb\u30bf\u30a4\u30d7 {0} \u304c\u6709\u52b9\u306a\u30bf\u30a4\u30d7\u3068\u3057\u3066\u8a8d\u8b58\u3055\u308c\u307e\u305b\u3093\u3002
+INVALID_TUPLE_TYPE_SIMS1502.explanation=\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+INVALID_TUPLE_TYPE_SIMS1502.useraction=CMSG0002
+
+#DATABASE_NOT_SUPPORTED_SIMS1503=CWSIS1503E: Database: {0}, version: {1}, platform: {2}, is not supported
+#DATABASE_NOT_SUPPORTED_SIMS1503.explanation=The specified database is not recognized as a supported database.
+#DATABASE_NOT_SUPPORTED_SIMS1503.useraction=Rerun the command and specify a supported database.
+
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504=CWSIS1504E: The messaging engine is stopping due to an exception from the data source.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.explanation=An exception from the data source caused the messaging engine to stop in order to avoid data corruption.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.useraction=CMSG0002
+
+#KEY_GENERATOR_UPDATE_FAILED_SIMS1505 is no longer used.
+
+#KEY_GENERATOR_MISSING_SIMS1506 is no longer used.
+
+INVALID_PERSISTABLE_OPERATION_SIMS1507=CWSIS1507E: \u9805\u76ee {0} \u306f\u3001\u30bf\u30a4\u30d7\u304c {1} \u3067\u3042\u308b\u305f\u3081\u3001\u4ed6\u306e\u9805\u76ee\u3092\u5165\u308c\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+INVALID_PERSISTABLE_OPERATION_SIMS1507.explanation=\u5185\u90e8\u30e1\u30c3\u30bb\u30fc\u30b8\u8868\u73fe\u3067\u7121\u52b9\u306a\u64cd\u4f5c\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+INVALID_PERSISTABLE_OPERATION_SIMS1507.useraction=CMSG0002
+
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508=CWSIS1508E: The item table identifier, {0}, is outside of the allowed range.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.explanation=A maximum of 32 item tables can be used, with identifiers in the range 0 - 31.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.useraction=CMSG0002
+
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509=CWSIS1509E: An incorrect number of stream tables, {0}, were found.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.explanation=There must be only one stream table.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510=CWSIS1510E: An incorrect number of permanent tables, {0}, were found.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.explanation=There must be at least one permanent table.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511=CWSIS1511E: An incorrect number of temporary tables, {0}, were found.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.explanation=There must be at least one temporary table.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.useraction=Correct the problem and try again.
+
+#UNKNOWN_ITEM_TABLE_KEY_SIMS1512 is no longer used.
+
+ROLLBACK_ONLY_EXCEPTION_SIMS1513=CWSIS1513E: \u81ea\u52d5\u30b3\u30df\u30c3\u30c8\u63a5\u7d9a\u306b\u300c\u30ed\u30fc\u30eb\u30d0\u30c3\u30af\u306e\u307f\u300d\u306e\u72b6\u614b\u3092\u8a2d\u5b9a\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.explanation=\u81ea\u52d5\u30b3\u30df\u30c3\u30c8\u63a5\u7d9a\u306e\u72b6\u614b\u3092\u300c\u30ed\u30fc\u30eb\u30d0\u30c3\u30af\u306e\u307f\u300d\u306b\u8a2d\u5b9a\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.useraction=CMSG0002
+
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514=CWSIS1514E: A data source JNDI name has not been specified.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.explanation=A JNDI name is needed in order to identify the data source to use as a data store.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.useraction=Correct the problem and try again.
+
+#DATABASE_NOT_RECOGNIZED_SIMS1515=CWSIS1515E: The database, {0}, is not recognized as a valid database.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.explanation=An internal error has occurred.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.useraction=CMSG0002
+
+#INVALID_TABLE_ENTRY_SIMS1516=CWSIS1516E: Both data columns of table, {0}, were non-null.
+#INVALID_TABLE_ENTRY_SIMS1516.explanation=An internal error has occurred.
+#INVALID_TABLE_ENTRY_SIMS1516.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517=CWSIS1517W: Reliable persistent data could not be written to the data store by messaging engine {0}.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.explanation=An earlier exception prevented the writing of reliable persistent data to the data store for the messaging engine. The data cannot be recovered.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.useraction=CMSG0002
+
+#MAX_DATA_SIZE_SIMS1518 is no longer used.
+
+# {0} is the messaging engine's name
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519=CWSIS1519E: Messaging engine {0} cannot obtain the lock on its data store, which ensures it has exclusive access to the data.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.explanation=The data store lock is already held, probably by another active or recently failed messaging engine.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.useraction=CMSG0002
+
+INVALID_TASK_OPERATION_SIMS1520=CWSIS1520E: \u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u306e\u72b6\u614b\u304c\u3001\u64cd\u4f5c\u3092\u5b9f\u884c\u3059\u308b\u3068\u304d\u306e\u6b63\u3057\u3044\u72b6\u614b\u306b\u306a\u3063\u3066\u3044\u307e\u305b\u3093\u3002 \u73fe\u5728\u306e\u72b6\u614b\u306f {0} \u3067\u3059\u3002
+INVALID_TASK_OPERATION_SIMS1520.explanation=\u30bf\u30b9\u30af\u3092\u5b9f\u884c\u3059\u308b\u305f\u3081\u306b\u306f\u3001\u30c8\u30e9\u30f3\u30b6\u30af\u30b7\u30e7\u30f3\u304c\u6709\u52b9\u306a\u72b6\u614b\u306b\u306a\u3063\u3066\u3044\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002
+INVALID_TASK_OPERATION_SIMS1520.useraction=CMSG0002
+
+#UNSUPPORTED_TASK_OPERATION_SIMS1521 is no longer used.
+
+#CONNECTION_WAIT_TIMEOUT_SIMS1522=CWSIS1522E: The messaging engine's request for a database connection timed out.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.explanation=The connection pool for the data source used by the messaging engine is too small.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.useraction=CMSG0002
+
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523=CWSIS1523E: Dynamic allocation of database objects in DB2 for z/OS is not allowed.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.explanation=Database tables required by the data store cannot be created dynamically.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.useraction=Use the sibDDLGenerator tool to generate the DDL statements for the data store tables.
+
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524=CWSIS1524E: Data source, {0}, not found.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.explanation=The look up of the specified JNDI name has failed to locate the data source.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.useraction=Verify that the JNDI name is valid and try again.
+
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525=CWSIS1525E: Incorrect item table type, {0}.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.explanation=An item table type has not been recognized as valid.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.useraction=Correct the problem and try again.
+
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526=CWSIS1526E: The item table, {0}, is not able to perform the operation. It is of type, {1}.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.explanation=The item table cannot perform the requested operation because it is not of the correct type.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.useraction=CMSG0002
+
+INVALID_PERSISTABLE_STATE_SIMS1527=CWSIS1527E: \u6301\u7d9a\u53ef\u80fd\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u306e\u72b6\u614b\u304c\u7121\u52b9\u3067\u3059\u3002\u958b\u59cb\u64cd\u4f5c\u30ab\u30a6\u30f3\u30c8: {0}\u3001\u5b8c\u4e86\u64cd\u4f5c\u30ab\u30a6\u30f3\u30c8: {1}
+INVALID_PERSISTABLE_STATE_SIMS1527.explanation=\u5b8c\u4e86\u3057\u305f\u64cd\u4f5c\u30ab\u30a6\u30f3\u30c8\u304c\u3001\u958b\u59cb\u3057\u305f\u64cd\u4f5c\u30ab\u30a6\u30f3\u30c8\u3088\u308a\u5927\u304d\u304f\u306a\u3063\u3066\u3044\u308b\u305f\u3081\u3001\u6301\u7d9a\u53ef\u80fd\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u306e\u72b6\u614b\u304c\u7121\u52b9\u3067\u3059\u3002
+INVALID_PERSISTABLE_STATE_SIMS1527.useraction=CMSG0002
+
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528=CWSIS1528E: New connections cannot be provided because the persistence layer is stopped.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.explanation=The data store persistence layer has been stopped so no more connections will be provided.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.useraction=Restart the messaging engine and try again.
+
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529=CWSIS1529E: The column, {0}, was not found in the table, {1}, as expected.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.explanation=The messaging engine expected to find the column in the relevant table.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.useraction=Correct the problem and try again.
+
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530=CWSIS1530E: The data type, {0}, was found instead of the expected type, {1}, for column, {2}, in table, {3}.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.explanation=The messaging engine expects certain data types to be used for the columns in the data store tables.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.useraction=Correct the problem and try again.
+
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531=CWSIS1531E: The maximum data size, {0} bytes, of the data store has been exceeded. The data size was, {1} bytes.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.explanation=The maximum data size that can be stored in the data store tables has been exceeded.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.useraction=CMSG0002
+
+#MISSING_TABLE_EXCEPTION_SIMS1532=CWSIS1532E: The table, {0}, is missing.
+#MISSING_TABLE_EXCEPTION_SIMS1532.explanation=The messaging engine was unable to find the table in the DBMS, and the option to have the messaging engine automatically create it was not selected.
+#MISSING_TABLE_EXCEPTION_SIMS1532.useraction=Correct the problem and try again.
+
+#MISSING_SCHEMA_EXCEPTION_SIMS1533=CWSIS1533E: The schema, {0}, does not exist.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.explanation=The messaging engine was unable to locate the schema in the DBMS.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.useraction=Correct the problem and try again.
+
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534=CWSIS1534E: \u30af\u30e9\u30b9\u53c2\u7167 {0} \u304c\u89e3\u6c7a\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u3001\u5f53\u8a72\u53c2\u7167\u306b\u5bfe\u5fdc\u3059\u308b\u30af\u30e9\u30b9\u3092\u898b\u3064\u3051\u3089\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.useraction=CMSG0002 
+
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535=CWSIS1535E: The messaging engine''s unique id does not match that found in the data store. ME_UUID={0}, ME_UUID(DB)={1}
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.explanation=The unique id of your messaging engine does not match that in the data store.
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                               by a different messaging engine. Either point your messaging engine's data source \ 
+#                                               to a separate set of tables or remove the existing ones.
+
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536=CWSIS1536E: The messaging engine''s version does not match that found in the data store. VERSION={0}, VERSION(DB)={1}
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.explanation=The version of your messaging engine does not match that in the data store.
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                                by a different messaging engine. Either point your messaging engine's data source \ 
+#                                                to a separate set of tables or remove the existing ones.
+
+#DBLOCK_ACQUIRED_SIMS1537=CWSIS1537I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has acquired an exclusive lock on the data store.
+#DBLOCK_ACQUIRED_SIMS1537.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1537.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1538=CWSIS1538I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain an exclusive lock on the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.useraction=No action is required.
+
+#DDLGENERATOR_USAGE_INFO_SIMS1539=CWSIS1539I: sibDDLGenerator [{0} <DBMS name>] [{1} <DBMS version>] [{2} <DBMS platform>] [{3} <schema>] [{4} <user>] [{5}|{6}] [{7} <database> (z/OS only)][{8} <true|false> (z/OS only)][{9} <tablespace prefix, maximum 5 characters> (z/OS only)][{10} <storage group> [{11} <high-level qualifier>] (z/OS only)] [{12} <buffer pool> (z/OS only)] [{13} <terminator>] [{14}] [{15}] [{16} <statements>] [{17} <statements>] [{18} <number of permanent tables>] [{19} <number of temporary tables>]
+#DDLGENERATOR_USAGE_INFO_SIMS1539.explanation=DDLGenerator usage information.
+#DDLGENERATOR_USAGE_INFO_SIMS1539.useraction=Rerun the command using the correct syntax.
+
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540=CWSIS1540E: An invalid number of tables has been specified, {0}.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.explanation=The specified number of tables must be a positive integer.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.useraction=Correct the error and try again.
+
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541=CWSIS1541E: The maximum number of SIBnnn tables that can be used by a messaging engine, {0}, has been exceeded.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.explanation=The total number of stream (there is always one stream table), permanent and temporary tables should not exceed the maximum.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.useraction=Reduce the number of permanent or temporary tables specified, and restart the server.
+
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542=CWSIS1542E: The configured number of permanent or temporary tables, {1}, is less than the number currently in use, {0}.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.explanation=The number of permanent or temporary tables cannot be decreased.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.useraction=Restore the original values for the number of permanent and temporary tables, and restart the server. 
+
+#DBLOCK_NO_OWNER_SIMS1543=CWSIS1543I: No previous owner was found in the messaging engine's data store.
+#DBLOCK_NO_OWNER_SIMS1543.explanation=The data store has not been used by another messaging engine.
+#DBLOCK_NO_OWNER_SIMS1543.useraction=No action is required.
+
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544=CWSIS1544E: Multiple previous owner id's found in the messaging engine's data store.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.explanation=The data store has identified more than one messagine engine as its owner.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.useraction=CMSG0002
+
+#DBLOCK_ONE_OWNER_SIMS1545=CWSIS1545I: A single previous owner was found in the messaging engine''s data store, ME_UUID={0}, INC_UUID={1}
+#DBLOCK_ONE_OWNER_SIMS1545.explanation=The messaging engine identified has previously used the data store.
+#DBLOCK_ONE_OWNER_SIMS1545.useraction=No action is required.
+
+#DBLOCK_NOT_HELD_SIMS1546 is no longer used.
+
+#SCHEMA_NAME_UNDEFINED_SIMS1547=CWSIS1547E: Unable to determine the schema name for the messaging engine.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.explanation=The schema name was not defined explicitly for the data store, and the database user id was not provided.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.useraction=Provide a schema name and try again.
+
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548=CWSIS1548W: \u3053\u306e\u6642\u70b9\u3067\u306f\u3001\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u30fb\u30b5\u30a4\u30ba\u3092\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u69cb\u6210\u5185\u306e\u5024\u306b\u5909\u66f4\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u65e2\u5b58\u306e\u5185\u5bb9\u304c\u539f\u56e0\u3067\u3001\u69cb\u6210\u5185\u306e\u5024\u304c\u6709\u52b9\u306b\u306a\u308a\u307e\u305b\u3093\u3002
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002 \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u3001\u6b21\u56de\u306e\u59cb\u52d5\u6642\u306b\u3001\u518d\u5ea6\u3053\u306e\u69cb\u6210\u5909\u66f4\u3092\u9069\u7528\u3057\u3088\u3046\u3068\u3057\u307e\u3059\u3002
+
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549=CWSIS1549W: \u3053\u306e\u6642\u70b9\u3067\u306f\u3001\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u30fb\u30b5\u30a4\u30ba\u3092\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u69cb\u6210\u5185\u306e\u5024\u306b\u5909\u66f4\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u65e2\u5b58\u306e\u5185\u5bb9\u304c\u539f\u56e0\u3067\u3001\u69cb\u6210\u5185\u306e\u5024\u304c\u6709\u52b9\u306b\u306a\u308a\u307e\u305b\u3093\u3002
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002 \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u3001\u6b21\u56de\u306e\u59cb\u52d5\u6642\u306b\u3001\u518d\u5ea6\u3053\u306e\u69cb\u6210\u5909\u66f4\u3092\u9069\u7528\u3057\u3088\u3046\u3068\u3057\u307e\u3059\u3002
+
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550=CWSIS1550I: \u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u73fe\u884c\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u69cb\u6210\u60c5\u5831\u306b\u304a\u3051\u308b\u30b5\u30a4\u30ba\u306f {1} \u30d0\u30a4\u30c8\u3067\u3059\u3002
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551=CWSIS1551I: \u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u73fe\u884c\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u73fe\u884c\u6700\u5927\u30b5\u30a4\u30ba\u306f {1} \u30d0\u30a4\u30c8\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552=CWSIS1552I: \u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u73fe\u884c\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u73fe\u884c\u6700\u5927\u30b5\u30a4\u30ba\u306f\u7121\u5236\u9650\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553=CWSIS1553I: \u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u69cb\u6210\u60c5\u5831\u306b\u304a\u3051\u308b\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u6700\u5927\u30b5\u30a4\u30ba\u306f {1} \u30d0\u30a4\u30c8\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554=CWSIS1554I: \u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u69cb\u6210\u60c5\u5831\u306b\u304a\u3051\u308b\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u6700\u5927\u30b5\u30a4\u30ba\u306f\u7121\u5236\u9650\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555=CWSIS1555I: \u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u73fe\u884c\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u73fe\u884c\u6700\u5927\u30b5\u30a4\u30ba\u306f {1} \u30d0\u30a4\u30c8\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556=CWSIS1556I: \u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u73fe\u884c\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u73fe\u884c\u6700\u5927\u30b5\u30a4\u30ba\u306f\u7121\u5236\u9650\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557=CWSIS1557I: \u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u69cb\u6210\u60c5\u5831\u306b\u304a\u3051\u308b\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u6700\u5927\u30b5\u30a4\u30ba\u306f {1} \u30d0\u30a4\u30c8\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558=CWSIS1558I: \u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u69cb\u6210\u60c5\u5831\u306b\u304a\u3051\u308b\u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u306f {0} \u30d0\u30a4\u30c8\u3067\u3059\u3002 \u6700\u5927\u30b5\u30a4\u30ba\u306f\u7121\u5236\u9650\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.explanation=\u3053\u308c\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u69cb\u6210\u60c5\u5831\u306e\u4e00\u90e8\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559=CWSIS1559I: \u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u5185\u306e\u30c7\u30fc\u30bf\u304c {0} \u30d0\u30a4\u30c8\u3092\u5360\u3081\u3066\u3044\u307e\u3059\u3002
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.explanation=\u3053\u308c\u306f\u3001\u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u5185\u5bb9\u306b\u3088\u3063\u3066\u6d88\u8cbb\u3055\u308c\u308b\u30b9\u30da\u30fc\u30b9\u306e\u30d0\u30a4\u30c8\u6570\u3067\u3059\u3002 \u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u3092\u3053\u306e\u5024\u3092\u4e0b\u56de\u308b\u30b5\u30a4\u30ba\u307e\u3067\u524a\u6e1b\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560=CWSIS1560I: \u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u5185\u306e\u30c7\u30fc\u30bf\u304c {0} \u30d0\u30a4\u30c8\u3092\u5360\u3081\u3066\u3044\u307e\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.explanation=\u3053\u308c\u306f\u3001\u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u5185\u5bb9\u306b\u3088\u3063\u3066\u6d88\u8cbb\u3055\u308c\u308b\u30b9\u30da\u30fc\u30b9\u306e\u30d0\u30a4\u30c8\u6570\u3067\u3059\u3002 \u6700\u5c0f\u4e88\u7d04\u30b5\u30a4\u30ba\u3092\u3053\u306e\u5024\u3092\u4e0b\u56de\u308b\u30b5\u30a4\u30ba\u307e\u3067\u524a\u6e1b\u3059\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561=CWSIS1561E: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u56fa\u6709 ID \u304c\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u5185\u3067\u691c\u51fa\u3055\u308c\u305f ID \u3068\u4e00\u81f4\u3057\u307e\u305b\u3093\u3002 ME_UUID={0}\u3001ME_UUID(FS)={1}
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u56fa\u6709 ID \u304c\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u5185\u306e ID \u3068\u4e00\u81f4\u3057\u307e\u305b\u3093\u3002
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.useraction=\u5225\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u6240\u6709\u3059\u308b\u65e2\u5b58\u306e\u30d5\u30a1\u30a4\u30eb\u306e\u30bb\u30c3\u30c8\u306b\u63a5\u7d9a\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002 \
+\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u5225\u500b\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30bb\u30c3\u30c8\u3092\u6307\u3059\u3088\u3046\u306b\u3059\u308b\u304b\u3001\u65e2\u5b58\u306e\u30d5\u30a1\u30a4\u30eb\u306e\u30bb\u30c3\u30c8\u3092\u9664\u53bb\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562=CWSIS1562E: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u5185\u3067\u691c\u51fa\u3055\u308c\u305f\u30d0\u30fc\u30b8\u30e7\u30f3\u3068\u4e00\u81f4\u3057\u307e\u305b\u3093\u3002 VERSION={0}\u3001VERSION(FS)={1}
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u304c\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u5185\u306e\u30d0\u30fc\u30b8\u30e7\u30f3\u3068\u4e00\u81f4\u3057\u307e\u305b\u3093\u3002
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.useraction=\u5225\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u6240\u6709\u3059\u308b\u65e2\u5b58\u306e\u30d5\u30a1\u30a4\u30eb\u306e\u30bb\u30c3\u30c8\u306b\u63a5\u7d9a\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002 \
+\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u5225\u500b\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30bb\u30c3\u30c8\u3092\u6307\u3059\u3088\u3046\u306b\u3059\u308b\u304b\u3001\u65e2\u5b58\u306e\u30d5\u30a1\u30a4\u30eb\u306e\u30bb\u30c3\u30c8\u3092\u9664\u53bb\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ACQUIRED_SIMS1563=CWSIS1563I: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3 ME_UUID={0}\u3001INC_UUID={1} \u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306b\u5bfe\u3057\u3066\u6392\u4ed6\u30ed\u30c3\u30af\u3092\u53d6\u5f97\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.explanation=\u8868\u8a18\u306e UUID \u3067\u8b58\u5225\u3055\u308c\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u6240\u6709\u6a29\u3092\u78ba\u7acb\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564=CWSIS1564I: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3 ME_UUID={0}\u3001INC_UUID={1} \u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306b\u5bfe\u3057\u3066\u6392\u4ed6\u30ed\u30c3\u30af\u3092\u7372\u5f97\u3057\u3088\u3046\u3068\u3057\u3066\u3044\u307e\u3059\u3002
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.explanation=\u8868\u8a18\u306e UUID \u3067\u8b58\u5225\u3055\u308c\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u6240\u6709\u6a29\u3092\u78ba\u7acb\u3057\u3088\u3046\u3068\u3057\u3066\u3044\u307e\u3059\u3002
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_LOCK_NO_OWNER_SIMS1565=CWSIS1565I: \u524d\u306e\u6240\u6709\u8005\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u5185\u3067\u691c\u51fa\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.explanation=\u3053\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306f\u3001\u5225\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306b\u3088\u3063\u3066\u4f7f\u7528\u3055\u308c\u305f\u3053\u3068\u306f\u3042\u308a\u307e\u305b\u3093\u3002
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# {0} is the UUID of the messaging engine found in the file store
+# {1} is the INC_UUID of the messaging engine found in the file store
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566=CWSIS1566I: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u5185\u3067\u524d\u306e\u6240\u6709\u8005\u304c 1 \u3064\u3060\u3051\u691c\u51fa\u3055\u308c\u307e\u3057\u305f: ME_UUID={0}\u3001INC_UUID={1}
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.explanation=\u8868\u8a18\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u3001\u4ee5\u524d\u306b\u3053\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u3092\u4f7f\u7528\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# {0} is the messaging engine's name
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567=CWSIS1567E: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3 {0} \u306f\u3001\u30c7\u30fc\u30bf\u3078\u306e\u6392\u4ed6\u7684\u30a2\u30af\u30bb\u30b9\u3092\u78ba\u4fdd\u3059\u308b\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30c3\u30af\u3092\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093\u3002
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30c3\u30af\u304c\u3001\u5225\u306e\u30a2\u30af\u30c6\u30a3\u30d6\u306a\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u307e\u305f\u306f\u6700\u8fd1\u969c\u5bb3\u3092\u8d77\u3053\u3057\u305f\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306b\u3088\u3063\u3066\u65e2\u306b\u4fdd\u6301\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568=CWSIS1568I: Messaging engine {0} is using a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.explanation=The message store for the messaging engine is a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.useraction=No action is required.
+
+# {0} is the messaging engine's name
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569=CWSIS1569I: \u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3 {0} \u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u3092\u4f7f\u7528\u3057\u3066\u3044\u307e\u3059\u3002
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30fb\u30b9\u30c8\u30a2\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u3067\u3059\u3002
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# {0} is the text of the exception thrown
+#DBLOCK_EXCEPTION_SIMS1570=CWSIS1570E: The messaging engine encountered an exception while locking the data store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1570.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1570.useraction=CMSG0002
+
+# {0} is the number of permanent tables in use
+# {1} is the number of temporary tables in use
+#NUMBER_OF_TABLES_IN_USE_SIMS1571=CWSIS1571I: Data store table summary: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.explanation=The data store is using these permanent and temporary tables.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.useraction=No action is required.
+
+# This message is also issued if the number of tables is changing
+# {0} is the number of permanent tables previously in use
+# {1} is the number of temporary tables previously in use
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572=CWSIS1572I: Data store table summary before configuration change: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.explanation=The data store was using these permanent and temporary tables before the configuration was changed.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.useraction=No action is required.
+
+FILE_STORE_LOG_FULL_SIMS1573E=CWSIS1573E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u304c\u30d5\u30eb\u3067\u3059\u3002
+FILE_STORE_LOG_FULL_SIMS1573E.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u306b\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u4fdd\u7ba1\u3059\u308b\u305f\u3081\u306e\u30b9\u30da\u30fc\u30b9\u304c\u3082\u3046\u3042\u308a\u307e\u305b\u3093\u3002 \
+\u3053\u306e\u539f\u56e0\u3068\u3057\u3066\u8003\u3048\u3089\u308c\u308b\u306e\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u60f3\u5b9a\u5916\u306b\u84c4\u7a4d\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u3001\u3042\u308b\u3044\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b5\u30a4\u30ba\u304c\u5c0f\u3055\u3059\u304e\u308b\u3053\u3068\u3067\u3059\u3002 
+FILE_STORE_LOG_FULL_SIMS1573E.useraction=\u904e\u5270\u306a\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u30af\u30ea\u30fc\u30f3\u30a2\u30c3\u30d7\u3059\u308b\u304b\u3001\u5fc5\u8981\u3067\u3042\u308c\u3070\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u30b5\u30a4\u30ba\u3092\u5897\u3084\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E=CWSIS1574E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u304c\u30d5\u30eb\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306b\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u4fdd\u7ba1\u3059\u308b\u305f\u3081\u306e\u30b9\u30da\u30fc\u30b9\u304c\u3082\u3046\u3042\u308a\u307e\u305b\u3093\u3002 \
+\u3053\u306e\u539f\u56e0\u3068\u3057\u3066\u8003\u3048\u3089\u308c\u308b\u306e\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u60f3\u5b9a\u5916\u306b\u84c4\u7a4d\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u3001\u3042\u308b\u3044\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b5\u30a4\u30ba\u304c\u5c0f\u3055\u3059\u304e\u308b\u3053\u3068\u3067\u3059\u3002
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.useraction=\u904e\u5270\u306a\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u30af\u30ea\u30fc\u30f3\u30a2\u30c3\u30d7\u3059\u308b\u304b\u3001\u5fc5\u8981\u3067\u3042\u308c\u3070\u6c38\u7d9a\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u30b5\u30a4\u30ba\u3092\u5897\u3084\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E=CWSIS1575E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u304c\u30d5\u30eb\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306b\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u4fdd\u7ba1\u3059\u308b\u305f\u3081\u306e\u30b9\u30da\u30fc\u30b9\u304c\u3082\u3046\u3042\u308a\u307e\u305b\u3093\u3002 \
+\u3053\u306e\u539f\u56e0\u3068\u3057\u3066\u8003\u3048\u3089\u308c\u308b\u306e\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u60f3\u5b9a\u5916\u306b\u84c4\u7a4d\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u3001\u3042\u308b\u3044\u306f\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b5\u30a4\u30ba\u304c\u5c0f\u3055\u3059\u304e\u308b\u3053\u3068\u3067\u3059\u3002
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.useraction=\u904e\u5270\u306a\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u30af\u30ea\u30fc\u30f3\u30a2\u30c3\u30d7\u3059\u308b\u304b\u3001\u5fc5\u8981\u3067\u3042\u308c\u3070\u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u30b5\u30a4\u30ba\u3092\u5897\u3084\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+SPILL_DISPATCHER_IS_FULL_SIMS1576E=CWSIS1576E: \u4e88\u5099\u306e\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u30d5\u30eb\u3067\u3059\u3002 
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.explanation=\u4e88\u5099\u306e\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u30d5\u30eb\u3067\u3042\u308b\u305f\u3081\u3001\u30b9\u30da\u30fc\u30b9\u304c\u4f7f\u7528\u53ef\u80fd\u306b\u306a\u308b\u307e\u3067\u306f\u65b0\u898f\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002 \
+\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u306e\u30b9\u30da\u30fc\u30b9\u3092\u89e3\u653e\u3067\u304d\u308b\u3088\u3046\u306b\u3001\u65e2\u5b58\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u9664\u53bb\u3059\u308b\u3053\u3068\u306f\u53ef\u80fd\u3067\u3059\u3002
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.useraction=\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u3092\u6b63\u5e38\u306b\u623b\u3059\u305f\u3081\u306e\u51e6\u7f6e\u306f\u5fc5\u8981\u3042\u308a\u307e\u305b\u3093\u3002 \
+\u305f\u3060\u3057\u3001\u3053\u308c\u306f\u3001\u4e00\u6642\u4fdd\u7ba1\u30d5\u30a1\u30a4\u30eb\u306e\u30b5\u30a4\u30ba\u304c\u5c0f\u3055\u3059\u304e\u308b\u3068\u304d\u306e\u75c7\u72b6\u3067\u3042\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002
+
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577=CWSIS1577E: \u6c38\u7d9a\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.explanation=\u3053\u306e\u524d\u306b\u767a\u751f\u3057\u305f\u30a8\u30e9\u30fc\u306e\u305f\u3081\u3001\u6c38\u7d9a\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u8ffd\u52a0\u306e\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.useraction=CMSG0002
+
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578=CWSIS1578E: \u4e88\u5099\u306e\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.explanation=\u3053\u306e\u524d\u306b\u767a\u751f\u3057\u305f\u30a8\u30e9\u30fc\u306e\u305f\u3081\u3001\u4e88\u5099\u306e\u30c7\u30a3\u30b9\u30d1\u30c3\u30c1\u30e3\u30fc\u304c\u8ffd\u52a0\u306e\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u307e\u305b\u3093\u3002
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.useraction=CMSG0002
+
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579=CWSIS1579E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u304c\u5225\u306e\u30d7\u30ed\u30bb\u30b9\u306b\u3088\u3063\u3066\u30ed\u30c3\u30af\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u305d\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u3092\u30ed\u30c3\u30af\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u5225\u306e\u30d7\u30ed\u30bb\u30b9\u304c\u305d\u306e\u30d5\u30a1\u30a4\u30eb\u306e\u30ed\u30c3\u30af\u3092\u65e2\u306b\u4fdd\u6301\u3057\u3066\u3044\u308b\u305f\u3081\u3001\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002 \
+\u3053\u306e\u30d7\u30ed\u30bb\u30b9\u306f\u3001\u5225\u306e\u30a2\u30af\u30c6\u30a3\u30d6\u30fb\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304b\u3001\u4ed6\u306e\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u30fb\u30d7\u30ed\u30bb\u30b9\u3067\u3042\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.useraction=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u3001\u305d\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u3067\u4f7f\u7528\u3059\u308b\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u3092\u6392\u4ed6\u7684\u306b\u53c2\u7167\u3057\u3066\u3044\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002 \
+2 \u756a\u76ee\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u540c\u3058\u30d5\u30a1\u30a4\u30eb\u3092\u4f7f\u7528\u3057\u3066\u3044\u308b\u5834\u5408\u306f\u3001\u69cb\u6210\u306b\u8aa4\u308a\u304c\u3042\u308b\u304b\u3001\u3042\u308b\u3044\u306f\u3001\u7121\u52b9\u306a\u30d5\u30a7\u30a4\u30eb\u30aa\u30fc\u30d0\u30fc\u306e\u8a66\u884c\u304c\u539f\u56e0\u3068\u601d\u308f\u308c\u307e\u3059\u3002 \
+\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u958b\u59cb\u3092\u8a31\u53ef\u3059\u308b\u306b\u306f\u3001\u3053\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u3092\u4f7f\u7528\u3057\u3066\u3044\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3092\u5224\u5225\u3057\u3066\u305d\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3092\u505c\u6b62\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# {0} is the path to the log file that was provided from the configuration.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580=CWSIS1580E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u304c\u3001\u6307\u5b9a\u3055\u308c\u305f\u30ed\u30b1\u30fc\u30b7\u30e7\u30f3: {0} \u306b\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306f\u3001\u305d\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u3092\u30aa\u30fc\u30d7\u30f3\u307e\u305f\u306f\u4f5c\u6210\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u5b9f\u884c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002 \
+\u3053\u306e\u554f\u984c\u306e\u4e00\u822c\u7684\u306a\u539f\u56e0\u3068\u3057\u3066\u306f\u3001\u30c7\u30a3\u30b9\u30af\u30fb\u30de\u30a6\u30f3\u30c8\u304c\u5b58\u5728\u3057\u306a\u3044\u304b\u3001\u6307\u5b9a\u3055\u308c\u305f\u30d1\u30b9\u306e\u5165\u529b\u306b\u8aa4\u308a\u304c\u3042\u308b\u3053\u3068\u304c\u8003\u3048\u3089\u308c\u307e\u3059\u3002
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.useraction=\u6307\u5b9a\u3055\u308c\u305f\u30d1\u30b9\u304c\u4f7f\u7528\u53ef\u80fd\u306a\u30c7\u30a3\u30b9\u30af\u3068\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u3092\u53c2\u7167\u3057\u3066\u3044\u308b\u304b\u3069\u3046\u304b\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# {0} The log file name
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581=CWSIS1581I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u305d\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u521d\u671f\u5316\u3092\u8a66\u884c\u3057\u3066\u3044\u307e\u3059: {0}
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u958b\u59cb\u3055\u308c\u3001\u305d\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u5185\u5bb9\u306e\u8aad\u307f\u53d6\u308a\u3092\u8a66\u884c\u3057\u3066\u3044\u307e\u3059\u3002
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582=CWSIS1582I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u521d\u671f\u5316\u6642\u306b\u554f\u984c\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u304c\u3001\u518d\u8a66\u884c\u3055\u308c\u307e\u3059\u3002
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.explanation=\u73fe\u6642\u70b9\u3067\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u521d\u671f\u5316\u306e\u8a66\u884c\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002 \
+\u524d\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u304c\u51fa\u529b\u3055\u308c\u3001\u5931\u6557\u306e\u7406\u7531\u306b\u3064\u3044\u3066\u306e\u8a73\u7d30\u304c\u793a\u3055\u308c\u307e\u3059\u3002 \
+\u3053\u306e\u5931\u6557\u304c\u56de\u5fa9\u53ef\u80fd\u304b\u3069\u3046\u304b\u3092\u78ba\u8a8d\u3059\u308b\u305f\u3081\u306b\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306f\u521d\u671f\u5316\u3092\u518d\u8a66\u884c\u3057\u307e\u3059\u3002
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.useraction=\u8907\u6570\u56de\u306e\u8a66\u884c\u306e\u5f8c\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u521d\u671f\u5316\u3092\u6b63\u5e38\u306b\u5b9f\u884c\u3067\u304d\u306a\u3044\u5834\u5408\u306f\u3001\u3053\u306e\u5931\u6557\u3092\u793a\u3059\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u30ed\u30b0\u3092\u8abf\u3079\u3066\u3001\u69cb\u6210\u307e\u305f\u306f\u63a5\u7d9a\u4e0a\u306e\u554f\u984c\u304c\u3042\u308b\u304b\u3069\u3046\u304b\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583=CWSIS1583E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306f\u3001\u521d\u671f\u5316\u306e\u518d\u8a66\u884c\u9650\u5ea6\u3092\u8d85\u3048\u305f\u305f\u3081\u3001\u3053\u306e\u6642\u70b9\u3067\u505c\u6b62\u3057\u307e\u3059\u3002
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.explanation=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306f\u3001\u521d\u671f\u5316\u518d\u8a66\u884c\u306e\u5236\u9650\u6642\u9593\u306b\u9054\u3057\u305f\u305f\u3081\u3001\u3053\u306e\u6642\u70b9\u3067\u505c\u6b62\u3057\u307e\u3059\u3002 \
+\u521d\u671f\u5316\u306e\u5931\u6557\u304c\u7e70\u308a\u8fd4\u3055\u308c\u305f\u7406\u7531\u306b\u3064\u3044\u3066\u306f\u3001\u524d\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306b\u793a\u3055\u308c\u307e\u3059\u3002 \
+\u30b5\u30fc\u30d0\u30fc\u69cb\u6210\u304c\u30d5\u30a7\u30a4\u30eb\u30aa\u30fc\u30d0\u30fc\u3092\u30b5\u30dd\u30fc\u30c8\u3057\u3066\u3044\u308b\u5834\u5408\u306f\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u505c\u6b62\u5f8c\u306b\u305d\u308c\u3092\u5b9f\u884c\u3067\u304d\u307e\u3059\u3002
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.useraction=\u524d\u306b\u51fa\u529b\u3055\u308c\u305f\u30e1\u30c3\u30bb\u30fc\u30b8\u3067\u3001\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u521d\u671f\u5316\u304c\u5931\u6557\u3057\u305f\u7406\u7531\u3092\u5224\u5225\u3067\u304d\u307e\u3059\u3002
+
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584=CWSIS1584I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u521d\u671f\u5316\u3055\u308c\u307e\u3057\u305f\u3002
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u30aa\u30fc\u30d7\u30f3\u3057\u3001\u30ed\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb\u3092\u521d\u671f\u5316\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+# {0} The permanent store file name
+# {1} The temporary store file name
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585=CWSIS1585I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u305d\u306e\u6c38\u7d9a\u4fdd\u7ba1 ({0}) \u304a\u3088\u3073\u4e00\u6642\u4fdd\u7ba1 ({1}) \u306e\u958b\u59cb\u3092\u8a66\u884c\u3057\u307e\u3059\u3002
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u305d\u306e\u30b9\u30c8\u30a2\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u5185\u5bb9\u306e\u30aa\u30fc\u30d7\u30f3\u3068\u8aad\u307f\u53d6\u308a\u3092\u8a66\u884c\u3057\u307e\u3059\u3002 \
+\u3053\u306e\u8a66\u884c\u3067\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u304c\u521d\u3081\u3066\u958b\u59cb\u3055\u308c\u305f\u5834\u5408\u306f\u3001\u3053\u308c\u3089\u306e\u30d5\u30a1\u30a4\u30eb\u3082\u4f5c\u6210\u3055\u308c\u307e\u3059\u3002
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586=CWSIS1586I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u6c38\u7d9a\u4fdd\u7ba1\u304c\u6b63\u5e38\u306b\u958b\u59cb\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u30aa\u30fc\u30d7\u30f3\u3057\u3001\u6c38\u7d9a\u30b9\u30c8\u30a2\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u30b3\u30f3\u30c6\u30f3\u30c4\u3092\u78ba\u8a8d\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587=CWSIS1587I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u4e00\u6642\u4fdd\u7ba1\u304c\u6b63\u5e38\u306b\u958b\u59cb\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u30aa\u30fc\u30d7\u30f3\u3057\u3001\u4e00\u6642\u30b9\u30c8\u30a2\u30fb\u30d5\u30a1\u30a4\u30eb\u306e\u30b3\u30f3\u30c6\u30f3\u30c4\u3092\u78ba\u8a8d\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588=CWSIS1588I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u958b\u59cb\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u30aa\u30fc\u30d7\u30f3\u3057\u3001\u305d\u306e\u3059\u3079\u3066\u306e\u30d5\u30a1\u30a4\u30eb\u3092\u8aad\u307f\u53d6\u308a\u3001\u65b0\u3057\u3044\u4f5c\u696d\u3092\u53d7\u3051\u5165\u308c\u3089\u308c\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3057\u305f\u3002
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_STOP_EXPECTED_SIMS1589=CWSIS1589I: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u6b63\u5e38\u306b\u505c\u6b62\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_STOP_EXPECTED_SIMS1589.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u3001\u5236\u5fa1\u3055\u308c\u305f\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u306e\u4e00\u74b0\u3068\u3057\u3066\u505c\u6b62\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_STOP_EXPECTED_SIMS1589.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+
+FILE_STORE_STOP_UNEXPECTED_SIMS1590=CWSIS1590E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u4e88\u671f\u3057\u306a\u3044\u72b6\u6cc1\u3067\u505c\u6b62\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.explanation=\u4e88\u671f\u3057\u306a\u3044\u30a8\u30e9\u30fc\u304c\u539f\u56e0\u3067\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u304c\u505c\u6b62\u3057\u307e\u3057\u305f\u3002 \u30ed\u30b0\u3067\u524d\u306b\u3042\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u306b\u3001\u5931\u6557\u306e\u539f\u56e0\u304c\u793a\u3055\u308c\u307e\u3059\u3002
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.useraction=\u30ed\u30b0\u5185\u306e\u3059\u3079\u3066\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u8abf\u3079\u3066\u3001\u4e88\u671f\u305b\u305a\u767a\u751f\u3057\u305f\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u306e\u6839\u672c\u539f\u56e0\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591=CWSIS1591E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u521d\u671f\u5316\u4e2d\u306b\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u521d\u671f\u5316\u4e2d\u306b\u3001\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u306e\u958b\u59cb\u3092\u59a8\u3052\u305f\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.useraction=CMSG0002
+
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592=CWSIS1592E: \u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306b\u4e88\u671f\u3057\u306a\u3044 IO \u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.explanation=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u521d\u671f\u5316\u4e2d\u306b\u3001\u4e88\u671f\u3057\u306a\u3044 IO \u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 \
+\u521d\u671f\u5316\u306e\u8a66\u307f\u3092\u3082\u3046\u4e00\u5ea6\u3067\u304d\u307e\u3059\u3002
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.useraction=\u30d5\u30a1\u30a4\u30eb\u30fb\u30b9\u30c8\u30a2\u306e\u521d\u671f\u5316\u3092\u518d\u8a66\u884c\u3059\u308b\u3068\u304d\u306b\u3001\u554f\u984c\u304c\u89e3\u6c7a\u3055\u308c\u305f\u304b\u78ba\u8a8d\u3059\u308b\u306b\u306f\u3001\u30b5\u30fc\u30d0\u30fc\u30fb\u30ed\u30b0\u3092\u30c1\u30a7\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# Messages CWSIS1593 & CWSIS1594 introduced to replace message CWSIS1546 which is ambiguous
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_FAILED_SIMS1593=CWSIS1593I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has failed to gain an initial lock on the data store.
+#DBLOCK_FAILED_SIMS1593.explanation=The messaging engine, identified by the UUIDs in the message, has been unable to get an exclusive lock \ 
+#                                   on the database tables that hold its data. This could be due to another instance of the messaging engine \ 
+#                                   running against the same set of tables. It could also be the result of a lock from a previously running \ 
+#                                   instance being held for longer than expected in the database. The messaging engine will retry for a \ 
+#                                   period during startup to see if it is able to acquire the lock.
+#DBLOCK_FAILED_SIMS1593.useraction=If the messaging engine does not succeed in acquiring the lock during the startup retry period then \ 
+#                                  check that no other instance of the messaging engine is running and that there are no outstanding locks \ 
+#                                 on the tables for this messaging engine being held on your database server.
+
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_LOST_SIMS1594=CWSIS1594I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has lost the lock on the data store.
+#DBLOCK_LOST_SIMS1594.explanation=The messaging engine, identified by the UUIDs in the message, has lost an existing lock on the tables that \ 
+#                                 hold its data. This may be due to a connectivity problem between the messaging engine and the database server \ 
+#                                 or that another instance of the messaging engine has started and taken control of the tables.
+#DBLOCK_LOST_SIMS1594.useraction=Check that a network connection between your messaging engine and database server is available and that there is \ 
+#                               only one instance of the messaging engine running.
+
+#INVALID_PARAMETER_COMBINATION_SIMS1595=CWSIS1595E: An invalid combination of parameters has been specified, Database: {0}, version: {1}, platform: {2} . Refer to the documentation for the correct parameters for your database.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.explanation=The combination of parameters used was unrecognized by the sibDDLGenerator.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.useraction=Refer to the documentation for a valid combination of parameters to use for your database. Rerun the command with a valid combination of parameters.
+
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596=CWSIS1596I: The data store exclusive lock cannot be disabled.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.explanation=The data store exclusive lock ensures integrity of the data within the data store and cannot \ 
+#                                                        be disabled for this messaging engine.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.useraction=If you have identified a need to disable the data store exclusive lock contact IBM Support.
+
+#DATASTORE_LOCK_DISABLED_CWSIS1597=CWSIS1597I: The data store exclusive lock has been disabled for {0} milliseconds.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.explanation=A request was made to disable the data store exclusive lock. The lock will remain disabled for the \ 
+#                                              length of time stated in the message at which point it will re-enable automatically.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.useraction=No action is required.
+
+#DATASTORE_LOCK_REENABLED_CWSIS1598=CWSIS1598I: The data store exclusive lock has been automatically re-enabled.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.explanation=The messaging engines data store has re-enabled its exclusive lock after the requested time period.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1599=CWSIS1599I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain ownership on the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.useraction=No action is required.
+
+#DBLOCK_EXCEPTION_SIMS1600=CWSIS1600E: Unable to update Messaging Engine status as the messaging engine encountered an exception while acquiring ownership on the message store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1600.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1600.useraction=CMSG0002
+
+#DBLOCK_ACQUIRED_SIMS1601=CWSIS1601I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has obtained ownership on the data store.
+#DBLOCK_ACQUIRED_SIMS1601.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1601.useraction=No action is required.
+
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602=CWSIS1602W: Restrict database locking feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603=CWSIS1603W: Keep count of failed deliveries feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+
+# -------------------------------------------------------------------------------------------------
+# Expiry
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_EXPIRABLE_SIMS2000=CWSIS2000E: \u9805\u76ee\u306b\u56fa\u6709\u30ad\u30fc {0} \u306f\u3042\u308a\u307e\u305b\u3093\u3002
+DUPLICATE_EXPIRABLE_SIMS2000.explanation=\u56fa\u6709\u3067\u306a\u3044\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u3092\u6709\u52b9\u671f\u9650\u7d22\u5f15\u306b\u8ffd\u52a0\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+DUPLICATE_EXPIRABLE_SIMS2000.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+EXPIRY_DAEMON_TERMINATED_SIMS2001=CWSIS2001E: \u6709\u52b9\u671f\u9650\u30c7\u30fc\u30e2\u30f3\u304c\u3001\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916 {0} \u306e\u305f\u3081\u7570\u5e38\u7d42\u4e86\u3057\u307e\u3057\u305f\u3002
+EXPIRY_DAEMON_TERMINATED_SIMS2001.explanation=\u6709\u52b9\u671f\u9650\u30c7\u30fc\u30e2\u30f3\u30fb\u30b9\u30ec\u30c3\u30c9\u304c\u5272\u308a\u8fbc\u307e\u308c\u3001\u505c\u6b62\u3057\u307e\u3057\u305f\u3002
+EXPIRY_DAEMON_TERMINATED_SIMS2001.useraction=CMSG0002
+ 
+# {0} is the text of the exception thrown
+CACHE_LOADER_TERMINATED_SIMS2003=CWSIS2003E: \u30ad\u30e3\u30c3\u30b7\u30e5\u30fb\u30ed\u30fc\u30c0\u30fc\u30fb\u30c7\u30fc\u30e2\u30f3\u304c\u3001\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916 {0} \u306e\u305f\u3081\u306b\u3001\u7570\u5e38\u7d42\u4e86\u3057\u307e\u3057\u305f\u3002
+CACHE_LOADER_TERMINATED_SIMS2003.explanation=\u30ad\u30e3\u30c3\u30b7\u30e5\u30fb\u30ed\u30fc\u30c0\u30fc\u30fb\u30c7\u30fc\u30e2\u30f3\u30fb\u30b9\u30ec\u30c3\u30c9\u304c\u5272\u308a\u8fbc\u307e\u308c\u3001\u505c\u6b62\u3057\u307e\u3057\u305f\u3002
+CACHE_LOADER_TERMINATED_SIMS2003.useraction=CMSG0002
+
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004=CWSIS2004E: \u6709\u52b9\u671f\u9650\u30c7\u30fc\u30e2\u30f3\u306f\u65e2\u306b\u5b9f\u884c\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.explanation=\u6709\u52b9\u671f\u9650\u30c7\u30fc\u30e2\u30f3\u3092\u958b\u59cb\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u65e2\u306b\u5b9f\u884c\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# DeliveryDelayManager
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010=CWSIS2010E: \u9805\u76ee\u306b\u56fa\u6709\u30ad\u30fc {0} \u306f\u3042\u308a\u307e\u305b\u3093\u3002
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.explanation=\u56fa\u6709\u3067\u306a\u3044\u30aa\u30d6\u30b8\u30a7\u30af\u30c8\u3092\u30c7\u30ea\u30d0\u30ea\u30fc\u9045\u5ef6\u7d22\u5f15\u306b\u8ffd\u52a0\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u3002
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.useraction=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3092\u518d\u59cb\u52d5\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u554f\u984c\u304c\u89e3\u6c7a\u3057\u306a\u3044\u5834\u5408\u306f\u3001WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u306e\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# {0} is the text of the exception thrown
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011=CWSIS2011E: \u30c7\u30ea\u30d0\u30ea\u30fc\u9045\u5ef6\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u30fb\u30c7\u30fc\u30e2\u30f3\u304c\u3001\u4e88\u671f\u3057\u306a\u3044\u4f8b\u5916 {0} \u306e\u305f\u3081\u306b\u7570\u5e38\u7d42\u4e86\u3057\u307e\u3057\u305f\u3002
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.explanation=\u30c7\u30ea\u30d0\u30ea\u30fc\u9045\u5ef6\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u30fb\u30c7\u30fc\u30e2\u30f3\u30fb\u30b9\u30ec\u30c3\u30c9\u304c\u5272\u308a\u8fbc\u307e\u308c\u3001\u505c\u6b62\u3057\u307e\u3057\u305f\u3002
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.useraction=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3092\u518d\u59cb\u52d5\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u554f\u984c\u304c\u89e3\u6c7a\u3057\u306a\u3044\u5834\u5408\u306f\u3001WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u306e\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+ 
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012=CWSIS2012E: \u30c7\u30ea\u30d0\u30ea\u30fc\u9045\u5ef6\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u30fb\u30c7\u30fc\u30e2\u30f3\u306f\u65e2\u306b\u5b9f\u884c\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.explanation=\u30c7\u30ea\u30d0\u30ea\u30fc\u9045\u5ef6\u30de\u30cd\u30fc\u30b8\u30e3\u30fc\u30fb\u30c7\u30fc\u30e2\u30f3\u30fb\u30b9\u30ec\u30c3\u30c9\u3092\u958b\u59cb\u3057\u3088\u3046\u3068\u3057\u307e\u3057\u305f\u304c\u3001\u65e2\u306b\u5b9f\u884c\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.useraction=\u30e1\u30c3\u30bb\u30fc\u30b8\u30f3\u30b0\u30fb\u30a8\u30f3\u30b8\u30f3\u3092\u518d\u59cb\u52d5\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u554f\u984c\u304c\u89e3\u6c7a\u3057\u306a\u3044\u5834\u5408\u306f\u3001WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u306e\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIMS9999=CWSIS9999E: {0}
+TEMPORARY_SIMS9999.explanation=\u3053\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u60c5\u5831\u3060\u3051\u3067\u306f\u4e0d\u5341\u5206\u306a\u5834\u5408\u3001\u8a73\u7d30\u306b\u3064\u3044\u3066\u306f\u4ed8\u968f\u3059\u308b\u30a8\u30e9\u30fc\u30fb\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+TEMPORARY_SIMS9999.useraction=\u8a73\u3057\u304f\u306f\u3001\u4ed8\u968f\u3059\u308b\u30a8\u30e9\u30fc\u30fb\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002

@@ -1,0 +1,18 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="c14n.abstract">
+
+    <!-- This is a subflow that does Subject Canonicalization using the Attribute Resolver service. -->
+    
+    <action-state id="AttributeSourcedSubjectCanonicalization">
+        <evaluate expression="ResolveAttributes" />
+        <evaluate expression="AttributeSourcedSubjectCanonicalization" />
+        <evaluate expression="'proceed'" />
+        
+        <transition on="proceed" to="proceed" />
+    </action-state>
+
+    <bean-import resource="attribute-sourced-subject-c14n-beans.xml" />
+
+</flow>

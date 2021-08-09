@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.1
+
+Bundle-Name: wim base
+Bundle-Description:  wim base, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.security.wim.base
+
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.wim.internal.base.jar
+#JakartaEE-Bundle-Name: WIM base internal
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.wim.internal.base
+#JakartaEE-Bundle-Description: WIM base internal
+#JakartaEE-Bundle-Version: 
+
+
+Import-Package: \
+ !javax.xml.bind.*, \
+ *
+ 
+# Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
+# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
+# bundle will be always used due to JAXB 2.2 API is not resolved
+DynamicImport-Package: \
+ javax.xml.bind, \
+ javax.xml.bind.annotation, \
+ javax.xml.bind.annotation.adapters, \
+ javax.xml.bind.attachment, \
+ javax.xml.bind.helpers, \
+ javax.xml.bind.util
+
+Private-Package: \
+ com.ibm.websphere.security.wim.util.resources 
+
+Export-Package: \
+ com.ibm.wsspi.security.wim, \
+ com.ibm.wsspi.security.wim.exception, \
+ com.ibm.wsspi.security.wim.model, \
+ com.ibm.websphere.security.wim;provide:=true, \
+ com.ibm.websphere.security.wim.ras;provide:=true, \
+ com.ibm.websphere.security.wim.util;provide:=true
+
+instrument.classesExcludes: com/ibm/websphere/security/wim/util/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    javax.activation:activation;version=1.1,\
+    com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+    com.sun.xml.bind:jaxb-impl;version=2.2.10,\
+    com.sun.xml.bind:jaxb-core;version=2.2.10
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest

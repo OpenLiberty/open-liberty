@@ -1,0 +1,101 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2
+Bundle-Activator: com.ibm.ws.cxf.rt.ws.policy.NoOpActivator
+
+
+Export-Package: \
+  !schemas, \
+  !schemas.blueprint, \
+  com.ibm.ws.cxf.rt.ws.policy, \
+  org.apache.cxf.ws.policy;version="2.6.2", \
+  org.apache.cxf.ws.policy.attachment;version="2.6.2", \
+  org.apache.cxf.ws.policy.attachment.external;version="2.6.2", \
+  org.apache.cxf.ws.policy.attachment.reference;version="2.6.2", \
+  org.apache.cxf.ws.policy.attachment.wsdl11;version="2.6.2", \
+  org.apache.cxf.ws.policy.blueprint;version="2.6.2", \
+  org.apache.cxf.ws.policy.builder.jaxb;version="2.6.2", \
+  org.apache.cxf.ws.policy.builder.primitive;version="2.6.2", \
+  org.apache.cxf.ws.policy.mtom;version="2.6.2", \
+  org.apache.cxf.ws.policy.selector;version="2.6.2", \
+  org.apache.cxf.ws.policy.spring;version="2.6.2", \
+  org.apache.cxf.ws.policy.v200409;version="2.6.2", \
+  org.apache.cxf.ws.policy.v200607;version="2.6.2"
+
+Import-Package: \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  !org.apache.cxf.ws.policy.attachment.wsdl11.*, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  javax.annotation, \
+  javax.wsdl, \
+  javax.wsdl.extensions, \
+  javax.xml.bind;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.bind.annotation.adapters;version="[2.2,3)", \
+  javax.xml.namespace, \
+  javax.xml.parsers, \
+  javax.xml.stream, \
+  javax.xml.xpath, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.annotations;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.classloader;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.jaxb;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.blueprint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.spring;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.extension;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.feature;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.policy;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.resource;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.factory;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.staxutils;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.attachment;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.attachment.external;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.attachment.reference;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.builder.jaxb;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.builder.primitive;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.selector;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  org.apache.neethi, \
+  org.apache.neethi.builders, \
+  org.apache.neethi.builders.xml, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.w3c.dom, \
+  org.xml.sax
+
+Private-Package: \
+  schemas, \
+  schemas.blueprint
+  

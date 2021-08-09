@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=1.30,0,02/04/15,09:57:59
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.jpa/resources/EJBJPAMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Die Stateful Session-Bean {0} im Modul {1} der Anwendung {2} hat keine Abh\u00e4ngigkeit von der Persistenzreferenz {3} deklariert.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Eine Stateful Session-Bean in einem Webarchiv muss die Abh\u00e4ngigkeiten von allen Persistenzkontextreferenzen und Persistenzeinheiten deklarieren, auf die es zugreifen m\u00f6chte.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=f\u00fcgen Sie der Stateful-Session-Bean die entsprechende Quellcodeannotation @PersistenceContext oder @PersistenceUnit hinzu, oder f\u00fcgen Sie dem entsprechenden Element <session> in der Datei ejb-jar.xml das entsprechende Element <persistence-context-ref> oder <persistence-unit-ref> hinzu.

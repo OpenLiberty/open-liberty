@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: The product cannot determine the fully qualified domain name of the host. The host name will default to {0}. The error was: {1}
+DETERMINE_HOST_ERROR.explanation=The IP address or host name of the server cannot be determined.
+DETERMINE_HOST_ERROR.useraction=Check the network configuration of the server and restart the server with the --clean option.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: OSGi service {0} is not available.  Try to restart the server with the --clean option.
+OSGI_SERVICE_ERROR.explanation=The specified service is not available, causing this internal server error.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the --clean option.

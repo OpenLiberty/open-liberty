@@ -1,0 +1,10 @@
+version: 1
+dn: cn=nis,ou=schema
+cn: nis
+m-disabled: TRUE
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+m-dependencies: cosine
+creatorsname: uid=admin,ou=system

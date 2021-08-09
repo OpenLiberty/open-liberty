@@ -1,0 +1,30 @@
+This product includes software developed by:
+The Apache Software Foundation (http://www.apache.org/).
+
+------------------------------------------------------------------------
+See the file LICENSE.txt
+See licenses for accompanying products in the "/licenses" subdirectory.
+------------------------------------------------------------------------
+
+This software also includes code from Facelets (https://facelets.dev.java.net/)
+for the purpose of implementing Facelets PDL for JSF 2.0 support.
+
+This product includes schema files developed for the Glassfish Java EE
+reference implementation (http://java.sun.com/xml/ns/j2ee/).
+Apache Myfaces elects to include this software in this distribution
+under the CDDL license.  You can obtain a copy of the License at:
+    https://glassfish.dev.java.net/public/CDDL+GPL.html
+The source code is available at:
+    https://glassfish.dev.java.net/source/browse/glassfish/
+
+The following schemas are included:
+
+===========================
+  javaee_5.xsd
+  javaee_web_services_client_1_2.xsd
+===========================
+
+This software also includes code from Grails Licensed under Apache License, 
+Version 2.0 (org.apache.myfaces.shared.util.StreamCharBuffer)
+Copyright 2009 the original author or authors. Lari Hotari, Sagire Software Oy
+

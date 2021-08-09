@@ -1,0 +1,11 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: oauth20TokenIntrospectProvider-1.0
+Subsystem-SymbolicName: com.ibm.ws.security.oauth20.tokenintrospectprovider; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.ws.security.oauth20.tokenintrospectprovider; version="[1,1.0.100)"; start-phase:=SERVICE
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Description: %description
+Subsystem-Localization: OSGI-INF/l10n/subsystem
+Subsystem-Name: oauth20TokenIntrospectProvider-1.0
+IBM-Feature-Version: 2
+IBM-ProductID: com.ibm.websphere.appserver

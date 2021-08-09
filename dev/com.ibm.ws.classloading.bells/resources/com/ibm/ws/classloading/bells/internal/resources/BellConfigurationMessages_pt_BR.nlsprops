@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+################### LIBRARY SERVICE EXPORT MESSAGES 0050-0058 ################### 
+#################################################################################
+
+# {0} - the name of the library
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the implementation class
+bell.service.name=CWWKL0050I: A biblioteca {0} registrou o servi\u00e7o que \u00e9 declarado no arquivo {1}, usando a classe de implementa\u00e7\u00e3o {2}.
+bell.service.name.explanation=O servi\u00e7o foi declarado no diret\u00f3rio META-INF/services e registrado no servidor.  
+bell.service.name.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.no.impl=CWWKL0051W: O sistema n\u00e3o pode localizar a implementa\u00e7\u00e3o {0} do servi\u00e7o que \u00e9 declarado no arquivo {1} e registrado na biblioteca {2}.
+bell.no.impl.explanation=A implementa\u00e7\u00e3o do servi\u00e7o n\u00e3o foi encontrada.
+bell.no.impl.useraction=Certifique-se de que o nome especificado na declara\u00e7\u00e3o de servi\u00e7o est\u00e1 correto.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - message from the NoClassDefFoundError
+bell.no.inter=CWWKL0052W: O sistema n\u00e3o pode construir uma inst\u00e2ncia da classe de implementa\u00e7\u00e3o {0} devido a uma defini\u00e7\u00e3o de classe ausente. Essa classe \u00e9 uma implementa\u00e7\u00e3o do servi\u00e7o que \u00e9 declarado no arquivo {1} e registrado na biblioteca {2}. O erro \u00e9: {3}
+bell.no.inter.explanation=Uma classe que \u00e9 necess\u00e1ria para a inicializa\u00e7\u00e3o do servi\u00e7o n\u00e3o foi localizada.
+bell.no.inter.useraction=Certifique-se de que o nome especificado na declara\u00e7\u00e3o de servi\u00e7o est\u00e1 correto. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.not.constructible=CWWKL0053W: O sistema n\u00e3o pode construir uma inst\u00e2ncia da classe de implementa\u00e7\u00e3o {0}. Essa classe \u00e9 uma implementa\u00e7\u00e3o do servi\u00e7o que \u00e9 declarado no arquivo {1} e registrado na biblioteca {2}.
+bell.not.constructible.explanation=O sistema n\u00e3o pode criar uma inst\u00e2ncia da implementa\u00e7\u00e3o de servi\u00e7o porque n\u00e3o h\u00e1 acesso \u00e0 defini\u00e7\u00e3o de classe ou um construtor sem argumento est\u00e1 ausente na classe.
+bell.not.constructible.useraction=Assegure-se de que exista acessa \u00e0 defini\u00e7\u00e3o de classe e ao construtor.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.illegal.access=CWWKL0054W: O sistema n\u00e3o pode construir uma inst\u00e2ncia da classe de implementa\u00e7\u00e3o {0} devido a acesso n\u00e3o autorizado. Essa classe \u00e9 uma implementa\u00e7\u00e3o do servi\u00e7o que \u00e9 declarado no arquivo {1} e registrado na biblioteca {2}.
+bell.illegal.access.explanation=O sistema n\u00e3o pode acessar a declara\u00e7\u00e3o de classe ou o construtor.
+bell.illegal.access.useraction=Assegure-se de que a classe e o construtor estejam definidos e acess\u00edveis.
+
+# {0} - the name of the library
+bell.no.services.found=CWWKL0055W: O sistema n\u00e3o pode localizar nenhum servi\u00e7o na biblioteca a seguir: {0}.
+bell.no.services.found.explanation=N\u00e3o houve servi\u00e7os declarados na pasta META-INF/services.
+bell.no.services.found.useraction=Certifique-se de que as Extens\u00f5es B\u00e1sicas que utilizam Liberty Libraries (BELL) estejam configuradas com a biblioteca correta, que tenha a pasta META-INF/servi\u00e7os esperada
+
+# {0} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {1} - the name of the library
+# {2} - the exception thrown when trying to read the file
+bell.io.error=CWWKL0056W: Ocorreu um erro ao ler o arquivo {0} para exportar servi\u00e7os da biblioteca {1}. O erro \u00e9: {2}
+bell.io.error.explanation=O arquivo de declara\u00e7\u00e3o do servi\u00e7o n\u00e3o \u00e9 leg\u00edvel.
+bell.io.error.useraction=Assegure-se de que o arquivo seja leg\u00edvel pelo sistema.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - the exception thrown when instantiating the class
+bell.error.ctor=CWWKL0057W: A {0} inst\u00e2ncia n\u00e3o foi criada com \u00eaxito. Essa classe \u00e9 uma implementa\u00e7\u00e3o do servi\u00e7o que \u00e9 declarado no arquivo {1} e registrado na biblioteca {2}. Ocorreu o seguinte erro: {3}
+bell.error.ctor.explanation=O sistema recebeu um erro de exce\u00e7\u00e3o inesperada durante a cria\u00e7\u00e3o da inst\u00e2ncia. Esse erro pode ocorrer como resultado de uma exce\u00e7\u00e3o do construtor de classe.
+bell.error.ctor.useraction=Se uma exce\u00e7\u00e3o ocorreu no construtor, revise e verifique o comportamento do construtor de classe.
+
+bell.no.services.config=CWWKL0058W: N\u00e3o \u00e9 poss\u00edvel localizar o servi\u00e7o {0} na pasta META-INF/services na biblioteca {1}.
+bell.no.services.config.explanation=N\u00e3o h\u00e1 servi\u00e7os correspondentes declarados na pasta META-INF/services.
+bell.no.services.config.useraction= Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.

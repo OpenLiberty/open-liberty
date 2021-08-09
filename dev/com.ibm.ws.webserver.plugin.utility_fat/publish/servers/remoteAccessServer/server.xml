@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <include location="../fatTestCommon.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>restConnector-2.0</feature>
+    </featureManager>
+       
+    <quickStartSecurity userName="mrAdmin" userPassword="mrPassword" />
+    
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>    
+      
+    <ssl id="defaultSSLConfig"
+      keyStoreRef="defaultKeyStore"
+      trustStoreRef="defaultTrustStore"
+      serverKeyAlias="default" />  
+      
+    <keyStore id="defaultKeyStore" password="Liberty"
+	           location="resources/security/sslOptions.jks"/>
+
+	<keyStore id="defaultTrustStore" password="Liberty"
+	           location="resources/security/trust.jks"/>  
+<!--
+    <logging  traceSpecification="com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all"
+                traceFileName="trace.log"
+                maxFileSize="20"
+                maxFiles="10"
+                traceFormat="BASIC" />
+-->
+
+</server>

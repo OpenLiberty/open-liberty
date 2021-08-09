@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <web-app id="TokenEndpointServlet" version="3.0" 
+     xmlns="http://java.sun.com/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+     
+  <display-name>Test Token Endpoint</display-name>
+  <description>RP Server-side implementation to replace the OP token endpoint.</description>
+  
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+  	<servlet-name>TokenEndpointServlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.testTokenEndpoint.TokenEndpointServlet</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>TokenEndpointServlet</servlet-name>
+    <url-pattern>/saveToken</url-pattern>
+  </servlet-mapping>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_2">
+    <servlet-name>TokenEndpointServlet</servlet-name>
+    <url-pattern>/getToken</url-pattern>
+  </servlet-mapping>
+
+</web-app>
+
+
+
+  

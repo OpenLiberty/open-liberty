@@ -1,0 +1,10 @@
+dn: m-oid=1.3.6.1.1.1.1.30, ou=attributeTypes, cn=rfc2307bis, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.1.30
+m-name: nisDomain
+m-description: NIS domain
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-length: 0

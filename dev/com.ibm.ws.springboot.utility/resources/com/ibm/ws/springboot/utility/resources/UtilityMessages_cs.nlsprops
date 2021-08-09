@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Chyba: {0}
+error.inputConsoleNotAvailable=Vstupn\u00ed konzola nen\u00ed dostupn\u00e1.
+error.missingIO=Chyba, chyb\u00ed za\u0159\u00edzen\u00ed I/O: {0}.
+
+usage=Pou\u017eit\u00ed: {0}
+task.unknown=Nezn\u00e1m\u00e1 \u00faloha: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+insufficientArgs=Nedostate\u010dn\u00e9 mno\u017estv\u00ed argument\u016f.
+invalidArg=Neplatn\u00fd argument {0}.
+missingArg=Chyb\u00ed argument {0}.
+missingArg2=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}.
+exclusiveArg=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}, nikoli oboj\u00ed.
+missingValue=Chyb\u00ed hodnota pro argument {0}.
+
+thin.abort=P\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed \u00falohy tenk\u00e9 aplikace:
+thin.appNotFound=Ur\u010denou aplikaci nelze naj\u00edt v um\u00edst\u011bn\u00ed {0}
+thin.appTargetIsDirectory=Ur\u010den\u00fd c\u00edl aplikace je adres\u00e1\u0159 {0}
+thin.libCacheIsFile=Ur\u010den\u00fd c\u00edl mezipam\u011bti knihovny je soubor {0}
+thin.creating=Vytvo\u0159en\u00ed tenk\u00e9 aplikace z: {0}
+thin.libraryCache=Mezipam\u011b\u0165 knihovny: {0}
+thin.applicationLoc=Tenk\u00e1 aplikace: {0}
+
+file.requiredDirNotCreated=Nelze vytvo\u0159it po\u017eadovanou adres\u00e1\u0159ovou strukturu pro {0}
+file.failedDirCreate=Nezda\u0159ilo se vytvo\u0159it adres\u00e1\u0159 {0}.
+
+

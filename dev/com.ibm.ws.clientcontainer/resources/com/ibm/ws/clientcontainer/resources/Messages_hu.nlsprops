@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: Az oszt\u00e1lynak argumentumok n\u00e9lk\u00fcli konstruktorral kell rendelkeznie.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=Az oszt\u00e1lynak argumentumok n\u00e9lk\u00fcli konstruktorral kell rendelkeznie, \u00e9s a javax.security.auth.callback.CallbackHandler fel\u00fcletet kell megval\u00f3s\u00edtania.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=Adjon argumentumok n\u00e9lk\u00fcli konstruktort a visszah\u00edv\u00e1s-kezel\u0151 oszt\u00e1lyhoz.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: A k\u00f6vetkez\u0151 besz\u00far\u00e1si kiv\u00e9tel t\u00f6rt\u00e9nt a kezel\u0151 PostConstruct met\u00f3dusn\u00e1l: {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=Egy kiv\u00e9tel t\u00f6rt\u00e9nik, amikor a t\u00e1rol\u00f3 megh\u00edvja a PostConstruct met\u00f3dust.   
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a PostConstruct met\u00f3dus megfelel\u0151en van meghat\u00e1rozva a telep\u00edt\u00e9si le\u00edr\u00f3ban, vagy megfelel\u0151en van jegyezve az oszt\u00e1lyban.    
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: A k\u00f6vetkez\u0151 besz\u00far\u00e1si kiv\u00e9tel t\u00f6rt\u00e9nt a kezel\u0151 PreDestroy met\u00f3dusn\u00e1l: {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=Egy kiv\u00e9tel t\u00f6rt\u00e9nik, amikor a t\u00e1rol\u00f3 megh\u00edvja a PreDestroy met\u00f3dust. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a PreDestroy met\u00f3dus megfelel\u0151en van meghat\u00e1rozva a telep\u00edt\u00e9si le\u00edr\u00f3ban, vagy megfelel\u0151en van jegyezve az oszt\u00e1lyban. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: T\u00f6bb PostConstruct vagy PreDestroy met\u00f3dus l\u00e9tezik a(z) {1} oszt\u00e1lyban. A(z) {0} PostConstruct vagy PreDestroy met\u00f3dust nem fogja megh\u00edvni a t\u00e1rol\u00f3.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=T\u00f6bb PostConstruct vagy PreDestroy met\u00f3dus van deklar\u00e1lva az oszt\u00e1lyban.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=Nincs teend\u0151. A t\u00e1rol\u00f3 megh\u00edvja az els\u0151 \u00e9szlelt met\u00f3dust.

@@ -1,0 +1,59 @@
+<server description="JavaEESec Multiple Module FAT">
+
+	<featureManager>
+		<feature>appSecurity-3.0</feature>
+		<feature>ejbLite-3.2</feature>
+		<feature>jsf-2.3</feature>
+		<feature>el-3.0</feature>
+		<feature>jdbc-4.1</feature>
+		<feature>componenttest-1.0</feature>
+	</featureManager>
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+	<application type="ear" id="securityejbinwar2" name="securityejbinwar2"
+		location="securityejbinwar2.ear">
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="user2" access-id="uid=user2,ou=users,o=ibm,c=us" />
+				<run-as userid="user2" />
+			</security-role>
+			<security-role name="Manager">
+				<user name="user1" access-id="uid=user1,ou=users,o=ibm,c=us" />
+				<run-as userid="user1" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+
+			<security-role name="declareRoles01">
+				<user name="runasuser1" access-id="uid=runasuser1,ou=users,o=ibm,c=us" />
+				<run-as userid="runasuser1" />
+			</security-role>
+		</application-bnd>
+		<classloader commonLibraryRef="DerbyLib" />
+	</application>
+
+	<webContainer deferServletLoad="false" />
+
+<application type="war" id="DefaultQueryDatabaseServlet2"
+		name="DefaultQueryDatabaseServlet2" location="dbfat2.war">
+		<classloader commonLibraryRef="DerbyLib" />
+	</application>
+	
+	<dataSource id="derby1" jndiName="jdbc/derby2fat"
+		fat.modify="true">
+		<jdbcDriver libraryRef="DerbyLib" />
+		<properties.derby.embedded databaseName="memory:derby1"
+			createDatabase="create" />
+		<containerAuthData user="dbuser1" password="{xor}Oz0vKDtu" />
+	</dataSource>
+	
+	<library id="DerbyLib" fat.modify="true">
+		<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+	</library>
+    
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar"
+		className="java.security.AllPermission" />
+	<include location="../fatTestPorts.xml" />
+</server>

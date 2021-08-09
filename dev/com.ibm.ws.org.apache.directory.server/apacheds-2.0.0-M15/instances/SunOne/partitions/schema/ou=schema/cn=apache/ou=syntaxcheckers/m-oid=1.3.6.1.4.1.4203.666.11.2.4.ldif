@@ -1,0 +1,8 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.4203.666.11.2.4,ou=syntaxCheckers,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.4203.666.11.2.4
+m-fqcn: org.apache.directory.api.ldap.model.schema.syntaxCheckers.CsnSidSyntaxChecker
+objectclass: metaSyntaxChecker
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system

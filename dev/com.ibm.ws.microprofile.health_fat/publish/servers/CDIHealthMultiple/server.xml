@@ -1,0 +1,15 @@
+<server description="Server for testing health">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>mpHealth-1.0</feature>
+    </featureManager>
+	
+	<logging traceSpecification="HEALTH=all=enabled:logservice=all=enabled:*=info=enabled:com.ibm.websphere.org.eclipse.microprofile.health.*=all=enabled:com.ibm.ws.microprofile.health.*=all=enabled
+	"/>
+
+</server>

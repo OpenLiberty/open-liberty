@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+
+  <!-- add a valid auth alias to a resource-ref that would otherwise have insufficient auth -->
+  <resource-ref name="java:app/env/jdbc/reboundAuth">
+    <authentication-alias name="krb5Auth"/>
+  </resource-ref>
+
+</web-bnd>

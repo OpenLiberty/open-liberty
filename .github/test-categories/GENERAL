@@ -1,0 +1,5 @@
+build.example_fat
+build.example.testcontainers_fat
+com.ibm.ws.java11_fat
+build.featureStart_fat
+io.openliberty.ws.global.handler.internal_fat

@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Um novo cliente de transfer\u00eancia de arquivos conectou-se ao identificador de conex\u00e3o {0}.
+filetransfer.client.init.explanation=Um novo cliente de transfer\u00eancia de arquivos conectou-se ao identificador de conex\u00e3o especificado.
+filetransfer.client.init.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+filetransfer.client.error=CWWKX7952E: Ocorreu uma mensagem de erro "{0}" do lado do cliente para a conex\u00e3o {1}.
+filetransfer.client.error.explanation=O lado do cliente do conector JMX REST encontrou um erro e a mensagem especificada foi gerada.
+filetransfer.client.error.useraction=Use a mensagem de erro gerada para identificar e corrigir o problema que causou esse erro e execute novamente a opera\u00e7\u00e3o.
+
+filetransfer.server.error=CWWKX7953E: Ocorreu uma mensagem de erro "{0}" do lado do servidor para a conex\u00e3o {1}.
+filetransfer.server.error.explanation=O lado do servidor do conector JMX REST encontrou um erro e gerou a mensagem especificada.
+filetransfer.server.error.useraction=Use a mensagem de erro gerada para identificar e corrigir o problema que causou esse erro e execute novamente a opera\u00e7\u00e3o.
+
+filetransfer.client.bad.credentials=CWWKX7954E: O nome de usu\u00e1rio ou a senha especificados n\u00e3o est\u00e3o autorizados. O servidor respondeu com o c\u00f3digo {0} e a mensagem "{1}" para a conex\u00e3o {2}.
+filetransfer.client.bad.credentials.explanation=As credenciais fornecidas ao obter a conex\u00e3o s\u00e3o incorretas. O usu\u00e1rio pode n\u00e3o existir, n\u00e3o ter autoridade para acessar o servidor, ou a senha pode ser incorreta.
+filetransfer.client.bad.credentials.useraction=Corrija o nome de usu\u00e1rio ou a senha e, em seguida, obtenha uma nova conex\u00e3o.
+
+filetransfer.response.code.error=CWWKX7955E: O cliente de transfer\u00eancia de arquivos recebeu o c\u00f3digo de resposta {0} com a mensagem "{1}" para a conex\u00e3o {2}.
+filetransfer.response.code.error.explanation=O cliente de transfer\u00eancia de arquivos recebeu um c\u00f3digo de resposta inesperado do servidor.
+filetransfer.response.code.error.useraction=Use o c\u00f3digo de resposta do cliente para identificar e resolver a causa desse problema e execute novamente a opera\u00e7\u00e3o.
+
+filetransfer.download.file=CWWKX7956I: A solicita\u00e7\u00e3o para fazer o download do arquivo {0} foi bem-sucedida e seu conte\u00fado foi gravado no arquivo {1} usando a conex\u00e3o {2}.
+filetransfer.download.file.explanation=A solicita\u00e7\u00e3o de download do arquivo especificado obteve \u00eaxito.
+filetransfer.download.file.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+filetransfer.unsupported.operation=CWWKX7957E: A opera\u00e7\u00e3o {0} n\u00e3o \u00e9 suportada pelo cliente de transfer\u00eancia de arquivos para a conex\u00e3o {1}.
+filetransfer.unsupported.operation.explanation=A opera\u00e7\u00e3o especificada n\u00e3o \u00e9 suportada pelo cliente de transfer\u00eancia de arquivos.
+filetransfer.unsupported.operation.useraction=Solicite uma opera\u00e7\u00e3o que seja suportada pelo cliente de transfer\u00eancia de arquivos.
+
+filetransfer.upload.file=CWWKX7958I: A solicita\u00e7\u00e3o para fazer o upload do arquivo {0} foi bem-sucedida e seu conte\u00fado foi gravado no arquivo {1} usando a conex\u00e3o {2}.
+filetransfer.upload.file.explanation=A solicita\u00e7\u00e3o de upload do arquivo especificado obteve \u00eaxito.
+filetransfer.upload.file.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+filetransfer.delete.file=CWWKX7959I: A solicita\u00e7\u00e3o para excluir o arquivo {0} foi bem-sucedida usando a conex\u00e3o {1}.
+filetransfer.delete.file.explanation=A solicita\u00e7\u00e3o de exclus\u00e3o do arquivo especificado obteve \u00eaxito.
+filetransfer.delete.file.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+filetransfer.delete.all=CWWKX7960I: A solicita\u00e7\u00e3o para excluir todos os arquivos e pastas da cole\u00e7\u00e3o {0} foi bem-sucedida usando a conex\u00e3o {1}.
+filetransfer.delete.all.explanation=A solicita\u00e7\u00e3o de exclus\u00e3o da cole\u00e7\u00e3o especificada foi bem-sucedida.
+filetransfer.delete.all.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.

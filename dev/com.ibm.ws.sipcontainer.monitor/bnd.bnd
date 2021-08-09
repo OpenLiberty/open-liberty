@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+bVersion=1.0
+
+Bundle-Name: WebSphere SIP Container monitor
+Bundle-SymbolicName: com.ibm.ws.sipcontainer.monitor
+Bundle-Description:  WebSphere SIP Container monitor  Support, version ${bVersion}
+
+Export-Package: com.ibm.ws.sip.monitor.pmi.*, \
+ com.ibm.ws.sip.monitor.mxbeans
+ 
+-dsannotations: com.ibm.ws.sip.monitor.pmi.basic.SipContainerModule, \
+ com.ibm.ws.sip.monitor.pmi.application.ApplicationsModule
+    
+Liberty-Monitoring-Components:com.ibm.ws.sip.monitor.pmi.basic.SipContainerBasicCountersMonitor, \
+	com.ibm.ws.sip.monitor.pmi.taskduration.TaskDurationCountersMonitor, \
+	com.ibm.ws.sip.monitor.pmi.queuemonitor.QueueMonitoringCountersMonitor, \
+	com.ibm.ws.sip.monitor.pmi.inbound.InboundRequestCountersMonitor, \
+	com.ibm.ws.sip.monitor.pmi.outbound.OutboundRequestCountersMonitor, \
+	com.ibm.ws.sip.monitor.pmi.inbound.InboundResponseCountersMonitor, \
+	com.ibm.ws.sip.monitor.pmi.outbound.OutboundResponseCountersMonitor
+
+-buildpath: \
+	com.ibm.ws.sipcontainer;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.monitor;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

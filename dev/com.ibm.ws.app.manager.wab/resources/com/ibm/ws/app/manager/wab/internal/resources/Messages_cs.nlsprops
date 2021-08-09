@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: Do\u0161lo k chyb\u011b p\u0159i inicializaci instala\u010dn\u00edho programu WAB.
+bundle.tracker.init.fail.explanation=Server nemohl inicializovat instala\u010dn\u00ed programWeb Application Bundle (WAB), tak\u017ee WAB nebyly nainstalov\u00e1ny.
+bundle.tracker.init.fail.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail=CWWKZ0202E: Nelze nainstalovat bal\u00edk {0} s kontextov\u00fdm ko\u0159enem {1} do webov\u00e9ho kontejneru.
+wab.install.fail.explanation=Server nemohl nainstalovat Web Application Bundle (WAB) do webov\u00e9ho kontejneru.
+wab.install.fail.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail.adapt=CWWKZ0203E: Nelze nainstalovat bal\u00edk {0} s kontextov\u00fdm ko\u0159enem {1} do webov\u00e9ho kontejneru.
+wab.install.fail.adapt.explanation=Server nemohl nainstalovat Web Application Bundle (WAB) do webov\u00e9ho kontejneru.
+wab.install.fail.adapt.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail.overlay=CWWKZ0204E: Nelze nainstalovat bal\u00edk {0} s kontextov\u00fdm ko\u0159enem {1} do webov\u00e9ho kontejneru.
+wab.install.fail.overlay.explanation=Server nemohl nainstalovat Web Application Bundle (WAB) do webov\u00e9ho kontejneru.
+wab.install.fail.overlay.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail.cache=CWWKZ0205E: Nelze nainstalovat bal\u00edk {0} s kontextov\u00fdm ko\u0159enem {1} do webov\u00e9ho kontejneru.
+wab.install.fail.cache.explanation=Server nemohl nainstalovat Web Application Bundle (WAB) do webov\u00e9ho kontejneru.
+wab.install.fail.cache.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail.container=CWWKZ0206E: Nelze nainstalovat bal\u00edk {0} s kontextov\u00fdm ko\u0159enem {1} do webov\u00e9ho kontejneru.
+wab.install.fail.container.explanation=Server nemohl nainstalovat Web Application Bundle (WAB) do webov\u00e9ho kontejneru.
+wab.install.fail.container.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail.wiring=CWWKZ0207E: Nelze nainstalovat bal\u00edk {0} s kontextov\u00fdm ko\u0159enem {1} do webov\u00e9ho kontejneru.
+wab.install.fail.wiring.explanation=Server nemohl nainstalovat Web Application Bundle (WAB) do webov\u00e9ho kontejneru.
+wab.install.fail.wiring.useraction=Dal\u0161\u00ed informace naleznete v protokolu a souborech FFDC.
+
+wab.install.fail.clash=CWWKZ0208E: Bal\u00edk {0} s kontextov\u00fdm ko\u0159enov\u00fdm adres\u00e1\u0159em {1} nelze nainstalovat do webov\u00e9ho kontejneru, proto\u017ee m\u00e1 stejn\u00fd kontextov\u00fd adres\u00e1\u0159 jako n\u00e1sleduj\u00edc\u00ed bal\u00edky: {2}
+wab.install.fail.clash.explanation=Kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 ka\u017ed\u00e9ho bal\u00edku WAB (Web Application Bundle) ve webov\u00e9m kontejneru mus\u00ed b\u00fdt jedine\u010dn\u00fd. Server nem\u016f\u017ee nainstalovat bal\u00edk WAB do webov\u00e9ho kontejneru, proto\u017ee m\u00e1 stejn\u00fd kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 jako jin\u00fd implementovan\u00fd bal\u00edk.
+wab.install.fail.clash.useraction=Pou\u017eijte jin\u00fd kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159.

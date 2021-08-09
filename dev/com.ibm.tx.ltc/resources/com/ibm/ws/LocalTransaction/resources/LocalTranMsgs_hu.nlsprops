@@ -1,0 +1,361 @@
+###############################################################################
+# Copyright (c) 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  10-22-01  ihodges               Creation
+#  10-24-01  irobins   113516      Added ERR_BEGIN_LTC_ACT
+#  27/02/02  gareth  LIDB1436.01.1 Use new RAS format
+#  14-03-02 amulholl    121351     Add message def ERR_DEPLOY
+#  25-04-02 beavenj    126204      Add message defs ERR_DEPLOY_...
+#  27-05-02 dmatthew   130828      Add message defs for cleanup failures
+#  23-08-02 irobins    143408      Use common messages
+#  17-06-03 ihodges    151542      New message ERR_BEGIN_GLOBAL_TX
+#  02-02-04 irobins    165735      Update explanation text
+#  01-06-04 dmatthew   207915      Change errors to warnings for unresolved
+#  26-02-07 awilkins   422999      Message review: updates to useraction and explanation
+#  11-02-08 mallam     496337      PII additions
+#  29-02-08 johawkes   501807      Style changes
+#-----------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/transaction.impl/src/com/ibm/ws/LocalTransaction/resources/LocalTransactionMessages.nlsprops
+#COMPONENTPREFIX WLTC
+#COMPONENTNAMEFOR WLTC WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#-----------------------------------------------------------------------
+ERR_INT_ERROR=WLTC0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) {1} oszt\u00e1ly {0} met\u00f3dus\u00e1ban; a kiv\u00e9telverem tartalma: {2}.
+ERR_INT_ERROR.explanation=CMSG0001
+ERR_INT_ERROR.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: LocalTransactionContainment nem ind\u00edthat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_BEGIN_TX_GLB_ACT.explanation=Nem megengedett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy helyi tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra, mik\u00f6zben egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_BEGIN_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t.
+
+#-----------------------------------------------------------------------
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: LocalTransactionContainment nem folytathat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_RESUME_TX_GLB_ACT.explanation=A t\u00e1rol\u00f3 nem tud folytatni egy LocalTransactionContainment m\u0171veletet, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
+ERR_RESUME_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik vagy felf\u00fcggeszt\u00e9sre ker\u00fcl, miel\u0151tt visszat\u00e9r egy LocalTransactionContainment m\u0171velethez.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Nem lehet bejegyezni egy helyi tranzakci\u00f3s er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_ENLIST_TX_GLB_ACT.explanation=Egy helyi tranzakci\u00f3s kapcsolat nem haszn\u00e1lhat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
+ERR_ENLIST_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: Az er\u0151forr\u00e1st nem lehet bejegyezni. A local-transaction resolution-control \u00e9rt\u00e9ke Application, \u00edgy az er\u0151forr\u00e1sokat csak t\u00f6rl\u00e9sre lehet bejegyezni.
+ERR_ENLIST_TX_CLEANUP.explanation=A t\u00e1rol\u00f3 megpr\u00f3b\u00e1lt bejegyezni egy er\u0151forr\u00e1st, amikor a resolution-control \u00e9rt\u00e9ke nem ContainerAtBoundary.
+ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Az er\u0151forr\u00e1st nem lehet bejegyezni. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_ENLIST_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy er\u0151forr\u00e1st be lehet jegyezni.
+ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Nem lehet bejegyezni az er\u0151forr\u00e1st t\u00f6rl\u00e9sre, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_ENLIST_CLN_TX_GLB_ACT.explanation=Egy helyi tranzakci\u00f3s kapcsolat nem haszn\u00e1lhat\u00f3, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
+ERR_ENLIST_CLN_TX_GLB_ACT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden glob\u00e1lis tranzakci\u00f3 befejez\u0151dik miel\u0151tt helyi tranzakci\u00f3val v\u00e9gezne munk\u00e1t.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Nem lehet bejegyezni az er\u0151forr\u00e1st t\u00f6rl\u00e9sre. A local-transaction resolution-control \u00e9rt\u00e9ke ContainerAtBoundary, \u00edgy az er\u0151forr\u00e1sokat nem lehet bejegyezni t\u00f6rl\u00e9sre.
+ERR_ENLIST_CLN_TX_CLEANUP.explanation=A helyi tranzakci\u00f3s kapcsolatot haszn\u00e1l\u00f3 alkalmaz\u00e1s be van \u00e1ll\u00edtva a t\u00e1rol\u00f3hoz a helyi tranzakci\u00f3k ind\u00edt\u00e1s\u00e1nak \u00e9s felbont\u00e1s\u00e1nak felel\u0151sek\u00e9nt, de az alkalmaz\u00e1s maga ind\u00edtott egy helyi tranzakci\u00f3t.
+ERR_ENLIST_CLN_TX_CLEANUP.useraction=Az alkalmaz\u00e1snak a t\u00e1rol\u00f3 \u00e1ltal felbontott helyi tranzakci\u00f3k haszn\u00e1lat\u00e1n\u00e1l k\u00f6vetnie kell a kapcsolathaszn\u00e1lat get-use-model elem\u00e9t.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Nem lehet bejegyezni az er\u0151forr\u00e1st t\u00f6rl\u00e9sre. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_ENLIST_CLN_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy er\u0151forr\u00e1st be lehet jegyezni.
+ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: Nem lehet kit\u00f6r\u00f6lni az er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_DELIST_TX_GLB_ACT.explanation=A LocalTransactionContainment nem tud kit\u00f6r\u00f6lni egy er\u0151forr\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 pillanatnyilag akt\u00edv.
+ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: Nem lehet kit\u00f6r\u00f6lni az er\u0151forr\u00e1st. Nincs bejegyezve t\u00f6rl\u00e9sre a LocalTransactionContainment eszk\u00f6zn\u00e9l.
+ERR_DELIST_NOT_ENLISTED.explanation=A LocalTransactionContainment nem tud kit\u00f6r\u00f6lni egy olyan er\u0151forr\u00e1st, amely nem volt bejegyezve t\u00f6rl\u00e9sre.
+ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: Nem lehet kit\u00f6r\u00f6lni az er\u0151forr\u00e1st. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_DELIST_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy er\u0151forr\u00e1st ki lehet t\u00f6r\u00f6lni.
+ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Nem lehet bejegyezni a szinkroniz\u00e1l\u00e1st, mivel egy glob\u00e1lis tranzakci\u00f3 akt\u00edv.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=A szinkroniz\u00e1l\u00e1s nem jegyezhet\u0151 be, mivel egy glob\u00e1lis tranzakci\u00f3 jelenleg akt\u00edv.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: A szinkroniz\u00e1l\u00e1s nem jegyezhet\u0151 be. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=A LocalTransactionContainment nincs olyan \u00e1llapotban, ahol egy szinkroniz\u00e1l\u00e1st be lehet jegyezni.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_START=WLTC0015E: A(z) {0} er\u0151forr\u00e1s ind\u00edt\u00e1sa nem siker\u00fclt. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+ERR_XA_RESOURCE_START.explanation=A t\u00e1rol\u00f3 nem tudta elind\u00edtani a helyi tranzakci\u00f3t.
+ERR_XA_RESOURCE_START.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-kezel\u0151t.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: A(z) {0} er\u0151forr\u00e1s befejez\u00e9se meghi\u00fasult. A kiv\u00e9tel veremtartalma a k\u00f6vetkez\u0151: {1}
+ERR_XA_RESOURCE_COMPLETE.explanation=A t\u00e1rol\u00f3 nem tudta befejezni a helyi tranzakci\u00f3t.
+ERR_XA_RESOURCE_COMPLETE.useraction=Vizsg\u00e1lja meg az er\u0151forr\u00e1s-kezel\u0151t.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Az er\u0151forr\u00e1sok visszag\u00f6rgetve a setRollbackOnly() megh\u00edv\u00e1sa miatt.
+ERR_XA_RESOURCE_ROLLEDBACK.explanation=Az LocalTransactionContainment (LTC) elemn\u00e9l bejegyzett er\u0151forr\u00e1sok vissza lettek g\u00f6rgetve, mivel a setRollbackOnly() meg lett h\u00edvva az LTC-n.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_LTC_ACT=WLTC0018E: Nem lehet LocalTransactionContainment elemet kezdeni. M\u00e1r akt\u00edv egy LocalTransactionContainment.
+ERR_BEGIN_LTC_ACT.explanation=Egy LocalTransactionContainment m\u00e1r akt\u00edv volt, amikor k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy \u00faj ind\u00edt\u00e1s\u00e1ra.
+ERR_BEGIN_LTC_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_STATE_RB_ONLY=WLTC0019E: A m\u0171veletet nem lehet v\u00e9grehajtani. A LocalTransactionContainment csak visszag\u00f6rgethet\u0151k\u00e9nt lett megjel\u00f6lve.
+ERR_STATE_RB_ONLY.explanation=A LocalTransactionContainment eszk\u00f6zt, amely alatt a meghi\u00fasult m\u0171velet el lett v\u00e9gezve, a t\u00e1rol\u00f3 csak visszag\u00f6rgethet\u0151k\u00e9nt jel\u00f6lte meg.
+ERR_STATE_RB_ONLY.useraction=Haszn\u00e1lja a nyomk\u00f6vet\u00e9st annak meghat\u00e1roz\u00e1s\u00e1ra, hogy a LocalTransactionContainment mi\u00e9rt lett csak visszag\u00f6rgethet\u0151nek megjel\u00f6lve.
+
+#-----------------------------------------------------------------------
+ERR_LTC_COMPLETE=WLTC0020E: A m\u0171veletet nem lehet v\u00e9grehajtani. A LocalTransactionContainment befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_LTC_COMPLETE.explanation=A LocalTransactionContainment eszk\u00f6z, amely alatt a meghi\u00fasult m\u0171velet el lett v\u00e9gezve, befejez\u0151dik vagy befejez\u0151d\u00f6tt.
+ERR_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT=WLTC0021E: Az er\u0151forr\u00e1s befejez\u0151d\u00f6tt \u00e1llapota ellentmond\u00f3.
+ERR_NP_INCONSISTENT.explanation=Az ActivitySessionResource eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator ellentmond\u00f3 eredm\u00e9nnyel fejez\u0151d\u00f6tt be.
+ERR_NP_INCONSISTENT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_ROLLEDBACK=WLTC0022E: Az er\u0151forr\u00e1s alaphelyzetbe \u00e1ll\u00edtva egy setRollbackOnly h\u00edv\u00e1sa miatt az LTC-n.
+ERR_NP_ROLLEDBACK.explanation=Az ActivitySessionResource eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator alaphelyzetbe lett \u00e1ll\u00edtva, mivel egy setRollbackOnly lett megh\u00edvva az LocalTransactionContainment eszk\u00f6z\u00f6n.
+ERR_NP_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL=WLTC0023E: Az er\u0151forr\u00e1s befejez\u00e9se meghi\u00fasult egy illeg\u00e1lis \u00e1llapot miatt.
+ERR_NP_ILLEGAL.explanation=Az ActivitySessionResource eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator \u00e9rv\u00e9nytelen \u00e1llapotban van a befejez\u00e9shez.
+ERR_NP_ILLEGAL.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_LOOKUP_ASM=WLTC0024E: Nem lehet kapcsolatot l\u00e9tes\u00edteni az ActivitySession szolg\u00e1ltat\u00e1ssal. Az ActivitySessionManager kikeres\u00e9se meghi\u00fasult.
+ERR_AS_LOOKUP_ASM.explanation=Az ActivitySessionManager objektum nem tal\u00e1lhat\u00f3 a JNDI n\u00e9vt\u00e9rben.
+ERR_AS_LOOKUP_ASM.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_ILLEGAL_STATE=WLTC0025E: Nem lehet bejegyezni az ActivitySession szolg\u00e1ltat\u00e1sn\u00e1l. Az ActivitySession illeg\u00e1lis \u00e1llapotban van.
+ERR_AS_ILLEGAL_STATE.explanation=A jelenlegi ActivitySession nincs megfelel\u0151 \u00e1llapotban, hogy az LocalTransactionContainment sz\u00e1m\u00e1ra er\u0151forr\u00e1sk\u00e9nt be lehessen jegyezni.
+ERR_AS_ILLEGAL_STATE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_UNEXPECTED=WLTC0026E: V\u00e1ratlan hiba t\u00f6rt\u00e9nt az ActivitySession szolg\u00e1ltat\u00e1ssal egy\u00fcttm\u0171k\u00f6d\u00e9s k\u00f6zben.
+ERR_AS_UNEXPECTED.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a LocalTransactionContainment az ActivitySession szolg\u00e1ltat\u00e1sn\u00e1l bejegyz\u00e9s\u00e9re tett k\u00eds\u00e9rlete sor\u00e1n.
+ERR_AS_UNEXPECTED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_CLEANUP=WLTC0027E: Nincs takar\u00edtand\u00f3 LocalTransactionCoordinator
+ERR_NO_LTC_CLEANUP.explanation=A LocalTransactionCoordinator nincs hozz\u00e1rendelve a jelenlegi sz\u00e1lhoz, \u00edgy az nem takar\u00edthat\u00f3 ki.
+ERR_NO_LTC_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_COMPLETE=WLTC0028E: Nincs befejezend\u0151 LocalTransactionCoordinator.
+ERR_NO_LTC_COMPLETE.explanation=A LocalTransactionCoordinator nincs hozz\u00e1rendelve a jelenlegi sz\u00e1lhoz, \u00edgy az nem fejezhet\u0151 be.
+ERR_NO_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY=WLTC0029E: Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult; a(z) {0} alkalmaz\u00e1s-\u00f6sszetev\u0151 olyan telep\u00edt\u00e9sle\u00edr\u00f3 kiterjeszt\u00e9sekkel rendelkezik, amelyek nem enged\u00e9lyezettek a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 telep\u00edtett kiad\u00e1s\u00e1ban; haszn\u00e1latuk adatveszt\u00e9st eredm\u00e9nyezhet: az ActivationPolicy: {1}; a LocalTransactionBoundary: {2}.
+ERR_DEPLOY.explanation=Az \u00fczenetben azonos\u00edtott alkalmaz\u00e1s olyan kiterjeszt\u00e9sekkel lett \u00f6ssze\u00e1ll\u00edtva, amelyek a term\u00e9k telep\u00edtett kiad\u00e1s\u00e1ban nem t\u00e1mogatottak. \
+Ha a term\u00e9k enged\u00e9lyezte, hogy az alkalmaz\u00e1s a v\u00e1rt kiterjeszt\u00e9st\u00e1mogat\u00e1s hi\u00e1ny\u00e1ban fusson, akkor a viselked\u00e9sm\u00f3d m\u00f3dosulhat olyan m\u00f3don, hogy az az adatok integrit\u00e1s\u00e1ra legyen hat\u00e1ssal; p\u00e9ld\u00e1ul a tranzakci\u00f3s adatok friss\u00edt\u00e9se t\u00f6bb tranzakci\u00f3 sor\u00e1n mehet v\u00e9gbe, m\u00edg a kiterjeszt\u00e9st\u00e1mogat\u00e1s jelenl\u00e9t\u00e9ben ezek ugyanazon tranzakci\u00f3 alatt menn\u00e9nek v\u00e9gbe. \
+Ez\u00e9rt az alkalmaz\u00e1s telep\u00edt\u00e9se nem biztons\u00e1gos.
+ERR_DEPLOY.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, amely telep\u00edt\u00e9se meghi\u00fasult. \
+Ha futtathat\u00f3 a kiterjeszt\u00e9st\u00e1mogat\u00e1s n\u00e9lk\u00fcl, \u00e1ll\u00edtsa \u00f6ssze \u00fajra az alkalmaz\u00e1st a kiterjeszt\u00e9sek megad\u00e1sa n\u00e9lk\u00fcl. \
+Ha az alkalmaz\u00e1snak sz\u00fcks\u00e9ge van a kiterjesztett t\u00e1mogat\u00e1sra, akkor azt csak olyan alkalmaz\u00e1skiszolg\u00e1l\u00f3kra telep\u00edtse, amelyek biztos\u00edtj\u00e1k ezt a fajta t\u00e1mogat\u00e1st.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_RESOLUTION=WLTC0030E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; a(z) {0} alkalmaz\u00e1skomponens a saj\u00e1t tranzakci\u00f3inak kezel\u00e9s\u00e9re van be\u00e1ll\u00edtva, de a ContainerAtBoundary inkompatibilis helyi tranzakci\u00f3felold\u00e1si vez\u00e9rl\u0151be\u00e1ll\u00edt\u00e1ssal rendelkezik.
+ERR_DEPLOY_RESOLUTION.explanation=Az \u00fczenetben azonos\u00edtott komponens nem t\u00e1mogatott kiterjeszt\u00e9sekkel lett \u00f6ssze\u00e1ll\u00edtva. Emiatt az alkalmaz\u00e1s nem ker\u00fclt telep\u00edt\u00e9sre.
+ERR_DEPLOY_RESOLUTION.useraction=Az alkalmaz\u00e1st, amely telep\u00edt\u00e9se meghi\u00fasult, \u00fajra \u00f6ssze kell \u00e1ll\u00edtani a komponens egy alternat\u00edv konfigur\u00e1ci\u00f3j\u00e1val.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_FAILURE=WLTC0031E: Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult; a(z) {0} alkalmaz\u00e1s-\u00f6sszetev\u0151 nem telep\u00edthet\u0151.
+ERR_DEPLOY_FAILURE.explanation=Az \u00fczenetben azonos\u00edtott alkalmaz\u00e1s megfelel\u0151 telep\u00edt\u00e9se meghi\u00fasult, \u00e9s az alkalmaz\u00e1s nem el\u00e9rhet\u0151.
+ERR_DEPLOY_FAILURE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: N\u00e9h\u00e1ny helyi tranzakci\u00f3s er\u0151forr\u00e1s vissza lett g\u00f6rgetve egy LocalTransactionContainment t\u00f6rl\u00e9se k\u00f6zben.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Egy befejezetlen helyi tranzakci\u00f3s er\u0151forr\u00e1sokkal rendelkez\u0151 LocalTransactionContainment befejez\u0151d\u00f6tt, \u00e9s az er\u0151forr\u00e1sok visszag\u00f6rget\u00e9s\u00e9t okozta.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+
+#-----------------------------------------------------------------------
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: A(z) {0} er\u0151forr\u00e1s visszag\u00f6rgetve a LocalTransactionContainment t\u00f6rl\u00e9se sor\u00e1n.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=A visszag\u00f6rget tranzakci\u00f3s er\u0151forr\u00e1s nem volt feloldva a LocalTransactionContainment befejez\u00e9sekor \u00e9s vissza lett g\u00f6rgetve.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Semmit sem kell tennie. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: A LocalTransactionContainment befejez\u0151d\u00f6tt \u00e1llapota ellentmond\u00f3 a t\u00f6rl\u00e9s sor\u00e1n.
+ERR_NP_INCONSISTENT_CLEANUP.explanation=Az ActivitySessionSynchronization eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator ellentmond\u00f3 eredm\u00e9nnyel fejez\u0151d\u00f6tt be a t\u00f6rl\u00e9s sor\u00e1n.
+ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Egy feloldatlan LocalTransactionContainment alaphelyzetbe lett \u00e1ll\u00edtva a t\u00f6rl\u00e9s sor\u00e1n.
+WRN_NP_ROLLEDBACK_CLEANUP.explanation=Az ActivitySessionSynchronization eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator alaphelyzetbe lett \u00e1ll\u00edtva.
+WRN_NP_ROLLEDBACK_CLEANUP.useraction=Egy alkalmaz\u00e1shiba t\u00f6rt\u00e9nt. Az alaphelyzetbe \u00e1ll\u00edt\u00e1s ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: N\u00e9h\u00e1ny, egy LocalTransactionContainment eszk\u00f6zben bejegyzett er\u0151forr\u00e1s befejez\u0151d\u00e9se meghi\u00fasult a t\u00f6rl\u00e9s sor\u00e1n, illeg\u00e1lis \u00e1llapot miatt.
+ERR_NP_ILLEGAL_CLEANUP.explanation=Egy ActivitySessionSynchronization eszk\u00f6zk\u00e9nt bejegyzett LocalTransactionCoordinator n\u00e9h\u00e1ny er\u0151forr\u00e1st \u00e9rv\u00e9nytelen \u00e1llapotban tartalmaz a befejez\u00e9shez a t\u00f6rl\u00e9s k\u00f6zben.
+ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: Nem lehet glob\u00e1lis tranzakci\u00f3t ind\u00edtani. M\u00e1r akt\u00edv egy LocalTransactionContainment.
+ERR_BEGIN_GLOBAL_TX.explanation=Egy LocalTransactionContainment m\u00e1r akt\u00edv volt, amikor k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy glob\u00e1lis tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra.
+ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002
+

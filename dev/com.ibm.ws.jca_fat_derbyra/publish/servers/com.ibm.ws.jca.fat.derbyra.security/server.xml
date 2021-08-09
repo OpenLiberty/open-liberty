@@ -1,0 +1,58 @@
+<server>
+    <featureManager>
+      <feature>componenttest-1.0</feature>
+      <feature>concurrent-1.0</feature>
+      <feature>jca-1.7</feature>
+      <feature>jndi-1.0</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>servlet-3.1</feature>
+      <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <resourceAdapter location="${server.config.dir}/connectors/DerbyRA.rar" contextServiceRef="DefaultContextService"/>
+
+    <connectionFactory jndiName="eis/ds1">
+      <connectionManager maxPoolSize="2" connectionTimeout="0"/>
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <properties.DerbyRA/>
+    </connectionFactory>    
+
+    <adminObject jndiName="eis/bootstrapContext">
+      <properties.DerbyRA.BootstrapContext/>
+    </adminObject>
+
+    <adminObject jndiName="eis/map1">
+      <properties.DerbyRA.Map tableName="MAP1"/>
+    </adminObject>
+    
+    <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntryName" loginModuleRef="testLoginModule" />
+	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jca.fat.security.login.TestLoginModule">
+	  <library id="loginLib">
+	    <fileset dir="${server.config.dir}" includes="loginModule.jar"/>
+      </library>
+    </jaasLoginModule>
+
+    <!-- "APP" is the default schema for Derby -->
+    <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
+
+    <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
+    
+    <!-- 
+    NOTE: for this bucket to run cleanly with j2sec enabled with IBM JDK, the following permission must 
+    be manually granted in the java.policy file at $JAVA_HOME/jre/lib/security/java.policy: 
+    permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
+    -->
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/loginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntryName"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="${env.PERMISSION}" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+</server>

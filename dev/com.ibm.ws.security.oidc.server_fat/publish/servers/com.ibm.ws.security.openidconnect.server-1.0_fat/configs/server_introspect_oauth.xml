@@ -1,0 +1,245 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<featureManager>
+		<feature>oauth-2.0</feature>
+		<feature>ssl-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<config monitorInterval="100ms" />
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="testuser"
+			password="testuserpwd" />
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+		<group name="group1">
+			<member name="user1" />
+		</group>
+		<group name="group2">
+			<member name="user1" />
+			<member name="user2" />
+		</group>
+	</basicRegistry>
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+
+	<include location="${server.config.dir}/imports/fatTestPorts.xml" />
+
+	<webAppSecurity
+		httpOnlyCookies="false"
+		allowFailOverToBasicAuth="true"
+		ssoRequiresSSL="true" />
+
+	<httpSession
+		cookieHttpOnly="false"
+		cookieSecure="true" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		filter="request-url%=snoop;request-url!=snooping"
+		oauthOnly="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+		<autoAuthorizeClient>client03</autoAuthorizeClient>
+		<autoAuthorizeClient>client04</autoAuthorizeClient>
+		<autoAuthorizeClient>user1</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client02"
+				secret="{xor}LDo8LTor"
+				displayname="client02"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client03"
+				secret="{xor}LDo8LTor"
+				displayname="client03"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client04"
+				secret="{xor}LDo8LTor"
+				displayname="client04"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="user1"
+				secret="{xor}LDo8Ki02KyY="
+				displayname="user1"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigSampleExp"
+		filter="request-url%=snoop;request-url!=snooping"
+		accessTokenLifetime="10s"
+		oauthOnly="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>eclient01</autoAuthorizeClient>
+		<autoAuthorizeClient>eclient02</autoAuthorizeClient>
+		<autoAuthorizeClient>eclient03</autoAuthorizeClient>
+		<autoAuthorizeClient>eclient04</autoAuthorizeClient>
+		<autoAuthorizeClient>euser1</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="eclient01"
+				secret="{xor}LDo8LTor"
+				displayname="eclient01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="eclient02"
+				secret="{xor}LDo8LTor"
+				displayname="eclient02"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="eclient03"
+				secret="{xor}LDo8LTor"
+				displayname="eclient03"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="eclient04"
+				secret="{xor}LDo8LTor"
+				displayname="eclient04"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="euser1"
+				secret="{xor}LDo8Ki02KyY="
+				displayname="euser1"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigPublic"
+		allowPublicClients="true"
+		filter="request-url%=sniffing"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>pclient01</autoAuthorizeClient>
+		<autoAuthorizeClient>pclient02</autoAuthorizeClient>
+		<autoAuthorizeClient>pclient03</autoAuthorizeClient>
+		<autoAuthorizeClient>pclient04</autoAuthorizeClient>
+		<autoAuthorizeClient>user2</autoAuthorizeClient>
+		<localStore>
+			<client
+				name="pclient01"
+				secret="{xor}LDo8LTor"
+				displayname="pclient01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="pclient02"
+				secret="{xor}LDo8LTor"
+				displayname="pclient02"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="pclient03"
+				secret="{xor}LDo8LTor"
+				displayname="pclient03"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="pclient04"
+				secret="{xor}LDo8LTor"
+				displayname="pclient04"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="user2"
+				secret="{xor}LDo8Ki02KyY="
+				displayname="user2"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigTai"
+		filter="request-url%=snooping"
+		oauthOnly="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+		<autoAuthorizeClient>user1</autoAuthorizeClient>
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+</server>

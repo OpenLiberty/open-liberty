@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: The custom password encryption service has started. The class name is {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=This message is for informational purposes only.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=No action is required.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: The custom password encryption service has stopped. The class name is {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=This message is for informational purposes only.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=No action is required.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: There was an unexpected exception during password decryption by using the custom password encryption service.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=There was an unexpected exception while processing the decryption by using the custom password encryption service.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=Check the custom password encryption service logs and server logs for more information about the cause of the exception.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: There was an unexpected exception during password encryption by using the custom password encryption service.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=There was an unexpected exception while processing the encryption by using the custom password encryption service.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=Check the custom password encryption service logs and server logs for more information about the cause of the exception.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: The third party custom password service is not available to process the custom encoded password.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=The custom encoded password cannot be processed because the custom password service is not available.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=Make sure that the custom password user feature that implements the com.ibm.wsspi.security.crypto.CustomPasswordEncryption interface is configured and started.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: The password was not processed because the password algorithm name {0} is not supported. The supported types are {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=The password was not encrypted or decrypted because the supplied password algorithm name is not supported.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Make sure that one of the supported algorithms is used.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: The password was not processed because an unknown password algorithm exception was reported.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=The specified algorithm is not supported.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Check the server log and if the custom password encryption is used check the custom password encryption logs for further information.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: The password was not processed because an invalid password cipher exception was reported.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=The password was not encrypted or decrypted because the exception was reported while processing the password.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Check the server log and if the custom password encryption is used check the custom password encryption logs for further information.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: The password was not processed because an unsupported encoding exception was reported.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=The password was not encrypted or decrypted because the exception was reported while processing the password.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Check the server log and if the custom password encryption is used check the custom password encryption logs for further information.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: The password was not decrypted because a decoding error was reported.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=The encrypted password was not encoded properly.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Make sure that the encrypted password is not truncated and encoded by using Base64 encoding.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=More than one CustomPasswordEncryption implementation is detected. Only one CustomPasswordEncryption implementation is supported. The list of detected CustomPasswordEncryption implementation is as follows:
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=An error was reported while processing the extension manifest file {0}. This file was ignored. The custom encryption is not available. The error message is {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=The required header {0} was not found in the extension manifest file {1}. The custom encryption is not available.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=The feature manifest file which corresponds with the extension manifest file {0} was not found. The custom encryption is not available.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=The decryption operation is not supported by the hash algorithm. 

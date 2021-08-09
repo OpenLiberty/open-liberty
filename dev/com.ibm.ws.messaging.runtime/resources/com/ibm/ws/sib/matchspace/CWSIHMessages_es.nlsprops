@@ -1,0 +1,110 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: La sintaxis del tema, {0}, es incorrecta. Se esperaba un car\u00e1cter ''*'' y se encontr\u00f3 un car\u00e1cter {1}.
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=El tema no tiene el formato correcto. El car\u00e1cter comod\u00edn de un nivel '*' s\u00f3lo puede aparecer como un solo car\u00e1cter en un nivel para un tema, por ejemplo: */a o a/*/b o a/* .
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=Corrija la especificaci\u00f3n incorrecta del tema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: La sintaxis del tema, {0}, es incorrecta. Se esperaba un car\u00e1cter ''.'' y se encontr\u00f3 un car\u00e1cter {1}.
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=El tema no tiene el formato correcto. El car\u00e1cter '.' s\u00f3lo puede aparecer como un solo car\u00e1cter en un nivel para un tema o al final de una expresi\u00f3n de tema, por ejemplo: /./a o a//..
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=Corrija la especificaci\u00f3n incorrecta del tema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: La sintaxis del tema, {0}, es incorrecta. Se esperaba un car\u00e1cter ''/'' y se encontr\u00f3 un car\u00e1cter {1}.
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=El tema no tiene el formato correcto. Tampoco puede haber tres caracteres '/' juntos.
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=Corrija la especificaci\u00f3n incorrecta del tema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: La sintaxis del tema, {0}, es incorrecta. Se ha encontrado un car\u00e1cter inesperado despu\u00e9s de un car\u00e1cter ''/'' en el car\u00e1cter {1}.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=El tema no tiene el formato correcto. Los caracteres comod\u00edn no pueden ir seguidos de otros caracteres excepto por el car\u00e1cter '/'.  Ejemplos de temas incorrectos son a//.a o a/*b . 
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=Corrija la especificaci\u00f3n incorrecta del tema.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: El tema no es v\u00e1lido.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=El tema proporcionado no es v\u00e1lido porque es nulo, lo que no est\u00e1 permitido.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=Aseg\u00farese de que el tema es un objeto serie v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: La sintaxis del tema para un mensaje publicado es incorrecta: {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=El tema proporcionado no puede contener caracteres comod\u00edn porque es una publicaci\u00f3n.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=Elimine los caracteres comod\u00edn de los mensajes de la publicaci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: No se puede crear una instancia coincidente: excepci\u00f3n {0}.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=No se puede crear una instancia coincidente porque el archivo sib.matchspaceImpl.jar falta o est\u00e1 da\u00f1ado.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=Si el mensaje no proporciona suficiente informaci\u00f3n, consulte los mensajes anteriores para obtener m\u00e1s ayuda.
+TEMPORARY_CWSIH9999.useraction=Consulte los mensajes anteriores para obtener m\u00e1s informaci\u00f3n. 

@@ -1,0 +1,172 @@
+################################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+################################################################################
+
+dn: dc=rtp,dc=raleigh,dc=ibm,dc=com
+dc: rtp
+objectclass: domain
+objectclass: top
+
+dn: ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+ou: users
+objectClass: organizationalUnit
+objectClass: top
+
+dn: uid=noNSUID,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+sn: noNSUIDSN
+cn: noNSUIDCN
+objectClass: organizationalPerson
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: top
+userPassword:: e1NTSEF9ekdZQjZJZ1BWVzE4WjJ5d3RrNGlkMTVRRm5DWTJKOGtGQVlKaEE9PQ=
+ =
+uid: noNSUID
+
+dn: uid=persona1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+mail: persona1@ibm.com
+telephoneNumber: 1 919 555 5555
+sn: persona1
+cn: Test persona1
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+title: Test Persona
+userPassword: ppersona1
+uid: persona1
+
+dn: cn=vmm_nestedGrp,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmm_nestedGrp
+objectclass: nssimpleroledefinition
+objectclass: nsmanagedroledefinition
+objectclass: top
+objectclass: ldapsubentry
+objectclass: nsroledefinition
+description: LDAP group vmm_nestedGrp for testing
+
+dn: cn=vmmgroup1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+nsRoleDN: cn=vmm_nestedGrp,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmmgroup1
+objectclass: nssimpleroledefinition
+objectclass: nsmanagedroledefinition
+objectclass: top
+objectclass: ldapsubentry
+objectclass: nsroledefinition
+description: LDAP group vmmgroup1 for testing
+
+dn: cn=vmmgroup2,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+nsRoleDN: cn=vmm_nestedGrp, ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmmgroup2
+objectclass: nssimpleroledefinition
+objectclass: nsmanagedroledefinition
+objectclass: top
+objectclass: ldapsubentry
+objectclass: nsroledefinition
+description: LDAP group vmmgroup2 for testing
+
+dn: cn=vmmgroup3,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmmgroup3
+objectclass: nssimpleroledefinition
+objectclass: nsmanagedroledefinition
+objectclass: top
+objectclass: ldapsubentry
+objectclass: nsroledefinition
+description: LDAP group vmmgroup3 for testing
+
+dn: cn=vmmgrp1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmmgrp1
+objectclass: nssimpleroledefinition
+objectclass: nsmanagedroledefinition
+objectclass: top
+objectclass: ldapsubentry
+objectclass: nsroledefinition
+description: LDAP group vmmgrp1 for testing
+
+dn: cn=vmmgrp2,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: vmmgrp2
+objectClass: nssimpleroledefinition
+objectClass: nsmanagedroledefinition
+objectClass: top
+objectClass: ldapsubentry
+objectClass: nsroledefinition
+description: LDAP group vmmgrp2 for testing
+
+dn: uid=vmmtestuser,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+mail: vmmtestuser@ibm.com
+telephoneNumber: 1 919 555 5555
+sn: vmmtestusersn
+cn: FVT vmmtestuser
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+title: FVT user
+userPassword:: e1NIQX1DOFlVWjhlcGY5UlRjK0wzV29RK1U2VHdLb2s9
+uid: vmmtestuser
+
+dn: uid=vmmuser1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+mail: vmmuser1@ibm.com
+telephoneNumber: 1 919 555 5555
+sn: vmmuser1sn
+nsRoleDN: cn=vmmgroup1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: FVT vmmuser1
+objectClass: organizationalPerson
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: top
+title: FVT user
+userPassword:: e1NIQX11WmNIWW1Qb1UvQzh3c0NYUmdzMFFBT25LYjQ9
+uid: vmmuser1
+
+dn: uid=vmmuser2,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+mail: vmmuser2@ibm.com
+telephoneNumber: 1 919 555 5555
+sn: vmmuser2sn
+nsRoleDN: cn=vmmgroup2,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: FVT vmmuser2
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+title: FVT user
+userPassword:: e1NIQX1Wd2ZFZkdkcHZIcE1JdXkwbXFaT0NCSVpCcG89
+uid: vmmuser2
+
+dn: uid=vmmuser3,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+mail: vmmuser3@ibm.com
+telephoneNumber: 1 919 555 5555
+sn: vmmuser3sn
+nsRoleDN: cn=vmmgroup3,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: FVT vmmuser3
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+title: FVT user
+userPassword:: e1NIQX1VZkhzUlltMTFwditwN2gvMXZ0YzY4Q0J2TWM9
+uid: vmmuser3
+
+dn: uid=vmmuser4,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+mail: vmmuser4@ibm.com
+telephoneNumber: 1 919 555 5555
+sn: vmmuser4sn
+nsRoleDN: cn=vmmgroup1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+nsRoleDN: cn=vmmgroup2,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+nsRoleDN: cn=vmmgroup3,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
+cn: FVT vmmuser4
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+title: FVT user
+userPassword:: e1NIQX1yY2Q3YXhGS1dsZ1huWEw0QXlYakxWY2V0NE09
+uid: vmmuser4
+

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<toolspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xhtml="http://www.w3.org/TR/xhtml1/strict" xmlns="http://cxf.apache.org/Xutil/ToolSpecification" xmlns:ts="http://cxf.apache.org/Xutil/ToolSpecification" xsi:schemaLocation="http://cxf.apache.org/Xutil/ToolSpecification http://cxf.apache.org/schema/xutil/tool-specification.xsd">
+    <annotation>
+Examples:
+
+        wadl2java application.wadl
+        wadl2java -p com.books application.wadl
+    </annotation>
+    <usage>
+        <optionGroup id="options">
+            <option id="wadlns">
+                <annotation>
+                    Specify the WADL namespace.
+                </annotation>
+                <switch>wadlns</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>wadl-namespace</annotation>
+                </associatedArgument>
+            </option>
+            <option id="packagename">
+                <annotation>
+                    Specifies the java package name to use for the generated code
+                    representing WADL resource elements.
+                </annotation>
+                <switch>p</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>package-name</annotation>
+                </associatedArgument>
+            </option>
+            <option id="schemaPackagename" maxOccurs="unbounded">
+                <annotation>
+                    Specifies the java package name to use for the generated code
+                    representing WADL grammar elements.
+                    Optionally specify a namespace to Java package name
+                    mapping.
+                </annotation>
+                <switch>sp</switch>
+                <associatedArgument placement="afterSpace">
+                    <valuetype>NamingSpacePackageString</valuetype>
+                    <annotation>[schema-namespace =]package-name</annotation>
+                </associatedArgument>
+            </option>
+            <option id="schemaTypeMap" maxOccurs="unbounded">
+                <annotation>
+                    Specifies the optional mapping between WADL parameter 
+                    or representation schema type and custom Java type.
+                </annotation>
+                <switch>tMap</switch>
+                <associatedArgument placement="afterSpace">
+                    <valuetype>NamingSpacePackageString</valuetype>
+                    <annotation>schema-type=java-type</annotation>
+                </associatedArgument>
+            </option>
+            <option id="mediaTypeMap" maxOccurs="unbounded">
+                <annotation>
+                    Specifies the optional mapping between a WADL representation
+                    with no wadl:element attribute and Java class.
+                </annotation>
+                <switch>repMap</switch>
+                <associatedArgument placement="afterSpace">
+                    <valuetype>NamingSpacePackageString</valuetype>
+                    <annotation>media-type=class-name</annotation>
+                </associatedArgument>
+            </option>
+            <option id="resourcename">
+                <annotation>
+                    Specify the simple class name to use for the generated code
+                    representing a WADL resource without the id attribute.
+                </annotation>
+                <switch>resource</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>resource-name</annotation>
+                </associatedArgument>
+            </option>
+            <option id="binding" maxOccurs="unbounded">
+                <annotation>
+                    Specify external jaxb binding files. Use one
+                    -b flag for each binding file.
+                </annotation>
+                <switch>b</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>binding-file-name</annotation>
+                </associatedArgument>
+            </option>
+            <option id="catalog" maxOccurs="1">
+                <annotation>
+                    Specify catalog file to map the imported wadl/schema.
+                </annotation>
+                <switch>catalog</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>catalog-file-name</annotation>
+                </associatedArgument>
+            </option>
+            <option id="outputdir" maxOccurs="1">
+                <annotation>
+                    Specify the directory into which the code is placed.
+                </annotation>
+                <switch>d</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>output-directory</annotation>
+                </associatedArgument>
+            </option>
+            <option id="interface" maxOccurs="1">
+                <annotation>
+                    Specifies that interface is generated.
+                </annotation>
+                <switch>interface</switch>
+            </option>
+            <option id="impl" maxOccurs="1">
+                <annotation>
+                    Specifies that a dummy service implementation is generated.
+                </annotation>
+                <switch>impl</switch>
+            </option>
+            <option id="async" maxOccurs="unbounded">
+                <annotation>
+                    Specifies a comma separated list of method names or identifiers 
+                    which need to support suspended asynchronous invocations                     
+                </annotation>
+                <associatedArgument placement="immediate">
+                    <annotation>methodNames</annotation>
+                </associatedArgument>
+                <switch>async</switch>
+            </option>
+            <option id="generateEnums" maxOccurs="1">
+                <annotation>
+                    Specifies that Enum classes can be generated to represent
+                    parameters with multiple options
+                </annotation>
+                <switch>generateEnums</switch>
+            </option>
+            <option id="inheritResourceParams" maxOccurs="1">
+                <annotation>
+                    Specifies that resource-level (path or matrix) parameters
+                    can be inherited by child resources
+                </annotation>
+                <switch>inheritResourceParams</switch>
+            </option>
+            <option id="notypes" maxOccurs="1">
+                <annotation>Turns off generating types</annotation>
+                <switch>noTypes</switch>
+            </option>
+            <option id="noVoidForEmptyResponses" maxOccurs="1">
+                <annotation>
+                   Use JAX-RS Response return type for methods with no response representation
+                </annotation>
+                <switch>noVoidForEmptyResponses</switch>
+            </option>
+            <option id="noAddressBinding" maxOccurs="1">
+                <annotation>
+                    Specifies that the generator should not use the address jaxb binding file to map wsa:EndpointReferenceType 
+                    or wsa:EndpointReference to javax.xml.ws.wsaddressing.W3CEndpointReference.
+                </annotation>
+                <switch>noAddressBinding</switch>
+            </option>
+            <option id="supportMultipleXmlReps" maxOccurs="1">
+                <annotation>
+                    Specifies that if a method contains multiple request XML representations
+                    then a separate method per every such representation will be generated.
+                    Note, enabling this option is not recommended when a server-side JAX-RS
+                    code is generated.
+                    A single method containing a javax.xml.transform.Source input parameter
+                    will be generated by default such cases.   
+                </annotation>
+                <switch>supportMultipleXmlReps</switch>
+            </option>
+            <option id="generateResponseIfHeadersSet" maxOccurs="1">
+                <annotation>
+                   Use JAX-RS Response return type if WADL Response element has 'header' parameters   
+                </annotation>
+                <switch>generateResponseIfHeadersSet</switch>
+            </option>
+            <option id="generateResponseForMethods" maxOccurs="unbounded">
+                <annotation>
+                    Specifies a comma separated list of method names or identifiers 
+                    which need to have JAXRS Response return type generated                     
+                </annotation>
+                <associatedArgument placement="immediate">
+                    <annotation>methodNames</annotation>
+                </associatedArgument>
+                <switch>generateResponseForMethods</switch>
+            </option>
+            <option id="async" maxOccurs="unbounded">
+                <annotation>
+                    Specifies a comma separated list of method names or identifiers 
+                    which need to support suspended asynchronous invocations                     
+                </annotation>
+                <associatedArgument placement="immediate">
+                    <annotation>methodNames</annotation>
+                </associatedArgument>
+                <switch>async</switch>
+            </option>
+            <option id="xjc" maxOccurs="unbounded">
+                <annotation>
+                    Specifies a comma separated list of arguments that are passed directly to XJC when the
+                    JAXB data binding  is used. This option causes XJC to load additional plugins that
+                    augment code generation. For example to load the toString(ts) plugin that will add a toString()
+                    method to all generated types the following &lt;xjc arguments&gt; would
+                    be used:
+                          -xjc-Xts
+                    A list of available XJC plugins can be obtained by using -xjc-X.
+                </annotation>
+                <associatedArgument placement="immediate">
+                    <annotation>xjc-arguments</annotation>
+                </associatedArgument>
+                <switch>xjc</switch>
+            </option>
+            <option id="encoding" maxOccurs="1">
+                <annotation>
+                    Specifies the charset encoding to use when generating java sources 
+                </annotation>
+                <switch>encoding</switch>
+                <associatedArgument placement="afterSpace">
+                    <annotation>encoding</annotation>
+                </associatedArgument>
+            </option>
+            <!-- 
+
+            <option id="validate" maxOccurs="1">
+                <annotation>
+                    Specifies that the WADL is validated before generating the code. Using 
+                    this option is highly recommended.
+                </annotation>
+                <switch>validate</switch>
+            </option>
+            
+            -->
+        </optionGroup>
+        <optionGroup id="common_options">
+            <option id="help" maxOccurs="1">
+                <annotation>
+                    Display detailed information for options.
+                </annotation>
+                <switch>h</switch>
+                <switch>?</switch>
+                <switch>help</switch>
+            </option>
+            <option id="version">
+                <annotation>
+                    Display the version of the tool.</annotation>
+                <switch>version</switch>
+                <switch>v</switch>
+            </option>
+            <option id="verbose">
+                <annotation>
+                    Specifies that the generator runs in verbose mode.</annotation>
+                <switch>verbose</switch>
+                <switch>V</switch>
+            </option>
+            <option id="quiet">
+                <annotation>
+                    Specifies that the generator runs in quiet mode.</annotation>
+                <switch>quiet</switch>
+                <switch>q</switch>
+                <switch>Q</switch>
+            </option>
+        </optionGroup>
+        <argument id="wadl" minOccurs="1" maxOccurs="1">
+            <annotation>
+                wadl-url
+            </annotation>
+        </argument>
+    </usage>
+</toolspec>

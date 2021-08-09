@@ -1,0 +1,20 @@
+<server description="JavaEESec Common Security FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="war" id="JavaEESecUnprotected" name="JavaEESecUnprotected" location="JavaEESecUnprotected.war">
+<!--        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1" access-id="user:defaultRealm/jaspiuser1" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+-->
+    </application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

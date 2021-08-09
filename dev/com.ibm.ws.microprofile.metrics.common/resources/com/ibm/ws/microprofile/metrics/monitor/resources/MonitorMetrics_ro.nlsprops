@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2020, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2003I: Indicii de m\u0103surare ai monitoriz\u0103rii pot fi extra\u015fi cu mpMetrics.
+FEATURE_REGISTERED.explanation=Caracteristica Performance Monitoring \u015fi o caracteristic\u0103 MicroProfile Metrics sunt activate. Indicii de m\u0103surare de monitorizare pot fi extra\u015fi prin MicroProfile Metrics.
+FEATURE_REGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+FEATURE_UNREGISTERED=CWPMI2004I: To\u0163i indicii de m\u0103surare ai monitoriz\u0103rii au fost de-\u00eenregistra\u0163i de la mpMetrics.
+FEATURE_UNREGISTERED.explanation=Caracteristica Performance Monitoring, caracteristica MicroProfile Metrics sau ambele caracteristici au fost \u00eenl\u0103turate de pe server. Tuturor indicilor de m\u0103surare de monitorizare li s-a anulat \u00eenregistrarea de la MicroProfile Metrics.
+FEATURE_UNREGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: Mapatorul de excep\u0163ii MicroProfile Metrics a detectat \u015fi trateaz\u0103 o excep\u0163ie netratat\u0103 de la aplica\u0163ia JAX-RS.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=Aplica\u0163ia bazat\u0103 pe JAX-RS a avut parte de o excep\u0163ie care nu este tratat\u0103 \u00een aplica\u0163ie. Codul MicroProfile o trateaz\u0103 prin jurnalizarea urm\u0103ririi stivei de excep\u0163ii \u015fi prin returnarea r\u0103spunsului 500 Internal Server Error.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Acest comportament poate fi acceptabil. Pentru a trata excep\u0163ia altfel, ad\u0103uga\u0163i o interfa\u0163\u0103 ExceptionMapper care trateaz\u0103 excep\u0163ia \u015fi o mapeaz\u0103 la un r\u0103spuns diferit.

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+        All rights reserved. This program and the accompanying materials
+	    are made available under the terms of the Eclipse Public License v1.0
+	        which accompanies this distribution, and is available at
+		    http://www.eclipse.org/legal/epl-v10.html
+
+		        Contributors:
+			    IBM Corporation - initial API and implementor
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+
+<OCD id="com.ibm.ws.security.audit.event.metatype" name="%auditEvent.name" description="%auditEvent.desc" ibm:alias="auditEvent">
+   <AD id="eventName" name="%eventName.name" description="%eventName.desc" required="false" type="String">
+            <Option label="%securityAuditMgmt.desc" value="SECURITY_AUDIT_MGMT"/>  
+            <Option label="%securityMemberMgmt.desc" value="SECURITY_MEMBER_MGMT"/>                 
+            <Option label="%securityApiAuthn.desc" value="SECURITY_API_AUTHN"/>
+            <Option label="%securityApiAuthnTerminate.desc" value="SECURITY_API_AUTHN_TERMINATE"/>
+            <Option label="%securityAuthn.desc" value="SECURITY_AUTHN"/>
+            <Option label="%securityAuthTerminate.desc" value="SECURITY_AUTHN_TERMINATE"/>
+            <Option label="%securityAuthFailover.desc" value="SECURITY_AUTHN_FAILOVER"/>
+            <Option label="%securityAuthnDelegation.desc" value="SECURITY_AUTHN_DELEGATION"/>
+            <Option label="%securityAuthz.desc" value="SECURITY_AUTHZ"/>
+            <Option label="%jmxMBean.desc" value="JMX_MBEAN"/>
+            <Option label="%jmxMBeanAttributes.desc" value="JMX_MBEAN_ATTRIBUTES"/>
+            <Option label="%jmxMBeanRegister.desc" value="JMX_MBEAN_REGISTER"/>
+            <Option label="%jmxNotification.desc" value="JMX_NOTIFICATION"/>
+            <Option label="%securityJmsAuthn.desc" value="SECURITY_JMS_AUTHN"/>
+            <Option label="%securityJmsAuthz.desc" value="SECURITY_JMS_AUTHZ"/>
+            <Option label="%securitySAFAuthzDetails.desc" value="SECURITY_SAF_AUTHZ_DETAILS"/>
+            <Option label="%applicationTokenMgmt.desc" value="APPLICATION_TOKEN_MANAGEMENT"/>
+            <Option label="%securitySAFAuthz.desc" value="SECURITY_SAF_AUTHZ"/>   
+    </AD>
+
+   <AD id="isCustomEvent" name="internal" description="%isCustomEvent.desc" required="false" type="Boolean" default="false"/>
+   <AD id="auditData" name="internal" description="%auditData.desc" required="false" type="String"/>
+   <AD id="outcome" name="%auditOutcome.name" description="%auditOutcome.desc" required="false" type="String">
+            <Option label="success" value="SUCCESS"/>
+            <Option label="failure" value="FAILURE"/>
+            <Option label="error" value="ERROR"/>
+            <Option label="redirect" value="REDIRECT"/>
+            <Option label="info" value="INFO"/>
+            <Option label="warning" value="WARNING"/>
+            <Option label="denied" value="DENIED"/>
+            <Option label="challenge" value="CHALLENGE"/>
+   </AD>
+</OCD>
+
+ <Designate factoryPid="com.ibm.ws.security.audit.event">
+    <Object ocdref="com.ibm.ws.security.audit.event.metatype"/>
+</Designate>
+
+
+</metatype:MetaData>

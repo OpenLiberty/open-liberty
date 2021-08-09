@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.5,ou=objectClasses,cn=apache,ou=schema
+m-must: cn
+m-must: apacheCatalogEntryBaseDn
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.5
+m-supobjectclass: top
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: apacheCatalogEntry
+creatorsname: uid=admin,ou=system
+m-may: apacheCatalogEntryName

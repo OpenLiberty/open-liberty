@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: Aucune instance de travail n''a \u00e9t\u00e9 trouv\u00e9e pour l''ID d''instance {0}.
+job.instance.not.found.explanation=Ce message d'erreur est \u00e9mis lorsqu'un ID d'instance non valide est utilis\u00e9 dans la demande REST.
+job.instance.not.found.useraction=Examinez la demande REST soumise pour v\u00e9rifier que l'ID d'instance soumis est valide.
+
+in.memory.search.not.supported=CWWKY0152E: L'URL d'appel d'API REST de gestion des lots n'est pas prise en charge pour la persistance Batch en m\u00e9moire.
+in.memory.search.not.supported.explanation=L'API REST de gestion des lots a \u00e9t\u00e9 appel\u00e9e avec une combinaison de param\u00e8tres de chemin et de requ\u00eate qui est reconnue par le serveur mais non prise en charge lors de l'utilisation de la persistance Batch en m\u00e9moire. Cette URL peut \u00eatre prise en charge lors de l'utilisation de l'option de base de donn\u00e9es pour la persistance Batch.
+in.memory.search.not.supported.useraction=Utilisez la version "v1" de l'API REST de lots, laquelle prend en charge la persistance Batch en m\u00e9moire.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: La base de donn\u00e9es du r\u00e9f\u00e9rentiel des travaux ne prend pas en charge les param\u00e8tres de recherche ou de suppression par travail car aucune table JOBPARAMETER n'existe dans la base de donn\u00e9es.
+db.tables.not.created.for.jobparm.search.explanation=L'API REST de gestion des lotd a \u00e9t\u00e9 appel\u00e9e avec des param\u00e8tres de requ\u00eate recherchant des instances de travail par mod\u00e8le de param\u00e8tre de travail, \u00e0 l'aide d'une op\u00e9ration de recherche (GET) ou de purge (DELETE). Toutefoos, ce param\u00e8tre de recherche particulier n'est pris en charge que lorsque le r\u00e9f\u00e9rentiel des travaux contient la table JOBPARAMETER, laquelle a \u00e9t\u00e9 ajout\u00e9e dans les niveaux de groupe de correctifs 16.0.0.4 ou suivants. Si le magasin de base de donn\u00e9es qui est utilis\u00e9 par la persistance Batch a \u00e9t\u00e9 configur\u00e9 avec la valeur par d\u00e9faut 'createTables=true', cette table aurait \u00e9t\u00e9 automatiquement cr\u00e9\u00e9e lors du d\u00e9marrage du composant par lots au sein d'un serveur ex\u00e9cutant les niveaux de groupe de correctifs 16.0.0.4 ou suivants. Toutefois, si le magasin de base de donn\u00e9es est configur\u00e9 avec 'createTables=false', l'administrateur WebSphere ou DBA devra cr\u00e9er s\u00e9par\u00e9ment la nouvelle table avant d'ex\u00e9cuter une recherche par param\u00e8tre de travail.
+db.tables.not.created.for.jobparm.search.useraction=Consultez la documentation relative aux groupes de correctifs pour plus de d\u00e9tails sur la migration de la base de donn\u00e9es utilis\u00e9e par la persistance Batch.
+
+ssl.connection.unavailable=CWWKY0154I: Une connexion au point d''extr\u00e9mit\u00e9 Batch sur {0} a rencontr\u00e9 une erreur d''\u00e9tablissement de liaison (handshake) SSL. Cette demande et les suivantes tenteront d''utiliser une redirection HTTP pour \u00eatre rout\u00e9es jusqu''au point d''extr\u00e9mit\u00e9 correct.
+ssl.connection.unavailable.explanation=Certaines actions disponibles dans l'API REST Batch doivent \u00eatre effectu\u00e9es sur le m\u00eame serveur que celui o\u00f9 le travail correspondant a \u00e9t\u00e9 lanc\u00e9. Si l'action a \u00e9t\u00e9 initi\u00e9e sur un autre serveur, celui-ci a peut-\u00eatre tent\u00e9 de cr\u00e9er une nouvelle connexion pour transf\u00e9rer la demande \u00e0 la destination voulue. Or, ce serveur n'a pas pu \u00e9tablir de liaison SSL avec le serveur de destination. Par cons\u00e9quent, cette demande et les suivantes tenteront d'utiliser des redirections \u00e0 la place de nouvelles connexions.
+ssl.connection.unavailable.useraction=Aucune action n'est requise.
+
+http.options.received=CWWKY0155W: Une demande HTTP OPTIONS a \u00e9t\u00e9 re\u00e7ue d''un serveur Liberty \u00e0 {0} sur l''API REST Batch. C''est la cons\u00e9quence d''une tentative de connexion d''un autre serveur Liberty qui h\u00e9berge le Centre d''administration. Pour r\u00e9soudre ce probl\u00e8me, configurez CORS sur le serveur afin qu''il accepte les demandes de l''autre serveur h\u00e9bergeant le Centre d''administration.
+http.options.received.explanation=Certaines actions disponibles dans l'API REST Batch doivent \u00eatre effectu\u00e9es sur le m\u00eame serveur que celui o\u00f9 le travail correspondant a \u00e9t\u00e9 lanc\u00e9. Si l'action a \u00e9t\u00e9 initi\u00e9e sur un autre serveur, celui-ci a peut-\u00eatre tent\u00e9 de cr\u00e9er une nouvelle connexion pour transf\u00e9rer la demande \u00e0 la destination voulue. CORS (partage de ressources d'origines multiples) n'est pas configur\u00e9 pour autoriser l'\u00e9tablissement d'une telle connexion entre un serveur et l'autre. Cette demande n'a donc pu \u00eatre satisfaite.
+http.options.received.useraction=Configurez CORS de telle sorte qu'il autorise les connexions destin\u00e9es \u00e0 l'API REST Batch sur ce serveur depuis le serveur h\u00e9bergeant le Centre d'administration.

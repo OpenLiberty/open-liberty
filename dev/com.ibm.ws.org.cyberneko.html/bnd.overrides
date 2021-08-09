@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: com.ibm.ws.org.cyberneko.html
+Bundle-Description: org.apache nekohtml; version=1.9.18
+Bundle-SymbolicName: com.ibm.ws.org.cyberneko.html.1.9.18
+
+WS-TraceGroup: \
+  OPENID
+
+Export-Package: \
+ org.cyberneko.html;version="1.0.16", \
+ org.cyberneko.html.parsers;version="1.0.16"
+
+Import-Package: 
+
+DynamicImport-Package: *
+
+Include-Resource: \
+ @${repo;com.ibm.ws:nekohtml;1.9.18}!/LICENSE.txt
+
+Ant-Version:
+Built-By:

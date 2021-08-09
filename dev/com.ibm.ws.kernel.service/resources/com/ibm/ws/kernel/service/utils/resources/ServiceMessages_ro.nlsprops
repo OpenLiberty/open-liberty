@@ -1,0 +1,77 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Parametrul specificat nu este un \u015fir sau matrice de \u015firuri. {1}={2} pentru {0}
+invalidStringArray.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, un \u015fir sau matrice de \u015firuri.
+invalidStringArray.useraction=Verifica\u0163i valoarea specificat\u0103 \u00een configura\u0163ia serverului \u015fi asigura\u0163i-v\u0103 c\u0103 valoarea este o reprezentare valid\u0103 a unui \u015fir sau a unei matrici de \u015firuri.
+
+invalidStringCollection=CWWKE0102W: Parametrul specificat nu este un \u015fir sau colec\u0163ie de \u015firuri. {1}={2} pentru {0}
+invalidStringCollection.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, un \u015fir sau colec\u0163ie de \u015firuri.
+invalidStringCollection.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unui \u015fir sau colec\u0163ii de \u015firuri.
+
+invalidBoolean=CWWKE0103W: Parametrul specificat nu reprezint\u0103 o valoare boolean\u0103. {1}={2} pentru {0}
+invalidBoolean.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare boolean.
+invalidBoolean.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unei valori boolean.
+
+invalidLong=CWWKE0104W: Parametrul specificat nu reprezint\u0103 o valoare lung\u0103. {1}={2} pentru {0}
+invalidLong.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare long.
+invalidLong.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unei valori long.
+
+invalidInteger=CWWKE0105W: Parametrul specificat nu reprezint\u0103 o valoare \u00eentreag\u0103. {1}={2} pentru {0}
+invalidInteger.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare \u00eentreg.
+invalidInteger.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 an unei valori \u00eentregi.
+
+invalidIntegerArray=CWWKE0106W: Parametrul specificat nu reprezint\u0103 o matrice de \u00eentregi. {1}={2} pentru {0}
+invalidIntegerArray.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o matrice de \u00eentregi.
+invalidIntegerArray.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 an unei matrici de \u00eentregi.
+
+invalidDuration=CWWKE0107W: Parametrul specificat nu reprezint\u0103 o valoarea de durat\u0103. {1}={2} pentru {0}
+invalidDuration.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare de durat\u0103.
+invalidDuration.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unei valori de durat\u0103.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#
+
+memory.information.unexpected=CWWKE0947E: Au fost \u00eent\u00e2lnite {0}: {1} informa\u0163ii de memorie sistem de operare nea\u015fteptate.
+memory.information.unexpected.explanation=Unele informa\u0163ii de memorie sistem de operare nu au fost \u00een formatul a\u015fteptat. C\u00e2nd a \u00eent\u00e2lnit formatul nea\u015fteptat produsul putea citi un fi\u015fier sau rula un program. Textul mesajului furnizeaz\u0103 fie numele fi\u015fierului sistemului de operare, fie numele programului \u015fi ie\u015firea programului. Pute\u0163i folosi aceste informa\u0163ii pentru a depana problema.
+memory.information.unexpected.useraction=Examina\u0163i informa\u0163iile din textul mesajului. Corecta\u0163i orice problem\u0103 pentru a v\u0103 asigura c\u0103 sistemul de operare se comport\u0103 corect \u015fi c\u0103 nu se \u00eent\u00e2lnesc informa\u0163ii de memorie sistem de operare nea\u015fteptate.
+
+memory.information.unavailable=CWWKE0948E: Informa\u0163iile de memorie disponibil\u0103 nu sunt implementate pe acest sistem de operare.
+memory.information.unavailable.explanation=Aceast\u0103 func\u0163ie nu a fost \u00eenc\u0103 implementat\u0103 pentru acest sistem de operare.
+memory.information.unavailable.useraction=Utiliza\u0163i API-ul OperatingSystem pentru a ob\u0163ine tipul sistemului de operare \u015fi evita\u0163i apelarea acestei func\u0163ii pentru acest tip de sistem de operare.
+
+os.pagesize.unavailable=CWWKE0949E: Informa\u0163iile de dimensiune pagin\u0103 nu sunt implementate pe acest sistem de operare.
+os.pagesize.unavailable.explanation=Aceast\u0103 func\u0163ie nu a fost \u00eenc\u0103 implementat\u0103 pentru acest sistem de operare.
+os.pagesize.unavailable.useraction=Utiliza\u0163i API-ul OperatingSystem pentru a ob\u0163ine tipul sistemului de operare \u015fi evita\u0163i apelarea acestei func\u0163ii pentru acest tip de sistem de operare.
+
+os.execute.error=CWWKE0950E: Programul {0} a e\u015fuat s\u0103 ruleze. Codul returnat este {1}. Ie\u015firea este {2}
+os.execute.error.explanation=Mai multe situa\u0163ii pot cauza acest e\u015fec. De exemplu, programul a e\u015fuat din cauza unei condi\u0163ii de eroare pe care o raporteaz\u0103 \u00een codul \u015fi ie\u015firea returnate.
+os.execute.error.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 comand\u0103 \u015fi c\u0103 este \u00eentr-unul din din directoarele din variabila de mediu PATH.

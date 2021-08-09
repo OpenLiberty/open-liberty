@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Shibboleth IdP V3 - Jetty Container" basedir=".." default="install">
+
+    <!--  This file is for automatic configuration of Jetty, primarily from the MSI installer.
+
+       	Names and APIS *may* change in the future, please enter an RFI if you wish to use this
+       	in production outside the MSI installer.
+
+        TARGETS:
+
+        	The only top level target is "install".  This in turn calls subsidiary targets.
+
+        PROPERTIES:
+
+            The following properties are used.  They have to be provided on the command line or
+            via the property file.
+
+            jetty.property.file: Name of a file to fill in all or some of the below. This file is deleted after processing.
+            jetty.merge.properties: The name of a property file to merge with idp.ini.  This file is deleted after processing.
+            idp.host.name: The host name.
+            idp.uri.subject.alt.name: If we are creating certificates.
+            idp.target.dir: where to install to.
+
+            idp.keystore.password: password to use on the PKCS12 file for a user-facing TLS credential,
+                which will be created if one does not already exist either in JKS or PKCS12 form.
+                This value must also have been written to the merge properties file as
+                jetty.browser.keystore.password.
+
+            jetty.no.tidy: Do not delete the two above files (debug only)
+
+    -->
+
+    <taskdef resource="net/shibboleth/idp/installer/ant.xml" />
+
+    <target name="install" depends="init, properties, keystores, directories, copyinis, reprotect, tidy" />
+
+    <target name="init">
+        <tstamp />
+        <hostinfo />
+    </target>
+
+    <target name="properties">
+        <property file="${jetty.property.file}" />
+        <available property="idp.ini.present" file="${idp.target.dir}/jetty-base/start.d/idp.ini" />
+        <available property="idp.jks.present" file="${idp.target.dir}/credentials/idp.jks" />
+        <available property="idp.userfacing.p12.present" file="${idp.target.dir}/credentials/idp-userfacing.p12" />
+        <condition property="generate.userfacing.p12">
+            <!-- Generate the pkcs12 keystore if neither the JKS nor the P12 exist -->
+            <not>
+                <or>
+                    <istrue value="${idp.jks.present}" />
+                    <istrue value="${idp.userfacing.p12.present}" />
+                </or>
+            </not>
+        </condition>
+    </target>
+
+    <!-- Handle keystores -->
+    <target name="keystores" depends="jks, gen-userfacing" />
+
+    <target name="jks" if="idp.jks.present">
+      	<!-- Note that this password is the old default for QI.  This will overwrite what we may have put in when the merge file was created. -->
+      	<echo file="${jetty.merge.properties}" append="yes">
+        	jetty.backchannel.keystore.type=JKS
+        	jetty.browser.keystore.type=JKS
+        	jetty.backchannel.keystore.password= SeCrEt
+        	jetty.browser.keystore.password= SeCrEt
+        	jetty.backchannel.keystore.path= ${idp.target.dir}/credentials/idp.jks
+        	jetty.browser.keystore.path= ${idp.target.dir}/credentials/idp.jks
+        </echo>
+    </target>
+
+    <target name="gen-userfacing" if="generate.userfacing.p12">
+        <selfsignedcert hostname="${idp.host.name}" keystoreFile="${idp.target.dir}/credentials/idp-userfacing.p12" keystorePassword="${idp.keystore.password}" uriSubjectAltNames="${idp.uri.subject.alt.name}" />
+    </target>
+
+    <target name="directories">
+        <mkdir dir="jetty-base/start.d" />
+        <mkdir dir="jetty-base/logs" />
+        <mkdir dir="static" />
+    </target>
+
+    <target name="copyinis" depends="properties, directories, copyidpini, rewriteidpini">
+        <copy file="${idp.target.dir}/jetty-base/start.d.dist/idp-system.ini" toFile="${idp.target.dir}/jetty-base/start.d/idp-system.ini" overwrite="true" force="true" />
+     </target>
+
+    <target name="copyidpini" depends="directories" unless="idp.ini.present">
+        <mergeproperties inFile="${idp.target.dir}/jetty-base/start.d.dist/idp.ini.windows" outFile="${idp.target.dir}/jetty-base/start.d/idp.ini" mergeFile="${jetty.merge.properties}" />
+    </target>
+
+    <target name="rewriteidpini" depends="directories" if="idp.ini.present">
+        <rewriteproperties inFile="${idp.target.dir}/jetty-base/start.d/idp.ini" outFile="${idp.target.dir}/jetty-base/start.d/idp.ini" propertyNameFile="${idp.target.dir}/jetty-base/start.d.dist/idp.ini.rewrite.property.names" />
+    </target>
+
+
+   <target name="reprotect">
+       <chmod perm="600" dir="jetty-base/start.d" includes="**/*.key"/>
+       <chmod perm="444" dir="jetty-base/etc" includes="**/*"/>
+       <chmod perm="444" dir="jetty-base/lib" includes="**/*"/>
+       <chmod perm="444" dir="jetty-base/webapps" includes="**/*"/>
+       <attrib readonly="true">
+           <fileset dir="jetty-base/etc" includes="**/*"/>
+       </attrib>
+    	<attrib readonly="true">
+        	<fileset dir="jetty-base/lib" includes="**/*"/>
+    	</attrib>
+    	<attrib readonly="true">
+        	<fileset dir="jetty-base/webapps" includes="**/*"/>
+    	</attrib>
+    </target>
+
+    <target name="tidy" unless="jetty.no.tidy">
+        <delete file="${jetty.merge.properties}" failonerror="false" />
+        <delete file="${jetty.property.file}" failonerror="false" />
+    </target>
+
+</project>

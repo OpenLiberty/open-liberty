@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+    version="2.2">
+
+     <application>
+     	<locale-config>
+     		<default-locale>en</default-locale>
+     		<supported-locale>zh_CN</supported-locale>
+     	</locale-config>
+     	
+		<resource-bundle>
+			<base-name>com.ibm.ws.jsf22.fat.localprops.messages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+
+		<message-bundle>
+			com.ibm.ws.jsf22.fat.localprops.resources
+		</message-bundle>     
+    </application>
+     
+</faces-config>

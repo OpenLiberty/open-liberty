@@ -1,0 +1,29 @@
+.footer ul{
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 160px;
+    max-width: 700px;
+    text-align: center;
+    padding: 0;
+    margin-top: 0px;
+    font-size: 14px;
+    font-family: Open Sans,sans-serif;
+}
+.footer li{
+    display: inline-block;
+    list-style: none;
+    border-right: thin solid black;
+    padding-right: 4px;
+    padding-left: 4px;
+}
+
+.footer li:last-child{
+    border: none;
+}
+
+.footer a{
+    color: #2070D0;
+  }
+  .footer a:visited{
+    color: #2070D0;
+  }

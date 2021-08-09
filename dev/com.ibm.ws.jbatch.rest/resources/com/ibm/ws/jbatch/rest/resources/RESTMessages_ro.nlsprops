@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: Nu a fost g\u0103sit\u0103 nicio instan\u0163\u0103 de job pentru ID-ul {0}.
+job.instance.not.found.explanation=Acest mesaj de eroare este emis c\u00e2nd este folosit un ID de instan\u0163\u0103 invalid \u00een cererea REST.
+job.instance.not.found.useraction=Verifica\u0163i cererea REST trimis\u0103 pentru a v\u0103 asigura c\u0103 ID-ul de instan\u0163\u0103 transmis este valid.
+
+in.memory.search.not.supported=CWWKY0152E: URL-ul de invocare REST API de gestionare batch nu este suportat pentru persisten\u0163a batch \u00een memorie.
+in.memory.search.not.supported.explanation=REST API de gestionare batch a fost invocat cu o combina\u0163ie de cale \u015fi parametrii de interogare care este recunoscut\u0103 de server dar nu este suportat\u0103 atunci c\u00e2nd folosi\u0163i persisten\u0163a batch \u00een memorie. Acest URL s-ar putea s\u0103 fie suportat c\u00e2nd se utilizeaz\u0103 op\u0163iunea bazei de date pentru persisten\u0163\u0103.
+in.memory.search.not.supported.useraction=Utiliza\u0163i versiunea "v1" a REST API batch, care suport\u0103 persisten\u0163a batch \u00een memorie.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: Baza de date a magaziei de joburi nu suport\u0103 c\u0103utarea sau \u015ftergerea parametrilor jobului deoarece niciun tabel JOBPARAMETER nu exist\u0103 \u00een baza de date.
+db.tables.not.created.for.jobparm.search.explanation=API-ul REST de gestionare batch a fost invocat cu parametri de interogare pentru c\u0103utarea instan\u0163elor de job dup\u0103 tiparul de parametri al jobului, prin utilizarea unei c\u0103ut\u0103ri (GET) sau a unei opera\u0163ii de epurare (DELETE). \u00cens\u0103 acest parametru de c\u0103utare particular este suportat doar c\u00e2nd magazia de joburi con\u0163ine tabelul JOBPARAMETER, care a fost ad\u0103ugat \u00een nivelurile pachetului de corec\u0163ii 16.0.0.4 sau ulterior. Dac\u0103 depozitul de baz\u0103 de date care este utilizat de persisten\u0163a batch a fost configurat cu valoarea implicit\u0103 'createTables=true', acest tabel ar fi fost creat automat c\u00e2nd este pornit\u0103 componenta batch cu un server care ruleaz\u0103 nivelul pachet de corec\u0163ii 16.0.0.4 sau ulterior. \u00cens\u0103 dac\u0103 depozitul de baz\u0103 de date este configurat cu 'createTables=false', administratorul WebSphere sau DBA va trebui s\u0103 creeze separat tabelul nou \u00eenainte de a executa o c\u0103utare dup\u0103 parametrul jobului.
+db.tables.not.created.for.jobparm.search.useraction=Consulta\u0163i documenta\u0163ia pachetului de corec\u0163ii pentru instruc\u0163iuni privind migrarea bazei de date utilizate de persisten\u0163a batch.
+
+ssl.connection.unavailable=CWWKY0154I: O conexiune la punctul final Batch la {0} a \u00eent\u00e2lnit o eroare de handshake (dialog de confirmare) SSL. Aceast\u0103 cerere precum \u015fi cererile viitoare vor \u00eencerca s\u0103 utilizeze o redirectare HTTP pentru a ruta la punctul final corect.
+ssl.connection.unavailable.explanation=Anumite ac\u0163iuni disponibile prin intermediul API-ului REST Batch trebuie realizate la acela\u015fi server pe care ruleaz\u0103 jobul corespondent. Dac\u0103 ac\u0163iunea este ini\u0163iat\u0103 pe un alt server, acel server ar putea \u00eencerca s\u0103 creeze o conexiune nou\u0103 pentru a \u00eenainta cererea la destina\u0163ia cerut\u0103. Acest server nu poate finaliza un dialog de confirmare (handshake) cu serverul destina\u0163ie. Astfel, aceast\u0103 cerere \u015fi cererile viitoare vor \u00eencerca s\u0103 utilizeze redirect\u0103ri ale cererilor \u00een loc de conexiuni noi.
+ssl.connection.unavailable.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+http.options.received=CWWKY0155W: O cerere HTTP OPTIONS a fost primit\u0103 de API-ul REST Batch de la un server Liberty la {0}. Acest lucru este rezultatul unei \u00eencerc\u0103ri de conexiune de la alt server Liberty care g\u0103zduie\u015fte Admin Center. Pentru a rezolva aceast\u0103 problem\u0103, configura\u0163i CORS pe acest server pentru a accepta cereri de la serverul care g\u0103zduie\u015fte Admin Center.
+http.options.received.explanation=Anumite ac\u0163iuni disponibile prin intermediul API-ului REST Batch trebuie realizate la acela\u015fi server pe care ruleaz\u0103 jobul corespondent. Dac\u0103 ac\u0163iunea este ini\u0163iat\u0103 pe un alt server, acel server ar putea \u00eencerca s\u0103 creeze o conexiune nou\u0103 pentru a \u00eenainta cererea la destina\u0163ia cerut\u0103. CORS (Cross-Origin Resource Sharing) nu este configurat pentru a permite o asemenea conexiune de la un server la altul. Astfel, aceast\u0103 cerere nu va fi finalizat\u0103.
+http.options.received.useraction=Configura\u0163i CORS pentru a permite conexiuni pentru API-ul REST Batch de la serverul care g\u0103zduie\u015fte Admin Center la acest server.

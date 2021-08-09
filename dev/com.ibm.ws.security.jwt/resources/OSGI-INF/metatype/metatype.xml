@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2016, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.jwt.builder" ibm:alias="jwtBuilder"
+         name="%jwtBuilder" description="%jwtBuilder.desc">
+         <AD id="id" name="%jwtBuilderId" description="%jwtBuilderId.desc" required="false" type="String" default="defaultJWT"/>
+         <AD id="issuer" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
+         <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc" required="false" type="Boolean" default="false"/> 
+         <!-- deprecated --><AD id="expiry" name="%valid" description="%valid.desc" required="false" type="String" default="2h" ibm:type="duration(h)"/>
+         <AD id="expiresInSeconds" name="%expiresInSeconds" description= "%expiresInSeconds.desc" required="false" type="String" default="-1" ibm:type="duration(s)" />
+         <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="400" />
+         <AD id="claims" name="%claims" description="%claims.desc" required="false" type="String" cardinality="400" />
+         <AD id="scope" name="%scope" description="%scope.desc" required="false" type="String" />
+         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
+             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+             <Option label="%tokenSignAlgorithm.RS384" value="RS384" />
+             <Option label="%tokenSignAlgorithm.RS512" value="RS512" />
+             <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+             <Option label="%tokenSignAlgorithm.HS384" value="HS384" />
+             <Option label="%tokenSignAlgorithm.HS512" value="HS512" />
+             <Option label="%tokenSignAlgorithm.ES256" value="ES256" />
+             <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
+             <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
+         </AD>
+
+         <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
+		 <AD id="jti" name="%jti" description="%jti.desc" required="false" type="Boolean" default="false"/>
+         <AD id="keyStoreRef" name="%keyStoreRef" description="%keyStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+         <AD id="keyAlias" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
+         <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+         <AD id="jwkRotationTime" name="internal" description="internal use only" required="false" type="String" ibm:type="duration(m)" default="720m" min="60m"/>
+         <AD id="jwkSigningKeySize" name="internal" description="internal use only" required="false" type="Long" default="2048">
+            <Option label="%jwkSigningKeySize.1024" value="1024"/>
+            <Option label="%jwkSigningKeySize.2048" value="2048"/>
+            <Option label="%jwkSigningKeySize.4096" value="4096"/>
+         </AD>
+         <AD id="nbfOffset" name="%nbfOffset" description="%nbfOffset.desc" required="false" type="String" default="-1" ibm:type="duration(s)"/>
+         <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
+         <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" >
+             <Option label="%keyManagementKeyAlgorithm.RSA-OAEP" value="RSA-OAEP" />
+         </AD>
+         <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" />
+         <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" >
+             <Option label="%contentEncryptionAlgorithm.A256GCM" value="A256GCM" />
+         </AD>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.jwt.builder">
+         <Object ocdref="com.ibm.ws.security.jwt.builder" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.jwt.consumer.metatype" ibm:alias="jwtConsumer"
+         name="%jwtConsumer" description="%jwtConsumer.desc">
+        <AD id="id" name="%jwtConsumerId" description="%jwtConsumerId.desc" required="false" type="String" />
+        <AD id="issuer" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
+        <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
+        <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="2147483647" />
+        <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" >
+            <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+            <Option label="%tokenSignAlgorithm.RS384" value="RS384" />
+            <Option label="%tokenSignAlgorithm.RS512" value="RS512" />
+            <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+            <Option label="%tokenSignAlgorithm.HS384" value="HS384" />
+            <Option label="%tokenSignAlgorithm.HS512" value="HS512" />
+            <Option label="%tokenSignAlgorithm.ES256" value="ES256" />
+            <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
+            <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
+        </AD>
+        <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+        <AD id="trustedAlias" name="%trustedAliasName" description="%trustedAliasName.desc" required="false" type="String" />
+        <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="5m" ibm:type="duration" />
+        <AD id="validationRequired" name="internal" description="internal use only"  required="false" type="Boolean" default="true"/>
+        <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc" required="false" type="Boolean" default="false"/>
+        <AD id="jwkEndpointUrl" name="%jwkEndpointUrl" description="%jwkEndpointUrl.desc"  required="false"  type="String" />
+        <AD id="amrValues" name="%amrValues" description="%amrValues.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
+        <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.consumer.desc" required="false" type="String" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.jwt.consumer">
+        <Object ocdref="com.ibm.ws.security.jwt.consumer.metatype" />
+    </Designate>
+
+</metatype:MetaData>

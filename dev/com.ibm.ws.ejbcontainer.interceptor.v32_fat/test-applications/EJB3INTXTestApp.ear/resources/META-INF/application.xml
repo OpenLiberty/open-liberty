@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application id="Application_ID" version="5"
+      xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd">
+   <display-name>EJB3INTX.ear</display-name>
+   <module id="EjbModule_1">
+      <ejb>EJB3INTXBean.jar</ejb>
+   </module>
+   <module>
+      <web>
+          <web-uri>EJB3INTXWeb.war</web-uri>
+          <context-root>/EJB3INTXTestApp</context-root>
+      </web>
+   </module>
+</application>

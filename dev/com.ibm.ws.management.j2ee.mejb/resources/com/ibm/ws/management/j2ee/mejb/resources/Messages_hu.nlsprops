@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mejb/resources/com/ibm/ws/management/j2ee/mejb/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSR77
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+MANAGEMENT_EJB_SERVICE_ACTIVATED=CWWKJ0200I: Elindult a ManagementEJB szolg\u00e1ltat\u00e1s.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.explanation=A ManagementEJB szolg\u00e1ltat\u00e1s sikeresen elindult.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l. Semmit sem kell tennie.
+
+MANAGEMENT_EJB_SERVICE_DEACTIVATED=CWWKJ0201I: Le\u00e1llt a ManagementEJB szolg\u00e1ltat\u00e1s.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.explanation=A ManagementEJB szolg\u00e1ltat\u00e1s sikeresen le\u00e1llt.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l. Semmit sem kell tennie.
+
+MANAGEMENT_EJB_START_ERROR=CWWKJ0202E: Az EJB rendszermodul nem ind\u00edthat\u00f3 el. Hiba: {0} 
+MANAGEMENT_EJB_START_ERROR.explanation=A term\u00e9k nem tudja elind\u00edtani az EJB rendszermodult, mivel hiba t\u00f6rt\u00e9nt.
+MANAGEMENT_EJB_START_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EJB modul megfelel\u0151en be\u00e1ll\u00edt\u00e1sra ker\u00fclt. 
+

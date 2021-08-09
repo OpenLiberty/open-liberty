@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.wsspi.sib.core.CWSIRMessages.nlsprops
+#
+# SIB.common component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIR0001=CWSIR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIR9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/CWSIRMessages.nlsprops
+#COMPONENTPREFIX CWSIR
+#COMPONENTNAMEFOR CWSIR SIBus Core
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+BROWSE_METHOD_CWSIR0001=CWSIR0001E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress.
+BROWSE_METHOD_CWSIR0001.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createBrowserSession \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+BROWSE_METHOD_CWSIR0001.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# destAddr is a argument name for a method call
+CREATE_CONSUMER_CWSIR0021=CWSIR0021E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+CREATE_CONSUMER_CWSIR0021.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createConsumerSession \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_CONSUMER_CWSIR0021.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0031=CWSIR0031E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress.
+CREATE_DURABLE_SUB_CWSIR0031.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createConsumerSessionForDurableSubscription \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_DURABLE_SUB_CWSIR0031.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0032=CWSIR0032E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName.
+CREATE_DURABLE_SUB_CWSIR0032.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createConsumerSessionForDurableSubscription \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_DURABLE_SUB_CWSIR0032.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0041=CWSIR0041E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress.
+CREATE_DURABLE_SUB_CWSIR0041.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createDurableSubscription \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destinationAddress \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_DURABLE_SUB_CWSIR0041.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destinationAddress.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0042=CWSIR0042E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName.
+CREATE_DURABLE_SUB_CWSIR0042.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createDurableSubscription \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_DURABLE_SUB_CWSIR0042.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0051=CWSIR0051E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+CREATE_PRODUCER_CWSIR0051.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 createProducerSession \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_PRODUCER_CWSIR0051.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+DELETE_DURABLE_SUB_CWSIR0061=CWSIR0061E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName.
+DELETE_DURABLE_SUB_CWSIR0061.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 deleteDurableSubscription \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 subscriptionName \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+DELETE_DURABLE_SUB_CWSIR0061.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 subscriptionName.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0071=CWSIR0071E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+CREATE_PRODUCER_CWSIR0071.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 deleteTemporaryDestination \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+CREATE_PRODUCER_CWSIR0071.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+GET_DEST_CONFIG_CWSIR0081=CWSIR0081E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+GET_DEST_CONFIG_CWSIR0081.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 getDestinationConfiguration \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+GET_DEST_CONFIG_CWSIR0081.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_NO_WAIT_CWSIR0091=CWSIR0091E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+RECEIVE_NO_WAIT_CWSIR0091.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 receiveNoWait \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+RECEIVE_NO_WAIT_CWSIR0091.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_WITH_WAIT_CWSIR0101=CWSIR0101E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+RECEIVE_WITH_WAIT_CWSIR0101.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 receiveWithWait \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+RECEIVE_WITH_WAIT_CWSIR0101.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+SEND_CWSIR0111=CWSIR0111E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.
+SEND_CWSIR0111.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 receiveWithWait \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr.  \u0410\u0440\u0433\u0443\u043c\u0435\u043d\u0442 destAddr \u043d\u0435 \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0440\u0430\u0432\u0435\u043d null
+SEND_CWSIR0111.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 destAddr.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_CWSIR0112=CWSIR0112E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f.
+SEND_CWSIR0112.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 send \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f. \u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u043d\u0435 \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u043f\u0443\u0441\u0442\u044b\u043c.
+SEND_CWSIR0112.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_EXCEPTION_DEST_CWSIR0121=CWSIR0121E: \u041f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f.
+SEND_EXCEPTION_DEST_CWSIR0121.explanation=\u041f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 sendToExceptionDestination \u043f\u0435\u0440\u0435\u0434\u0430\u043d \u043f\u0443\u0441\u0442\u043e\u0439 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f.  \u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u043d\u0435 \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u043f\u0443\u0441\u0442\u044b\u043c.
+SEND_EXCEPTION_DEST_CWSIR0121.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the internal method name called on the SPI.
+LME_ERROR_CWSIR0131=CWSIR0131E: \u0412 \u043d\u0430\u0441\u0442\u043e\u044f\u0449\u0438\u0439 \u043c\u043e\u043c\u0435\u043d\u0442 \u0432\u044b\u0437\u043e\u0432 \u043c\u0435\u0442\u043e\u0434\u0430 {0} \u043d\u0435\u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c.
+LME_ERROR_CWSIR0131.explanation=\u042d\u0442\u043e\u0442 \u0432\u044b\u0437\u043e\u0432 \u043c\u043e\u0436\u043d\u043e \u0432\u044b\u043f\u043e\u043b\u043d\u044f\u0442\u044c \u0442\u043e\u043b\u044c\u043a\u043e \u0438\u0437 \u043c\u0435\u0442\u043e\u0434\u0430 AsynchConsumerCallback.consumeMessages.
+LME_ERROR_CWSIR0131.useraction=\u0412\u044b\u043f\u043e\u043b\u043d\u0438\u0442\u0435 \u0432\u044b\u0437\u043e\u0432 AsynchConsumerCallback.consumeMessages \u0438\u0437 \u043c\u0435\u0442\u043e\u0434\u0430 \u0438\u043b\u0438 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 \u0441\u043e\u043e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0443\u044e\u0449\u0438\u0439 \u0432\u044b\u0437\u043e\u0432 ConsumerSession, \u0435\u0441\u043b\u0438 \u044d\u0442\u043e \u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e
+
+# -------------------------------------------------------------------------------------------------
+# 
+LME_ERROR_CWSIR0132=CWSIR0132E: \u041c\u0430\u0441\u0441\u0438\u0432 msgHandles \u0441\u043e\u0434\u0435\u0440\u0436\u0438\u0442 \u043d\u0443\u043b\u0435\u0432\u044b\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u044f.
+LME_ERROR_CWSIR0132.explanation=\u041c\u0430\u0441\u0441\u0438\u0432 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u043e\u0432 msgHandles \u043d\u0435 \u043c\u043e\u0436\u0435\u0442 \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0442\u044c \u043f\u0443\u0441\u0442\u044b\u0445 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432, \u043f\u043e\u044d\u0442\u043e\u043c\u0443 \u0432\u044b\u0437\u043e\u0432 ConsumerSession \u0438\u043b\u0438 BifurcatedConsumerSession \u043d\u0435 \u0431\u044b\u043b \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d.
+LME_ERROR_CWSIR0132.useraction=\u0412\u044b\u043f\u043e\u043b\u043d\u0438\u0442\u0435 \u0432\u044b\u0437\u043e\u0432 \u043f\u043e\u0432\u0442\u043e\u0440\u043d\u043e, \u0443\u0434\u0430\u043b\u0438\u0432 \u043f\u0443\u0441\u0442\u044b\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b \u0438\u0437 \u043c\u0430\u0441\u0441\u0438\u0432\u0430
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141=CWSIR0141E: \u041d\u0435\u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 maxActiveMessages {0}.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.explanation=\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435 maxActiveMessages \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u043d\u0435 \u043c\u0435\u043d\u044c\u0448\u0435 0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 maxActiveMessages.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142=CWSIR0142E: \u041d\u0435\u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 messageLockExpiry {0}.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.explanation=\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435 messageLockExpiry \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u043d\u0435 \u043c\u0435\u043d\u044c\u0448\u0435 0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 messageLockExpiry.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143=CWSIR0143E: \u041d\u0435\u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 maxBatchSize {0}.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.explanation=\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435 maxBatchSize \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0431\u043e\u043b\u044c\u0448\u0435 0
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.useraction=\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0430\u0440\u0433\u0443\u043c\u0435\u043d\u0442\u0430 maxBatchSize.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIR9999=CWSIR9999E: {0}
+TEMPORARY_CWSIR9999.explanation=\u0415\u0441\u043b\u0438 \u043d\u0435\u043e\u0431\u0445\u043e\u0434\u0438\u043c\u044b\u0435 \u0441\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u0432 \u044d\u0442\u043e\u043c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0438 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u044e\u0442, \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0438\u0442\u0435 \u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f.
+TEMPORARY_CWSIR9999.useraction=\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f \u043f\u0440\u0438\u0432\u0435\u0434\u0435\u043d\u0430 \u0432 \u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0445 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f\u0445.

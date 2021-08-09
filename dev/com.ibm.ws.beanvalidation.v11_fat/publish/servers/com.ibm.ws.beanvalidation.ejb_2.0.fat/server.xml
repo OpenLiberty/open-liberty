@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>beanValidation-2.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+    
+    <include location="../fatTestPorts.xml"/>
+</server>

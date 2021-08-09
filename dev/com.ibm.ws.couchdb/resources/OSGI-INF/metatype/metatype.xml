@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="com.ibm.ws.couchdb.couchdb">
+  <Object ocdref="com.ibm.ws.couchdb.couchdb"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.couchdb.couchdb" ibm:alias="couchdb" name="%couchdb" description="%couchdb.desc">
+ 	 <AD id="libraryRef"                     type="String"  required="true"  ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="%libraryRef" description="%libraryRef.desc" />
+	 <AD id="library.target"                 type="String"  required="true"  default="(service.pid=${libraryRef})" ibm:final="true" name="internal" description="internal use only"/>
+	 <AD id="jndiName"                       type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+	 <AD id="url"                            type="String"  required="false"  name="%url" 			 		description="%url.desc"/>
+	 <AD id="host"                           type="String"  required="false"  name="%host" 			 		description="%host.desc"/>
+ 	 <AD id="port"                           type="Integer" required="false" name="%port" 					description="%port.desc" 			 		default="5984"/>
+ 	 <AD id="username"                		 type="String"  required="true"  name="%username"		 		description="%username.desc"/>
+ 	 <AD id="password"                		 type="String"  required="true"  name="%password" 		 		description="%password.desc" 		 							ibm:type="password"/>
+ 	 <AD id="maxConnections"                 type="Integer" required="false" name="%maxConnections" 		description="%maxConnections.desc" 			default="20"/>
+ 	 <AD id="connectionTimeout"              type="String"  required="false" name="%connectionTimeout"  	description="%connectionTimeout.desc" 		default="30s"		ibm:type="duration"/>
+ 	 <AD id="socketTimeout"                  type="String"  required="false" name="%socketTimeout" 	 		description="%socketTimeout.desc"	 		default="1m"		ibm:type="duration"/>
+ 	 <AD id="enableSSL"                      type="Boolean" required="false" name="%enableSSL" 		 		description="%enableSSL.desc"		 		default="false"/>
+ 	 <AD id="relaxedSSLSettings"             type="Boolean" required="false" name="%relaxedSSLSettings" 	description="%relaxedSSLSettings.desc" 		default="false"/>
+ 	 <AD id="caching"                        type="Boolean" required="false" name="%caching" 		 		description="%caching.desc" 		 		default="true"/>
+ 	 <AD id="maxCacheEntries"                type="Integer" required="false" name="%maxCacheEntries" 		description="%maxCacheEntries.desc" 		default="1000"		min="0"/>
+ 	 <AD id="maxObjectSizeBytes"             type="Integer" required="false" name="%maxObjectSizeBytes" 	description="%maxObjectSizeBytes.desc" 		default="8192"		min="0"/>
+ 	 <AD id="useExpectContinue"              type="Boolean" required="false" name="%useExpectContinue"		description="%useExpectContinue.desc"		default="true"/>
+ 	 <AD id="cleanupIdleConnections"         type="Boolean" required="false" name="%cleanupIdleConnections" description="%cleanupIdleConnections.desc" 	default="true"/>
+
+ </OCD>
+</metatype:MetaData>

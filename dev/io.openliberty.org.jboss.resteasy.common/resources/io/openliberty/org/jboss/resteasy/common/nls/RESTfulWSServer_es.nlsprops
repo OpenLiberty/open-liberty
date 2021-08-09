@@ -1,0 +1,83 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Se han definido varios servlets REST para el m\u00f3dulo web, {0}. S\u00f3lo se permiten cero o un servlet REST por m\u00f3dulo web.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=S\u00f3lo se permite definir un servlet REST por m\u00f3dulo web. Un servlet REST es cualquier servlet que utilice uno de los siguientes nombres de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher u org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Este mensaje indica que m\u00e1s de un servlet se ha especificado en web.xml o se ha configurado din\u00e1micamente. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Revise el web.xml para estos servlets y elim\u00ednelos todos o todos excepto uno.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Se han definido varias correlaciones de servlets REST para el m\u00f3dulo web, {0}. Un servlet REST s\u00f3lo se puede asociar con una correlaci\u00f3n de v\u00eda de acceso \u00fanica.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=S\u00f3lo se permite configurar un servlet REST con cero o una correlaci\u00f3n de v\u00eda de acceso. Un servlet REST es cualquier servlet que utilice uno de los siguientes nombres de clase: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher u org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Este mensaje indica que se ha asociado m\u00e1s de una correlaci\u00f3n con un servlet REST en web.xml. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Revise el web.xml para las correlaciones de servlet que est\u00e1n asociadas con el servlet REST y elim\u00ednelas todas o todas excepto una.
+
+INVALID_LONG_PROPERTY_CWWKW1302W=CWWKW1302W: La propiedad de cliente {0} debe ser un entero largo, pero se ha configurado incorrectamente con {1}. Este valor se pasar\u00e1 por alto.
+INVALID_LONG_PROPERTY_CWWKW1302W.explanation=Las propiedades del cliente, como los valores de tiempo de espera, deben configurarse como un entero largo positivo o una serie que pueda convertirse a un entero largo. Este mensaje indica que una propiedad de cliente se ha configurado con un valor no v\u00e1lido. Esta propiedad se ignorar\u00e1.
+INVALID_LONG_PROPERTY_CWWKW1302W.useraction=Revise el c\u00f3digo de la aplicaci\u00f3n y la configuraci\u00f3n del servidor para determinar d\u00f3nde se ha establecido incorrectamente esta propiedad y elimine la propiedad o c\u00e1mbiela por un valor entero largo v\u00e1lido.
+
+INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: La propiedad de cliente {0} debe ser un entero, pero se ha configurado incorrectamente con {1}. Este valor se pasar\u00e1 por alto.
+INVALID_INT_PROPERTY_CWWKW1303W.explanation=Las propiedades de cliente, como los valores de puerto de proxy, se deben configurar como un entero positivo o una serie que pueda convertirse a un entero. Este mensaje indica que una propiedad de cliente se ha configurado con un valor no v\u00e1lido. Esta propiedad se ignorar\u00e1.
+INVALID_INT_PROPERTY_CWWKW1303W.useraction=Revise el c\u00f3digo de la aplicaci\u00f3n y la configuraci\u00f3n del servidor para determinar d\u00f3nde se ha establecido incorrectamente esta propiedad y elimine la propiedad o c\u00e1mbiela por un valor entero v\u00e1lido.
+
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: La propiedad de cliente {0} debe ser un booleano, pero se ha configurado incorrectamente con {1}. Este valor se pasar\u00e1 por alto.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Las propiedades de cliente, como por ejemplo si se deben seguir autom\u00e1ticamente las redirecciones, se deben configurar como un booleano o como una serie que se puede convertir en un booleano. Este mensaje indica que una propiedad de cliente se ha establecido en un valor no v\u00e1lido. Esta propiedad se ignorar\u00e1.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Revise el c\u00f3digo de la aplicaci\u00f3n y la configuraci\u00f3n del servidor para determinar d\u00f3nde se ha establecido incorrectamente esta propiedad y elimine la propiedad o c\u00e1mbiela por un valor booleano v\u00e1lido.
+
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: El servidor ignora el proveedor {0} porque no es v\u00e1lido.
+INVALID_PROVIDER_CWWKW1305W.explanation=La clase de proveedor especificada probablemente no contiene un constructor p\u00fablico v\u00e1lido o no implementa una interfaz de proveedor REST de Jakarta. Los requisitos para una implementaci\u00f3n de proveedor v\u00e1lida se describen en la secci\u00f3n 4 de la especificaci\u00f3n de Jakarta RESTful Web Services.
+INVALID_PROVIDER_CWWKW1305W.useraction=Revise el c\u00f3digo de aplicaci\u00f3n para asegurarse de que el proveedor especificado implementa correctamente la interfaz de proveedor y contiene un constructor p\u00fablico v\u00e1lido por cada uno de los requisitos de especificaci\u00f3n.
+
+
+# Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+warn_missing_mpjwt_token=CWWKW0707W: El atributo [{0}] en la configuraci\u00f3n [{1}] se ha establecido en [{2}], pero la se\u00f1al web JSON (JWT) MicroProfile no est\u00e1 disponible. La solicitud no contiene una cabecera Authorization con la se\u00f1al.
+warn_missing_mpjwt_token.explanation=El tiempo de ejecuci\u00f3n no ha encontrado la se\u00f1al JWT MicroProfile en el sujeto runAs. Este error suele indicar un problema con la autenticaci\u00f3n. Aseg\u00farese de que no se produzca ning\u00fan error mientras la caracter\u00edstica JWT MicroProfile autentique a un usuario.
+warn_missing_mpjwt_token.useraction=Compruebe si se han producido errores previos en la acci\u00f3n del usuario en el registro del servidor.

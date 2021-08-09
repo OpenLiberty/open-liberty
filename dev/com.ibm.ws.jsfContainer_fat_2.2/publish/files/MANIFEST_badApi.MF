@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Implementation-Title: Mojarra
+Probe-Provider-Xml-File-Names: META-INF/mojarra-jsf-api-probe-provider.xml
+DocName: JavaServer Faces API
+Specification-Title: JavaServer Faces
+Bundle-SymbolicName: javax.faces-api
+Extension-Name: javax.faces
+Implementation-Version: 2.2
+Bundle-Name: JavaServer Faces API 2.2.14 (20161114-2154)
+Bundle-Version: 2.2
+Bundle-ManifestVersion: 2
+Bundle-Description: Mojarra JSF API (javax.faces/2.2) 2.2.14 (20161114-2154)
+Specification-Version: 2.1
+Include-Resource: META-INF=build/classes/META-INF,build/classes

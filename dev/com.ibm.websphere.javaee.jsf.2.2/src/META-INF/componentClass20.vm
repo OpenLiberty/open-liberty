@@ -1,0 +1,563 @@
+## Velocity template used to generate JSF2.0-compatible component classes
+## from component meta-data.
+##
+## Note that there are two types of component generation:
+##  * "subclass mode" (use annotated class as a parent class)
+##  * "template mode" (use annotated class as a template)
+## This template file is used for both.
+##
+## Variable $component refers to a ComponentMeta object to process
+## Variable $utils refers to an instance of MyfacesUtils.
+##
+## When "template mode" is being used then variable $innersource
+## holds a String containing all the non-abstract functions defined
+## in the annotated class.
+##
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+package ${component.packageName};
+
+#if ($component.className.startsWith("javax.faces.component.html"))
+import javax.faces.el.ValueBinding;
+#end
+import javax.el.ValueExpression;
+import javax.faces.context.FacesContext;
+$utils.importTagClasses($component)
+
+#if ($component.isTemplate())
+#set ($generatedClassParent = $component.sourceClassParentClassName)
+#else
+#set ($generatedClassParent = $component.sourceClassName)
+#end
+// Generated from class ${component.sourceClassName}.
+//
+// WARNING: This file was automatically generated. Do not edit it directly,
+//          or you will lose your changes.
+public class ${utils.getClassFromFullClass($component.className)} extends $generatedClassParent
+#if ($component.implements)
+    implements $component.implements
+#end
+{
+#if ($component.serialuid)
+    private static final long serialVersionUID = ${component.serialuid}; 
+#end  
+
+    static public final String COMPONENT_FAMILY =
+        "$component.family";
+    static public final String COMPONENT_TYPE =
+        "$component.type";
+##if ($component.rendererType)
+##if (!($component.rendererType == ""))
+##    static public final String DEFAULT_RENDERER_TYPE = 
+##        "$component.rendererType";
+##end
+##end
+
+#if ($innersource)
+    //BEGIN CODE COPIED FROM $component.sourceClassName 
+$innersource
+    //END CODE COPIED FROM $component.sourceClassName
+#end
+
+    public ${utils.getClassFromFullClass($component.className)}()
+    {
+#if ($component.rendererType)
+#if ($component.rendererType == "")
+        setRendererType(null);
+#else
+        setRendererType("$component.rendererType");
+#end
+#else
+        setRendererType(null);
+#end
+    }
+
+## On myfaces 1.1 the family is inherited, so this could be commented
+## On other this should not be commented
+    @Override    
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
+
+## Iterate over full component property list
+#set ($propertyList = ${component.propertyList})
+
+## TODO: this condition should be checked for parent components
+## and csv implements
+#if ($component.implements)
+#if ($component.implements == "javax.faces.component.behavior.ClientBehaviorHolder")
+    static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
+        java.util.Collections.unmodifiableCollection(
+            java.util.Arrays.asList(
+#set ($commavar = "")
+#foreach( $property in $propertyList )
+#if ($property.clientEvent)
+#if ($property.clientEvent != "")
+            $commavar "$property.clientEvent"
+#set ($commavar = ",")            
+#end
+#end
+#end
+        ));
+
+    public java.util.Collection<String> getEventNames()
+    {
+        return CLIENT_EVENTS_LIST;
+    }
+
+    @Override
+    public void addClientBehavior(String eventName, javax.faces.component.behavior.ClientBehavior behavior)
+    {
+        super.addClientBehavior(eventName, behavior);
+        _CommonEventConstants.markEvent(this, eventName);
+    }
+#end
+#end
+#if ($component.defaultEventName)
+#if ($component.defaultEventName != "")
+
+    //ClientBehaviorHolder default: $component.defaultEventName
+    public String getDefaultEventName()
+    {
+        return "$component.defaultEventName";
+    }
+#end
+#end
+
+#set ($propertyList = ${component.propertyComponentList})
+    
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $utils.getClassFromFullClass($property.className))
+#if($utils.getDefaultValueField($property)) 
+#set ($defaultValue = $utils.getDefaultValueField($property))
+#else
+#set ($defaultValue = false)
+#end
+    // Property: $property.name
+#if ($property.isPartialStateHolder())
+#if ($property.isLiteralOnly() || $property.isTagExcluded() )
+    private $type $field #if($defaultValue) = $defaultValue;#{else};#{end}
+
+     
+#else
+    private $type $field;
+    
+#end
+
+    private boolean _$utils.getPrefixedPropertyName("isSet", $property.name)()
+    {
+        Boolean value = (Boolean) getStateHelper().get(PropertyKeys.${property.name}Set);
+        return value == null ? false : value;
+    }
+
+#if($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
+    private boolean ${field}Set;
+    
+#if ($property.isSetMethod())
+    $property.setMethodScope boolean $utils.getPrefixedPropertyName("isSet", $property.name)()
+    {
+        return ${field}Set;
+    }
+#end
+#end
+#if($property.isLocalMethod())
+#if("boolean" == $type)
+#set ($methodName = $utils.getPrefixedPropertyName("isLocal", $property.name))
+#else
+#set ($methodName = $utils.getPrefixedPropertyName("getLocal", $property.name))
+#end
+    final $property.localMethodScope $type ${methodName}()
+    {
+        return $field;
+    }
+     
+#end
+    public $type $utils.getMethodReaderFromProperty($property.name, $type)()
+    {
+#if ($property.isTagExcluded() || $property.isLiteralOnly())
+        return $field;
+#else
+#if ($utils.isPrimitiveClass($type))
+        if (${field}Set)
+#else
+        if ($field != null)
+#end
+        {
+            return $field;
+        }
+        ValueExpression vb = getValueExpression("$property.name");
+        if (vb != null)
+        {
+#if ($utils.isPrimitiveClass($type))
+            return ($utils.castIfNecessary($type) vb.getValue(getFacesContext().getELContext())).${type}Value();
+#else
+#set ($pritype = $utils.getPrimitiveType($property.className))
+#if ($utils.isPrimitiveClass($pritype))
+            Object value = vb == null ? null : vb.getValue(getFacesContext().getELContext());
+            if (!(value instanceof $type)){
+                value = ${type}.valueOf(value.toString());
+            }            
+            return $utils.castIfNecessary($type) value;
+#else
+            return $utils.castIfNecessary($type) vb.getValue(getFacesContext().getELContext());
+#end
+#end
+        }
+#if ($defaultValue)
+        return $defaultValue; 
+#elseif ($utils.isPrimitiveClass($type))
+        return $utils.primitiveDefaultValue($type);
+#else       
+        return null;
+#end
+#end
+    }
+
+    public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
+    {
+        this.$field = $utils.getVariableFromName($property.name);
+        if (initialStateMarked())
+        {
+            getStateHelper().put(PropertyKeys.${property.name}Set,Boolean.TRUE);
+        }
+#if ($utils.isPrimitiveClass($type) && !$property.isTagExcluded() )
+        this.${field}Set = true;        
+#end
+    }
+#else
+## StateHelper aware property
+#if ($property.name == "for")
+## To keep compatibility with RI, we should call it forVal
+#set ($field = "forVal")
+#elseif ($property.name == "public")
+## To keep compatibility with RI, we should call it publicVal
+#set ($field = "publicVal")
+#else
+#set ($field = $property.name)
+#end
+
+    public $type $utils.getMethodReaderFromProperty($property.name, $type)()
+    {
+#if ($property.isLiteralOnly())
+#if ($defaultValue)
+        Object value = getStateHelper().get(PropertyKeys.$field);
+        if (value != null)
+        {
+            return $utils.castIfNecessary($type) value;        
+        }
+        return $defaultValue;        
+#else
+        return $utils.castIfNecessary($type) getStateHelper().get(PropertyKeys.$field);        
+#end
+#else
+#if ($defaultValue)
+        return $utils.castIfNecessary($type) getStateHelper().eval(PropertyKeys.$field, $defaultValue);
+#else
+        return $utils.castIfNecessary($type) getStateHelper().eval(PropertyKeys.$field);
+#end
+#end
+    }
+    
+    public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
+    {
+        getStateHelper().put(PropertyKeys.$field, $utils.getVariableFromName($property.name) ); 
+#if ($property.name == "style" ||
+     $property.name == "styleClass" ||
+     $property.name == "dir" ||
+     $property.name == "lang" ||
+     $property.name == "title" ||
+     $property.name == "escape" ||
+     $property.name == "disabled" ||
+     $property.name == "enabled" ||
+     $property.name == "readonly" ||
+     $property.name == "accesskey" ||
+     $property.name == "alt" ||
+     $property.name == "onchange" ||
+     $property.name == "onselect" ||
+     $property.name == "onclick" ||
+     $property.name == "ondblclick" ||
+     $property.name == "onmousedown" ||
+     $property.name == "onmouseup" ||
+     $property.name == "onmouseover" ||
+     $property.name == "onmousemove" ||
+     $property.name == "onmouseout" ||
+     $property.name == "onkeypress" ||
+     $property.name == "onkeydown" ||
+     $property.name == "onkeyup" ||
+     $property.name == "onfocus" ||
+     $property.name == "onblur" ||
+     $property.name == "label" ||
+     $property.name == "charset" ||
+     $property.name == "coords" ||
+     $property.name == "hreflang" ||
+     $property.name == "rel" ||
+     $property.name == "rev" ||
+     $property.name == "shape" ||
+     $property.name == "target" ||
+     $property.name == "type" ||
+     $property.name == "tabindex" ||
+     $property.name == "align" ||
+     $property.name == "checked" ||
+     $property.name == "maxlength" ||
+     $property.name == "size" ||
+     $property.name == "role"
+      )
+#set($overrideSetValueExpression = true)
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.${property.name.toUpperCase()}_PROP);
+#end
+    }
+#end
+#end
+
+#if ($component.className.startsWith("javax.faces.component.html") && $overrideSetValueExpression)
+    public void setValueBinding(String name, ValueBinding binding)
+    {
+        super.setValueBinding(name, binding);
+        _CommonPropertyConstants.markProperty(this, name);
+    }
+
+    public void setValueExpression(String name, ValueExpression expression)
+    {
+        super.setValueExpression(name, expression);
+        _CommonPropertyConstants.markProperty(this, name);
+    }
+#end
+
+#if ($component.className.startsWith("javax.faces.component.html"))
+    protected enum PropertyKeys
+    {
+#else
+    enum PropertyKeys
+    {
+#end
+#set ($comma = "")
+#set ($addc = "false")
+#foreach( $property in $propertyList )
+#if ($property.name == "for")
+#set ($addc = "true")
+## To keep compatibility with RI, we should call it forVal
+#set ($field = "forVal")
+#elseif ($property.name == "public")
+#set ($addc = "true")
+## To keep compatibility with RI, we should call it publicVal
+#set ($field = "publicVal")
+#else
+#set ($field = $property.name)
+#end
+#set ($type = $utils.getClassFromFullClass($property.className))
+#if($utils.getDefaultValueField($property)) 
+#set ($defaultValue = $utils.getDefaultValueField($property))
+#else
+#set ($defaultValue = false)
+#end
+#if ($property.name == "for")
+        $comma $field("for")
+#elseif ($property.name == "public")
+        $comma $field("public")
+#else
+#if ($property.isPartialStateHolder())
+        $comma ${field}Set
+#else
+        $comma $field
+#end
+#end
+#set($comma = ",")
+#end
+#if ("true" == $addc)
+        ;
+        String c;
+        
+        PropertyKeys()
+        {
+        }
+        
+        //Constructor needed by "for" property
+        PropertyKeys(String c)
+        { 
+            this.c = c;
+        }
+        
+        public String toString()
+        {
+            return ((this.c != null) ? this.c : super.toString());
+        }
+#end
+    }
+
+#set ($primitiveCount = 1) ## $propertyList.size() + 1 
+#foreach( $property in $propertyList )
+#if ($property.isPartialStateHolder())
+#set ($primitiveCount = $primitiveCount + 1)
+#if($utils.isPrimitiveClass($property.className))
+#set ($primitiveCount = $primitiveCount + 1)
+#end
+#end
+#end
+## saveState and restoreState methods only has sense if we have properties
+## that does not use StateHelper class.
+#if ($primitiveCount > 1)
+
+    public void markInitialState()
+    {
+        super.markInitialState();
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#if ($property.isPartialStateHolder())        
+        if ($field != null && 
+            $field instanceof PartialStateHolder)
+        {
+            ((PartialStateHolder)$field).markInitialState();
+        }
+#end
+#end
+    }
+    
+    public void clearInitialState()
+    {
+        if (initialStateMarked())
+        {
+            super.clearInitialState();
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#if ($property.isPartialStateHolder())
+##          //Only has sense propagate this method if is initialStateMarked
+            if ($field != null && 
+                $field instanceof PartialStateHolder)
+            {
+                ((PartialStateHolder)$field).clearInitialState();
+            }
+#end
+#end
+        }
+    }
+
+    @Override
+    public Object saveState(FacesContext facesContext)
+    {
+        if (initialStateMarked())
+        {
+            boolean nullDelta = true;
+            Object parentSaved = super.saveState(facesContext);
+#set ($arrayIndex = 0)
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $property.className)
+#if ($property.isPartialStateHolder())
+#set ($arrayIndex = $arrayIndex + 1)
+            Object ${property.name}Saved = null;
+            if (!_$utils.getPrefixedPropertyName("isSet", $property.name)() &&
+                $field != null && $field instanceof PartialStateHolder)
+            {
+                //Delta
+                StateHolder holder = (StateHolder) $field;
+                if (!holder.isTransient())
+                {
+                    Object attachedState = holder.saveState(facesContext);
+                    if (attachedState != null)
+                    {
+                        nullDelta = false;
+                    }
+                    ${property.name}Saved = new _AttachedDeltaWrapper(${field}.getClass(),
+                        attachedState);
+                }
+            }
+            else if (_$utils.getPrefixedPropertyName("isSet", $property.name)() || $field != null )
+            {
+                //Full
+                ${property.name}Saved = saveAttachedState(facesContext,$field);
+                nullDelta = false;
+            }        
+## StateHelper Properties does not need save and restore
+#end
+#end
+            if (parentSaved == null && nullDelta)
+            {
+                //No values
+                return null;
+            }
+            
+            Object[] values = new Object[$primitiveCount];
+            values[0] = parentSaved;
+## Save full state
+#set ($arrayIndex = 0)
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $property.className)
+#if ($property.isPartialStateHolder())
+#set ($arrayIndex = $arrayIndex + 1)
+            values[$arrayIndex] = ${property.name}Saved;
+## StateHelper Properties does not need save and restore
+#end
+#end
+            return values;
+        }
+        else
+        {
+            Object[] values = new Object[$primitiveCount];
+            values[0] = super.saveState(facesContext);
+## Save full state
+#set ($arrayIndex = 0)
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $property.className)
+#if ($property.isPartialStateHolder())
+#set ($arrayIndex = $arrayIndex + 1)
+            values[$arrayIndex] = saveAttachedState(facesContext,$field);
+## StateHelper Properties does not need save and restore
+#end
+#end
+            return values;
+        }
+    }
+
+    @Override
+    public void restoreState(FacesContext facesContext, Object state)
+    {
+        if (state == null)
+        {
+            return;
+        }
+        
+        Object[] values = (Object[])state;
+        super.restoreState(facesContext,values[0]);
+#set ($arrayIndex = 0)
+#foreach( $property in $propertyList )
+#set ($field = $property.fieldName)
+#set ($type = $property.className)
+#if ($property.isPartialStateHolder())
+#set ($arrayIndex = $arrayIndex + 1)
+        if (values[$arrayIndex] instanceof _AttachedDeltaWrapper)
+        {
+            //Delta
+            ((StateHolder)$field).restoreState(facesContext, ((_AttachedDeltaWrapper) values[$arrayIndex]).getWrappedStateObject());
+        }
+        else
+        {
+            //Full
+            $field = $utils.castIfNecessary($type) restoreAttachedState(facesContext,values[$arrayIndex]);
+        }         
+#else
+## StateHelper Properties does not need save and restore
+#end
+#end
+    }
+#end
+}

@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: Hiba t\u00f6rt\u00e9nt a WAB telep\u00edt\u0151 inicializ\u00e1l\u00e1sakor.
+bundle.tracker.init.fail.explanation=A kiszolg\u00e1l\u00f3 nem tudta inicializ\u00e1lni a webalkalmaz\u00e1s k\u00f6teg (Web Application Bundle - WAB) telep\u00edt\u0151j\u00e9t, \u00edgy a webalkalmaz\u00e1s k\u00f6tegek nem lettek telep\u00edtve.
+bundle.tracker.init.fail.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail=CWWKZ0202E: A(z) {0} k\u00f6teg nem telep\u00edthet\u0151 a(z) {1} kontextusgy\u00f6k\u00e9rrel a webt\u00e1rol\u00f3ba.
+wab.install.fail.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a webalkalmaz\u00e1s k\u00f6teget (Web Application Bundle - WAB) a webt\u00e1rol\u00f3ba.
+wab.install.fail.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail.adapt=CWWKZ0203E: A(z) {0} k\u00f6teg nem telep\u00edthet\u0151 a(z) {1} kontextusgy\u00f6k\u00e9rrel a webt\u00e1rol\u00f3ba.
+wab.install.fail.adapt.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a webalkalmaz\u00e1s k\u00f6teget (Web Application Bundle - WAB) a webt\u00e1rol\u00f3ba.
+wab.install.fail.adapt.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail.overlay=CWWKZ0204E: A(z) {0} k\u00f6teg nem telep\u00edthet\u0151 a(z) {1} kontextusgy\u00f6k\u00e9rrel a webt\u00e1rol\u00f3ba.
+wab.install.fail.overlay.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a webalkalmaz\u00e1s k\u00f6teget (Web Application Bundle - WAB) a webt\u00e1rol\u00f3ba.
+wab.install.fail.overlay.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail.cache=CWWKZ0205E: A(z) {0} k\u00f6teg nem telep\u00edthet\u0151 a(z) {1} kontextusgy\u00f6k\u00e9rrel a webt\u00e1rol\u00f3ba.
+wab.install.fail.cache.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a webalkalmaz\u00e1s k\u00f6teget (Web Application Bundle - WAB) a webt\u00e1rol\u00f3ba.
+wab.install.fail.cache.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail.container=CWWKZ0206E: A(z) {0} k\u00f6teg nem telep\u00edthet\u0151 a(z) {1} kontextusgy\u00f6k\u00e9rrel a webt\u00e1rol\u00f3ba.
+wab.install.fail.container.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a webalkalmaz\u00e1s k\u00f6teget (Web Application Bundle - WAB) a webt\u00e1rol\u00f3ba.
+wab.install.fail.container.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail.wiring=CWWKZ0207E: A(z) {0} k\u00f6teg nem telep\u00edthet\u0151 a(z) {1} kontextusgy\u00f6k\u00e9rrel a webt\u00e1rol\u00f3ba.
+wab.install.fail.wiring.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a webalkalmaz\u00e1s k\u00f6teget (Web Application Bundle - WAB) a webt\u00e1rol\u00f3ba.
+wab.install.fail.wiring.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a napl\u00f3t \u00e9s az FFDC f\u00e1jlokat.
+
+wab.install.fail.clash=CWWKZ0208E: A(z) {0} k\u00f6teg {1} kontextusgy\u00f6k\u00e9rrel nem telep\u00edthet\u0151 a webes t\u00e1rol\u00f3ba, mert kontextusgy\u00f6kere ugyanaz, mint a k\u00f6vetkez\u0151 k\u00f6tegek\u00e9: {2}
+wab.install.fail.clash.explanation=Minden webalkalmaz\u00e1s k\u00f6teg (WAB) kontextusgy\u00f6ker\u00e9nek egyedinek kell lennie a webes t\u00e1rol\u00f3ban. A kiszolg\u00e1l\u00f3 nem tudja telep\u00edteni a WAB-ot a webes t\u00e1rol\u00f3ba, mert kontextusgy\u00f6kere megegyezik egy m\u00e1sik telep\u00edtett k\u00f6teg\u00e9vel.
+wab.install.fail.clash.useraction=Haszn\u00e1ljon m\u00e1sik kontextusgy\u00f6keret.

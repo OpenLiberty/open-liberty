@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.servlet.3.0; singleton:=true
+
+Export-Package: \
+    javax.servlet;thread-context=true;version="2.6.0";uses:="javax.servlet.annotation,javax.servlet.descriptor",\
+    javax.servlet.annotation;thread-context=true;version="2.6.0";uses:="javax.servlet",\
+    javax.servlet.descriptor;thread-context=true;version="2.6.0",\
+    javax.servlet.http;thread-context=true;version="2.6.0";uses:="javax.servlet",\
+    javax.servlet.resources;thread-context=true;version="2.6.0"
+
+Include-Resource: \
+  @${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0}!/META-INF/LICENSE, \
+  @${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0}!/META-INF/NOTICE, \
+  @${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0}!/javax/servlet/resources/**
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	org.apache.geronimo.specs.geronimo-servlet_3.0_spec;version=1.0

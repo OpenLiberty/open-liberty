@@ -1,0 +1,30 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jaxrs-2.0</feature>
+    <feature>mpRestClient-1.0</feature>
+    <feature>appSecurity-2.0</feature>
+  </featureManager>
+
+  <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
+  <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
+  <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+
+  <basicRegistry id="basic" realm="WebRealm">
+    <user name="user1" password="pass1"/>
+  </basicRegistry>
+
+  <application type="war" id="headerPropagationApp" name="headerPropagationApp" location="headerPropagationApp.war">
+    <application-bnd>
+      <security-role name="role1">
+        <user name="user1" />
+      </security-role>
+    </application-bnd>
+  </application>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <!--  Required to read the remote server's port system property -->
+  <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+
+</server>

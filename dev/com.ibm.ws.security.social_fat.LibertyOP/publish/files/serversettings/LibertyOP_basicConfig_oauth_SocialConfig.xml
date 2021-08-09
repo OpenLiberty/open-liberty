@@ -1,0 +1,1431 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<oauth2Login
+		id="oidcLogin1"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter1"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badClientId"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client09"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badClientId"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankClientId"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId=" "
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankClientId"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyClientId"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId=""
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyClientId"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badClientSecret"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="badSecret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badClientSecret"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankClientSecret"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret=" "
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankClientSecret"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyClientSecret"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret=""
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyClientSecret"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_XOR_Secret"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_xorSecret"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_bad_XOR_Secret"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}PT47DDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_bad_xorSecret"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_enabledTrue"
+		enabled="true"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_enabledTrue"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_enabledFalse"
+		enabled="false"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_enabledFalse"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badAuthFilterRef"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badAuthFilterRef"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodTrust"
+		sslRef="DefaultSSLSettings"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badTrust"
+		sslRef="BadTrustSSLSettings"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankTrust"
+		sslRef=" "
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyTrust"
+		sslRef=""
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badAuthEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorizeIt"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badAuthEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_reallyBadAuthEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="someString"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_reallyBadAuthEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankAuthEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint=" "
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankAuthEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyAuthEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint=""
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyAuthEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badTokenEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://somehost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badTokenEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankTokenEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint=" "
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankTokenEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyTokenEndpoint"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint=""
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyTokenEndpoint"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_tEAM_clientSecretBasic"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		tokenEndpointAuthMethod="client_secret_basic"
+		authFilterRef="authFilter_tEAM_clientSecretBasic"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_tEAM_clientSecretPost"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		tokenEndpointAuthMethod="client_secret_post"
+		authFilterRef="authFilter_tEAM_clientSecretPost"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_tEAM_clientSecretBad"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		tokenEndpointAuthMethod="client_secret_bad"
+		authFilterRef="authFilter_tEAM_clientSecretBad"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodUserApi"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodUserApi"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badUserApi"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/myinfo"
+		authFilterRef="authFilter_badUserApi"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankUserApi"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi=" "
+		authFilterRef="authFilter_blankUserApi"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyUserApi"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi=""
+		authFilterRef="authFilter_emptyUserApi"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_basicUserApiType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="basic"
+		authFilterRef="authFilter_basicUserApiType"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_introspectUserApiType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="introspect"
+		authFilterRef="authFilter_introspectUserApiType"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_kubeUserApiType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="kube"
+		authFilterRef="authFilter_kubeUserApiType"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodUserApiToken"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		userApiToken="noSuchThingAsAGoodOrBadValueWithLibertyOP"
+		authFilterRef="authFilter_good_userApiToken"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_badUserApiToken"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		userApiToken="noSuchThingAsAGoodOrBadValueWithLibertyOP"
+		authFilterRef="authFilter_bad_userApiToken"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_blankUserApiToken"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		userApiToken=" "
+		authFilterRef="authFilter_blank_userApiToken"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_emptyUserApiToken"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		userApiToken=""
+		authFilterRef="authFilter_empty_userApiToken"
+	>
+	</oauth2Login>
+				
+	<oauth2Login
+		id="oidcLogin_realmName"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		realmName="myLibertyOPRealm"
+		authFilterRef="authFilter_realmName"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankRealmName"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		realmName=" "
+		authFilterRef="authFilter_blankRealmName"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyRealmName"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		realmName=""
+		authFilterRef="authFilter_emptyRealmName"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_mapToUserRegistryFalse"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		mapToUserRegistry="false"
+		authFilterRef="authFilter_mapToUserRegistryFalse"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_mapToUserRegistryTrue"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		mapToUserRegistry="true"
+		authFilterRef="authFilter_mapToUserRegistryTrue"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodjwt_builder"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_good_jwt_builder"
+	>
+		<jwt builder="goodJwtBuilder" />
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankjwt_builder"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blank_jwt_builder"
+	>
+		<jwt builder=" " />
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyjwt_builder"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_empty_jwt_builder"
+	>
+		<jwt builder="" />
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_jwt_builder_HS256"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_jwt_builder_HS256"
+	>
+		<jwt builder="goodJwtBuilder_HS256" />
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodJwksUri"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client06"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodJwksUri"
+		jwksUri="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/jwk"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badJwksUri"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client06"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badJwksUri"
+		jwksUri="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/jwt"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_isClientSideRedirectSupported_true"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_isClientSideRedirectSupported_true"
+		isClientSideRedirectSupported="true"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_isClientSideRedirectSupported_false"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_isClientSideRedirectSupported_false"
+		isClientSideRedirectSupported="false"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badScope"
+		signatureAlgorithm="RS256"
+		scope="my dog has fleas"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badScope"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankScope"
+		signatureAlgorithm="RS256"
+		scope=" "
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankScope"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyScope"
+		signatureAlgorithm="RS256"
+		scope=""
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyScope"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badScope_limitedOPScope"
+		signatureAlgorithm="RS256"
+		scope="my dog has fleas"
+		userNameAttribute="sub"
+		clientId="client02"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badScope_limitedOPScope"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodUserNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodUserNameAttribute"
+		userNameAttribute="sub"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badUserNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badUserNameAttribute"
+		userNameAttribute="someBadName"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankUserNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankUserNameAttribute"
+		userNameAttribute=" "
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyUserNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyUserNameAttribute"
+		userNameAttribute=""
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodGroupNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodGroupNameAttribute"
+		groupNameAttribute="sub"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badGroupNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badGroupNameAttribute"
+		groupNameAttribute="someBadName"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankGroupNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankGroupNameAttribute"
+		groupNameAttribute=" "
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyGroupNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyGroupNameAttribute"
+		groupNameAttribute=""
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodRealmNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodRealmNameAttribute"
+		realmNameAttribute="sub"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badRealmNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badRealmNameAttribute"
+		realmNameAttribute="someBadName"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankRealmNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankRealmNameAttribute"
+		realmNameAttribute=" "
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyRealmNameAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyRealmNameAttribute"
+		realmNameAttribute=""
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodUserUniqueIdAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodUserUniqueIdAttribute"
+		userUniqueIdAttribute="sub"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badUserUniqueIdAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badUserUniqueIdAttribute"
+		userUniqueIdAttribute="someBadId"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankUserUniqueIdAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankUserUniqueIdAttribute"
+		userUniqueIdAttribute=" "
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyUserUniqueIdAttribute"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyUserUniqueIdAttribute"
+		userUniqueIdAttribute=""
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_goodRedirectToRPHostAndPort"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_goodRedirectToRPHostAndPort"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.HTTP_default.secure}"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badRedirectToRPHostAndPort"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_badRedirectToRPHostAndPort"
+		redirectToRPHostAndPort="https://myBogusMachine.austin.ibm.com:${bvt.prop.HTTP_default.secure}"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_blankRedirectToRPHostAndPort"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_blankRedirectToRPHostAndPort"
+		redirectToRPHostAndPort=" "
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_emptyRedirectToRPHostAndPort"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_emptyRedirectToRPHostAndPort"
+		redirectToRPHostAndPort=""
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_codeResponseType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		responseType="code"
+		authFilterRef="authFilter_codeResponseType"
+	>
+	</oauth2Login>
+		
+	<oauth2Login
+		id="oidcLogin_tokenResponseType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		responseType="token"
+		authFilterRef="authFilter_tokenResponseType"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_responseModeFormPost_codeResponseType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		responseType="code"
+		responseMode="form_post"
+		authFilterRef="authFilter_responseModeFormPost_codeResponseType"
+	>
+	</oauth2Login>
+		
+	<oauth2Login
+		id="oidcLogin_responseModeFormPost_tokenResponseType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		responseType="token"
+		responseMode="form_post"
+		authFilterRef="authFilter_responseModeFormPost_tokenResponseType"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_opMissingAuthCodeGrantType_codeResponseType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		responseType="code"
+		authFilterRef="authFilter_opMissingAuthCodeGrantType_codeResponseType"
+	>
+	</oauth2Login>
+	
+ 	<oauth2Login
+		id="oidcLogin_opMissingImplicitGrantType_tokenResponseType"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		responseType="token"
+		authFilterRef="authFilter_opMissingImplicitGrantType_tokenResponseType"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenRequiredTrue"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenRequiredTrue"
+		accessTokenRequired="true"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenRequiredTrue_withIntrospectRequiredAttrs"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_introstpect_accessTokenRequiredTrue"
+		accessTokenRequired="true"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenRequiredFalse"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenRequiredFalse"
+		accessTokenRequired="false"
+	>
+	</oauth2Login>
+	
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenSupportedTrue_optionalParmsOmitted"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenSupportedTrue_optionalParmsOmitted"
+		accessTokenSupported="true"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenSupportedTrue_optionalParmsOmitted_withIntrospectRequiredAttrs"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenSupportedTrue_introstpect_optionalParmsOmitted"
+		accessTokenSupported="true"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenSupportedTrue_optionalParmsIncluded"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenSupportedTrue_optionalParmsIncluded"
+		accessTokenSupported="true"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenSupportedFalse"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenSupportedFalse"
+		accessTokenSupported="false"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenRequiredTrue_accessTokenSupportedTrue"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenRequiredTrue_accessTokenSupportedTrue"
+		accessTokenRequired="true"
+		accessTokenSupported="true"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenHeaderNameBearer"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenHeaderNameBearer"
+		accessTokenRequired="true"
+ 		accessTokenHeaderName="Authorization"
+	>
+	</oauth2Login>
+	
+	<oauth2Login
+		id="oidcLogin_accessTokenHeaderNameXForwardedAccessToken"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenHeaderNameXForwardedAccessToken"
+		accessTokenRequired="true"
+		accessTokenHeaderName="X-Forwarded-Access-Token"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_accessTokenHeaderNameUserDefined"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		userApiType="${userApiType}"
+		authFilterRef="authFilter_accessTokenHeaderNameUserDefined"
+		accessTokenRequired="true"
+ 		accessTokenHeaderName="UserDefinedHeader"
+	>
+	</oauth2Login>	
+	
+</server>

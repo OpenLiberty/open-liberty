@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: Okre\u015blone po\u0142o\u017cenie jest nieosi\u0105galne. Nie jest ono elementem potomnym znanej lub skonfigurowanej \u015bcie\u017cki. \u015acie\u017cka: {0}.
+unreachableLocation.explanation=Platforma u\u017cywa \u015bcie\u017cek symbolicznych w celu udost\u0119pnienia podstawowych \
+zabezpiecze\u0144 przed swobodnym dost\u0119pem do systemu plik\u00f3w, je\u015bli us\u0142uga po\u0142o\u017cenia jest \
+u\u017cywana do rozstrzygania podanych \u015bcie\u017cek. \
+Plik README.TXT zawiera informacje o sposobie konfigurowania \u015bcie\u017cek \
+symbolicznych.
+unreachableLocation.useraction=Sprawd\u017a skonfigurowane \u015bcie\u017cki \
+w pliku bootstrap.properties i upewnij si\u0119, \u017ce skonfigurowana \u015bcie\u017cka jest \
+elementem potomnym istniej\u0105cych symboli lub jest powi\u0105zana z jawnie \
+zdefiniowanym symbolem.
+
+invalidResourceType=CWWKE0201E: Nie mo\u017cna utworzy\u0107 symbolu. \
+Okre\u015blone po\u0142o\u017cenie istnieje i powoduje konflikt z wymaganym typem: \
+{0}={1}.
+invalidResourceType.explanation=\u015acie\u017cka okre\u015blona dla symbolu \
+istnieje i jest zasobem innego typu ni\u017c okre\u015bla \u015bcie\u017cka (na przyk\u0142ad symbol opisuje \
+plik, lecz zas\u00f3b jest katalogiem).
+invalidResourceType.useraction=Sprawd\u017a, czy \u015bcie\u017cka jest poprawnie \
+okre\u015blona. \
+\u015acie\u017cki do katalog\u00f3w musz\u0105 by\u0107 zako\u0144czone znakiem /. \
+Upewnij si\u0119, \u017ce \u015bcie\u017cka odwo\u0142uje si\u0119 do nieistniej\u0105cego zasobu lub zasobu, \
+kt\u00f3ry istnieje i jest wymaganego typu.
+
+missingTmpDir=CWWKE0202E: Okre\u015blone po\u0142o\u017cenie katalogu \
+tymczasowego nie istnieje i nie mo\u017cna go utworzy\u0107: {0}.
+missingTmpDir.explanation=Katalog okre\u015blony jako \
+warto\u015b\u0107 java.io.tmpdir (przy u\u017cyciu w\u0142a\u015bciwo\u015bci systemowej lub zmiennej \
+\u015brodowiskowej specyficznej dla platformy) nie istnieje i nie mo\u017cna go utworzy\u0107.
+missingTmpDir.useraction=Upewnij si\u0119, \u017ce okre\u015blony katalog \
+istnieje i ma ustawione uprawnienia do odczytu i zapisu.
+
+relativeTmpDir=CWWKE0203I: Dla w\u0142a\u015bciwo\u015bci \
+java.io.tempdir okre\u015blono warto\u015b\u0107 b\u0119d\u0105c\u0105 \u015bcie\u017ck\u0105 wzgl\u0119dn\u0105. Rozstrzygni\u0119ta \u015bcie\u017cka to {0}.
+relativeTmpDir.explanation=Katalog okre\u015blony jako \
+warto\u015b\u0107 java.io.tmpdir (przy u\u017cyciu w\u0142a\u015bciwo\u015bci systemowej lub zmiennej \
+\u015brodowiskowej specyficznej dla platformy) jest wzgl\u0119dny i b\u0119dzie rozstrzygany \
+wzgl\u0119dem katalogu uruchomienia.
+relativeTmpDir.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+locationInitializationError=CWWKE0204E: Nie mo\u017cna zainicjowa\u0107 \
+us\u0142ugi po\u0142o\u017cenia platformy. Przyczyna: {0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: Struktura jest zamykana z powodu \
+poprzedniego b\u0142\u0119du inicjowania.
+frameworkShutdown.explanation=Struktura jest zamykana z powodu \
+poprzedniego b\u0142\u0119du, kt\u00f3ry wyst\u0105pi\u0142 podczas inicjowania.
+frameworkShutdown.useraction=Napraw b\u0142\u0105d i zrestartuj serwer.

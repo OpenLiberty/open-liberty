@@ -1,0 +1,5 @@
+<server description="Server for testing appConfig">
+        <featureManager>
+                <feature>mpConfig-1.4</feature>
+        </featureManager>
+</server>

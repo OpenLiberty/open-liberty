@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime WS MetadataExchange
+Bundle-Description: Apache CXF Runtime WS MetadataExchange, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.ws.mex.2.6.2
+Bundle-ActivationPolicy: lazy
+
+Export-Package: \
+ org.apache.cxf.*;version=2.6.2
+
+Import-Package: \
+ javax.xml.bind.*;version="[2.2,3)", \
+ javax.xml.ws.*;version="[2.2,3)", \
+ !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+ !org.apache.aries.*;version="[0.3,2)", \
+ !org.osgi.service.blueprint.*, \
+ org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ *
+
+DynamicImport-Package: org.apache.cxf.bus, \
+ org.apache.cxf.*
+
+Include-Resource:\
+ @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/cxf/**, \
+ @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/DEPENDENCIES, \
+ @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/LICENSE, \
+ @build/tmp/lib/cxf-rt-ws-mex-2.6.2.jar!/META-INF/NOTICE, \
+ build/tmp/bnd/cxf-rt-ws-mex-2.6.2
+
+-outputmask: com.ibm.ws.org.apache.cxf-rt-ws-mex.2.6.2.jar
+
+publish.wlp.jar.include: com.ibm.ws.org.apache.cxf-rt-ws-mex.2.6.2.jar
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Bundle-DocURL:
+Bundle-License:
+Implementation-Title:
+Implementation-Vendor:
+Implementation-Vendor-Id:
+Implementation-Version:
+Specification-Title:
+Specification-Vendor:
+Specification-Version:

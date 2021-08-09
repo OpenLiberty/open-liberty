@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=2.16.840.1.113730.3.1.241,ou=attributeTypes,cn=inetorgperson,ou=schema
+m-singlevalue: TRUE
+m-obsolete: FALSE
+m-description: RFC2798: preferred name to be used when displaying entries
+m-usage: USER_APPLICATIONS
+creatorsname: uid=admin,ou=system
+m-collective: FALSE
+m-oid: 2.16.840.1.113730.3.1.241
+m-substr: caseIgnoreSubstringsMatch
+m-nousermodification: FALSE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-name: displayName
+m-equality: caseIgnoreMatch

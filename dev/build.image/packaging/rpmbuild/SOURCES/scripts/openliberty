@@ -1,0 +1,64 @@
+#!/bin/sh -e
+
+##OBJECTIVE - used as server service script for users ##
+#
+# chkconfig: 345 85 15
+# description: A lightweight open framework for building fast and efficient cloud-native Java microservices.
+
+# load configuration variables
+iD=/opt/ol
+
+#set server params
+serverName=$2
+if [ -z $serverName ]; then
+    serverName=defaultServer
+fi                                                                                                                                                                                                                                                                                                                                                                                                     
+
+#set template params
+templateOpt=$3
+if [ -z $templateOpt ]; then
+    templateOpt=javaee8
+fi
+
+usage() {
+    echo "Usage: $0 {status|start|stop|restart} serverName"
+}
+
+start() {
+    $iD/bin/server start $serverName
+}
+
+status() {
+    $iD/bin/server status $serverName
+}
+
+stop() {
+    $iD/bin/server stop $serverName
+}
+
+create() {
+    su - openliberty -c '$0/bin/server create $1 --template=$2' -- $iD $serverName $templateOpt
+    su - openliberty -c 'printf "\nLOG_DIR=/var/log/openliberty/$0" >> /var/lib/openliberty/usr/servers/$0/server.env' -- $serverName
+}
+
+case "$1" in
+"start" )
+start
+;;
+"status" )
+status
+;;
+"stop" )
+stop
+;;
+"restart" )
+stop
+start
+;;
+"create")
+create
+;;
+* )
+usage
+;;
+esac

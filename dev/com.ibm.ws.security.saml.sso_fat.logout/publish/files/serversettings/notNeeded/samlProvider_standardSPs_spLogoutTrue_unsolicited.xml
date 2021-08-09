@@ -1,0 +1,215 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<samlWebSso20
+		id="sp1"
+		authFilterRef="myAuthFilter1"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spCookieName="WASSamlSP_sp1"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="sp2"
+		authFilterRef="myAuthFilter2"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA256"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spCookieName="WASSamlSP_sp2"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="sp13"
+		authFilterRef="myAuthFilter13"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		disableLtpaCookie="false"
+		spCookieName="WASSamlSP_sp13"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="sp1s2"
+		authFilterRef="myAuthFilter1s2"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spCookieName="WASSamlSP_sp1s2"
+		nameIDFormat="unspecified"
+		spLogout="true"
+		enabled="false"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="defaultSP"
+		authFilterRef="myAuthFilterDef"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="sp-dash"
+		authFilterRef="myAuthFilterDash"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData_missingLogout.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spCookieName="WASSamlSP_sp-dash"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="sp_underscore"
+		authFilterRef="myAuthFilterUnderscore"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spCookieName="WASSamlSP_sp_underscore"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+	
+	<samlWebSso20
+		id="spShortLifetime"
+		authFilterRef="myAuthFilterShortLifetime"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		spCookieName="WASSamlSP_spShortLifetime"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+	
+</server>    

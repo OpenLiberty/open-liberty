@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!-- Created by Metatype Generator (Sun Apr 02 13:36:42 EDT 2017) -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="com.ibm.ws.jca.resourceAdapter.properties.wasJms">
+  <Object ocdref="com.ibm.ws.jca.resourceAdapter.properties.wasJms" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.resourceAdapter.properties.wasJms" ibm:childAlias="properties.wasJms" ibm:parentPid="com.ibm.ws.jca.bundleResourceAdapter" ibm:extends="com.ibm.ws.jca.resourceAdapter.properties" name="internal" description="internal use only" >
+  <AD id="contextService.target" type="String" ibm:final="true" default="(service.pid=com.ibm.ws.context.manager)" name="internal" description="internal use only" />
+  <AD id="executorService.target" type="String" ibm:final="true" default="(service.pid=com.ibm.ws.threading)" name="internal" description="internal use only" />
+  <AD id="id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="reauthentication-support" type="Boolean" ibm:final="true" default="false" name="internal" description="internal use only" />
+  <AD id="resourceadapter-class" type="String" ibm:final="true" default="com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl" name="internal" description="internal use only" />
+  <AD id="resourceAdapterService.target" type="String" ibm:final="true" default="(id=wasJms)" name="internal" description="internal use only" />
+  <AD id="transaction-support" type="String" ibm:final="true" default="XATransaction" name="internal" description="internal use only" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsQueueConnectionFactory.properties.wasJms.javax.jms.QueueConnectionFactory">
+  <Object ocdref="com.ibm.ws.jca.jmsQueueConnectionFactory.properties.wasJms.javax.jms.QueueConnectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsQueueConnectionFactory.properties.wasJms.javax.jms.QueueConnectionFactory" ibm:extendsAlias="wasJms" ibm:extends="com.ibm.ws.jca.jmsQueueConnectionFactory.properties" name="%jms.qcf.properties.wasJms.QueueConnectionFactory" description="%jms.qcf.properties.wasJms.QueueConnectionFactory.desc" >
+  <AD id="busName" type="String" default="defaultBus" name="%jms.common.busName" description="%jms.common.busName.desc" />
+  <AD id="creates.objectClass" type="String" ibm:final="true" default="javax.jms.QueueConnectionFactory" cardinality="1" name="internal" description="internal use only" />
+  <AD id="managedconnectionfactory-class" type="String" ibm:final="true" default="com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl" name="internal" description="internal use only" />
+  <AD id="nonPersistentMapping" type="String" default="ExpressNonPersistent" name="%jms.common.nonPersistentMapping" description="%jms.common.nonPersistentMapping.desc" >
+   <Option value="BestEffortNonPersistent" label="BestEffortNonPersistent" />
+   <Option value="ExpressNonPersistent" label="ExpressNonPersistent" />
+   <Option value="ReliableNonPersistent" label="ReliableNonPersistent" />
+  </AD>
+  <AD id="password" type="String" ibm:type="password" required="false" name="%jms.common.password" description="%jms.common.password.desc" />
+  <AD id="persistentMapping" type="String" default="ReliablePersistent" name="%jms.common.persistentMapping" description="%jms.common.persistentMapping.desc" >
+   <Option value="ReliablePersistent" label="ReliablePersistent" />
+   <Option value="AssuredPersistent" label="AssuredPersistent" />
+  </AD>
+  <AD id="readAhead" type="String" default="Default" name="%jms.common.readAhead" description="%jms.common.readAhead.desc" >
+   <Option value="Default" label="Default" />
+   <Option value="AlwaysOn" label="AlwaysOn" />
+   <Option value="AlwaysOff" label="AlwaysOff" />
+  </AD>
+  <AD id="remoteServerAddress" type="String" required="false" name="%jms.common.remoteServerAddress" description="%jms.common.remoteServerAddress.desc" />
+  <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="targetTransportChain" type="String" required="false" name="%jms.common.targetTransportChain" description="%jms.common.targetTransportChain.desc" />
+  <AD id="temporaryQueueNamePrefix" type="String" default="temp" name="%jms.common.temporaryQueueNamePrefix" description="%jms.common.temporaryQueueNamePrefix.desc" />
+  <AD id="userName" type="String" required="false" name="%jms.common.userName" description="%jms.common.userName.desc" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsTopicConnectionFactory.properties.wasJms.javax.jms.TopicConnectionFactory">
+  <Object ocdref="com.ibm.ws.jca.jmsTopicConnectionFactory.properties.wasJms.javax.jms.TopicConnectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsTopicConnectionFactory.properties.wasJms.javax.jms.TopicConnectionFactory" ibm:extendsAlias="wasJms" ibm:extends="com.ibm.ws.jca.jmsTopicConnectionFactory.properties" name="%jms.tcf.properties.wasJms.TopicConnectionFactory" description="%jms.tcf.properties.wasJms.TopicConnectionFactory.desc" >
+  <AD id="busName" type="String" default="defaultBus" name="%jms.common.busName" description="%jms.common.busName.desc" />
+  <AD id="clientID" type="String" default="clientID" name="%jms.common.clientID" description="%jms.common.clientID.desc" />
+  <AD id="creates.objectClass" type="String" ibm:final="true" default="javax.jms.TopicConnectionFactory" cardinality="1" name="internal" description="internal use only" />
+  <AD id="durableSubscriptionHome" type="String" default="defaultME" name="%jms.common.durableSubscriptionHome" description="%jms.common.durableSubscriptionHome.desc" />
+  <AD id="managedconnectionfactory-class" type="String" ibm:final="true" default="com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedTopicConnectionFactoryImpl" name="internal" description="internal use only" />
+  <AD id="nonPersistentMapping" type="String" default="ExpressNonPersistent" name="%jms.common.nonPersistentMapping" description="%jms.common.nonPersistentMapping.desc" >
+   <Option value="BestEffortNonPersistent" label="BestEffortNonPersistent" />
+   <Option value="ExpressNonPersistent" label="ExpressNonPersistent" />
+   <Option value="ReliableNonPersistent" label="ReliableNonPersistent" />
+  </AD>
+  <AD id="password" type="String" ibm:type="password" required="false" name="%jms.common.password" description="%jms.common.password.desc" />
+  <AD id="persistentMapping" type="String" default="ReliablePersistent" name="%jms.common.persistentMapping" description="%jms.common.persistentMapping.desc" >
+   <Option value="ReliablePersistent" label="ReliablePersistent" />
+   <Option value="AssuredPersistent" label="AssuredPersistent" />
+  </AD>
+  <AD id="readAhead" type="String" default="Default" name="%jms.common.readAhead" description="%jms.common.readAhead.desc" >
+   <Option value="Default" label="Default" />
+   <Option value="AlwaysOn" label="AlwaysOn" />
+   <Option value="AlwaysOff" label="AlwaysOff" />
+  </AD>
+  <AD id="remoteServerAddress" type="String" required="false" name="%jms.common.remoteServerAddress" description="%jms.common.remoteServerAddress.desc" />
+  <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="shareDurableSubscription" type="String" required="false" name="%jms.common.shareDurableSubscription" description="%jms.common.shareDurableSubscription.desc" />
+  <AD id="targetTransportChain" type="String" required="false" name="%jms.common.targetTransportChain" description="%jms.common.targetTransportChain.desc" />
+  <AD id="temporaryTopicNamePrefix" type="String" default="temp" name="%jms.common.temporaryTopicNamePrefix" description="%jms.common.temporaryTopicNamePrefix.desc" />
+  <AD id="userName" type="String" required="false" name="%jms.common.userName" description="%jms.common.userName.desc" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsConnectionFactory.properties.wasJms.javax.jms.ConnectionFactory">
+  <Object ocdref="com.ibm.ws.jca.jmsConnectionFactory.properties.wasJms.javax.jms.ConnectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsConnectionFactory.properties.wasJms.javax.jms.ConnectionFactory" ibm:extendsAlias="wasJms" ibm:extends="com.ibm.ws.jca.jmsConnectionFactory.properties" name="%jms.cf.properties.wasJms.connectionfactory" description="%jms.cf.properties.wasJms.connectionfactory.desc" >
+  <AD id="busName" type="String" default="defaultBus" name="%jms.common.busName" description="%jms.common.busName.desc" />
+  <AD id="clientID" type="String" default="clientID" name="%jms.common.clientID" description="%jms.common.clientID.desc" />
+  <AD id="creates.objectClass" type="String" ibm:final="true" default="javax.jms.ConnectionFactory" cardinality="1" name="internal" description="internal use only" />
+  <AD id="durableSubscriptionHome" type="String" default="defaultME" name="%jms.common.durableSubscriptionHome" description="%jms.common.durableSubscriptionHome.desc" />
+  <AD id="managedconnectionfactory-class" type="String" ibm:final="true" default="com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl" name="internal" description="internal use only" />
+  <AD id="nonPersistentMapping" type="String" default="ExpressNonPersistent" name="%jms.common.nonPersistentMapping" description="%jms.common.nonPersistentMapping.desc" >
+   <Option value="BestEffortNonPersistent" label="BestEffortNonPersistent" />
+   <Option value="ExpressNonPersistent" label="ExpressNonPersistent" />
+   <Option value="ReliableNonPersistent" label="ReliableNonPersistent" />
+  </AD>
+  <AD id="password" type="String" ibm:type="password" required="false" name="%jms.common.password" description="%jms.common.password.desc" />
+  <AD id="persistentMapping" type="String" default="ReliablePersistent" name="%jms.common.persistentMapping" description="%jms.common.persistentMapping.desc" >
+   <Option value="ReliablePersistent" label="ReliablePersistent" />
+   <Option value="AssuredPersistent" label="AssuredPersistent" />
+  </AD>
+  <AD id="readAhead" type="String" default="Default" name="%jms.common.readAhead" description="%jms.common.readAhead.desc" >
+   <Option value="Default" label="Default" />
+   <Option value="AlwaysOn" label="AlwaysOn" />
+   <Option value="AlwaysOff" label="AlwaysOff" />
+  </AD>
+  <AD id="remoteServerAddress" type="String" default="" name="%jms.common.remoteServerAddress" description="%jms.common.remoteServerAddress.desc" />
+  <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="shareDurableSubscription" type="String" required="false" name="%jms.common.shareDurableSubscription" description="%jms.common.shareDurableSubscription.desc" />
+  <AD id="targetTransportChain" type="String" required="false" name="%jms.common.targetTransportChain" description="%jms.common.targetTransportChain.desc" />
+  <AD id="temporaryQueueNamePrefix" type="String" default="temp" name="%jms.common.temporaryQueueNamePrefix" description="%jms.common.temporaryQueueNamePrefix.desc" />
+  <AD id="temporaryTopicNamePrefix" type="String" default="temp" name="%jms.common.temporaryTopicNamePrefix" description="%jms.common.temporaryTopicNamePrefix.desc" />
+  <AD id="userName" type="String" required="false" name="%jms.common.userName" description="%jms.common.userName.desc" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsQueue.properties.wasJms.javax.jms.Queue-com.ibm.ws.sib.api.jms.impl.JmsQueueImpl">
+  <Object ocdref="com.ibm.ws.jca.jmsQueue.properties.wasJms.javax.jms.Queue-com.ibm.ws.sib.api.jms.impl.JmsQueueImpl" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsQueue.properties.wasJms.javax.jms.Queue-com.ibm.ws.sib.api.jms.impl.JmsQueueImpl" ibm:extendsAlias="wasJms" ibm:extends="com.ibm.ws.jca.jmsQueue.properties" name="%properties.wasJms.Queue" description="%properties.wasJms.Queue.desc" >
+  <AD id="adminobject-class" type="String" ibm:final="true" default="com.ibm.ws.sib.api.jms.impl.JmsQueueImpl" name="internal" description="internal use only" />
+  <AD id="creates.objectClass" type="String" ibm:final="true" default="javax.jms.Queue" cardinality="1" name="internal" description="internal use only" />
+  <AD id="deliveryMode" type="String" default="Application" name="%jms.common.deliverymode" description="%jms.common.deliverymode.desc" >
+   <Option value="Application" label="Application" />
+   <Option value="Persistent" label="Persistent" />
+   <Option value="NonPersistent" label="NonPersistent" />
+  </AD>
+  <AD id="priority" type="Integer" required="false" min="0" max="9" name="%jms.common.priority" description="%jms.common.priority.desc" />
+  <AD id="queueName" type="String" default="Default.Queue" name="%queue.QueueName" description="%queue.QueueName.desc" />
+  <AD id="readAhead" type="String" default="AsConnection" name="%jms.common.readAhead" description="%jms.common.readAhead.desc" >
+   <Option value="AsConnection" label="AsConnection" />
+   <Option value="AlwaysOn" label="AlwaysOn" />
+   <Option value="AlwaysOff" label="AlwaysOff" />
+  </AD>
+  <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="timeToLive" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsTopic.properties.wasJms.javax.jms.Topic-com.ibm.ws.sib.api.jms.impl.JmsTopicImpl">
+  <Object ocdref="com.ibm.ws.jca.jmsTopic.properties.wasJms.javax.jms.Topic-com.ibm.ws.sib.api.jms.impl.JmsTopicImpl" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsTopic.properties.wasJms.javax.jms.Topic-com.ibm.ws.sib.api.jms.impl.JmsTopicImpl" ibm:extendsAlias="wasJms" ibm:extends="com.ibm.ws.jca.jmsTopic.properties" name="%properties.wasJms.Topic" description="%properties.wasJms.Topic.desc" >
+  <AD id="adminobject-class" type="String" ibm:final="true" default="com.ibm.ws.sib.api.jms.impl.JmsTopicImpl" name="internal" description="internal use only" />
+  <AD id="creates.objectClass" type="String" ibm:final="true" default="javax.jms.Topic" cardinality="1" name="internal" description="internal use only" />
+  <AD id="deliveryMode" type="String" default="Application" name="%jms.common.deliverymode" description="%jms.common.deliverymode.desc" >
+   <Option value="Application" label="Application" />
+   <Option value="Persistent" label="Persistent" />
+   <Option value="NonPersistent" label="NonPersistent" />
+  </AD>
+  <AD id="priority" type="Integer" required="false" min="0" max="9" name="%jms.common.priority" description="%jms.common.priority.desc" />
+  <AD id="readAhead" type="String" default="AsConnection" name="%jms.common.readAhead" description="%jms.common.readAhead.desc" >
+   <Option value="AsConnection" label="AsConnection" />
+   <Option value="AlwaysOn" label="AlwaysOn" />
+   <Option value="AlwaysOff" label="AlwaysOff" />
+  </AD>
+  <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="timeToLive" type="String" ibm:type="duration(s)" default="0s" min="0" name="%jms.common.timetolive" description="%jms.common.timetolive.desc" />
+  <AD id="topicName" type="String" default="Default.Topic" name="%topic.TopicName" description="%topic.TopicName.desc" />
+  <AD id="topicSpace" type="String" default="Default.Topic.Space" name="%topic.TopicSpace" description="%topic.TopicSpace.desc" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsActivationSpec.properties.wasJms.javax.jms.MessageListener">
+  <Object ocdref="com.ibm.ws.jca.jmsActivationSpec.properties.wasJms.javax.jms.MessageListener" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsActivationSpec.properties.wasJms.javax.jms.MessageListener" ibm:extendsAlias="wasJms" ibm:extends="com.ibm.ws.jca.jmsActivationSpec.properties" name="%jms.as.properties" description="%jms.as.properties.desc" >
+  <AD id="acknowledgeMode" type="String" default="Auto-acknowledge" name="%jms.as.acknowledgeMode" description="%jms.as.acknowledgeMode.desc" >
+   <Option value="Auto-acknowledge" label="Auto-acknowledge" />
+   <Option value="Dups-ok-acknowledge" label="Dups-ok-acknowledge" />
+  </AD>
+  <AD id="activationspec-class" type="String" ibm:final="true" default="com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl" name="internal" description="internal use only" />
+  <AD id="busName" type="String" default="defaultBus" name="%jms.common.busName" description="%jms.common.busName.desc" />
+  <AD id="clientId" type="String" required="false" name="%jms.common.clientID" description="%jms.common.clientID.desc" />
+  <AD id="connectionFactoryLookup" type="String" required="false" name="%jms.as.connectionFactoryLookup" description="%jms.as.connectionFactoryLookup.desc" />
+  <AD id="destination" type="String" required="false" name="%jms.as.destinationref" description="%jms.as.destinationref.desc" />
+  <AD id="destinationLookup" type="String" required="false" name="%jms.as.destinationLookup" description="%jms.as.destinationLookup.desc" />
+  <AD id="destinationRef" type="String" ibm:type="pid" required="false" ibm:reference="com.ibm.ws.jca.adminObject.supertype" cardinality="0" name="%jms.as.destinationref" description="%jms.as.destinationref.desc" />
+  <AD id="destinationType" type="String" default="javax.jms.Queue" name="%jms.as.destinationType" description="%jms.as.destinationType.desc" >
+   <Option value="javax.jms.Queue" label="javax.jms.Queue" />
+   <Option value="javax.jms.Topic" label="javax.jms.Topic" />
+  </AD>
+  <AD id="maxBatchSize" type="Integer" required="false" min="1" max="2147483647" name="%jms.as.maxBatchSize" description="%jms.as.maxBatchSize.desc" />
+  <AD id="maxConcurrency" type="Integer" default="5" min="1" max="2147483647" name="%jms.as.maxConcurrency" description="%jms.as.maxConcurrency.desc" />
+  <AD id="messageSelector" type="String" required="false" name="%jms.as.messageSelector" description="%jms.as.messageSelector.desc" />
+  <AD id="readAhead" type="String" default="Default" name="%jms.common.readAhead" description="%jms.common.readAhead.desc" >
+   <Option value="Default" label="Default" />
+   <Option value="AlwaysOn" label="AlwaysOn" />
+   <Option value="AlwaysOff" label="AlwaysOff" />
+  </AD>
+  <AD id="remoteServerAddress" type="String" required="false" name="%jms.common.remoteServerAddress" description="%jms.common.remoteServerAddress.desc" />
+  <AD id="required-config-property" type="String" ibm:final="true" default="destination,destinationType" cardinality="10000" name="internal" description="internal use only" />
+  <AD id="resourceAdapterConfig.id" type="String" ibm:final="true" default="wasJms" name="internal" description="internal use only" />
+  <AD id="retryInterval" type="String" ibm:type="duration(s)" default="30s" min="1" name="%jms.as.retryInterval" description="%jms.as.retryInterval.desc" />
+  <AD id="shareDurableSubscription" type="String" required="false" name="%jms.common.shareDurableSubscription" description="%jms.common.shareDurableSubscription.desc" />
+  <AD id="subscriptionDurability" type="String" default="NonDurable" name="%jms.as.subscriptionDurability" description="%jms.as.subscriptionDurability.desc" >
+   <Option value="NonDurable" label="NonDurable" />
+   <Option value="NonDurableShared" label="NonDurableShared" />
+   <Option value="Durable" label="Durable" />
+   <Option value="DurableShared" label="DurableShared" />
+  </AD>
+  <AD id="subscriptionName" type="String" required="false" name="%jms.as.subscriptionName" description="%jms.as.subscriptionName.desc" />
+  <AD id="targetTransportChain" type="String" default="InboundBasicMessaging" name="%jms.common.targetTransportChain" description="%jms.common.targetTransportChain.desc" >
+   <Option value="InboundBasicMessaging" label="InboundBasicMessaging" />
+   <Option value="InboundSecureMessaging" label="InboundSecureMessaging" />
+  </AD>
+ </OCD>
+
+</metatype:MetaData>

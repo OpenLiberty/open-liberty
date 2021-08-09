@@ -1,0 +1,67 @@
+<server>
+
+  <featureManager>                                                   
+    <feature>jsp-2.3</feature>                                     
+    <feature>wasJmsServer-1.0</feature>                    
+    <feature>wasJmsClient-2.0</feature>                    
+    <feature>jmsMdb-3.2</feature>
+    <feature>testjmsinternals-1.0</feature>
+    <feature>timedexit-1.0</feature>                           
+  </featureManager>
+
+  <include optional="true" location="../fatTestPorts.xml"/>
+
+  <variable name="onError" value="FAIL"/>
+
+  <messagingEngine id="defaultME">
+	<queue id="Queue1" maxRedeliveryCount="2"/>
+	<queue id="Queue2" maxRedeliveryCount="2"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+  </messagingEngine>
+   
+ <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+   <properties.wasJms queueName="newQueue"/>
+ </jmsQueue> 
+          
+ <jmsQueue id="eis/queue1" jndiName="eis/queue1">
+   <properties.wasJms queueName="QUEUE1"/>
+ </jmsQueue>
+    
+ <jmsQueue id="eis/queue2" jndiName="eis/queue2">
+   <properties.wasJms queueName="Queue2"/>
+ </jmsQueue>
+    
+ <jmsQueue id="queue/test" jndiName="queue/test">
+   <properties.wasJms queueName="Queue10"/>
+ </jmsQueue>
+    
+ <jmsQueue id="Queue11/test" jndiName="Queue11/test">
+   <properties.wasJms queueName="Queue11"/>
+ </jmsQueue>
+     
+ <connectionManager id="ConMgr5" maxPoolSize="2"/>
+    
+ <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">                    
+   <properties.wasJms
+     remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"           
+     targetTransportChain="InboundBasicMessaging"/>                         
+ </jmsQueueConnectionFactory>
+    
+ <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+   <properties.wasJms userName="CF1USER" password="junkpassword"/> 
+ </jmsQueueConnectionFactory>
+     
+ <jmsActivationSpec id="jmsapp/jmsmdb/AckModeMessageDrivenBean">
+   <properties.wasJms
+     destinationRef="eis/queue1"
+     destinationType="javax.jms.Queue"
+	 remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"
+	 targetTransportChain="InboundBasicMessaging"
+     userName="user1"
+     password="user1pwd"
+     acknowledgeMode="Dups-ok-acknowledge"/> 
+ </jmsActivationSpec>
+    
+ <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/>
+
+</server>

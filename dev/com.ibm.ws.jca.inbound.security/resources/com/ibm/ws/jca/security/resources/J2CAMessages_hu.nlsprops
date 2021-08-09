@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: A WorkManager nem tudta felt\u00f6lteni a v\u00e9grehajt\u00e1s t\u00e1rgymez\u0151j\u00e9t a munkap\u00e9ld\u00e1ny biztons\u00e1gi k\u00f6rnyezet\u00e9nek l\u00e9trehoz\u00e1s\u00e1hoz sz\u00fcks\u00e9ges h\u00edv\u00f3azonos\u00edt\u00f3kkal vagy hiteles\u00edt\u0151 adatokkal.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 \u00e1ltal k\u00fcld\u00f6tt JASPIC-visszah\u00edv\u00e1sok feldolgoz\u00e1sa sor\u00e1n bek\u00f6vetkez\u0151 kiv\u00e9tel miatt a WorkManager JASPIC visszah\u00edv\u00e1s-kezel\u0151je nem tudta bet\u00f6lteni a h\u00edv\u00f3azonos\u00edt\u00f3kat vagy az egy\u00e9ni hiteles\u00edt\u0151 adatokat a v\u00e9grehajt\u00e1s t\u00e1rgymez\u0151j\u00e9be.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=A hiba ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz ellen\u0151rizze az FFDC \u00e9s a kiszolg\u00e1l\u00f3 napl\u00f3iban a k\u00f6zvetlen\u00fcl a J2CA0672E \u00fczenet megjelen\u00e9se el\u0151tti napl\u00f3bejegyz\u00e9seket. Ha az okot az \u00fczenet megjelen\u00e9se el\u0151tti napl\u00f3bejegyz\u00e9sekb\u0151l nem lehet meghat\u00e1rozni, gy\u0171jtse \u00f6ssze a diagnosztikai adatokat, \u00e9s keresse fel az IBM t\u00e1mogat\u00f3 webhely\u00e9t tov\u00e1bbi tudnival\u00f3k\u00e9rt.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: A Munkakezel\u0151 \u00e1ltal megadott v\u00e9grehajt\u00e1si t\u00e1rgy nem egyezik a(z) {0} \u00e1ltal k\u00fcld\u00f6tt t\u00e1rggyal.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=A v\u00e9grehajt\u00e1si t\u00e1rgynak a Munkakezel\u0151 \u00e1ltal a munkap\u00e9ld\u00e1ny biztons\u00e1gi k\u00f6rnyezet\u00e9nek l\u00e9trehoz\u00e1s\u00e1hoz megadott p\u00e9ld\u00e1nya nem azonos a megfelel\u0151 visszah\u00edv\u00e1st\u00f3l kapott p\u00e9ld\u00e1nnyal. A WorkManager figyelmen k\u00edv\u00fcl hagyta a visszah\u00edv\u00e1st\u00f3l kapott t\u00e1rgyat, \u00e9s a megadott p\u00e9ld\u00e1nyt felhaszn\u00e1lva folytatta a biztons\u00e1gi k\u00f6rnyezet l\u00e9trehoz\u00e1s\u00e1t.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=K\u00e9rje meg az er\u0151forr\u00e1s-illeszt\u0151 gy\u00e1rt\u00f3j\u00e1t, hogy m\u00f3dos\u00edtsa a JASPIC visszah\u00edv\u00e1s\u00e1nak getSubject() m\u00f3dszer\u00e9t \u00fagy, hogy a setupSecurityContext m\u00f3dszert megh\u00edvva adja vissza a SecurityContext-p\u00e9ld\u00e1ny r\u00e9sz\u00e9re megadott v\u00e9grehajt\u00e1si t\u00e1rgyat.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: A WorkManager JASPIC visszah\u00edv\u00e1s-kezel\u0151je a biztons\u00e1gi k\u00f6rnyezet \u00e1ltal biztos\u00edtott visszah\u00edv\u00e1sok kezel\u00e9se k\u00f6zben a(z) {0} kiv\u00e9tel miatt nem tudta elv\u00e9gezni a feladatot. A kiv\u00e9tel\u00fczenet: {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=A WorkManager az \u00e1tvitt biztons\u00e1gi k\u00f6rnyezeten bel\u00fcli er\u0151forr\u00e1s-illeszt\u0151 \u00e1ltal biztos\u00edtott JASPIC-visszah\u00edv\u00e1sok kezel\u00e9se k\u00f6zben kiv\u00e9telt tal\u00e1lt. A kiv\u00e9tel bek\u00f6vetkez\u00e9s\u00e9nek oka a k\u00f6vetkez\u0151k valamelyike lehet: 1) Valamelyik CallerPrincipalCallback a felhaszn\u00e1l\u00f3-nyilv\u00e1ntart\u00e1sban nem szerepl\u0151 felhaszn\u00e1l\u00f3nevet tartalmaz\u00f3 azonos\u00edt\u00f3t adott meg. 2) Valamelyik PasswordValidationCallback \u00e9rv\u00e9nytelen felhaszn\u00e1l\u00f3nevet vagy jelsz\u00f3t adott meg. 3) Egy CallerPrincipalCallback \u00e9s egy PasswordValidationCallback elt\u00e9r\u0151 felhaszn\u00e1l\u00f3nevet adott meg. 4) Az er\u0151forr\u00e1s-illeszt\u0151 olyan visszah\u00edv\u00e1st adott meg, amelyet az alkalmaz\u00e1skiszolg\u00e1l\u00f3 jelenleg nem t\u00e1mogat. 5) Az er\u0151forr\u00e1s-illeszt\u0151 egyn\u00e9l t\u00f6bb CallerPrincipalCallback visszah\u00edv\u00e1st adott meg.  6) A Munkakezel\u0151 nem v\u00e1rt hib\u00e1ba \u00fctk\u00f6z\u00f6tt.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Ha a kiv\u00e9telre figyelmeztet\u0151 \u00fczenethez hibak\u00f3d is tartozik, ellen\u0151rizze, milyen m\u0171veletet kell v\u00e9grehajtania a felhaszn\u00e1l\u00f3nak az adott hibak\u00f3d eset\u00e9n. Ha a kiv\u00e9tel egy UnsupportedCallbackException, k\u00e9rje az er\u0151forr\u00e1s-illeszt\u0151 gy\u00e1rt\u00f3j\u00e1nak seg\u00edts\u00e9g\u00e9t, mert a WorkManager JASPIC visszah\u00edv\u00e1s-kezel\u0151je jelenleg nem t\u00e1mogatja az adott visszah\u00edv\u00e1st. Ha a kiv\u00e9tel nem az eml\u00edtett probl\u00e9m\u00e1k valamelyike miatt k\u00f6vetkezett be, gy\u0171jtse \u00f6ssze a diagnosztikai adatokat, \u00e9s tov\u00e1bbi tudnival\u00f3k\u00e9rt keresse fel az IBM t\u00e1mogat\u00f3 webhely\u00e9t.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: A(z) {0} csoport nem az alkalmaz\u00e1shoz kapcsol\u00f3d\u00f3 tartom\u00e1nyhoz tartozik.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=A munkap\u00e9ld\u00e1nnyal egy\u00fctt \u00e1tvitt biztons\u00e1gi k\u00f6rnyezet olyan csoportnevet adott meg, amely az alkalmaz\u00e1shoz t\u00e1rs\u00edtott biztons\u00e1gi tartom\u00e1ny tartom\u00e1ny\u00e1ban (felhaszn\u00e1l\u00f3-nyilv\u00e1ntart\u00e1s) nem szerepel.  A Munkakezel\u0151 mindig \u00e9rv\u00e9nytelen csoportnevet kapott egy JASPIC GroupPrincipalCallback-p\u00e9ld\u00e1nyt\u00f3l, amikor csak az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edtotta a p\u00e9ld\u00e1nyt.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Ellen\u0151rizze, hogy a csoport ugyanabb\u00f3l a tartom\u00e1nyb\u00f3l van-e. Ehhez ellen\u0151rizze, hogy a csoport l\u00e9tezik-e az adott tartom\u00e1ny felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s\u00e1ban. Ha a csoport m\u00e1s tartom\u00e1nyba tartozik, k\u00e9rje az er\u0151forr\u00e1s-illeszt\u0151 gy\u00e1rt\u00f3j\u00e1nak seg\u00edts\u00e9g\u00e9t, mert a WorkManager nem t\u00e1mogatja a m\u00e1s tartom\u00e1nyokban l\u00e9v\u0151 csoportokat.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Nem tal\u00e1lhat\u00f3 a(z) {0} egyedi azonos\u00edt\u00f3hoz tartoz\u00f3 csoport.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=A munkap\u00e9ld\u00e1nnyal egy\u00fctt \u00e1tvitt biztons\u00e1gi k\u00f6rnyezet olyan felhaszn\u00e1l\u00f3nevet adott meg, amely nem tartozik a felhaszn\u00e1l\u00f3-nyilv\u00e1ntart\u00e1sban meghat\u00e1rozott egyik csoporthoz sem.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Semmit sem kell tennie.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: A PasswordValidationCallback \u00e1ltal megadott {0} felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 \u00e9rv\u00e9nytelen.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=A felhaszn\u00e1l\u00f3n\u00e9v \u00e9s a jelsz\u00f3 nem szerepel az alkalmaz\u00e1shoz t\u00e1rs\u00edtott biztons\u00e1gi tartom\u00e1nyhoz be\u00e1ll\u00edtott tartom\u00e1ny felhaszn\u00e1l\u00f3-nyilv\u00e1ntart\u00e1s\u00e1ban.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=\u00c1ll\u00edtsa be az er\u0151forr\u00e1s-illeszt\u0151t \u00e9s a v\u00e1llalat inform\u00e1ci\u00f3s rendszer\u00e9t, hogy \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t haszn\u00e1ljon. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Nem siker\u00fclt \u00e9rv\u00e9nyes\u00edteni a PasswordValidationCallback \u00e1ltal megadott {0} felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=A WorkManager eszk\u00f6znek nem siker\u00fclt \u00e9rv\u00e9nyes\u00edteni a PasswordValidationCallback m\u00f3dszer \u00e1ltal megadott felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t egy CustomRegistryException kiv\u00e9tel miatt. A kiv\u00e9telt egy \u00e9rv\u00e9nytelen jelsz\u00f3 vagy az adott alkalmaz\u00e1s tartom\u00e1ny\u00e1ba tartoz\u00f3 felhaszn\u00e1l\u00f3-nyilv\u00e1ntart\u00e1s hib\u00e1ja okozta.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=Ha a CustomRegistryException kiv\u00e9tel oka az \u00e9rv\u00e9nytelen jelsz\u00f3, \u00e1ll\u00edtsa be az er\u0151forr\u00e1s-illeszt\u0151t vagy a v\u00e1llalat inform\u00e1ci\u00f3s rendszer\u00e9t, hogy \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3n\u00e9v-jelsz\u00f3 p\u00e1rost haszn\u00e1ljon. Egy\u00e9b esetben h\u00e1r\u00edtsa el a felhaszn\u00e1l\u00f3-nyilv\u00e1ntart\u00e1s hib\u00e1j\u00e1t.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: A PasswordValidationCallback \u00e1ltal megadott {0} \u00e9s a CallerPrincipalCallback \u00e1ltal megadott {1} felhaszn\u00e1l\u00f3n\u00e9v nem egyezik.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=A PasswordValidationCallback \u00e9s a CallerPrincipalCallback \u00e1ltal megadott felhaszn\u00e1l\u00f3n\u00e9vnek egyeznie kell. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Az er\u0151forr\u00e1s-illeszt\u0151 \u00e9s a rendszergazda seg\u00edts\u00e9g\u00e9vel ellen\u0151rizze, hogy az er\u0151forr\u00e1s-illeszt\u0151 \u00fagy van-e megtervezve \u00e9s be\u00e1ll\u00edtva, hogy ezen k\u00e9t visszah\u00edv\u00e1sra ugyanazt a felhaszn\u00e1l\u00f3nevet adja vissza.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: A WorkManager nem tudta t\u00e1rs\u00edtani a biztos\u00edtott SecurityContext k\u00f6rnyezetet a munkap\u00e9ld\u00e1nyhoz.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=A Munkakezel\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt, mik\u00f6zben megpr\u00f3b\u00e1lta l\u00e9trehozni \u00e9s be\u00e1ll\u00edtani a bej\u00f6v\u0151 munkaig\u00e9nyl\u00e9s biztons\u00e1gi k\u00f6rnyezet\u00e9t. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=A hiba ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz ellen\u0151rizze az FFDC \u00e9s a kiszolg\u00e1l\u00f3 napl\u00f3iban a J2CA0668E \u00e9s a J2CA0669E \u00fczenethez tartoz\u00f3 napl\u00f3bejegyz\u00e9seket.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: A(z) {0} met\u00f3dus {1} kiv\u00e9telt \u00e9szlelt.
+METHOD_FAILED_J2CA0132.explanation=A met\u00f3dus elfogott egy kiv\u00e9telt, ami nagy val\u00f3sz\u00edn\u0171s\u00e9ggel bels\u0151 hiba.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

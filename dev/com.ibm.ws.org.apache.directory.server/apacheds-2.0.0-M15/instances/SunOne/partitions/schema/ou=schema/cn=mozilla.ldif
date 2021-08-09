@@ -1,0 +1,9 @@
+version: 1
+dn: cn=mozilla,ou=schema
+cn: mozilla
+m-disabled: TRUE
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+creatorsname: uid=admin,ou=system

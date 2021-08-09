@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs.2.0.server/resources/com/ibm/ws/jaxrs20/server/internal/resources/JaxRsWebServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS WebContainer Code
+#RANGE 0100 - 0199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+warn.provider.no.public.ctor=CWWKW0100W: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc758 JAX-RS \uc81c\uacf5\uc790 \ud074\ub798\uc2a4\uc778 {0}\uc5d0 \uacf5\uc6a9 \uc0dd\uc131\uc790\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. \uc11c\ubc84\uac00 \uc774 \uc81c\uacf5\uc790\ub97c \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+warn.provider.no.public.ctor.explanation=JAX-RS \uc2a4\ud399\uc758 \uacbd\uc6b0, \uc81c\uacf5\uc790 \ud074\ub798\uc2a4\uac00 \ud638\ucd9c\ud560 JAX-RS \ucee8\ud14c\uc774\ub108 \uad6c\ud604\uc5d0 \ub300\ud55c \uacf5\uc6a9 \uc0dd\uc131\uc790\ub97c \ud558\ub098 \uc774\uc0c1 \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4. \uc9c0\uc815\ub41c \uc81c\uacf5\uc790 \ud074\ub798\uc2a4\uac00 \uacf5\uc6a9 \uc0dd\uc131\uc790\ub97c \ud3ec\ud568\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc11c\ubc84\uac00 \uc774\ub97c \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+warn.provider.no.public.ctor.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc774 \uc81c\uacf5\uc790\uac00 \ud544\uc694\ud55c \uacbd\uc6b0, \uc774 \ud074\ub798\uc2a4\uac00 \ud558\ub098 \uc774\uc0c1\uc758 \uacf5\uc6a9 \uc0dd\uc131\uc790\ub97c \ud3ec\ud568\ud558\ub3c4\ub85d \uc218\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 JAX-RS 2.0(JSR 339) \uc2a4\ud399\uc758 4.1.2\uc808\uc744 \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+warn.servlet.specified.without.application=CWWKW0101W: {0} \ubaa8\ub4c8\uc758 web.xml\uc740 \uc774\ub984\uc774 {1}\uc774\uace0 \ud074\ub798\uc2a4\uac00 {2}\uc778 \uc11c\ube14\ub9bf\uc744 \uc9c0\uc815\ud558\uc9c0\ub9cc \ud544\uc218 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucd08\uae30\ud654 \ub9e4\uac1c\ubcc0\uc218\ub294 \uc9c0\uc815\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+warn.servlet.specified.without.application.explanation=web.xml\uc740 JAX-RS \uc11c\ube14\ub9bf \uc120\uc5b8 \uc2dc \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucd08\uae30\ud654 \ub9e4\uac1c\ubcc0\uc218 \uc694\uc18c\ub97c \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 Knowledge Center\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.without.application.useraction=\ud544\uc218 \ucd08\uae30\ud654 \ub9e4\uac1c\ubcc0\uc218 \uc694\uc18c\ub97c \ud3ec\ud568\ud558\uc5ec \uc774 \ubaa8\ub4c8\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud074\ub798\uc2a4\ub97c \uc9c0\uc815\ud558\ub3c4\ub85d web.xml\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+warn.servlet.specified.with.invalid.application=CWWKW0102W: {0} \ubaa8\ub4c8\uc758 web.xml\uc740 \ucd08\uae30\ud654 \ub9e4\uac1c\ubcc0\uc218\uc5d0\uc11c \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud074\ub798\uc2a4\ub97c \uc120\uc5b8\ud558\ub294 \uc774\ub984\uc774 {1}\uc778 \uc11c\ube14\ub9bf\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4. {2} \ud074\ub798\uc2a4\ub294 javax.ws.rs.Application\uc758 \uc11c\ube0c\ud074\ub798\uc2a4\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+warn.servlet.specified.with.invalid.application.explanation=web.xml\uc740 "javax.ws.rs.Application"\uc758 \ub9e4\uac1c\ubcc0\uc218 \uc774\ub984\uacfc javax.ws.rs.Application\uc744 \ud655\uc7a5\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud074\ub798\uc2a4\uc758 \ub9e4\uac1c\ubcc0\uc218 \uac12\uc774 \uc788\ub294 \ucd08\uae30\ud654 \ub9e4\uac1c\ubcc0\uc218 \uc694\uc18c\ub97c \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 Knowledge Center\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.with.invalid.application.useraction=\uc774 \ubaa8\ub4c8\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ube0c\ud074\ub798\uc2a4\ub97c \uc9c0\uc815\ud558\ub3c4\ub85d web.xml\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.

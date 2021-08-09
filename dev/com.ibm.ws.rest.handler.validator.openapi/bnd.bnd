@@ -1,0 +1,44 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: Open API for Validator REST Endpoint
+Bundle-SymbolicName: com.ibm.ws.rest.handler.validator.openapi
+Bundle-Description: Open API information for REST-based validation resources; version=${bVersion}
+
+
+WS-TraceGroup: rest.validation
+  
+Private-Package:\
+  com.ibm.ws.rest.handler.validator.openapi.*
+
+DynamicImport-Package:\
+  javax.jms
+
+Include-Resource: \
+  META-INF=resources/META-INF
+  
+-dsannotations:\
+  com.ibm.ws.rest.handler.validator.openapi.ValidatorSchemaRESTHandler
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.rest.handler.validator,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.microprofile.openapi,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0

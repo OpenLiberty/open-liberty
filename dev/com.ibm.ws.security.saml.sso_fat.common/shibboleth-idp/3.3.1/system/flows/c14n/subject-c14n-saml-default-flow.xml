@@ -1,0 +1,23 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="c14n.abstract">
+
+    <!--
+    This is a one-step subflow that uses the subflow ID to derive a bean name to invoke, the bean being
+    an action that performs SAML subject canonicalization of some type. This is used to run the built-in
+    canonicalization capabilities pre-defined in the software.
+    -->
+    
+    <action-state id="DoCanonicalization">
+        <on-entry>
+            <set name="requestScope.beanId" value="'Shibboleth.C14N.' + flowRequestContext.getActiveFlow().getId().split('/')[1]" />
+        </on-entry>
+        <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().getBean(beanId).execute(flowRequestContext)" />
+
+        <transition on="success" to="proceed" />
+    </action-state>
+
+    <bean-import resource="subject-c14n-saml-default-beans.xml" />
+
+</flow>

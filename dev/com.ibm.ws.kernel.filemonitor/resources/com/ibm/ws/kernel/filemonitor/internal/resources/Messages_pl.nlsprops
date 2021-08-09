@@ -1,0 +1,86 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: Podany parametr nie okre\u015bla \
+poprawnego filtru nazw plik\u00f3w. {0} = {1}
+badFilter.explanation=Warto\u015b\u0107 okre\u015blonego parametru \
+konfiguracyjnego nie jest warto\u015bci\u0105 \u0142a\u0144cuchow\u0105 lub nie mo\u017cna jej \
+przekszta\u0142ci\u0107 w warto\u015b\u0107 \u0142a\u0144cuchow\u0105.
+badFilter.useraction=Sprawd\u017a warto\u015b\u0107 okre\u015blon\u0105 w konfiguracji serwera.
+
+badInterval=CWWKE0401W: Okre\u015blony parametr nie \
+reprezentuje poprawnego odst\u0119pu czasu monitorowania. {0} = {1}
+badInterval.explanation=Nie mo\u017cna przeanalizowa\u0107 \
+warto\u015bci okre\u015blonego parametru konfiguracyjnego jako odst\u0119pu czasu \
+monitorowania.
+badInterval.useraction=Sprawd\u017a warto\u015b\u0107 podan\u0105 w konfiguracji \
+serwera i upewnij si\u0119, \u017ce okre\u015bla poprawny odst\u0119p czasu monitorowania. \
+Na przyk\u0142ad 1s oznacza jedn\u0105 sekund\u0119. \
+Poprawne jednostki to ms (milisekundy), s (sekundy), m (minuty) i h (godziny).
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: Nie mo\u017cna przydzieli\u0107 \
+okre\u015blonego po\u0142o\u017cenia pami\u0119ci podr\u0119cznej, dlatego wszystkie informacje o \
+monitorowanych plikach zostan\u0105 zapisane w pami\u0119ci. {0} = {1}
+badDiskCache.explanation=Us\u0142uga nie mo\u017ce utworzy\u0107 \
+po\u0142o\u017cenia pami\u0119ci podr\u0119cznej dla zestawu monitorowanych zasob\u00f3w.
+badDiskCache.useraction=Upewnij si\u0119, \u017ce masz dost\u0119p do zapisu \
+do katalogu serwera i obszaru roboczego.
+
+createMonitorException=CWWKE0403W: Wyst\u0105pi\u0142 wyj\u0105tek \
+podczas tworzenia monitora dla zasobu {0}. Monitorowanie dla tego zasobu jest wy\u0142\u0105czone. Komunikat o wyj\u0105tku to: {1}
+createMonitorException.explanation=Wyst\u0105pi\u0142 \
+nieoczekiwany wyj\u0105tek podczas tworzenia monitora dla okre\u015blonego zasobu. Zas\u00f3b nie b\u0119dzie monitorowany. 
+createMonitorException.useraction=Sprawd\u017a, czy masz dost\u0119p do odczytu do okre\u015blonego zasobu. Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie \
+FFDC.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: Nie mo\u017cna usun\u0105\u0107 pliku pami\u0119ci podr\u0119cznej {0}.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=Us\u0142uga nie mo\u017ce \
+usun\u0105\u0107 po\u0142o\u017cenia pami\u0119ci podr\u0119cznej dla zestawu monitorowanych zasob\u00f3w.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Upewnij si\u0119, \u017ce masz dost\u0119p \
+do zapisu do katalogu serwera i obszaru roboczego.
+
+fileMonitorException=CWWKE0405W: Wyst\u0105pi\u0142 wyj\u0105tek podczas \
+powiadamiania monitora o nast\u0119puj\u0105cych operacjach tworzenia, modyfikowania oraz usuwania \
+plik\u00f3w: {0}, {1} i {2}. Klasa monitora to: {3}. Komunikat o wyj\u0105tku to: {4}
+fileMonitorException.explanation=Wyst\u0105pi\u0142 \
+nieoczekiwany wyj\u0105tek podczas tworzenia monitora dla okre\u015blonego zasobu. 
+fileMonitorException.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie \
+FFDC.
+
+fileMonitorDisabled=CWWKE0406W: Podczas powiadamiania monitora o \
+zmianach wyst\u0105pi\u0142o wi\u0119cej wyj\u0105tk\u00f3w ni\u017c {0}. Klasa monitora to: {1}. Ten monitor plik\u00f3w \
+zosta\u0142 w\u0142a\u015bnie wy\u0142\u0105czony. 
+fileMonitorDisabled.explanation=Zbyt wiele nast\u0119puj\u0105cych po sobie \
+wyj\u0105tk\u00f3w wyst\u0105pi\u0142o podczas powiadamiania monitora dla okre\u015blonego zasobu. Zas\u00f3b nie b\u0119dzie ju\u017c monitorowany. 
+fileMonitorDisabled.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci \
+wyj\u0105tk\u00f3w i w powi\u0105zanych komunikatach FFDC.

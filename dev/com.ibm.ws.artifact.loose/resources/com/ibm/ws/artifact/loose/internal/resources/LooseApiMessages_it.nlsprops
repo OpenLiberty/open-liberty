@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: Impossibile trovare il file XML in {0}.
+XML_NOT_FOUND.explanation=Non \u00e8 stato possibile trovare il file XML specificato.
+XML_NOT_FOUND.useraction=Verificare che il file si trovi nell'ubicazione corretta e che non sia stato spostato.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: Impossibile leggere il file XML in {0}.
+XML_STREAM_ERROR.explanation=Non \u00e8 stato possibile leggere il file XML specificato.
+XML_STREAM_ERROR.useraction=Verificare che il file sia correttamente formattato come XML.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: Il file XML dichiarato in un''applicazione dello spazio di lavoro fa riferimento ad un file in {0} e contiene un attributo "excludes" non valido. 
+EXCLUDES_ON_FILE.explanation=L'elemento del file XML contiene un attributo "excludes" che non \u00e8 valido. L'attributo \u00e8 stato ignorato.
+EXCLUDES_ON_FILE.useraction=Rimuovere l'attributo "excludes" dall'elemento.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: Il file XML dichiarato in un''applicazione dello spazio di lavoro fa riferimento ad un archivio denominato {0} e contiene un attributo "excludes" non valido. 
+EXCLUDES_ON_ARCHIVE.explanation=L'elemento dell'archivio XML contiene un attributo "excludes" che non \u00e8 valido. L'attributo \u00e8 stato ignorato.
+EXCLUDES_ON_ARCHIVE.useraction=Rimuovere l'attributo "excludes" dall'elemento.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: Il file XML dichiarato in un''applicazione dello spazio di lavoro contiene un attributo "excludes" non valido: {0}
+INVALID_EXCLUDE_PATTERN.explanation=L'attributo "excludes" non \u00e8 valido e non pu\u00f2 essere interpretato.
+INVALID_EXCLUDE_PATTERN.useraction=Correggere la sintassi dell'attributo o rimuovere l'attributo, se non necessario.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: Il file XML dichiarato in un''applicazione dello spazio di lavoro fa riferimento ad un file {0} che non \u00e8 stato possibile trovare.
+DECLARED_FILE_NOT_FOUND.explanation=Non \u00e8 stato possibile trovare il file dichiarato per l'applicazione dello spazio di lavoro.
+DECLARED_FILE_NOT_FOUND.useraction=Verificare che il file si trovi nell'ubicazione di riferimento o che l'ubicazione di riferimento corrisponda all'ubicazione del file.

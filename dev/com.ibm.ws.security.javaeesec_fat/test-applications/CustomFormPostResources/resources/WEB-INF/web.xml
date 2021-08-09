@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="JavaEESecCustomFormPostServlet" version="3.1" 
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">  
+
+	<display-name>CustomFormPost</display-name>
+	
+	<!-- SERVLET DEFINITIONS -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+
+	<!-- SECURITY CONSTRAINTS -->
+	<security-constraint>
+		<display-name>form_get</display-name>
+		<web-resource-collection>
+			<web-resource-name>form_auth_servlet</web-resource-name>
+			<url-pattern>/form.xhtml</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+	</security-constraint>
+
+	<security-constraint>
+		<display-name>form_post</display-name>
+		<web-resource-collection>
+			<web-resource-name>form_auth_servlet</web-resource-name>
+			<url-pattern>/form.xhtml</url-pattern>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>grantedgroup</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+   <!-- ROLES DEFINITION -->
+	<security-role>
+		<role-name>grantedgroup</role-name>
+	</security-role>
+</web-app>

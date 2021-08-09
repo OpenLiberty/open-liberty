@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME javax.batch-1.0/resources/com/ibm/jbatch/javax/batch/runtime/internal/resources/BatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0350 - 0399: javax.batch
+# 
+
+batch.container.unavailable=CWWKY0350E: \u672a\u6fc0\u6d3b\u6279\u5904\u7406\u5bb9\u5668\u3002\u8bf7\u786e\u4fdd\u5df2\u901a\u8fc7\u914d\u7f6e\u5143\u7d20 {0} \u914d\u7f6e\u6279\u5904\u7406\u6301\u4e45\u6027\u3002
+batch.container.unavailable.explanation=\u56e0\u4e3a\u672a\u6fc0\u6d3b\u6279\u5904\u7406\u5bb9\u5668\uff0c\u6240\u4ee5\u5c1d\u8bd5\u8bbf\u95ee\u6279\u5904\u7406\u5bb9\u5668\u5931\u8d25\u3002\u8fd9\u901a\u5e38\u662f\u7531\u4e8e\u7f3a\u5c11\u914d\u7f6e\u3002
+batch.container.unavailable.useraction=\u8bf7\u786e\u4fdd\u5df2\u914d\u7f6e\u6279\u5904\u7406\u6301\u4e45\u6027\u3002
+ 
+
+ 

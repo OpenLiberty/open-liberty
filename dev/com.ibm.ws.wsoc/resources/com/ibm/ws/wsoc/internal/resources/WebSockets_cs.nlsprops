@@ -1,0 +1,230 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: B\u011bhem implementace aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee t\u0159\u00edda anotovan\u00e9ho koncov\u00e9ho bodu {0} bu\u010f nen\u00ed ve\u0159ejn\u00e1, nebo konkr\u00e9tn\u00ed nebo nem\u00e1 ve\u0159ejn\u00fd konstruktor no-args.
+invalid.endpointclass.explanation=T\u0159\u00edda anotovan\u00e9ho koncov\u00e9ho bodu serveru mus\u00ed b\u00fdt ve\u0159ejn\u00e1, konkr\u00e9tn\u00ed a mus\u00ed m\u00edt ve\u0159ejn\u00fd konstruktor no-args.
+invalid.endpointclass.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru tak, aby byla ve\u0159ejn\u00e1, konkr\u00e9tn\u00ed a m\u011bla ve\u0159ejn\u00fd konstruktor no-args. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+missing.annotation=CWWKH0002E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee ob\u011b anotace @onOpen a @onMessage chyb\u00ed ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0}.
+missing.annotation.explanation=T\u0159\u00edda anotovan\u00e9ho koncov\u00e9ho bodu serveru je neplatn\u00e1, chyb\u00ed-li ob\u011b anotace @OnOpen a @onMessage.
+missing.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu p\u0159id\u00e1n\u00edm anotace @OnOpen anebo @OnMessage. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanonepong.annotation=CWWKH0003E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee je ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} definov\u00e1na v\u00edce ne\u017e jedna metoda @OnMessage s typem zpr\u00e1vy Pong.
+morethanonepong.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee je ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu definov\u00e1na v\u00edce ne\u017e jedna metoda @OnMessage s typem zpr\u00e1vy Pong. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanonepong.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru definov\u00e1n\u00edm pouze jedn\u00e9 metody @OnMessage typu zpr\u00e1vy Pong. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanonebinary.annotation=CWWKH0004E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee je ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} definov\u00e1na v\u00edce ne\u017e jedna metoda @OnMessage s bin\u00e1rn\u00edm typem zpr\u00e1vy.
+morethanonebinary.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee je ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu definov\u00e1na v\u00edce ne\u017e jedna metoda @OnMessage s bin\u00e1rn\u00edm typem zpr\u00e1vy. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanonebinary.annotation.useraction=Opravte anotovan\u00fd koncov\u00fd bod serveru definov\u00e1n\u00edm pouze jedn\u00e9 metody @OnMessage bin\u00e1rn\u00edho typu zpr\u00e1vy. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+missing.msgtype.param=CWWKH0005E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} nem\u00e1 parametr zpr\u00e1vy bin\u00e1rn\u00edho, textov\u00e9ho nebo pong typu.
+missing.msgtype.param.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee metoda @OnMessage nem\u00e1 parametr zpr\u00e1vy bin\u00e1rn\u00edho, textov\u00e9ho nebo pong typu. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+missing.msgtype.param.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru deklarac\u00ed metody @OnMessage s parametrem zpr\u00e1vy textov\u00e9ho, bin\u00e1rn\u00edho nebo pong typu. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanonetext.annotation=CWWKH0006E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee je ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} definov\u00e1na v\u00edce ne\u017e jedna metoda @OnMessage s typem zpr\u00e1vy text.
+morethanonetext.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee je ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu definov\u00e1na v\u00edce ne\u017e jedna metoda @OnMessage s typem zpr\u00e1vy text. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanonetext.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru definov\u00e1n\u00edm pouze jedn\u00e9 metody @OnMessage typu textov\u00e9 zpr\u00e1vy. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.onopen.annotation=CWWKH0007E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnOpen {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 jin\u00e9 parametry ne\u017e Session, EndpointConfig nebo @PathParam.
+invalid.onopen.annotation.explanation=V metod\u011b @OnOpen byl nalezen neplatn\u00fd typ parametru. Metoda @OnOpen m\u016f\u017ee m\u00edt pouze nepovinn\u00e9 parametry Session, EndpointConfig a @PathParam. 
+invalid.onopen.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru odebr\u00e1n\u00edm neplatn\u00e9ho typu parametru z metody @OnOpen. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanoneclose.annotation=CWWKH0008E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} byla nalezena v\u00edce ne\u017e jedna metoda @OnClose. Metody @OnClose jsou {1} a {2}.
+morethanoneclose.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu je definov\u00e1na v\u00edce ne\u017e jedna metoda @OnClose. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanoneclose.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru tak, aby m\u011bla nadefinovanou pouze jednu metodu @OnClose. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.onclose.annotation=CWWKH0009E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnClose {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 jin\u00e9 parametry ne\u017e Session, CloseReason nebo @PathParam.
+invalid.onclose.annotation.explanation=V metod\u011b @OnClose byl nalezen neplatn\u00fd typ parametru. Metoda @OnClose m\u016f\u017ee m\u00edt pouze nepovinn\u00e9 parametry Session, CloseReason a @PathParam. 
+invalid.onclose.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru odebr\u00e1n\u00edm neplatn\u00e9ho typu parametru z metody @OnClose. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanoneerror.annotation=CWWKH0010E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} je definov\u00e1na v\u00edce ne\u017e jedna metoda @OnError. Metody @OnError jsou {1} a {2}.
+morethanoneerror.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu je definov\u00e1na v\u00edce ne\u017e jedna metoda @OnError. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanoneerror.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru tak, aby m\u011bla nadefinovanou pouze jednu metodu @OnError. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.onerror.annotation=CWWKH0011E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnError {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 parametry jin\u00e9 ne\u017e Throwable, Session nebo @PathParam.
+invalid.onerror.annotation.explanation=V metod\u011b @OnClose byl nalezen neplatn\u00fd typ parametru. Metoda @OnClose m\u00e1 pouze povinn\u00fd parametr Throwable a nepovinn\u00e9 parametry Session a @PathParam. 
+invalid.onerror.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru odebr\u00e1n\u00edm neplatn\u00e9ho typu parametru z metody @OnClose. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+missing.throwable=CWWKH0012E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnError {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} nem\u00e1 povinn\u00fd parametr typu Throwable.
+missing.throwable.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee metoda @OnError nem\u00e1 povinn\u00fd parametr typu Throwable. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+missing.throwable.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru p\u0159id\u00e1n\u00edm povinn\u00e9ho parametru typu Throwable do metody @OnError. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.pong.annotation=CWWKH0013E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 neplatn\u00fd parametr {2}.
+invalid.pong.annotation.explanation=V metod\u011b @OnMessage s typem zpr\u00e1vy pong byl nalezen neplatn\u00fd typ parametru. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na.
+invalid.pong.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru odebr\u00e1n\u00edm neplatn\u00e9ho typu parametru z metody @OnMessage. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanone.binary.param=CWWKH0014E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 v\u00edce ne\u017e jeden parametr zpr\u00e1vy bin\u00e1rn\u00edho typu.
+morethanone.binary.param.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee metoda @OnMessage m\u00e1 v\u00edce ne\u017e jeden parametr bin\u00e1rn\u00edho typu zpr\u00e1vy. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanone.binary.param.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru definov\u00e1n\u00edm pouze jednoho parametru bin\u00e1rn\u00edho typu zpr\u00e1vy. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.decoderclass=CWWKH0015E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee t\u0159\u00edda dekod\u00e9ru {0} pou\u017eit\u00e1 v metod\u011b @OnMessage {1} t\u0159\u00eddy anotovan\u00e9ho koncov\u00e9ho bodu {2} bu\u010f nen\u00ed ve\u0159ejn\u00e1, nebo konkr\u00e9tn\u00ed nebo nem\u00e1 ve\u0159ejn\u00fd konstruktor no-args.
+invalid.decoderclass.explanation=T\u0159\u00edda dekod\u00e9ru pou\u017eit\u00e1 ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu serveru mus\u00ed b\u00fdt ve\u0159ejn\u00e1, konkr\u00e9tn\u00ed a mus\u00ed m\u00edt ve\u0159ejn\u00fd konstruktor no-args.
+invalid.decoderclass.useraction=Opravte t\u0159\u00eddu dekod\u00e9ru na ve\u0159ejnou, konkr\u00e9tn\u00ed a s ve\u0159ejn\u00fdm konstruktorem no-args. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanone.message.param=CWWKH0016E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 v\u00edce ne\u017e jeden parametr typu zpr\u00e1vy {2}.
+morethanone.message.param.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee metoda @OnMessage m\u00e1 v\u00edce ne\u017e jeden parametr typu zpr\u00e1vy. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanone.message.param.useraction=Opravte metodu @OnMessage definov\u00e1n\u00edm pouze jednoho parametru typu zpr\u00e1vy v souladu s dokumentac\u00ed rozhran\u00ed API javax.websocket.OnMessage. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.binary.param=CWWKH0017E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 neplatn\u00fd parametr {2}.
+invalid.binary.param.explanation=V metod\u011b @OnMessage s bin\u00e1rn\u00edm typem zpr\u00e1vy byl nalezen neplatn\u00fd typ parametru. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na.
+invalid.binary.param.useraction=Opravte metodu @OnMessage odebr\u00e1n\u00edm neplatn\u00e9ho typu parametru v souladu s dokumentac\u00ed rozhran\u00ed API javax.websocket.OnMessage. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+morethanone.text.param=CWWKH0018E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 v\u00edce ne\u017e jeden parametr textov\u00e9ho typu zpr\u00e1vy {2}.
+morethanone.text.param.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee metoda @OnMessage m\u00e1 v\u00edce ne\u017e jeden parametr textov\u00e9ho typu zpr\u00e1vy. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanone.text.param.useraction=Opravte metodu @OnMessage definov\u00e1n\u00edm pouze jednoho parametru textov\u00e9ho typu zpr\u00e1vy v souladu s dokumentac\u00ed rozhran\u00ed API javax.websocket.OnMessage. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.text.param=CWWKH0019E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee metoda @OnMessage {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} m\u00e1 neplatn\u00fd parametr {2}.
+invalid.text.param.explanation=V metod\u011b @OnMessage s textov\u00fdm typem zpr\u00e1vy byl nalezen neplatn\u00fd typ parametru. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na.
+invalid.text.param.useraction=Opravte metodu @OnMessage odebr\u00e1n\u00edm neplatn\u00e9ho typu parametru v souladu s dokumentac\u00ed rozhran\u00ed API javax.websocket.OnMessage. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+missing.path.segment=CWWKH0020E: P\u0159i vol\u00e1n\u00ed koncov\u00e9ho bodu serveru WebSocket do\u0161lo k v\u00fdjimce. Parametr @PathParam {0} definovan\u00fd v metod\u011b {1} nem\u00e1 odpov\u00eddaj\u00edc\u00ed segment cesty v identifik\u00e1toru URI @ServerEndpoint ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {2}.
+missing.path.segment.explanation=Parametr @PathParam nem\u00e1 odpov\u00eddaj\u00edc\u00ed segment cesty v identifik\u00e1toru URI @ServerEndpoint. 
+missing.path.segment.useraction=Opravte n\u00e1zev parametru @PathParam tak, aby se shodoval s jedn\u00edm ze segment\u016f cesty v identifik\u00e1toru URI @ServerEndpoint. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+missing.pathparam.value=CWWKH0021E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee anotace @PathParam {0} definovan\u00e1 v metod\u011b {1} postr\u00e1d\u00e1 hodnotu anotace v t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {2}.
+missing.pathparam.value.explanation=Anotace @PathParam nem\u00e1 hodnotu. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na.
+missing.pathparam.value.useraction=Opravte anotaci @PathParam p\u0159id\u00e1n\u00edm hodnoty do anotace. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.pathparam.type=CWWKH0022E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee parametr @PathParam {0} definovan\u00fd v metod\u011b {1} m\u00e1 ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {2} neplatn\u00fd typ.
+invalid.pathparam.type.explanation=Parametr @PathParam m\u00e1 neplatn\u00fd typ. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na.
+invalid.pathparam.type.useraction=Opravte typ anotace @PathParam tak, aby to byl bu\u010f \u0159et\u011bzec, libovoln\u00fd primitivn\u00ed typ Java, nebo r\u00e1me\u010dkov\u00e1 verze. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+mismatch.pathparam.type=CWWKH0023E: P\u0159i prov\u00e1d\u011bn\u00ed metody {0} ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {1} b\u011bhem p\u0159evodu dat @PathParam v indexu parametru {2} na typ {3} do\u0161lo k v\u00fdjimce.
+mismatch.pathparam.type.explanation=P\u0159evod cesty parametru @PathParam s p\u0159\u00edslu\u0161n\u00fdm segmentem z identifik\u00e1toru URI ServerEndpoint se nezda\u0159ilo kv\u016fli neplatn\u00e9mu typu. Metoda koncov\u00e9ho bodu se neprovedla \u00fasp\u011b\u0161n\u011b.
+mismatch.pathparam.type.useraction=Ujist\u011bte se, \u017ee p\u0159\u00edchoz\u00ed identifik\u00e1tor URI ServerEndpoint m\u00e1 datov\u00fd typ odpov\u00eddaj\u00edc\u00ed parametru @PathParam.
+
+bytes.notavailable=CWWKH0024E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee ke \u010dten\u00ed nebyly k dispozici \u017e\u00e1dn\u00e9 dal\u0161\u00ed bajty.
+bytes.notavailable.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee ke \u010dten\u00ed nebyly \u017e\u00e1dn\u00e9 dal\u0161\u00ed bajty.
+bytes.notavailable.useraction=Zkontrolujte spr\u00e1vnost dat p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket.
+
+onmessage.notdefined=CWWKH0025E: Klient poslal zpr\u00e1vu na koncov\u00fd bod {0}, kter\u00fd nem\u00e1 pro tento typ zpr\u00e1vy definovanou metodu @OnMessage nebo obslu\u017enou rutinu MessageHandler.
+onmessage.notdefined.explanation=Nelze prov\u00e9st po\u017eadavek klienta WebSocket, proto\u017ee klient pos\u00edl\u00e1 zpr\u00e1vu na koncov\u00fd bod serveru, kter\u00fd nem\u00e1 pro tento typ zpr\u00e1vy definovanou metodu @OnMessage nebo obslu\u017enou rutinu MessageHandler.
+onmessage.notdefined.useraction=Bu\u010f upozorn\u011bte klienta, nebo p\u0159idejte do anotovan\u00e9ho koncov\u00e9ho bodu serveru metodu @OnMessage nebo p\u0159idejte obslu\u017enou rutinu MessageHandler, abyste byli schopni obslou\u017eit po\u017eadavek klienta, a znovu naimplementujte aplikaci.
+
+decoder.ioexception=CWWKH0026E: Nelze prov\u00e9st po\u017eadavek klienta WebSocket, proto\u017ee p\u0159i vol\u00e1n\u00ed onMessage ve t\u0159\u00edd\u011b {0} do\u0161lo p\u0159i dek\u00f3dov\u00e1n\u00ed dat zpr\u00e1vy {1} k v\u00fdjimce. Zpr\u00e1va v\u00fdjimky: {2}
+decoder.ioexception.explanation=Nelze prov\u00e9st po\u017eadavek klienta WebSocket, proto\u017ee p\u0159i vol\u00e1n\u00ed onMessage p\u0159i dek\u00f3dov\u00e1n\u00ed dat zpr\u00e1vy do\u0161lo k v\u00fdjimce. 
+decoder.ioexception.useraction=Zkontrolujte data p\u0159\u00edchoz\u00ed zpr\u00e1vy a dekod\u00e9r.
+
+decoder.create.exception=CWWKH0027E: Nelze prov\u00e9st po\u017eadavek WebSocket, proto\u017ee do\u0161lo k probl\u00e9mu p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance t\u0159\u00eddy dekod\u00e9ru {0}. V\u00fdjimka je {1}
+decoder.create.exception.explanation=Nelze prov\u00e9st po\u017eadavek WebSocket, proto\u017ee do\u0161lo k probl\u00e9mu p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance t\u0159\u00eddy dekod\u00e9ru.
+decoder.create.exception.useraction=Zkontrolujte t\u0159\u00eddu dekod\u00e9ru.
+
+fin1.processing.error=CWWKH0028E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket ve t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce, proto\u017ee se p\u0159i zpracov\u00e1n\u00ed FIN s hodnotou 1 objevila chyba.
+fin1.processing.error.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee se p\u0159i zpracov\u00e1n\u00ed FIN s hodnotou 1 objevila chyba.
+fin1.processing.error.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket.
+ 
+fin0.processing.error=CWWKH0029E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket ve t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce, proto\u017ee se p\u0159i zpracov\u00e1n\u00ed FIN s hodnotou 0 objevila chyba.
+fin0.processing.error.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee se p\u0159i zpracov\u00e1n\u00ed FIN s hodnotou 0 objevila chyba.
+fin0.processing.error.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket.
+
+invalid.opcode=CWWKH0030E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket v t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce kv\u016fli neplatn\u00e9mu k\u00f3du opcode {1} v r\u00e1mci zpr\u00e1vy.
+invalid.opcode.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce kv\u016fli neplatn\u00e9mu k\u00f3du opcode v r\u00e1mci zpr\u00e1vy.
+invalid.opcode.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket.
+
+invalid.continue.opcode=CWWKH0031E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket ve t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce kv\u016fli neplatn\u00e9mu k\u00f3du opcode pokra\u010dov\u00e1n\u00ed s nefragmentovanou zpr\u00e1vou.
+invalid.continue.opcode.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce kv\u016fli neplatn\u00e9mu k\u00f3du opcode pokra\u010dov\u00e1n\u00ed s nefragmentovanou zpr\u00e1vou.
+invalid.continue.opcode.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket. 
+
+incorrect.maskflag=CWWKH0032E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket v t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce, proto\u017ee p\u0159\u00edznak masky nebyl v r\u00e1mci zpr\u00e1vy spr\u00e1vn\u011b nastaven.
+incorrect.maskflag.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee p\u0159\u00edznak masky nebyl v r\u00e1mci zpr\u00e1vy spr\u00e1vn\u011b nastaven.
+incorrect.maskflag.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket. 
+
+invalid.maskflag.value=CWWKH0033E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket v t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce, proto\u017ee p\u0159\u00edznak masky nebyl nastaven na spr\u00e1vnou hodnotu.
+invalid.maskflag.value.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee p\u0159\u00edznak masky nebyl nastaven na spr\u00e1vnou hodnotu.
+invalid.maskflag.value.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket.
+
+duplicate.uri=CWWKH0034E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee stejn\u00fd identifik\u00e1tor URI {0} m\u00e1 v\u00edce server\u016f.
+duplicate.uri.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee jeden identifik\u00e1tor URI m\u00e1 v\u00edce server\u016f. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+duplicate.uri.useraction=V aplikaci WebSocket nadefinujte jedine\u010dn\u00fd identifik\u00e1tor URI koncov\u00e9ho bodu serveru. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.nonzero.opcode=CWWKH0035E: P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket v t\u0159\u00edd\u011b ServerEndpoint {0} do\u0161lo k v\u00fdjimce kv\u016fli neplatn\u00e9mu nenulov\u00e9mu k\u00f3du opcode a jin\u00e9mu, ne\u017e prvn\u00edmu r\u00e1mci.
+invalid.nonzero.opcode.explanation=P\u0159i \u010dten\u00ed p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket do\u0161lo k v\u00fdjimce kv\u016fli neplatn\u00e9mu nenulov\u00e9mu k\u00f3du opcode a jin\u00e9mu, ne\u017e prvn\u00edmu r\u00e1mci.
+invalid.nonzero.opcode.useraction=Zkontrolujte spr\u00e1vnost dat r\u00e1mce p\u0159\u00edchoz\u00ed zpr\u00e1vy WebSocket.
+
+morethanoneonopen.annotation=CWWKH0036E: P\u0159i implementaci aplikace WebSocket do\u0161lo k v\u00fdjimce, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu {0} je definov\u00e1na v\u00edce ne\u017e jedna metoda @OnOpen.
+morethanoneonopen.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu je definov\u00e1na v\u00edce ne\u017e jedna metoda @OnOpen. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na. 
+morethanoneonopen.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru tak, aby m\u011bla nadefinovanou pouze jednu metodu @OnOpen. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+invalid.message.toobig=CWWKH0037E: Neplatn\u00e1 p\u0159\u00edchoz\u00ed zpr\u00e1va WebSocket ve t\u0159\u00edd\u011b koncov\u00e9ho bodu serveru {0}. Velikost p\u0159\u00edchoz\u00ed zpr\u00e1vy je {1}, co\u017e je v\u011bt\u0161\u00ed ne\u017e hodnota parametru maxMessageSize {2} definovan\u00e1 v metod\u011b anotace @OnMessage {3}.
+invalid.message.toobig.explanation=Zpr\u00e1va WebSocket nem\u016f\u017ee p\u0159ekro\u010dit velikost maxMessageSize definovanou v anotaci @OnMessage.
+invalid.message.toobig.useraction=Zkontrolujte klienta, aby pos\u00edlal zpr\u00e1vy WebSocket men\u0161\u00ed ne\u017e hodnota parametru maxMessageSize definovan\u00e1 v anotaci @OnMessage, nebo hodnotu parametru maxMessageSize v anotaci @OnMessage zvy\u0161te a znovu naimplementujte aplikaci.
+
+maxidletimeout.closesession=CWWKH0038E: Relace WebSocket je ji\u017e {0} sekund neaktivn\u00ed. Zav\u00edr\u00e1m p\u0159ipojen\u00ed.
+maxidletimeout.closesession.explanation=\u010casov\u00fd limit relace WebSocket vypr\u0161el. Relace WebSocket nejsou aktivn\u00ed, nejsou-li odesl\u00e1ny ani p\u0159ijaty \u017e\u00e1dn\u00e9 zpr\u00e1vy za uplynul\u00fd po\u010det sekund, kter\u00fd je ur\u010den nastaven\u00edm maxIdleTimeout.
+maxidletimeout.closesession.useraction=Zkontrolujte, pro\u010d klient neodes\u00edl\u00e1 ani nep\u0159ij\u00edm\u00e1 zpr\u00e1vy. V p\u0159\u00edpad\u011b pot\u0159eby zvy\u0161te hodnotu nastaven\u00ed maxIdleTimeout pomoc\u00ed rozhran\u00ed API Session.setMaxIdleTimeout().
+
+client.invalid.returncode=CWWKH0039E: Byl-li koncov\u00e9mu bodu {1} na c\u00edlov\u00e9m serveru odesl\u00e1n odchoz\u00ed po\u017eadavek WebSocket, byla m\u00edsto odezvy 101 vr\u00e1cena odezva {0}.
+client.invalid.returncode.explanation=Odchoz\u00ed operace WebSocket vy\u017eaduj\u00ed k\u00f3d odezvy 101 pro operace WebSocket.
+client.invalid.returncode.useraction=Pomoc\u00ed neplatn\u00e9ho k\u00f3du odezvy zjist\u011bte, zda je c\u00edlov\u00fd koncov\u00fd bod platn\u00fdm a spu\u0161t\u011bn\u00fdm koncov\u00fdm bodem WebSocket, a jak\u00e1 je p\u0159\u00ed\u010dina selh\u00e1n\u00ed odchoz\u00edho po\u017eadavku WebSocket. 
+
+client.invalid.acceptkey=CWWKH0040E: P\u0159i odesl\u00e1n\u00ed odchoz\u00edho po\u017eadavku WebSocket koncov\u00e9mu bodu {1} odpov\u011bd\u011bl c\u00edlov\u00fd server neplatn\u00fdm kl\u00ed\u010dem p\u0159ijet\u00ed WebSocket. 
+client.invalid.acceptkey.explanation=Odchoz\u00ed operace WebSocket vy\u017eaduj\u00ed, aby c\u00edlov\u00fd server vracel platn\u00fd kl\u00ed\u010d p\u0159ijet\u00ed WebSocket pro operace WebSocket.
+client.invalid.acceptkey.useraction=Ov\u011b\u0159te, zda c\u00edlov\u00fd server odpov\u00edd\u00e1 protokolu WebSocket.
+
+client.invalid.endpoint=CWWKH0041E: P\u0159i odchoz\u00edm po\u017eadavku WebSocket byl ur\u010den neplatn\u00fd koncov\u00fd bod {0}.
+client.invalid.endpoint.explanation=U odchoz\u00edho po\u017eadavku WebSocket je po\u017eadov\u00e1n platn\u00fd koncov\u00fd bod.
+client.invalid.endpoint.useraction=Zkontrolujte, zda parametr ClientEndpoint pou\u017e\u00edvan\u00fd v metod\u011b connectToServer rozhran\u00ed API WebSocket API ud\u00e1v\u00e1 anotovan\u00fd koncov\u00fd bod klienta. 
+
+client.invalid.scheme=CWWKH0042E: Pro odchoz\u00ed p\u0159ipojen\u00ed klienta bylo pou\u017eito neplatn\u00e9 sch\u00e9ma {0}. Platn\u00e1 sch\u00e9mata protokolu WebSocket jsou ws a wss.
+client.invalid.scheme.explanation=Platn\u00e1 sch\u00e9mata WebSocket jsou ws a wss.
+client.invalid.scheme.useraction=P\u0159i odchoz\u00edm po\u017eadavku WebSocket pou\u017e\u00edvejte platn\u00e9 sch\u00e9ma.
+
+client.invalid.configurator=CWWKH0043E: P\u0159i odchoz\u00edm po\u017eadavku nebyla vytvo\u0159ena t\u0159\u00edda konfigur\u00e1toru {0}. V\u00fdjimka: {1}. 
+client.invalid.configurator.explanation=P\u0159i odchoz\u00edm po\u017eadavku nebyla vytvo\u0159ena t\u0159\u00edda konfigur\u00e1toru, mo\u017en\u00e1 proto\u017ee neexistoval nebo nebyl p\u0159\u00edstupn\u00fd ve\u0159ejn\u00fd konstruktor t\u0159\u00eddy Configurator s nulov\u00fdm argumentem.
+client.invalid.configurator.useraction=Ov\u011b\u0159te, zda je t\u0159\u00edda konfigur\u00e1toru spr\u00e1vn\u00e1 a m\u00e1 p\u0159\u00edstupn\u00fd ve\u0159ejn\u00fd konstruktor s nulov\u00fdm argumentem.
+ 
+client.connection.error=CWWKH0044E: P\u0159i odchoz\u00edm po\u017eadavku WebSocket nebylo mo\u017en\u00e9 zpracovat koncov\u00fd bod {0}. V\u00fdjimka: {1}.
+client.connection.error.explanation=Kdy\u017e se koncov\u00fd bod b\u011bhem odchoz\u00edho po\u017eadavku WebSocket pokusil p\u0159ipojit k c\u00edlov\u00e9mu serveru, do\u0161lo k v\u00fdjimce.
+client.connection.error.useraction=Na z\u00e1klad\u011b podrobnost\u00ed o v\u00fdjimce ur\u010dete p\u0159\u00ed\u010dinu a probl\u00e9m opravte.
+
+client.invalid.endpointclass=CWWKH0045E: T\u0159\u00edda {0} nen\u00ed platn\u00e1 a byla uvedena b\u011bhem odchoz\u00edho po\u017eadavku WebSocket.
+client.invalid.endpointclass.explanation=Pro odchoz\u00ed po\u017eadavek WebSocket je povinn\u00e1 platn\u00e1 t\u0159\u00edda koncov\u00e9ho bodu.
+client.invalid.endpointclass.useraction=Ov\u011b\u0159te, \u017ee parametr Endpoint, kter\u00fd se pou\u017eil v metod\u011b connectToServer vol\u00e1n\u00ed WebSocket API, roz\u0161i\u0159uje t\u0159\u00eddu koncov\u00e9ho bodu WebSocket.
+
+adding.endpoint=CWWKH0046I: P\u0159id\u00e1n\u00ed koncov\u00e9ho bodu WebSocket ServerEndpoint s t\u00edmto identifik\u00e1torem URI: {0}
+adding.endpoint.explanation=Koncov\u00fd bod WebSocket ServerEndpoint s uveden\u00fdm identifik\u00e1torem URI je pro klienta WebSocket k dispozici.
+adding.endpoint.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+invalid.endpoint.context=CWWKH0047E: Koncov\u00e9 body WebSocket ServerEndpoint s kontextovou cestou {0} nejsou pro klienta k dispozici.
+invalid.endpoint.context.explanation=Koncov\u00e9 body WebSocket ServerEndpoint s uvedenou kontextovou cestou nejsou dostupn\u00e9 pro obsluhu klienta WebSocket.
+invalid.endpoint.context.useraction=Informace, pro\u010d koncov\u00e9 body ServerEndpoint nejsou dostupn\u00e9, najdete v protokolech a trasov\u00e1n\u00ed serveru profilu Liberty.
+
+client.connection.nossl=CWWKH0048E: Koncov\u00fd bod {0} nelze zpracovat b\u011bhem odchoz\u00edho zabezpe\u010den\u00e9ho po\u017eadavku WebSocket, proto\u017ee zabezpe\u010den\u00ed nebylo povoleno.
+client.connection.nossl.explanation=Chcete-li zpracovat odchoz\u00ed zabezpe\u010den\u00fd po\u017eadavek WebSocket, mus\u00edte m\u00edt povolen\u00e9 zabezpe\u010den\u00ed.
+client.connection.nossl.useraction=Povolte zabezpe\u010den\u00ed.
+
+endpoint.addsclosed=CWWKH0049E: Po spu\u0161t\u011bn\u00ed aplikace WebSocket nelze p\u0159idat dal\u0161\u00ed koncov\u00e9 body WebSocket.
+endpoint.addsclosed.explanation=Koncov\u00e9 body WebSocket mus\u00edte p\u0159idat p\u0159ed spu\u0161t\u011bn\u00edm aplikace WebSocket.
+endpoint.addsclosed.useraction=P\u0159idejte koncov\u00e9 body WebSocket p\u0159ed spu\u0161t\u011bn\u00edm aplikace WebSocket.
+
+endpoint.creation.error=CWWKH0050E: T\u0159\u00eddu koncov\u00e9ho bodu {0} nelze vytvo\u0159it. V\u00fdjimka: {1}.
+endpoint.creation.error.explanation=P\u0159i vytv\u00e1\u0159en\u00ed t\u0159\u00eddy koncov\u00e9ho bodu do\u0161lo k v\u00fdjimce.
+endpoint.creation.error.useraction=Na z\u00e1klad\u011b podrobnost\u00ed o v\u00fdjimce ur\u010dete p\u0159\u00ed\u010dinu a probl\u00e9m opravte.
+
+endpoint.instance.error=CWWKH0051E: Server nem\u00e1 p\u0159\u00edstup k t\u0159\u00edd\u011b koncov\u00e9ho bodu {0} kv\u016fli n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+endpoint.instance.error.explanation=Kdy\u017e se server pokusil o p\u0159\u00edstup k uveden\u00e9 t\u0159\u00edd\u011b koncov\u00e9ho bodu, do\u0161lo k chyb\u011b.
+endpoint.instance.error.useraction=Zkontrolujte podrobn\u00e9 \u00fadaje o v\u00fdjimce, zjist\u011bte, pro\u010d nelze p\u0159istupovat k dan\u00e9 t\u0159\u00edd\u011b koncov\u00e9ho bodu a odstra\u0148te probl\u00e9m.
+
+missingslashornull.uri=CWWKH0052E: Do\u0161lo k v\u00fdjimce b\u011bhem implementace/spu\u0161t\u011bn\u00ed koncov\u00e9ho bodu serveru: {0} s identifik\u00e1torem uri: "{1}". Identifik\u00e1tor URI koncov\u00e9ho bodu je bu\u010f null, nebo se nespou\u0161t\u00ed s /.
+missingslashornull.uri.explanation=Koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee identifik\u00e1tor URI koncov\u00e9ho bodu je bu\u010f null, nebo se nespou\u0161t\u00ed s / ve t\u0159\u00edd\u011b koncov\u00e9ho bodu. Aplikace WebSocket nen\u00ed pro po\u017eadavky dostupn\u00e1. 
+missingslashornull.uri.useraction=Definujte nenulov\u00fd identifik\u00e1tor URI koncov\u00e9ho bodu, kter\u00fd za\u010d\u00edn\u00e1 /. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
+
+
+

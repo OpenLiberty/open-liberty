@@ -1,0 +1,85 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/authentication/internal/resources/AuthenticationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1000 - CWWKS1099
+
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE=CWWKS1000E: Le service JAAS n'est pas disponible.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.explanation=Le service d'authentification n'est pas configur\u00e9 avec le service JAAS.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Aucune action de l'utilisateur n'est requise.
+
+# JAAS Message prefix block: CWWKS1100 - CWWKS1132
+
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD=CWWKS1100A: L''authentification n''a pas r\u00e9ussi pour l''ID utilisateur {0}. Un ID utilisateur ou un mot de passe non valide a \u00e9t\u00e9 sp\u00e9cifi\u00e9.
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD.explanation=L'ID utilisateur indiqu\u00e9 ou le mot de passe associ\u00e9 ne sont pas valides.
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD.useraction=V\u00e9rifiez que l'ID utilisateur et le mot de passe sont entr\u00e9s correctement. Si le probl\u00e8me persiste, contactez l'administrateur du registre d'utilisateurs.
+
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP=CWWKS1101W: L''authentification CLIENT-CERT a \u00e9chou\u00e9 pour le certificat de client avec le nom distinctif (DN) {0}. Ce DN ne correspond \u00e0 aucun utilisateur dans le registre.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP.explanation=Le certificat de client indiqu\u00e9 ne correspond \u00e0 aucun utilisateur dans le registre.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP.useraction=Assurez-vous que le client fournit un certificat mapp\u00e9 \u00e0 une entr\u00e9e d'utilisateur dans le registre.
+
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR=CWWKS1102E: L''authentification CLIENT-CERT a \u00e9chou\u00e9 pour le certificat de client avec le nom distinctif (DN) {0}. Une exception interne s''est produite : {1}.
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.explanation=CMSG0001
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.useraction=CMSG0002
+
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND=CWWKS1103E: Absence de biblioth\u00e8que partag\u00e9e pour le module de connexion personnalis\u00e9.
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.explanation=L'authentification n'a pas r\u00e9ussi car il n'y a pas de fichier JAR pour le module de connexion personnalis\u00e9 JAAS.
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.useraction=Assurez-vous qu'il existe un fichier JAR valide pour le module de connexion personnalis\u00e9.
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1104W: Aucun module de connexion (loginModule) personnalis\u00e9 JAAS n''est d\u00e9fini pour l''\u00e9l\u00e9ment loginModuleRef {0}.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=L'authentification n'a pas r\u00e9ussi car il n'y a pas de module de connexion d\u00e9fini pour la r\u00e9f\u00e9rence de module de connexion.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=V\u00e9rifiez que l'\u00e9l\u00e9ment loginModuleRef dispose d'un \u00e9l\u00e9ment jaasLoginModule configur\u00e9.
+
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Impossible de charger le module de connexion JAAS \u00e0 partir de la biblioth\u00e8que partag\u00e9e.  Une erreur interne s'est produite.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Une erreur interne s'est produite.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: L''authentification n''a pas r\u00e9ussi pour l''ID utilisateur {0}. Un ID utilisateur non valide a \u00e9t\u00e9 sp\u00e9cifi\u00e9.
+JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=L'authentification n'a pas r\u00e9ussi car l'ID utilisateur sp\u00e9cifi\u00e9 n'est pas valide.
+JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=V\u00e9rifiez que l'ID utilisateur est entr\u00e9 correctement. Si le probl\u00e8me persiste, contactez l'administrateur du registre d'utilisateurs.
+
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Les options WSLoginModuleProxy sont vides ou de type null.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=L'authentification n'a pas abouti car l'\u00e9l\u00e9ment options de WSLoginModuleProxy est vide ou de type null.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=V\u00e9rifiez que la configuration WSLoginModuleProxy inclut l'\u00e9l\u00e9ment options.
+
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: L'option de d\u00e9l\u00e9gation WSLoginModuleProxy n'est pas d\u00e9finie.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=L'authentification n'a pas abouti car l'\u00e9l\u00e9ment jaasLoginModule ayant l'ID WSLoginModuleProxy ne dispose pas de l'attribut delegate dans l'\u00e9l\u00e9ment options.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=V\u00e9rifiez que l'\u00e9l\u00e9ment jaasLoginModule ayant l'ID WSLoginModuleProxy inclut l'attribut delegate dans l'\u00e9l\u00e9ment options.  
+
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: WSLoginModuleProxy n'est pas prise en charge dans jaasLoginContextEntry system.DEFAULT.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=L'entr\u00e9e WSLoginModuleProxy n'est pas prise en charge dans jaasLoginContextEntry system.DEFAULT.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Retirez l'entr\u00e9e proxy de l'attribut loginModuleRef de jaasLoginContextEntry system.DEFAULT.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1120E: jaasLoginContextEntry {0} ne comporte pas de modules de connexion dans loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=L'\u00e9l\u00e9ment jassLoginContextEntry n'a aucun module de connexion sp\u00e9cifi\u00e9 dans l'attribut loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Assurez-vous qu'au moins un module de connexion est sp\u00e9cifi\u00e9 dans l'attribut loginModuleRef.  
+
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME=CWWKS1121W: Authentification r\u00e9ussie pour l''utilisateur {0}. Le nom affich\u00e9 n''a pas pu \u00eatre d\u00e9termin\u00e9 pour l''utilisateur {0} \u00e0 partir du registre LDAP \u00e0 l''aide du filtre userIdMap. Le nom de s\u00e9curit\u00e9, qui est g\u00e9n\u00e9ralement le nom distinctif complet, sera renvoy\u00e9 pour les appels d''API de programmation afin d''obtenir le principal utilisateur.
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.explanation=Le filtre userIDMap LDAP n'a pas pu d\u00e9terminer le nom affich\u00e9 de l'utilisateur. Le nom de s\u00e9curit\u00e9 sera renvoy\u00e9 pour le nom principal pour les appels d'API de programmation comme getUserPrincipal.
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.useraction=Si l'utilisateur doit avoir un nom affich\u00e9, v\u00e9rifiez qu'il est cr\u00e9\u00e9 dans LDAP pour correspondre au filtre userIdMap configur\u00e9.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1122W: En raison du doublon de nom, le nom jaasLoginContextEntry {0}, qui est d\u00e9fini par l''ID {1}, est remplac\u00e9 par la valeur de l''ID {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=Le m\u00eame nom est d\u00e9fini par plusieurs \u00e9l\u00e9ments jassLoginContextEntry. Par cons\u00e9quent, la valeur d'origine est remplac\u00e9e par une autre valeur.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Assurez-vous que chaque \u00e9l\u00e9ment jaasLoginContextEntry a un nom et un ID uniques.
+
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE=CWWKS1123I: Le plug-in d''authentification de collectivit\u00e9 avec le nom de classe {0} a \u00e9t\u00e9 activ\u00e9. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.explanation=Un plug-in d'authentification de collectivit\u00e9 a \u00e9t\u00e9 activ\u00e9 et est maintenant disponible pour authentifier les requ\u00eates de la collectivit\u00e9.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Aucune action n'est requise.
+
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Le plug-in d''authentification de collectivit\u00e9 avec le nom de classe {0} a \u00e9t\u00e9 d\u00e9sactiv\u00e9. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Un plug-in d'authentification de collectivit\u00e9 a \u00e9t\u00e9 d\u00e9sactiv\u00e9 et n'est plus disponible pour authentifier les requ\u00eates de la collectivit\u00e9.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Aucune action n'est requise.

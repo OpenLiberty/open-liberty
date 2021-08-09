@@ -1,0 +1,21 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+<variable name="spLogoutVar" value="false"/>
+
+<!-- java2 permission NOT needed when spLogoutVar is set to false, but, ...
+		since we reconfig from false to true and the jvm needs to start with the permission
+		we need to have the permission set at server startup -->
+<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+
+</server> 

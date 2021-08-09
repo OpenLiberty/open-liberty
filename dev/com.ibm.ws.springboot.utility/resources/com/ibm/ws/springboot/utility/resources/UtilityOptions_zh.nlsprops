@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=\u63cf\u8ff0\uff1a
+global.actions=\u64cd\u4f5c\uff1a
+global.options=\u9009\u9879\uff1a
+global.usage=\u7528\u6cd5\uff1a
+global.required=\u5fc5\u9700\uff1a
+global.options.statement=\t\u4f7f\u7528 help [actionName] \u53ef\u53d6\u5f97\u6bcf\u4e2a\u64cd\u4f5c\u7684\u8be6\u7ec6\u9009\u9879\u4fe1\u606f\u3002
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\t\u6253\u5370\u6307\u5b9a\u64cd\u4f5c\u7684\u5e2e\u52a9\u4fe1\u606f\u3002
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [actionName]
+
+
+# -------- THIN OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+thin.desc=\t\u521b\u5efa\u7cbe\u7b80\u5e94\u7528\u7a0b\u5e8f\u4ee5\u4f9b\u670d\u52a1\u5668\u914d\u7f6e\u4f7f\u7528\u3002
+#Note to translator the word "thin" should not be translated
+thin.usage.options=\t{0} thin --sourceAppPath=path [options]
+
+thin.required-key.sourceapp=\ \ \ \ --sourceAppPath=file
+thin.required-desc.sourceapp=\t\u8981\u7cbe\u7b80\u7684\u6e90\u5e94\u7528\u7a0b\u5e8f\u6587\u4ef6\u7684\u8def\u5f84\u3002
+
+thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=file
+#Note to translator the word ".spring" should not be translated
+thin.optional-desc.targetthinapp=\t\u7528\u4e8e\u4fdd\u5b58\u7cbe\u7b80\u5e94\u7528\u7a0b\u5e8f\u6587\u4ef6\u7684\u8def\u5f84\u3002\n\
+\t\u5982\u679c\u672a\u6307\u5b9a\u6b64\u9009\u9879\uff0c\u90a3\u4e48\u5c06\u5728\u6e90\u5e94\u7528\u7a0b\u5e8f\u7684\u7236\u76ee\u5f55\u4e2d\u521b\u5efa\u5e26\u6709 .spring \u6269\u5c55\u540d\u7684\u65b0\u6587\u4ef6\u3002
+
+thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
+#Note to translator the word "lib.index.cache" should not be translated
+thin.optional-desc.targetlibcache=\t\u7528\u4e8e\u4fdd\u5b58\u5e93\u9ad8\u901f\u7f13\u5b58\u7684\u76ee\u5f55\u8def\u5f84\u3002\n\
+\t\u5982\u679c\u672a\u6307\u5b9a\u6b64\u9009\u9879\uff0c\u90a3\u4e48\u5c06\u5728\u6e90\u5e94\u7528\u7a0b\u5e8f\u7684\u7236\u76ee\u5f55\u4e2d\u521b\u5efa\u540d\u4e3a lib.index.cache \u7684\u76ee\u5f55\u3002
+thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=directory
+thin.optional-desc.parentlibcache=\t\u7236\u4ee3\u53ea\u8bfb\u5e93\u9ad8\u901f\u7f13\u5b58\u7684\u76ee\u5f55\u8def\u5f84\u3002\n\
+\t\u5c06\u5148\u641c\u7d22\u7236\u7ea7\u5e93\u9ad8\u901f\u7f13\u5b58\u4ee5\u67e5\u627e\u73b0\u6709\u5e93\u3002\u5982\u679c\u627e\u4e0d\u5230\u8be5\u5e93\uff0c\u90a3\u4e48\u8868\u793a\u8be5\u5e93\u5b58\u50a8\u5728 --targetLibCachePath \u9009\u9879\u6307\u5b9a\u7684\u53ef\u5199\u5165\u5e93\u9ad8\u901f\u7f13\u5b58\u4e2d\u3002\u5982\u679c\u672a\u6307\u5b9a\u6b64\u9009\u9879\uff0c\u90a3\u4e48\u5c06\u641c\u7d22\u7236\u7ea7\u5e93\u9ad8\u901f\u7f13\u5b58\u3002
+
+
+

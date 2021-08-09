@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2011, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.javamail.repository/resources/com/ibm/ws/javamail/repository/internal/resources/MailMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere JavaMail API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# TODO: Get the correct Message Prefix block for JAVAMAIL feature
+# liberty wiki should have a list of the Message Prefix
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+#-----  JavaMail messages
+
+CWWKX0957I=CWWKX0957I: Objekt javax.mail.Session byl \u00fasp\u011b\u0161n\u011b vytvo\u0159en relac\u00ed po\u0161ty v souboru server.xml
+CWWKX0957I.explanation= Relace po\u0161ty (mailSession) byla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena s informacemi dodan\u00fdmi v souboru server.xml
+CWWKX0957I.useraction= V tuto chv\u00edli nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce

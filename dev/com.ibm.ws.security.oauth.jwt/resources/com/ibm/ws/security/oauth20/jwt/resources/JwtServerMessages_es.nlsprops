@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS2200 - CWWKS2299
+
+JWT_TOKEN_TOO_MANY_TOKENS_ERR=CWWKS2202E: La solicitud de punto final de se\u00f1al ha fallado debido a que se ha encontrado m\u00e1s de una se\u00f1al JWT.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.explanation=La solicitud de punto final de se\u00f1al tiene m\u00e1s de una se\u00f1al JWT. Esto no est\u00e1 permitido.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.useraction=Aseg\u00farese de que la solicitud de punto final de se\u00f1al solo incluya una se\u00f1al JWT.
+
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR=CWWKS2203E: La solicitud de punto final de se\u00f1al ha fallado debido a que no se ha encontrado ninguna se\u00f1al JWT.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.explanation=La solicitud de punto final de se\u00f1al no tiene una se\u00f1al JWT. No se puede procesar.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.useraction=Aseg\u00farese de que la solicitud de punto final de se\u00f1al tenga una se\u00f1al JWT.
+
+JWT_UNEXPECTED_EXCEPTION_ERR=CWWKS2204E: Durante el proceso de la solicitud de se\u00f1al, el proveedor de OpenID Connect ha recibido una excepci\u00f3n inesperada ({0}).
+JWT_UNEXPECTED_EXCEPTION_ERR.explanation=El proveedor de OpenID Connect recibe una excepci\u00f3n no esperada.
+JWT_UNEXPECTED_EXCEPTION_ERR.useraction=P\u00f3ngase en contacto con IBM.
+
+JWT_TOKEN_BAD_NUMBER_ERR=CWWKS2205E: La solicitud de punto final de se\u00f1al ha fallado. La reclamaci\u00f3n ''{0}'' [{1}] incluida en la se\u00f1al JWT no tiene el formato correcto. Debe estar en la hora UTC y debe ser un entero.
+JWT_TOKEN_BAD_NUMBER_ERR.explanation=La reclamaci\u00f3n JWT no tiene el formato de entero de hora UTC esperado.
+JWT_TOKEN_BAD_NUMBER_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n incluida en la se\u00f1al JWT tenga el formato correcto. La hora UTC debe estar en formato num\u00e9rico.
+
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR=CWWKS2206E: La solicitud de punto final de se\u00f1al ha fallado debido a que no se puede verificar la se\u00f1al JWT. Se ha producido una excepci\u00f3n imprevista durante la verificaci\u00f3n de la reclamaci\u00f3n ''sub'', [{0}].
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.explanation=La solicitud de punto final de se\u00f1al ha fallado. No se puede verificar la reclamaci\u00f3n 'sub' de la se\u00f1al JWT. Se ha producido una excepci\u00f3n no esperada durante la verificaci\u00f3n.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n 'sub' incluida en la se\u00f1al JWT sea un usuario v\u00e1lido del proveedor de OpenID.
+
+JWT_TOKEN_BAD_AUD_ERR=CWWKS2207E: La solicitud de punto final de se\u00f1al ha fallado. La se\u00f1al JWT no es v\u00e1lida debido a que este proveedor de OpenID Connect no est\u00e1 incluido en la reclamaci\u00f3n 'aud' (destinatarios).
+JWT_TOKEN_BAD_AUD_ERR.explanation=El proveedor de OpenID Connect ha de estar incluido en la lista de destinatarios de la se\u00f1al JWT. En la configuraci\u00f3n, el ID del proveedor de OpenID Connect es issuerIdentifier o su URL de punto final de se\u00f1al.  
+JWT_TOKEN_BAD_AUD_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n 'aud' incluida en la se\u00f1al JWT incluya el proveedor de OpenID Connect de destino. Compruebe el issuerIdentifier en la configuraci\u00f3n del proveedor de OpenID Connect o su URL de punto final de se\u00f1al. 
+
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR=CWWKS2208E: La solicitud de punto final de se\u00f1al ha fallado debido a que no se puede verificar la se\u00f1al JWT. En la se\u00f1al JWT falta la reclamaci\u00f3n ''{0}'' necesaria.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.explanation=No se puede procesar la solicitud de punto final de se\u00f1al debido a que la se\u00f1al JWT no incluye una reclamaci\u00f3n necesaria.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.useraction=A\u00f1ada la reclamaci\u00f3n necesaria a la se\u00f1al JWT.
+
+JWT_TOKEN_ISS_MISMATCH_ERR=CWWKS2209E: La solicitud de punto final de se\u00f1al ha fallado. La se\u00f1al JWT no es v\u00e1lida debido a que su reclamaci\u00f3n ''iss'' [{0}] no coincide con el URI de redirecci\u00f3n de cliente o el clientId especificado en la configuraci\u00f3n del proveedor de OpenID Connect. 
+JWT_TOKEN_ISS_MISMATCH_ERR.explanation=La reclamaci\u00f3n de emisor en la se\u00f1al JWT debe coincidir con el URI de redirecci\u00f3n de cliente o con el clientId registrado en el proveedor de OpenID Connect.
+JWT_TOKEN_ISS_MISMATCH_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n de emisor sea el URI de redirecci\u00f3n de cliente o el clientId.  Compruebe el clientId o el URI de redirecci\u00f3n en la configuraci\u00f3n del proveedor de OpenID Connect. 
+
+JWT_TOKEN_SUB_NOT_FOUND_ERR=CWWKS2210E: La solicitud de punto final de se\u00f1al ha fallado. La se\u00f1al JWT no es v\u00e1lida debido a que no se encuentra su reclamaci\u00f3n ''sub'' [{0}] en el registro de usuario del proveedor de OpenID Connect.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.explanation=La se\u00f1al JWT no es v\u00e1lida debido a que no se encuentra su reclamaci\u00f3n de sujeto en el registro de usuario del proveedor de OpenID Connect.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n de sujeto incluida en la se\u00f1al JWT sea un usuario del registro de usuarios del proveedor de OpenID Connect.
+
+JWT_TOKEN_EXPIRED_ERR=CWWKS2211E: La solicitud de punto final de se\u00f1al ha fallado debido a que la se\u00f1al JWT ha caducado. El tiempo de caducidad (''exp'') de la reclamaci\u00f3n es [{0}].
+JWT_TOKEN_EXPIRED_ERR.explanation=La se\u00f1al JWT ha caducado. El mensaje de error indica el tiempo de caducidad.
+JWT_TOKEN_EXPIRED_ERR.useraction=Aseg\u00farese de que la se\u00f1al JWT no haya caducado, sincronice la hora entre los sistemas o aumente el periodo de tiempo de caducidad.
+
+JWT_TOKEN_FUTURE_TOKEN_ERR=CWWKS2212E: La solicitud de punto final de se\u00f1al ha fallado debido a que la se\u00f1al JWT no es v\u00e1lida. Su reclamaci\u00f3n ''iat'' es [{0}]. El valor de issued-at-time (''iat'') est\u00e1 en el futuro.
+JWT_TOKEN_FUTURE_TOKEN_ERR.explanation=El valor de iat (issued-at-time) de la se\u00f1al JWT es posterior a la hora actual. No es una hora v\u00e1lida en el momento de su proceso.
+JWT_TOKEN_FUTURE_TOKEN_ERR.useraction=Sincronice la hora entre los sistemas y aseg\u00farese de que la hora de 'iat' sea v\u00e1lida o env\u00ede la se\u00f1al JWT m\u00e1s tarde.
+
+# do not translate tokenMaxLifetime
+JWT_TOKEN_MAX_LIFETIME_ERR=CWWKS2214E: La solicitud de punto final de se\u00f1al ha fallado. La se\u00f1al JWT no es v\u00e1lida debido a que su reclamaci\u00f3n ''iss'' (emitir a las):[{0}] supera el tiempo de vida m\u00e1ximo de se\u00f1al JWT permitido, el cual se ha definido en la configuraci\u00f3n como tokenMaxLifetime: [{1}] segundos.
+JWT_TOKEN_MAX_LIFETIME_ERR.explanation=La se\u00f1ala JWT emitida supera el valor m\u00e1ximo de tiempo de vida de se\u00f1al JWT (valor de tokenMaxLifetime) definido en la configuraci\u00f3n del proveedor de OpenID Connect.
+JWT_TOKEN_MAX_LIFETIME_ERR.useraction=Aseg\u00farese de que la se\u00f1al JWT se emita dentro del valor m\u00e1ximo de tiempo de vida de se\u00f1al JWT o aumente el valor de tokenMaxLifetime en la configuraci\u00f3n del servidor.
+
+JWT_TOKEN_IAT_NEEDED_ERR=CWWKS2215E: La solicitud de punto final de se\u00f1al ha fallado. La se\u00f1al JWT debe proporcionar la reclamaci\u00f3n 'iat' ya que se ha establecido 'iatRequired' en true en la configuraci\u00f3n del proveedor de OpenID Connect.
+JWT_TOKEN_IAT_NEEDED_ERR.explanation=El proveedor de OpenID Connect ha establecido 'iatRequired' como true. En este caso, es necesaria la reclamaci\u00f3n 'iat' en la se\u00f1al JWT. Si falta la reclamaci\u00f3n 'iat' se genera un error.
+JWT_TOKEN_IAT_NEEDED_ERR.useraction=Proporciona una reclamaci\u00f3n 'iat' en la se\u00f1al JWT o establezca 'iatRequired' en false en el proveedor de OpenID Connect.
+
+JWT_TOKEN_BEFORE_ERR=CWWKS2216E: La solicitud de punto final de se\u00f1al ha fallado debido a que se ha solicitado la se\u00f1al JWT antes de su reclamaci\u00f3n ''nbf'': [{0}].
+JWT_TOKEN_BEFORE_ERR.explanation=La se\u00f1al JWT incluye una reclamaci\u00f3n "no antes de las" pero la hora de la solicitud es anterior a la hora de nbf (not-before-time). 
+JWT_TOKEN_BEFORE_ERR.useraction=Aseg\u00farese de que la se\u00f1al JWT se env\u00ede despu\u00e9s de su reclamaci\u00f3n 'nbf' (not-before-time).
+
+JWT_TOKEN_DUP_JTI_ERR=CWWKS2217E: La solicitud de punto final de se\u00f1al ha fallado. Ya se ha enviado otra se\u00f1al JWT con el mismo ''iss'':[{0}] y ''jti'':[{1}].
+JWT_TOKEN_DUP_JTI_ERR.explanation=Una se\u00f1al JWT emitida por el mismo usuario no se puede enviar dos veces. El valor de jti es el ID exclusivo de una se\u00f1al.
+JWT_TOKEN_DUP_JTI_ERR.useraction=Aseg\u00farese de que cada se\u00f1al JWT emitida por el mismo emisor tenga un ID de jti exclusivo.
+
+#
+# Message prefix block: CWWKS2251 - CWWKS2299
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS2251E: La solicitud de punto final de se\u00f1al ha fallado. La se\u00f1al JWT de la solicitud no incluye una reclamaci\u00f3n necesaria ''{0}''.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=La se\u00f1al JWT no contiene todas las reclamaciones necesarias.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Proporcione las reclamaciones necesarias en la se\u00f1al JWT. 
+
+JWT_TOKEN_NO_TOKEN_ERR=CWWKS2257E: La solicitud de punto final de se\u00f1al ha fallado. La solicitud no es v\u00e1lida porque no incluye la se\u00f1al JWT necesaria.
+JWT_TOKEN_NO_TOKEN_ERR.explanation=La solicitud no es v\u00e1lida porque no incluye la se\u00f1al JWT necesaria.
+JWT_TOKEN_NO_TOKEN_ERR.useraction=Aseg\u00farese de que la solicitud contenga una se\u00f1al JWT.
+
+JWT_TOKEN_UNEXPECTED_EXCEPTION=CWWKS2258E: La solicitud de punto final de se\u00f1al ha fallado. El m\u00e9todo [{0}] recibe una excepci\u00f3n imprevista [{1}].
+JWT_TOKEN_UNEXPECTED_EXCEPTION.explanation=El servidor recibe una excepci\u00f3n no esperada.
+JWT_TOKEN_UNEXPECTED_EXCEPTION.useraction=Aseg\u00farese de que la configuraci\u00f3n del archivo server.xml sea correcta. Si es coherente, p\u00f3ngase en contacto con IBM.
+
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR=CWWKS2260E: La solicitud de punto final de se\u00f1al ha fallado debido a que se ha solicitado la se\u00f1al JWT antes de su reclamaci\u00f3n ''nbf''. La hora actual m\u00e1s el desfase horario del proveedor de OpenID Connect es [{0}]. La hora ''nbf'' es [{1}].
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.explanation=La se\u00f1al JWT no es v\u00e1lida. Se ha presentado antes de su reclamaci\u00f3n 'nbf' (not-before-time). 
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.useraction=Aseg\u00farese de que la se\u00f1al JWT de la solicitud sea posterior a la hora de 'nbf' (not-before-time). Sincronice la hora entre el cliente y el proveedor de OpenID Connect o aumente el desfase horario en la configuraci\u00f3n del proveedor de OpenID.
+
+JWT_TOKEN_IAT_FUTURE_ERR=CWWKS2262E: La solicitud de punto final de se\u00f1al ha fallado. La hora de la reclamaci\u00f3n ''iat'' de la se\u00f1al JWT est\u00e1 en el futuro: [{0}]. La hora actual m\u00e1s el desfase horario: [{1}]. 
+JWT_TOKEN_IAT_FUTURE_ERR.explanation=La reclamaci\u00f3n 'iat' de la se\u00f1al JWT indica que la se\u00f1al se ha emitido en el futuro. No es una hora v\u00e1lida en el momento actual en el proveedor de OpenID Connect.
+JWT_TOKEN_IAT_FUTURE_ERR.useraction=Aseg\u00farese de que la hora entre el cliente y el proveedor de OpenID Connect est\u00e9 sincronizada y no emita la se\u00f1al JWT cuyo 'iat' est\u00e1 en el futuro. 
+
+JWT_TOKEN_EXPIRE_ERR=CWWKS2263E: La solicitud de punto final de se\u00f1al ha fallado. La hora de se\u00f1al JWT ha excedido su reclamaci\u00f3n ''exp'': [{0}]. La hora actual m\u00e1s el desfase horario del proveedor de OpenID Connect es [{1}].
+JWT_TOKEN_EXPIRE_ERR.explanation=La hora 'exp' de la se\u00f1al JWT ha excedido la hora actual m\u00e1s el desfase horario. No es v\u00e1lida. 
+JWT_TOKEN_EXPIRE_ERR.useraction=Aseg\u00farese de que la se\u00f1al JWT no caduque o sincronice la hora entre el cliente y el proveedor de OpenID Connect. 
+
+JWT_TOKEN_INVALID_ISS_ERR=CWWKS2265E: La solicitud de punto final de se\u00f1al ha fallado. El emisor de la se\u00f1al JWT [{0}] no coincide con el clientId [{2}] ni con ning\u00fan URI de redirecci\u00f3n, tal como: [{1}]. 
+JWT_TOKEN_INVALID_ISS_ERR.explanation=La reclamaci\u00f3n 'iss' incluida en la se\u00f1al JWT debe ser el ID de cliente o cualquier URI de redirecci\u00f3n de cliente.
+JWT_TOKEN_INVALID_ISS_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n 'iss' incluida en la se\u00f1al JWT sea el ID de cliente o cualquier URI de redirecci\u00f3n de cliente.
+
+JWT_TOKEN_INVALID_AUD_ERR=CWWKS2266E: La solicitud de punto final de se\u00f1al ha fallado. La reclamaci\u00f3n de destinatario [{0}] no coincide con el identificador de emisor de OpenID Connect Provider [{1}] o con el punto final de se\u00f1al [{2}].
+JWT_TOKEN_INVALID_AUD_ERR.explanation=La reclamaci\u00f3n 'aud' incluida en la se\u00f1al JWT ha de ser el identificador de emisor o el punto final de se\u00f1al de OpenID Connect Provider.
+JWT_TOKEN_INVALID_AUD_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n 'aud' incluida en la se\u00f1al JWT sea el identificador de emisor o el punto final de se\u00f1al de OpenID Connect Provider.
+
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR=CWWKS2267E: La solicitud de punto final de se\u00f1al ha fallado. La reclamaci\u00f3n de destinatario es [{0}] y no coincide con el identificador de emisor del proveedor [{1}], que se ha definido como issuerIdentifier de openidConnectProvider en la configuraci\u00f3n.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.explanation=La reclamaci\u00f3n 'aud' incluida en la se\u00f1al JWT ha de ser el identificador de emisor definido de forma expl\u00edcita en la configuraci\u00f3n.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.useraction=Aseg\u00farese de que la reclamaci\u00f3n 'aud' incluida en la se\u00f1al JWT sea el identificador de emisor definido en la configuraci\u00f3n.
+
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR=CWWKS2268E: La solicitud de punto final de se\u00f1al ha fallado. Durante la verificaci\u00f3n de la reclamaci\u00f3n ''sub''  [{0}], se ha recibido una excepci\u00f3n de registro no esperada [{1}]
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.explanation=Durante la verificaci\u00f3n de la reclamaci\u00f3n 'sub' del registro de usuarios del proveedor de OpenID Connect. Se ha producido una excepci\u00f3n imprevista.
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.useraction=Aseg\u00farese de que el registro de usuarios del proveedor de OpenID Connect funcione correctamente y que sub(user) sea un usuario v\u00e1lido del registro.
+
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR=CWWKS2269E: La solicitud de punto final de se\u00f1al ha fallado. No se puede obtener un almac\u00e9n de confianza para verificar la se\u00f1al JWT debido a una excepci\u00f3n [{0}]. Los valores de configuraci\u00f3n de jwtGrantType son signatureAlgorithm: [{1}] trustStoreRef: [{2}] y el nombre de alias es: [{3}]
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.explanation=El algoritmo de firma indicado para la se\u00f1al JWT necesita una clave p\u00fablica para verificar la se\u00f1al JWT de entrada pero no se ha podido obtener una. 
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.useraction=Aseg\u00farese de que la configuraci\u00f3n de jwtGrantType y keyStore es correcta y aseg\u00farese tambi\u00e9n de que la ubicaci\u00f3n de trustStore y la contrase\u00f1a son correctas. 
+
+JWT_TOKEN_NO_PUBLIC_KEY_ERR=CWWKS2270E: La solicitud de punto final de se\u00f1al ha fallado. No se puede obtener un almac\u00e9n de confianza para verificar la se\u00f1al JWT. El algoritmo de firma para la verificaci\u00f3n en el proveedor de OpenID Connect es [{0}]. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.explanation=El proveedor de OpenID Connect no puede obtener un almac\u00e9n de confianza para verificar la se\u00f1al JWT. La configuraci\u00f3n del openidConnectProvider debe ser correcta. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.useraction=Aseg\u00farese de que las configuraciones de jwtGrantType y trustStoreRef en openidConnectProvider son correctas y aseg\u00farese tambi\u00e9n de que la ubicaci\u00f3n de trustStore y la contrase\u00f1a son correctas. 
+
+JWT_UNEXPECTED_ERR=CWWKS2271E: Durante el proceso de solicitud del punto final de la se\u00f1al, el proveedor de OpenID Connect no se ha podido procesar debido a ({0}].
+JWT_UNEXPECTED_ERR.explanation=El proveedor de OpenID Connect recibe un error inesperado
+JWT_UNEXPECTED_ERR.useraction=Aseg\u00farese de que la configuraci\u00f3n es correcta. Si el problema persiste, p\u00f3ngase en contacto con IBM.
+
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR=CWWKS2272E: La solicitud de punto final de la se\u00f1al OAuth ha fallado. La se\u00f1al JWT est\u00e1 firmada con RS256. Solo se admite con el punto final de la se\u00f1al de OpenID Connect.
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.explanation=La se\u00f1al JWT firmada con el algoritmo de firma RS256 no se admite en el punto final de se\u00f1al OAuth. 
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.useraction=Para utilizar la se\u00f1al JWT con el algoritmo de firma RS256, configure correctamente openidConnectProvider y env\u00ede tambi\u00e9n la solicitud mediante el punto final de se\u00f1al de OpenID Connect.

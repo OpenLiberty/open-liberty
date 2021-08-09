@@ -1,0 +1,101 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<SamlUserResolver
+		id="SampleSamlResolver1"
+		service.vendor="IBM"
+		user1="user2"
+		user2="user7"
+		user3="null"
+		user4="" />
+
+	<samlWebSso20
+		id="sp1"
+		authFilterRef="myAuthFilter1"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		nameIDFormat="unspecified"
+	>
+	</samlWebSso20>
+
+
+	<authFilter id="myAuthFilter1">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp1/"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp2"
+		authFilterRef="myAuthFilter2"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA256"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		nameIDFormat="unspecified" />
+
+	<authFilter id="myAuthFilter2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp2/"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp13"
+		authFilterRef="myAuthFilter13"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		nameIDFormat="unspecified" />
+
+	<authFilter id="myAuthFilter13">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp13/"
+			matchType="contains" />
+	</authFilter>
+
+</server>    

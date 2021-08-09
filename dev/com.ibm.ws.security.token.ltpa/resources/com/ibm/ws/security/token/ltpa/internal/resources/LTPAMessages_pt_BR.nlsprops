@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: N\u00e3o h\u00e1 factory de token inicializada.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=A factory do token n\u00e3o foi inicializada.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Valide a configura\u00e7\u00e3o do Token Manager no arquivo server.xml ou qualquer outro recurso especificado pela configura\u00e7\u00e3o.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: N\u00e3o h\u00e1 ID exclusivo com o qual criar o token.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=O par\u00e2metro unique_id \u00e9 nulo ou n\u00e3o foi especificado nos dados do token.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Valide se o usu\u00e1rio possui um ID exclusivo. Se estiver usando um registro do usu\u00e1rio customizado, valide se os dados do token cont\u00eam um valor para o par\u00e2metro unique_id.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: O sistema n\u00e3o pode criar o token LTPA porque a propriedade {0} necess\u00e1ria est\u00e1 ausente.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=A chave especificada est\u00e1 ausente, portanto, o token LTPA n\u00e3o pode ser criado.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Explore o arquivo de propriedades no qual as informa\u00e7\u00f5es chave de LTPA est\u00e3o armazenadas e verifique se as informa\u00e7\u00f5es chave incluem uma chave secreta, uma chave privada e uma chave p\u00fablica.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Criando as chaves LTPA. Isso pode levar alguns segundos.
+LTPA_CREATE_KEYS_START.explanation=As chaves LTPA n\u00e3o existem e s\u00e3o geradas automaticamente. Quaisquer servi\u00e7os que precisam do LTPA n\u00e3o ser\u00e3o iniciados at\u00e9 que as chaves LTPA tenham sido geradas e a configura\u00e7\u00e3o esteja pronta.
+LTPA_CREATE_KEYS_START.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Chaves LTPA criadas em {0} segundos. Arquivo-chave LTPA: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Essa mensagem \u00e9 apenas informativa.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+LTPA_CONFIG_READY=CWWKS4105I: A configura\u00e7\u00e3o de LTPA fica pronta ap\u00f3s {0} segundos.
+LTPA_CONFIG_READY.explanation=Essa mensagem \u00e9 apenas informativa.
+LTPA_CONFIG_READY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: Erro de configura\u00e7\u00e3o LTPA. N\u00e3o foi poss\u00edvel criar ou ler o arquivo-chave LTPA: {0}
+LTPA_CONFIG_ERROR.explanation=As chaves LTPA n\u00e3o puderam ser lidas ou criadas no local especificado.
+LTPA_CONFIG_ERROR.useraction=Assegure que o local esteja acess\u00edvel pelo processo do servidor. Quaisquer FFDCs podem indicar um erro fatal na gera\u00e7\u00e3o ou carregamento das chaves.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: O arquivo de chaves LTPA ou a configura\u00e7\u00e3o foram modificados. As chaves LTPA ser\u00e3o recarregadas do arquivo: {0}
+LTPA_KEYS_TO_LOAD.explanation=As chaves LTPA precisam ser recarregadas porque ocorreu uma mudan\u00e7a no arquivo de chaves LTPA ou na configura\u00e7\u00e3o.
+LTPA_KEYS_TO_LOAD.useraction=Assegure-se de que todos os servidores que participam da Conex\u00e3o \u00danica usem as mesmas chaves LTPA e senha.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: O sistema n\u00e3o pode criar a chave LTPA.
+LTPA_KEY_CREATE_ERROR.explanation=A chave LTPA n\u00e3o pode ser criada.
+LTPA_KEY_CREATE_ERROR.useraction=Quaisquer FFDCs podem indicar um erro fatal na gera\u00e7\u00e3o das chaves.
+
+

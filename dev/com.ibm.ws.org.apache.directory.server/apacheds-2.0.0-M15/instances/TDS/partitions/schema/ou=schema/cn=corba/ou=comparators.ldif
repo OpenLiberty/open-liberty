@@ -1,0 +1,10 @@
+version: 1
+dn: ou=comparators,cn=corba,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 3121ea8f-862d-412e-b2ff-71ff741fa0c2
+entryCSN: 20130919065345.013000Z#000000#000#000000
+entryParentId: 279976bd-d621-4acf-bf11-c812da7ba7f2
+ou: comparators
+createTimestamp: 20130919065353.530Z

@@ -1,0 +1,1144 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+EXCP_DURING_INIT_CWSIT0000.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: Do\u0161lo k intern\u00ed chyb\u011b. Nedefinovan\u00fd objekt {0} byl pou\u017eit k vytvo\u0159en\u00ed instance {1}.
+NULL_USED_TO_CREATE_CWSIT0001.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: Do\u0161lo k intern\u00ed chyb\u011b. Nedefinovan\u00fd objekt {0} byl p\u0159ed\u00e1n p\u0159i vol\u00e1n\u00ed metody {1}.
+NULL_USED_ON_CWSIT0002.explanation=CMSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: Ve vlastnostech p\u0159ipojen\u00ed nebyla nalezena \u017e\u00e1dn\u00e1 vlastnost {0}.
+NULL_PROPERTY_CWSIT0003.explanation=P\u0159i vytv\u00e1\u0159en\u00ed klientsk\u00e9ho p\u0159ipojen\u00ed nebyla ve vlastnostech p\u0159ipojen\u00ed nalezena vy\u017eadovan\u00e1 vlastnost.
+NULL_PROPERTY_CWSIT0003.useraction=Ov\u011b\u0159te, zda je p\u0159i vytv\u00e1\u0159en\u00ed p\u0159ipojen\u00ed vy\u017eadovan\u00e1 vlastnost spr\u00e1vn\u011b zad\u00e1na.
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy ClientConnectionFactory nelze vytvo\u0159it.
+NO_CCF_CWSIT0004.explanation=CMSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy ClientConnection nelze vytvo\u0159it.
+NO_CC_CWSIT0005.explanation=CMSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: Nebylo mo\u017en\u00e9 kontaktovat \u017e\u00e1dn\u00fd ze zadan\u00fdch server\u016f samozaveden\u00ed. Dal\u0161\u00ed podrobnosti naleznete v p\u0159ipojen\u00e9 v\u00fdjimce. K pokus\u016fm o p\u0159ipojen\u00ed k server\u016fm samozaveden\u00ed do\u0161lo u: {0}
+NO_BOOTSTRAP_CWSIT0006.explanation=Klient se nemohl p\u0159ipojit ke sb\u011brnici. Tuto situaci mohou zp\u016fsobit probl\u00e9my konfigurace \u010di probl\u00e9my se s\u00edt\u00ed, nebo aktu\u00e1ln\u011b nejsou po\u017eadovan\u00e9 servery samozaveden\u00ed k dispozici.
+NO_BOOTSTRAP_CWSIT0006.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd server samozaveden\u00ed k dispozici. Podrobnosti t\u00fdkaj\u00edc\u00ed se konfigurov\u00e1n\u00ed p\u0159ipojen\u00ed k serveru samozaveden\u00ed naleznete v Informa\u010dn\u00edm centru.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: Nelze kontaktovat server samozaveden\u00ed v {0} v d\u016fsledku v\u00fdjimky: {1}.
+BOOTSTRAP_FAILED_CWSIT0007.explanation=Klient nem\u016f\u017ee nav\u00e1zat kontakt s uveden\u00fdm serverem samozaveden\u00ed. Tuto situaci mohou zp\u016fsobit probl\u00e9my konfigurace \u010di probl\u00e9my se s\u00edt\u00ed, nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00fd server samozaveden\u00ed. Proces samozaveden\u00ed klient\u016f bude pokra\u010dovat u dal\u0161\u00edho koncov\u00e9ho bodu poskytovatele v seznamu koncov\u00fdch bod\u016f poskytovatele.
+BOOTSTRAP_FAILED_CWSIT0007.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a po\u017eadovan\u00fd server samozaveden\u00ed je k dispozici. Server samozaveden\u00ed je ur\u010den\u00fd ve vlastnosti Poskytovatel koncov\u00e9ho bodu pro tov\u00e1rnu p\u0159ipojen\u00ed JMS. Adresa koncov\u00e9ho bodu m\u00e1 tvar n\u00e1zev_hostitele:\u010d\u00edslo_portu:n\u00e1zev_\u0159et\u011bzu (nap\u0159\u00edklad localhost:7276:BootstrapBasicMessaging). Pro tov\u00e1rnu p\u0159ipojen\u00ed je nutn\u00e9 uv\u00e9st vlastnost Poskytovatel koncov\u00e9ho bodu v p\u0159\u00edpad\u011b, \u017ee se pou\u017e\u00edv\u00e1 server samozaveden\u00ed, kter\u00fd nen\u00ed nastaven\u00fd jako v\u00fdchoz\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: Do\u0161lo k \u00fasp\u011b\u0161n\u00e9mu p\u0159ipojen\u00ed k serveru samozaveden\u00ed v {0}, av\u0161ak server vr\u00e1til chybov\u00fd stav: {1}.
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=Klient se p\u0159ipojil ke sb\u011brnici, av\u0161ak do\u0161lo k probl\u00e9mu p\u0159i pou\u017eit\u00ed slu\u017eby. Tuto situaci mohou zp\u016fsobit probl\u00e9my se s\u00edt\u00ed nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00e1 slu\u017eba.
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00e1 slu\u017eba k dispozici. Podrobnosti t\u00fdkaj\u00edc\u00ed se konfigurov\u00e1n\u00ed p\u0159ipojen\u00ed k serveru samozaveden\u00ed naleznete v Informa\u010dn\u00edm centru.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: P\u0159ipojen\u00ed klienta ke sb\u011brnici {1} se na serveru samozaveden\u00ed nezda\u0159ilo u koncov\u00e9ho bodu {0} z p\u0159\u00ed\u010diny: {2}.
+MIRRORED_FAILURE_CWSIT0009.explanation=Po\u017eadavek na samozaveden\u00ed klienta se nezda\u0159il z p\u0159\u00ed\u010diny probl\u00e9mu na serveru samozaveden\u00ed. Byl vr\u00e1cen d\u016fvod pro selh\u00e1n\u00ed na serveru samozaveden\u00ed. Proces samozaveden\u00ed klient\u016f bude pokra\u010dovat u dal\u0161\u00edho koncov\u00e9ho bodu poskytovatele v seznamu koncov\u00fdch bod\u016f poskytovatele.
+MIRRORED_FAILURE_CWSIT0009.useraction=Zjist\u011bte a vy\u0159e\u0161te selh\u00e1n\u00ed popsan\u00e9 v chybov\u00e9 zpr\u00e1v\u011b a pot\u00e9 operaci zopakujte. 
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: Po\u017eadavek klienta na stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} se nezda\u0159il z p\u0159\u00ed\u010diny {2}.
+MIRRORED_FAILURE_CWSIT0010.explanation=P\u0159ipojen\u00ed klienta ke sb\u011brnici se nezda\u0159ilo z p\u0159\u00ed\u010diny selh\u00e1n\u00ed na serveru. Byl vr\u00e1cen d\u016fvod pro selh\u00e1n\u00ed na serveru.
+MIRRORED_FAILURE_CWSIT0010.useraction=Zjist\u011bte a vy\u0159e\u0161te selh\u00e1n\u00ed popsan\u00e9 v chybov\u00e9 zpr\u00e1v\u011b a pot\u00e9 operaci zopakujte. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: Nelze se p\u0159ipojit ke stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}. P\u0159ipojen\u00ed bylo ztraceno.
+ATTACH_FAILED_CWSIT0011.explanation=Klient nem\u016f\u017ee nav\u00e1zat kontakt s uveden\u00fdm strojem syst\u00e9mu zpr\u00e1v. Tuto situaci mohou zp\u016fsobit probl\u00e9my se s\u00edt\u00ed nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v.
+ATTACH_FAILED_CWSIT0011.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: Do\u0161lo k intern\u00ed chyb\u011b. Nedefinovan\u00fd objekt {0} byl pou\u017eit k vytvo\u0159en\u00ed instance {1}.
+NULL_USED_TO_CREATE_CWSIT0012.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: Do\u0161lo k intern\u00ed chyb\u011b. Nedefinovan\u00fd objekt {0} byl pou\u017eit k vytvo\u0159en\u00ed instance {1}.
+NULL_USED_TO_CREATE_CWSIT0013.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: Po\u017eadavek na p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v se ve stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}, koncov\u00e9m bodu {2} nezda\u0159il z p\u0159\u00ed\u010diny: {3}.
+MIRRORED_FAILURE_CWSIT0014.explanation=Po\u017eadavek na p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v se nezda\u0159il z p\u0159\u00ed\u010diny selh\u00e1n\u00ed ve vzd\u00e1len\u00e9m stroji syst\u00e9mu zpr\u00e1v.
+MIRRORED_FAILURE_CWSIT0014.useraction=Zjist\u011bte a vy\u0159e\u0161te selh\u00e1n\u00ed popsan\u00e9 v chybov\u00e9 zpr\u00e1v\u011b a pot\u00e9 operaci zopakujte. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: Nelze se p\u0159ipojit ke stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}.
+CONNECT_FAILED_CWSIT0015.explanation=Stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee kontaktovat jin\u00fd stroj syst\u00e9mu zpr\u00e1v. Tuto situaci mohou zp\u016fsobit probl\u00e9my se s\u00edt\u00ed nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v.
+CONNECT_FAILED_CWSIT0015.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: Jm\u00e9no u\u017eivatele {0} nepro\u0161lo ov\u011b\u0159ov\u00e1n\u00edm na sb\u011brnici {1}.
+FAILED_AUTHENTICATION_CWSIT0016.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed klienta ke stroji syst\u00e9mu zpr\u00e1v se vzd\u00e1len\u00e9mu stroji syst\u00e9mu zpr\u00e1v nezda\u0159ilo ov\u011b\u0159it. K selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHENTICATION_CWSIT0016.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: Nelze vytvo\u0159it mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} v hostiteli {2} a portu {3} pomoc\u00ed transportn\u00edho \u0159et\u011bzu {4}.
+LINK_FAILED_CWSIT0017.explanation=Stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee kontaktovat jin\u00fd stroj syst\u00e9mu zpr\u00e1v. Tuto situaci mohou zp\u016fsobit probl\u00e9my se s\u00edt\u00ed nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v.
+LINK_FAILED_CWSIT0017.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: Nelze vytvo\u0159it odkaz na sb\u011brnici SIBus {0} se strojem syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} v hostiteli {3} na portu {4} pomoc\u00ed transportn\u00edho \u0159et\u011bzu {5}.
+BRIDGE_FAILED_CWSIT0018.explanation=Stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee kontaktovat jin\u00fd stroj syst\u00e9mu zpr\u00e1v. Tuto situaci mohou zp\u016fsobit probl\u00e9my se s\u00edt\u00ed nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v.
+BRIDGE_FAILED_CWSIT0018.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: Na sb\u011brnici {0}, kter\u00e1 odpov\u00eddala zadan\u00fdm vlastnostem p\u0159ipojen\u00ed {1}, nen\u00ed k dispozici \u017e\u00e1dn\u00fd vhodn\u00fd stroj syst\u00e9mu zpr\u00e1v. P\u0159\u00ed\u010dina selh\u00e1n\u00ed: {2}
+NO_SUITABLE_ME_CWSIT0019.explanation=Klienta nebylo mo\u017en\u00e9 p\u0159ipojit ke sb\u011brnici, proto\u017ee v tomto okam\u017eiku nen\u00ed k dispozici \u017e\u00e1dn\u00fd vhodn\u00fd stroj syst\u00e9mu zpr\u00e1v, kter\u00fd by spl\u0148oval krit\u00e9ria p\u0159ipojen\u00ed ur\u010den\u00e1 vlastnostmi p\u0159ipojen\u00ed.
+NO_SUITABLE_ME_CWSIT0019.useraction=Zopakujte operaci. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, po\u017e\u00e1dejte administr\u00e1tora syst\u00e9mu o kontrolu, zda je k dispozici vhodn\u00fd stroj syst\u00e9mu zpr\u00e1v. P\u0159\u00edpadn\u011b uvoln\u011bte krit\u00e9ria p\u0159ipojen\u00ed ur\u010den\u00e1 vlastnostmi p\u0159ipojen\u00ed a operaci zopakujte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce ve stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} b\u011bhem vytv\u00e1\u0159en\u00ed p\u0159ipojen\u00ed, v\u00fdjimka: {2}.
+EXCEPTION_CWSIT0020.explanation=CMSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: Vy\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nebyl v tomto procesu nalezen.
+NOT_FOUND_CWSIT0021.explanation=Klient nemohl b\u00fdt p\u0159ipojen ke sb\u011brnici, proto\u017ee po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v nebyl nalezen v procesu, ke kter\u00e9mu byl klient p\u0159ipojen.
+NOT_FOUND_CWSIT0021.useraction=Tato chyba je obvykle zp\u016fsobena p\u0159echodn\u00fdm stavem, nap\u0159\u00edklad selh\u00e1n\u00edm serveru b\u011bhem p\u0159esm\u011brov\u00e1n\u00ed klienta. Opakov\u00e1n\u00edm operace by chyba m\u011bla b\u00fdt odstran\u011bna.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: Jm\u00e9no u\u017eivatele {0} nepro\u0161lo ov\u011b\u0159ov\u00e1n\u00edm na sb\u011brnici {1}.
+FAILED_AUTHENTICATION_CWSIT0022.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v nebylo ov\u011b\u0159eno vzd\u00e1len\u00fdm strojem syst\u00e9mu zpr\u00e1v. K selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHENTICATION_CWSIT0022.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: Pravidla topologie nepovoluj\u00ed p\u0159ipojen\u00ed mezi stroji syst\u00e9mu zpr\u00e1v se stejn\u00fdm n\u00e1zvem.
+NOT_ALLOWED_CWSIT0023.explanation=Stroj syst\u00e9mu zpr\u00e1v se stejn\u00fdm n\u00e1zvem se pokusil o p\u0159ipojen\u00ed k tomuto stroji syst\u00e9mu zpr\u00e1v. V r\u00e1mci stejn\u00e9 sb\u011brnice nejsou povoleny dva stroje syst\u00e9mu zpr\u00e1v se stejn\u00fdmi n\u00e1zvy.
+NOT_ALLOWED_CWSIT0023.useraction=Zkontrolujte topologii sb\u011brnice a n\u00e1zvy stroj\u016f syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+EXCP_DURING_INIT_CWSIT0024.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: Stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} se pokusil o vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus se strojem syst\u00e9mu zpr\u00e1v {2}.
+NOT_ALLOWED_CWSIT0026.explanation=Stroj syst\u00e9mu zpr\u00e1v ve stejn\u00e9 sb\u011brnici se pokusil o vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus s t\u00edmto strojem syst\u00e9mu zpr\u00e1v. Pravidla topologie nepovoluj\u00ed odkazy na sb\u011brnici SIBus mezi stroji syst\u00e9mu zpr\u00e1v na stejn\u00e9 sb\u011brnici.
+NOT_ALLOWED_CWSIT0026.useraction=Zkontrolujte topologii sb\u011brnice.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} ke stroji syst\u00e9mu zpr\u00e1v {2} bylo spu\u0161t\u011bno.
+INFO_CWSIT0028.explanation=P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v bylo spu\u0161t\u011bno.
+INFO_CWSIT0028.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} ke stroji syst\u00e9mu zpr\u00e1v {2} bylo zastaveno.
+INFO_CWSIT0029.explanation=P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v bylo zastaveno.
+INFO_CWSIT0029.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: Mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed pro stroj syst\u00e9mu zpr\u00e1v {0} v pods\u00edti {1} na sb\u011brnici {2} ke stroji syst\u00e9mu zpr\u00e1v {3} v pods\u00edti {4} bylo spu\u0161t\u011bno.
+INFO_CWSIT0030.explanation=Mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v bylo spu\u0161t\u011bno.
+INFO_CWSIT0030.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: Mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed pro stroj syst\u00e9mu zpr\u00e1v {0} v pods\u00edti {1} na sb\u011brnici {2} ke stroji syst\u00e9mu zpr\u00e1v {3} v pods\u00edti {4} bylo zastaveno.
+INFO_CWSIT0031.explanation=Mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v bylo zastaveno.
+INFO_CWSIT0031.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: Odkaz na sb\u011brnici SIBus {0} stroje syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} se strojem syst\u00e9mu zpr\u00e1v {3} na sb\u011brnici {4} byl spu\u0161t\u011bn.
+INFO_CWSIT0032.explanation=Odkaz na sb\u011brnici SIBus mezi dv\u011bma stroji syst\u00e9mu zpr\u00e1v byl spu\u0161t\u011bn.
+INFO_CWSIT0032.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: Odkaz na sb\u011brnici SIBus {0} stroje syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} se strojem syst\u00e9mu zpr\u00e1v {3} na sb\u011brnici {4} byl zastaven.
+INFO_CWSIT0033.explanation=Odkaz na sb\u011brnici SIBus mezi dv\u011bma stroji syst\u00e9mu zpr\u00e1v byl zastaven.
+INFO_CWSIT0033.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: Po\u017eadavek na p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v se ve stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nezda\u0159il z p\u0159\u00ed\u010diny: {2}.
+MIRRORED_FAILURE_CWSIT0034.explanation=Po\u017eadavek na p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v ke stroji syst\u00e9mu zpr\u00e1v se nezda\u0159il z p\u0159\u00ed\u010diny selh\u00e1n\u00ed ve vzd\u00e1len\u00e9m stroji syst\u00e9mu zpr\u00e1v. Byl vr\u00e1cen d\u016fvod selh\u00e1n\u00ed ve vzd\u00e1len\u00e9m stroji syst\u00e9mu zpr\u00e1v.
+MIRRORED_FAILURE_CWSIT0034.useraction=Po\u017e\u00e1dejte administr\u00e1tora syst\u00e9mu, aby pomoc\u00ed protokol\u016f vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v pomohl ur\u010dit p\u0159\u00ed\u010dinu tohoto probl\u00e9mu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: Jm\u00e9no u\u017eivatele {0} nepro\u0161lo ov\u011b\u0159ov\u00e1n\u00edm na sb\u011brnici {1}.
+FAILED_AUTHENTICATION_CWSIT0035.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v nebylo ov\u011b\u0159eno vzd\u00e1len\u00fdm strojem syst\u00e9mu zpr\u00e1v. K selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHENTICATION_CWSIT0035.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu klienta p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0036.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu samozaveden\u00ed klienta p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v na sb\u011brnici {0}: p\u0159ijat\u00fd typ zpr\u00e1vy je {1}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {2}.
+PROTOCOL_ERROR_CWSIT0038.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu p\u0159ipojen\u00ed p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0039.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0040.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu odkazu na sb\u011brnici SIBus p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0041.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu p\u0159ipojen\u00ed p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0042.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0043.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it objekt t\u0159\u00eddy MEConnectionFactory.
+NO_MCF_CWSIT0044.explanation=CMSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it objekt t\u0159\u00eddy MEConnectionFactory.
+NO_MCF_CWSIT0045.explanation=CMSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it objekt t\u0159\u00eddy MEConnectionFactory.
+NO_MCF_CWSIT0046.explanation=CMSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it objekt t\u0159\u00eddy MEConnection.
+NO_MC_CWSIT0047.explanation=CMSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it objekt t\u0159\u00eddy MEConnection.
+NO_MC_CWSIT0048.explanation=CMSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze vytvo\u0159it objekt t\u0159\u00eddy MEConnection.
+NO_MC_CWSIT0049.explanation=CMSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: Do\u0161lo k intern\u00ed chyb\u011b. O\u010dek\u00e1van\u00e1 hodnota v bajtech {0} nebyla nalezena. Nam\u00edsto toho byla nalezena hodnota v bajtech {1}.
+INVALID_BYTE_VALUE_CWSIT0053.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: Do\u0161lo k intern\u00ed chyb\u011b. O\u010dek\u00e1van\u00e1 hodnota v bajtech {0} nebyla nalezena. Nam\u00edsto toho byla nalezena hodnota v bajtech {1}.
+INVALID_BYTE_VALUE_CWSIT0054.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: Byla p\u0159ed\u00e1na nespr\u00e1vn\u00e1 hodnota {0} pro vlastnost p\u0159ipojen\u00ed {1}. Platn\u00e9 hodnoty jsou: {2}.
+INVALID_TARGET_TYPE_CWSIT0055.explanation=Aplikace poskytla hodnotu vlastnosti p\u0159ipojen\u00ed, kter\u00e1 nen\u00ed spr\u00e1vn\u00e1. P\u0159ipojen\u00ed nebylo vytvo\u0159eno.
+INVALID_TARGET_TYPE_CWSIT0055.useraction=Pou\u017eijte pro vlastnost p\u0159ipojen\u00ed platnou hodnotu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: Jm\u00e9no u\u017eivatele {0} nepro\u0161lo ov\u011b\u0159ov\u00e1n\u00edm na sb\u011brnici {1}.
+FAILED_AUTHENTICATION_CWSIT0056.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus nebylo ov\u011b\u0159eno vzd\u00e1len\u00fdm strojem syst\u00e9mu zpr\u00e1v. K selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHENTICATION_CWSIT0056.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: Odkaz na sb\u011brnici SIBus {0} selhal ve vzd\u00e1len\u00e9m stroji syst\u00e9mu zpr\u00e1v v hostiteli {1} z p\u0159\u00ed\u010diny {2}.
+MIRRORED_FAILURE_CWSIT0057.explanation=Po\u017eadavek na odkaz na sb\u011brnici SIBus se nezda\u0159il z p\u0159\u00ed\u010diny selh\u00e1n\u00ed ve vzd\u00e1len\u00e9m stroji syst\u00e9mu zpr\u00e1v.
+MIRRORED_FAILURE_CWSIT0057.useraction=Zjist\u011bte a vy\u0159e\u0161te selh\u00e1n\u00ed popsan\u00e9 v chybov\u00e9 zpr\u00e1v\u011b a pot\u00e9 operaci zopakujte. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: Nen\u00ed mo\u017en\u00e9 dokon\u010dit odkaz na sb\u011brnici SIBus {0}, proto\u017ee vzd\u00e1len\u00e1 sb\u011brnice {2} vr\u00e1tila neo\u010dek\u00e1van\u00fd n\u00e1zev stroje syst\u00e9mu zpr\u00e1v {3}; o\u010dek\u00e1van\u00fd n\u00e1zev stroje syst\u00e9mu zpr\u00e1v byl {1}.
+BRIDGE_FAILED_CWSIT0058.explanation=Odkazy na sb\u011brnici SIBus vy\u017eaduj\u00ed, aby n\u00e1zev stroje syst\u00e9mu zpr\u00e1v ve vzd\u00e1len\u00e9 sb\u011brnici odpov\u00eddal n\u00e1zvu stroje syst\u00e9mu zpr\u00e1v konfigurovan\u00e9mu pro odkaz na sb\u011brnici SIBus.
+BRIDGE_FAILED_CWSIT0058.useraction=Zkontrolujte konfiguraci odkazu na sb\u011brnici SIBus a zajist\u011bte, aby ob\u011b sb\u011brnice m\u011bly konfigurov\u00e1n spr\u00e1vn\u00fd n\u00e1zev stroje syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: Nelze vytvo\u0159it odkaz na sb\u011brnici SIBus {0} se strojem syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2}.
+BRIDGE_FAILED_CWSIT0059.explanation=S uveden\u00fdm strojem syst\u00e9mu zpr\u00e1v nelze nav\u00e1zat kontakt. Tuto situaci mohou zp\u016fsobit probl\u00e9my se s\u00edt\u00ed nebo aktu\u00e1ln\u011b nen\u00ed k dispozici po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v.
+BRIDGE_FAILED_CWSIT0059.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: Jm\u00e9no u\u017eivatele {0} nem\u00e1 autorizaci k vytvo\u0159en\u00ed mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v {1}.
+FAILED_AUTHORISATION_CWSIT0060.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v nen\u00ed stejn\u00e9 jako jm\u00e9no u\u017eivatele, pro kter\u00e9 m\u011bl vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v autorizaci k povolen\u00ed vytvo\u0159en\u00ed mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed stroj\u016f syst\u00e9mu zpr\u00e1v.
+FAILED_AUTHORISATION_CWSIT0060.useraction=Ov\u011b\u0159te, zda oba stroje syst\u00e9mu zpr\u00e1v maj\u00ed konfigurov\u00e1no stejn\u00e9 jm\u00e9no u\u017eivatele pro mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroj\u016f syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu odkazu na sb\u011brnici SIBus p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0061.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: Do\u0161lo k intern\u00ed chyb\u011b. Objevila se chyba v protokolu odkazu na sb\u011brnici SIBus p\u0159i komunikaci se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}: p\u0159ijat\u00fd typ zpr\u00e1vy je {2}, ale o\u010dek\u00e1van\u00fd typ zpr\u00e1vy je {3}.
+PROTOCOL_ERROR_CWSIT0062.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: Vy\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nebyl v tomto procesu nalezen.
+NOT_FOUND_CWSIT0063.explanation=Stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee komunikovat se sousedn\u00edm strojem syst\u00e9mu zpr\u00e1v, proto\u017ee sousedn\u00ed stroj syst\u00e9mu zpr\u00e1v nebyl nalezen v procesu, ke kter\u00e9mu je tento stroj syst\u00e9mu zpr\u00e1v p\u0159ipojen.
+NOT_FOUND_CWSIT0063.useraction=Zopakujte operaci. Ov\u011b\u0159te, zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici ve spr\u00e1vn\u00e9m um\u00edst\u011bn\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: Vy\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nebyl v tomto procesu nalezen.
+NOT_FOUND_CWSIT0064.explanation=Stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee komunikovat se sousedn\u00edm strojem syst\u00e9mu zpr\u00e1v, proto\u017ee sousedn\u00ed stroj syst\u00e9mu zpr\u00e1v nebyl nalezen v procesu, ke kter\u00e9mu je tento stroj syst\u00e9mu zpr\u00e1v p\u0159ipojen.
+NOT_FOUND_CWSIT0064.useraction=Zopakujte operaci. Ov\u011b\u0159te, zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici ve spr\u00e1vn\u00e9m um\u00edst\u011bn\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: Vy\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nebyl v tomto procesu nalezen.
+NOT_FOUND_CWSIT0065.explanation=Stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee komunikovat se sousedn\u00edm strojem syst\u00e9mu zpr\u00e1v, proto\u017ee sousedn\u00ed stroj syst\u00e9mu zpr\u00e1v nebyl nalezen v procesu, ke kter\u00e9mu je tento stroj syst\u00e9mu zpr\u00e1v p\u0159ipojen.
+NOT_FOUND_CWSIT0065.useraction=Zopakujte operaci. Ov\u011b\u0159te, zda je po\u017eadovan\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici ve spr\u00e1vn\u00e9m um\u00edst\u011bn\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: Nen\u00ed mo\u017en\u00e9 dokon\u010dit odkaz na sb\u011brnici SIBus {0}, proto\u017ee stroj syst\u00e9mu zpr\u00e1v v \u017e\u00e1daj\u00edc\u00ed sb\u011brnici {1} se pokou\u0161\u00ed o p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v ve stejn\u00e9 sb\u011brnici.
+INVALID_REQUEST_CWSIT0066.explanation=Stroj syst\u00e9mu zpr\u00e1v se pokusil o vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus se strojem syst\u00e9mu zpr\u00e1v ve stejn\u00e9 sb\u011brnici. Odkazy na sb\u011brnici SIBus nejsou povolena mezi stroji syst\u00e9mu zpr\u00e1v ve stejn\u00e9 sb\u011brnici.
+INVALID_REQUEST_CWSIT0066.useraction=Zkontrolujte konfiguraci odkazu na sb\u011brnici SIBus a zajist\u011bte, aby koncov\u00e9 body pro zav\u00e1d\u011bc\u00ed program spr\u00e1vn\u011b sm\u011brovaly na vzd\u00e1lenou sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: Odkaz na sb\u011brnici SIBus {0} nen\u00ed na sb\u011brnici {1} k dispozici.
+UNABLE_TO_FIND_CWSIT0067.explanation=Byl p\u0159ijat po\u017eadavek na odkaz na sb\u011brnici SIBus z jin\u00e9 sb\u011brnice, v c\u00edlov\u00e9 sb\u011brnici v\u0161ak nen\u00ed k dispozici \u017e\u00e1dn\u00fd stroj syst\u00e9mu zpr\u00e1v pro p\u0159\u00edjem po\u017eadavku.
+UNABLE_TO_FIND_CWSIT0067.useraction=Ov\u011b\u0159te, zda je dostupn\u00fd stroj syst\u00e9mu zpr\u00e1v konfigurovan\u00fd pro zpracov\u00e1n\u00ed odkazu na sb\u011brnici SIBus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: Byl p\u0159ijat po\u017eadavek na odkaz na sb\u011brnici SIBus pro {0} ze sb\u011brnice {1} (stroj syst\u00e9mu zpr\u00e1v {2}), ale nebyla nalezena \u017e\u00e1dn\u00e1 odpov\u00eddaj\u00edc\u00ed definice konfigurace.
+UNABLE_TO_FIND_CWSIT0068.explanation=Byl p\u0159ijat po\u017eadavek na odkaz na sb\u011brnici SIBus z jin\u00e9 sb\u011brnice, ale nelze nal\u00e9zt \u017e\u00e1dnou definici konfigurace, kter\u00e1 by po\u017eadavku odpov\u00eddala. Po\u017eadavek byl odm\u00edtnut.
+UNABLE_TO_FIND_CWSIT0068.useraction=Ov\u011b\u0159te, zda jsou konfigurace odkazu na sb\u011brnici SIBus v obou sb\u011brnic\u00edch spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: Pro p\u0159ipojen\u00ed s pou\u017eit\u00edm odkazu na sb\u011brnici SIBus {0} na sb\u011brnici {1} nebyla nalezena \u017e\u00e1dn\u00e1 odpov\u00eddaj\u00edc\u00ed konfigurace.
+UNABLE_TO_FIND_CWSIT0069.explanation=Po\u017eadavek na odkaz na sb\u011brnici SIBus byl odm\u00edtnut jinou sb\u011brnic\u00ed, proto\u017ee nelze nal\u00e9zt \u017e\u00e1dnou definici konfigurace, kter\u00e1 by po\u017eadavku odpov\u00eddala.
+UNABLE_TO_FIND_CWSIT0069.useraction=Ov\u011b\u0159te, zda jsou konfigurace odkazu na sb\u011brnici SIBus v obou sb\u011brnic\u00edch spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: Byl p\u0159ijat po\u017eadavek na odkaz na sb\u011brnici SIBus pro p\u0159ipojen\u00ed {0} ze sb\u011brnice {1} (stroj syst\u00e9mu zpr\u00e1v {2}), definice konfigurace v\u0161ak o\u010dek\u00e1v\u00e1 stroj syst\u00e9mu zpr\u00e1v {3}.
+NOT_ALLOWED_CWSIT0070.explanation=Byl p\u0159ijat po\u017eadavek na odkaz na sb\u011brnici SIBus ze stroje syst\u00e9mu zpr\u00e1v v jin\u00e9 sb\u011brnici, kter\u00fd nen\u00ed strojem syst\u00e9mu zpr\u00e1v uveden\u00fdm v definici konfigurace v t\u00e9to sb\u011brnici. Po\u017eadavek byl odm\u00edtnut.
+NOT_ALLOWED_CWSIT0070.useraction=Ov\u011b\u0159te, zda jsou konfigurace odkazu na sb\u011brnici SIBus v obou sb\u011brnic\u00edch spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: Po\u017eadavek na odkaz na sb\u011brnici SIBus pro {0} byl odm\u00edtnut sb\u011brnic\u00ed {1}, proto\u017ee \u017e\u00e1daj\u00edc\u00ed stroj syst\u00e9mu zpr\u00e1v {2} neodpov\u00eddal stroji syst\u00e9mu zpr\u00e1v {3}.
+NOT_ALLOWED_CWSIT0071.explanation=Vzd\u00e1len\u00e1 sb\u011brnice zjistila nekonzistenci ve stroji syst\u00e9mu zpr\u00e1v uveden\u00e9m v po\u017eadavku na odkaz na sb\u011brnici SIBus vytvo\u0159en\u00e9m v t\u00e9to sb\u011brnici a ve vlastn\u00ed definici konfigurace odkazu na sb\u011brnici SIBus.
+NOT_ALLOWED_CWSIT0071.useraction=Ov\u011b\u0159te, zda jsou konfigurace odkazu na sb\u011brnici SIBus v obou sb\u011brnic\u00edch spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: Nelze z\u00edskat ov\u011b\u0159ovac\u00ed data z aliasu ov\u011b\u0159ov\u00e1n\u00ed {0} pro mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=Pokud alias ov\u011b\u0159ov\u00e1n\u00ed neexistuje nebo je chybn\u011b konfigurov\u00e1n, nebude mo\u017en\u00e9 z n\u011bj z\u00edsk\u00e1vat data ov\u011b\u0159ov\u00e1n\u00ed. Jako ov\u011b\u0159ovac\u00ed data po\u017eadovan\u00e1 pro mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroj\u016f syst\u00e9mu zpr\u00e1v budou p\u0159edpokl\u00e1d\u00e1ny v\u00fdchoz\u00ed hodnoty pr\u00e1zdn\u00fdch \u0159et\u011bzc\u016f. Pokud je povoleno zabezpe\u010den\u00ed, zabr\u00e1n\u00ed tento probl\u00e9m p\u0159ipojen\u00ed stroj\u016f syst\u00e9mu zpr\u00e1v.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=Ov\u011b\u0159te, zda je alias mezisb\u011brnicov\u00e9ho ov\u011b\u0159ov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v spr\u00e1vn\u011b konfigurov\u00e1n.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: Nen\u00ed konfigurov\u00e1n \u017e\u00e1dn\u00fd alias mezisb\u011brnicov\u00e9ho ov\u011b\u0159ov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v.
+NO_AUTHALIAS_CWSIT0073.explanation=Pokud nen\u00ed konfigurov\u00e1n \u017e\u00e1dn\u00fd alias mezisb\u011brnicov\u00e9ho ov\u011b\u0159ov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v, nebude provedena \u017e\u00e1dn\u00e1 ov\u011b\u0159ovac\u00ed kontrola pro mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroj\u016f syst\u00e9mu zpr\u00e1v. Chcete-li ov\u011b\u0159ovat mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed stroj\u016f syst\u00e9mu zpr\u00e1v, konfigurujte alias mezisb\u011brnicov\u00e9ho ov\u011b\u0159ov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v.
+NO_AUTHALIAS_CWSIT0073.useraction=Konfigurujte alias mezisb\u011brnicov\u00e9ho ov\u011b\u0159ov\u00e1n\u00ed stroje syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: Do\u0161lo k intern\u00ed chyb\u011b. UUID propojen\u00ed {0} je ji\u017e definov\u00e1no.
+ALREADY_DEFINED_CWSIT0074.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: Do\u0161lo k intern\u00ed chyb\u011b. UUID propojen\u00ed {0} je ji\u017e definov\u00e1no.
+ALREADY_DEFINED_CWSIT0075.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: Do\u0161lo k intern\u00ed chyb\u011b. UUID propojen\u00ed {0} nebylo definov\u00e1no.
+UNDEFINED_CWSIT0076.explanation=CMSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: Do\u0161lo k intern\u00ed chyb\u011b. UUID propojen\u00ed {0} nebylo definov\u00e1no.
+UNDEFINED_CWSIT0077.explanation=CMSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: Do\u0161lo k intern\u00ed chyb\u011b. Propojen\u00ed s UUID {0} nelze registrovat, proto\u017ee propojen\u00ed nen\u00ed spu\u0161t\u011bno.
+NOT_STARTED_CWSIT0078.explanation=CMSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: Do\u0161lo k intern\u00ed chyb\u011b. Propojen\u00ed s UUID {0} nelze registrovat, proto\u017ee propojen\u00ed nen\u00ed aktivn\u00ed.
+NOT_ACTIVE_CWSIT0079.explanation=CMSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: Nelze vytvo\u0159it odkaz na sb\u011brnici SIBus {0} ze sb\u011brnice {1} na sb\u011brnici {2}, proto\u017ee propojen\u00ed na sb\u011brnici {3} nen\u00ed spu\u0161t\u011bno.
+NOT_STARTED_CWSIT0080.explanation=Odkaz na sb\u011brnici SIBus je aktu\u00e1ln\u011b spu\u0161t\u011bno v jedn\u00e9 sb\u011brnici, nen\u00ed v\u0161ak spu\u0161t\u011bno ve druh\u00e9 sb\u011brnici. P\u0159ipojen\u00ed bude mo\u017en\u00e9 a\u017e po spu\u0161t\u011bn\u00ed propojen\u00ed v obou sb\u011brnic\u00edch.
+NOT_STARTED_CWSIT0080.useraction=Zastavte odkaz na sb\u011brnici SIBus v odes\u00edlaj\u00edc\u00ed sb\u011brnici nebo spus\u0165te propojen\u00ed v p\u0159ij\u00edmaj\u00edc\u00ed sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159emos\u0165uj\u00edc\u00ed soused s UUID {0} nebyl v sousedstv\u00ed nalezen.
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: Do\u0161lo k intern\u00ed chyb\u011b. Soused s UUID {0} nebyl v sousedstv\u00ed nalezen.
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: Jm\u00e9no u\u017eivatele {0} nem\u00e1 autorizaci k vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus {1} mezi sb\u011brnic\u00ed {2} a sb\u011brnic\u00ed {3}.
+FAILED_AUTHORISATION_CWSIT0085.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed pro odkaz na sb\u011brnici SIBus nebylo stejn\u00e9 jako jm\u00e9no u\u017eivatele, pro kter\u00e9 m\u011bl vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v autorizaci k povolen\u00ed vytv\u00e1\u0159en\u00ed p\u0159ipojen\u00ed pro odkaz na sb\u011brnici SIBus.
+FAILED_AUTHORISATION_CWSIT0085.useraction=Ov\u011b\u0159te, zda oba stroje syst\u00e9mu zpr\u00e1v maj\u00ed pro tento odkaz na sb\u011brnici SIBus konfigurov\u00e1no stejn\u00e9 jm\u00e9no u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: Sb\u011brnice {0} nebyla nalezena.
+BUS_NOT_FOUND_CWSIT0086.explanation=Po\u017eadovan\u00e1 sb\u011brnice nen\u00ed na serveru konfigurov\u00e1na, a proto nen\u00ed mo\u017en\u00e9 pou\u017e\u00edt tento server pro p\u0159ipojen\u00ed k po\u017eadovan\u00e9 sb\u011brnici.
+BUS_NOT_FOUND_CWSIT0086.useraction=Ov\u011b\u0159te, zda je n\u00e1zev sb\u011brnice spr\u00e1vn\u00fd, a pou\u017eijte server, kter\u00fd m\u00e1 konfigurov\u00e1nu po\u017eadovanou sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: Byl p\u0159ijat po\u017eadavek na mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed ze stroje syst\u00e9mu zpr\u00e1v {1}, ale nebyla nalezena \u017e\u00e1dn\u00e1 odpov\u00eddaj\u00edc\u00ed definice konfigurace.
+UNABLE_TO_FIND_CWSIT0087.explanation=Byl p\u0159ijat po\u017eadavek na mezisb\u011brnicov\u00e9 p\u0159ipojen\u00ed z jin\u00e9ho stroje syst\u00e9mu zpr\u00e1v, ale nelze nal\u00e9zt \u017e\u00e1dnou definici konfigurace, kter\u00e1 by po\u017eadavku odpov\u00eddala. Po\u017eadavek byl odm\u00edtnut.
+UNABLE_TO_FIND_CWSIT0087.useraction=Ov\u011b\u0159te, zda jsou konfigurace mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed v obou stroj\u00edch syst\u00e9mu zpr\u00e1v spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: V sou\u010dasn\u00e9 dob\u011b nejsou na sb\u011brnici {0} spu\u0161t\u011bny \u017e\u00e1dn\u00e9 stroje syst\u00e9mu zpr\u00e1v. Dal\u0161\u00ed informace o selh\u00e1n\u00ed: {1}
+NO_MES_STARTED_CWSIT0088.explanation=Klient nemohl b\u00fdt p\u0159ipojen ke sb\u011brnici, proto\u017ee v sou\u010dasn\u00e9 dob\u011b nejsou na po\u017eadovan\u00e9 sb\u011brnici spu\u0161t\u011bny \u017e\u00e1dn\u00e9 stroje syst\u00e9mu zpr\u00e1v.
+NO_MES_STARTED_CWSIT0088.useraction=Zopakujte operaci. Spus\u0165te stroj syst\u00e9mu zpr\u00e1v v po\u017eadovan\u00e9 sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: Jm\u00e9no u\u017eivatele {0} nepro\u0161lo ov\u011b\u0159ov\u00e1n\u00edm na sb\u011brnici {1}.
+FAILED_AUTHENTICATION_CWSIT0089.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed klienta ke stroji syst\u00e9mu zpr\u00e1v nebylo vzd\u00e1len\u00fdm strojem syst\u00e9mu zpr\u00e1v ov\u011b\u0159eno. K selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHENTICATION_CWSIT0089.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: Na sb\u011brnici {0} byl zad\u00e1n po\u017eadavek na samozaveden\u00ed prost\u0159ednictv\u00edm \u0159et\u011bzu kan\u00e1lu {1}. Pou\u017eit\u00ed tohoto \u0159et\u011bzu nen\u00ed povoleno sb\u011brnic\u00ed {0}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=Klient se pokusil o odesl\u00e1n\u00ed po\u017eadavku na samozaveden\u00ed, aby se mohl p\u0159ipojit ke sb\u011brnici, sb\u011brnice v\u0161ak nepovoluje po\u017eadavky na samozaveden\u00ed prost\u0159ednictv\u00edm p\u0159\u00edslu\u0161n\u00e9ho kan\u00e1lu.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=Zm\u011b\u0148te konfiguraci klienta tak, aby koncov\u00fd bod pro zav\u00e1d\u011bc\u00ed program pou\u017e\u00edval povolen\u00fd \u0159et\u011bz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: Do\u0161lo k \u00fasp\u011b\u0161n\u00e9mu vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus se strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} bez uveden\u00ed aliasu ov\u011b\u0159ov\u00e1n\u00ed odkazu na sb\u011brnici SIBus. Z bezpe\u010dnostn\u00edch d\u016fvod\u016f se doporu\u010duje nastavit alias ov\u011b\u0159ov\u00e1n\u00ed.
+NO_AUTHALIAS_CWSIT0091.explanation=Kdy\u017e alias ov\u011b\u0159ov\u00e1n\u00ed sb\u011brnice SIBus nen\u00ed nastaven pro odkaz na sb\u011brnici SIBus, je mo\u017en\u00e9 vytvo\u0159it odkaz na sb\u011brnici SIBus mezi zabezpe\u010denou a nezabezpe\u010denou sb\u011brnic\u00ed, ani\u017e by doch\u00e1zelo ke kontrole ov\u011b\u0159ov\u00e1n\u00ed.
+NO_AUTHALIAS_CWSIT0091.useraction=Chcete-li vynutit kontrolu ov\u011b\u0159ov\u00e1n\u00ed, nastavte alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159i odkazu na sb\u011brnici SIBus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: Do\u0161lo k pokusu o p\u0159ipojen\u00ed ke sb\u011brnici {0} prost\u0159ednictv\u00edm \u0159et\u011bzu kan\u00e1lu {1}. Pou\u017eit\u00ed tohoto \u0159et\u011bzu nen\u00ed povoleno sb\u011brnic\u00ed {0}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=Klient se pokusil o odesl\u00e1n\u00ed po\u017eadavku na p\u0159ipojen\u00ed ke sb\u011brnici, sb\u011brnice v\u0161ak nepovoluje p\u0159ipojen\u00ed prost\u0159ednictv\u00edm \u0159et\u011bzu kan\u00e1lu.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=Zm\u011b\u0148te konfiguraci klienta tak, aby se p\u0159ipojoval prost\u0159ednictv\u00edm povolen\u00e9ho \u0159et\u011bzu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: Sb\u011brnice {0} se pokusila o vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus s ciz\u00ed sb\u011brnic\u00ed {1} prost\u0159ednictv\u00edm \u0159et\u011bzu kan\u00e1lu samozaveden\u00ed {2}. Pou\u017eit\u00ed tohoto \u0159et\u011bzu nen\u00ed povoleno ciz\u00ed sb\u011brnic\u00ed {1}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=Sb\u011brnice se pokusila o pou\u017eit\u00ed transportn\u00edho \u0159et\u011bzu samozaveden\u00ed, kter\u00fd nen\u00ed podporov\u00e1n ciz\u00ed sb\u011brnic\u00ed.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=Zm\u011b\u0148te konfiguraci sb\u011brnice tak, aby koncov\u00fd bod pro zav\u00e1d\u011bc\u00ed program pou\u017e\u00edval \u0159et\u011bz povolen\u00fd ciz\u00ed sb\u011brnic\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: Klienta nebyl autorizov\u00e1n pro p\u0159ipojen\u00ed ke sb\u011brnici {0} pomoc\u00ed serveru samozaveden\u00ed s koncov\u00fdm bodem {1}. P\u0159\u00ed\u010dina: {2}.
+NOT_AUTHORIZED_CWSIT0094.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed se sb\u011brnic\u00ed nebylo autorizov\u00e1no pro p\u0159ipojen\u00ed ke sb\u011brnici.
+NOT_AUTHORIZED_CWSIT0094.useraction=Ov\u011b\u0159te, \u017ee je p\u0159\u00edslu\u0161n\u00e9mu jm\u00e9nu u\u017eivatele p\u0159i\u0159azena role konektoru sb\u011brnice.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: Stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} se pokusil o vytvo\u0159en\u00ed odkazu na sb\u011brnici SIBus se strojem syst\u00e9mu zpr\u00e1v {2} na ciz\u00ed sb\u011brnici {3} prost\u0159ednictv\u00edm p\u0159\u00edchoz\u00edho \u0159et\u011bzu kan\u00e1lu {4}. Pou\u017eit\u00ed tohoto \u0159et\u011bzu nen\u00ed povoleno ciz\u00ed sb\u011brnic\u00ed {3}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=Sb\u011brnice se pokusila o pou\u017eit\u00ed p\u0159\u00edchoz\u00edho transportn\u00edho \u0159et\u011bzu, kter\u00fd nen\u00ed podporov\u00e1n ciz\u00ed sb\u011brnic\u00ed.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=Zm\u011b\u0148te konfiguraci sb\u011brnice tak, aby se p\u0159ipojovala k \u0159et\u011bzu povolen\u00e9mu ciz\u00ed sb\u011brnic\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: Stroj syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} se pokusil o p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {2} prost\u0159ednictv\u00edm p\u0159\u00edchoz\u00edho \u0159et\u011bzu kan\u00e1lu {3}. Pou\u017eit\u00ed tohoto \u0159et\u011bzu nen\u00ed povoleno sb\u011brnic\u00ed {1}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=Sb\u011brnice byla konfigurov\u00e1na k pou\u017eit\u00ed \u0159et\u011bzu transportn\u00edho kan\u00e1lu, kter\u00fd nen\u00ed povolen pro komunikaci mezi stroji syst\u00e9mu zpr\u00e1v.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=Zm\u011b\u0148te konfiguraci sb\u011brnice tak, aby jako transportn\u00ed \u0159et\u011bz mezi stroji uv\u00e1d\u011bla povolen\u00fd \u0159et\u011bz. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: Stroj syst\u00e9mu zpr\u00e1v {0} v pods\u00edti {1} se pokusil o p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {2} v pods\u00edti {3} prost\u0159ednictv\u00edm p\u0159\u00edchoz\u00edho \u0159et\u011bzu kan\u00e1lu {4}. Pou\u017eit\u00ed tohoto \u0159et\u011bzu nen\u00ed povoleno sb\u011brnic\u00ed {5}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=Sb\u011brnice se pokusila o pou\u017eit\u00ed \u0159et\u011bzu transportn\u00edho kan\u00e1lu, kter\u00fd nen\u00ed povolen.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=Zm\u011b\u0148te konfiguraci sb\u011brnice tak, aby se p\u0159ipojovala pomoc\u00ed povolen\u00e9ho \u0159et\u011bzu transportn\u00edho kan\u00e1lu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: P\u0159ipojen\u00ed klienta ke sb\u011brnici {0} pomoc\u00ed serveru samozaveden\u00ed s koncov\u00fdm bodem {1} nepro\u0161lo ov\u011b\u0159ov\u00e1n\u00edm z p\u0159\u00ed\u010diny: {2}.
+FAILED_AUTHENTICATION_CWSIT0098.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed klienta ke stroji syst\u00e9mu zpr\u00e1v nebylo vzd\u00e1len\u00fdm strojem syst\u00e9mu zpr\u00e1v ov\u011b\u0159eno. K selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHENTICATION_CWSIT0098.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: Klient \u00fasp\u011b\u0161n\u011b kontaktoval server samozaveden\u00ed v koncov\u00e9m bod\u011b {0} a byl p\u0159esm\u011brov\u00e1n do stroje syst\u00e9mu zpr\u00e1v {1} v koncov\u00e9m bod\u011b {2}. Pokus o kontaktov\u00e1n\u00ed tohoto koncov\u00e9ho bodu se nezda\u0159il z p\u0159\u00ed\u010diny: {3}.
+REDIRECT_FAILURE_CWSIT0099.explanation=P\u0159ipojen\u00ed klienta ke sb\u011brnici po p\u0159esm\u011brov\u00e1n\u00ed se nezda\u0159ilo z p\u0159\u00ed\u010diny selh\u00e1n\u00ed na serveru. Byl vr\u00e1cen d\u016fvod pro selh\u00e1n\u00ed na serveru.
+REDIRECT_FAILURE_CWSIT0099.useraction=Zjist\u011bte a vy\u0159e\u0161te selh\u00e1n\u00ed popsan\u00e9 v chybov\u00e9 zpr\u00e1v\u011b a pot\u00e9 operaci zopakujte. 
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: Bylo o\u010dek\u00e1v\u00e1no z\u00edsk\u00e1n\u00ed koncov\u00e9ho bodu CFEndpoint z v\u00fdb\u011bru, ale \u017e\u00e1dn\u00fd nebyl poskytnut (intern\u00ed chyba).
+BAD_SELECT_CWSIT0100.explanation=Po\u017eadavek na rozpozn\u00e1n\u00ed c\u00edlov\u00e9ho stroje syst\u00e9mu zpr\u00e1v selhal.
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: Byl zji\u0161t\u011bn neplatn\u00fd parametr.
+INVALID_PARAMETER_CWSIT0101.explanation=Po\u017eadavek na rozpozn\u00e1n\u00ed c\u00edlov\u00e9ho stroje syst\u00e9mu zpr\u00e1v selhal.
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: V\u00fdb\u011br stroje syst\u00e9mu zpr\u00e1v {0} byl nalezen, ale musel b\u00fdt zahozen, proto\u017ee nespl\u0148uje omezen\u00ed bl\u00edzkosti p\u0159ipojen\u00ed ({1}), kter\u00e9 bylo zad\u00e1no aplikac\u00ed.
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=Po\u017eadavek na rozpozn\u00e1n\u00ed c\u00edlov\u00e9ho stroje syst\u00e9mu zpr\u00e1v selhal.
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=Pokud jste cht\u011bli, aby bylo vytvo\u0159eno p\u0159ipojen\u00ed k stroji syst\u00e9mu zpr\u00e1v zobrazen\u00e9m v chybov\u00e9 zpr\u00e1v\u011b, mus\u00edte sn\u00ed\u017eit hodnotu bl\u00edzkosti p\u0159ipojen\u00ed v tov\u00e1rn\u011b p\u0159ipojen\u00ed nebo specifikaci aktivace a zopakovat akci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: Nebyl nalezen \u017e\u00e1dn\u00fd stroj syst\u00e9mu zpr\u00e1v, kter\u00fd by odpov\u00eddal n\u00e1sleduj\u00edc\u00edm parametr\u016fm: sb\u011brnice={0}, c\u00edlov\u00e1 skupina={1}, typ c\u00edle={2}, v\u00fdznamnost c\u00edle={3}, transportn\u00ed \u0159et\u011bz={4}, bl\u00edzkost={5}.
+NULL_SELECTION_CWSIT0103.explanation=Po\u017eadavek na rozpozn\u00e1n\u00ed c\u00edlov\u00e9ho stroje syst\u00e9mu zpr\u00e1v selhal.
+NULL_SELECTION_CWSIT0103.useraction=Zkontroluje stav stroje syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu se chcete p\u0159ipojit, a ov\u011b\u0159te, zda je spu\u0161t\u011bn\u00fd. P\u0159\u00edpadn\u011b upravte vlastnosti p\u0159ipojen\u00ed tak, aby umo\u017e\u0148ovala v\u00fdb\u011br aktivn\u00edho stroje syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: Klient se pokusil o p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1}, av\u0161ak p\u0159ipojen\u00ed nebylo mo\u017en\u00e9 vytvo\u0159it, proto\u017ee stroj syst\u00e9mu zpr\u00e1v nebyl spu\u0161t\u011bn.
+ME_NOT_STARTED_CWSIT0104.explanation=Stroj syst\u00e9mu zpr\u00e1v existuje, ale nen\u00ed spu\u0161t\u011bn.
+ME_NOT_STARTED_CWSIT0104.useraction=Spus\u0165te stroj syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu se chcete p\u0159ipojit, a operaci zopakujte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: Aplikace neuvedla p\u0159i pokusu o ov\u011b\u0159en\u00ed na sb\u011brnici {0} jm\u00e9no u\u017eivatele.
+FAILED_AUTHENTICATION_CWSIT0105.explanation=Ov\u011b\u0159ov\u00e1n\u00ed u vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v se nezda\u0159ilo, proto\u017ee aplikace neuvedla jm\u00e9no u\u017eivatele.
+FAILED_AUTHENTICATION_CWSIT0105.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: Odkaz na sb\u011brnici SIBus {0} se strojem syst\u00e9mu zpr\u00e1v {1} na sb\u011brnici {2} v hostiteli {3} na portu {4} pomoc\u00ed transportn\u00edho \u0159et\u011bzu {5} bylo \u00fasp\u011b\u0161n\u011b vytvo\u0159eno.
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=Byl vytvo\u0159en most s jin\u00fdm strojem syst\u00e9mu zpr\u00e1v na jin\u00e9 sb\u011brnici.
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: Ur\u010den\u00fd port {0} v koncov\u00e9m bodu implikuje pou\u017eit\u00ed transportn\u00edho \u0159et\u011bzu {1}. D\u016fsledkem je, \u017ee se hesla budou mezi klientem a serverem p\u0159en\u00e1\u0161et v ne\u0161ifrovan\u00e9m tvaru. Tento p\u0159enos se z bezpe\u010dnostn\u00edch d\u016fvod\u016f nedoporu\u010duje.
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=V koncov\u00e9m bodu poskytovatele je vybr\u00e1n v\u00fdchoz\u00ed port a n\u00e1zev \u0159et\u011bzu nebyl ur\u010den. V\u00fdsledkem je nezabezpe\u010den\u00fd transportn\u00ed \u0159et\u011bz. Doporu\u010duje se ur\u010dit zabezpe\u010den\u00ed pro toto p\u0159ipojen\u00ed.
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=Tomuto varov\u00e1n\u00ed m\u016f\u017eete p\u0159edej\u00edt ru\u010dn\u00edm zad\u00e1n\u00edm po\u017eadovan\u00e9ho transportn\u00edho \u0159et\u011bzu (zabezpe\u010den\u00fd nebo nezabezpe\u010den\u00fd) nebo vynech\u00e1n\u00edm hesla p\u0159i vytvo\u0159en\u00ed p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: Jm\u00e9no u\u017eivatele {0} nepro\u0161lo autorizac\u00ed ve sb\u011brnici {1}.
+FAILED_AUTHORIZATION_CWSIT0108.explanation=Jm\u00e9no u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed klienta ke stroji syst\u00e9mu zpr\u00e1v nebylo vzd\u00e1len\u00fdm strojem syst\u00e9mu zpr\u00e1v autorizov\u00e1no. K selh\u00e1n\u00ed autorizace do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b jm\u00e9na u\u017eivatele nebo hesla.
+FAILED_AUTHORIZATION_CWSIT0108.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: Aplikace neuvedla p\u0159i pokusu o autorizaci ve sb\u011brnici {0} jm\u00e9no u\u017eivatele.
+FAILED_AUTHORIZATION_CWSIT0109.explanation=Autorizace u vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v se nezda\u0159ila, proto\u017ee aplikace neuvedla jm\u00e9no u\u017eivatele.
+FAILED_AUTHORIZATION_CWSIT0109.useraction=Ov\u011b\u0159te, zda hodnoty jm\u00e9na u\u017eivatele a hesla jsou spr\u00e1vn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: Token zabezpe\u010den\u00ed poskytnut\u00fd strojem syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nepro\u0161el ov\u011b\u0159ov\u00e1n\u00edm.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=Token zabezpe\u010den\u00ed pou\u017eit\u00fd k vytvo\u0159en\u00ed mezisb\u011brnicov\u00e9ho p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v se nezda\u0159ilo ov\u011b\u0159it.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: Informace o identit\u011b p\u0159edan\u00e9 prost\u0159ednictv\u00edm tokenu zabezpe\u010den\u00ed neodpov\u00eddaj\u00ed \u00fadaj\u016fm v po\u017eadavku na p\u0159ipojen\u00ed zadan\u00e9m strojem syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1}.
+TOKEN_INCONSISTENT_CWSIT0111.explanation=To m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+TOKEN_INCONSISTENT_CWSIT0111.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: Typ tokenu zabezpe\u010den\u00ed {0} p\u0159edan\u00fd strojem syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} nen\u00ed podporov\u00e1n.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=Ov\u011b\u0159ov\u00e1n\u00ed vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v nelze prov\u00e9st, proto\u017ee token zabezpe\u010den\u00ed nen\u00ed podporov\u00e1n.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: V po\u017eadavku na p\u0159ipojen\u00ed ze stroje syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nebyl ur\u010den typ tokenu zabezpe\u010den\u00ed.
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=To m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: Informace o identit\u011b p\u0159edan\u00e9 prost\u0159ednictv\u00edm tokenu zabezpe\u010den\u00ed neodpov\u00eddaj\u00ed \u00fadaj\u016fm v odpov\u011bdi na p\u0159ipojen\u00ed ze stroje syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1}.
+TOKEN_INCONSISTENT_CWSIT0115.explanation=To m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+TOKEN_INCONSISTENT_CWSIT0115.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: Typ tokenu zabezpe\u010den\u00ed {0} p\u0159edan\u00fd strojem syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} pro vz\u00e1jemn\u00e9 ov\u011b\u0159ov\u00e1n\u00ed nen\u00ed podporov\u00e1n.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=Ov\u011b\u0159ov\u00e1n\u00ed vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v nelze prov\u00e9st, proto\u017ee token zabezpe\u010den\u00ed nen\u00ed podporov\u00e1n.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: V odpov\u011bdi na p\u0159ipojen\u00ed ze stroje syst\u00e9mu zpr\u00e1v {0} na sb\u011brnici {1} nebyl ur\u010den typ tokenu zabezpe\u010den\u00ed.
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=To m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=Zkontrolujte protokoly chyb stroj\u016f syst\u00e9mu zpr\u00e1v, kter\u00e9 se \u00fa\u010dastnily tohoto pokusu o p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: B\u011bhem pokusu o p\u0159ipojen\u00ed ke vzd\u00e1len\u00e9mu stroji syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1} byly ne\u00fapln\u00e9 informace p\u0159\u00edznakem toho, \u017ee nebylo mo\u017en\u00e9 ov\u011b\u0159it identitu vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v.
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt probl\u00e9m t\u00fdkaj\u00edc\u00ed se \u010dasov\u00e9ho limitu nebo tato skute\u010dnost m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=Po\u010dkejte na opakov\u00e1n\u00ed pokusu nebo zkontrolujte syst\u00e9mov\u00e9 protokoly a protokoly chyb p\u0159idru\u017een\u00e9 ke stroj\u016fm syst\u00e9mu zpr\u00e1v, kter\u00fdch se pokus o p\u0159ipojen\u00ed t\u00fdk\u00e1, a prozkoumejte mo\u017enost \u00fatoku na zabezpe\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: Vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1} provedl pokus o p\u0159ipojen\u00ed; ne\u00fapln\u00e9 informace jsou v\u0161ak p\u0159\u00edznakem toho, \u017ee nebylo mo\u017en\u00e9 ov\u011b\u0159it identitu vzd\u00e1len\u00e9ho stroje syst\u00e9mu zpr\u00e1v.
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt probl\u00e9m t\u00fdkaj\u00edc\u00ed se \u010dasov\u00e9ho limitu nebo tato skute\u010dnost m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=Po\u010dkejte na opakov\u00e1n\u00ed pokusu nebo zkontrolujte syst\u00e9mov\u00e9 protokoly a protokoly chyb p\u0159idru\u017een\u00e9 ke stroj\u016fm syst\u00e9mu zpr\u00e1v, kter\u00fdch se pokus o p\u0159ipojen\u00ed t\u00fdk\u00e1, a prozkoumejte mo\u017enost \u00fatoku na zabezpe\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: Nebylo mo\u017en\u00e9 ov\u011b\u0159it identitu p\u0159ipojuj\u00edc\u00edho se stroje syst\u00e9mu zpr\u00e1v {0} ve sb\u011brnici {1}.
+TARGET_NOT_FOUND_CWSIT0120.explanation=P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt probl\u00e9m t\u00fdkaj\u00edc\u00ed se \u010dasov\u00e9ho limitu nebo tato skute\u010dnost m\u016f\u017ee znamenat, \u017ee se o p\u0159ipojen\u00ed k syst\u00e9mu pokou\u0161\u00ed neautorizovan\u00fd u\u017eivatel.
+TARGET_NOT_FOUND_CWSIT0120.useraction=Po\u010dkejte na opakov\u00e1n\u00ed pokusu nebo zkontrolujte syst\u00e9mov\u00e9 protokoly a protokoly chyb p\u0159idru\u017een\u00e9 ke stroj\u016fm syst\u00e9mu zpr\u00e1v, kter\u00fdch se pokus o p\u0159ipojen\u00ed t\u00fdk\u00e1, a prozkoumejte mo\u017enost \u00fatoku na zabezpe\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: P\u0159i pokusu o p\u0159evod n\u00e1zvu hostitele {0} byla vyvol\u00e1na v\u00fdjimka java.net.UnknownHostException.
+INVALID_HOST_CWSIT0121.explanation=P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt klient, kter\u00fd obdr\u017eel n\u00e1zev hostitele, jen\u017e nelze p\u0159ev\u00e9st ve slu\u017eb\u011b DNS (Domain Name System).
+INVALID_HOST_CWSIT0121.useraction=Zkuste registrovat n\u00e1zev hostitele na lok\u00e1ln\u00edm serveru DNS nebo p\u0159idat polo\u017eku do souboru hostitel\u016f klienta a zopakujte akci.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: Pro tento klastr se pou\u017e\u00edv\u00e1 tabulka statick\u00e9ho sm\u011brov\u00e1n\u00ed - statick\u00e9 sm\u011brov\u00e1n\u00ed obvykle br\u00e1n\u00ed spr\u00e1vn\u00e9mu fungov\u00e1n\u00ed sb\u011brnice SIBus a nedoporu\u010duje se.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=Povolen\u00ed statick\u00e9ho sm\u011brov\u00e1n\u00ed br\u00e1n\u00ed dynamick\u00e9mu sd\u00edlen\u00ed informac\u00ed v r\u00e1mci bu\u0148ky, jako nap\u0159\u00edklad um\u00edst\u011bn\u00ed stroje syst\u00e9mu zpr\u00e1v, a zp\u016fsobuje, \u017ee se aplikace nemohou p\u0159ipojit ke sb\u011brnici.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=Pokud doch\u00e1z\u00ed k probl\u00e9m\u016fm p\u0159i pou\u017eit\u00ed sb\u011brnice SIBus, m\u011bla by b\u00fdt tabulka statick\u00e9ho sm\u011brov\u00e1n\u00ed odstran\u011bna a servery restartov\u00e1ny, aby do\u0161lo k obnoven\u00ed standardn\u00edho chov\u00e1n\u00ed sm\u011brov\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: Server nen\u00ed nakonfigurov\u00e1n tak, aby povoloval samozaveden\u00ed pro sb\u011brnici {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=Klient se pokusil prov\u00e9st samozaveden\u00ed pro sb\u011brnici pomoc\u00ed serveru, kter\u00fd nen\u00ed nakonfigurov\u00e1n tak, aby povoloval samozaveden\u00ed pro sb\u011brnici. 
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=Znovu sb\u011brnici konfigurujte, aby bylo mo\u017en\u00e9 pou\u017e\u00edvat server pro samozaveden\u00ed, nebo aktualizujte koncov\u00e9 body poskytovatele klient\u016f tak, aby pou\u017e\u00edvaly jin\u00fd server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: Sb\u011brnice {0} se pokusila vyhledat ciz\u00ed sb\u011brnici {1} pomoc\u00ed serveru, kter\u00fd nen\u00ed nakonfigurov\u00e1n tak, aby povoloval samozaveden\u00ed pro sb\u011brnici {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=Sb\u011brnice se pokusila prov\u00e9st samozaveden\u00ed pro ciz\u00ed sb\u011brnici pomoc\u00ed serveru, kter\u00fd nepodporuje samozaveden\u00ed pro ciz\u00ed sb\u011brnici.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=Zad\u00e1n\u00edm jin\u00e9 kombinace hostitele a portu zm\u011b\u0148te konfiguraci sb\u011brnice tak, aby koncov\u00fd bod pro zav\u00e1d\u011bc\u00ed program pou\u017e\u00edval jin\u00fd server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=Pokud tato zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed informace v okoln\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIT9999.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro server WebSphere Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: P\u0159ipojen\u00ed k c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v v koncov\u00e9m bod\u011b {0} bylo \u00fasp\u011b\u0161n\u00e9, ale stroj syst\u00e9mu zpr\u00e1v vr\u00e1til tento chybov\u00fd stav: {1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=Klient se p\u0159ipojil ke stroji syst\u00e9mu zpr\u00e1v, ale nastal probl\u00e9m s \u00fasp\u011b\u0161n\u00fdm p\u0159ipojen\u00edm k c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v. 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=Zajist\u011bte spr\u00e1vnou funkci c\u00edlov\u00e9ho stroje syst\u00e9mu zpr\u00e1v a vhodnou konfiguraci tohoto stroje k p\u0159ij\u00edm\u00e1n\u00ed p\u0159\u00edchoz\u00edch vzd\u00e1len\u00fdch p\u0159ipojen\u00ed. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: Nelze kontaktovat ur\u010den\u00e9 c\u00edlov\u00e9 stroje syst\u00e9mu zpr\u00e1v. Dal\u0161\u00ed podrobnosti najdete v p\u0159ipojen\u00e9 v\u00fdjimce. Klient se pokusil p\u0159ipojit k t\u011bmto stroj\u016fm: {0}
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=Klient se nem\u016f\u017ee p\u0159ipojit. P\u0159ipojen\u00ed se mo\u017en\u00e1 nezda\u0159ilo z d\u016fvodu nedostupnosti povinn\u00fdch stroj\u016f syst\u00e9mu zpr\u00e1v nebo z d\u016fvodu probl\u00e9m\u016f s konfigurac\u00ed \u010di s\u00edt\u00ed. 
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=Ov\u011b\u0159te, \u017ee s\u00ed\u0165 pracuje spr\u00e1vn\u011b a \u017ee jsou po\u017eadovan\u00e9 c\u00edlov\u00e9 servery stroje syst\u00e9mu zpr\u00e1v dostupn\u00e9. Informace o konfiguraci p\u0159ipojen\u00ed k c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v najdete v dokumentaci k produktu. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: Ov\u011b\u0159en\u00ed klienta v c\u00edlov\u00e9m stoji syst\u00e9mu zpr\u00e1v se nezda\u0159ilo s uveden\u00edm t\u00e9to p\u0159\u00ed\u010diny: {2}
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=Vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v nemohl ov\u011b\u0159it ID u\u017eivatele pou\u017e\u00edvan\u00e9 ke z\u0159\u00edzen\u00ed p\u0159ipojen\u00ed k c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v. K selh\u00e1n\u00ed ov\u011b\u0159en\u00ed do\u0161lo pravd\u011bpodobn\u011b kv\u016fli nespr\u00e1vn\u00e9 hodnot\u011b ID u\u017eivatele nebo hesla.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=Zkontrolujte, zda jsou zadan\u00e9 hodnoty ID u\u017eivatele a hesla spr\u00e1vn\u00e9. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: Klient nem\u00e1 autorizaci pro p\u0159ipojen\u00ed k c\u00edlov\u00e9mu syst\u00e9mu zpr\u00e1v. P\u0159\u00ed\u010dina: {2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=ID u\u017eivatele pou\u017eit\u00e9 k vytvo\u0159en\u00ed p\u0159ipojen\u00ed nebylo autorizov\u00e1no pro p\u0159ipojen\u00ed k c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v.
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=Zajist\u011bte pro dan\u00e9 ID u\u017eivatele nezbytn\u00e1 opr\u00e1vn\u011bn\u00ed. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: Po\u017eadavek na p\u0159ipojen\u00ed klienta k c\u00edlov\u00e9mu stoji syst\u00e9mu zpr\u00e1v se nezda\u0159ilo s uveden\u00edm t\u00e9to p\u0159\u00ed\u010diny: {2}
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=Po\u017eadavek na p\u0159ipojen\u00ed klienta se nezda\u0159il kv\u016fli probl\u00e9mu v c\u00edlov\u00e9m stroji syst\u00e9mu zpr\u00e1v. Byl vr\u00e1cen d\u016fvod selh\u00e1n\u00ed ve vzd\u00e1len\u00e9m stroji syst\u00e9mu zpr\u00e1v.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=Zjist\u011bte a vy\u0159e\u0161te selh\u00e1n\u00ed popsan\u00e9 v chybov\u00e9 zpr\u00e1v\u011b a pot\u00e9 operaci zopakujte. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: Nelze se p\u0159ipojit k c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v na adrese {0} kv\u016fli v\u00fdjimce: {1}
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=Klient nem\u016f\u017ee nav\u00e1zat p\u0159ipojen\u00ed k ur\u010den\u00e9mu c\u00edlov\u00e9mu stroji syst\u00e9mu zpr\u00e1v. P\u0159ipojen\u00ed se mo\u017en\u00e1 nezda\u0159ilo z d\u016fvodu nedostupnosti povinn\u00fdch stroj\u016f syst\u00e9mu zpr\u00e1v nebo z d\u016fvodu probl\u00e9m\u016f s konfigurac\u00ed \u010di s\u00edt\u00ed. 
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=Ov\u011b\u0159te, zda s\u00ed\u0165 funguje a zda je po\u017eadovan\u00fd c\u00edlov\u00fd stroj syst\u00e9mu zpr\u00e1v k dispozici. Vzd\u00e1len\u00fd stroj syst\u00e9mu zpr\u00e1v ur\u010duje vlastnost Adresa vzd\u00e1len\u00e9ho serveru tov\u00e1rny p\u0159ipojen\u00ed slu\u017eby JMS. Adresa m\u00e1 tvar n\u00e1zev_hostitele:\u010d\u00edslo_portu:n\u00e1zev_\u0159et\u011bzu (nap\u0159\u00edklad localhost:7276:BootstrapBasicMessaging). 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: Neexistuje \u017e\u00e1dn\u00fd lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v, ke kter\u00e9mu by bylo mo\u017en\u00e9 se p\u0159ipojit. Chcete-li povolit lok\u00e1ln\u00ed stroj syst\u00e9mu zpr\u00e1v, p\u0159idejte funkci {0}.
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=Klient nem\u016f\u017ee nav\u00e1zat p\u0159ipojen\u00ed k uveden\u00e9mu lok\u00e1ln\u00edmu stroji syst\u00e9mu zpr\u00e1v. Mohlo k tomu doj\u00edt z toho d\u016fvodu, \u017ee stroj syst\u00e9mu zpr\u00e1v nebyl nakonfigurov\u00e1n nebo nen\u00ed aktivn\u00ed na aktu\u00e1ln\u00edm serveru profilu Liberty nebo \u017ee stroj syst\u00e9mu zpr\u00e1v nem\u016f\u017ee p\u0159ij\u00edmat \u017e\u00e1dn\u00e1 p\u0159ipojen\u00ed.
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=Zajist\u011bte, aby byl stroj syst\u00e9mu zpr\u00e1v spu\u0161t\u011bn\u00fd na aktu\u00e1ln\u00edm serveru profilu Liberty.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: Klient z\u0159\u00eddil p\u0159ipojen\u00ed k c\u00edlov\u00e9mu serveru na adrese {0}, ale server p\u0159ipojen\u00ed odm\u00edtl.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=Klient se \u00fasp\u011b\u0161n\u011b p\u0159ipojil k c\u00edlov\u00e9mu serveru, ale c\u00edlov\u00fd server p\u0159ipojen\u00ed odm\u00edtl, proto\u017ee stroj syst\u00e9mu zpr\u00e1v spu\u0161t\u011bn\u00fd na c\u00edlov\u00e9m serveru nevyhovuje vlastnostem definovan\u00fdmi pro tov\u00e1rnu p\u0159ipojen\u00ed.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= Nakonfigurujte vlastnosti tov\u00e1rny p\u0159ipojen\u00ed tak, aby stroj syst\u00e9mu zpr\u00e1v na c\u00edlov\u00e9m serveru vyhovoval nakonfigurovan\u00fdm vlastnostem tov\u00e1rny p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: Nelze se p\u0159ipojit k lok\u00e1ln\u00edmu stroji syst\u00e9mu zpr\u00e1v, proto\u017ee se nezda\u0159ilo spu\u0161t\u011bn\u00ed.
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=Klient nem\u016f\u017ee nav\u00e1zat p\u0159ipojen\u00ed k uveden\u00e9mu lok\u00e1ln\u00edmu stroji syst\u00e9mu zpr\u00e1v. Je tomu tak proto, \u017ee stroj syst\u00e9mu zpr\u00e1v byl nakonfigurov\u00e1n v aktu\u00e1ln\u00edm serveru profilu Liberty, ale stroj syst\u00e9mu zpr\u00e1v se nezda\u0159ilo spustit.
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=Zajist\u011bte, aby byl stroj syst\u00e9mu zpr\u00e1v spu\u0161t\u011bn\u00fd na aktu\u00e1ln\u00edm serveru profilu Liberty. Dal\u0161\u00ed ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f viz protokoly chyb nebo FFDC.

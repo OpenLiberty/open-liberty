@@ -1,0 +1,65 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props, 
+bVersion=1.0
+
+Bundle-Name: WebSphere Logging (RAS/FFDC)
+Bundle-Description: ${Bundle-Name}, version ${bVersion}
+Bundle-SymbolicName: com.ibm.ws.logging; singleton:=true
+
+Private-Package: \
+ com.ibm.ws.logging.*,\
+ com.ibm.ws.collector.manager.internal.*,\
+ com.ibm.wsspi.logprovider.*
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+	com.ibm.ejs.ras;provide:=true,\
+	com.ibm.websphere.logging;provide:=true,\
+	com.ibm.websphere.logging.hpel;provide:=true,\
+	com.ibm.websphere.ras;provide:=true,\
+	com.ibm.websphere.ras.annotation;provide:=true,\
+	com.ibm.ws.ffdc;provide:=true,\
+	com.ibm.ws.ffdc.annotation;provide:=true,\
+	com.ibm.ws.logging;provide:=true,\
+	com.ibm.ws.ras.instrument.annotation,\
+	com.ibm.ws.logging.internal,\
+	com.ibm.wsspi.collector.manager,\
+	com.ibm.ws.collector.manager.buffer,\
+	com.ibm.ws.logging.synch,\
+	com.ibm.ws.logging.utils,\
+	com.ibm.ws.logging.source,\
+	com.ibm.ws.health.center.data,\
+	com.ibm.ws.logging.collector,\
+	com.ibm.ws.logging.data,\
+	com.ibm.wsspi.logging;provide:=true
+
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+-includeresource: \
+ META-INF/logging/liberty.ras.rawtracelist.properties=resources/liberty.ras.rawtracelist.properties
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.kernel.boot.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.ras.instrument;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.org.objectweb.asm;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	com.ibm.wsspi.org.osgi.service.log;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

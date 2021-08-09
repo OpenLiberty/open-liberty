@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName:featureI-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.featureI-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: bundle2;  version="[1,2)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

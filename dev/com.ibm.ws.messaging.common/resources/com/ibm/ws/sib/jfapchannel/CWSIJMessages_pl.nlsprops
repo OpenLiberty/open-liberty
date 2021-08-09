@@ -1,0 +1,600 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 92072           2013-19-02 venugopv L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIJ0001=CWSIJ0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIJ0000-CWSIJ9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIJ0001-CWSIJ9998   com.ibm.ws.sib.jfapchannel
+#   CWSIJ9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.43,0,10/10/14,01:07:38
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/jfapchannel/CWSIJMessages.nlsprops
+#COMPONENTPREFIX CWSIJ
+#COMPONENTNAMEFOR CWSIJ Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}.
+EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: Nie mo\u017cna wywo\u0142a\u0107 metody {0} klasy {1} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {2}
+EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}.
+EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: Nie mo\u017cna wywo\u0142a\u0107 metody {0} klasy {1} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {2}
+EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: Nie mo\u017cna znale\u017a\u0107 instancji us\u0142ugi struktury kana\u0142\u00f3w do u\u017cytku na potrzeby komunikacji.
+CF_NOT_AVAILABLE_SICJ0005.explanation=Nie mo\u017cna znale\u017a\u0107 instancji us\u0142ugi struktury kana\u0142\u00f3w.  Komunikacja sieciowa jest niemo\u017cliwa.
+CF_NOT_AVAILABLE_SICJ0005.useraction=Sprawd\u017a, czy serwer docelowy jest uruchomiony i u\u017cywa domy\u015blnego portu startowego 2809 na lokalnym komputerze. Je\u015bli nie, wykonaj ponownie komend\u0119 launchClient z parametrem -CCBootstrapPort, podaj\u0105c poprawny numer portu, oraz parametrem -CCBootstrapHost, podaj\u0105c poprawn\u0105 nazw\u0119 hosta serwera docelowego. Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+EXCP_CONN_FAIL_NO_CF_SICJ0007=CWSIJ0007E: Pr\u00f3ba nawi\u0105zania po\u0142\u0105czenia nie powiod\u0142a si\u0119, poniewa\u017c nie uda\u0142o si\u0119 zainicjowa\u0107 komponentu Communications.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.explanation=Podj\u0119to pr\u00f3b\u0119 nawi\u0105zania po\u0142\u0105czenia sieciowego, ale ta pr\u00f3ba si\u0119 nie powiod\u0142a, poniewa\u017c nie mo\u017cna poprawnie zainicjowa\u0107 komponentu Communications.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.useraction=Sprawd\u017a pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego nie uda\u0142o si\u0119 poprawnie zainicjowa\u0107 komponentu Communications.  Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_OUTBOUND_SICJ0008=CWSIJ0008W: Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0}.
+NO_DEFAULT_OUTBOUND_SICJ0008.explanation=Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych.  By\u0107 mo\u017ce ten serwer aplikacji nie b\u0119dzie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105cze\u0144 ze zdalnymi mechanizmami przesy\u0142ania komunikat\u00f3w bramy.
+NO_DEFAULT_OUTBOUND_SICJ0008.useraction=Zdefiniuj domy\u015blny \u0142a\u0144cuch kana\u0142\u00f3w danych wychodz\u0105cych przesy\u0142ania komunikat\u00f3w dla tego serwera aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009=CWSIJ0009W: Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0}.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.explanation=Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych.  By\u0107 mo\u017ce ten serwer aplikacji nie b\u0119dzie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105cze\u0144 ze zdalnymi mechanizmami przesy\u0142ania komunikat\u00f3w bramy.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.useraction=Zdefiniuj domy\u015blny bezpieczny \u0142a\u0144cuch kana\u0142\u00f3w danych wychodz\u0105cych przesy\u0142ania komunikat\u00f3w dla tego serwera aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010=CWSIJ0010W: Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego tunelowanego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0}.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.explanation=Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego tunelowanego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych.  By\u0107 mo\u017ce ten serwer aplikacji nie b\u0119dzie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105cze\u0144 ze zdalnymi mechanizmami przesy\u0142ania komunikat\u00f3w bramy.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Zdefiniuj domy\u015blny tunelowany \u0142a\u0144cuch kana\u0142\u00f3w danych wychodz\u0105cych przesy\u0142ania komunikat\u00f3w dla tego serwera aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego tunelowanego, bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0}.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Dla tego serwera aplikacji nie zdefiniowano domy\u015blnego tunelowanego, bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych.  By\u0107 mo\u017ce ten serwer aplikacji nie b\u0119dzie m\u00f3g\u0142 nawi\u0105za\u0107 po\u0142\u0105cze\u0144 ze zdalnymi mechanizmami przesy\u0142ania komunikat\u00f3w bramy.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Zdefiniuj domy\u015blny tunelowany, bezpieczny \u0142a\u0144cuch kana\u0142\u00f3w danych wychodz\u0105cych przesy\u0142ania komunikat\u00f3w dla tego serwera aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the SSL properties file.
+NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Nie mo\u017cna znale\u017a\u0107 pliku w\u0142a\u015bciwo\u015bci {0} s\u0142u\u017c\u0105cego do okre\u015blania pocz\u0105tkowych zabezpiecze\u0144 na poziomie transportu przesy\u0142ania komunikat\u00f3w dla klienta.
+NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Nie mo\u017cna znale\u017a\u0107 pliku w\u0142a\u015bciwo\u015bci zawieraj\u0105cego informacje u\u017cywane podczas nawi\u0105zywania bezpiecznych po\u0142\u0105cze\u0144 przesy\u0142ania komunikat\u00f3w dla klienta.  Zostanie u\u017cyty zestaw warto\u015bci domy\u015blnych.  By\u0107 mo\u017ce nie b\u0119dzie mo\u017cliwe nawi\u0105zywanie bezpiecznych po\u0142\u0105cze\u0144 przesy\u0142ania komunikat\u00f3w dla klienta.
+NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Skonfiguruj plik w\u0142a\u015bciwo\u015bci dla poziomu bezpiecze\u0144stwa przesy\u0142ania komunikat\u00f3w klienta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna znale\u017a\u0107 reprezentacji klasy {0}.
+NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
+NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna znale\u017a\u0107 reprezentacji klasy {0}.
+NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
+NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna znale\u017a\u0107 reprezentacji klasy {0}.
+NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
+NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna znale\u017a\u0107 reprezentacji klasy {0}.
+NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
+NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna znale\u017a\u0107 reprezentacji klasy {0}.
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: Nie mo\u017cna utworzy\u0107 domy\u015blnego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: Nie mo\u017cna utworzy\u0107 bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: Nie mo\u017cna utworzy\u0107 tunelowanego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: Nie mo\u017cna utworzy\u0107 tunelowanego, bezpiecznego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w wychodz\u0105cych {0} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: Nie mo\u017cna uruchomi\u0107 \u017cadnego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w przychodz\u0105cych dla tego serwera aplikacji.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=Nie mo\u017cna uruchomi\u0107 \u017cadnego \u0142a\u0144cucha kana\u0142\u00f3w przesy\u0142ania komunikat\u00f3w przychodz\u0105cych, poniewa\u017c prawdopodobnie \u017caden \u0142a\u0144cuch nie zosta\u0142 zdefiniowany dla tego serwera aplikacji.  By\u0107 mo\u017ce klienty przesy\u0142ania komunikat\u00f3w lub inne mechanizmy przesy\u0142ania komunikat\u00f3w nie b\u0119d\u0105 mog\u0142y pomy\u015blnie nawi\u0105zywa\u0107 po\u0142\u0105cze\u0144 z tym serwerem aplikacji.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.useraction=Zdefiniuj dodatkowe \u0142a\u0144cuchy kana\u0142\u00f3w danych przychodz\u0105cych na serwerze aplikacji na potrzeby przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The minimum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028=CWSIJ0028W: Okres pulsu {0} skonfigurowany dla kana\u0142u {1} jest mniejszy ni\u017c warto\u015b\u0107 minimalna {2}.  Mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w zosta\u0142a wy\u0142\u0105czona.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.explanation=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 atrybutu konfiguracji kana\u0142u.  W wyniku tego wy\u0142\u0105czono mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w dla ca\u0142ej komunikacji w powi\u0105zanym \u0142a\u0144cuchu kana\u0142\u00f3w.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.useraction=Podano niepoprawn\u0105 warto\u015b\u0107 okresu pulsu.  Zmie\u0144 t\u0119 warto\u015b\u0107 w taki spos\u00f3b, aby znajdowa\u0142a si\u0119 w zakresie dopuszczalnych warto\u015bci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The maximum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029=CWSIJ0029W: Okres pulsu {0} skonfigurowany dla kana\u0142u {1} jest wi\u0119kszy ni\u017c warto\u015b\u0107 maksymalna {2}.  Mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w zosta\u0142a wy\u0142\u0105czona.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.explanation=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 atrybutu konfiguracji kana\u0142u.  W wyniku tego wy\u0142\u0105czono mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w dla ca\u0142ej komunikacji w powi\u0105zanym \u0142a\u0144cuchu kana\u0142\u00f3w.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.useraction=Podano niepoprawn\u0105 warto\u015b\u0107 okresu pulsu.  Zmie\u0144 t\u0119 warto\u015b\u0107 w taki spos\u00f3b, aby znajdowa\u0142a si\u0119 w zakresie dopuszczalnych warto\u015bci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030=CWSIJ0030W: Limit czasu pulsu {0} skonfigurowany dla kana\u0142u {1} jest mniejszy ni\u017c warto\u015b\u0107 minimalna {2}.  Mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w zosta\u0142a wy\u0142\u0105czona.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.explanation=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 atrybutu konfiguracji kana\u0142u.  W wyniku tego wy\u0142\u0105czono mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w dla ca\u0142ej komunikacji w powi\u0105zanym \u0142a\u0144cuchu kana\u0142\u00f3w.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.useraction=Podano niepoprawn\u0105 warto\u015b\u0107 limitu czasu pulsu.  Zmie\u0144 t\u0119 warto\u015b\u0107 w taki spos\u00f3b, aby znajdowa\u0142a si\u0119 w zakresie dopuszczalnych warto\u015bci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031=CWSIJ0031W: Limit czasu pulsu {0} skonfigurowany dla kana\u0142u {1} jest wi\u0119kszy ni\u017c warto\u015b\u0107 maksymalna {2}.  Mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w zosta\u0142a wy\u0142\u0105czona.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.explanation=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 atrybutu konfiguracji kana\u0142u.  W wyniku tego wy\u0142\u0105czono mo\u017cliwo\u015b\u0107 korzystania z puls\u00f3w dla ca\u0142ej komunikacji w powi\u0105zanym \u0142a\u0144cuchu kana\u0142\u00f3w.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=Podano niepoprawn\u0105 warto\u015b\u0107 limitu czasu pulsu.  Zmie\u0144 t\u0119 warto\u015b\u0107 w taki spos\u00f3b, aby znajdowa\u0142a si\u0119 w zakresie dopuszczalnych warto\u015bci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032=CWSIJ0032E: An internal error occurred.  An object of class {0} cannot be created because of exception: {1}.
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.explanation=CMSG0001
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}.
+NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
+NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}.
+NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
+NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: Mechanizm przesy\u0142ania komunikat\u00f3w, kt\u00f3ry nawi\u0105za\u0142 wcze\u015bniej po\u0142\u0105czenie z hosta {0} w \u0142a\u0144cuchu transportowym {1}, nieoczekiwanie roz\u0142\u0105czy\u0142 si\u0119.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.explanation=Mechanizm przesy\u0142ania komunikat\u00f3w roz\u0142\u0105czy\u0142 si\u0119 z tym serwerem aplikacji, nie przestrzegaj\u0105c odpowiednich protoko\u0142\u00f3w roz\u0142\u0105czania.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036=CWSIJ0036E: Klient, kt\u00f3ry nawi\u0105za\u0142 wcze\u015bniej po\u0142\u0105czenie z hosta {0} w \u0142a\u0144cuchu transportowym {1}, nieoczekiwanie roz\u0142\u0105czy\u0142 si\u0119.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.explanation=Klient roz\u0142\u0105czy\u0142 si\u0119 z tym serwerem aplikacji, nie przestrzegaj\u0105c odpowiednich protoko\u0142\u00f3w roz\u0142\u0105czania.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_RECEIVED_SICJ0037=CWSIJ0037E: Po\u0142\u0105czenie, kt\u00f3re mechanizm przesy\u0142ania komunikat\u00f3w nawi\u0105za\u0142 z hosta {0} w \u0142a\u0144cuchu transportowym {1}, zosta\u0142o zako\u0144czone z powodu odebrania niepoprawnych danych.
+ME_BAD_DATA_RECEIVED_SICJ0037.explanation=Po\u0142\u0105czenie mechanizmu przesy\u0142ania komunikat\u00f3w nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone z powodu przes\u0142ania niepoprawnych danych.
+ME_BAD_DATA_RECEIVED_SICJ0037.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_ON_CONNECT_SICJ0038=CWSIJ0038E: Po\u0142\u0105czenie, kt\u00f3re mechanizm przesy\u0142ania komunikat\u00f3w nawi\u0105za\u0142 z hosta {0} w \u0142a\u0144cuchu transportowym {1}, zosta\u0142o zako\u0144czone z powodu odebrania niepoprawnych danych pocz\u0105tkowych.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.explanation=Po\u0142\u0105czenie mechanizmu przesy\u0142ania komunikat\u00f3w nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone z powodu przes\u0142ania niepoprawnych danych.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_RECEIVED_SICJ0039=CWSIJ0039E: Po\u0142\u0105czenie nawi\u0105zane z hosta {0} w \u0142a\u0144cuchu transportowym {1} zosta\u0142o zako\u0144czone z powodu odebrania niepoprawnych danych.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.explanation=Po\u0142\u0105czenie nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone z powodu przes\u0142ania niepoprawnych danych.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040=CWSIJ0040E: Po\u0142\u0105czenie nawi\u0105zane z hosta {0} w \u0142a\u0144cuchu transportowym {1} zosta\u0142o zako\u0144czone z powodu odebrania niepoprawnych danych pocz\u0105tkowych.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.explanation=Po\u0142\u0105czenie nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone z powodu przes\u0142ania niepoprawnych danych.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+ME_NOT_RESPONDING_SICJ0041=CWSIJ0041E: Po\u0142\u0105czenie, kt\u00f3re mechanizm przesy\u0142ania komunikat\u00f3w nawi\u0105za\u0142 z hosta {0} w \u0142a\u0144cuchu transportowym {1}, zosta\u0142o zako\u0144czone, poniewa\u017c przesta\u0142o odpowiada\u0107 po {2} sekundach.
+ME_NOT_RESPONDING_SICJ0041.explanation=Po\u0142\u0105czenie mechanizmu przesy\u0142ania komunikat\u00f3w nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone, poniewa\u017c przesta\u0142o odpowiada\u0107.
+ME_NOT_RESPONDING_SICJ0041.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+CLIENT_NOT_RESPONDING_SICJ0042=CWSIJ0042E: Po\u0142\u0105czenie nawi\u0105zane z hosta {0} w \u0142a\u0144cuchu transportowym {1} zosta\u0142o zako\u0144czone, poniewa\u017c przesta\u0142o odpowiada\u0107 po {2} sekundach.
+CLIENT_NOT_RESPONDING_SICJ0042.explanation=Po\u0142\u0105czenie nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone, poniewa\u017c przesta\u0142o odpowiada\u0107.
+CLIENT_NOT_RESPONDING_SICJ0042.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+CONNECTION_INTERNAL_SICJ0043.explanation=CMSG0001
+CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: Podj\u0119to pr\u00f3b\u0119 wykonania operacji na po\u0142\u0105czeniu, kt\u00f3re jest ju\u017c zamkni\u0119te.
+CONNECTION_CLOSED_SICJ0044.explanation=Podj\u0119to pr\u00f3b\u0119 wykonania operacji w odniesieniu do zasobu po\u0142\u0105czenia, kt\u00f3ry zosta\u0142 wcze\u015bniej zamkni\u0119ty.  Przyczyn\u0105 tego problemu mo\u017ce by\u0107 b\u0142\u0105d programistyczny aplikacji lub zamkni\u0119cie zasobu po\u0142\u0105czenia przez system w wyniku wykrycia b\u0142\u0119du.
+CONNECTION_CLOSED_SICJ0044.useraction=Sprawd\u017a pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain
+CONVERSATIONIMPL_INVALIDATE_SICJ0045=CWSIJ0045E: Nieoczekiwany warunek spowodowa\u0142 zamkni\u0119cie po\u0142\u0105czenia sieciowego, kt\u00f3re nawi\u0105zano z hosta {0} korzystaj\u0105cego z \u0142a\u0144cucha {1}.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.explanation=Wykrycie nieoczekiwanego warunku spowodowa\u0142o zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=Sprawd\u017a wszystkie do\u0142\u0105czone wyj\u0105tki i pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie sieciowe zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=CMSG0001
+CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: Podj\u0119to pr\u00f3b\u0119 wykonania operacji na po\u0142\u0105czeniu, kt\u00f3re jest ju\u017c zamkni\u0119te.
+CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=Podj\u0119to pr\u00f3b\u0119 wykonania operacji w odniesieniu do zasobu po\u0142\u0105czenia, kt\u00f3ry zosta\u0142 wcze\u015bniej zamkni\u0119ty.  Przyczyn\u0105 tego problemu mo\u017ce by\u0107 b\u0142\u0105d programistyczny aplikacji lub zamkni\u0119cie zasobu po\u0142\u0105czenia przez system w wyniku wykrycia b\u0142\u0119du.
+CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=Sprawd\u017a pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=CMSG0001
+CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+EXCHANGERL_INTERNAL_SICJ0049.explanation=CMSG0001
+EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+IDTABLE_INTERNAL_SICJ0050.explanation=CMSG0001
+IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name
+INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: Nieoczekiwany warunek spowodowa\u0142 zamkni\u0119cie po\u0142\u0105czenia sieciowego, kt\u00f3re nawi\u0105zano z hosta {0} korzystaj\u0105cego z \u0142a\u0144cucha {1}.
+INBOUNDCONV_INVALIDATE_SICJ0051.explanation=Wykrycie nieoczekiwanego warunku spowodowa\u0142o zamkni\u0119cie po\u0142\u0105czenia sieciowego.  Sprawd\u017a ewentualne powi\u0105zane komunikaty wyj\u0105tk\u00f3w pod k\u0105tem dodatkowych informacji.
+INBOUNDCONV_INVALIDATE_SICJ0051.useraction=Sprawd\u017a wszystkie do\u0142\u0105czone wyj\u0105tki i pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie sieciowe zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+INBOUNDCONV_INTERNAL_SICJ0052.explanation=CMSG0001
+INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name and {1} is the chain name.
+TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: Po\u0142\u0105czenie sieciowe zosta\u0142o zako\u0144czone po tym, jak w\u0119ze\u0142 sieci wys\u0142a\u0142 niepoprawnie sformatowane informacje.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.explanation=Po\u0142\u0105czenie sieciowe nawi\u0105zane z poziomu hosta w \u0142a\u0144cuchu transportowym zosta\u0142o zako\u0144czone po odebraniu niepoprawnie sformatowanych informacji.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+TRANSPARSER_INTERNAL_SICJ0054.explanation=CMSG0001
+TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: Brak zasob\u00f3w uniemo\u017cliwi\u0142 nawi\u0105zanie nowego po\u0142\u0105czenia.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=Nie mo\u017cna nawi\u0105za\u0107 nowego po\u0142\u0105czenia z powodu braku wymaganych zasob\u00f3w.  Przyczyn\u0105 tego problemu jest du\u017ca liczba aktywnych, nawi\u0105zanych po\u0142\u0105cze\u0144.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.useraction=Zmniejsz liczb\u0119 zasob\u00f3w u\u017cywanych przez aplikacje poprzez zamkni\u0119cie niepotrzebnych po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name
+OUTBOUNDCONV_INVALIDATE_SICJ0056=CWSIJ0056E: Nieoczekiwany warunek spowodowa\u0142 zamkni\u0119cie po\u0142\u0105czenia sieciowego, kt\u00f3re nawi\u0105zano z hostem {0} na porcie {1} korzystaj\u0105cym z \u0142a\u0144cucha {2}.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.explanation=Wykrycie nieoczekiwanego warunku spowodowa\u0142o zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=Sprawd\u017a wszystkie do\u0142\u0105czone wyj\u0105tki i pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie sieciowe zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=CMSG0001
+PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+REQIDTABLE_INTERNAL_SICJ0058.explanation=CMSG0001
+REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+SVRCONNMGR_INTERNAL_SICJ0059.explanation=CMSG0001
+SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+TRANSDATA_INTERNAL_SICJ0060.explanation=CMSG0001
+TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+TRANSDATAIT_INTERNAL_SICJ0061.explanation=CMSG0001
+TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+CONNDATAGROUP_INTERNAL_SICJ0062.explanation=CMSG0001
+CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the hostname, {1} is the port.
+CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z hostem o nazwie {0} i porcie {1}.
+CONNDATAGROUP_CONNFAILED_SICJ0063.explanation=Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia sieciowego z hostem o okre\u015blonej nazwie i numerze portu.
+CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=Sprawd\u017a, czy podana nazwa hosta jest prawid\u0142owa i czy proces nas\u0142uchuje po\u0142\u0105cze\u0144 na podanym porcie. Wyst\u0105pi\u0142 problem z po\u0142\u0105czeniem SSL podczas u\u017cywania cienkiego klienta us\u0142ug JMS z serwerem WebSphere Application Server lub adaptera zasob\u00f3w us\u0142ug JMS z serwerem WebSphere Application Server. Problem ten mo\u017ce by\u0107 \u0142atwiejszy do zdiagnozowania po skonfigurowaniu w\u0142a\u015bciwo\u015bci systemowej javax.net.debug=all (Sun JSSE) lub javax.net.debug=true (IBM JSSE) i ponowieniu dzia\u0142ania klienta aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=CMSG0001
+OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
+CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nie mo\u017cna znale\u017a\u0107 \u0142a\u0144cucha transportowego o nazwie {0} udost\u0119pniaj\u0105cego konfiguracj\u0119 SSL, kt\u00f3ra mo\u017ce by\u0107 wymagana w celu nawi\u0105zania po\u0142\u0105czenia ze zdalnym hostem o nazwie {1}.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Bie\u017c\u0105ca konfiguracja nie zawiera informacji wymaganych w celu nawi\u0105zania po\u0142\u0105czenia z w\u0119z\u0142em sieci opartego na protokole SSL.  Informacje te zazwyczaj mo\u017cna uzyska\u0107 z odpowiedniej definicji \u0142a\u0144cucha transportowego. Taka definicja \u0142a\u0144cucha ma nazw\u0119 odpowiadaj\u0105c\u0105 \u0142a\u0144cuchowi znajduj\u0105cemu si\u0119 w zdalnym w\u0119\u017ale sieci.  Nie mo\u017cna znale\u017a\u0107 takiego \u0142a\u0144cucha transportowego.  Nawi\u0105zanie po\u0142\u0105czenia mo\u017ce by\u0107 niemo\u017cliwe.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Zdefiniuj dodatkowe \u0142a\u0144cuchy transportowe.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: \u0141a\u0144cuch transportowy o nazwie {0} nie zawiera \u017cadnej konfiguracji SSL, kt\u00f3ra mo\u017ce by\u0107 wymagana w celu nawi\u0105zania po\u0142\u0105czenia ze zdalnym hostem o nazwie {1}.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Bie\u017c\u0105ca konfiguracja nie zawiera informacji wymaganych w celu nawi\u0105zania po\u0142\u0105czenia z w\u0119z\u0142em sieci opartego na protokole SSL.  Informacje te zazwyczaj mo\u017cna uzyska\u0107 z odpowiedniej definicji \u0142a\u0144cucha transportowego. Taka definicja \u0142a\u0144cucha ma nazw\u0119 odpowiadaj\u0105c\u0105 \u0142a\u0144cuchowi znajduj\u0105cemu si\u0119 w zdalnym w\u0119\u017ale sieci.  Nie mo\u017cna znale\u017a\u0107 takiego \u0142a\u0144cucha transportowego.  Nawi\u0105zanie po\u0142\u0105czenia mo\u017ce by\u0107 niemo\u017cliwe.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Skonfiguruj dodatkowe kana\u0142y transportowe SSL dla okre\u015blonego \u0142a\u0144cucha transportowego.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=CMSG0001
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 instancji kana\u0142u {0} z powodu wyj\u0105tku: {1}.
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=CMSG0001
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: Po\u0142\u0105czenie, kt\u00f3re mechanizm przesy\u0142ania komunikat\u00f3w nawi\u0105za\u0142 z hostem {0} na porcie {1} przy u\u017cyciu \u0142a\u0144cucha transportowego {2}, zosta\u0142o zako\u0144czone, poniewa\u017c przesta\u0142o odpowiada\u0107 po {3} sekundach.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.explanation=Po\u0142\u0105czenie mechanizmu przesy\u0142ania komunikat\u00f3w nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone, poniewa\u017c przesta\u0142o odpowiada\u0107.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071=CWSIJ0071E: Po\u0142\u0105czenie nawi\u0105zane z hostem {0} na porcie {1} przy u\u017cyciu \u0142a\u0144cucha transportowego {2} zosta\u0142o zako\u0144czone, poniewa\u017c przesta\u0142o odpowiada\u0107 po {3} sekundach.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.explanation=Po\u0142\u0105czenie nawi\u0105zane z okre\u015blonego hosta zosta\u0142o roz\u0142\u0105czone, poniewa\u017c przesta\u0142o odpowiada\u0107.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port and {2} is the chain
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072=CWSIJ0072E: Nieoczekiwany warunek spowodowa\u0142 zamkni\u0119cie po\u0142\u0105czenia sieciowego, kt\u00f3re nawi\u0105zano z hostem {0} na porcie {1} korzystaj\u0105cym z \u0142a\u0144cucha {2}.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.explanation=Wykrycie nieoczekiwanego warunku spowodowa\u0142o zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=Sprawd\u017a powi\u0105zane wyj\u0105tki i pliki dziennika serwera aplikacji, aby ustali\u0107, dlaczego po\u0142\u0105czenie sieciowe zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+# *** ignore this message - it is no longer used in the code. ***
+# {0} is the host, {1} is the port and {2} is the transport chain name
+#OUTOFMEMORY_SICJ0073=CWSIJ0073E: The available heap memory was exhausted while attempting to allocate storage for a message received from host {0} on port {1} using chain {2}.
+#OUTOFMEMORY_SICJ0073.explanation=Insufficient heap memory was available to store message data received from the specified remote process.  The connection to the remote process was closed.
+#OUTOFMEMORY_SICJ0073.useraction=Investigate the message throughput, message size and load of your application server.  Consider reducing message throughput, message size, application server load or increasing the amount of heap allocated by your server process.
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+BUFFER_NOT_VALID_SICJ0074.explanation=CMSG0001
+BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+BUFFER_NOT_PREPARED_SICJ0075.explanation=CMSG0001
+BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+BUFFER_ALREADY_RELEASED_SICJ0076.explanation=CMSG0001
+BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: Nieoczekiwany warunek spowodowa\u0142 zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+PRIORITY_QUEUE_PURGED_SICJ0077.explanation=Wykrycie nieoczekiwanego warunku spowodowa\u0142o zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+PRIORITY_QUEUE_PURGED_SICJ0077.useraction=Sprawd\u017a wszystkie do\u0142\u0105czone wyj\u0105tki i pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie sieciowe zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAIN_SICJ0078=CWSIJ0078E: Uruchomienie \u0142a\u0144cucha transportowego {1} nie powiod\u0142o si\u0119 z powodu nieoczekiwanego wyj\u0105tku {0}.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.explanation=Podany \u0142a\u0144cuch transportowy nie m\u00f3g\u0142 zosta\u0107 uruchomiony z powodu wymienionego wyj\u0105tku.  Inne procesy nie b\u0119d\u0105 mog\u0142y nawi\u0105za\u0107 po\u0142\u0105czenia sieciowego z tym serwerem za pomoc\u0105 tego \u0142a\u0144cucha transportowego.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.useraction=Sprawd\u017a wyj\u0105tek podany w komunikacie i okre\u015bl, czy zawiera informacje umo\u017cliwiaj\u0105ce rozwi\u0105zanie problemu. Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079=CWSIJ0079I: \u0141a\u0144cuch transportowy przesy\u0142ania komunikat\u00f3w {0} nie zosta\u0142 uruchomiony.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.explanation=\u0141a\u0144cuch transportowy nie zosta\u0142 uruchomiony, poniewa\u017c \u017cadna z magistral zdefiniowanych dla kom\u00f3rki nie pozwala na u\u017cycie \u0142a\u0144cucha.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.useraction=Przejrzyj opcje transportu dozwolone przez te magistrale.
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_CONNFAILED_SICJ0080=CWSIJ0080E: Nawi\u0105zanie po\u0142\u0105czenia mi\u0119dzypami\u0119ciowego z procesem pomocniczym regionu steruj\u0105cego nie powiod\u0142o si\u0119.
+CONNDATAGROUP_CONNFAILED_SICJ0080.explanation=Nawi\u0105zanie po\u0142\u0105czenia mi\u0119dzypami\u0119ciowego nie powiod\u0142o si\u0119. Przyczyn\u0105 mog\u0142o by\u0107 asynchroniczne uruchomienie proces\u00f3w serwera aplikacji.
+CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=Je\u015bli przyczyn\u0105 wy\u015bwietlenia komunikatu by\u0142o asynchroniczne uruchomienie proces\u00f3w serwera aplikacji, nie b\u0119dzie wymagana \u017cadna czynno\u015b\u0107.  Je\u015bli ten komunikat b\u0119dzie si\u0119 powtarza\u0142, skontaktuj si\u0119 z serwisem IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Nie mo\u017cna utworzy\u0107 obiektu klasy {0} z powodu wyj\u0105tku: {1}.
+EXCP_DURING_INIT_SICJ0081.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.  Otrzymano wyj\u0105tek: {0}.
+EXCP_DURING_INIT_SICJ0082.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+NETWORK_FAILURE_SICJ0083=CWSIJ0083E: Nieoczekiwany warunek spowodowa\u0142 zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+NETWORK_FAILURE_SICJ0083.explanation=Wykrycie nieoczekiwanego warunku spowodowa\u0142o zamkni\u0119cie po\u0142\u0105czenia sieciowego.
+NETWORK_FAILURE_SICJ0083.useraction=Sprawd\u017a wszystkie do\u0142\u0105czone wyj\u0105tki i pliki dziennika serwera aplikacji, aby okre\u015bli\u0107, dlaczego po\u0142\u0105czenie sieciowe zosta\u0142o zamkni\u0119te. Wi\u0119cej informacji na temat problemu zawieraj\u0105 towarzysz\u0105ce komunikaty o b\u0142\u0119dzie. Zapoznaj si\u0119 z nimi i w miar\u0119 mo\u017cliwo\u015bci usu\u0144 problem.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084=CWSIJ0084E: Poprawne zatrzymanie \u0142a\u0144cucha transportowego {1} nie powiod\u0142o si\u0119 z powodu nieoczekiwanego wyj\u0105tku {0}.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.explanation=Podany \u0142a\u0144cuch transportowy m\u00f3g\u0142 nie zosta\u0107 poprawnie zatrzymany z powodu okre\u015blonego wyj\u0105tku. Je\u015bli zatrzymanie \u0142a\u0144cucha transportowego nie powiod\u0142o si\u0119, inne procesy mog\u0105 nadal nawi\u0105zywa\u0107 po\u0142\u0105czenia sieciowe z tym serwerem przy u\u017cyciu okre\u015blonego \u0142a\u0144cucha transportowego.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Sprawd\u017a wyj\u0105tek podany w komunikacie i okre\u015bl, czy zawiera informacje umo\u017cliwiaj\u0105ce rozwi\u0105zanie problemu. Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: \u0141a\u0144cuch transportowy przesy\u0142ania komunikat\u00f3w {0} zosta\u0142 zatrzymany.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=\u0141a\u0144cuch transportowy zosta\u0142 zatrzymany w wyniku zmiany konfiguracji, co oznacza, \u017ce \u017cadna z magistral zdefiniowanych dla kom\u00f3rki nie pozwala ju\u017c na u\u017cycie \u0142a\u0144cucha.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIJ9999=CWSIJ9999E: {0}
+TEMPORARY_CWSIJ9999.explanation=Je\u015bli komunikat nie podaje dostatecznych informacji, zapoznaj si\u0119 z towarzysz\u0105cymi mu komunikatami o b\u0142\u0119dach.
+TEMPORARY_CWSIJ9999.useraction=Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086=CWSIJ0086I: Poprawne zatrzymanie \u0142a\u0144cucha transportowego {1} nie powiod\u0142o si\u0119 z powodu nieoczekiwanego wyj\u0105tku {0}.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086.explanation=Podany \u0142a\u0144cuch transportowy m\u00f3g\u0142 nie zosta\u0107 poprawnie zatrzymany z powodu okre\u015blonego wyj\u0105tku. Je\u015bli zatrzymanie \u0142a\u0144cucha transportowego nie powiod\u0142o si\u0119, inne procesy mog\u0105 nadal nawi\u0105zywa\u0107 po\u0142\u0105czenia sieciowe z tym serwerem przy u\u017cyciu okre\u015blonego \u0142a\u0144cucha transportowego.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086.useraction=Sprawd\u017a wyj\u0105tek podany w komunikacie i okre\u015bl, czy zawiera informacje umo\u017cliwiaj\u0105ce rozwi\u0105zanie problemu. Wi\u0119cej informacji dotycz\u0105cych sposobu rozwi\u0105zywania tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problemu na stronie WWW wsparcia serwera Application Server dost\u0119pne pod adresem: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+missingPorts.ChainDisabled=CWSIJ0086W: \u0141a\u0144cuch transportowy przesy\u0142ania komunikat\u00f3w {0} zosta\u0142 wy\u0142\u0105czony.
+missingPorts.ChainDisabled.explanation=Okre\u015blony \u0142a\u0144cuch transportowy zosta\u0142 wy\u0142\u0105czony, poniewa\u017c skonfigurowany port ma numer mniejszy ni\u017c 0.
+missingPorts.ChainDisabled.useraction=Popraw port przypisany do \u0142a\u0144cucha transportowego w konfiguracji komunikacji JMS, tak aby by\u0142 wi\u0119kszy lub r\u00f3wny 0. 
+
+# -------------------------------------------------------------------------------------------------
+missingSslOptions.ChainNotStarted=CWSIJ0087W: Nie mo\u017cna uruchomi\u0107 \u0142a\u0144cucha transportowego przesy\u0142ania komunikat\u00f3w {0}.
+missingSslOptions.ChainNotStarted.explanation=Okre\u015blony \u0142a\u0144cuch transportowy nie mo\u017ce zosta\u0107 uruchomiony z powodu problemu podczas odczytywania konfiguracji SSL.
+missingSslOptions.ChainNotStarted.useraction= Upewnij si\u0119, \u017ce konfiguracja SSL jest poprawna. 
+
+
+
+

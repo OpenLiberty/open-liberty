@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<ejbbnd:EJBJarBinding
+    xmlns:common="common.xmi"
+    xmlns:ejb="ejb.xmi"
+    xmlns:ejbbnd="ejbbnd.xmi"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmi:version="2.0"
+>
+  <ejbJar href="WEB-INF/ejb-jar.xml#EJBJar_ID"/>
+
+  <ejbBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateless2xLocalHome">
+    <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateless2xLocalBean_ID"/>
+  </ejbBindings>
+
+  <ejbBindings jndiName="ejb/com/ibm/ejb2x/ejbinwar/intf/Stateless2xRemoteHome">
+    <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateless2xRemoteBean_ID"/>
+
+    <ejbRefBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateless2xLocalHome">
+      <bindingEjbRef xmi:type="common:EJBLocalRef" href="WEB-INF/ejb-jar.xml#EJBLocalRef_Stateless2xRemoteBean_Stateless2xLocal_ID"/>
+    </ejbRefBindings>
+
+    <ejbRefBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateful2xLocalHome">
+      <bindingEjbRef xmi:type="common:EJBLocalRef" href="WEB-INF/ejb-jar.xml#EJBLocalRef_Stateless2xRemoteBean_Stateful2xLocal_ID"/>
+    </ejbRefBindings>
+  </ejbBindings>
+
+  <ejbBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateful2xLocalHome">
+    <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateful2xLocalBean_ID"/>
+  </ejbBindings>
+
+  <ejbBindings jndiName="ejb/com/ibm/ejb2x/ejbinwar/intf/Stateful2xRemoteHome">
+    <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateful2xRemoteBean_ID"/>
+  </ejbBindings>
+</ejbbnd:EJBJarBinding>

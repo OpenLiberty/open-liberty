@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Fragment-Host: com.ibm.ws.jsf.2.2;bundle-version=1.0
+Bundle-Name: WebSphere JSF MyFaces Third Party API
+Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.jsf-2.2
+Bundle-Description: WebSphere JSF 2.2 MyFaces Third Party API
+
+# Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the 
+# org.apache.myfaces.buildtools package is javax.j2ee.jsf-2.2/lib/myfaces-builder-annotations-1.0.9.jar
+Export-Package: \
+  org.apache.myfaces.renderkit.html;thread-context=true, \
+  org.apache.myfaces.shared.config, \
+  org.apache.myfaces.shared.renderkit, \
+  org.apache.myfaces.shared.renderkit.html, \
+  org.apache.myfaces.shared.renderkit.html.util
+
+publish.wlp.jar.suffix: dev/api/third-party
+
+
+instrument.ffdc: false
+  instrument.classesExcludes: \
+  com/ibm/ws/jsf/resources/*.class, \
+  org/**/*.class
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+-buildpath: com.ibm.ws.jsf.2.2;version=project

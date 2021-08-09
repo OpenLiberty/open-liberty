@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Se ha denegado el acceso a la v\u00eda de acceso {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=Se ha intentado acceder a una v\u00eda de acceso que est\u00e1 fuera de la regi\u00f3n de lectura/grabaci\u00f3n configurada.
+SERVER_ACCESS_DENIED_ERROR.useraction=Corrija la v\u00eda de acceso para indicar una que est\u00e9 dentro de la regi\u00f3n de lectura/grabaci\u00f3n configurada.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: El servicio OSGi {0} no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.explanation=Este es un error de servidor interno generado porque el servicio especificado no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n "clean".
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: La solicitud de descarga del archivo {0} se ha completado satisfactoriamente.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=La solicitud de descarga del archivo especificado se ha completado satisfactoriamente.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: La solicitud de carga del archivo {0} se ha completado satisfactoriamente.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=La solicitud de carga del archivo especificado se ha completado satisfactoriamente.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: La solicitud de supresi\u00f3n del archivo {0} se ha completado satisfactoriamente.
+DELETE_REQUEST_COMPLETE_INFO.explanation=La solicitud de supresi\u00f3n del archivo especificado se ha completado satisfactoriamente.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: La solicitud de supresi\u00f3n del archivo {0} no se ha podido completar.
+DELETE_REQUEST_ERROR.explanation=La solicitud de supresi\u00f3n del archivo especificado no ha sido satisfactoria; puede que se est\u00e9 utilizando en otro proceso.
+DELETE_REQUEST_ERROR.useraction=Verifique que el archivo no est\u00e9 siendo utilizado por otro proceso y que existan los permisos adecuados que permitan la supresi\u00f3n del archivo.
+
+PATH_NOT_VALID=CWWKX0127E: La v\u00eda de acceso {0} no es v\u00e1lida.
+PATH_NOT_VALID.explanation=La v\u00eda de acceso especificada no es v\u00e1lida y no ha podido encontrarse.
+PATH_NOT_VALID.useraction=Aseg\u00farese de que se haya especificado una v\u00eda de acceso v\u00e1lida que no contenga caracteres o valores no v\u00e1lidos.
+
+NO_WRITE_LOCATION=CWWKX0128E: No hay ubicaciones modificables configuradas en el servidor de direccionamiento.
+NO_WRITE_LOCATION.explanation=No hay ubicaciones modificables configuradas en el servidor de direccionamiento.
+NO_WRITE_LOCATION.useraction=Aseg\u00farese de que haya al menos 1 ubicaci\u00f3n modificable configurada en el servidor de direccionamiento.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: El archivado subido {0} no se ha podido expandir.
+UPLOAD_EXPANSION_ERROR.explanation=La expansi\u00f3n del archivado subido especificado no se ha podido completar.
+UPLOAD_EXPANSION_ERROR.useraction=Aseg\u00farese de que el archivado no est\u00e9 da\u00f1ado.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: No se ha podido localizar el programa de utilidad de expansi\u00f3n de archivado.
+ARCHIVE_EXPANDER_ERROR.explanation=No se ha podido localizar el programa de utilidad de expansi\u00f3n de archivado necesario.
+ARCHIVE_EXPANDER_ERROR.useraction=Aseg\u00farese de que el directorio de instalaci\u00f3n de Liberty no est\u00e9 da\u00f1ado.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: No se ha encontrado ninguna tarea con el ID {0}.
+UNKNOWN_TASK_ID_ERROR.explanation=El identificador proporcionado no coincide con ninguna de las tareas contenidas actualmente en el registro de tareas.
+UNKNOWN_TASK_ID_ERROR.useraction=Consulte un identificador v\u00e1lido que no se haya reciclado.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: Las opciones de las acciones posteriores a la transferencia {0} no son v\u00e1lidas.
+INVALID_ACTION_OPTIONS.explanation=Las opciones de las acciones posteriores a la transferencia posterior deben ser nulas, deben estar vac\u00edas o deben ser una lista separada por comas con la misma longitud que la lista de acciones.
+INVALID_ACTION_OPTIONS.useraction=Aseg\u00farese de que las opciones de las acciones posteriores a la transferencia contengan un valor v\u00e1lido.

@@ -1,0 +1,107 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.transactions.CWSJSMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIG0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/transactions/CWSJSMessages.nlsprops
+#COMPONENTPREFIX CWSJS
+#COMPONENTNAMEFOR CWSJS transactions
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0001=CWSJS0001E: A survenit o eroare intern\u0103.
+INTERNAL_ERROR_CWSJS0001.explanation=MSG0001
+INTERNAL_ERROR_CWSJS0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+LOCALTX_FAIL_CWSJS0002=CWSJS0002E: O excep\u0163ie, {0}, a fost creat\u0103 \u00een timpul proces\u0103rii unei opera\u0163ii tranzac\u0163ionale, cauz\u00e2nd opera\u0163ia s\u0103 e\u015fueze.
+LOCALTX_FAIL_CWSJS0002.explanation=Excep\u0163ia specificat\u0103 a fost creat\u0103 \u00een timpul proces\u0103rii unei opera\u0163ii de tranzac\u0163ionare.  Aceast\u0103 excep\u0163ie a cauzat e\u015fuarea opera\u0163ieii de tranzac\u0163ionare.
+LOCALTX_FAIL_CWSJS0002.useraction=Investiga\u0163i cauza excep\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+DUPLICATE_COMPLETE_CWSJS0003=CWSJS0003E: S-a f\u0103cut o \u00eencercare de a completa o tranzac\u0163ie local\u0103 deja completat\u0103.
+DUPLICATE_COMPLETE_CWSJS0003.explanation=Comiterea sau metoda de derulare \u00eenapoi a unei tranzac\u0163ii locale a fost invocat\u0103 dup\u0103 ce tranzac\u0163ia s-a \u00eencheiat.
+DUPLICATE_COMPLETE_CWSJS0003.useraction=Evita\u0163i s\u0103 face\u0163i \u00eencerc\u0103ri duplicate de a finaliza o tranzac\u0163ie.
+
+# -------------------------------------------------------------------------------------------------
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004=CWSJS0004E: S-a f\u0103cut o \u00eencercare de a realiza lucru pe domeniul unei tranzac\u0163ii locale completate.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a realiza o ac\u0163iune de reconstruc\u0163ie folosind o tranzac\u0163ie local\u0103 care este deja angajat\u0103 sau derulat\u0103 \u00eenapoi.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.useraction=Nu \u00eencerca\u0163i s\u0103 realiza\u0163i noi lucr\u0103ri de tranzac\u0163ionare \u00een scopul unei tranzac\u0163ii finalizat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+GLOBAL_ENLIST_NO_TX_CWSJS0005=CWSJS0005E: S-a f\u0103cut o \u00eencercare de a realiza lucru folosind o XAResource nelistat\u0103. 
+GLOBAL_ENLIST_NO_TX_CWSJS0005.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a realiza un lucru tranzac\u0163ionat cu o resurs\u0103 XA care nu este inregistrat\u0103 intr-o tranzac\u0163ie global\u0103.
+GLOBAL_ENLIST_NO_TX_CWSJS0005.useraction=Nu \u00eencerca\u0163i s\u0103 realiza\u0163i lucruri tranzac\u0163ionate \u00een scopul unei resurse XA ne\u00eenregistrat\u0103.
+# -------------------------------------------------------------------------------------------------
+NO_CLASSPATH_CWSJS0006=CWSJS0006E: A ap\u0103rut o eroare intern\u0103.  Calea clasei curente nu poate fi determinat\u0103.
+NO_CLASSPATH_CWSJS0006.explanation=MSG0001
+NO_CLASSPATH_CWSJS0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNRECOVERABLE_ERROR_CWSJS0007=CWSJS0007E: A ap\u0103rut o eroare intern\u0103.  Reprezentarea \u015firului unui XID a devenit corupt\u0103.
+UNRECOVERABLE_ERROR_CWSJS0007.explanation=MSG0001
+UNRECOVERABLE_ERROR_CWSJS0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0008=CWSJS0008E: Num\u0103rul maxim de opera\u0163ii care pot fi permise pentru o singur\u0103 tranzac\u0163ie ({0}) este dep\u0103\u015fit.
+TX_SIZE_EXCEEDED_CWSJS0008.explanation=S-a f\u0103cut o \u00eencercare de a realiza mai multe opera\u0163ii dec\u00e2t num\u0103rul maxim permis \u00een domeniul unei singure tranzac\u0163ii.
+TX_SIZE_EXCEEDED_CWSJS0008.useraction=Reduce\u0163i num\u0103rul de opera\u0163ii care sunt \u00eencercate \u00een scopul oric\u0103rei tranzac\u0163ii mai mic\u0103 dec\u00e2t limita specificat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0009=CWSJS0009E: A ap\u0103rut o eroare intern\u0103.
+INTERNAL_ERROR_CWSJS0009.explanation=MSG0001
+INTERNAL_ERROR_CWSJS0009.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations that is permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0010=CWSJS0010E: Num\u0103rul maxim de opera\u0163ii care pot fi permise pentru o singur\u0103 tranzac\u0163ie ({0}) este dep\u0103\u015fit.
+TX_SIZE_EXCEEDED_CWSJS0010.explanation=S-a f\u0103cut o \u00eencercare de a realiza mai multe opera\u0163ii dec\u00e2t num\u0103rul maxim permis \u00een domeniul unei singure tranzac\u0163ii.
+TX_SIZE_EXCEEDED_CWSJS0010.useraction=Reduce\u0163i num\u0103rul de opera\u0163ii care sunt \u00eencercate \u00een scopul oric\u0103rei tranzac\u0163ii mai mic\u0103 dec\u00e2t limita specificat\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJS9999=CWSJS9999E: {0}
+TEMPORARY_CWSJS9999.explanation=Dac\u0103 mesajul nu ofer\u0103 suficiente informa\u0163ii, verifica\u0163i mesajele ulterioare pentru ajutor.
+TEMPORARY_CWSJS9999.useraction=Verifica\u0163i mesajele de eroare care acompaniaz\u0103 acest mesaj pentru mai multe informa\u0163ii.

@@ -1,0 +1,120 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: El adaptador de recursos {0} se ha instalado en {1} segundos.
+J2CA7001.adapter.install.successful.explanation=El servidor ha instalado el adaptador de recursos satisfactoriamente.
+J2CA7001.adapter.install.successful.useraction=No se requiere ninguna acci\u00f3n.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: Se ha producido una excepci\u00f3n al instalar el adaptador de recursos {0}. El mensaje de excepci\u00f3n es: {1}
+J2CA7002.adapter.install.failed.explanation=El servidor no ha podido instalar el adaptador de recursos.
+J2CA7002.adapter.install.failed.useraction=Lea el mensaje de excepci\u00f3n para obtener m\u00e1s informaci\u00f3n.
+
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=J2CA7006E: El servidor no ha podido crear una ubicaci\u00f3n de descarga en {0} para el adaptador de recursos {1}.
+J2CA7006.cannot.create.directory.explanation=Al intentar descargar un adaptador de recursos para instalarlo, el servidor no ha podido crear  el directorio de descarga.
+J2CA7006.cannot.create.directory.useraction=Aseg\u00farese de que haya suficiente espacio de disco para la descarga.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: El adaptador de recursos {0} se ha desinstalado satisfactoriamente.
+J2CA7009.adapter.uninstalled.explanation=El servidor ha desinstalado el adaptador de recursos satisfactoriamente.
+J2CA7009.adapter.uninstalled.useraction=No se requiere ninguna acci\u00f3n.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: Se ha producido una excepci\u00f3n al desinstalar el adaptador de recursos {0}. El mensaje de excepci\u00f3n es: {1}.
+J2CA7010.adapter.uninstall.failed.explanation=El servidor no ha podido desinstalar el adaptador de recursos.
+J2CA7010.adapter.uninstall.failed.useraction=Aseg\u00farese de que el adaptador de recursos est\u00e1 en un estado en el que pueda desinstalarse.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: El adaptador de recursos {0} no estaba instalado.
+J2CA7012.adapter.not.installed.explanation=El adaptador de recursos no se ha podido instalar debido a errores anteriores. 
+J2CA7012.adapter.not.installed.useraction=Compruebe la configuraci\u00f3n del adaptador de recursos y consulte los registros para ver los errores ocurridos durante la instalaci\u00f3n del adaptador de recursos.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: No es posible instalar varios adaptadores de recursos u otros artefactos denominados {0}.
+J2CA7013.duplicate.adapter.name.explanation=El nombre del adaptador de recursos debe ser exclusivo.  Esto puede ser debido a que se han configurado varios adaptadores de recursos u otros artefactos con el mismo nombre, o a que se ha desplegado un solo adaptador de recursos mediante la configuraci\u00f3n en el archivo server.xml y mediante la colocaci\u00f3n del adaptador de recursos en el directorio dropins.
+J2CA7013.duplicate.adapter.name.useraction=Si varios adaptadores de recursos u otros artefactos tienen el mismo nombre, elimine o renombre uno de ellos. Si un adaptador de recursos se ha desplegado de dos maneras diferentes, cambie la configuraci\u00f3n de forma que s\u00f3lo se utilice un m\u00e9todo de despliegue.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: El adaptador de recursos {0} no se ha podido instalar porque no se ha encontrado en la ubicaci\u00f3n {1}.
+J2CA7014.adapter.not.found.explanation=El servidor no ha podido encontrar el adaptador de recursos en la ubicaci\u00f3n especificada (o ubicaciones relativas si era una v\u00eda de acceso relativa).
+J2CA7014.adapter.not.found.useraction=Compruebe que la ubicaci\u00f3n definida es correcta para el adaptador de recursos.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: Instalando el adaptador de recursos {0}.
+J2CA7018.installing.adapter.explanation=El adaptador de recursos se est\u00e1 instalando.
+J2CA7018.installing.adapter.useraction=No se requiere ninguna acci\u00f3n.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: El adaptador de recursos {0} no se ha actualizado.
+J2CA7020.adapter.not.updated.explanation=El adaptador de recursos no se ha podido instalar debido a errores anteriores. 
+J2CA7020.adapter.not.updated.useraction=Compruebe la configuraci\u00f3n del adaptador de recursos y consulte los registros para ver los errores ocurridos durante la instalaci\u00f3n del adaptador de recursos.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: El adaptador de recursos {1} en la ubicaci\u00f3n {0} no es v\u00e1lido.
+J2CA7021.adapter.at.location.not.valid.explanation=El archivo o directorio de la ubicaci\u00f3n especificada no es v\u00e1lida, por lo que el adaptador de recursos no puede instalarse.
+J2CA7021.adapter.at.location.not.valid.useraction=Aseg\u00farese de que el archivo o directorio especificado es v\u00e1lido.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: El adaptador de recursos {0} no se ha instalado en {1} segundos.
+J2CA7022.adapter.slow.install.explanation=El adaptador de recursos no se ha instalado en el tiempo esperado. Esto podr\u00eda deberse a que el servidor est\u00e1 sobrecargado o a que el adaptador de recursos es grande. Si el adaptador de recursos se instala como parte del arranque del servidor, el arranque del servidor finalizar\u00e1 sin tener que esperar a que se instale el adaptador de recursos.
+J2CA7022.adapter.slow.install.useraction=Si el adaptador de recursos tarda mucho tiempo en instalarse, no es necesaria ninguna acci\u00f3n; de lo contrario, compruebe los registros del servidor para ver si otros mensajes indican una causa.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: Se ha producido una excepci\u00f3n al intentar desinstalar el adaptador de recursos {0} autom\u00e1ticamente.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=El adaptador de recursos instalado no se ha podido encontrar en el servidor.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=No se requiere ninguna acci\u00f3n.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: Se ha producido una excepci\u00f3n al intentar instalar autom\u00e1ticamente el adaptador de recursos {0}.
+J2CA7056.monitor.adapter.install.fail.explanation=El servidor no ha podido instalar el adaptador de recursos.
+J2CA7056.monitor.adapter.install.fail.useraction=No se requiere ninguna acci\u00f3n.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: El adaptador de recursos {0} instalado desde {1} se ha suprimido mientras sigue configurada.
+J2CA7059.invalid.delete.of.adapter.explanation=Un adaptador de recursos que est\u00e1 configurado actualmente en el archivo server.xml se ha suprimido.
+J2CA7059.invalid.delete.of.adapter.useraction=Si la supresi\u00f3n ha sido intencionada, elimine la configuraci\u00f3n del adaptador de recursos del archivo server.xml.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: El servidor de aplicaciones no puede supervisar el adaptador de recursos {0}.
+J2CA7060.adapter.monitoring.fail.explanation=Se ha instalado un adaptador de recursos, pero la supervisi\u00f3n no se ha iniciado en \u00e9l. Si se actualiza un archivo dentro del adaptador de recursos, el servidor no detectar\u00e1 el cambio. 
+J2CA7060.adapter.monitoring.fail.useraction=Al actualizar archivos de este adaptador de recursos, desinstale manualmente y vuelva a instalar el adaptador de recursos en el servidor.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: El servidor de aplicaciones no ha podido instalar el adaptador de recursos {0}.
+error.not.installed.explanation=Un error anterior ha impedido la instalaci\u00f3n del adaptador de recursos.
+error.not.installed.useraction=Compruebe la ubicaci\u00f3n especificada en el elemento de configuraci\u00f3n del adaptador de recursos.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=J2CA7702E: La aplicaci\u00f3n {0} ha encontrado un error de an\u00e1lisis al procesar el descriptor de la aplicaci\u00f3n {1}: {2}
+error.application.parse.descriptor.explanation=Se ha producido un error al analizar el descriptor de la aplicaci\u00f3n. No hay m\u00f3dulos disponibles para la aplicaci\u00f3n.
+error.application.parse.descriptor.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales. Revise el contenido del descriptor de la aplicaci\u00f3n para asegurarse de que el contenido es v\u00e1lido como datos XML.

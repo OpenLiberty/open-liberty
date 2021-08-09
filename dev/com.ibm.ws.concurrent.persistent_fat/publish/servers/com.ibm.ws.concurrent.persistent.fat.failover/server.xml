@@ -1,0 +1,56 @@
+<!--
+    Copyright (c) 2014, 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>jndi-1.0</feature>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>persistentExecutor-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>timerInterfacesTestFeature-1.0</feature>
+    <feature>localConnector-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+  
+  <persistentExecutor jndiName="concurrent/myScheduler" taskStoreRef="DBTaskStore" 
+                      initialPollDelay="2s" pollInterval="2s500ms" missedTaskThreshold="6s" ignore.minimum.for.test.use.only="true"
+                      retryLimit="1"/>
+
+  <databaseStore id="DBTaskStore">
+    <dataSource fat.modify="true" jndiName="jdbc/schedDB" id="TaskStoreDS">
+      <jdbcDriver libraryRef="FATJDBCLib"/>
+      <!-- properties modified by FATRunner during database rotation. -->
+      <properties createDatabase="create" databaseName="memory:failoverdb"/>
+    </dataSource>
+  </databaseStore>
+  
+  <!-- database (always Derby embedded) for the test application -->
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="DerbyJDBCLib"/>
+    <properties createDatabase="create" databaseName="memory:testdb"/>
+  </dataSource>
+  
+  <library id="FATJDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  </library>
+    
+  <library id="DerbyJDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="derby.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/jdbc/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+  <javaPermission className="java.io.FilePermission" name="${server.config.dir}/ddl/*" actions="read"/>
+  <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  
+  <variable name="onError" value="FAIL"/>
+</server>

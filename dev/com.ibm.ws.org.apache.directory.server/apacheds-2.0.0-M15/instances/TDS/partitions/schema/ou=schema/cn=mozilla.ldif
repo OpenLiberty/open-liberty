@@ -1,0 +1,13 @@
+version: 1
+dn: cn=mozilla,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaSchema
+objectclass: top
+cn: mozilla
+m-disabled: TRUE
+entryUUID: 0e53d3f0-ff75-45ae-b72a-a6c2874d50a4
+m-dependencies: system
+m-dependencies: core
+entryCSN: 20130919065344.519000Z#000001#000#000000
+entryParentId: 3456708f-5a09-4e37-8bcb-59f59172fa8c
+createTimestamp: 20130919065353.229Z

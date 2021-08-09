@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.115.121.1.23,ou=syntaxCheckers,cn=system,ou=schema
+m-oid: 1.3.6.1.4.1.1466.115.121.1.23
+m-fqcn: org.apache.directory.api.ldap.model.schema.syntaxCheckers.FaxSyntaxCheck
+ er
+objectclass: metaSyntaxChecker
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 4e4406aa-5e1b-44db-b9af-a61cbd4f3df2
+entryCSN: 20130919081859.336000Z#000001#000#000000
+entryParentId: 5916a9b7-8e44-4711-ac94-466743b9f6b9
+createTimestamp: 20130919081911.104Z

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+         
+      <enterprise-beans>
+         
+         <session id="Session_1">
+            <ejb-name>BindingName1</ejb-name>
+            <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
+            <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
+            <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_2">
+            <ejb-name>BindingName2</ejb-name>
+            <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
+            <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
+            <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="Session_3">
+            <ejb-name>BindingName3</ejb-name>
+            <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
+            <business-remote>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-remote>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="Session_4">
+            <ejb-name>BindingName4</ejb-name>
+            <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
+            <business-remote>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-remote>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="Session_5">
+            <ejb-name>BindingName5</ejb-name>
+            <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
+            <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
+            <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
+            <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
+            <business-remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf</business-remote>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="Session_6">
+            <ejb-name>BindingName6</ejb-name>
+            <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
+            <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
+            <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
+            <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
+            <business-remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf</business-remote>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="Session_7">
+            <ejb-name>BindingName7</ejb-name>
+            <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
+            <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
+            <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
+            <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
+            <business-remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf</business-remote>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         
+         <session id="Session_8">
+            <ejb-name>BindingName8</ejb-name>
+            <home>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameHome</home>
+            <remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingName</remote>
+            <local-home>com.ibm.ejb3x.BindingName.ejb.BindingNameHome</local-home>
+            <local>com.ibm.ejb3x.BindingName.ejb.BindingName</local>
+            <business-local>com.ibm.ejb3x.BindingName.ejb.BindingNameIntf</business-local>
+            <business-remote>com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf</business-remote>
+            <ejb-class>com.ibm.ejb3x.BindingName.ejb.BindingNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+      </enterprise-beans>
+   </ejb-jar>

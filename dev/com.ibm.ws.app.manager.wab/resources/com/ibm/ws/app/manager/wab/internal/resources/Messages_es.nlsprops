@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: Se ha producido un error al inicializar el instalador WAB.
+bundle.tracker.init.fail.explanation=El servidor no ha podido inicializar el instalador WAB (paquete de aplicaciones web), por lo tanto, los WAB no se han instalado.
+bundle.tracker.init.fail.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail=CWWKZ0202E: No se ha podido instalar el paquete {0} con la ra\u00edz de contexto {1} en el contenedor web.
+wab.install.fail.explanation=El servidor no ha podido instalar el WAB (paquete de aplicaciones web) en el contenedor web.
+wab.install.fail.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail.adapt=CWWKZ0203E: No se ha podido instalar el paquete {0} con la ra\u00edz de contexto {1} en el contenedor web.
+wab.install.fail.adapt.explanation=El servidor no ha podido instalar el WAB (paquete de aplicaciones web) en el contenedor web.
+wab.install.fail.adapt.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail.overlay=CWWKZ0204E: No se ha podido instalar el paquete {0} con la ra\u00edz de contexto {1} en el contenedor web.
+wab.install.fail.overlay.explanation=El servidor no ha podido instalar el WAB (paquete de aplicaciones web) en el contenedor web.
+wab.install.fail.overlay.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail.cache=CWWKZ0205E: No se ha podido instalar el paquete {0} con la ra\u00edz de contexto {1} en el contenedor web.
+wab.install.fail.cache.explanation=El servidor no ha podido instalar el WAB (paquete de aplicaciones web) en el contenedor web.
+wab.install.fail.cache.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail.container=CWWKZ0206E: No se ha podido instalar el paquete {0} con la ra\u00edz de contexto {1} en el contenedor web.
+wab.install.fail.container.explanation=El servidor no ha podido instalar el WAB (paquete de aplicaciones web) en el contenedor web.
+wab.install.fail.container.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail.wiring=CWWKZ0207E: No se ha podido instalar el paquete {0} con la ra\u00edz de contexto {1} en el contenedor web.
+wab.install.fail.wiring.explanation=El servidor no ha podido instalar el WAB (paquete de aplicaciones web) en el contenedor web.
+wab.install.fail.wiring.useraction=Consulte los archivos de registro y FFDC para obtener m\u00e1s informaci\u00f3n.
+
+wab.install.fail.clash=CWWKZ0208E: El paquete {0} con la ra\u00edz de contexto {1} no se puede instalar en el contenedor web porque no tiene la misma ra\u00edz de contexto que los siguientes paquetes: {2}.
+wab.install.fail.clash.explanation=La ra\u00edz de contexto de cada WAB (paquete de aplicaciones web) en el contenedor web debe ser exclusiva. El servidor no puede instalar el WAB en el contenedor web porque su ra\u00edz de contexto es la misma que otro paquete que se ha desplegado.
+wab.install.fail.clash.useraction=Utilice una ra\u00edz de contexto diferente. 

@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Acesso negado ao caminho {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=Foi feita uma tentativa de acessar um caminho que est\u00e1 fora da regi\u00e3o de leitura/grava\u00e7\u00e3o configurada.
+SERVER_ACCESS_DENIED_ERROR.useraction=Corrija o caminho para indicar um que esteja dentro da regi\u00e3o de leitura/grava\u00e7\u00e3o configurada.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: O servi\u00e7o OSGi {0} n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.explanation=Este \u00e9 um erro interno do servidor lan\u00e7ado porque o servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o "clean".
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: A solicita\u00e7\u00e3o de download para o arquivo {0} foi conclu\u00edda com \u00eaxito.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=A solicita\u00e7\u00e3o de download para o arquivo especificado foi conclu\u00edda com \u00eaxito.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: A solicita\u00e7\u00e3o de upload para o arquivo {0} foi conclu\u00edda com \u00eaxito.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=A solicita\u00e7\u00e3o de upload para o arquivo especificado foi conclu\u00edda com \u00eaxito.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: A solicita\u00e7\u00e3o de exclus\u00e3o para o arquivo {0} foi conclu\u00edda com \u00eaxito.
+DELETE_REQUEST_COMPLETE_INFO.explanation=A solicita\u00e7\u00e3o de exclus\u00e3o para o arquivo especificado foi conclu\u00edda com \u00eaxito.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Esta \u00e9 uma mensagem informativa e nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: A solicita\u00e7\u00e3o de exclus\u00e3o para o arquivo {0} n\u00e3o p\u00f4de ser conclu\u00edda.
+DELETE_REQUEST_ERROR.explanation=A solicita\u00e7\u00e3o de exclus\u00e3o para o arquivo especificado foi malsucedida, ele pode estar sendo usado por outro processo.
+DELETE_REQUEST_ERROR.useraction=Verifique se o arquivo n\u00e3o est\u00e1 sendo usado por outro processo e se existem permiss\u00f5es apropriadas que permitam a exclus\u00e3o do arquivo.
+
+PATH_NOT_VALID=CWWKX0127E: O caminho {0} n\u00e3o \u00e9 v\u00e1lido.
+PATH_NOT_VALID.explanation=O caminho especificado n\u00e3o \u00e9 v\u00e1lido, e n\u00e3o p\u00f4de ser localizado.
+PATH_NOT_VALID.useraction=Assegure-se de que um caminho v\u00e1lido que n\u00e3o contenha caracteres ou valores inv\u00e1lidos seja especificado.
+
+NO_WRITE_LOCATION=CWWKX0128E: N\u00e3o existem locais grav\u00e1veis configurados no servidor de roteamento.
+NO_WRITE_LOCATION.explanation=N\u00e3o existem locais grav\u00e1veis configurados no servidor de roteamento.
+NO_WRITE_LOCATION.useraction=Assegure-se de que pelo menos um local grav\u00e1vel seja configurado no servidor de roteamento.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: O archive {0} transferido por upload n\u00e3o p\u00f4de ser expandido.
+UPLOAD_EXPANSION_ERROR.explanation=A expans\u00e3o para o archive transferido por upload especificado n\u00e3o p\u00f4de ser conclu\u00edda.
+UPLOAD_EXPANSION_ERROR.useraction=Assegure-se de que o archive n\u00e3o esteja corrompido.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: O utilit\u00e1rio expansor de archive n\u00e3o p\u00f4de ser localizado.
+ARCHIVE_EXPANDER_ERROR.explanation=O utilit\u00e1rio expansor de archive necess\u00e1rio n\u00e3o p\u00f4de ser localizado.
+ARCHIVE_EXPANDER_ERROR.useraction=Assegure-se de que o diret\u00f3rio de instala\u00e7\u00e3o do Liberty n\u00e3o esteja corrompido.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: Uma tarefa com o ID {0} n\u00e3o foi localizada.
+UNKNOWN_TASK_ID_ERROR.explanation=O identificador fornecido n\u00e3o corresponde a nenhuma tarefa atualmente sendo mantida no registro de tarefas.
+UNKNOWN_TASK_ID_ERROR.useraction=Consulte um identificador v\u00e1lido que n\u00e3o tenha sido reciclado.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: As op\u00e7\u00f5es de a\u00e7\u00e3o p\u00f3s-transfer\u00eancia {0} n\u00e3o s\u00e3o v\u00e1lidas.
+INVALID_ACTION_OPTIONS.explanation= As op\u00e7\u00f5es de a\u00e7\u00e3o p\u00f3s-transfer\u00eancia devem ser nulas, vazias ou estarem em uma lista separada por v\u00edrgula com o mesmo comprimento que a lista de a\u00e7\u00f5es.
+INVALID_ACTION_OPTIONS.useraction=Assegure-se de que as op\u00e7\u00f5es de a\u00e7\u00e3o p\u00f3s-transfer\u00eancia contenham um valor v\u00e1lido.

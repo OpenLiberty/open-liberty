@@ -1,0 +1,22 @@
+<server>
+
+	<mpJwt
+		id="mpJwt_1"
+        	authFilterRef="mpJwtAppAuthFilter"
+		jwksUri="${mpJwt_jwksUri}"
+		sslRef="ssl_allSigAlg"
+		keyName="rs256"
+		signatureAlgorithm="RS256"
+		audiences="client01, client02"
+		issuer="testIssuer"
+		tokenHeader="Cookie"
+		cookieName="myJwt">
+	</mpJwt>
+
+    <authFilter id="mpJwtAppAuthFilter">
+        <requestUrl
+             id="mpJwtRequestUrl"
+             urlPattern="MicroProfileApp"
+             matchType="contains" />
+    </authFilter>
+</server>

@@ -1,0 +1,9 @@
+/bin/
+/generated/
+
+# These resources should be output into /build instead.
+/lib/fonts/IBMPlexSans-Bold.woff
+/lib/fonts/IBMPlexSans-Light.woff
+/lib/fonts/IBMPlexSans-Regular.woff
+/lib/fonts/IBMPlexSans-SemiBold.woff
+/lib/jquery/jquery.min.js

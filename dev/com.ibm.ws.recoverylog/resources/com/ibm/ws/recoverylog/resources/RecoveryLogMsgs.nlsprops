@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: The Recovery Log Service has been suspended ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=The Recovery Log Service is in pending state to allow the system to backup the recovery log files.
+CWRLS0001_SUSPEND_RLS.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: The Recovery Log Service has been resumed ({0}).
+CWRLS0002_RESUME_RLS.explanation=The Recovery Log Service that was suspended earlier is restored to running state.
+CWRLS0002_RESUME_RLS.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=This message code is used to support messages that have not yet been allocated their own message code.
+CWRLS0003_GENERIC_ERROR.useraction=Refer to the message text for more information.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Unable to create recovery log file {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=The recovery log service could not create the file indicated in the message. Either the target directory is inaccessible, or the system does not have sufficient permissions to create the required file.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Ensure that the required directory hierarchy is valid and accessible to the recovery log service.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Unable to obtain an exclusive file lock on {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=The recovery log service could not exclusively lock the file indicated in the message.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Creating new recovery log file {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=A new recovery log file has been established to store persistent data.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: No existing recovery log files found in {0}. Cold starting the recovery log.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Either previously recovery log files have been deleted, or this is the first time recovery log files have been stored in this location. In either case, the associated service will start and will not perform any recovery processing.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Recovery log is being marked as failed. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=The recovery log has failed, and there is no further access to the recovery log. The message shows the component and the relevant exception.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Restart the server so that the log can be repaired. Try to fix any conditions indicated by the exception in the message.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Details of recovery log failure: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=This message is issued with message CWRLS0008E to indicate the details of the recovery log failure.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Use the information in this message and message CWRLS0008E to correct that condition that caused the recovery log to fail.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Performing recovery processing for local WebSphere server ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=The recovery log service is directing recovery processing of associated client services.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Performing recovery processing for a peer WebSphere server ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=The recovery log service is directing recovery processing of associated client services for the peer server.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: All persistent services have been directed to perform recovery processing for this WebSphere server ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=The recovery log service has prompted all associated client services to begin recovery.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: All persistent services have been directed to perform recovery processing for a peer WebSphere server ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=The recovery log service has prompted all associated client services to begin recovery for the peer server.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Halting any current recovery processing for a peer WebSphere server ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=Recovery processing is being transferred to an alternative application server. Typically, this occurs when a server is restarted and retakes ownership of its recovery logs.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Recovery log file locking has been disabled in the transaction service custom properties.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=The file locking mechanism that the recovery log service uses to ensure exclusive access to recovery log files has been explicitly disabled.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Ensure that the appropriate constraints are in place to support this configuration setting.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Unable to obtain an exclusive file lock needed to perform recovery processing for server {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Either the target server is active, or the recovery log configuration is incorrect.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Ensure that the recovery log configuration is valid.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: An attempt to obtain an exclusive file lock needed to perform recovery processing for server {0} was interrupted.   Another server is being activated to perform this recovery processing.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Control of a recovery log has been passed between two application servers.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: An attempt to halt transactional recovery and forward processing for the local server ({0}) has been aborted.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=The recovery log service has stopped the local server from relinquishing control of its own recovery logs. This might be caused by the core group policy configuration.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Ensure that the policy configuration does not assign ownership of the recovery log of an active server to an alternative server.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: The Recovery Log Service has been configured as snapshot safe in the transaction service custom properties.
+CWRLS0019_SNAPSHOT_SAFE.explanation=When a snapshot of the log files is requested, all transaction logging activity is suspended while the snapshot is taken, to ensure that the log files are in a known state that is consistent with other systems involved in the snapshot.
+CWRLS0019_SNAPSHOT_SAFE.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: The Recovery Log Service has NOT been configured as snapshot safe in the transaction service custom properties.
+CWRLS0020_SNAPSHOT_SAFE.explanation=If a snapshot of the log files is taken, the log files might not be in a state that is consistent with other systems involved in the snapshot.
+CWRLS0020_SNAPSHOT_SAFE.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: The Recovery Log Service has been called to resume ({0}) but there are other outstanding suspends.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=The recovery log service will be resumed only when there are no outstanding suspend operations.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: A Recovery Log Service suspend operation has timed out ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=If there are no outstanding suspend operations the recovery log service will resume.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: The Recovery Log Service has been resumed following the timeout of a suspend operation.
+CWRLS0023_RESUME_RLS.explanation=This message is for informational purposes only.
+CWRLS0023_RESUME_RLS.useraction=No action is required.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Exception caught during recovery! {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= An exception was detected while attempting to recover from a previous server failure.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: Server recovery mode startup is not compatible with HA enablement.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=In a high availability configuration, server recovery might be automatically initiated on a peer server.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Do not attempt to start a server in recovery mode if it is enabled for high availability .
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Unable to obtain an exclusive file lock on {0} - retrying.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=The recovery log service cannot exclusively lock the file indicated in the message during recovery, because the file appears to be in use. The recovery service will attempt periodically to gain the exclusive lock so that recovery can proceed. If the recovery log file is one of the main server recovery logs, startup is suspended until access to the logs is possible.  If the recovery log file belongs to another peer server, another server might gain the locks and perform peer recovery; in this situation, this server will stop trying to recover.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Examine any related messages to determine the cause of the problem. If there are no related messages, check the location of the recovery logs and ensure they are not being accessed by another server. For example, this situation could occur if more than one server is configured to use the recovery logs of another server.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Common transaction log directory {0} has been defined for servers {1} and {2}
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Transaction logs from two servers are using a common directory configuration. This might cause recovery lock contention or a failure of data integrity. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Configure separate log directory paths for each server.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Common compensation log directory {0} has been defined for servers {1} and {2}
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Compensation logs from two servers are using a common directory configuration. This might cause to recovery lock contention or a failure of data integrity. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Configure separate log directory paths for each server.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Unable to perform recovery processing for local WebSphere server - server being terminated
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=The recovery log service cannot perform or complete recovery for the local server and no further work can proceed, so the server will be stopped.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Waiting for HAManager to activate recovery processing for local WebSphere server
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=The recovery log service cannot initiate recovery processing for the local server, because it is waiting for the HAManager to activate group membership for the recovery logs of this local server.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Examine any related messages to determine the cause of the problem. If there are no related messages, check the configuration of the DefaultCoreGroup settings and associated policy definitions for the recovery log service for the server. For example, if the Clustered TM policy is set to not support fail back, another server might have a hold on the logs and will stop this server from being activated.
+

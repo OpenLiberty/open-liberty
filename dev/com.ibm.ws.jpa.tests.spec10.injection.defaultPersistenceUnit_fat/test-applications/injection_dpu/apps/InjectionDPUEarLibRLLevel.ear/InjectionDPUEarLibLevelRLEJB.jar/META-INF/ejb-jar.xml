@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+    <enterprise-beans>
+       <session>
+            <ejb-name>EarLibLevelRLDPUJNDIInjectionSLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUJNDIInjectionSLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/InjectionDPU_AMRL</persistence-unit-ref-name>
+            </persistence-unit-ref>    
+        </session>
+        <session>
+            <ejb-name>EarLibLevelRLDPUJNDIInjectionSFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUJNDIInjectionSFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+                <bean-method>
+                    <method-name>release</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Bean</transaction-type>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/InjectionDPU_AMRL</persistence-unit-ref-name>
+            </persistence-unit-ref>    
+        </session>
+                
+        <session>
+            <ejb-name>EarLibLevelRLDPUFieldInjectionSLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUFieldInjectionSLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUFieldInjectionSLEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+        
+        <session>
+            <ejb-name>EarLibLevelRLDPUMethodInjectionSLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUMethodInjectionSLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUMethodInjectionSLEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+        
+        
+        <session>
+            <ejb-name>EarLibLevelRLDPUFieldInjectionSFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUFieldInjectionSFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUFieldInjectionSFEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+        
+        <session>
+            <ejb-name>EarLibLevelRLDPUMethodInjectionSFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUMethodInjectionSFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.injectiondpu.ejb.earliblevel.rl.EarLibLevelRLDPUMethodInjectionSFEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

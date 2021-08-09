@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Ning\u00fan objeto IdentityStore admite la validaci\u00f3n del usuario. Aseg\u00farese de que al menos un objeto IdentityStore admita la validaci\u00f3n de usuario.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=No se ha encontrado ning\u00fan objeto IdentityStore para validar el usuario. Por lo tanto, el usuario no se puede autenticar.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Aseg\u00farese de que al menos un objeto IdentityStore admita la validaci\u00f3n del usuario.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: No se ha podido crear el objeto HttpAuthenticationMechanism para el m\u00f3dulo {0} en la aplicaci\u00f3n {1}.
+JAVAEESEC_ERROR_NO_HAM.explanation=La raz\u00f3n por la que no se ha creado el objeto HttpAuthenticationMechanism var\u00eda. Los mensajes de error del objeto HttpAuthenticationMechanism proporcionan informaci\u00f3n sobre por qu\u00e9 no se puede crear el objeto HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.useraction=Consulte los mensajes de error del objeto HttpAuthenticationMechanism y realice correcciones seg\u00fan lo especificado en los mensajes de error.
+
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: La expresi\u00f3n de Expression Language (EL) del atributo ''{0}'' de la anotaci\u00f3n del almac\u00e9n de identidades no se puede resolver en un valor v\u00e1lido. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. En su lugar se utilizar\u00e1 el valor de atributo predeterminado de ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=La causa del error es una discrepancia del tipo entre el resultado de EL y el valor del atributo esperado. Por ejemplo, si el tipo de atributo esperado es String (serie), el resultado EL debe ser String.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL sean v\u00e1lidas y de que los beans de referencia que se utilizan en la expresi\u00f3n se puedan resolver, y que el tipo de resultado se corresponda con el atributo.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Un par\u00e1metro hashAlgorithm proporcionado para hashAlgorithm, {0}, est\u00e1 en un formato incorrecto. El par\u00e1metro recibido es {1}. El formato necesario es nombre=valor.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Una lista de par\u00e1metros hashAlgorithm est\u00e1 en un formato incorrecto y no se puede analizar.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Corrija el elemento hashAlgorithmParameters en la anotaci\u00f3n DatabaseIdentityStore.
+
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: No se pueden validar las credenciales del interlocutor {0}. El objeto DatabaseIdentityStore no ha podido ejecutar la consulta ''{1}'' con un error: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=La b\u00fasqueda del interlocutor ha fallado con un error.
+JAVAEESEC_ERROR_GEN_DB.useraction=Consulte el mensaje de error y realice las correcciones oportunas en la b\u00fasqueda seg\u00fan lo especificado en el mensaje de error.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: El objeto DatabaseIdentityStore no ha podido ejecutar la consulta ''{1}'' para obtener los grupos del interlocutor {0}. La lista parcial de grupos es {2}. El error es {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Se ha devuelto una lista parcial de los grupos para el interlocutor en lugar de una lista completa de los grupos debido a un error en la consulta.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Revise el error proporcionado y realice las correcciones oportunas en la consulta para que se devuelva la lista completa de los grupos para el interlocutor. 
+
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: La credencial proporcionada al objeto IdentityStore no es una UsernamePasswordCredential y no se puede validar.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=La credencial proporcionada al objeto IdentityStore no es una clase UsernamePasswordCredential y no se puede validar.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Revise el tipo de credencial que se ha pasado al objeto IdentityStore mediante la implementaci\u00f3n de HttpAuthMechanism.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: El algoritmo hash no se ha encontrado para la clase {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=No se ha encontrado el algoritmo hash listado en el elemento hashAlgorithm en la anotaci\u00f3n DatabaseIdentityStoreDefinition.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=A\u00f1ada el algoritmo hash personalizado como un bean que est\u00e9 disponible para la aplicaci\u00f3n.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: La consulta ''{1}'' no ha devuelto una contrase\u00f1a para el interlocutor {0} en DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=La consulta no ha devuelto una contrase\u00f1a para la consulta de interlocutor proporcionada.
+JAVAEESEC_WARNING_NO_PWD.useraction=Si se esperaba una contrase\u00f1a, revise la consulta de interlocutor y el contenido de base de datos.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: La consulta ''{1}'' ha devuelto varios resultados para el interlocutor {0} en DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Se han devuelto varios resultados para el interlocutor solicitado. La consulta de interlocutor s\u00f3lo debe devolver un \u00fanico resultado.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Revise la consulta de interlocutor y el contenido de base de datos. Cambie la consulta de interlocutor para que se devuelva un resultado.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND=CWWKS3400W: Error en el enlace con el interlocutor {0}. Se ha producido la excepci\u00f3n siguiente: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.explanation=Se ha producido una excepci\u00f3n al enlazar con el interlocutor proporcionado.
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.useraction=Revise la excepci\u00f3n proporcionada.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH=CWWKS3401E: Error en la b\u00fasqueda del interlocutor {0} con el filtro {1} y searchBase {2}. Se ha producido la excepci\u00f3n siguiente: {3}
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.explanation=Se ha producido una excepci\u00f3n al buscar al interlocutor proporcionado.
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.useraction=Revise la excepci\u00f3n proporcionada.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH=CWWKS3402E: Error en la b\u00fasqueda de los grupos de {0}. Se ha producido la excepci\u00f3n siguiente: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.explanation=Se ha producido una excepci\u00f3n al buscar los grupos del usuario especificado.
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.useraction=Revise la excepci\u00f3n proporcionada.
+
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP=CWWKS3403W: Se han devuelto varios resultados para el interlocutor {0} en LdapIdentityStore con el filtro {1} y la searchBase {2}.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.explanation=Se han devuelto varios resultados para el interlocutor solicitado. La b\u00fasqueda de interlocutor solo debe devolver un \u00fanico resultado.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.useraction=Revise callerSearchFilter, searchBase y el contenido del repositorio.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3404W: Error en la b\u00fasqueda del atributo {1} en la entidad {0}. Se ha producido la excepci\u00f3n siguiente: {2}
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=Se ha producido una excepci\u00f3n al buscar los atributos en la entidad especificada.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Revise la excepci\u00f3n proporcionada.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3405W: Al interlocutor {0} le falta callerNameAttribute {1}.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=El interlocutor dado no tiene el atributo especificado como se ha establecido en LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Revise callerNameAttribute y el contenido del repositorio.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3406W: Al grupo {0} le falta groupNameAttribute {1}.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=El grupo dado no tiene el atributo especificado como se ha establecido en LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Revise groupNameAttribute y el contenido del repositorio.

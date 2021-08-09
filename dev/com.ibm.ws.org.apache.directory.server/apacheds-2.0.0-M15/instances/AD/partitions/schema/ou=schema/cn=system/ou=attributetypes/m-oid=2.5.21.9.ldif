@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.21.9,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: objectIdentifierMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.38
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DIRECTORY_OPERATION
+m-oid: 2.5.21.9
+m-name: structuralObjectClass
+m-description: X.500(93): structural object class of entry
+m-obsolete: FALSE
+entryUUID: 17560cb4-50c7-416a-a10a-1af8e841532d
+entryCSN: 20130919081859.237000Z#000001#000#000000
+entryParentId: 00d07a58-ce34-4e15-b277-c443ee6d991b
+createTimestamp: 20130919081909.518Z

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="EjbinWarServletLdap" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+  <display-name>EjbinWarServletLdap</display-name>
+  <description>This is a servlet to test EJBs</description>
+
+  <!-- SERVLET DEFINITIONS -->
+   
+  <servlet id="Default_Servlet_1">
+    <description>SecurityEJBServlet2</description>
+    <display-name>SecurityEJBServlet2</display-name>
+    <servlet-name>SecurityEJBServlet2</servlet-name>
+    <servlet-class>web.war.ejb.annotated.servlet2.SecurityEJBServlet2</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+ 
+  
+  <!-- SERVLET MAPPINGS -->   
+   
+  <servlet-mapping id="Default_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBServlet2</servlet-name>
+    <url-pattern>/SimpleServlet2</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_Ann_Default">
+     <web-resource-collection id="WebResourceCollection_Default">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleServlet2</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_Default">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+  
+
+   <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  
+</web-app>

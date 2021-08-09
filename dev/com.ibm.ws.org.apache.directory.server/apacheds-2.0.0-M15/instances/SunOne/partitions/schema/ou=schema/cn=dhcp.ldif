@@ -1,0 +1,9 @@
+version: 1
+dn: cn=dhcp,ou=schema
+cn: dhcp
+m-disabled: TRUE
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+creatorsname: uid=admin,ou=system

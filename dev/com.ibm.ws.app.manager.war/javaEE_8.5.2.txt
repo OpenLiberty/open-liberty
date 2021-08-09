@@ -1,0 +1,135 @@
+From the JavaEE 6 specification:
+
+EE.8.5.2 Deploying a Java EE Application
+
+This section specifies the requirements for deploying a Java EE
+application.
+
+1. The deployment tool must first read the Java EE application
+deployment descriptor from the application .ear file
+(META-INF/application.xml). If the deployment descriptor is present,
+it fully specifies the modules included in the application. If no
+deployment descriptor is present, the deployment tool uses the
+following rules to determine the modules included in the application.
+
+a. All files in the application package with a filename extension of
+.war are considered web modules. The context root of the web module is
+the module name (see Section EE.8.1.1, Component Creation).
+
+b. All files in the application package with a filename extension of
+.rar are considered resource adapters.
+
+c. A directory named lib is considered to be the library directory, as
+described in Section EE.8.2.1, Bundled Libraries.
+
+d. For all files in the application package with a filename extension
+of .jar, but not contained in the lib directory, do the following:
+
+i. If the JAR file contains a META-INF/MANIFEST.MF file with a
+Main-Class attribute, or contains a META-INF/application-client.xml
+file, consider the JAR file to be an application client module.
+
+ii. If the JAR file contains a META-INF/ejb-jar.xml file, or contains
+any class with an EJB component annotation (Stateless, etc.), consider
+the JAR file to be an EJB module.
+
+iii. All other JAR files are ignored unless referenced by a JAR file
+discovered above using one of the JAR file reference mechanisms such
+as the Class-Path header in a manifest file.
+
+2. The deployment tool must ensure that the application name is unique
+in the application server instance. If the name is not unique, the
+deployment tool may automatically choose a unique name or allow the
+Deployer to choose a unique name, but must not fail the
+deployment. This ensures that existing applications continue to be
+deployable.
+
+3. The deployment tool must open each of the Java EE modules listed in
+the Java EE application deployment descriptor or discovered using the
+rules above and read the Java EE module deployment descriptor, if
+present in the package. See the Enterprise JavaBeans, servlet, Java EE
+Connector and application client specifications for the required
+location and name of the deployment descriptor for each component
+type. Deployment descriptors are optional for all module types. (The
+application client specification is Chapter EE.10, “Application
+Clients”.)
+
+4. If the module deployment descriptor is absent, or is present and is
+a Java EE 5 or later version descriptor and the metadata-complete
+attribute is not set to true, the deployment tool must examine all the
+class files in the application package that can be used by the module
+(that is, all class files that are included in the .ear file and can
+be referenced by the module, such as the class files included in the
+module itself, class files referenced from the module by use of a
+Class-Path reference, class files included in the library directory,
+etc.). Any annotations that specify deployment information must be
+logically merged with the information in the deployment descriptor (if
+present). Note that the presence of component-declaring annotations in
+shared artifacts, such as libraries in the library directory and
+libraries referenced by more than one module through Class-Path
+references, can have unintended and undesirable consequences and is
+not recommended. The correspondence of annotation information with
+deployment descriptor information, as well as the overriding rules,
+are described in this and other Java EE specifications. The result of
+this logical merge process provides the deployment information used in
+subsequent deployment steps. Note that there is no requirement for the
+merge process to produce a new deployment descriptor, although that
+might be a common implementation technique.
+
+5. The deployment tool must install all of the components described by
+each module deployment descriptor, or marked via annotations and
+discovered as described in the previous requirement, into the
+appropriate container according to the deployment requirements of the
+respective Java EE component specification. All classes in .jar files
+or directories referenced from other JAR files using the Class-Path
+manifest header must be included in the deployment. If the .ear file,
+or any JAR format files within the .ear file, declares a dependency on
+an installed library, that dependency must be satisfied.
+
+6. The deployment tool must allow the Deployer to configure the
+container to provide the resources and configuration values needed for
+each component. The required resources and configuration parameters
+are specified in the deployment descriptor or via annotations
+discovered in requirement 3.
+
+7. The deployment tool must allow the Deployer to deploy the same Java
+EE application multiple times, as multiple independent applications,
+possibly with different configurations. For example, the enterprise
+beans in an ejb-jar file might be deployed multiple times under
+different JNDI names and with different configurations of their
+resources.
+
+8. When presenting security role descriptions to the Deployer, the
+deployment tool must use the descriptions in the Java EE application
+deployment descriptor rather than the descriptions in any module
+deployment descriptors for security roles with the same name. However,
+for security roles that appear in a module deployment descriptor but
+do not appear in the application deployment descriptor, the deployment
+tool must use the description provided in the module deployment
+descriptor.
+
+EE.8.5.3 Deploying a Library
+
+This section specifies the requirements for deploying a library.
+
+1. The deployment tool must record the extension name and version
+information from the manifest file of the library JAR file. The
+deployment tool must make the library available to other Java EE
+deployment units that request it according to the version matching
+rules described in the Optional Package Versioning specification. Note
+that the library itself may include dependencies on other libraries
+and these dependencies must also be satisfied.
+
+2. The deployment tool must make the library available with at least
+the same security permissions as any application or module that uses
+it. The library may be installed with the full security permissions of
+the container.
+
+3. Not all libraries will be deployable on all Java EE products at all
+times. Libraries that conflict with the operation of the Java EE
+product may not be deployable. For example, an attempt to deploy an
+older version of a library that has subsequently been included in the
+Java EE platform specification may be rejected. Similarly, deployment
+of a library that is also used in the implementation of the Java EE
+product may be rejected. Deployment of a library that is in active use
+by an application may be rejected.

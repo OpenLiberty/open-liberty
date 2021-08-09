@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server>
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>restfulWS-3.0</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+    
+    <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cdiinjectintoapp/app/-" actions="GET:"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+</server>

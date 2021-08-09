@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.32,ou=attributeTypes,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: caseExactMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.32
+m-name: m-fqcn
+m-description: The fully qualified class name of a code based schema entity
+m-obsolete: FALSE
+entryUUID: 99dbb3b3-de9b-4ed9-8271-fb2aee69d63a
+entryCSN: 20130919081858.450000Z#000001#000#000000
+entryParentId: d15ad417-7f57-4a04-9588-51e0a2f4bfd0
+createTimestamp: 20130919081909.086Z

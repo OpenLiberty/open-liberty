@@ -1,0 +1,296 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=A lerakat k\u00f6nyvt\u00e1r nem tal\u00e1lhat\u00f3.
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=yy/M/dd
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=yyyy. MMM d. H.mm a z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=yy/M/d H.m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=A kezd\u00e9si d\u00e1tum/id\u0151 nem \u00e9rtelmezhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=A kimeneti napl\u00f3 helye nem \u00edrhat\u00f3.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=A befejez\u00e9si d\u00e1tum/id\u0151 nem \u00e9rtelmezhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=LogViewerMessages
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=A sz\u00e1lazonos\u00edt\u00f3 nem \u00e9rtelmezhet\u0151. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=Az export\u00e1lt bin\u00e1ris lerakat helye nem \u00edrhat\u00f3.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott k\u00f6nyvt\u00e1r \u00fcres \u00e9s rendelkezik \u00edr\u00e1si jogosults\u00e1ggal.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=A m\u0171velet befejez\u0151d\u00f6tt
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=Nem lehet \u00e9rtelmezni a(z) {0} szintet.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=A lerakatok eredeti ter\u00fcleti be\u00e1ll\u00edt\u00e1sa nem haszn\u00e1lhat\u00f3 A rendszer alap\u00e9rtelmezett ter\u00fcleti be\u00e1ll\u00edt\u00e1s\u00e1nak haszn\u00e1lata. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=A kimeneti f\u00e1jl nem \u00edrhat\u00f3 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Kimenet \u00edr\u00e1sa a k\u00f6vetkez\u0151be: 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=V\u00e1lasszon egy kiszolg\u00e1l\u00f3t
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I=Feldolgozva {0} rekord {1} m\u00e1sodperc alatt ({2} rekord m\u00e1sodpercenk\u00e9nt).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=A(z) {0} id\u0151tartam nem \u00e9rtelmezhet\u0151: {1}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=A megadott k\u00f6nyvt\u00e1r jelenleg nem tartalmaz napl\u00f3- vagy nyomk\u00f6vet\u00e9si f\u00e1jlt.  A k\u00f6nyvt\u00e1r megfigyel\u00e9se folytat\u00f3dik.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=A megadott k\u00f6nyvt\u00e1r nem tartalmaz napl\u00f3- vagy nyomk\u00f6vet\u00e9si f\u00e1jlt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=A(z) {0} be\u00e1ll\u00edt\u00e1shoz {1} param\u00e9terekre van sz\u00fcks\u00e9g.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Ismeretlen argumentum: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=A -repositoryDir argumentum hi\u00e1nyzik vagy nem tal\u00e1lhat\u00f3 HPEL t\u00e1r azon a helyen.\n\t A -repositoryDir akkor sz\u00fcks\u00e9ges, amikor a logViewer a profil bin k\u00f6nyvt\u00e1ron k\u00edv\u00fclr\u0151l van megh\u00edvva.\n\t Amennyiben a -repositoryDir nem mutat HPEL t\u00e1rra, akkor a specifik\u00e1ci\u00f3\n\t helytelen, vagy a t\u00e1r m\u00e9g nem lett l\u00e9trehozva.\n\t Ez az\u00e9rt fordulhat el\u0151, mert a HPEL nincs enged\u00e9lyezve, vagy a kiszolg\u00e1l\u00f3\n\t m\u00e9g nem indult el a HPEL enged\u00e9lyez\u00e9se \u00f3ta.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=\u00c9rv\u00e9nytelen d\u00e1tumargumentumok: a -startDate \u00e9rt\u00e9k k\u00e9s\u0151bbi, mint a -stopDate.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=\u00c9rv\u00e9nytelen szint argumentumok: A -minLevel magasabban van, mint a -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Helytelen kimeneti form\u00e1tum van megadva: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=Haszn\u00e1lja a -help lehet\u0151s\u00e9get haszn\u00e1lati inform\u00e1ci\u00f3k\u00e9rt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I=A(z) {0} haszn\u00e1lata lerakat k\u00f6nyvt\u00e1rk\u00e9nt. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=LogViewer\nA logViewer parancsot a HPEL napl\u00f3k megtekint\u00e9s\u00e9hez, lek\u00e9rdez\u00e9s\u00e9hez \u00e9s sz\u0171r\u00e9s\u00e9hez, valamint a t\u00e1rak nyomk\u00f6vet\u00e9s\u00e9hez haszn\u00e1lhatja. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I=A(z) {0} haszn\u00e1lata lerakat k\u00f6nyvt\u00e1rk\u00e9nt.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [kapcsol\u00f3k]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Kapcsol\u00f3k:\n\n-repositoryDir <directory name>\n\t A t\u00e1r k\u00f6nyvt\u00e1r\u00e1nak el\u00e9r\u00e9si \u00fatj\u00e1t hat\u00e1rozza meg. Ha a\n\t a napl\u00f3z\u00e1si \u00e9s nyomk\u00f6vet\u00e9si adatokat egy\u00fctt k\u00edv\u00e1nja lek\u00e9rdezni, adja meg a\n\t sz\u00fcl\u0151 k\u00f6nyvt\u00e1r el\u00e9r\u00e9si \u00fatj\u00e1t, amely a napl\u00f3z\u00e1si \u00e9s nyomk\u00f6vet\u00e9si adatok\n\t k\u00f6nyvt\u00e1r\u00e1t tartalmazza. Amennyiben az alap\u00e9rtelmezett profile_root/logs/application_server/\n\t t\u00e1r helyet haszn\u00e1lja, futtassa az eszk\u00f6zt a profil\n\tbin k\u00f6nyvt\u00e1rb\u00f3l, ezut\u00e1n ez az argumentum elhagyhat\u00f3. Az eszk\u00f6z ellen\u0151rzi az alap\u00e9rtelmezett\n\t helyet, ha nincs megadva. Amennyiben t\u00f6bb alkalmaz\u00e1skiszolg\u00e1l\u00f3 l\u00e9tezik\n\t ebben a profilban HPEL t\u00e1rakkal, a rendszer felsz\u00f3l\u00edtja a felhaszn\u00e1l\u00f3t azon\n\t kiszolg\u00e1l\u00f3napl\u00f3 \u00e9s nyomk\u00f6vet\u00e9si t\u00e1r kiv\u00e1laszt\u00e1s\u00e1ra, amelyet a felhaszn\u00e1l\u00f3 meg k\u00edv\u00e1n tekinteni. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <f\u00e1jln\u00e9v>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t A sz\u00f6veges kimenet \u00edr\u00e1si helyek\u00e9nt szolg\u00e1l\u00f3 f\u00e1jl nev\u00e9t hat\u00e1rozza meg. Amennyiben nem\n\t adja meg ezt az inform\u00e1ci\u00f3t, a sz\u00f6veges kimenet a kezel\u0151pulton jelenik meg. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <d\u00e1tum_id\u0151>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t A legkor\u00e1bbi d\u00e1tumot vagy d\u00e1tumot \u00e9s id\u0151pontot adja meg, amelyre vonatkoz\u00f3an napl\u00f3bejegyz\u00e9seket \n\t k\u00edv\u00e1n kinyerni. Megadhat csak egy d\u00e1tumot, illetve egy d\u00e1tumot \n\t \u00e9s id\u0151pontot.  Csak d\u00e1tum megad\u00e1sa egyen\u00e9rt\u00e9k\u0171\n\t a 00:00:00:000 id\u0151pont megad\u00e1s\u00e1val a felhaszn\u00e1l\u00f3 id\u0151z\u00f3n\u00e1j\u00e1ban. A d\u00e1tumokat\n\t {0} form\u00e1tumban kell megadni. A d\u00e1tumokat \u00e9s id\u0151pontokat a(z)\n\t  {1}  form\u00e1tumban kell megadni, ahol \u00d3 az \u00f3ra 24 \u00f3r\u00e1s form\u00e1tumban, a p \n\t a perc, az m a m\u00e1sodperc, az E az ezredm\u00e1sodperc, \n\ta z pedig az id\u0151z\u00f3n\u00e1ra vonatkozik. Ha ezzel a \n\t be\u00e1ll\u00edt\u00e1ssal adja meg az id\u0151pontot, id\u00e9z\u0151jeleket kell haszn\u00e1lnia, mivel a d\u00e1tum/id\u0151pont \n\t form\u00e1tum sz\u00f3k\u00f6z\u00f6ket tartalmaz.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t P\u00e9ld\u00e1k: \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <d\u00e1tum_id\u0151>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t A legk\u00e9s\u0151bbi d\u00e1tumot vagy d\u00e1tumot \u00e9s id\u0151pontot adja meg, amelyre vonatkoz\u00f3an napl\u00f3bejegyz\u00e9seket \n\t k\u00edv\u00e1n kinyerni. Megadhat csak egy d\u00e1tumot, illetve egy d\u00e1tumot \n\t \u00e9s id\u0151pontot.  Csak d\u00e1tum megad\u00e1sa egyen\u00e9rt\u00e9k\u0171\n\t a 23:59:59:999 id\u0151pont megad\u00e1s\u00e1val a felhaszn\u00e1l\u00f3 id\u0151z\u00f3n\u00e1j\u00e1ban.  A d\u00e1tumokat\n\t {0} form\u00e1tumban kell megadni. A d\u00e1tumokat \u00e9s id\u0151pontokat a(z) \n\t {1} form\u00e1tumban kell megadni, ahol \u00d3 az \u00f3ra 24 \u00f3r\u00e1s form\u00e1tumban, a p \n\t a perc, az m a m\u00e1sodperc, az E az ezredm\u00e1sodperc, \n\ta z pedig az id\u0151z\u00f3n\u00e1ra vonatkozik. Ha ezzel a \n\t be\u00e1ll\u00edt\u00e1ssal adja meg az id\u0151pontot, id\u00e9z\u0151jeleket kell haszn\u00e1lnia, mivel a d\u00e1tum/id\u0151pont \n\t form\u00e1tum sz\u00f3k\u00f6z\u00f6ket tartalmaz.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t P\u00e9ld\u00e1k: \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Meghat\u00e1rozza, hogy a LogViewer csak a megadott\n\t szintr\u0151l nyerjen ki napl\u00f3bejegyz\u00e9seket. A -minLevel vagy -maxLevel param\u00e9terrel val\u00f3 egy\u00fcttes haszn\u00e1latkor,\n\t a rendszer az utols\u00f3 be\u00e1ll\u00edt\u00e1s(oka)t haszn\u00e1lja.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Meghat\u00e1rozza, hogy a LogViewer ne jelen\u00edtsen meg a megadott \n\t szint alatti napl\u00f3bejegyz\u00e9seket Egy szint megad\u00e1s\u00e1val minden \u00fczenet kinyerhet\u0151 az \n\t adott \u00e9s az a felett tal\u00e1lhat\u00f3 szintekr\u0151l.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Meghat\u00e1rozza, hogy a LogViewer ne jelen\u00edtsen meg a megadott \n\t szint feletti napl\u00f3bejegyz\u00e9seket. A szint megad\u00e1sa kinyeri az \u00f6sszes \u00fczenetet a megadott \n \t szintr\u0151l \u00e9s az az alatti szintekr\u0151l.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t A kimeneti form\u00e1tumot hat\u00e1rozza meg. A t\u00e1mogatott form\u00e1tumok az alapvet\u0151, a speci\u00e1lis \u00e9s\n\t a CBE-1.0.1 form\u00e1tum. Ha nem adja meg ezt a param\u00e9tert, a kimeneti form\u00e1tum az\n\t alapvet\u0151. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [id\u0151k\u00f6z]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Meghat\u00e1rozza, hogy a logViewer folyamatosan figyelje a t\u00e1rat,\n\t \u00e9s az \u00faj napl\u00f3rekord bejegyz\u00e9seket a l\u00e9trehoz\u00e1suk pillanat\u00e1ban ki\u00edrja. Megadhat egy\n\t tetsz\u0151leges eg\u00e9sz sz\u00e1m argumentumot a param\u00e9ter ut\u00e1n annak meghat\u00e1roz\u00e1s\u00e1ra, hogy a\n\t LogViewer eszk\u00f6z milyen gyakoris\u00e1ggal k\u00e9rdezze le a t\u00e1rat az \u00faj rekordok tekintet\u00e9ben. Alap\u00e9rtelmez\u00e9s szerint a\n\t LogViewer 5 m\u00e1sodpercenk\u00e9nt k\u00e9rdezi le a t\u00e1rat az \u00faj rekordok tekintet\u00e9ben. Amikor\n\t m\u00e1s sz\u0171r\u0151be\u00e1ll\u00edt\u00e1sokkal haszn\u00e1lja, csak azok az \u00faj rekordokat jelen\u00edti meg a rendszer, amelyek megfelelnek a sz\u0171r\u00e9s\n\t krit\u00e9riumainak. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [id\u0151k\u00f6z]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t A -tail egy szinonim\u00e1ja.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <napl\u00f3z\u00f3k_nevei>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Meghat\u00e1rozza, hogy mely napl\u00f3z\u00f3k legyenek benne a kimenetben. A t\u00f6bbsz\u00f6r\u00f6s \n\t bejegyz\u00e9seket vessz\u0151vel kell elv\u00e1lasztani. Ha ezt a kapcsol\u00f3t a \n\t -excludeLoggers kapcsol\u00f3val \n\t egy\u00fctt haszn\u00e1lja, \u00e9s egy napl\u00f3z\u00f3 megfelel egy bejegyz\u00e9snek mindk\u00e9t napl\u00f3z\u00f3n\u00e9vlist\u00e1n, \n\t a rendszer a jobban meghat\u00e1rozott bejegyz\u00e9s seg\u00edts\u00e9g\u00e9vel d\u00f6nt a napl\u00f3z\u00f3 felv\u00e9tel\u00e9r\u0151l vagy kiz\u00e1r\u00e1s\u00e1r\u00f3l.  Ez a forgat\u00f3k\u00f6nyv l\u00e1that\u00f3 az al\u00e1bbi utols\u00f3 \n\t p\u00e9ld\u00e1ban, amely ki fogja z\u00e1rni az \u00f6sszes com.ibm napl\u00f3z\u00f3t, kiv\u00e9ve a \n\t com.ibm.ws.config napl\u00f3z\u00f3kat.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t P\u00e9ld\u00e1ul: \n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <napl\u00f3z\u00f3k_nevei>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Megadja, hogy a rendszer mely napl\u00f3z\u00f3kat z\u00e1rja ki a kimenetb\u0151l. A t\u00f6bbsz\u00f6r\u00f6s \n\t bejegyz\u00e9seket vessz\u0151vel kell elv\u00e1lasztani. Ha ezt a kapcsol\u00f3t a \n\t -includeLoggers kapcsol\u00f3val \n\t egy\u00fctt haszn\u00e1lja, \u00e9s egy napl\u00f3z\u00f3 megfelel egy bejegyz\u00e9snek mindk\u00e9t napl\u00f3z\u00f3n\u00e9vlist\u00e1n, \n\t a rendszer a jobban meghat\u00e1rozott bejegyz\u00e9s seg\u00edts\u00e9g\u00e9vel d\u00f6nt a napl\u00f3z\u00f3 felv\u00e9tel\u00e9r\u0151l vagy kiz\u00e1r\u00e1s\u00e1r\u00f3l.  Ez a forgat\u00f3k\u00f6nyv l\u00e1that\u00f3 az al\u00e1bbi utols\u00f3 p\u00e9ld\u00e1ban, \n\t amely ki fogja z\u00e1rni az \u00f6sszes com.ibm napl\u00f3z\u00f3t, kiv\u00e9ve a \n\t com.ibm.ws.config napl\u00f3z\u00f3kat.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t P\u00e9ld\u00e1ul: \n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <sz\u00e1lazonos\u00edt\u00f3k>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Egy megadott sz\u00e1lr\u00f3l sz\u00e1rmaz\u00f3 napl\u00f3bejegyz\u00e9seket jelen\u00edt meg. Ez a be\u00e1ll\u00edt\u00e1s ki\n\t fog sz\u0171rni minden olyan napl\u00f3\u00fczenetet, amely nem a megadott sz\u00e1lazonos\u00edt\u00f3val \n\t lett l\u00e9trehozva. Megjegyz\u00e9s: A sz\u00e1lazonos\u00edt\u00f3t hexadecim\u00e1lis form\u00e1tumban kell megadni.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <k\u00f6nyvt\u00e1rn\u00e9v>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Rekordokat nyer ki \u00e9s kimeneteket \u00edr egy \u00faj bin\u00e1ris t\u00e1rba. Ez a \n\t kapcsol\u00f3 haszn\u00e1lhat\u00f3 m\u00e1s sz\u0171r\u0151be\u00e1ll\u00edt\u00e1sokkal egy\u00fctt a napl\u00f3 \u00e9s \n\t nyomk\u00f6vet\u00e9si rekordok egy r\u00e9szhalmaz\u00e1nak az \u00faj t\u00e1rba t\u00f6rt\u00e9n\u0151 elhelyez\u00e9s\u00e9re.  Ez a kapcsol\u00f3 azon \n\t k\u00f6nyvt\u00e1r el\u00e9r\u00e9si \u00fatj\u00e1t haszn\u00e1lja, ahov\u00e1 az \u00faj t\u00e1rat \n\t argumentumk\u00e9nt kell \u00edrni, ez\u00e9rt a k\u00f6nyvt\u00e1rnak \u00fcresnek kell lennie. Ha a \n\t k\u00f6nyvt\u00e1r nem l\u00e9tezik, a rendszer l\u00e9trehozza.  A k\u00f6nyvt\u00e1r l\u00e9trehoz\u00e1sa sor\u00e1n \n\t el\u0151fordul\u00f3 hib\u00e1k azonban nem odatartoz\u00f3 \n\t k\u00f6nyvt\u00e1rak l\u00e9trehoz\u00e1s\u00e1t eredm\u00e9nyezheti.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t Azon el\u00e9rhet\u0151 kiszolg\u00e1l\u00f3folyamat p\u00e9ld\u00e1nyok azonos\u00edt\u00f3it \n\t list\u00e1zza, amelyek el\u00e9rhet\u0151k az -instance kapcsol\u00f3val val\u00f3 haszn\u00e1latra. A LogViewer a -listInstances be\u00e1ll\u00edt\u00e1ssal val\u00f3 \n\t futtat\u00e1sa ut\u00e1n, haszn\u00e1lhatja az \n\t -instance be\u00e1ll\u00edt\u00e1st a LogViewer megh\u00edv\u00e1s\u00e1ra a kiszolg\u00e1l\u00f3folyamat \n\t argumentumk\u00e9nt haszn\u00e1lt p\u00e9ld\u00e1nyazonos\u00edt\u00f3inak egyik\u00e9vel. Mivel ez a kapcsol\u00f3 nem dolgoz fel \n\t egy napl\u00f3- vagy nyomk\u00f6vet\u00e9si rekordot sem, a rendszer minden egy\u00e9b kapcsol\u00f3t figyelmen k\u00edv\u00fcl a \n\t haszn\u00e1latakor. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <p\u00e9ld\u00e1nyazonos\u00edt\u00f3>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Lek\u00e9ri egy adott kiszolg\u00e1l\u00f3folyamat p\u00e9ld\u00e1nyazonos\u00edt\u00f3j\u00e1ra vonatkoz\u00f3 napl\u00f3z\u00e1si \n\t \u00e9s nyomk\u00f6vet\u00e9si adatokat. Futtassa a LogViewer eszk\u00f6zt \n\t a -listInstances be\u00e1ll\u00edt\u00e1ssal ezen be\u00e1ll\u00edt\u00e1s haszn\u00e1lata el\u0151tt \n\t egy \u00e9rv\u00e9nyes p\u00e9ld\u00e1nyazonos\u00edt\u00f3 beszerz\u00e9s\u00e9re. Ez a kapcsol\u00f3 olyan k\u00f6rnyezet napl\u00f3inak \u00e9s \n\t nyomk\u00f6vet\u00e9si adatainak megtekint\u00e9sekor sz\u00fcks\u00e9ges, amely \n\t alfolyamatokat tartalmaz, p\u00e9ld\u00e1ul a z/OS oper\u00e1ci\u00f3s rendszert. Ha ezt a kapcsol\u00f3t kombin\u00e1lja a \n\t -lastInstance kapcsol\u00f3val, az -instance kapcsol\u00f3t nem veszi figyelembe a rendszer.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       P\u00e9ld\u00e1nyazonos\u00edt\u00f3                                                       Kezd\u00e9si d\u00e1tum
+
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=P\u00e9ld\u00e1nyazonos\u00edt\u00f3             Kezd\u00e9si d\u00e1tum
+
+# Instance Start Date format
+CWTRA0073I=MM/dd/yy HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=yy/M/dd
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=yy/M/d H.m:s:S z
+
+NoLevelNameInCustomLevelsFile=Form\u00e1tumprobl\u00e9ma a k\u00f6vetkez\u0151ben: {0}. {1} eg\u00e9sz szint. Az \u00e9rt\u00e9knek rendelkeznie kell szintn\u00e9vvel.
+TooManyValuesInCustomLevelsFile=Form\u00e1tumprobl\u00e9ma a k\u00f6vetkez\u0151ben: {0}. {1} eg\u00e9sz szint. A(z) "{2}" \u00e9rt\u00e9k t\u00f6bb, mint {3} elemet tartalmaz.
+LevelIdTooBigInCustomLevelsFile=Form\u00e1tumprobl\u00e9ma a k\u00f6vetkez\u0151ben: {0}. {1} eg\u00e9sz szint. A(z) {2} vagy {3} k\u00f6z\u00fcl legal\u00e1bb az egyiknek egykarakteres szintazonos\u00edt\u00f3nak kell lennie.
+NotIntegerKeyInCustomLevelsFile=Form\u00e1tumprobl\u00e9ma a k\u00f6vetkez\u0151ben: {0}. A(z) {1} kulcsnak eg\u00e9sz sz\u00e1mnak kell lennie.
+SpecifiedCustomLevelsFileNotFound=Az egy\u00e9ni szintmeghat\u00e1roz\u00e1st tartalmaz\u00f3 {0} f\u00e1jl nem tal\u00e1lhat\u00f3.
+ErrorReadingCustomLevelsFile=Hiba az egy\u00e9ni szintmeghat\u00e1roz\u00e1st tartalmaz\u00f3 {0} f\u00e1jl olvas\u00e1sakor. Hiba: {1}
+SpecifiedCustomHeaderFileNotFound=Az egy\u00e9ni fejl\u00e9c-meghat\u00e1roz\u00e1st tartalmaz\u00f3 {0} f\u00e1jl nem tal\u00e1lhat\u00f3.
+ErrorReadingCustomHeaderFile=Hiba az egy\u00e9ni fejl\u00e9c-meghat\u00e1roz\u00e1st tartalmaz\u00f3 {0} f\u00e1jl olvas\u00e1sakor. Hiba: {1}
+
+ErrorUsingHeaderTimeZone=A napl\u00f3fejl\u00e9c helytelen id\u0151z\u00f3na-be\u00e1ll\u00edt\u00e1st tartalmaz: {0}. Haszn\u00e1lja helyette a rendszer alap\u00e9rt\u00e9k\u00e9t.
+
+UnsupportedEncodingError=A megadott {0} k\u00f3dol\u00e1st ez a JVM nem t\u00e1mogatja.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=Nem siker\u00fclt haszn\u00e1lni a p\u00e9ld\u00e1nyazonos\u00edt\u00f3t, ami az -instance param\u00e9terhez ker\u00fclt megad\u00e1sra.  Haszn\u00e1ljon ink\u00e1bb egyet azok k\u00f6z\u00fcl az \u00e9rv\u00e9nyes p\u00e9ld\u00e1nyazonos\u00edt\u00f3 \u00e9rt\u00e9kek k\u00f6z\u00fcl, amelyek a -listInstances be\u00e1ll\u00edt\u00e1s haszn\u00e1lata eset\u00e9n jelennek meg.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Lek\u00e9ri a leg\u00fajabb kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny napl\u00f3- \u00e9s nyomk\u00f6vet\u00e9si \n\t adatait.  Ha ezt a be\u00e1ll\u00edt\u00e1st az -instance be\u00e1ll\u00edt\u00e1ssal egy\u00fctt haszn\u00e1lja, \n\t az -instance be\u00e1ll\u00edt\u00e1st a rendszer figyelmen k\u00edv\u00fcl hagyja.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <\u00fczenet>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Csak a k\u00e9rt sz\u00f6vegnek megfelel\u0151 \u00fczenetmez\u0151t \n\t tartalmaz\u00f3 napl\u00f3- \u00e9s nyomk\u00f6vet\u00e9si adatokat k\u00e9ri le. A napl\u00f3- \u00e9s nyomk\u00f6vet\u00e9si adatok \n \t beolvas\u00e1sakor haszn\u00e1ljon csillagot (*) t\u00f6bb egym\u00e1st k\u00f6vet\u0151 karakter, illetve k\u00e9rd\u0151jelet (?) \n \t egyetlen karakter jel\u00f6l\u00e9s\u00e9re.
+
+LVM_HELP_EXTENSIONS=-includeExtensions name[=value][,name[=value]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\t Lek\u00e9ri a napl\u00f3z\u00e1si \u00e9s nyomk\u00f6vet\u00e9si adatokat, melyek kiterjeszt\u00e9s \n\t neve egyezik a k\u00e9rt n\u00e9vvel, kiterjeszt\u00e9s \u00e9rt\u00e9ke pedig egyezik a k\u00e9rt \n\t \u00e9rt\u00e9kkel. A be\u00e1ll\u00edt\u00e1st haszn\u00e1lhatja arra is, hogy lek\u00e9rje a napl\u00f3z\u00e1si \n\t \u00e9s nyomk\u00f6vet\u00e9si adatokat, melyek kiterjeszt\u00e9s neve egyezik a k\u00e9rt n\u00e9vvel, \n\t kiterjeszt\u00e9s \u00e9rt\u00e9ke pedig tetsz\u0151leges, ha kihagyja a be\u00e1ll\u00edt\u00e1s =value \n\t r\u00e9sz\u00e9t. T\u00f6bb name=value argumentumot v\u00e1lasszon el vessz\u0151vel. \n\t Adjon meg '==' (k\u00e9t egyenl\u0151s\u00e9gjelet) az '=' (egy egyenl\u0151s\u00e9gjel) helyett azokban \n\t az esetekben, amikor a n\u00e9vnek vagy \u00e9rt\u00e9knek egyenl\u0151s\u00e9gjelet kell tartalmaznia. \n\t Adjon meg ',,' (k\u00e9t vessz\u0151t) az ',' (egy vessz\u0151) helyett azokban az \n\t esetekben, amikor a n\u00e9vnek vagy \u00e9rt\u00e9knek vessz\u0151t kell tartalmaznia.
+
+LVM_HELP_ENCODING=-encoding <karakterk\u00e9szlet>
+
+LVM_HELP_ENCODING_DESCR=\t A LogViewer \u00e1ltal a sz\u00f6vegkimenethez haszn\u00e1lt karakterk\u00e9szletet adja meg.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=Al\u00e1bb a LogViewer fentebb felsorolt be\u00e1ll\u00edt\u00e1sokkal val\u00f3 haszn\u00e1lat\u00e1ra \nl\u00e1that n\u00e9h\u00e1ny p\u00e9ld\u00e1t.
+LVM_HELP_SAMPLE1= Ha csak azokat a napl\u00f3bejegyz\u00e9seket szeretn\u00e9 beolvastatni a t\u00e1rb\u00f3l, amelyekhez napl\u00f3- \u00e9s nyomk\u00f6vet\u00e9si bejegyz\u00e9s egyar\u00e1nt tartozhat: \n \t logViewer.bat -minLevel DETAIL.
+LVM_HELP_SAMPLE2= Ha azokat a napl\u00f3bejegyz\u00e9seket szeretn\u00e9 beolvastatni acom.my.company.name.MyClass napl\u00f3z\u00f3b\u00f3l, amelyekhez a SEVERE minimumszint tartozik,  \n \u00e9s {0} \u00e9s {1} k\u00f6z\u00f6tt t\u00f6rt\u00e9ntek:\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.my.company.name.MyClass"  -minLevel SEVERE.
+LVM_HELP_SAMPLE3= M\u00e1solat k\u00e9sz\u00edt\u00e9se a t\u00e1rr\u00f3l, ahol a(z) {1} fogja tartalmazni a \nmegl\u00e9v\u0151 t\u00e1r m\u00e1solat\u00e1t napl\u00f3-\u00e9s nyomk\u00f6vet\u00e9si adatokr\u00f3l a(z) {0} helyr\u0151l: \n\tlogViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= Napl\u00f3- \u00e9s nyomk\u00f6vet\u00e9si bejegyz\u00e9sek megjelen\u00edt\u00e9se a felhaszn\u00e1l\u00f3 alkalmaz\u00e1sk\u00f3dj\u00e1b\u00f3l (felt\u00e9telezve, hogy a napl\u00f3z\u00f3 nevek \nmindegyike a com.mycompany karakterl\u00e1nccal kezd\u0151dik): \n\t logViewer.bat -includeloggers com.mycompany.*

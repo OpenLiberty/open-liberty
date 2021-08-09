@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda. O formato do valor da propriedade {0} n\u00e3o \u00e9 v\u00e1lido. O valor da propriedade deve ser do formato e tipo de dados corretos.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=O formato do valor da propriedade n\u00e3o \u00e9 v\u00e1lido. Por exemplo, o tipo da propriedade \u00e9 um n\u00famero inteiro, mas o valor l n\u00e3o \u00e9 um n\u00famero inteiro v\u00e1lido.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=Assegure-se de que o valor da propriedade seja do tipo de dados e formato corretos.
+
+ENTITY_NOT_FOUND=CWIML4001E: A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda. A entidade {0} n\u00e3o foi localizada. Especifique a entidade correta ou crie a entidade ausente.
+ENTITY_NOT_FOUND.explanation=O nome da entidade especificado, que poderia ser um uniqueName ou uniqueId, n\u00e3o p\u00f4de ser localizado no reposit\u00f3rio subjacente. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem localizar essa entidade.
+ENTITY_NOT_FOUND.useraction=Assegure que a entidade exista no reposit\u00f3rio subjacente. Se a entidade existe, ent\u00e3o, verifique se a permiss\u00e3o de leitura est\u00e1 configurada para a entidade e tente novamente.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda. Existem mais de um registro para o nome do principal {0} nos registros de usu\u00e1rio configurados. O nome do principal deve ser exclusivo em todos os registros do usu\u00e1rio.
+MULTIPLE_PRINCIPALS_FOUND.explanation=V\u00e1rios propriet\u00e1rios foram localizados para o nome do propriet\u00e1rio determinado. O processo de login n\u00e3o pode continuar.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Assegure que o nome do propriet\u00e1rio correto esteja especificado. Por exemplo, especificar o nome do propriet\u00e1rio como um nome exclusivo pode evitar esse tipo de exce\u00e7\u00e3o.

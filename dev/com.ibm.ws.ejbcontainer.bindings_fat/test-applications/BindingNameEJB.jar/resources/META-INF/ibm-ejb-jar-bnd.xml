@@ -1,0 +1,37 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+  	
+  	
+  <session name="BindingName1">
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:ejb/BindingNameIntf1"/>
+  	</session>	
+  <session name="BindingName2">
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:BindingNameIntf2"/>
+  	</session>
+  <session name="BindingName3">
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejb/BindingNameIntf3"/>
+  	</session>	
+  <session name="BindingName4">
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="BindingNameIntf4"/>
+  	</session>
+  <session name="BindingName5">
+    <interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:ejb/BindingNameIntf5"/>
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf" binding-name="ejb/BindingNameIntf5"/>
+  	</session>	
+  <session name="BindingName6">
+    <interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:BindingNameIntf6"/>
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf" binding-name="BindingNameIntf6"/>
+  	</session>
+  <session name="BindingName7">
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:ejb/BindingNameIntf7"/>
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf" binding-name="ejb/BindingNameIntf7"/>
+  	</session>	
+  <session name="BindingName8">
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:BindingNameIntf8"/>
+  	<interface class="com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf" binding-name="BindingNameIntf8"/>
+  	</session>
+ 
+</ejb-jar-bnd>

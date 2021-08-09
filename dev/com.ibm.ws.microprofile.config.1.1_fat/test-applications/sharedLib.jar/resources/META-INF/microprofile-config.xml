@@ -1,0 +1,5 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>These config properties should be read in as part of the default sources</comment>  
+        <entry key="defaultSources.sharedLib.config.xml">sharedLibPropertiesDefaultValue</entry>
+</properties>

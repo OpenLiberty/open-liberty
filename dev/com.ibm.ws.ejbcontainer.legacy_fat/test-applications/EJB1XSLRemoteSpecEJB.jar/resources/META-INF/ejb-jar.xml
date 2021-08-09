@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN" "http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd">
+   <ejb-jar id="ejb-jar_ID">
+      <display-name>R40-SLRemote</display-name>
+      <enterprise-beans>
+         <session id="Session_1">
+            <ejb-name>SLRaEnvEntry</ejb-name>
+            <home>com.ibm.ejb1x.base.spec.slr.ejb.SLRaHome</home>
+            <remote>com.ibm.ejb1x.base.spec.slr.ejb.SLRa</remote>
+            <ejb-class>com.ibm.ejb1x.base.spec.slr.ejb.SLRaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1">
+               <env-entry-name>ejb10-properties/value1</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>value of value1</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_2">
+               <env-entry-name>envBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_3">
+               <env-entry-name>envBooleanBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_4">
+               <env-entry-name>envBooleanInvalid</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>InvalidBoolean</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_5">
+               <env-entry-name>envBooleanNoValue</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+            </env-entry>
+            <env-entry id="EnvEntry_6">
+               <env-entry-name>envByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>9</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_7">
+               <env-entry-name>envByteBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_8">
+               <env-entry-name>envByteGT8bit</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>1000</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_9">
+               <env-entry-name>envByteInvalid</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>InvalidByte</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_10">
+               <env-entry-name>envByteNoValue</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+            </env-entry>
+            <env-entry id="EnvEntry_11">
+               <env-entry-name>envDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>7003</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_12">
+               <env-entry-name>envDouble2</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>7003.0</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_13">
+               <env-entry-name>envDouble3</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>7.0030e3d</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_14">
+               <env-entry-name>envDoubleBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_15">
+               <env-entry-name>envDoubleGT64bit</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>1234567890123456789012345678901234567890e1000000</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_16">
+               <env-entry-name>envDoubleInvalid</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>InvalidDouble</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_17">
+               <env-entry-name>envFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>7007</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_18">
+               <env-entry-name>envFloat2</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>7007.0</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_19">
+               <env-entry-name>envFloat3</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>7.0070e3</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_20">
+               <env-entry-name>envFloatBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_21">
+               <env-entry-name>envFloatGT32bit</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>12345678901234567890.0e1000</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_22">
+               <env-entry-name>envFloatInvalid</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>InvalidFloat</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_23">
+               <env-entry-name>envInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>7004</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_24">
+               <env-entry-name>envIntegerBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_25">
+               <env-entry-name>envIntegerGT32bit</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>1000000000000</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_26">
+               <env-entry-name>envIntegerInvalid</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>InvalidInteger</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_27">
+               <env-entry-name>envIntegerNoValue</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+            </env-entry>
+            <env-entry id="EnvEntry_28">
+               <env-entry-name>envLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>7005</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_29">
+               <env-entry-name>envLongBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_30">
+               <env-entry-name>envLongGT64bit</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>1000000000000000000000</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_31">
+               <env-entry-name>envLongInvalid</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>InvalidLong</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_32">
+               <env-entry-name>envLongNoValue</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+            </env-entry>
+            <env-entry id="EnvEntry_33">
+               <env-entry-name>envShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>7006</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_34">
+               <env-entry-name>envShortBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_35">
+               <env-entry-name>envShortGT16bit</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>1000000</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_36">
+               <env-entry-name>envShortInvalid</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>InvalidShort</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_37">
+               <env-entry-name>envShortNoValue</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+            </env-entry>
+            <env-entry id="EnvEntry_38">
+               <env-entry-name>envString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>IEV09</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_39">
+               <env-entry-name>envStringBlankValue</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_40">
+               <env-entry-name>envCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>C</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_41">
+               <env-entry-name>envCharacterBlankValue</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value></env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_42">
+               <env-entry-name>envCharacterInvalid</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>InvalidCharacter</env-entry-value>
+            </env-entry>
+            <env-entry id="EnvEntry_43">
+               <env-entry-name>envCharacterNoValue</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+            </env-entry>
+         </session>
+         <session id="Session_2">
+            <ejb-name>SLRRNonReentranceEJB</ejb-name>
+            <home>com.ibm.ejb1x.base.spec.slr.ejb.SLRTestReentranceHome</home>
+            <remote>com.ibm.ejb1x.base.spec.slr.ejb.SLRTestReentrance</remote>
+            <ejb-class>com.ibm.ejb1x.base.spec.slr.ejb.SLRTestReentranceBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+            <ejb-ref id="EjbRef_1">
+               <ejb-ref-name>ejb/SLRNonReentranceHome</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <home>com.ibm.ejb1x.base.spec.slr.ejb.SLRaHome</home>
+               <remote>com.ibm.ejb1x.base.spec.slr.ejb.SLRa</remote>
+               <ejb-link>SLRaBMT</ejb-link>
+            </ejb-ref>
+         </session>
+         <session id="Session_3">
+            <ejb-name>SLRaCMT</ejb-name>
+            <home>com.ibm.ejb1x.base.spec.slr.ejb.SLRaHome</home>
+            <remote>com.ibm.ejb1x.base.spec.slr.ejb.SLRa</remote>
+            <ejb-class>com.ibm.ejb1x.base.spec.slr.ejb.SLRaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="Session_4">
+            <ejb-name>SLRaBMT</ejb-name>
+            <home>com.ibm.ejb1x.base.spec.slr.ejb.SLRaHome</home>
+            <remote>com.ibm.ejb1x.base.spec.slr.ejb.SLRa</remote>
+            <ejb-class>com.ibm.ejb1x.base.spec.slr.ejb.SLRaBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+            <env-entry id="EnvEntry_101">
+               <env-entry-name>ejb10-properties/value1</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>value of value1</env-entry-value>
+            </env-entry>
+         </session>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+      </assembly-descriptor>
+   </ejb-jar>

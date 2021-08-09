@@ -1,0 +1,7 @@
+<server description="server-04.xml">
+	<featureManager>
+		<feature>feature04</feature>
+	</featureManager>
+
+	<element4 attribute4="value4">element4</element4>
+</server>

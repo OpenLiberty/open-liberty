@@ -1,0 +1,59 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        echo "Adding group - openliberty"
+        if (! getent group openliberty > /dev/null 2>&1); then
+            addgroup --system --quiet openliberty
+        fi
+
+        echo "Adding user - openliberty"
+        if (! id openliberty > /dev/null 2>&1); then
+            adduser --system --home /usr/share/openliberty --no-create-home --ingroup openliberty --disabled-password --shell /bin/bash --quiet openliberty  
+        fi
+
+        echo "Setting up the systemd openliberty service"
+        if [ -x "/etc/init.d/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
+            #only enable defaultServer service if any openliberty@ services exist. 
+            NUM_EXISTING_SERVICE=`ls /etc/systemd/system/multi-user.target.wants/ |grep openliberty@ | wc -l`
+            if [ "${NUM_EXISTING_SERVICE}" -eq "0" ]; then
+                systemctl daemon-reload
+                systemctl enable openliberty@defaultServer.service
+            fi
+        fi
+
+        echo "Creating the license directory"
+        mkdir -p /usr/share/doc/openliberty
+        cp /opt/ol/LICENSE /usr/share/doc/openliberty
+        cp /opt/ol/NOTICES /usr/share/doc/openliberty
+
+        echo "Creating server,log and run directory"
+        mkdir -p /var/run/openliberty
+        mkdir -p /var/log/openliberty
+        mkdir -p /var/lib/openliberty/usr/servers
+
+        echo "Setting up defaultServer for user"
+        if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
+            tar -xf /usr/share/openliberty/defaultServer.tar -C /var/lib/openliberty/usr/servers
+            printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
+        fi
+
+        echo "Setting permissions to files/folders"
+        chown -R openliberty:openliberty /var/lib/openliberty
+        chmod -R u+w /var/lib/openliberty
+        chown -R openliberty:openliberty /var/run/openliberty
+        chmod -R u+w /var/run/openliberty
+        chown -R openliberty:openliberty /var/log/openliberty
+        chmod -R u+w /var/log/openliberty
+        ;;
+    abort-remove|abort-upgrade)
+        ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
+

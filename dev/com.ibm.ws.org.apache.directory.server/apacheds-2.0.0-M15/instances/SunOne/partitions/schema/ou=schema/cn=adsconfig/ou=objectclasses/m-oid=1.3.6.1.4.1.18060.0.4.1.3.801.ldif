@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.801,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.801
+m-name: ads-saslMechHandler
+m-description: SASL mechanism handler
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-base
+m-must: ads-saslMechName
+m-must: ads-saslMechClassName
+m-may: ads-ntlmMechProvider
+creatorsname: uid=admin,ou=system

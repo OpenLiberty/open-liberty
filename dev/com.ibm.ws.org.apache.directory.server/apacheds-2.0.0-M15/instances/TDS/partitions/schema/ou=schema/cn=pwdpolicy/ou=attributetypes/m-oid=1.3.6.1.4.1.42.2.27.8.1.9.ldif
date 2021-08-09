@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.9,ou=attributeTypes,cn=pwdpolicy,ou=schema
+m-equality: booleanMatch
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.9
+m-name: pwdLockout
+entryUUID: 42bdc524-b094-4dfd-ab73-50323c8c1396
+entryCSN: 20130919065345.514000Z#000001#000#000000
+entryParentId: dda02085-cefb-4fca-be6a-80c8c0b760fb
+createTimestamp: 20130919065352.307Z

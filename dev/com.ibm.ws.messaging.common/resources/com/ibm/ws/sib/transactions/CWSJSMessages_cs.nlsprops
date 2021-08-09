@@ -1,0 +1,107 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.transactions.CWSJSMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIG0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/transactions/CWSJSMessages.nlsprops
+#COMPONENTPREFIX CWSJS
+#COMPONENTNAMEFOR CWSJS transactions
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0001=CWSJS0001E: Do\u0161lo k intern\u00ed chyb\u011b.
+INTERNAL_ERROR_CWSJS0001.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+LOCALTX_FAIL_CWSJS0002=CWSJS0002E: B\u011bhem zpracov\u00e1n\u00ed transak\u010dn\u00ed operace vznikla v\u00fdjimka {0}, kter\u00e1 zp\u016fsobila selh\u00e1n\u00ed operace.
+LOCALTX_FAIL_CWSJS0002.explanation=Uveden\u00e1 v\u00fdjimka vznikla b\u011bhem zpracov\u00e1n\u00ed transak\u010dn\u00ed operace. Tato v\u00fdjimka zp\u016fsobila selh\u00e1n\u00ed transak\u010dn\u00ed operace.
+LOCALTX_FAIL_CWSJS0002.useraction=Prozkoumejte p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+# -------------------------------------------------------------------------------------------------
+DUPLICATE_COMPLETE_CWSJS0003=CWSJS0003E: Do\u0161lo k pokusu o dokon\u010den\u00ed ji\u017e dokon\u010den\u00e9 lok\u00e1ln\u00ed transakce.
+DUPLICATE_COMPLETE_CWSJS0003.explanation=Po dokon\u010den\u00ed transakce byla vyvol\u00e1na metoda potvrzen\u00ed nebo odvol\u00e1n\u00ed lok\u00e1ln\u00ed transakce.
+DUPLICATE_COMPLETE_CWSJS0003.useraction=Nepokou\u0161ejte se opakovan\u011b dokon\u010dit transakci.
+
+# -------------------------------------------------------------------------------------------------
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004=CWSJS0004E: Do\u0161lo k pokusu o proveden\u00ed pr\u00e1ce v rozsahu dokon\u010den\u00e9 lok\u00e1ln\u00ed transakce.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.explanation=Do\u0161lo k pokusu o proveden\u00ed opraviteln\u00e9 akce pomoc\u00ed lok\u00e1ln\u00ed transakce, kter\u00e1 ji\u017e byla potvrzena nebo odvol\u00e1na.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.useraction=Nepokou\u0161ejte se prov\u00e1d\u011bt novou pr\u00e1ci zahrnuj\u00edc\u00ed transakci v rozsahu dokon\u010den\u00e9 transakce.
+
+# -------------------------------------------------------------------------------------------------
+GLOBAL_ENLIST_NO_TX_CWSJS0005=CWSJS0005E: Do\u0161lo k pokusu o proveden\u00ed pr\u00e1ce pomoc\u00ed prost\u0159edku XAResource neuveden\u00e9ho v seznamu. 
+GLOBAL_ENLIST_NO_TX_CWSJS0005.explanation=Do\u0161lo k pokusu o proveden\u00ed pr\u00e1ce zahrnuj\u00edc\u00ed transakci u prost\u0159edku XAResource, kter\u00fd nen\u00ed uveden v seznamu glob\u00e1ln\u00ed transakce.
+GLOBAL_ENLIST_NO_TX_CWSJS0005.useraction=Nepokou\u0161ejte se prov\u00e1d\u011bt pr\u00e1ci zahrnuj\u00edc\u00ed transakci v rozsahu prost\u0159edku XAResource neuveden\u00e9ho v seznamu.
+# -------------------------------------------------------------------------------------------------
+NO_CLASSPATH_CWSJS0006=CWSJS0006E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze ur\u010dit aktu\u00e1ln\u00ed cestu ke t\u0159\u00edd\u00e1m.
+NO_CLASSPATH_CWSJS0006.explanation=CMSG0001
+NO_CLASSPATH_CWSJS0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNRECOVERABLE_ERROR_CWSJS0007=CWSJS0007E: Do\u0161lo k intern\u00ed chyb\u011b. Bylo po\u0161kozeno \u0159et\u011bzcov\u00e9 vyj\u00e1d\u0159en\u00ed polo\u017eky XID.
+UNRECOVERABLE_ERROR_CWSJS0007.explanation=CMSG0001
+UNRECOVERABLE_ERROR_CWSJS0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0008=CWSJS0008E: Maxim\u00e1ln\u00ed po\u010det operac\u00ed povolen\u00fdch pro jedinou transakci ({0}) byl p\u0159ekro\u010den.
+TX_SIZE_EXCEEDED_CWSJS0008.explanation=Do\u0161lo k pokusu o proveden\u00ed v\u00edce transak\u010dn\u00edch operac\u00ed s pou\u017eit\u00edm jedin\u00e9 transakce, ne\u017e povoluje maxim\u00e1ln\u00ed po\u010det.
+TX_SIZE_EXCEEDED_CWSJS0008.useraction=Sni\u017ete po\u010det operac\u00ed, kter\u00e9 se pokou\u0161\u00edte prov\u00e1d\u011bt v r\u00e1mci kter\u00e9koli transakce, pod ur\u010denou mezn\u00ed hodnotu.
+
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0009=CWSJS0009E: Do\u0161lo k intern\u00ed chyb\u011b.
+INTERNAL_ERROR_CWSJS0009.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0009.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations that is permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0010=CWSJS0010E: Maxim\u00e1ln\u00ed po\u010det operac\u00ed povolen\u00fdch pro jedinou transakci ({0}) byl p\u0159ekro\u010den.
+TX_SIZE_EXCEEDED_CWSJS0010.explanation=Do\u0161lo k pokusu o proveden\u00ed v\u00edce transak\u010dn\u00edch operac\u00ed s pou\u017eit\u00edm jedin\u00e9 transakce, ne\u017e povoluje maxim\u00e1ln\u00ed po\u010det.
+TX_SIZE_EXCEEDED_CWSJS0010.useraction=Sni\u017ete po\u010det operac\u00ed, kter\u00e9 se pokou\u0161\u00edte prov\u00e1d\u011bt v r\u00e1mci kter\u00e9koli transakce, pod ur\u010denou mezn\u00ed hodnotu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJS9999=CWSJS9999E: {0}
+TEMPORARY_CWSJS9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed n\u00e1pov\u011bdu v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSJS9999.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.

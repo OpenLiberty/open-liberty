@@ -1,0 +1,22 @@
+version: 1
+dn: m-oid=2.5.20.1,ou=objectClasses,cn=system,ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+m-oid: 2.5.20.1
+m-name: subschema
+m-description: RFC2252: controlling subschema (sub)entry
+m-obsolete: FALSE
+entryUUID: 28297dcb-d0df-4eed-b2b9-ce7df81aa500
+m-may: dITStructureRules
+m-may: nameForms
+m-may: dITContentRules
+m-may: objectClasses
+m-may: attributeTypes
+m-may: matchingRules
+m-may: matchingRuleUse
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919081859.323000Z#000000#000#000000
+entryParentId: e4b78239-b11d-4577-894c-9e41af5f96f1
+createTimestamp: 20130919081910.366Z

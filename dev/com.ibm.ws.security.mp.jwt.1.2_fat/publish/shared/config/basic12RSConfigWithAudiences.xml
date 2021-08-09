@@ -1,0 +1,17 @@
+<server>
+
+	<mpJwt
+		id="mpJwt_1"
+		jwksUri="${mpJwt_jwksUri}"
+		keyName="${mpJwt_keyName}"
+		audiences="client01, client02"  
+		issuer="http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/defaultJWT,
+							http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/defaultJWT,
+							https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/defaultJWT,
+							https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/defaultJWT,
+							https://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidc/endpoint/OidcConfigSample,
+							testIssuer">
+	</mpJwt>
+
+</server>

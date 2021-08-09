@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>Page 2</title>
+</h:head>
+<h:body>
+    <h:form id="testFormPage2">  
+       <p>Window ID from parameter: <h:outputText id="windowIdParam" value="${param.jfwid}"/></p>
+	   <p>First Name from bean: <h:outputText id="firstName" value="${employeeBean.firstName}"/></p>
+	   <p>Last Name from bean: <h:outputText id="lastName" value="${employeeBean.lastName}"/></p>
+	   <p>Window ID from bean: <h:outputText id="windowIdBean" value="${employeeBean.windowId}"/></p>
+	   <p><h:commandButton id="back" value="Go Back" action="index" /></p>
+    </h:form>
+</h:body>
+</html>

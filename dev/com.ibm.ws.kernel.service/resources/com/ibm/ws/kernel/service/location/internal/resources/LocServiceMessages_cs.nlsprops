@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: Ur\u010den\u00e9 um\u00edst\u011bn\u00ed je nedosa\u017eiteln\u00e9. Nejedn\u00e1 se o pod\u0159\u00edzen\u00fd prvek zn\u00e1m\u00e9 nebo konfigurovan\u00e9 cesty; path={0}.
+unreachableLocation.explanation=Pokud je vyu\u017e\u00edv\u00e1na slu\u017eba vyhled\u00e1n\u00ed k interpretaci zadan\u00fdch cest, platforma vyu\u017e\u00edv\u00e1 symbolick\u00e9 cesty k poskytov\u00e1n\u00ed z\u00e1kladn\u00ed ochrany p\u0159ed libovoln\u00fdm p\u0159\u00edstupem k syst\u00e9mu soubor\u016f. \
+Soubor README.TXT obsahuje informace o tom, jak jsou konfigurov\u00e1ny symbolick\u00e9 cesty.
+unreachableLocation.useraction=Zkontrolujte konfigurovan\u00e9 cesty v souboru bootstrap.properties a ujist\u011bte se, \u017ee konfigurovan\u00e1 cesta je pod\u0159\u00edzen\u00fdm prvkem existuj\u00edc\u00edho symbolu nebo je p\u0159idru\u017eena k v\u00fdslovn\u011b definovan\u00e9mu symbolu.
+
+invalidResourceType=CWWKE0201E: Nebylo mo\u017en\u00e9 vytvo\u0159it symbol. Zadan\u00e9 um\u00edst\u011bn\u00ed existuje a vyvol\u00e1v\u00e1 konflikt s po\u017eadovan\u00fdm typem: {0}={1}.
+invalidResourceType.explanation=Zadan\u00e1 cesta k symbolu existuje a je jin\u00fdm typem prost\u0159edku, ne\u017e kter\u00fd m\u00e1 cesta zadan\u00fd (nap\u0159\u00edklad symbol popisuje soubor, ale prost\u0159edek je adres\u00e1\u0159em).
+invalidResourceType.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je cesta zad\u00e1na spr\u00e1vn\u011b. \
+Cesty k adres\u00e1\u0159i mus\u00ed kon\u010dit znakem /. \
+P\u0159esv\u011bd\u010dte se, \u017ee cesta odkazuje na prost\u0159edek, kter\u00fd neexistuje, nebo existuje a je po\u017eadovan\u00e9ho typu.
+
+missingTmpDir=CWWKE0202E: Zadan\u00e9 um\u00edst\u011bn\u00ed do\u010dasn\u00e9ho adres\u00e1\u0159e neexistuje a nemohlo b\u00fdt vytvo\u0159eno: {0}.
+missingTmpDir.explanation=Adres\u00e1\u0159 zadan\u00fd jako java.io.tmpdir (bu\u010f prost\u0159ednictv\u00edm syst\u00e9mov\u00e9 vlastnosti, nebo prom\u011bnn\u00e9 prost\u0159ed\u00ed specifick\u00e9 pro platformu) neexistuje a nemohl b\u00fdt vytvo\u0159en.
+missingTmpDir.useraction=Zkontrolujte, zda zadan\u00fd adres\u00e1\u0159 existuje a m\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed/z\u00e1pisu.
+
+relativeTmpDir=CWWKE0203I: Adres\u00e1\u0159 java.io.tempdir byl zad\u00e1n s relativn\u00ed cestou. Vyhodnocen\u00e1 cesta je {0}.
+relativeTmpDir.explanation=Adres\u00e1\u0159 zadan\u00fd jako java.io.tmpdir (bu\u010f prost\u0159ednictv\u00edm syst\u00e9mov\u00e9 vlastnosti, nebo prom\u011bnn\u00e9 prost\u0159ed\u00ed specifick\u00e9 pro platformu) byl relativn\u00ed a byl vyhodnocen relativn\u011b k adres\u00e1\u0159i spu\u0161t\u011bn\u00ed.
+relativeTmpDir.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+locationInitializationError=CWWKE0204E: Nelze inicializovat loka\u010dn\u00ed slu\u017ebu platformy, p\u0159\u00ed\u010dina={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: Prob\u00edh\u00e1 zastavov\u00e1n\u00ed r\u00e1mce z d\u016fvodu p\u0159edchoz\u00ed chyby inicializace.
+frameworkShutdown.explanation=Prob\u00edh\u00e1 zastavov\u00e1n\u00ed r\u00e1mce z d\u016fvodu p\u0159edchoz\u00ed chyby b\u011bhem inicializace.
+frameworkShutdown.useraction=Vy\u0159e\u0161te chybu a potom restartujte server.

@@ -1,0 +1,178 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+pluginManagement {
+  /**
+   * Load properties before initializing in order to use credentials to configure repositories.
+   */
+  File usrHomeProps = (System.properties['build.properties.path'] != null) ? file(System.properties['build.properties.path']) : file(System.properties['user.home'] + '/gradle.startup.properties')
+
+  Properties props = new Properties()	
+  if (usrHomeProps.exists()) {	
+    usrHomeProps.withInputStream { props.load(it) }	
+  }
+  
+  // Artifactory connections fail if a user accidentally adds whitespace to tokens.
+  def stripTrailingWhitespace = [
+          'artifactory.download.user',
+          'artifactory.download.token',
+          'artifactory.download.server',
+          'artifactory.upload.user',
+          'artifactory.upload.token',
+          'artifactory.upload.server',
+  ]
+  stripTrailingWhitespace.each { key ->
+    if (props.get(key) != null) {
+      String value = props.get(key)
+      props.setProperty(key, value.trim())
+    }
+  }
+
+  // This is to support more controlled dependency management if we are able to access particular internal systems.
+  boolean isUsingArtifactory = (usrHomeProps.exists()
+                                && !Boolean.parseBoolean(props.getProperty('artifactory.force.external.repo'))
+                                && props.getProperty('artifactory.download.server'))
+  props.setProperty('is.using.artifactory', isUsingArtifactory.toString())
+
+  String repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
+
+  // Bnd configuration for where to download open source software binaries that we've built from source.
+  String fetchRepoSource = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemoteSource;'
+                  +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';index=${build}/oss_source_dependencies.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteSource'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-source-built-maven-local')
+                  +';snapshotUrl=' + ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-source-built-maven-local')
+                  +';index=${build}/oss_source_dependencies.maven')
+  props.setProperty('fetch.oss.source.repository', fetchRepoSource)
+
+  // Bnd configuration for where to download open source software binaries from.
+  // Note: no non-artifactory snapshotUrl because we must not rely on public snapshots
+  String fetchRepoPublic = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemotePublic;'
+                  +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';index=${build}/oss_dependencies.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublic'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + repoURL
+                  +';snapshotUrl=' + repoURL
+                  +';index=${build}/oss_dependencies.maven')
+  props.setProperty('fetch.oss.repository', fetchRepoPublic)
+
+  // Bnd configuration for where to download IBM released binaries from.
+  String fetchRepoIBM = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteIBM'
+                  +';local=~/.ibmdhe/repository'
+                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';index=${build}/oss_ibm.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteIBM'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + repoURL
+                  +';snapshotUrl=' + repoURL
+                  +';index=${build}/oss_ibm.maven')
+  props.setProperty('fetch.oss.ibm.repository', fetchRepoIBM)
+
+  // Bnd configuration for where to download IBM Java binaries from.
+  String fetchRepoIBMJava = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = DummyRepo') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';local=~/.ibmjava/repository'
+                  +';name = IBMInternalJava'
+                  +';releaseUrl=' + repoURL
+                  +';snapshotUrl=' + repoURL
+                  +';index=${build}/ibm_java.maven')
+  props.setProperty('fetch.ibm.java.repository', fetchRepoIBMJava)
+
+  def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
+
+  // Bnd configuration for where to upload release artifacts to.
+  String pushRepoIBM = (!isUsingArtifactory && props.getProperty('artifactory.upload.server') != null) ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublish') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublish'
+                  +';releaseUrl=' + uploadRepoURL
+                  +';snapshotUrl=' + uploadRepoURL
+                  +';index=${build}/openliberty.maven')
+  props.setProperty('push.ibm.repository', pushRepoIBM)
+
+  gradle.ext.userProps = props
+
+  repositories {
+    /**
+     * Prefer a configured Artifactory over plugins.gradle.org.
+     * Do not fall back to plugins.gradle.org when there are Artifactory outages.
+     */
+    if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
+      maven {
+          credentials {
+              username gradle.userProps.getProperty("artifactory.download.user")
+              password gradle.userProps.getProperty("artifactory.download.token")
+          }
+          url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+          metadataSources {
+            mavenPom()
+            artifact()
+          }
+      }
+      maven {
+        url uri(bnd_repourl)
+        metadataSources {
+          mavenPom()
+          artifact()
+        }
+      }
+    } else {
+      maven {
+        url uri(bnd_repourl)
+        metadataSources {
+          mavenPom()
+          artifact()
+        }
+      }
+      maven {
+        url "https://plugins.gradle.org/m2/"
+        metadataSources {
+          mavenPom()
+          artifact() 
+        }
+      }
+    }
+  }
+}
+
+// Require Java 11
+if (!JavaVersion.current().isJava11Compatible()) {
+  println "WARNING: Building this repository will soon require Java 11. To use Java 11 follow these steps:\n" + 
+                            "  1) You can download a copy for your OS here if you don't already have it: " + 
+                            "https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=openj9\n" + 
+                            "  2) run 'export JAVA_HOME=/path/to/your/java11' in the shell, or set in ~/.bashrc\n" + 
+                            "  3) [MACOS ONLY] Set 'ulimit -Sn 1024' in your ~/.bashrc\n" + 
+                            "  4) Restart your gradle daemon with './gradlew --stop'\n";
+}
+
+apply from: 'wlp-gradle/propertiesSettings.gradle'
+apply from: 'wlp-gradle/bndSettings.gradle'
+apply from: 'wlp-gradle/buildCacheSettings.gradle'

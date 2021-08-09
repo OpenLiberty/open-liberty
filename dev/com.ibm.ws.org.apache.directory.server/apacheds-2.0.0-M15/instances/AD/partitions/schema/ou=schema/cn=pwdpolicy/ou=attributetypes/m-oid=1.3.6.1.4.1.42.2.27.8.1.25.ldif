@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.25,ou=attributeTypes,cn=pwdpolicy,ou=schema
+m-equality: integerMatch
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.25
+m-name: pwdMaxDelay
+entryUUID: bd2d86b3-df90-4a58-99d1-1a417c0e5ea5
+entryCSN: 20130919081859.067000Z#000000#000#000000
+entryParentId: fb59bad3-7431-4f89-b398-dee1afd6638f
+createTimestamp: 20130919081911.067Z

@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.jaxws.utils;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+/**
+ *
+ */
+public class StringUtilsTest {
+
+    @Test
+    public void testIsEmpty() {
+        Assert.assertTrue("Zero-length string should be empty", StringUtils.isEmpty(""));
+        Assert.assertTrue("null string reference should be empty", StringUtils.isEmpty(null));
+        Assert.assertTrue("The string contains only spaces should be empty", StringUtils.isEmpty(" "));
+        Assert.assertTrue("The string only contains line control should be empty", StringUtils.isEmpty("\r\n"));
+        Assert.assertFalse("StringUtils.isEmpty(\"a\") should return false", StringUtils.isEmpty("a"));
+        Assert.assertFalse("StringUtils.isEmpty(\" a \") should return false", StringUtils.isEmpty(" a "));
+    }
+
+}

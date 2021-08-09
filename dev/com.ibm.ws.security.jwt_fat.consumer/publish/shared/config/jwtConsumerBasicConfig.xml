@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+
+    <jwtConsumer id="jwtConsumer"
+        signatureAlgorithm="HS256" 
+        sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+        issuer="client01"
+        audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
+        clockSkew="15s"
+        />
+
+	<jwtConsumer id="jwt1" 
+		signatureAlgorithm="HS256" 
+		sharedKey="myDogHasFleas"/>
+
+</server>

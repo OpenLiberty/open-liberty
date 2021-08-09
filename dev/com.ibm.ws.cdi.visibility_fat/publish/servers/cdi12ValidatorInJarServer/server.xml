@@ -1,0 +1,13 @@
+<server description="Server for testing JAX-RS Validator on CDI">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>javaee-7.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+    
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+
+</server>

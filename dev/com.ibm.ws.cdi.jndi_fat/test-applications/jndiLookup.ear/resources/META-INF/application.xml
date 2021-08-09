@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Application_ID" version="6" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+	<display-name>jndiLookup</display-name>
+	<module id="WebModule_1200692465093">
+		<web>
+			<web-uri>jndiLookup.war</web-uri>
+			<context-root>jndiLookup</context-root>
+		</web>
+	</module>
+	<env-entry>
+		<env-entry-name>java:app/env/com.ibm.ws.cdi.jndi.test.result</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>test/passed</env-entry-value>
+	</env-entry>
+</application>

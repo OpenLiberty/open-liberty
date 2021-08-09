@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: El mismo tipo de contexto de hebra, {0}, lo proporcionan varios proveedores de contexto de hebra que est\u00e1n disponibles para la aplicaci\u00f3n. Los proveedores de contexto de hebra son: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=La especificaci\u00f3n de propagaci\u00f3n de contexto de MicroProfile no permite m\u00e1s de un ThreadContextProvider para cada tipo de contexto.
+CWWKC1150.duplicate.context.useraction=Actualice la aplicaci\u00f3n, las bibliotecas, o ambas cosas, de modo que no exista m\u00e1s de un ThreadContextProvider del tipo especificado.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: La configuraci\u00f3n de ManagedExecutor incluye los tipos de contexto de hebra siguientes que est\u00e1n configurados para que se borren y propaguen: {0}
+CWWKC1151.context.lists.overlap.explanation=Un tipo de contexto de hebra no se puede configurar en m\u00e1s de una categor\u00eda cuando se construye o se inyecta un ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Revise y corrija la categorizaci\u00f3n de los tipos de contexto de hebra en el constructor de ManagedExecutor o la anotaci\u00f3n ManagedExecutorConfig.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: Los siguientes tipos de contexto de hebra se configuran en m\u00e1s de una categor\u00eda de (borrado, propagado, sin cambios): {0}.
+CWWKC1152.context.lists.overlap.explanation=Un tipo de contexto de hebra no se puede configurar en m\u00e1s de una categor\u00eda cuando se construye o se inyecta una instancia de ThreadContext.
+CWWKC1152.context.lists.overlap.useraction=Revise y corrija la categorizaci\u00f3n de los tipos de contexto de hebra en el constructor de ThreadContext o la anotaci\u00f3n ThreadContextConfig.
+
+CWWKC1155.unknown.context=CWWKC1155E: Los tipos de contexto de hebra {0} est\u00e1n configurados para ser borrados o propagados, pero no hay ning\u00fan proveedor de contexto de hebra para estos tipos disponible para la aplicaci\u00f3n. Los tipos de contexto de hebra disponibles son: {1}.
+CWWKC1155.unknown.context.explanation=Para cada tipo de contexto de hebra configurado que el servidor no proporciona, debe tener disponible un proveedor de contexto de hebra en el cargador de clases del contexto de hebra de la aplicaci\u00f3n. Entre los tipos de contexto de hebra proporcionados por el servidor se incluyen: Aplicaci\u00f3n, CDI, Seguridad, Transacci\u00f3n.
+CWWKC1155.unknown.context.useraction=Actualice la aplicaci\u00f3n, las bibliotecas, o ambos, para incluir un proveedor de contexto de hebra para cada tipo de contexto de hebra configurado que el servidor no haya proporcionado. Otra posibilidad es actualizar la aplicaci\u00f3n para que utilice \u00fanicamente los tipos de contexto disponibles.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: No se admite la propagaci\u00f3n de transacciones a acciones contextuales y tareas.
+CWWKC1157.cannot.propagate.tx.explanation=Un ManagedExecutor o ThreadContext que est\u00e1 configurado para propagar contextos de transacci\u00f3n solo puede propagar contextos de transacci\u00f3n vac\u00edos. Por lo tanto, no puede crear acciones y tareas contextuales dentro de una transacci\u00f3n.
+CWWKC1157.cannot.propagate.tx.useraction=Cree la acci\u00f3n o tarea contextual fuera de la transacci\u00f3n. De forma alternativa, configure ManagedExecutor o ThreadContext para que no propague contextos de transacci\u00f3n.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

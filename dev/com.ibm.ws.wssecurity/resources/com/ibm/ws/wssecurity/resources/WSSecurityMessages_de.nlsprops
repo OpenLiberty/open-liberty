@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: WS-Security kann auf keinen Web-Service angewendet werden. Beim Versuch, das Ladeprogramm f\u00fcr die WS-Security-Richtlinien beim CXF-Framework zu registrieren, ist ein Fehler aufgetreten: [{0}]
+error.policy.notloaded.explanation=Das Ladeprogramm f\u00fcr die WS-Security-Richtlinien konnte w\u00e4hrend des Serverstarts nicht beim CXF-Framework registriert werden. Aufgrund des Fehlers wird die WS-Security-Laufzeitumgebung f\u00fcr SOAP-Nachrichten nicht aufgerufen, und es werden keine WS-Security-Integrit\u00e4tsbedingungen hinzugef\u00fcgt.
+error.policy.notloaded.useraction=Beheben Sie den in der Nachricht beschriebenen Fehler.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security kann auf keine Web-Service-Clientanwendungen angewendet werden. Das Konfigurationselement f\u00fcr WS-Security-Clients, wsSecurityClient, ist nicht im Server vorhanden.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=Das Feature wsSecurity-1.1 ist aktiviert, aber die WS-Security-Komponente findet das Element wsSecurityClient nicht in der Datei server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Wenn WS-Security-Integrit\u00e4tsbedingungen f\u00fcr eine Web-Service-Clientanwendung erforderlich sind, f\u00fcgen Sie der Datei server.xml das erforderliche Konfigurationselement wsSecurityClient hinzu.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: WS-Security kann auf keine Web-Service-Provideranwendungen angewendet werden. Das Konfigurationselement f\u00fcr WS-Security-Provider, wsSecurityProvider, ist nicht im Server vorhanden.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=Das Feature wsSecurity-1.1 ist aktiviert, aber die WS-Security-Komponente findet das Element wsSecurityProvider nicht in der Datei server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Wenn WS-Security-Integrit\u00e4tsbedingungen f\u00fcr eine Web-Service-Provideranwendung erforderlich sind, f\u00fcgen Sie der Datei server.xml das erforderliche Konfigurationselement wsSecurityClient hinzu.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Eine Caller-Token-Konfiguration kann nicht auf Web-Service-Provideranwendungen angewendet werden. Der f\u00fcr das Element callerToken in der wsSecurityProvider-Konfiguration in der Datei server.xml angegebene Name [{0}] ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind [{1}]. 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=Der f\u00fcr das Element callerToken in der wsSecurityProvider-Konfiguration in der Datei server.xml angegebene Name ist nicht g\u00fcltig.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=\u00dcberpr\u00fcfen Sie die Datei server.xml, um sicherzustellen, dass ein unterst\u00fctzter Wert f\u00fcr das Element callerToken angegeben ist. Die g\u00fcltigen Werte sind in der Fehlernachricht angegeben.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Das callerToken in der eingehenden Nachricht kann nicht identifiziert werden, weil mehrere UsernameToken-Instanzen im SOAP-Security-Header vorhanden sind.
+multiple_unt_exist_err.explanation=Das callerToken in der Datei security.xml ist auf UsernameToken gesetzt, und der Security-Header in der eingehenden SOAP-Nachricht enth\u00e4lt mehrere UsernameToken-Instanzen. Deshalb kann die WS-Security-Laufzeitumgebung nicht feststellen, welches UsernameToken f\u00fcr das Caller-Token zu verwenden ist.
+multiple_unt_exist_err.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) \u00c4ndern Sie die Clientkonfiguration so, dass nur ein einziges UsernameToken gesendet wird. 2) Entfernen Sie die callerToken-Konfiguration in der Datei server.xml.
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Es ist ein callerToken des Typs {0} konfiguriert, aber es ist kein Token des Typs {0} im eingehenden SOAP-Security-Header enthalten. Es konnte kein Caller-Token ausgew\u00e4hlt werden.
+no_caller_exist_err.explanation=Das in der Datei server.xml konfigurierte callerToken ist nicht im SOAP-Security-Header enthalten. 
+no_caller_exist_err.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) \u00c4ndern Sie die Clientkonfiguration so, dass das richtige Caller-Token gesendet wird. 2) Entfernen Sie die callerToken-Konfiguration in der Datei server.xml.
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Ursache: [{0}]
+error_authenticate.explanation=Es konnte kein Sicherheitssubjekt f\u00fcr das aus dem SOAP-Security-Header abgerufene Caller-Token erstellt werden. Die Fehlerursache ist in der Nachricht beschrieben.
+error_authenticate.useraction=Beheben Sie den in der Nachricht beschriebenen Fehler.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Das Caller-Token in der eingehenden Nachricht kann nicht identifiziert werden. Das callerToken in der Datei server.xml ist auf X509Token gesetzt, aber endorsingSupportingToken ist auf true (Standardeinstellung) gesetzt.
+multiple_endorsing_token_err.explanation=Das callerToken in der Datei server.xml ist auf X509Token gesetzt, aber endorsingSupportingToken ist auf true (Standardeinstellung) gesetzt. Da ein einziges Caller-Token in der Nachricht enthalten sein muss, damit ein Caller-Token ausgew\u00e4hlt wird, ist die Angabe mehrerer EndorsingSupportingToken nicht zul\u00e4ssig. 
+multiple_endorsing_token_err.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) \u00c4ndern Sie die Richtlinie so, dass nur ein einziges endorsingSupportingToken in die Nachricht eingeschlossen wird. 2) Entfernen Sie die callerToken-Konfiguration in der Datei server.xml. 3) Setzen Sie endorsingSupportingToken in der callerToken-Konfiguration in der Datei server.xml auf false.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Das Caller-Token in der eingehenden Nachricht kann nicht identifiziert werden. Das callerToken in der Datei server.xml ist auf X509Token gesetzt, endorsingSupportingToken ist auf true gesetzt und es sind mehrere Token f\u00fcr asymmetrische Signatur im eingehenden SOAP-Security-Header enthalten.
+multiple_asymmetric_token_err.explanation=Das callerToken in der Datei server.xml ist auf X509Token gesetzt, endorsingSupportingToken ist auf true gesetzt und es sind mehrere Token f\u00fcr asymmetrische Signatur im eingehenden SOAP-Security-Header enthalten. Da ein einziges Caller-Token in der Nachricht enthalten sein muss, damit ein Caller-Token ausgew\u00e4hlt wird, ist die Angabe mehrerer Token f\u00fcr asymmetrische Signatur nicht zul\u00e4ssig. 
+multiple_asymmetric_token_err.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) \u00c4ndern Sie die Richtlinie so, dass nur ein einziges Token f\u00fcr asymmetrische Signatur in die Nachricht eingeschlossen wird. 2) Entfernen Sie die callerToken-Konfiguration in der Datei server.xml.
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: Die NotBefore-Zusicherung [{0}] im SAML-Token liegt au\u00dferhalb des g\u00fcltigen Bereichs. Die aktuelle Zeit ist [{1}]. Die aktuelle Zeitabweichungseinstellung sind [{2}] Sekunden.
+saml_token_not_yet_valid.explanation=Die NotBefore-Zusicherung im SAML-Token gibt an, wann das Token g\u00fcltig wird. Vor diesem Zeitpunkt kann das Token nicht verwendet werden. Zur Verwendung dieses SAML-Tokens muss der Wert der NotBefore-Zusicherung einen Zeitpunkt in der Vergangenheit darstellen. Eine m\u00f6gliche Ursache hierf\u00fcr k\u00f6nnte eine Abweichung der Systemzeit des Empf\u00e4ngers von der Systemzeit des Erstellers der Zusicherung sein.
+saml_token_not_yet_valid.useraction=Stellen Sie sicher, dass Datum und Uhrzeit im Identit\u00e4tsprovider mit diesem SAML Web Single Sign-On (SSO)-Service-Provider synchronisiert sind, oder erh\u00f6hen Sie die Zeitabweichung.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: Die NotOnOrAfter-Zusicherung [{0}] im SAML-Token liegt au\u00dferhalb des g\u00fcltigen Bereichs. Die aktuelle Zeit ist [{1}]. Die aktuelle Zeitabweichungseinstellung sind [{2}] Sekunden.
+saml_token_expired.explanation=Die NotOnOrAfter-Zusicherung im SAML-Token gibt an, wann das Token abl\u00e4uft. Das Token muss vor diesem Zeitpunkt verwendet werden. Eine m\u00f6gliche Ursache hierf\u00fcr k\u00f6nnte eine Abweichung der Systemzeit des Empf\u00e4ngers von der Systemzeit des Erstellers der Zusicherung sein.
+saml_token_expired.useraction=Stellen Sie sicher, dass Datum und Uhrzeit im Identit\u00e4tsprovider mit diesem SAML Web Single Sign-On (SSO)-Service-Provider synchronisiert sind, oder erh\u00f6hen Sie die Zeitabweichung.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: Die IssueInstant-Zusicherung [{0}] im SAML-Token liegt au\u00dferhalb des g\u00fcltigen Bereichs. Die aktuelle Zeit ist [{1}]. Die aktuelle Zeitabweichungseinstellung sind [{2}] Sekunden.
+saml_token_issued_too_long_ago.explanation=Die IssueInstant-Zusicherung im SAML-Token ist zu alt f\u00fcr die Verwendung dieses Tokens. Ein SAML-Token muss innerhalb eines konfigurierten Zeitraums nach Tokenausstellung verwendet werden. Eine m\u00f6gliche Ursache hierf\u00fcr k\u00f6nnte eine Abweichung der Systemzeit des Empf\u00e4ngers von der Systemzeit des Erstellers der Zusicherung sein.
+saml_token_issued_too_long_ago.useraction=Stellen Sie sicher, dass Datum und Uhrzeit im Identit\u00e4tsprovider mit diesem SAML Web Single Sign-On (SSO)-Service-Provider synchronisiert sind, oder erh\u00f6hen Sie die Zeitabweichung.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: Die IssueInstant-Zusicherung [{0}] im SAML-Token liegt in der Zukunft und damit au\u00dferhalb des g\u00fcltigen Bereichs. Die aktuelle Zeit ist [{1}]. Die aktuelle Zeitabweichungseinstellung sind [{2}] Sekunden.
+saml_token_issue_instant_in_future.explanation=Die IssueInstant-Zusicherung im SAML-Token wurde auf einen Zeitpunkt in der Zukunft gesetzt und wird deshalb als nicht g\u00fcltig eingestuft. Der IssueInstant-Wert muss einen Zeitpunkt in der Vergangenheit angeben, damit das SAML-Token als g\u00fcltig eingestuft wird. Eine m\u00f6gliche Ursache hierf\u00fcr k\u00f6nnte eine Abweichung der Systemzeit des Empf\u00e4ngers von der Systemzeit des Erstellers der Zusicherung sein.
+saml_token_issue_instant_in_future.useraction=Stellen Sie sicher, dass Datum und Uhrzeit im Identit\u00e4tsprovider mit diesem SAML Web Single Sign-On (SSO)-Service-Provider synchronisiert sind, oder erh\u00f6hen Sie die Zeitabweichung.
+
+failed_to_extract_saml_element=CWWKW0218W: Beim Versuch, das SAML-Element aus dem bereitgestellten SAML-Token zu extrahieren, ist eine Ausnahme eingetreten. Ausnahme: [{0}]
+failed_to_extract_saml_element.explanation=Beim Parsing des SAML-Tokens ist eine Ausnahme eingetreten. Das Token hat m\u00f6glicherweise ein falsches Format oder es ist ein interner Fehler beim Parsen der Tokenzeichenfolge aufgetreten.
+failed_to_extract_saml_element.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zu dem Fehler.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: Beim Versuch, das SAML-Token aus dem Subjekt zu extrahieren, ist eine Ausnahme eingetreten. Ausnahme: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Beim Extrahieren des SAML-Tokens aus dem Subjekt ist eine Ausnahme eingetreten.
+failed_to_extract_saml_token_from_subject.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zu dem Fehler.
+
+failed_to_obtain_subject_info=CWWKW0220E: Die Authentifizierung ist wegen einer Ausnahme beim Abrufen von Subjektinformationen aus der SAML-Zusicherung fehlgeschlagen. Ausnahme: [{0}]
+failed_to_obtain_subject_info.explanation=Beim Versuch, Informationen aus dem Subjekt des bereitgestellten SAML-Tokens abzurufen, ist eine Ausnahme eingetreten.
+failed_to_obtain_subject_info.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zu dem Fehler.
+
+failed_to_authenticate=CWWKW0221E: Die Authentifizierung ist wegen einer unerwarteten Ausnahme fehlgeschlagen. Ausnahme: [{0}]
+failed_to_authenticate.explanation=Beim Abrufen von Subjekt- oder Identit\u00e4tsinformationen w\u00e4hrend der Interaktion mit der Benutzerregistry ist wahrscheinlich ein Problem aufgetreten.
+failed_to_authenticate.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zu dem Fehler. Stellen Sie sicher, dass die Subjektinformationen im SAML-Token den erwarteten Werten in der konfigurierten Benutzerregistry zugeordnet sind.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: Die Tokenvalidierung ist fehlgeschlagen, weil der empfangene UsernameToken-Kennworttyp [{0}] nicht mit dem erforderlichen Kennworttyp [{0}] \u00fcbereinstimmt.
+password_type_mismatch.explanation=Der Kennworttyp im UsernameToken stimmt nicht mit dem in der WS-Security-Richtlinie definierten Kennworttyp \u00fcberein. Die Typen m\u00fcssen identisch sein. Der Web-Service-Client muss denselben Kennworttyp zusichern, der in der WS-Security-Richtlinie definiert ist, damit die Validierung erfolgreich ist.
+password_type_mismatch.useraction=Stellen Sie sicher, dass der Web-Service-Client den in der WS-Security-Richtlinie definierten Kennworttyp zusichert.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: Die Tokenvalidierung ist fehlgeschlagen, weil ein angepasster Kennworttyp erkannt wurde, aber die in der Anforderung enthaltenen Konfigurationsdaten angeben, dass angepasste Kennworttypen nicht unterst\u00fctzt werden.
+cannot_handle_custom_password_types.explanation=Das Kennwort im UsernameToken ist weder hashverschl\u00fcsselt noch Klartext und wird deshalb als angepasster Kennworttyp eingestuft. Die Konfiguration in den Anforderungsdaten gibt an, dass angepasste Kennworttypen nicht unterst\u00fctzt werden.
+cannot_handle_custom_password_types.useraction=Stellen Sie sicher, dass der Web-Service-Client einen Kennworttyp verwendet, der im UsernameToken-Profil definiert ist, oder konfigurieren Sie den Web-Service-Provider so, dass er angepasste Kennworttypen akzeptiert.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: Der Benutzername oder das Kennwort im UsernameToken ist leer. \u00dcberpr\u00fcfen Sie das UsernameToken, um sicherzustellen, dass Benutzername und Kennwort im Token nicht leer sind.
+empty_user_or_password.explanation=Der Benutzernamenseintrag oder Kennworteintrag im UsernameToken fehlt oder er ist leer.
+empty_user_or_password.useraction=Stellen Sie sicher, dass ein Benutzername und ein Kennwort im Token angegeben sind. Wenn kein Benutzername oder kein Kennwort angegeben wurden, fordern Sie ein neues UsernameToken an.
+
+registry_exception_checking_password=CWWKW0225E: Beim Zugriff auf die Benutzerregistry oder beim \u00dcberpr\u00fcfen des Kennworts f\u00fcr den Benutzer [{0}] ist eine Ausnahme eingetreten. Ausnahme: [{1}]
+registry_exception_checking_password.explanation=Beim Abrufen einer Referenz auf die Benutzerregistry \u00fcber den Benutzerregistry-Service ist eine Ausnahme aufgetreten oder beim \u00dcberpr\u00fcfen des Kennworts f\u00fcr den angegebenen Benutzer ist eine Ausnahme eingetreten.
+registry_exception_checking_password.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen zur Ausnahme. Stellen Sie sicher, dass der angegebene Benutzername und das angegebene Kennwort korrekt sind und einem Eintrag in der konfigurierten Benutzerregistry entsprechen.
+
+check_password_failed=CWWKW0226E: Der Benutzer [{0}] konnte nicht validiert werden. Vergewissern Sie sich, dass die angegebenen Benutzerberechtigungsnachweise (Benutzername und Kennwort) korrekt sind.
+check_password_failed.explanation=Der angegebene Benutzer konnte anhand der konfigurierten Benutzerregistry nicht validiert werden. Dies ist wahrscheinlich auf eine abweichende Benutzername/Kennwort-Kombination zur\u00fcckzuf\u00fchren.
+check_password_failed.useraction=\u00dcberpr\u00fcfen Sie die bereitgestellten Berechtigungsnachweise, um sicherzustellen, dass Benutzername und Kennwort einem Eintrag in der konfigurierten Benutzerregistry entsprechen.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: Vom Kennwort-Callback-Handler wurde ein Nullkennwort zur\u00fcckgegeben.
+no_password_returned_by_callback.explanation=Der Kennwort-Callback-Handler muss f\u00fcr Kennw\u00f6rter des Typs PasswordDigest in einem UsernameToken ein Kennwort ungleich null zur\u00fcckgeben.
+no_password_returned_by_callback.useraction=Stellen Sie sicher, dass der Kennwort-Callback-Handler ein nicht leeres Kennwort ungleich null f\u00fcr einen g\u00fcltigen Benutzer zur\u00fcckgeben.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: Die SAML-Zusicherung enth\u00e4lt kein Attribut [{0}]. Ein Attribut [{0}] ist erforderlich, weil dieses Attribut in der Callerkonfiguration als ID [{1}] angegeben ist. 
+SAML20_ATTRIBUTE_ERR.explanation=Entweder fehlt das Attribut in der SAML-Zusicherung oder in der Callerkonfiguration ist ein falscher Wert f\u00fcr die angegebene ID angegeben.
+SAML20_ATTRIBUTE_ERR.useraction=F\u00fchren Sie einen der folgenden Schritte aus: 1) Stellen Sie sicher, dass das Attribut in der SAML-Zusicherung vorhanden ist. 2) Konfigurieren Sie das callerToken, um ein anderes Attribut als ID anzugeben.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: Die SAML-Zusicherung enth\u00e4lt kein Element [{0}]. Ein Element [{0}] ist erforderlich. 
+SAML20_ELEMENT_ERR.explanation=In der SAML-Zusicherung fehlt ein Element, das die WS-Security-Laufzeitumgebung f\u00fcr die Verarbeitung des Caller-Tokens ben\u00f6tigt.
+SAML20_ELEMENT_ERR.useraction=F\u00fchren Sie einen der folgenden Schritte aus: 1) Stellen Sie sicher, dass das erforderliche Element in der SAML-Sicherung vorhanden ist. 2) Konfigurieren Sie das callerToken, um einen Wert f\u00fcr das Element zu definieren.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: UserCredentialResolver kann die SAML-Zusicherung nicht aufl\u00f6sen und l\u00f6st eine Ausnahme des Typs UserIdentityException mit der Nachricht [{0}] aus.
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Der vom Benutzerfeature bereitgestellte UserCredentialResolver-Service kann die SAML-Zusicherung nicht zuordnen und l\u00f6st eine Ausnahme des Typs UserIdentityException aus.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Stellen Sie sicher, dass der UserCredentialResolver-Service ordnungsgem\u00e4\u00df konfiguriert ist, wenn die Ausnahme des Typs UserIdentityException nicht erwartet wird.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Das callerToken in der eingehenden Nachricht kann nicht identifiziert werden, weil mehrere SAML-Zusicherungen im SOAP-Sicherheitsheader vorhanden sind.
+multiple_saml_exist_err.explanation=Das callerToken in der Datei server.xml ist auf SamlToken gesetzt und der Sicherheitsheader in der eingehenden SOAP-Nachricht enth\u00e4lt mehrere SAML-Zusicherungen. Deshalb kann die WS-Security-Laufzeitumgebung nicht bestimmen, welche SAML-Zusicherung f\u00fcr das Caller-Token verwendet werden soll.
+multiple_saml_exist_err.useraction=F\u00fchren Sie einen der folgenden Schritte aus: 1) \u00c4ndern Sie die Clientkonfiguration so, dass nur eine einzige SAML-Zusicherung gesendet wird. 2) Entfernen Sie die callerToken-Konfiguration in der Datei server.xml.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service mit der Benutzer-ID [{0}] erstellt werden.
+error_authenticate_maptouser.explanation=Es konnte kein Sicherheitssubjekt f\u00fcr das aus dem SOAP-Security-Header abgerufene Caller-Token erstellt werden. Stellen Sie sicher, dass der in der Nachricht angegebene Benutzer in der Benutzerregistry vorhanden ist.
+error_authenticate_maptouser.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Stellen Sie sicher, dass der Benutzer in der Benutzerregistry in der Datei server.xml vorhanden ist. 2) Setzen Sie das Attribut mapToUserRegistry nicht in der callerToken-Konfiguration.
+
+no_callbacks_provided=CWWKW0233E: Es wurden keine Callbacks f\u00fcr die Verarbeitung der Anforderung bereitgestellt.
+no_callbacks_provided.explanation=Es muss mindestens ein Callback an den Callback-Handler \u00fcbergeben werden, damit ein SAML-Token verarbeitet und zur\u00fcckgegeben werden kann.
+no_callbacks_provided.useraction=Es ist keine Benutzeraktion f\u00fcr diesen Fall verf\u00fcgbar.
+
+no_saml_found_in_subject=CWWKW0234E: Das erforderliche SAML-Token fehlt im Subjekt.
+no_saml_found_in_subject.explanation=Beim Extrahieren des SAML-Tokens aus dem Subjekt ist ein Fehler aufgetreten oder es wurde kein SAML-Element im aktuellen Subjekt gefunden.
+no_saml_found_in_subject.useraction=Wenn Sie das RunAs-Subjekt erstellen, m\u00fcssen Sie sicherstellen, dass dem Subjekt das SAML-Token hinzugef\u00fcgt wird. Stellen Sie alternativ sicher, dass Ihre Serverkonfiguration das Hinzuf\u00fcgen des SAML-Tokens zum Subjekt unterst\u00fctzt, indem Sie das Attribut includeTokenInSubject in Ihrer SAML-Konfiguration \u00fcberpr\u00fcfen.

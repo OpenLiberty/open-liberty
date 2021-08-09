@@ -1,0 +1,5 @@
+The wasdev_files folder contains files that are hosted on wasdev.net.  
+These files are used by the welcome page of a Liberty server (http://localhost:9080).
+
+These files are not currently not bundled in this project's jar.  
+The files should not ever be since they are only hosted on wasdev.net.

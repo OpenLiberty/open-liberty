@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:tns="http://server.lpsserver.wsat.ws.ibm.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="WSATSimpleService" 
+	targetNamespace="http://server.lpsserver.wsat.ws.ibm.com/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+	<wsp:Policy wsu:Id="TransactedPolicy">
+		<wsat:ATAssertion/>
+	</wsp:Policy>
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server.lpsserver.wsat.ws.ibm.com/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://server.lpsserver.wsat.ws.ibm.com/">
+  <xs:element name="WSTXLPS004FVT" type="tns:WSTXLPS004FVT"/>
+  <xs:element name="WSTXLPS004FVTResponse" type="tns:WSTXLPS004FVTResponse"/>
+  <xs:element name="WSTXLPS005FVT" type="tns:WSTXLPS005FVT"/>
+  <xs:element name="WSTXLPS005FVTResponse" type="tns:WSTXLPS005FVTResponse"/>
+  <xs:element name="WSTXLPS011FVT" type="tns:WSTXLPS011FVT"/>
+  <xs:element name="WSTXLPS011FVTResponse" type="tns:WSTXLPS011FVTResponse"/>
+  <xs:element name="WSTXLPS101FVT" type="tns:WSTXLPS101FVT"/>
+  <xs:element name="WSTXLPS101FVTResponse" type="tns:WSTXLPS101FVTResponse"/>
+  <xs:element name="WSTXLPS102FVT" type="tns:WSTXLPS102FVT"/>
+  <xs:element name="WSTXLPS102FVTResponse" type="tns:WSTXLPS102FVTResponse"/>
+  <xs:element name="WSTXLPS103FVT" type="tns:WSTXLPS103FVT"/>
+  <xs:element name="WSTXLPS103FVTResponse" type="tns:WSTXLPS103FVTResponse"/>
+  <xs:element name="WSTXLPS104FVT" type="tns:WSTXLPS104FVT"/>
+  <xs:element name="WSTXLPS104FVTResponse" type="tns:WSTXLPS104FVTResponse"/>
+  <xs:element name="WSTXLPS105FVT" type="tns:WSTXLPS105FVT"/>
+  <xs:element name="WSTXLPS105FVTResponse" type="tns:WSTXLPS105FVTResponse"/>
+  <xs:element name="WSTXLPS106FVT" type="tns:WSTXLPS106FVT"/>
+  <xs:element name="WSTXLPS106FVTResponse" type="tns:WSTXLPS106FVTResponse"/>
+  <xs:element name="WSTXLPS107FVT" type="tns:WSTXLPS107FVT"/>
+  <xs:element name="WSTXLPS107FVTResponse" type="tns:WSTXLPS107FVTResponse"/>
+  <xs:element name="WSTXLPS108FVT" type="tns:WSTXLPS108FVT"/>
+  <xs:element name="WSTXLPS108FVTResponse" type="tns:WSTXLPS108FVTResponse"/>
+  <xs:element name="WSTXLPS109FVT" type="tns:WSTXLPS109FVT"/>
+  <xs:element name="WSTXLPS109FVTResponse" type="tns:WSTXLPS109FVTResponse"/>
+  <xs:element name="WSTXLPS110FVT" type="tns:WSTXLPS110FVT"/>
+  <xs:element name="WSTXLPS110FVTResponse" type="tns:WSTXLPS110FVTResponse"/>
+  <xs:element name="WSTXLPS111FVT" type="tns:WSTXLPS111FVT"/>
+  <xs:element name="WSTXLPS111FVTResponse" type="tns:WSTXLPS111FVTResponse"/>
+  <xs:element name="WSTXLPS112FVT" type="tns:WSTXLPS112FVT"/>
+  <xs:element name="WSTXLPS112FVTResponse" type="tns:WSTXLPS112FVTResponse"/>
+  <xs:element name="WSTXLPS113FVT" type="tns:WSTXLPS113FVT"/>
+  <xs:element name="WSTXLPS113FVTResponse" type="tns:WSTXLPS113FVTResponse"/>
+  <xs:element name="WSTXLPS114FVT" type="tns:WSTXLPS114FVT"/>
+  <xs:element name="WSTXLPS114FVTResponse" type="tns:WSTXLPS114FVTResponse"/>
+  <xs:element name="WSTXLPS201FVT" type="tns:WSTXLPS201FVT"/>
+  <xs:element name="WSTXLPS201FVTResponse" type="tns:WSTXLPS201FVTResponse"/>
+  <xs:element name="WSTXLPS202FVT" type="tns:WSTXLPS202FVT"/>
+  <xs:element name="WSTXLPS202FVTResponse" type="tns:WSTXLPS202FVTResponse"/>
+  <xs:element name="WSTXLPS203FVT" type="tns:WSTXLPS203FVT"/>
+  <xs:element name="WSTXLPS203FVTResponse" type="tns:WSTXLPS203FVTResponse"/>
+  <xs:element name="WSTXLPS204FVT" type="tns:WSTXLPS204FVT"/>
+  <xs:element name="WSTXLPS204FVTResponse" type="tns:WSTXLPS204FVTResponse"/>
+  <xs:element name="WSTXLPS205FVT" type="tns:WSTXLPS205FVT"/>
+  <xs:element name="WSTXLPS205FVTResponse" type="tns:WSTXLPS205FVTResponse"/>
+  <xs:element name="WSTXLPS206FVT" type="tns:WSTXLPS206FVT"/>
+  <xs:element name="WSTXLPS206FVTResponse" type="tns:WSTXLPS206FVTResponse"/>
+  <xs:element name="WSTXLPS207FVT" type="tns:WSTXLPS207FVT"/>
+  <xs:element name="WSTXLPS207FVTResponse" type="tns:WSTXLPS207FVTResponse"/>
+  <xs:element name="echo" type="tns:echo"/>
+  <xs:element name="echoResponse" type="tns:echoResponse"/>
+  <xs:complexType name="WSTXLPS004FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS004FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS005FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS005FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS011FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS011FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS106FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS106FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS202FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS202FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS101FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS101FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS114FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS114FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS203FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS203FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS108FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS108FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS204FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS204FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="echo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="echoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS109FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS109FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS113FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS113FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS206FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS206FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS104FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS104FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS110FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS110FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS205FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS205FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS201FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS201FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS102FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS102FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS107FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS107FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS207FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS207FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS112FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS112FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS105FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS105FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS103FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS103FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS111FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS111FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Exception" type="tns:Exception"/>
+  <xs:complexType name="Exception">
+    <xs:sequence>
+      <xs:element name="message" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="message" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>  </wsdl:types>
+  <wsdl:message name="WSTXLPS004FVT">
+    <wsdl:part element="tns:WSTXLPS004FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS005FVT">
+    <wsdl:part element="tns:WSTXLPS005FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS011FVT">
+    <wsdl:part element="tns:WSTXLPS011FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS004FVTResponse">
+    <wsdl:part element="tns:WSTXLPS004FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS005FVTResponse">
+    <wsdl:part element="tns:WSTXLPS005FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS011FVTResponse">
+    <wsdl:part element="tns:WSTXLPS011FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS105FVTResponse">
+    <wsdl:part element="tns:WSTXLPS105FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS204FVT">
+    <wsdl:part element="tns:WSTXLPS204FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS110FVT">
+    <wsdl:part element="tns:WSTXLPS110FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS112FVT">
+    <wsdl:part element="tns:WSTXLPS112FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="echo">
+    <wsdl:part element="tns:echo" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS207FVT">
+    <wsdl:part element="tns:WSTXLPS207FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS203FVTResponse">
+    <wsdl:part element="tns:WSTXLPS203FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS206FVTResponse">
+    <wsdl:part element="tns:WSTXLPS206FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS202FVT">
+    <wsdl:part element="tns:WSTXLPS202FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS201FVTResponse">
+    <wsdl:part element="tns:WSTXLPS201FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS103FVTResponse">
+    <wsdl:part element="tns:WSTXLPS103FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS203FVT">
+    <wsdl:part element="tns:WSTXLPS203FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS114FVT">
+    <wsdl:part element="tns:WSTXLPS114FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS206FVT">
+    <wsdl:part element="tns:WSTXLPS206FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS107FVTResponse">
+    <wsdl:part element="tns:WSTXLPS107FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS108FVT">
+    <wsdl:part element="tns:WSTXLPS108FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS101FVTResponse">
+    <wsdl:part element="tns:WSTXLPS101FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS109FVT">
+    <wsdl:part element="tns:WSTXLPS109FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS111FVTResponse">
+    <wsdl:part element="tns:WSTXLPS111FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS102FVT">
+    <wsdl:part element="tns:WSTXLPS102FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS104FVTResponse">
+    <wsdl:part element="tns:WSTXLPS104FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS205FVT">
+    <wsdl:part element="tns:WSTXLPS205FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS108FVTResponse">
+    <wsdl:part element="tns:WSTXLPS108FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS204FVTResponse">
+    <wsdl:part element="tns:WSTXLPS204FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS205FVTResponse">
+    <wsdl:part element="tns:WSTXLPS205FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS112FVTResponse">
+    <wsdl:part element="tns:WSTXLPS112FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS102FVTResponse">
+    <wsdl:part element="tns:WSTXLPS102FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS202FVTResponse">
+    <wsdl:part element="tns:WSTXLPS202FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS111FVT">
+    <wsdl:part element="tns:WSTXLPS111FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS113FVT">
+    <wsdl:part element="tns:WSTXLPS113FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS110FVTResponse">
+    <wsdl:part element="tns:WSTXLPS110FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS103FVT">
+    <wsdl:part element="tns:WSTXLPS103FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="echoResponse">
+    <wsdl:part element="tns:echoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS207FVTResponse">
+    <wsdl:part element="tns:WSTXLPS207FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS101FVT">
+    <wsdl:part element="tns:WSTXLPS101FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="Exception">
+    <wsdl:part element="tns:Exception" name="Exception">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS106FVTResponse">
+    <wsdl:part element="tns:WSTXLPS106FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS104FVT">
+    <wsdl:part element="tns:WSTXLPS104FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS113FVTResponse">
+    <wsdl:part element="tns:WSTXLPS113FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS105FVT">
+    <wsdl:part element="tns:WSTXLPS105FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS114FVTResponse">
+    <wsdl:part element="tns:WSTXLPS114FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS107FVT">
+    <wsdl:part element="tns:WSTXLPS107FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS201FVT">
+    <wsdl:part element="tns:WSTXLPS201FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS106FVT">
+    <wsdl:part element="tns:WSTXLPS106FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS109FVTResponse">
+    <wsdl:part element="tns:WSTXLPS109FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="LastParticipantSupport">
+  	<wsdl:operation name="WSTXLPS004FVT">
+      <wsdl:input message="tns:WSTXLPS004FVT" name="WSTXLPS004FVT">
+    </wsdl:input>
+    <wsdl:output message="tns:WSTXLPS004FVTResponse" name="WSTXLPS004FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS005FVT">
+      <wsdl:input message="tns:WSTXLPS005FVT" name="WSTXLPS005FVT">
+    </wsdl:input>
+    <wsdl:output message="tns:WSTXLPS005FVTResponse" name="WSTXLPS005FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS011FVT">
+      <wsdl:input message="tns:WSTXLPS011FVT" name="WSTXLPS011FVT">
+    </wsdl:input>
+    <wsdl:output message="tns:WSTXLPS011FVTResponse" name="WSTXLPS011FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS106FVT">
+      <wsdl:input message="tns:WSTXLPS106FVT" name="WSTXLPS106FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS106FVTResponse" name="WSTXLPS106FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS202FVT">
+      <wsdl:input message="tns:WSTXLPS202FVT" name="WSTXLPS202FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS202FVTResponse" name="WSTXLPS202FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS101FVT">
+      <wsdl:input message="tns:WSTXLPS101FVT" name="WSTXLPS101FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS101FVTResponse" name="WSTXLPS101FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS114FVT">
+      <wsdl:input message="tns:WSTXLPS114FVT" name="WSTXLPS114FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS114FVTResponse" name="WSTXLPS114FVTResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS203FVT">
+      <wsdl:input message="tns:WSTXLPS203FVT" name="WSTXLPS203FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS203FVTResponse" name="WSTXLPS203FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS108FVT">
+      <wsdl:input message="tns:WSTXLPS108FVT" name="WSTXLPS108FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS108FVTResponse" name="WSTXLPS108FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS204FVT">
+      <wsdl:input message="tns:WSTXLPS204FVT" name="WSTXLPS204FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS204FVTResponse" name="WSTXLPS204FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="echo">
+      <wsdl:input message="tns:echo" name="echo">
+    </wsdl:input>
+      <wsdl:output message="tns:echoResponse" name="echoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS109FVT">
+      <wsdl:input message="tns:WSTXLPS109FVT" name="WSTXLPS109FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS109FVTResponse" name="WSTXLPS109FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS113FVT">
+      <wsdl:input message="tns:WSTXLPS113FVT" name="WSTXLPS113FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS113FVTResponse" name="WSTXLPS113FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS206FVT">
+      <wsdl:input message="tns:WSTXLPS206FVT" name="WSTXLPS206FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS206FVTResponse" name="WSTXLPS206FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS104FVT">
+      <wsdl:input message="tns:WSTXLPS104FVT" name="WSTXLPS104FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS104FVTResponse" name="WSTXLPS104FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS110FVT">
+      <wsdl:input message="tns:WSTXLPS110FVT" name="WSTXLPS110FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS110FVTResponse" name="WSTXLPS110FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS205FVT">
+      <wsdl:input message="tns:WSTXLPS205FVT" name="WSTXLPS205FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS205FVTResponse" name="WSTXLPS205FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS201FVT">
+      <wsdl:input message="tns:WSTXLPS201FVT" name="WSTXLPS201FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS201FVTResponse" name="WSTXLPS201FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS102FVT">
+      <wsdl:input message="tns:WSTXLPS102FVT" name="WSTXLPS102FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS102FVTResponse" name="WSTXLPS102FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS107FVT">
+      <wsdl:input message="tns:WSTXLPS107FVT" name="WSTXLPS107FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS107FVTResponse" name="WSTXLPS107FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS207FVT">
+      <wsdl:input message="tns:WSTXLPS207FVT" name="WSTXLPS207FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS207FVTResponse" name="WSTXLPS207FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS112FVT">
+      <wsdl:input message="tns:WSTXLPS112FVT" name="WSTXLPS112FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS112FVTResponse" name="WSTXLPS112FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS105FVT">
+      <wsdl:input message="tns:WSTXLPS105FVT" name="WSTXLPS105FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS105FVTResponse" name="WSTXLPS105FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS103FVT">
+      <wsdl:input message="tns:WSTXLPS103FVT" name="WSTXLPS103FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS103FVTResponse" name="WSTXLPS103FVTResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS111FVT">
+      <wsdl:input message="tns:WSTXLPS111FVT" name="WSTXLPS111FVT">
+    </wsdl:input>
+      <wsdl:output message="tns:WSTXLPS111FVTResponse" name="WSTXLPS111FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LastParticipantSupportServiceSoapBinding" type="tns:LastParticipantSupport">
+	<wsp:PolicyReference URI="#TransactedPolicy"
+				wsdl:required="true" />
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="WSTXLPS004FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS004FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS004FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS005FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS005FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS005FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS011FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS011FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS011FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS106FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS106FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS106FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS101FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS101FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS101FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS202FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS202FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS202FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS114FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS114FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS114FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS108FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS108FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS108FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS203FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS203FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS203FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS204FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS204FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS204FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS109FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS109FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS109FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="echo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="echoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS113FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS113FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS113FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS206FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS206FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS206FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS104FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS104FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS104FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS110FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS110FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS110FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS201FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS201FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS201FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS205FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS205FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS205FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS102FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS102FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS102FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS107FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS107FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS107FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS207FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS207FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS207FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS103FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS103FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS103FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS105FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS105FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS105FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS112FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS112FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS112FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS111FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS111FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS111FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LastParticipantSupportService">
+    <wsdl:port binding="tns:LastParticipantSupportServiceSoapBinding" name="LastParticipantSupportPort">
+      <soap:address location="http://localhost:9992/LPSServer/LastParticipantSupportService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

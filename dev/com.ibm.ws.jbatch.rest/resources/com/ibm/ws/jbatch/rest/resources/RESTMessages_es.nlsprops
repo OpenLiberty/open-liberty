@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.rest/resources/com/ibm/ws/jbatch/rest/resources/RestMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains:
+# 0151 - 0199: com.ibm.ws.jbatch.rest
+# 
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.instance.not.found=CWWKY0151E: No se ha encontrado ninguna instancia de trabajo para el ID de instancia {0}.
+job.instance.not.found.explanation=Este mensaje de error se emite cuando se utiliza un ID de instancia no v\u00e1lido en la solicitud REST.
+job.instance.not.found.useraction=Compruebe la solicitud REST sometida para asegurarse de que el ID de la instancia sometida es v\u00e1lido.
+
+in.memory.search.not.supported=CWWKY0152E: El URL de invocaci\u00f3n de la API REST de gesti\u00f3n de proceso por lotes no est\u00e1 soportado para la persistencia de proceso por lotes en memoria.
+in.memory.search.not.supported.explanation=La API REST de gesti\u00f3n de proceso por lotes se ha invocado con una combinaci\u00f3n de par\u00e1metros de v\u00eda de acceso y consulta que est\u00e1 reconocido por el servidor pero no est\u00e1 soportado cuando utiliza la persistencia de proceso por lotes en memoria. Este URL puede estar soportado cuando se utiliza la opci\u00f3n de base de datos para la persistencia de proceso por lotes.
+in.memory.search.not.supported.useraction=Utilice la versi\u00f3n "v1" de la API REST de proceso por lotes, que da soporte a la persistencia de proceso por lotes en memoria.
+
+db.tables.not.created.for.jobparm.search=CWWKY0153E: La base de datos de repositorio de trabajo no da soporte a la b\u00fasqueda o supresi\u00f3n mediante par\u00e1metros de trabajo porque no existe ninguna tabla JOBPARAMETER en la base de datos.
+db.tables.not.created.for.jobparm.search.explanation=El patr\u00f3n de par\u00e1metro de trabajo ha invocado la API REST de gesti\u00f3n de proceso por lotes con los par\u00e1metros de consulta que buscan instancias de trabajo, ya sea utilizando una operaci\u00f3n de b\u00fasqueda (GET) o de depuraci\u00f3n (DELETE). Si embargo, este par\u00e1metro de b\u00fasqueda concreto s\u00f3lo est\u00e1 soportado cuando el repositorio de trabajo contiene la tabla JOBPARAMETER, que se ha a\u00f1adido en los niveles de fixpack 16.0.0.4 o posterior. Si el almac\u00e9n de base de datos que utiliza la persistencia de proceso por lotes se ha configurado con el valor predeterminado 'createTables=true', esta tabla deber\u00eda crearse autom\u00e1ticamente cuando el componente de proceso por lotes se inicia dentro de un servidor que ejecuta un nivel de fixpack 16.0.0.4 o posterior. Sin embargo, si el almac\u00e9n de base de datos se ha configurado con 'createTables=false', el administrador de WebSphere o el DBA tendr\u00e1 que crear por separado la nueva tabla antes de ejecutar una b\u00fasqueda por par\u00e1metro de trabajo.
+db.tables.not.created.for.jobparm.search.useraction=Consulte la documentaci\u00f3n del fixpack para obtener instrucciones sobre la migraci\u00f3n de la base de datos utilizada por la persistencia de proceso por lotes.
+
+ssl.connection.unavailable=CWWKY0154I: Una conexi\u00f3n al punto final de proceso por lotes (Batch) en {0} ha encontrado un error de reconocimiento SSL. Esta solicitud y las solicitudes futuras intentar\u00e1n utilizar un redireccionamiento HTTP para direccionar al punto final correcto.
+ssl.connection.unavailable.explanation=Determinadas acciones disponibles a trav\u00e9s de la API REST de proceso por lotes se deben realizar en el mismo servidor en el que se ha ejecutado el trabajo correspondiente. Si la acci\u00f3n se inicia en otro servidor distinto, dicho servidor intentar\u00e1 crear una nueva conexi\u00f3n para reenviar la solicitud al destino pertinente. Este servidor no ha podido completar un reconocimiento SSL con el servidor de destino. Por tanto, esta solicitud y las solicitudes futuras intentar\u00e1n utilizar redireccionamientos de solicitudes en lugar de nuevas conexiones.
+ssl.connection.unavailable.useraction=No se requiere ninguna acci\u00f3n.
+
+http.options.received=CWWKY0155W: Se ha recibido una solicitud HTTP OPTIONS en la API REST de proceso por lotes desde un servidor Liberty en {0}. Esto es resultado de un intento de conexi\u00f3n desde otro servidor Liberty en el que est\u00e1 alojado Admin Center. Configure CORS en este servidor para que acepte solicitudes del servidor en el que est\u00e1 alojado Admin Center y as\u00ed poder solucionar este problema.
+http.options.received.explanation=Determinadas acciones disponibles a trav\u00e9s de la API REST de proceso por lotes se deben realizar en el mismo servidor en el que se ha ejecutado el trabajo correspondiente. Si la acci\u00f3n se inicia en otro servidor distinto, dicho servidor intentar\u00e1 crear una nueva conexi\u00f3n para reenviar la solicitud al destino pertinente. No se ha configurado el uso compartido de recursos de diversos or\u00edgenes (CORS o Cross-Origin Resource Sharing) para permitir que se realice esa conexi\u00f3n desde un servidor a otro. Por tanto, esta solicitud no se puede completar.
+http.options.received.useraction=Configure CORS para permitir conexiones de la API REST de proceso por lotes desde el servidor en el que se aloja Admin Center a este servidor.

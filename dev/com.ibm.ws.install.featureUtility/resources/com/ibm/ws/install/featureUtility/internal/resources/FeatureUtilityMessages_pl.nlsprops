@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=Ustawienia narz\u0119dzia featureUtility
+MSG_PROPERTIES_FILE_NOT_FOUND=Nie wykryto konfiguracji u\u017cytkownika. Centralne repozytorium Maven jest domy\u015blnym repozytorium zasob\u00f3w aplikacyjnych.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Aby dostosowa\u0107 ustawienia komendy featureUtility, utw\u00f3rz plik featureUtility.properties w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Poni\u017cszego przyk\u0142adu mo\u017cna u\u017cy\u0107 jako szablonu w celu utworzenia w\u0142asnego pliku featureUtility.properties. Usu\u0144 znak komentarza z wierszy rozpoczynaj\u0105cych si\u0119 od pojedynczego znaku # i zast\u0105p warto\u015bci w\u0142asnymi warto\u015bciami niestandardowymi.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Aby dostosowa\u0107 ustawienia komendy installUtility, utw\u00f3rz plik repositories.properties w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Poni\u017cszego przyk\u0142adu mo\u017cna u\u017cy\u0107 jako szablonu w celu utworzenia w\u0142asnego pliku repositories.properties. Usu\u0144 znak komentarza z wierszy rozpoczynaj\u0105cych si\u0119 od pojedynczego znaku # i zast\u0105p warto\u015bci w\u0142asnymi warto\u015bciami niestandardowymi.
+MSG_TRUE=Prawda
+MSG_FALSE=Fa\u0142sz
+MSG_DEFAULT_REPO_USEAGE_LABEL=U\u017cyj domy\u015blnego repozytorium:
+MSG_DEFAULT_REPO_NAME_LABEL=Domy\u015blne repozytorium zasob\u00f3w aplikacyjnych:
+MSG_DEFAULT_REPO_NAME=Centralne repozytorium Maven
+MSG_CONFIG_REPO_LABEL=Skonfigurowane repozytoria
+MSG_MAVEN_LOCAL_REPO=Lokalne repozytorium Maven
+MSG_NO_CONFIG_REPO=Nie skonfigurowano repozytori\u00f3w
+MSG_UNSPECIFIED=<Nieokre\u015blone>
+MSG_PASSWORD_NOT_ENCODED_PROXY=Has\u0142o dla tego serwera proxy nie jest zakodowane. Aby zakodowa\u0107 has\u0142o, uruchom dzia\u0142anie kodowania w narz\u0119dziu securityUtility, u\u017cywaj\u0105c opcji --encoding ustawionej na obs\u0142ugiwany typ kodowania. Obs\u0142ugiwane typy to xor (domy\u015blny), aes i hash.
+MSG_PROXY_LABEL=Ustawienia serwera proxy
+MSG_NO_CONFIG_PROXY=Nie skonfigurowano serwer\u00f3w proxy
+MSG_REPO_FILE_NOT_FOUND=Nie wykryto konfiguracji u\u017cytkownika. Repozytorium produktu IBM WebSphere Liberty jest domy\u015blnym repozytorium zasob\u00f3w aplikacyjnych.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Aby dostosowa\u0107 ustawienia komendy installUtility, utw\u00f3rz plik repositories.properties w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
+MSG_REPO_FILE_NOT_FOUND_ACTION=Poni\u017cszego przyk\u0142adu mo\u017cna u\u017cy\u0107 jako szablonu w celu utworzenia w\u0142asnego pliku repositories.properties. Usu\u0144 znak komentarza z wierszy rozpoczynaj\u0105cych si\u0119 od pojedynczego znaku # i zast\u0105p warto\u015bci w\u0142asnymi warto\u015bciami niestandardowymi.
+MSG_VALIDATION_SUCCESSFUL=W przypadku pliku w\u0142a\u015bciwo\u015bci pomy\u015blnie zako\u0144czono operacj\u0119 sprawdzania poprawno\u015bci.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Sprawdzanie poprawno\u015bci pliku w\u0142a\u015bciwo\u015bci nie powiod\u0142o si\u0119. Aby wy\u015bwietli\u0107 szczeg\u00f3\u0142owe komunikaty sprawdzania poprawno\u015bci, nale\u017cy u\u017cy\u0107 opcji --viewValidationMessages.
+MSG_VALIDATION_NUM_OF_ERRORS=Liczba b\u0142\u0119d\u00f3w: {0}
+MSG_VALIDATION_MESSAGES=Sprawdzanie poprawno\u015bci pliku w\u0142a\u015bciwo\u015bci
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nazwa: {0}
+FIELD_REPO_LOCATION=Po\u0142o\u017cenie: {0}
+FIELD_REPO_STATUS=Status: {0}
+FIELD_REPO_REASON=Przyczyna: {0}
+FIELD_REPO_WARNING=Ostrze\u017cenie: {0}
+FIELD_NAME=Nazwa:
+FIELD_PORT=Port:
+FIELD_LOCATION=Po\u0142o\u017cenie:
+FIELD_PROXY_SERVER=Serwer proxy:
+FIELD_USER=Nazwa u\u017cytkownika:
+FIELD_PASS=Has\u0142o:
+FIELD_PROPS_FILE=Plik w\u0142a\u015bciwo\u015bci: {0}
+FIELD_REPO=Serwer repozytorium: {0} ({1})
+FIELD_PROXY=Serwer proxy: {0}
+FIELD_VALIDATION_RESULTS=Wyniki sprawdzania poprawno\u015bci: {0}
+FIELD_VALIDATION_LINE=Wiersz: {0}

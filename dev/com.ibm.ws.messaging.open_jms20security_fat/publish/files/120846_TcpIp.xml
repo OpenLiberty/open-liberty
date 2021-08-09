@@ -1,0 +1,56 @@
+<server>
+    <featureManager>
+      <feature>osgiconsole-1.0</feature>
+      <feature>servlet-3.1</feature>
+      <feature>wasJmsClient-2.0</feature>
+      <feature>wasJmsServer-1.0</feature>
+      <feature>jndi-1.0</feature>
+      <feature>jmsMdb-3.2</feature>
+      <feature>jsp-2.3</feature>   
+      <feature>testjmsinternals-1.0</feature>
+      <feature>wasJmsSecurity-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <messagingEngine id="defaultME" >
+
+		<queue id="QUEUE1" 
+			   maxRedeliveryCount="2"
+			   >
+		</queue>	
+		
+		
+    <fileStore id="com.ibm.ws.sib.fileStore"
+      logFileSize="10">
+    </fileStore>
+
+	 </messagingEngine>
+   
+	<jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+      <properties.wasJms queueName="QUEUE1" />
+    </jmsQueue>
+          
+   
+    <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+      <properties.wasJms userName="user1" password="user1pwd" /> 
+												
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr6" maxPoolSize="2"/>
+    
+    <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">
+      <properties.wasJms userName="user1" password="user1pwd" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" /> 
+												
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr5" maxPoolSize="2"/>
+    
+    
+    <jmsActivationSpec id="jmsapp/jmsmdb/RDC1MessageDrivenBean">
+ 			<properties.wasJms destinationRef="jndi_INPUT_Q" userName="user1" password="user1pwd" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" /> 
+    </jmsActivationSpec>
+
+    <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/>
+
+</server>

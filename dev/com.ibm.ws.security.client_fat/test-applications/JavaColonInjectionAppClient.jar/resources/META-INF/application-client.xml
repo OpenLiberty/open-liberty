@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
+   <application-client id="Application-client_ID">
+      <display-name>JavaColonInjectionAppClient</display-name>
+      
+      
+      <env-entry>
+         <description>Simple entry bound in java:module</description>
+         <env-entry-name>java:module/env/moduleEnvEntry</env-entry-name>
+         <env-entry-type>java.lang.String</env-entry-type>
+         <env-entry-value>I am module</env-entry-value>
+      </env-entry>
+      <env-entry>
+         <description>Simple entry bound in java:comp</description>
+         <env-entry-name>java:comp/env/compEnvEntry</env-entry-name>
+         <env-entry-type>java.lang.String</env-entry-type>
+         <env-entry-value>I am comp</env-entry-value>
+      </env-entry>
+      
+      <ejb-ref>
+        <ejb-ref-name>java:module/MySimpleInjectionBean!com.ibm.ws.clientcontainer.fat.javacolon.ejb.view.MySimpleInjectionBeanRemote</ejb-ref-name>
+        <lookup-name>java:global/JavaColonInjectionApp/JavaColonInjectionAppEJB/MySimpleInjectionBean!com.ibm.ws.clientcontainer.fat.javacolon.ejb.view.MySimpleInjectionBeanRemote</lookup-name>
+      </ejb-ref>
+      
+      <ejb-ref>
+        <ejb-ref-name>ejb/MySimpleInjectionBean</ejb-ref-name>
+        <lookup-name>java:app/JavaColonInjectionAppEJB/MySimpleInjectionBean!com.ibm.ws.clientcontainer.fat.javacolon.ejb.view.MySimpleInjectionBeanRemote</lookup-name>
+      </ejb-ref>
+   </application-client>

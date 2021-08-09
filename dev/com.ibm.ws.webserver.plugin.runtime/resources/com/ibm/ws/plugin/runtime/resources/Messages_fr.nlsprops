@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Une demande de g\u00e9n\u00e9ration d''un fichier de configuration de plug-in de serveur Web n''a pas \u00e9t\u00e9 trait\u00e9e pour le cluster {0} car le bean g\u00e9r\u00e9 de la fonction de contr\u00f4leur de collectivit\u00e9 obligatoire est introuvable.
+collective.mbean.not.available.explanation=La fonction de contr\u00f4leur de collectivit\u00e9 doit \u00eatre activ\u00e9e pour que le serveur puisse traiter la demande. 
+collective.mbean.not.available.useraction=Activez la fonction de contr\u00f4leur de collectivit\u00e9 dans le serveur cible ou dirigez la demande vers un serveur ayant la fonction du contr\u00f4leur de collectivit\u00e9 d\u00e9j\u00e0 activ\u00e9e.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Une demande de g\u00e9n\u00e9ration d'un fichier de configuration de plug-in de serveur Web n'a pas \u00e9t\u00e9 trait\u00e9e pour ce serveur car le bean g\u00e9r\u00e9 de la fonction Java Servlet obligatoire est introuvable.
+appserver.mbean.not.available.explanation=La fonction Java Servlet 3.0 ou 3.1 doit \u00eatre activ\u00e9e pour que le serveur puisse traiter la demande.
+appserver.mbean.not.available.useraction=Activez la fonction Java Servlet 3.0 ou 3.1 dans le serveur cible ou dirigez la demande vers un serveur ayant d\u00e9j\u00e0 la fonction Java Servlet activ\u00e9e.
+# -------------------------------- 

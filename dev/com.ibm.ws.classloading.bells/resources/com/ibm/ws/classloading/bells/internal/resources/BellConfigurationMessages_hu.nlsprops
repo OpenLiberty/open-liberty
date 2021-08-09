@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+################### LIBRARY SERVICE EXPORT MESSAGES 0050-0058 ################### 
+#################################################################################
+
+# {0} - the name of the library
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the implementation class
+bell.service.name=CWWKL0050I: A(z) {0} f\u00fcggv\u00e9nyt\u00e1r a(z) {2} megval\u00f3s\u00edt\u00e1si oszt\u00e1ly felhaszn\u00e1l\u00e1s\u00e1val bejegyezte a(z) {1} f\u00e1jlban deklar\u00e1lt szolg\u00e1ltat\u00e1st.
+bell.service.name.explanation=A szolg\u00e1ltat\u00e1s a META-INF/services k\u00f6nyvt\u00e1rban ker\u00fclt deklar\u00e1l\u00e1sra, \u00e9s a rendszer elv\u00e9gezte a szolg\u00e1ltat\u00e1s bejegyz\u00e9s\u00e9t a kiszolg\u00e1l\u00f3n.  
+bell.service.name.useraction=Semmit sem kell tennie.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.no.impl=CWWKL0051W: A(z) {1} f\u00e1jlban deklar\u00e1lt \u00e9s a(z) {2} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l bejegyzett szolg\u00e1ltat\u00e1s {0} megval\u00f3s\u00edt\u00e1s\u00e1t a rendszer nem tal\u00e1lja.
+bell.no.impl.explanation=A szolg\u00e1ltat\u00e1s megval\u00f3s\u00edt\u00e1sa nem tal\u00e1lhat\u00f3.
+bell.no.impl.useraction=\u00dcgyeljen arra, hogy a szolg\u00e1ltat\u00e1s deklar\u00e1ci\u00f3j\u00e1ban megadott n\u00e9v helyes legyen.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - message from the NoClassDefFoundError
+bell.no.inter=CWWKL0052W: Hi\u00e1nyz\u00f3 oszt\u00e1lymeghat\u00e1roz\u00e1s miatt a rendszer nem tudja \u00f6ssze\u00e1ll\u00edtani a(z) {0} megval\u00f3s\u00edt\u00e1si oszt\u00e1ly p\u00e9ld\u00e1ny\u00e1t. Ez az oszt\u00e1ly a(z) {1} f\u00e1jlban deklar\u00e1lt \u00e9s a(z) {2} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l bejegyzett szolg\u00e1ltat\u00e1s megval\u00f3s\u00edt\u00e1sa. A hiba a k\u00f6vetkez\u0151: {3}.
+bell.no.inter.explanation=Nem tal\u00e1lhat\u00f3 a szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1s\u00e1hoz sz\u00fcks\u00e9ges oszt\u00e1ly.
+bell.no.inter.useraction=\u00dcgyeljen arra, hogy a szolg\u00e1ltat\u00e1s deklar\u00e1ci\u00f3j\u00e1ban megadott n\u00e9v helyes legyen. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.not.constructible=CWWKL0053W: A rendszer nem tudja \u00f6ssze\u00e1ll\u00edtani a(z) {0} megval\u00f3s\u00edt\u00e1si oszt\u00e1ly p\u00e9ld\u00e1ny\u00e1t. Ez az oszt\u00e1ly a(z) {1} f\u00e1jlban deklar\u00e1lt \u00e9s a(z) {2} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l bejegyzett szolg\u00e1ltat\u00e1s megval\u00f3s\u00edt\u00e1sa.
+bell.not.constructible.explanation=A rendszer nem tudja l\u00e9trehozni a szolg\u00e1ltat\u00e1s-megval\u00f3s\u00edt\u00e1s egy p\u00e9ld\u00e1ny\u00e1t, mert nem lehet hozz\u00e1f\u00e9rni az oszt\u00e1lymeghat\u00e1roz\u00e1shoz, vagy az oszt\u00e1lyb\u00f3l hi\u00e1nyzik egy argumentum n\u00e9lk\u00fcli konstruktor.
+bell.not.constructible.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy hozz\u00e1f\u00e9r az oszt\u00e1lymeghat\u00e1roz\u00e1shoz \u00e9s a konstruktorhoz.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.illegal.access=CWWKL0054W: Jogosulatlan hozz\u00e1f\u00e9r\u00e9s miatt a rendszer nem tudja \u00f6ssze\u00e1ll\u00edtani a(z) {0} megval\u00f3s\u00edt\u00e1si oszt\u00e1ly p\u00e9ld\u00e1ny\u00e1t. Ez az oszt\u00e1ly a(z) {1} f\u00e1jlt deklar\u00e1l\u00f3 \u00e9s a(z) {2} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l bejegyzett szolg\u00e1ltat\u00e1s megval\u00f3s\u00edt\u00e1sa.
+bell.illegal.access.explanation=A rendszer nem f\u00e9r hozz\u00e1 az oszt\u00e1lydeklar\u00e1ci\u00f3hoz vagy a konstruktorhoz.
+bell.illegal.access.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az oszt\u00e1ly \u00e9s a konstruktor meg legyen adva, \u00e9s hozz\u00e1 lehessen f\u00e9rni ahhoz.
+
+# {0} - the name of the library
+bell.no.services.found=CWWKL0055W: A rendszer nem tal\u00e1l szolg\u00e1ltat\u00e1sokat a k\u00f6vetkez\u0151 k\u00f6nyvt\u00e1rban: {0}.
+bell.no.services.found.explanation=Nincsenek szolg\u00e1ltat\u00e1sok deklar\u00e1lva a META-INF/services mapp\u00e1ban.
+bell.no.services.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Basic Extensions using Liberty Libraries (BELL) a v\u00e1rt META-INF/services mapp\u00e1val rendelkez\u0151 megfelel\u0151 f\u00fcggv\u00e9nyt\u00e1rral van-e konfigur\u00e1lva
+
+# {0} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {1} - the name of the library
+# {2} - the exception thrown when trying to read the file
+bell.io.error=CWWKL0056W: Hiba t\u00f6rt\u00e9nt a(z) {0} f\u00e1jl olvas\u00e1sakor a szolg\u00e1ltat\u00e1sok export\u00e1l\u00e1s\u00e1hoz a(z) {1} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l. A hiba a k\u00f6vetkez\u0151: {2}
+bell.io.error.explanation=A szolg\u00e1ltat\u00e1sdeklar\u00e1ci\u00f3s f\u00e1jl nem olvashat\u00f3.
+bell.io.error.useraction=\u00dcgyeljen arra, hogy a f\u00e1jlt olvasni tudja a rendszer.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - the exception thrown when instantiating the class
+bell.error.ctor=CWWKL0057W: A(z) {0} p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa nem siker\u00fclt. Ez az oszt\u00e1ly a(z) {1} f\u00e1jlban deklar\u00e1lt \u00e9s a(z) {2} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l bejegyzett szolg\u00e1ltat\u00e1s megval\u00f3s\u00edt\u00e1sa. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {3}
+bell.error.ctor.explanation=A rendszer a p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n nem v\u00e1rt kiv\u00e9telt kapott. Ez a hiba az oszt\u00e1ly konstruktor\u00e1t\u00f3l kapott kiv\u00e9tel eredm\u00e9nyek\u00e9nt fordulhat el\u0151.
+bell.error.ctor.useraction=Ha kiv\u00e9tel fordult el\u0151 a konstruktorban, n\u00e9zze \u00e1t \u00e9s ellen\u0151rizze az oszt\u00e1ly konstruktor\u00e1nak viselked\u00e9s\u00e9t.
+
+bell.no.services.config=CWWKL0058W: A(z) {0} szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3 a META-INF/services mapp\u00e1ban a(z) {1} f\u00fcggv\u00e9nyt\u00e1rb\u00f3l.
+bell.no.services.config.explanation=Nincs megfelel\u0151 szolg\u00e1ltat\u00e1s deklar\u00e1lva a META-INF/services mapp\u00e1ban.
+bell.no.services.config.useraction= Semmit sem kell tennie.

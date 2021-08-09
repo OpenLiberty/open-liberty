@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+#
+
+global.description=Popis:
+global.options=Volby:
+global.usage=Pou\u017eit\u00ed:
+global.options.statement=\tPomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+help.desc=\tVytisknout informace n\u00e1pov\u011bdy pro ur\u010denou akci.
+help.usage.options=\t{0} help [n\u00e1zev_akce]
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+version.desc=\tVytisknout informace o produktu, jako jsou n\u00e1zev a verze produktu.
+version.usage.options=\t{0} version [volby]
+version.option-key.output=\ \ \ \ --output="cesta k v\u00fdstupn\u00edmu souboru"
+version.option-desc.output=\tCesta k souboru, kter\u00fd obsahuje v\u00fdstup tohoto p\u0159\u00edkazu. Tato    \n\
+\tvolba nen\u00ed povinn\u00e1. V\u00fdchoz\u00ed hodnota je STDOUT.
+version.option-key.verbose=\ \ \ \ --verbose
+version.option-desc.verbose=\tZobrazit ve\u0161ker\u00fd obsah v\u0161ech soubor\u016f vlastnost\u00ed.
+version.option-key.ifixes=\ \ \ \ --ifixes
+version.option-desc.ifixes=\tJe-li uveden, ur\u010duje, \u017ee nainstalovan\u00e9 opravy iFix v seznamu jsou rovn\u011b\u017e v\u00fdstupn\u00ed.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseAgreement.desc=\tZobrazuje licen\u010dn\u00ed smlouvu pro nainstalovan\u00e9 vyd\u00e1n\u00ed profilu Liberty.
+viewLicenseAgreement.usage.options=\t{0} viewLicenseAgreement
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseInfo.desc=\tZobrazuje licen\u010dn\u00ed informace pro nainstalovan\u00e9 vyd\u00e1n\u00ed profilu Liberty.
+viewLicenseInfo.usage.options=\t{0} viewLicenseInfo
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+featureInfo.desc=\tVypsat v\u0161echny nainstalovan\u00e9 funkce.
+featureInfo.usage.options=\t{0} featureInfo [volby]
+featureInfo.option-key.output=\ \ \ \ --output="cesta k v\u00fdstupn\u00edmu souboru"
+featureInfo.option-desc.output=\tCesta k souboru, kter\u00fd obsahuje v\u00fdstup tohoto p\u0159\u00edkazu. Tato    \n\
+\tvolba nen\u00ed povinn\u00e1. V\u00fdchoz\u00ed hodnota je STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+validate.desc=\tOv\u011b\u0159it produk\u010dn\u00ed instalaci oproti souboru kontroln\u00edch sou\u010dt\u016f produktu.
+validate.usage.options=\t{0} validate [volby]
+validate.option-key.checksumfile=\ \ \ \ --checksumfile="cesta k souboru kontroln\u00edch sou\u010dt\u016f"
+validate.option-desc.checksumfile=\tUr\u010dete soubor, kter\u00fd obsahuje kontroln\u00ed sou\u010det instalovan\u00fdch soubor\u016f \n\
+\t*.mf a *.blst. Tato volba nen\u00ed povinn\u00e1. V\u00fdchoz\u00ed hodnotou je cesta \n\
+\tlib/version/productChecksums.cs.
+validate.option-key.output=\ \ \ \ --output="cesta k v\u00fdstupn\u00edmu souboru"
+validate.option-desc.output=\tCesta k souboru, kter\u00fd obsahuje v\u00fdstup tohoto p\u0159\u00edkazu. Tato    \n\
+\tvolba nen\u00ed povinn\u00e1. V\u00fdchoz\u00ed hodnota je STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+compare.desc=\tPorovn\u00e1 opravy iFix pou\u017eit\u00e9 na aktu\u00e1ln\u00ed instalaci s novou \u00farovn\u00ed\n\
+\topravn\u00e9 sady a vyp\u00ed\u0161e v\u0161echny opravy iFix, kter\u00e9 v opravn\u00e9 sad\u011b nejsou, nebo provede porovn\u00e1n\u00ed se \n\
+\tzadan\u00fdm seznamem oprav iFix a vyp\u00ed\u0161e, zda jsou zahrnuty v \n\
+\t aktu\u00e1ln\u00ed verzi.
+compare.usage.options=\t{0} compare [volby]
+compare.option-key.target=\ \ \ \ --target="cesta k adres\u00e1\u0159i nebo archivn\u00edmu souboru"
+compare.option-desc.target=\tZadejte c\u00edlov\u00fd soubor, s n\u00edm\u017e se m\u00e1 aktu\u00e1ln\u00ed instalace porovnat. C\u00edlem \n\
+\tm\u016f\u017ee b\u00fdt bu\u010f adres\u00e1\u0159, nebo archivn\u00ed soubor, ale mus\u00ed se jednat o platn\u00e9 \n\
+\tum\u00edst\u011bn\u00ed instalace profilu Liberty serveru WebSphere Application Server.
+compare.option-key.apars=\ \ \ \ --apars="seznam ID oprav APAR odd\u011blen\u00fdch \u010d\u00e1rkami"
+compare.option-desc.apars=\tN\u00e1stroj pro porovn\u00e1n\u00ed zkontroluje aktu\u00e1ln\u00ed instalaci a porovn\u00e1 ji s t\u00edmto seznamem \n\
+\tID oprav APAR odd\u011blen\u00fdch \u010d\u00e1rkami, zda je obsahuje, a pot\u00e9 vyp\u00ed\u0161e v\u0161echny\n\
+\topravy APAR, kter\u00e9 zde obsa\u017eeny nejsou.
+compare.option-key.output=\ \ \ \ --output="cesta k v\u00fdstupn\u00edmu souboru"
+compare.option-desc.output=\tCesta k souboru, kter\u00fd m\u00e1 obsahovat v\u00fdstup tohoto p\u0159\u00edkazu. Tato volba \n\
+\tnen\u00ed povinn\u00e1. V\u00fdchoz\u00ed hodnota je STDOUT.
+compare.option-key.verbose=\ \ \ \ --verbose
+compare.option-desc.verbose=\tZobrazit p\u0159i v\u00fdskytu chyby podrobn\u00e9 chybov\u00e9 zpr\u00e1vy.
+compare.option.addon=Mus\u00ed b\u00fdt zad\u00e1na volba --target, nebo volba --apars.

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ $Id: package.html 1187701 2011-10-22 12:21:54Z bommel $
+-->
+</head>
+<body bgcolor="white">
+Public Facelet API.  Most developers should be able to utilizing the framework using
+the public classes and interfaces.
+<p/>
+An application that wishes to use Facelets as a ViewHandler, they must specify the
+following in their <code>faces-config.xml</code> (@see com.sun.facelets.FaceletViewHandler).
+<pre><code>
+&lt;application>
+  &lt;view-handler>com.sun.facelets.FaceletViewHandler&lt;/view-handler>
+&lt;/application>
+</code></pre>
+<p/>
+Below is sample code for using Facelets at the API level with JavaServer Faces.
+<pre><code>
+// get the view to render
+FacesContext context = FacesContext.getCurrentInstance();
+UIViewRoot viewToRender = context.getViewRoot();
+
+// grab our FaceletFactory and create a Facelet
+FaceletFactory factory = FaceletFactory.getInstance();
+Facelet f = factory.getFacelet(viewToRender.getViewId());
+
+// populate UIViewRoot
+f.apply(context, viewToRender);
+</code></pre>
+</body>
+</html>

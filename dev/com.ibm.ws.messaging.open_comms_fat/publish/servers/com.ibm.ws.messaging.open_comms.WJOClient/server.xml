@@ -1,0 +1,44 @@
+<server description="WJOClient">
+
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  <javaPermission className="java.net.SocketPermission" name="127.0.0.1" actions="resolve"/>
+  <javaPermission className="java.util.logging.LoggingPermission" name="control" actions=""/>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>jsp-2.3</feature>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>ssl-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+    <feature>componentTest-1.0</feature>
+  </featureManager>
+
+  <httpEndpoint id="defaultHttpEndpoint">
+    <sslOptions sslRef="CustomSslOptions" />
+  </httpEndpoint>
+
+  <ssl id="CustomSslOptions" keyStoreRef="defaultKeystore"/>
+
+  <keyStore id="defaultKeystore" location="WJOClient.jks" type="JKS" password="{xor}Lz4sLCgwLTs="/>
+
+  <wasJmsOutbound id="jmsSecureCustomChain" useSSL="true">
+    <sslOptions sslRef="CustomSslOptions"/>
+  </wasJmsOutbound>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms userName="persona99"
+                       password="ppersona99"
+                       remoteServerAddress="localhost:${bvt.prop.jms.0.ssl}:jmsSecureCustomChain"
+    />
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr6" maxPoolSize="2"/>
+
+  <jmsQueue jndiName="jndi_INPUT_Q">
+    <properties.wasJms queueName="QUEUE_ONE"/>
+  </jmsQueue>
+
+</server>

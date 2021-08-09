@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.2.13,ou=objectClasses,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.2.13
+m-name: sambaPrivilege
+m-description: Samba Privilege
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: top
+m-typeobjectclass: AUXILIARY
+m-must: sambaSID
+m-may: sambaPrivilegeList
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,5 @@
+com.ibm.ws.microprofile.rest.client.FT_fat
+com.ibm.ws.microprofile.rest.client11_fat_tck
+com.ibm.ws.microprofile.rest.client12_fat_tck
+com.ibm.ws.microprofile.rest.client13_fat_tck
+io.openliberty.microprofile.rest.client.2.0.internal_fat_tck

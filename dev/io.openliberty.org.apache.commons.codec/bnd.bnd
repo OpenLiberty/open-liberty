@@ -1,0 +1,16 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;commons-codec:commons-codec;1.15}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+-includeresource: \
+   @${repo;commons-codec:commons-codec;1.15;EXACT}!/!META-INF/maven/*
+
+-buildpath: commons-codec:commons-codec;version=1.15

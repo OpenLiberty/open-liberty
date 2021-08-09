@@ -1,0 +1,27 @@
+<server description="scim.test server">
+	<include location="../fatTestPorts.xml" />
+
+	<!-- Enable features -->
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+		<feature>scim-2.0</feature>
+	</featureManager>
+
+	<ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" />
+	<keyStore id="defaultKeyStore" password="Liberty" />
+
+    <basicRegistry realm="basicRealm">
+        <user name="administrator" password="passw0rd" />
+        <user name="reader" password="passw0rd" />
+        <user name="unauthorized" password="passw0rd" />
+    </basicRegistry>
+
+	<administrator-role>
+		<user>administrator</user>
+	</administrator-role>
+
+	<reader-role>
+		<user>reader</user>
+	</reader-role>
+	
+</server>

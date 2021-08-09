@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: \u65e0\u6cd5\u5728\u6807\u8bc6\u4e3a {2} \u4e14\u503c\u4e3a {3} \u7684\u670d\u52a1 {1} \u4e0a\u914d\u7f6e\u5c5e\u6027 {0}\u3002
+CWKKD0010.prop.error.explanation=\u6240\u914d\u7f6e\u5c5e\u6027\u4e0d\u53ef\u8bc6\u522b\u6216\u56e0\u4e3a\u53d1\u751f\u9519\u8bef\u800c\u672a\u914d\u7f6e\u3002
+CWKKD0010.prop.error.useraction=\u8bf7\u66f4\u6b63\u6216\u9664\u53bb\u6240\u914d\u7f6e\u5c5e\u6027\u3002
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: \u5bf9\u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u5b9a\u4e49\u7684\u4e3b\u673a\u540d\u6570 ({2}) \u548c\u7aef\u53e3\u6570 ({3}) \u4e0d\u76f8\u7b49\u3002
+CWKKD0011.hosts.ports.mismatch.explanation=\u4e3b\u673a\u540d\u5217\u8868\u548c\u7aef\u53e3\u53f7\u5217\u8868\u5fc5\u987b\u5177\u6709\u76f8\u540c\u6570\u76ee\u7684\u5143\u7d20\u3002
+CWKKD0011.hosts.ports.mismatch.useraction=\u8bf7\u66f4\u65b0\u670d\u52a1\u5668\u914d\u7f6e\uff0c\u4ee5\u4f7f hostNames \u548c ports \u5c5e\u6027\u5305\u542b\u76f8\u540c\u6570\u76ee\u7684\u5143\u7d20\u3002
+
+CWKKD0012.authentication.error=CWKKD0012E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u65e0\u6cd5\u5411\u6570\u636e\u5e93 {2} \u8ba4\u8bc1\u3002
+CWKKD0012.authentication.error.explanation=\u6570\u636e\u5e93\u62d2\u7edd\u8be5\u8ba4\u8bc1\u5c1d\u8bd5\u3002
+CWKKD0012.authentication.error.useraction=\u8bf7\u4f7f\u7528\u6b63\u786e\u7684\u7528\u6237\u540d\u548c\u5bc6\u7801\u6765\u66f4\u65b0\u670d\u52a1\u5668\u914d\u7f6e\u3002
+
+CWKKD0013.unsupported.driver=CWKKD0013E: {0} \u670d\u52a1\u5728\u5171\u4eab\u5e93 {1} \u4e0a\u9047\u5230\u4e86\u4e0d\u53d7\u652f\u6301\u7684 MongoDB \u9a71\u52a8\u7a0b\u5e8f\u7248\u672c\u3002\u9700\u8981\u7684\u6700\u4f4e\u7ea7\u522b\u4e3a {2}\uff0c\u4f46\u53d1\u73b0 {3}\u3002
+CWKKD0013.unsupported.driver.explanation=\u968f MongoDB \u670d\u52a1\u63d0\u4f9b\u7684\u9a71\u52a8\u7a0b\u5e8f\u5e93\u65e0\u6548\u3002
+CWKKD0013.unsupported.driver.useraction=\u8bf7\u4f7f\u7528\u53d7\u652f\u6301\u7ea7\u522b\u66f4\u65b0\u5171\u4eab\u5e93\u3002
+
+CWKKD0014.missing.driver=CWKKD0014E: {0} \u670d\u52a1\u5728\u5171\u4eab\u5e93 {1} \u4e2d\u627e\u4e0d\u5230\u6240\u9700 MongoDB \u9a71\u52a8\u7a0b\u5e8f\u7c7b\u3002
+CWKKD0014.missing.driver.explanation=MongoDB \u670d\u52a1\u5728\u6240\u914d\u7f6e\u5171\u4eab\u5e93\u4e2d\u627e\u4e0d\u5230\u6240\u9700\u7c7b\u3002
+CWKKD0014.missing.driver.useraction=\u8bf7\u4f7f\u7528\u53d7\u652f\u6301\u7ea7\u522b\u66f4\u65b0\u5171\u4eab\u5e93\u3002
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: \u5728\u672a\u5728 server.xml \u6587\u4ef6\u4e2d\u542f\u7528 ssl-1.0 \u529f\u80fd\u90e8\u4ef6\u7684\u60c5\u51b5\u4e0b\uff0c\u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u5c1d\u8bd5\u4f7f\u7528 SSL\u3002
+CWKKD0015.ssl.feature.missing.explanation=\u5728\u672a\u542f\u7528 ssl-1.0 \u529f\u80fd\u90e8\u4ef6\u7684\u60c5\u51b5\u4e0b\uff0c\u65e0\u6cd5\u4f7f\u7528 SSL \u914d\u7f6e\u3002
+CWKKD0015.ssl.feature.missing.useraction=\u5411 server.xml \u6587\u4ef6\u6dfb\u52a0 ssl-1.0 \u529f\u80fd\u90e8\u4ef6\u3002
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u5728\u5171\u4eab\u5e93 {2} \u4e0a\u9047\u5230\u4e86\u4e0d\u517c\u5bb9\u7684 MongoDB \u9a71\u52a8\u7a0b\u5e8f\u7248\u672c\u3002\u5bf9\u4e8e SSL\uff0c\u6240\u9700\u6700\u4f4e\u7ea7\u522b\u4e3a {3}\uff0c\u4f46\u8be5\u670d\u52a1\u53d1\u73b0 {4}\u3002
+CWKKD0017.ssl.incompatible.driver.explanation=\u968f MongoDB \u670d\u52a1\u63d0\u4f9b\u7684\u9a71\u52a8\u7a0b\u5e8f\u5e93\u65e0\u6548\uff0c\u65e0\u6cd5\u7528\u4e8e SSL\u3002
+CWKKD0017.ssl.incompatible.driver.useraction=\u8bf7\u4f7f\u7528\u53d7\u652f\u6301\u7ea7\u522b\u66f4\u65b0\u5171\u4eab\u5e93\u3002
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u9047\u5230\u4e86\u4e0d\u517c\u5bb9\u7684\u8ba4\u8bc1\u9009\u9879\u7ec4\u5408\u3002useCertificateAuthentication \u4e0e\u7528\u6237\u548c\u5bc6\u7801\u4e0d\u517c\u5bb9\u3002
+CWKKD0018.ssl.user.pswd.certificate.explanation=\u968f MongoDB \u670d\u52a1\u63d0\u4f9b\u7684\u8ba4\u8bc1\u9009\u9879\u4e0d\u517c\u5bb9\uff0c\u65e0\u6cd5\u4e0e SSL \u914d\u5408\u4f7f\u7528\u3002
+CWKKD0018.ssl.user.pswd.certificate.useraction=\u66f4\u65b0 server.xml mongo \u5143\u7d20\u4ee5\u6307\u5b9a\u7528\u6237\u548c\u5bc6\u7801\u6216\u6307\u5b9a useCertificateAuthentication\uff0c\u4f46\u4e0d\u80fd\u540c\u65f6\u6307\u5b9a\u4e24\u8005\u3002
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u914d\u7f6e\u4e3a\u4f7f\u7528\u8bc1\u4e66\u8ba4\u8bc1\u800c\u4e0d\u542f\u7528 SSL\u3002
+CWKKD0019.ssl.certificate.no.ssl.explanation=MongoDB \u670d\u52a1\u914d\u7f6e\u4e3a\u8fdb\u884c\u57fa\u4e8e\u8bc1\u4e66\u7684\u8ba4\u8bc1\u800c\u4e0d\u4f7f\u7528 SSL\u3002
+CWKKD0019.ssl.certificate.no.ssl.useraction=\u66f4\u65b0 server.xml \u4e2d\u7684 mongo \u5143\u7d20\u4ee5\u6dfb\u52a0 sslEnabled=true\uff0c\u6216\u79fb\u9664 useCertificateAuthentication\u3002
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: \u4ece\u6240\u63d0\u4f9b\u5bc6\u94a5\u5e93\u8bfb\u53d6\u5ba2\u6237\u7aef\u5bc6\u94a5\u548c\u8bc1\u4e66\u65f6\uff0c\u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u6536\u5230\u5f02\u5e38\u3002\u5d4c\u5957\u5f02\u5e38\u4e3a {2}
+CWKKD0020.ssl.get.certificate.user.explanation=MongoDB \u670d\u52a1\u5c1d\u8bd5\u4ece\u5bc6\u94a5\u5e93\u8bfb\u53d6\u5ba2\u6237\u7aef\u5bc6\u94a5\u548c\u8bc1\u4e66\uff0c\u4f46\u9047\u5230\u4e0e\u5bc6\u94a5\u5e93\u6216\u5176\u4e2d\u7684\u8bc1\u4e66\u76f8\u5173\u7684\u95ee\u9898\u3002
+CWKKD0020.ssl.get.certificate.user.useraction=\u5d4c\u5957\u5f02\u5e38\u5e94\u63d0\u4f9b\u66f4\u591a\u4fe1\u606f\u3002
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u5728\u5171\u4eab\u5e93 {2} \u4e0a\u9047\u5230\u4e86\u4e0d\u517c\u5bb9\u7684 MongoDB \u9a71\u52a8\u7a0b\u5e8f\u7248\u672c\u3002\u5bf9\u4e8e\u8bc1\u4e66\u8ba4\u8bc1\uff0c\u6240\u9700\u6700\u4f4e\u7ea7\u522b\u4e3a {3}\uff0c\u4f46\u8be5\u670d\u52a1\u53d1\u73b0\u7ea7\u522b {4}\u3002
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=\u968f MongoDB \u670d\u52a1\u63d0\u4f9b\u7684\u9a71\u52a8\u7a0b\u5e8f\u5e93\u65e0\u6548\uff0c\u65e0\u6cd5\u4e0e\u8bc1\u4e66\u8ba4\u8bc1\u914d\u5408\u4f7f\u7528\u3002
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=\u8bf7\u4f7f\u7528\u53d7\u652f\u6301\u7ea7\u522b\u66f4\u65b0\u5171\u4eab\u5e93...
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u5728 server.xml \u6587\u4ef6\u4e2d\u8bbe\u7f6e\u4e86 sslRef \u5c5e\u6027\uff0c\u4f46 sslEnabled \u672a\u8bbe\u7f6e\u4e3a true\u3002
+CWKKD0024.ssl.sslref.no.ssl.explanation=\u5728\u672a\u542f\u7528 SSL \u7684\u60c5\u51b5\u4e0b\u8bbe\u7f6e sslRef \u662f\u65e0\u6548\u64cd\u4f5c\u3002
+CWKKD0024.ssl.sslref.no.ssl.useraction=\u8bf7\u8bbe\u7f6e sslEnabled=true\uff0c\u6216\u79fb\u9664 sslRef\u3002
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: \u6807\u8bc6\u4e3a {1} \u7684 {0} \u670d\u52a1\u65e0\u6cd5\u4ece\u5bc6\u94a5\u5e93\u62bd\u53d6\u5ba2\u6237\u7aef\u5bc6\u94a5\u548c\u8bc1\u4e66\u3002\u5bc6\u94a5\u5e93\u4e2d\u6ca1\u6709\u5bc6\u94a5\uff0c\u6216\u8005\u6709\u591a\u4e2a\u5bc6\u94a5\u4f46\u672a\u5728 ssl \u5143\u7d20\u4e0a\u6307\u5b9a clientKeyAlias\u3002
+CWKKD0026.ssl.certificate.exception.explanation=\u88ab\u5f15\u7528\u5bc6\u94a5\u5e93\u5fc5\u987b\u81f3\u5c11\u5305\u542b\u4e00\u4e2a\u5ba2\u6237\u7aef\u5bc6\u94a5\u548c\u8bc1\u4e66\u5bf9\uff0c\u5982\u679c\u5b83\u5305\u542b\u591a\u4e2a\u5ba2\u6237\u7aef\u5bc6\u94a5\u548c\u8bc1\u4e66\u5bf9\uff0c\u90a3\u4e48\u5fc5\u987b\u4f7f\u7528 clientKeyAlias \u53c2\u6570\u6765\u786e\u5b9a\u8981\u4f7f\u7528\u7684\u5ba2\u6237\u7aef\u5bc6\u94a5\u548c\u8bc1\u4e66\u5bf9\u3002
+CWKKD0026.ssl.certificate.exception.useraction=\u68c0\u67e5\u4e0e Java \u5bc6\u94a5\u5de5\u5177\u914d\u5408\u4f7f\u7528\u7684\u5bc6\u94a5\u5e93\u3002\u4f8b\u5982\uff0c\u201ckeytool -list -keystore keystorename.jks\u201d\u663e\u793a\u5bc6\u94a5\u5e93\u4e2d\u7684\u6761\u76ee\u53ca\u5176\u522b\u540d\u3002\u5728 ssl \u5143\u7d20\u4e0a\u4f7f\u7528 clientKeyAlias \u6307\u5b9a\u5176\u4e2d\u4e00\u4e2a\u522b\u540d\u3002
+

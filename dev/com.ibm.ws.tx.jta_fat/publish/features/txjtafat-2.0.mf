@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
+Subsystem-SymbolicName: txjtafat-2.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: io.openliberty.jta-2.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: jakarta.transaction; type=spec,
+ javax.transaction.xa; type=spec

@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.rest.handler/resources/com/ibm/wsspi/rest/config/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Rest Handler
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   that do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1500 to CWWKO1529
+
+CWWKO1500_NOT_FOUND=CWWKO1500E: W konfiguracji serwera nie znaleziono skonfigurowanych instancji elementu {0}.
+CWWKO1500_NOT_FOUND.explanation=W pliku server.xml nie znaleziono \u017c\u0105danego elementu konfiguracji.
+CWWKO1500_NOT_FOUND.useraction=Sprawd\u017a, czy w pliku server.xml istnieje element konfiguracji oraz czy jego nazwa zosta\u0142a poprawnie zapisana z uwzgl\u0119dnieniem wielko\u015bci liter.
+
+CWWKO1501_INVALID_IDENTIFIER=CWWKO1501E: Unikalny identyfikator {0} nie jest poprawny. Poprawnym unikalnym identyfikatorem mo\u017ce by\u0107: {1}.
+CWWKO1501_INVALID_IDENTIFIER.explanation=Nie znaleziono skonfigurowanego elementu z \u017c\u0105danym unikalnym identyfikatorem. Znaleziono instancj\u0119 z innym unikalnym identyfikatorem i je\u015bli jest to szukana instancja, zostanie ona zg\u0142oszona.
+CWWKO1501_INVALID_IDENTIFIER.useraction=Okre\u015bl poprawny unikalny identyfikator. W przypadku element\u00f3w konfiguracji najwy\u017cszego poziomu z podanym atrybutem identyfikatora unikalny identyfikator ma warto\u015b\u0107 atrybutu identyfikatora. W przeciwnym razie unikalny identyfikator jest generowany przez serwer.
+
+CWWKO1502_MULTIPLE_FOUND=CWWKO1502E: Dla wielu skonfigurowanych instancji podano lub obliczono unikalny identyfikator {0}, kt\u00f3ry powoduje konflikt.
+CWWKO1502_MULTIPLE_FOUND.explanation=Unikalny identyfikator mo\u017ce zosta\u0107 u\u017cyty tylko raz.
+CWWKO1502_MULTIPLE_FOUND.useraction=Zaktualizuj konfiguracj\u0119 serwera w celu dodania lub zmodyfikowania atrybut\u00f3w identyfikatora, aby ka\u017cdy unikalny identyfikator by\u0142 u\u017cywany tylko raz.

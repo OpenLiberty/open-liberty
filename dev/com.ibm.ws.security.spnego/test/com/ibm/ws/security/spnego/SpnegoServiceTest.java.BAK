@@ -1,0 +1,363 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.spnego;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.ComponentContext;
+
+import test.common.SharedOutputManager;
+
+import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.spnego.internal.SpnegoConfigImpl;
+import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.AuthenticationResult;
+import com.ibm.ws.webcontainer.security.WebRequest;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.location.WsResource;
+
+/**
+ *
+ */
+public class SpnegoServiceTest {
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    @Rule
+    public TestRule managerRule = outputMgr;
+
+    private final Mockery mock = new JUnit4Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+    static final String KEY_FILTER = "authFilter";
+    private final ServiceReference<AuthenticationFilter> authFilterServiceRef = mock.mock(ServiceReference.class, "authFilterServiceRef");
+    private final ConfigurationAdmin configAdmin = mock.mock(ConfigurationAdmin.class, "configAdmin");
+    private final ServiceReference<WsLocationAdmin> wsLocationServiceRef = mock.mock(ServiceReference.class, "wsLocationServiceRef");
+    private final WsLocationAdmin locationAdmin = mock.mock(WsLocationAdmin.class);
+    private final WsResource wsResource = mock.mock(WsResource.class);
+    private final ComponentContext cc = mock.mock(ComponentContext.class);
+    private final HttpServletRequest req = mock.mock(HttpServletRequest.class, "req");
+    private final HttpServletResponse resp = mock.mock(HttpServletResponse.class, "resp");
+    private final SpnegoConfig spnegoConfig = mock.mock(SpnegoConfig.class);
+    private final AuthenticationFilter authFilter = mock.mock(AuthenticationFilter.class, "authFilter");
+    private final Configuration config = mock.mock(Configuration.class);
+    private final ErrorPageConfig errorPageConfig = mock.mock(ErrorPageConfig.class);
+    private final WebRequest webRequest = mock.mock(WebRequest.class);
+
+    final static String ID = "mySpnego";
+    private static final String KRB5_CONF = "/myKrb5.conf";
+    private static final String KRB5_KEYTAB = "/myKrb5.keytab";
+
+    @Before
+    public void setUp() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(cc).locateService("locationAdmin", wsLocationServiceRef);
+                will(returnValue(locationAdmin));
+
+                allowing(locationAdmin).resolveResource(KRB5_CONF);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(KRB5_KEYTAB);
+                will(returnValue(wsResource));
+                allowing(wsResource).exists();
+                will(returnValue(true));
+                allowing(cc).locateService("authenticationFilter", authFilterServiceRef);
+                will(returnValue(authFilter));
+                allowing(authFilter).isAccepted(req);
+                will(returnValue(true));
+            }
+        });
+    }
+
+    @After
+    public void tearDown() {
+        mock.assertIsSatisfied();
+        outputMgr.resetStreams();
+    }
+
+    @Test
+    public void testConstructor() {
+        final String methodName = "testConstructor";
+        final SpnegoService spnegoService = new SpnegoService();
+        try {
+            assertNotNull("There must be a spnego service", spnegoService);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testIsAuthFilterAccept() {
+        final String methodName = "testIsAuthFilterAccept";
+        final SpnegoService spnegoService = new SpnegoService();
+        try {
+            mockAuthFilterService();
+            Map<String, Object> props = SpnegoConfigImplTest.createProps(true);
+
+            spnegoService.setLocationAdmin(wsLocationServiceRef);
+            spnegoService.setAuthenticationFilter(authFilterServiceRef);
+            spnegoService.setSpnegoConfig(spnegoConfig);
+            spnegoService.activate(cc, props);
+
+            assertTrue("isAuthFilterAccept should return true", spnegoService.isAuthFilterAccept(req));
+        } catch (Exception e) {
+            outputMgr.failWithThrowable(methodName, e);
+        }
+    }
+
+    @Test
+    public void testAuthenticate_firstRequest() {
+        final String methodName = "testAuthenticate_firstRequest";
+        final SpnegoService spnegoService = new SpnegoService();
+        try {
+            mock.checking(new Expectations() {
+
+                {
+                    allowing(cc).locateService("authenticationFilter", authFilterServiceRef);
+                    will(returnValue(authFilter));
+
+                    allowing(webRequest).getHttpServletRequest();
+                    will(returnValue(req));
+                    allowing(webRequest).getHttpServletResponse();
+                    will(returnValue(resp));
+
+                    allowing(authFilter).isAccepted(req);
+                    will(returnValue(true));
+
+                    allowing(webRequest).isCallAfterSSO();
+                    will(returnValue(true));
+                    allowing(spnegoConfig).isInvokeAfterSSO();
+                    will(returnValue(true));
+
+                    allowing(req).getHeader("Authorization");
+                    will(returnValue(null));
+                    allowing(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    allowing(resp).setHeader("WWW-Authenticate", "Negotiate");
+                    allowing(resp).setContentType("text/html");
+                    allowing(resp).setCharacterEncoding("UTF-8");
+                    allowing(resp).getWriter();
+                    allowing(webRequest).isUnprotectedURI();
+                    will(returnValue(false));
+
+                }
+            });
+            mockAuthFilterService();
+            mockErrorPageConfig();
+            Map<String, Object> props = SpnegoConfigImplTest.createProps(true);
+
+            spnegoService.setLocationAdmin(wsLocationServiceRef);
+            spnegoService.setAuthenticationFilter(authFilterServiceRef);
+            spnegoService.activate(cc, props);
+            spnegoService.setSpnegoConfig(spnegoConfig);
+            AuthenticationResult authResult = spnegoService.authenticate(webRequest);
+            assertEquals("authResult status code should be " + AuthResult.TAI_CHALLENGE, AuthResult.TAI_CHALLENGE, authResult.getStatus());
+
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4300I:"));
+
+        } catch (Exception e) {
+            outputMgr.failWithThrowable(methodName, e);
+        }
+    }
+
+    @Test
+    public void testAuthenticate_secondRequest_403() {
+        final String methodName = "testAuthenticate_secondRequest_403";
+        final SpnegoService spnegoService = new SpnegoService();
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(webRequest).getHttpServletRequest();
+                    will(returnValue(req));
+                    allowing(webRequest).getHttpServletResponse();
+                    will(returnValue(resp));
+
+                    allowing(webRequest).isCallAfterSSO();
+                    will(returnValue(true));
+                    allowing(spnegoConfig).isInvokeAfterSSO();
+                    will(returnValue(true));
+
+                    allowing(req).getHeader("Authorization");
+                    will(returnValue("authHeader"));
+                    allowing(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    allowing(resp).setHeader("WWW-Authenticate", "Negotiate");
+                    allowing(resp).setContentType("text/html");
+                    allowing(resp).setCharacterEncoding("UTF-8");
+                    allowing(resp).getWriter();
+
+                }
+            });
+            mockAuthFilterService();
+            Map<String, Object> props = SpnegoConfigImplTest.createProps(true);
+
+            spnegoService.setLocationAdmin(wsLocationServiceRef);
+            spnegoService.setAuthenticationFilter(authFilterServiceRef);
+            spnegoService.setSpnegoConfig(spnegoConfig);
+            spnegoService.activate(cc, props);
+            AuthenticationResult authResult = spnegoService.authenticate(webRequest);
+            assertEquals("authResult status code should be " + AuthResult.FAILURE, AuthResult.FAILURE, authResult.getStatus());
+
+        } catch (Exception e) {
+            outputMgr.failWithThrowable(methodName, e);
+        }
+    }
+
+    @Test
+    public void testAuthenticate_secondRequest_100() {
+        final String methodName = "testAuthenticate_secondRequest_100";
+        final SpnegoService spnegoService = new SpnegoService();
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(webRequest).getHttpServletRequest();
+                    will(returnValue(req));
+                    allowing(webRequest).getHttpServletResponse();
+                    will(returnValue(resp));
+
+                    allowing(webRequest).isCallAfterSSO();
+                    will(returnValue(false));
+                    allowing(spnegoConfig).isInvokeAfterSSO();
+                    will(returnValue(false));
+
+                    allowing(req).getHeader("Authorization");
+                    will(returnValue("authHeader"));
+                    allowing(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    allowing(resp).setHeader("WWW-Authenticate", "Negotiate");
+                    allowing(resp).setContentType("text/html");
+                    allowing(resp).setCharacterEncoding("UTF-8");
+                    allowing(resp).getWriter();
+
+                }
+            });
+            mockAuthFilterService();
+            Map<String, Object> props = SpnegoConfigImplTest.createProps(false);
+
+            spnegoService.setLocationAdmin(wsLocationServiceRef);
+            spnegoService.setAuthenticationFilter(authFilterServiceRef);
+            spnegoService.setSpnegoConfig(spnegoConfig);
+            spnegoService.activate(cc, props);
+            AuthenticationResult authResult = spnegoService.authenticate(webRequest);
+            assertEquals("authResult status code should be " + AuthResult.CONTINUE, AuthResult.CONTINUE, authResult.getStatus());
+
+        } catch (Exception e) {
+            outputMgr.failWithThrowable(methodName, e);
+        }
+    }
+
+    @Test
+    public void testMisc() {
+        final String methodName = "testMisc";
+        final SpnegoService spnegoService = new SpnegoService();
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getHeader("Authorization");
+                    will(returnValue("authHeader"));
+                    allowing(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    allowing(resp).setHeader("WWW-Authenticate", "Negotiate");
+                    allowing(resp).setContentType("text/html");
+                    allowing(resp).setCharacterEncoding("UTF-8");
+                    allowing(resp).getWriter();
+
+                }
+            });
+            mockAuthFilterService();
+            Map<String, Object> props = SpnegoConfigImplTest.createProps(true);
+            spnegoService.setLocationAdmin(wsLocationServiceRef);
+            spnegoService.setAuthenticationFilter(authFilterServiceRef);
+            spnegoService.setSpnegoConfig(spnegoConfig);
+            spnegoService.activate(cc, props);
+            spnegoService.modified(props);
+            assertTrue("Expected message was not logged", outputMgr.checkForMessages("CWWKS4301I:"));
+            spnegoService.deactivate(cc);
+
+        } catch (Exception e) {
+            outputMgr.failWithThrowable(methodName, e);
+        }
+    }
+
+    public void mockAuthFilterService() throws IOException {
+        final Dictionary<String, String> dict = new Hashtable<String, String>();
+        dict.put("id", "myAuthFilter");
+        mock.checking(new Expectations() {
+            {
+                allowing(configAdmin).getConfiguration("myAuthFilter");
+                will(returnValue(config));
+                allowing(config).getProperties();
+                will(returnValue(dict));
+                allowing(authFilterServiceRef).getProperty("id");
+                will(returnValue("authenticationFilter"));
+                allowing(authFilterServiceRef).getProperty("service.id");
+                will(returnValue(99L));
+                allowing(authFilterServiceRef).getProperty("service.ranking");
+                will(returnValue(99L));
+            }
+        });
+    }
+
+    public void mockErrorPageConfig() throws IOException {
+        final Dictionary<String, String> dict = new Hashtable<String, String>();
+        dict.put("id", "myAuthFilter");
+        mock.checking(new Expectations() {
+            {
+                allowing(spnegoConfig).getErrorPageConfig();
+                will(returnValue(errorPageConfig));
+                allowing(errorPageConfig).getNTLMTokenReceivedPage();
+                will(returnValue("myErrorPage"));
+                allowing(errorPageConfig).getNtlmTokenReceivedPageContentType();
+                will(returnValue("text/html"));
+                allowing(errorPageConfig).getNtlmTokenReceivedPageCharset();
+                will(returnValue("UTF-8"));
+
+                allowing(errorPageConfig).getSpnegoNotSupportedPage();
+                will(returnValue("myErrorPage"));
+                allowing(errorPageConfig).getSpnegoNotSupportedPageContentType();
+                will(returnValue("text/html"));
+                allowing(errorPageConfig).getSpnegoNotSupportedPageCharset();
+                will(returnValue("UTF-8"));
+
+                allowing(resp).setContentType("text/html");
+                allowing(resp).setCharacterEncoding("UTF-8");
+                allowing(resp).getWriter();
+            }
+        });
+    }
+
+    public Map<String, Object> createProps(boolean value) {
+        final Map<String, Object> props = new Hashtable<String, Object>();
+        props.put(SpnegoConfigImpl.KEY_ID, "mySpnego");
+        props.put(SpnegoConfigImpl.KEY_AUTH_FILTER_REF, "myAuthFilter");
+        return props;
+    }
+}

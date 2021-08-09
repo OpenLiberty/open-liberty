@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.ready.service/resources/com/ibm/ws/security/internal/resources/SecurityReadyServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0007 - CWWKS0009
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved from com.ibm.ws.security project, they should not be retranslated!
+#
+
+SECURITY_SERVICE_STARTING=CWWKS0007I: O servi\u00e7o de seguran\u00e7a est\u00e1 iniciando...
+SECURITY_SERVICE_STARTING.explanation=O servi\u00e7o de seguran\u00e7a est\u00e1 no processo de in\u00edcio. Isso pode demorar algum tempo se a inicializa\u00e7\u00e3o de tempo \u00fanico precisa ocorrer.
+SECURITY_SERVICE_STARTING.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+SECURITY_SERVICE_READY=CWWKS0008I: O servi\u00e7o de seguran\u00e7a est\u00e1 pronto.
+SECURITY_SERVICE_READY.explanation=Essa mensagem \u00e9 apenas informativa.
+SECURITY_SERVICE_READY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+SECURITY_SERVICE_STOPPED=CWWKS0009I: O servi\u00e7o de seguran\u00e7a parou.
+SECURITY_SERVICE_STOPPED.explanation=Essa mensagem \u00e9 apenas informativa.
+SECURITY_SERVICE_STOPPED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

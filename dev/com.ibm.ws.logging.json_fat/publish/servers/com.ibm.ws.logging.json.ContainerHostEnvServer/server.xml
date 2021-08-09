@@ -1,0 +1,7 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+	   <feature>jsp-2.2</feature>
+    </featureManager>
+</server>

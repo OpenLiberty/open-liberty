@@ -1,0 +1,73 @@
+---
+openapi: "3.0.0"
+info:
+  title: "OpenAPI APIs"
+  description: "APIs available from the OpenAPI feature"
+  version: "1.0.0"
+tags:
+- name: "OpenAPI"
+  description: "APIs available from the OpenAPI feature"
+paths:
+  /ibm/api/docs:
+    get:
+      tags:
+      - "OpenAPI"
+      summary: "Get a valid OpenAPI 3.0 document with all REST APIs available from\
+        \ a Liberty instance"
+      description: "Returns a valid OpenAPI 3.0 document with all REST APIs available\
+        \ from a Liberty instance merged into a single document. This is useful for\
+        \ consumer applications that want to programmatically navigate the set of\
+        \ available APIs, such as an API Management solution. By default, the document\
+        \ is returned in YAML format. Including an optional 'Accept' header with an\
+        \ 'application/json' value provides the document in JSON format. This endpoint\
+        \ has two multiple-cardinality, optional query parameters called 'root' that\
+        \ can filter the found context roots and 'compact' that can control whether\
+        \ the output should be formatted or not."
+      operationId: "getDocs"
+      parameters:
+      - name: "root"
+        in: "query"
+        description: "Filter the found context roots"
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: "compact"
+        in: "query"
+        description: "Indicates if the output will contain any indenting white spaces,\
+          \ new line feeds, etc. By default, the output will not be compacted"
+        required: false
+        schema:
+            type: boolean
+            default: false
+      - name: "accept"
+        in: "header"
+        description: "Format of the returned document"
+        required: false
+        schema:
+            type: string
+            enum:
+            - application/json
+            - application/yaml
+      responses:
+        200:
+          description: "All available or filtered REST APIs from a Liberty instance\
+            \ merged into a single document"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedDoc"
+            application/yaml:
+              schema:
+                $ref: "#/components/schemas/GeneratedDoc"
+        405:
+          description: "Method not allowed"
+        415:
+          description: "Requested media type is not supported"
+        500:
+          description: "An internal error has occurred"
+components:
+  schemas:
+    GeneratedDoc:
+      type: string

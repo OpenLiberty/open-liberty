@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Beim Parsen der Abfrage [{0}] ist ein Problem hinsichtlich der Syntaxerkennung aufgetreten. Der Parser hat Folgendes zur\u00fcckgegeben: [{1}].
+
+8002=Allgemeines Problem beim Parsen der Abfrage [{0}]. Der Parser hat Folgendes zur\u00fcckgegeben: [{1}].
+
+8003=Die Klasse [{0}] wurde nicht gefunden. Der Parser hat Folgendes zur\u00fcckgegeben: [{1}].
+
+8004=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Unbekannte Identifizierungsvariable [{3}]. Die FROM-Klausel der Abfrage deklariert keine Identifizierungsvariable [{3}].
+
+8005=Fehler beim Kompilieren der Abfrage [{0}]. Beim Aufl\u00f6sen des Klassennamens ist ein Problem aufgetreten: Die Klasse [{1}] wurde nicht gefunden.
+
+8006=Fehler beim Kompilieren der Abfrage [{0}]. Beim Aufl\u00f6sen des Klassennamens ist ein Problem aufgetreten: Der Deskriptor f\u00fcr [{1}] wurde nicht gefunden.
+
+8007=Fehler beim Kompilieren der Abfrage [{0}]. Beim Aufl\u00f6sen des Klassennamens ist ein Problem aufgetreten: Die Zuordnung f\u00fcr [{1}] wurde nicht gefunden.
+
+8008=Fehler beim Kompilieren der Abfrage [{0}]. Beim Erstellen des Abfrageausdrucks ist ein Problem aufgetreten: Der ExpressionBuilder f\u00fcr [{1}] wurde nicht gefunden.
+
+8009=Problem beim Kompilieren der Abfrage [{0}]. Der Ausdruck [{1}] wird derzeit nicht unterst\u00fctzt.
+
+8010=Allgemeines Problem beim Parsen der Abfrage [{0}].
+
+8011=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltige Deklaration der Sammlungselemente [{3}]. Erwartet wurde ein Zuordnungsfeld mit Sammlungswert.
+
+8012=Problem beim Kompilieren der Abfrage [{0}]. Noch nicht implementiert: {1}.
+
+8013=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Die Konstruktorklasse [{3}] wurde nicht gefunden.
+
+8014=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiges SIZE-Argument [{3}]. Erwartet wurde ein Zuordnungsfeld mit Sammlungswert.
+
+8015=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiges Aufz\u00e4hlungsliteral. Der Aufz\u00e4hlungstyp {3} hat kein Aufz\u00e4hlungsliteral {4}.
+
+8016=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger SELECT-Ausdruck [{3}] f\u00fcr die Abfrage mit der Gruppierung [{4}]. Nur Aggregate, GROUP BY-Elemente oder Konstruktorausdr\u00fccke dieser sind in der SELECT-Klausel einer GROUP BY-Abfrage zul\u00e4ssig.
+
+8017=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger HAVING-Ausdruck [{3}] f\u00fcr die Abfrage mit der Gruppierung [{4}]. Die HAVING-Klausel muss Suchbedingungen f\u00fcr die Gruppierungselemente oder Aggregatfunktionen, die f\u00fcr Gruppierungselemente gelten, angeben.
+
+8018=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltige Mehrfachverwendung des Parameters [{3}] bei Annahme der unterschiedlichen Parametertypen [{4}] und [{5}].
+
+8019=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Mehrfachdeklaration der Identifizierungsvariablen [{3}], die zuvor als [{4} {3}] deklariert wurde.
+
+8020=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiges {3}-Funktionsargument [{4}]. Erwartet wurde ein Argument vom Typ [{5}].
+
+8021=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiges ORDER BY-Element [{3}] vom Typ [{4}]. Erwartet wurde ein Ausdruck eines sortierbaren Typs.
+
+8022=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiges {3}-Ausdrucksargument [{4}]. Erwartet wurde eine Argument vom Typ [{5}].
+
+8023=Syntaxfehler beim Parsen der Abfrage [{0}].
+
+8024=Syntaxfehler beim Parsen der Abfrage [{0}], Zeile {1}, Spalte {2}: Syntaxfehler bei [{3}].
+
+8025=Syntaxfehler beim Parsen der Abfrage [{0}], Zeile {1}, Spalte {2}: Unerwartetes Token [{3}].
+
+8026=Syntaxfehler beim Parsen der Abfrage [{0}], Zeile {1}, Spalte {2}: Unerwartetes Zeichen [{3}].
+
+8027=Syntaxfehler beim Parsen der Abfrage [{0}], Zeile {1}, Spalte {2}: Erwartetes Zeichen [{3}], gefundenes Zeichen [{4}].
+
+8028=Syntaxfehler beim Parsen der Abfrage [{0}], Zeile {1}, Spalte {2}: Unerwartetes Ende der Abfrage.
+
+8029=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger Navigationsausdruck [{3}]. Ein Ausdruck [{4}] vom Typ [{5}] kann nicht innerhalb einer Abfrage angesteuert werden.
+
+8030=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Unbekannter Status oder Zuordnungsfeld [{3}] der Klasse [{4}].
+
+8031=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: {3} der integrierten Entit\u00e4t {4} wird nicht unterst\u00fctzt.
+
+8032=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger Zugriff auf das Attribut [{3}] im SET-Klauselziel [{4}]. Nur Statusfelder und Zuordnungsfelder mit Einzelwerten k\u00f6nnen in einer SET-Klausel aktualisiert werden.
+
+8033=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger Navigationsausdruck [{3}]. Im SET-Klauselziel kann das Zuordnungsfeld [{4}] nicht angesteuert werden.
+
+8034=Fehler beim Kompilieren der Abfrage [{0}]. Unbekannter Entit\u00e4tstyp [{1}].
+
+8035=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger Ausdruck f\u00fcr gleiche Aufz\u00e4hlung. Der Aufz\u00e4hlungswert vom Typ [{3}} kann nicht mit einem Aufz\u00e4hlungswert vom Typ [{4}] verglichen werden.
+
+8036=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Ung\u00fcltiger Navigationsausdruck [{3}]. Das Zuordnungsfeld mit Sammlungswert [{4}] kann nicht angesteuert werden.
+
+8037=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}:  Unbekannter Entit\u00e4tstyp [{3}].
+
+8038=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Beim Aufl\u00f6sen des Klassennamens ist ein Problem aufgetreten. Die Klasse [{3}] wurde nicht gefunden.
+
+8039=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Die Variable {3} ist keine Map und es wird ein Mapschl\u00fcssel von ihr angefordert.
+
+8040=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Der Alias {3} wird in der Klausel ORDER BY verwendet, ist aber nicht in der Abfrage definiert.
+
+8041=Fehler beim Kompilieren der Abfrage [{0}], Zeile {1}, Spalte {2}: Der Index kann nur f\u00fcr eine Variable verwendet werden, wird aber f\u00fcr eine Nicht-Variable {3} aufgerufen.
+

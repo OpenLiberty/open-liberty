@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/sso/common/internal/resources/SAMLPropagationMessages.nlsprops
+#COMPONENTPREFIX CWWKS CWTAI
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML PROPAGATION
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5251 - CWWKS5299
+
+no_saml_found_in_subject=CWWKS5251W: O token SAML requerido est\u00e1 ausente do assunto. Esse problema pode ocorrer se o usu\u00e1rio n\u00e3o for autenticado com sucesso usando SAML, se o usu\u00e1rio efetuou logout anteriormente ou se o atributo de configura\u00e7\u00e3o includeTokenInSubject do SAML \u00e9 configurado como false.
+no_saml_found_in_subject.explanation=Ocorreu um erro ao extrair o token SAML do assunto ou um elemento SAML n\u00e3o foi localizado no assunto atual.
+no_saml_found_in_subject.useraction=Se voc\u00ea criar um assunto executado como, assegure-se de que o token SAML esteja inclu\u00eddo no assunto. Caso contr\u00e1rio, assegure-se de que a sua configura\u00e7\u00e3o do servidor suporte a inclus\u00e3o do token SAML no assunto ao verificar o atributo includeTokenInSubject em sua configura\u00e7\u00e3o SAML.
+
+failed_to_extract_saml_token_from_subject=CWWKS5252W: Ocorreu uma exce\u00e7\u00e3o ao tentar extrair o token SAML do assunto. A exce\u00e7\u00e3o foi: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao extrair o token SAML do assunto.
+failed_to_extract_saml_token_from_subject.useraction=Verifique os logs do servidor para obter mais informa\u00e7\u00f5es sobre o erro.

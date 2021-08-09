@@ -1,0 +1,6 @@
+version: 1
+dn: ou=normalizers,cn=autofs,ou=schema
+ou: normalizers
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: No se da soporte al tipo de mensaje {0} de este mensaje JMS de proceso por lotes.  Esta solicitud no se procesar\u00e1. El contenido de este mensaje es {1}
+warning.unsupported.message.type.explanation=Este tipo de mensaje no estaba soportado porque no es un tipo MapMessage de JMS. 
+warning.unsupported.message.type.useraction=No se requiere ninguna acci\u00f3n. 
+ 
+warning.unsupported.operation=CWWKY0201W: La operaci\u00f3n {0} es una operaci\u00f3n no soportada de un mensaje JMS de proceso por lotes. Esta solicitud no se procesar\u00e1. El contenido de este mensaje es {1}
+warning.unsupported.operation.explanation=S\u00f3lo se da soporte a las operaciones 'Start' y 'Restart'.
+warning.unsupported.operation.useraction=No se requiere ninguna acci\u00f3n. 
+
+warning.batch.activation.spec.not.found=CWWKY0202W: El punto final de mensaje del escucha JMS {0} de proceso por lotes no se puede activar porque la especificaci\u00f3n de activaci\u00f3n {1} del proceso por lotes no existe en la configuraci\u00f3n del servidor. El punto final de mensaje no recibir\u00e1 mensajes de proceso por lotes hasta que la especificaci\u00f3n de activaci\u00f3n est\u00e9 disponible. 
+warning.batch.activation.spec.not.found.explanation=El servidor est\u00e1 iniciando el escucha JMS de proceso por lotes, pero no puede activar el punto final de mensaje porque no se ha podido encontrar la especificaci\u00f3n de activaci\u00f3n en la configuraci\u00f3n del servidor. El punto final de mensaje no recibir\u00e1 mensajes de proceso por lotes hasta que pueda activarse el punto final.
+warning.batch.activation.spec.not.found.useraction=Cree la especificaci\u00f3n de activaci\u00f3n con el nombre especificado en la configuraci\u00f3n del servidor manualmente, o utilizando el centro de administraci\u00f3n.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: El punto final de mensaje del escucha JMS {0} de proceso por lotes no se puede activar porque la cola de destino {1} no existe. El punto final de mensaje no recibir\u00e1 mensajes JMS hasta que la cola de destino est\u00e9 disponible.
+warning.batch.destination.queue.not.found.explanation=El servidor est\u00e1 iniciando el escucha JMS de proceso por lotes, pero no puede activar el punto final de mensaje porque no se ha encontrado la cola de destino. El punto final de mensaje no recibir\u00e1 mensajes JMS de proceso por lotes hasta que pueda activarse el punto final.
+warning.batch.destination.queue.not.found.useraction=Cree la cola de destino con el nombre especificado en la configuraci\u00f3n del servidor manualmente, o utilizando el centro de administraci\u00f3n.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: El asignador JMS de proceso por lotes no se puede iniciar porque la f\u00e1brica de conexiones {0} no existe.  El asignador JMS de proceso por lotes no enviar\u00e1 mensajes JMS de proceso por lotes hasta que la f\u00e1brica de conexiones est\u00e9 disponible. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=El servidor est\u00e1 iniciando el asignador JMS de proceso por lotes, pero no puede iniciarse porque no se ha podido encontrar la f\u00e1brica de conexiones JMS.  El asignador JMS de proceso por lotes no enviar\u00e1 mensajes JMS de proceso por lotes hasta que la f\u00e1brica de conexiones est\u00e9 disponible.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Cree la f\u00e1brica de conexiones con el nombre especificado en la configuraci\u00f3n del servidor manualmente, o utilizando el centro de administraci\u00f3n.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: El asignador JMS de proceso por lotes no se puede iniciar porque la cola {0} no existe.  El asignador JMS de proceso por lotes no enviar\u00e1 mensajes JMS de proceso por lotes hasta que la cola est\u00e9 disponible.
+warning.batch.dispatcher.queue.not.found.explanation=El servidor est\u00e1 iniciando el asignador JMS de proceso por lotes, pero no puede iniciarse porque no se ha podido encontrar la cola JMS de proceso por lotes.  El asignador JMS de proceso por lotes no enviar\u00e1 mensajes JMS de proceso por lotes hasta que la cola est\u00e9 disponible.
+warning.batch.dispatcher.queue.not.found.useraction=Cree la cola con el nombre especificado en la configuraci\u00f3n del servidor manualmente, o utilizando el centro de administraci\u00f3n.
+
+error.unable.to.rollback.start=CWWKY0206E: El asignador JMS de proceso por lotes ha encontrado una excepci\u00f3n al asignar la solicitud de inicio de la instancia de trabajo {0} y no ha podido retrotraer la operaci\u00f3n.  La excepci\u00f3n es {1}.
+error.unable.to.rollback.start.explanation=El asignador JMS de proceso por lotes no ha podido retrotraer su operaci\u00f3n.
+error.unable.to.rollback.start.useraction=Vuelva a someter el trabajo.
+
+error.unable.to.rollback.restart=CWWKY0207E: El asignador JMS de proceso por lotes ha encontrado una excepci\u00f3n al asignar la ejecuci\u00f3n del trabajo de solicitud de inicio {0} y no ha podido retrotraer la operaci\u00f3n.  La excepci\u00f3n es {1}.
+error.unable.to.rollback.restart.explanation=El asignador JMS de proceso por lotes no ha podido retrotraer su operaci\u00f3n.
+error.unable.to.rollback.restart.useraction=Vuelva a someter el trabajo.
+
+error.endpoint.unable.process.message=CWWKY0208E: El escucha JMS de proceso por lotes ha encontrado una excepci\u00f3n al procesar el mensaje {0}. La excepci\u00f3n es {1}.
+error.endpoint.unable.process.message.explanation=El escucha JMS de proceso por lotes no ha podido procesar el mensaje de solicitud JMS de proceso por lotes.
+error.endpoint.unable.process.message.useraction=Vuelva a someter el trabajo. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: El escucha JMS de proceso por lotes ha encontrado una excepci\u00f3n al procesar la operaci\u00f3n de inicio de trabajo para la instancia de trabajo {0}. La excepci\u00f3n es {1}.
+error.endpoint.unable.process.start.request.explanation=El escucha JMS de proceso por lotes no ha podido procesar la solicitud de inicio de trabajo.
+error.endpoint.unable.process.start.request.useraction=Vuelva a someter el trabajo.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: El escucha JMS de proceso por lotes ha encontrado una excepci\u00f3n al procesar la operaci\u00f3n de reinicio de trabajo para la ejecuci\u00f3n de trabajo {0}. La excepci\u00f3n es {1}.
+error.endpoint.unable.process.restart.request.explanation=El escucha JMS de proceso por lotes no ha podido procesar la solicitud de reinicio de trabajo.
+error.endpoint.unable.process.restart.request.useraction=Vuelva a someter el trabajo.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: El tiempo de ejecuci\u00f3n de proceso por lotes no puede publicar el suceso en el tema {0} para el objeto {1}.  La excepci\u00f3n es {2}.
+warning.batch.events.unable.to.publish.explanation=El suceso no puede publicarse debido a una excepci\u00f3n.
+warning.batch.events.unable.to.publish.useraction=Revise el error relacionado en los registros del servidor.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: No se ha podido crear el recurso JMS para la publicaci\u00f3n de sucesos por lotes. La excepci\u00f3n es {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=No se ha podido crear el recurso JMS para activar el editor suceso por lotes debido a una excepci\u00f3n. 
+error.batch.events.publisher.jms.resource.activate.useraction=Compruebe la configuraci\u00f3n de la f\u00e1brica de conexiones JMS configurada por el elemento batchJmsDispatcher (batchConnectionFactory predeterminado o el referenciado expl\u00edcitamente). Compruebe la conectividad JMS y revise los registros de error relacionados con el servidor. 
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: No se ha podido crear el recurso JMS para asignador de proceso por lotes. La excepci\u00f3n es {0}
+error.batch.dispatcher.jms.resource.activate.explanation=No se ha podido crear el recurso JMS para activar asignador de proceso por lotes debido a una excepci\u00f3n, por ello el servidor no puede asignar trabajos o particiones a trav\u00e9s de JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Compruebe la configuraci\u00f3n de la f\u00e1brica de conexiones JMS y de la cola configuradas por el elemento batchJmsDispatcher (ya sea el batchConnectionFactory predeterminada o una expl\u00edcita referencia). Compruebe la conectividad JMS y revise los registros de error relacionados con el servidor. 
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Se est\u00e1 descartando el mensaje con el ID de mensaje asociado {0} porque no era la ejecuci\u00f3n m\u00e1s reciente.
+warning.endpoint.listener.stale.message.explanation=Se est\u00e1 descartando el mensaje de ejecuci\u00f3n de trabajo asociado obsoleto, dado que no era la ejecuci\u00f3n m\u00e1s reciente.
+warning.endpoint.listener.stale.message.useraction=No se requiere ninguna acci\u00f3n.
+
+error.start.partition.request=CWWKY0215E: La partici\u00f3n de proceso por lotes no se ha podido iniciar debido a una excepci\u00f3n. La excepci\u00f3n es {0}.
+error.start.partition.request.explanation=La partici\u00f3n de proceso por lotes no se ha podido iniciar debido a una excepci\u00f3n. 
+error.start.partition.request.useraction=Detenga el trabajo asociado y compruebe la conectividad JMS, la configuraci\u00f3n y revise los registros de del servidor para ver errores relacionados.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: No se ha podido crear la f\u00e1brica de conexiones JMS para ejecutar la partici\u00f3n remota. La excepci\u00f3n es {0}
+error.batch.executor.jms.create.failure.explanation=Error al conectarse a la f\u00e1brica de conexiones JMS de respuesta utilizada para enviar respuestas para ejecuciones de particiones remotas. Este servidor no podr\u00e1 ejecutar trabajos o particiones enviadas a trav\u00e9s de JMS hasta que se resuelva el problema.
+error.batch.executor.jms.create.failure.useraction=Compruebe la configuraci\u00f3n de la f\u00e1brica de conexiones JMS configurada por el elemento batchJmsDispatcher (batchConnectionFactory predeterminado o el referenciado expl\u00edcitamente). Si el usuario no utiliza particiones, la configuraci\u00f3n relacionada con la partici\u00f3n JMS remota se puede eliminar de la configuraci\u00f3n del servidor.
+
+error.batch.executor.activate.failure=CWWKY0217E: No se puede ejecutar el ejecutor JMS en el punto final debido a una excepci\u00f3n {0}
+error.batch.executor.activate.failure.explanation=No se ha podido activar el ejecutor JMS en el punto final debido a una excepci\u00f3n.
+error.batch.executor.activate.failure.useraction=Este servidor no podr\u00e1 ejecutar trabajos o particiones enviadas a trav\u00e9s de JMS hasta que se resuelva el problema. Compruebe la configuraci\u00f3n de la f\u00e1brica de conexiones JMS configurada por el elemento batchJmsDispatcher (batchConnectionFactory predeterminado o el referenciado expl\u00edcitamente). Compruebe la conectividad JMS, la configuraci\u00f3n de punto final y revise los registros del servidor para ver el error relacionado.
+
+info.batch.events.publish.topic=CWWKY0218I: El tiempo de ejecuci\u00f3n por lotes publicar\u00e1 sucesos en la ra\u00edz de tema JMS {0}.
+info.batch.events.publish.topic.explanation=Mensaje informativo. El tiempo de ejecuci\u00f3n por lotes publicar\u00e1 sucesos en la ra\u00edz de tema JMS por lotes listado.
+info.batch.events.publish.topic.useraction=La ra\u00edz de tema JMS por lotes se puede modificar. Compruebe las opciones configuradas que se utilizan para batchJmsEvents.

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Form\u00e1t hodnoty vlastnosti {0} nen\u00ed platn\u00fd. Hodnota vlastnosti mus\u00ed m\u00edt spr\u00e1vn\u00fd datov\u00fd typ a form\u00e1t.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=Form\u00e1t hodnoty vlastnosti nen\u00ed platn\u00fd. Nap\u0159. typ vlastnosti je typu Integer, ale zadan\u00e1 hodnota nen\u00ed platnou hodnotou typu Integer.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=Zkontrolujte, zda je hodnota vlastnosti m\u00e1 spr\u00e1vn\u00fd datov\u00fd typ a form\u00e1t.
+
+ENTITY_NOT_FOUND=CWIML4001E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Entita {0} nebyla nalezena. Zadejte spr\u00e1vnou entitu nebo vytvo\u0159te chyb\u011bj\u00edc\u00ed entitu.
+ENTITY_NOT_FOUND.explanation=Zadan\u00fd n\u00e1zev entity, co\u017e by mohl b\u00fdt jedine\u010dn\u00fd n\u00e1zev uniqueName nebo jedine\u010dn\u00fd identifik\u00e1tor uniqueId, nelze nal\u00e9zt v z\u00e1kladn\u00edm \u00falo\u017ei\u0161ti. Operace registru u\u017eivatel\u016f nem\u016f\u017ee bez nalezen\u00ed t\u00e9to entity pokra\u010dovat.
+ENTITY_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee entita v z\u00e1kladn\u00edm \u00falo\u017ei\u0161ti existuje. Pokud entita existuje, ov\u011b\u0159te, \u017ee m\u00e1 nastaven\u00e9 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed a zkuste operaci zopakovat.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Pro n\u00e1zev \u010dinitele {0} v konfigurovan\u00fdch registrech u\u017eivatel\u016f existuje v\u00edce ne\u017e jeden z\u00e1znam. N\u00e1zev \u010dinitele mus\u00ed b\u00fdt jedine\u010dn\u00fd ve v\u0161ech registrech u\u017eivatel\u016f.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Pro zadan\u00fd n\u00e1zev \u010dinitele bylo nalezeno v\u00edce \u010dinitel\u016f. Proces p\u0159ihla\u0161ov\u00e1n\u00ed nem\u016f\u017ee pokra\u010dovat.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Ujist\u011bte se, \u017ee je uveden spr\u00e1vn\u00fd n\u00e1zev \u010dinitele. T\u00e9to v\u00fdjimky se m\u016f\u017eete vyvarovat nap\u0159\u00edklad uveden\u00edm \u010dinitele jako jedine\u010dn\u00e9ho n\u00e1zvu.

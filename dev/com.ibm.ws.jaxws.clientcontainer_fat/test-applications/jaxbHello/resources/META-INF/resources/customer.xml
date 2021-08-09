@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Customer id="1">
+    <name>customer_test</name>
+    <phone>992-00356482</phone>
+    <address>
+        <street>street0</street>
+        <city>City0</city>
+        <state>state0</state>
+        <zip>34952</zip>
+        <name>customer_test</name>
+    </address>
+    <address>
+        <street>street1</street>
+        <city>City1</city>
+        <state>state1</state>
+        <zip>96843</zip>
+        <name>customer_test</name>
+    </address>
+</Customer>

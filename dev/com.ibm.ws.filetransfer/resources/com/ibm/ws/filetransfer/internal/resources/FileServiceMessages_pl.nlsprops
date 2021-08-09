@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Odmowa dost\u0119pu do \u015bcie\u017cki {0}.
+ACCESS_DENIED_ERROR.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do \u015bcie\u017cki poza skonfigurowanym regionem odczytu/zapisu.
+ACCESS_DENIED_ERROR.useraction=Sprawd\u017a, czy \u017c\u0105dana \u015bcie\u017cka nale\u017cy do skonfigurowanego regionu odczytu/zapisu.
+
+PATH_ERROR=CWWKX7901E: \u015acie\u017cka w systemie plik\u00f3w {0} jest niepoprawna.
+PATH_ERROR.explanation=Nie mo\u017cna rozstrzygn\u0105\u0107 okre\u015blonej \u015bcie\u017cki w systemie plik\u00f3w.
+PATH_ERROR.useraction=Podaj poprawn\u0105 \u015bcie\u017ck\u0119 w systemie plik\u00f3w.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: Odm\u00f3wiono utworzenia archiwum przy u\u017cyciu komponentu MBean przesy\u0142ania plik\u00f3w dla \u015bcie\u017cki \u017ar\u00f3d\u0142owej {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=Podj\u0119to pr\u00f3b\u0119 odczytania informacji ze \u015bcie\u017cki, kt\u00f3ra jest poza skonfigurowanym regionem odczytu.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: Odm\u00f3wiono utworzenia archiwum przy u\u017cyciu komponentu MBean przesy\u0142ania plik\u00f3w dla \u015bcie\u017cki docelowej {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=Podj\u0119to pr\u00f3b\u0119 zapisania informacji do \u015bcie\u017cki, kt\u00f3ra jest poza skonfigurowanym regionem zapisu.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: Archiwum {1} zosta\u0142o pomy\u015blnie utworzone z {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=Archiwum zosta\u0142o pomy\u015blnie utworzone.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: Nie mo\u017cna utworzy\u0107 archiwum {1} z {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=\u017b\u0105danie utworzenia archiwum nie powiod\u0142o si\u0119.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: Odm\u00f3wiono rozwini\u0119cia archiwum dla \u015bcie\u017cki \u017ar\u00f3d\u0142owej {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=Podj\u0119to pr\u00f3b\u0119 odczytania informacji ze \u015bcie\u017cki, kt\u00f3ra jest poza skonfigurowanym regionem odczytu.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: Odm\u00f3wiono rozwini\u0119cia archiwum dla \u015bcie\u017cki docelowej {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=Podj\u0119to pr\u00f3b\u0119 zapisania informacji do \u015bcie\u017cki, kt\u00f3ra jest poza skonfigurowanym regionem zapisu.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: Archiwum {0} zosta\u0142o pomy\u015blnie rozwini\u0119te do {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=Archiwum zosta\u0142o pomy\u015blnie rozwini\u0119te.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: Nie mo\u017cna rozwin\u0105\u0107 archiwum {0} do {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=\u017b\u0105danie rozwini\u0119cia archiwum nie powiod\u0142o si\u0119.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: Operacja {0} jest dost\u0119pna tylko wtedy, gdy dost\u0119p do komponentu MBean jest uzyskiwany przez konektor REST rozszerze\u0144 JMX firmy IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=Dost\u0119p do okre\u015blonej operacji komponentu MBean jest mo\u017cliwy tylko przez konektor REST rozszerze\u0144 JMX firmy IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Uzyskaj dost\u0119p do tego komponentu MBean za po\u015brednictwem konektora REST rozszerze\u0144 JMX firmy IBM.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Ten wewn\u0119trzny b\u0142\u0105d serwera wyst\u0105pi\u0142, poniewa\u017c okre\u015blona us\u0142uga jest niedost\u0119pna,
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
+
+ATTRIBUTE_UPDATED=CWWKX7912I: Atrybut FileServiceMXBean {0} zosta\u0142 pomy\u015blnie zaktualizowany.
+ATTRIBUTE_UPDATED.explanation=Okre\u015blony atrybut FileServiceMXBean zosta\u0142 pomy\u015blnie zaktualizowany.
+ATTRIBUTE_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 

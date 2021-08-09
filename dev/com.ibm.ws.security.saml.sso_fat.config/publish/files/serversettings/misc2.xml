@@ -1,0 +1,43 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+	</featureManager>
+
+	<httpEndpoint
+		id="defaultHttpEndpoint"
+		host="*"
+		httpPort="${bvt.prop.HTTP_secondary}"
+		httpsPort="${bvt.prop.HTTP_secondary.secure}" />
+
+	<iiopEndpoint
+		id="defaultIiopEndpoint"
+		iiopPort="${bvt.prop.IIOP.secondary}"
+	>
+		<iiopsOptions
+			iiopsPort="${bvt.prop.IIOP.secondary.secure}"
+			sslRef="defaultSSLConfig" />
+	</iiopEndpoint>
+
+
+	<webAppSecurity
+		httpOnlyCookies="false"
+		allowFailOverToBasicAuth="true" />
+
+	<httpSession cookieHttpOnly="false" />
+
+	<config monitorInterval="100ms" />
+
+</server>

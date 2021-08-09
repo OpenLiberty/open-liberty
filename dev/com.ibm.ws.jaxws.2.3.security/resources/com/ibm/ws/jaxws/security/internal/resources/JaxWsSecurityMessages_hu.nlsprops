@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: Az SSL konfigur\u00e1ci\u00f3 lek\u00e9r\u00e9se sslRef={0} be\u00e1ll\u00edt\u00e1ssal meghi\u00fasult.
+err.when.get.ssl.config.explanation=Az ibm-ws-bnd.xml ff\u00e1jlban megadott sslRef attrib\u00fatum nem azonos\u00edtja a server.xml f\u00e1jl ssl elem\u00e9t, vagy a hivatkozott ssl elem tartalma \u00e9rv\u00e9nytelen.
+err.when.get.ssl.config.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az sslRef attrib\u00fatum \u00e9rt\u00e9ke megegyezik a server.xml f\u00e1jl ssl elem\u00e9vel, illetve hogy a hivatkozott ssl elem tartalma helyes.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: Az SSLSocketFactory lek\u00e9r\u00e9se sslRef={0} be\u00e1ll\u00edt\u00e1ssal {1} eset\u00e9ben meghi\u00fasult.
+err.when.get.ssl.socket.factory.explanation=A server.xml f\u00e1jl kulcst\u00e1rol\u00f3 vagy tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 elem\u00e9nek \u00e9rv\u00e9nytelen be\u00e1ll\u00edt\u00e1sa kiv\u00e9telt eredm\u00e9nyezhet, mert az ibm-ws-bnd.xml f\u00e1jlban megadott sslRef attrib\u00fatum a server.xml f\u00e1jl SSL be\u00e1ll\u00edt\u00e1s\u00e1ra hivatkozik.
+err.when.get.ssl.socket.factory.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcst\u00e1rol\u00f3 vagy tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 elem helye \u00e9s jelszava helyesen van megadva a server.xml f\u00e1jlban, \u00e9s a tan\u00fas\u00edtv\u00e1ny \u00e1ln\u00e9v \u00e9rv\u00e9nyes az ibm-ws-bnd.xml f\u00e1jlban. 
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: Az ibm-ws-bnd.xml f\u00e1jlban meghat\u00e1rozott login-config elem figyelmen k\u00edv\u00fcl marad, mert az alkalmaz\u00e1s webes alkalmaz\u00e1s, \u00e9s a web.xml f\u00e1jlban kell meghat\u00e1rozni.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=A login-config elem csak a webes alkalmaz\u00e1s web.xml f\u00e1jlj\u00e1ban lehet meghat\u00e1rozva, \u00e9s az ibm-ws-bnd.xml f\u00e1jlban meghat\u00e1rozott login-config elem figyelmen k\u00edv\u00fcl marad.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a login-config elem csak a webes alkalmaz\u00e1s web.xml f\u00e1jlj\u00e1ban van be\u00e1ll\u00edtva. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: A(z) {0} hiteles\u00edt\u00e9si m\u00f3dzser (auth-method) t\u00edpus nem t\u00e1mogatott az ibm-ws-bnd.xml f\u00e1jlban.
+ibm.ws.bnd.auth.method.not.support.explanation=Az ibm-ws-bnd.xml f\u00e1jl csak BASIC \u00e9s CLIENT_CERT hiteles\u00edt\u00e9si t\u00edpust t\u00e1mogat.
+ibm.ws.bnd.auth.method.not.support.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az ibm-ws-bnd.xml f\u00e1jlban meghat\u00e1rozott hiteles\u00edt\u00e9si m\u00f3dszer (auth-method) t\u00edpusa BASIC vagy CLIENT_CERT.

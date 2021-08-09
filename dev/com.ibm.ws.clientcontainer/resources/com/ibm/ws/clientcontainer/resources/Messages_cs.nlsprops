@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: T\u0159\u00edda mus\u00ed m\u00edt konstruktor bez argument\u016f.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=T\u0159\u00edda mus\u00ed m\u00edt konstruktor bez argument\u016f a implementovat rozhran\u00ed javax.security.auth.callback.CallbackHandler.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=P\u0159idejte konstruktor bez argument\u016f do t\u0159\u00eddy obslu\u017en\u00e9 rutiny zp\u011btn\u00e9ho vol\u00e1n\u00ed.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: P\u0159i zpracov\u00e1n\u00ed metody PostConstruct do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce vlo\u017een\u00ed: {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=K v\u00fdjimce doch\u00e1z\u00ed p\u0159i vyvol\u00e1n\u00ed metody PostConstruct kontejnerem. 
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=Ov\u011b\u0159te, \u017ee je metoda PostConstruct spr\u00e1vn\u011b definov\u00e1na v deskriptoru implementace nebo spr\u00e1vn\u011b anotov\u00e1na ve t\u0159\u00edd\u011b. 
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: P\u0159i zpracov\u00e1n\u00ed metody PreDestroy do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce vlo\u017een\u00ed: {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=K v\u00fdjimce doch\u00e1z\u00ed p\u0159i vyvol\u00e1n\u00ed metody PreDestroy kontejnerem. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=Ov\u011b\u0159te, \u017ee je metoda PreDestroy spr\u00e1vn\u011b definov\u00e1na v deskriptoru implementace nebo spr\u00e1vn\u011b anotov\u00e1na ve t\u0159\u00edd\u011b. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: Ve t\u0159\u00edd\u011b {1} existuje v\u00edce ne\u017e jedna metoda PostConstruct nebo PreDestroy. Metoda PostConstruct nebo PreDestroy {0} nebude kontejnerem vyvol\u00e1na.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=Existuje v\u00edce ne\u017e jedna metoda PostConstruct nebo PreDestroy, kter\u00e1 je deklarov\u00e1na ve t\u0159\u00edd\u011b.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Kontejner vyvol\u00e1 prvn\u00ed metodu, kterou zjist\u00ed.

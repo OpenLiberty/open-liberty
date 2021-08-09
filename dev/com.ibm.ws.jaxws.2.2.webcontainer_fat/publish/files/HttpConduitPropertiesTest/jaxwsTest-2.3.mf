@@ -1,0 +1,22 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: jaxwsTest-2.3
+Subsystem-SymbolicName: com.ibm.websphere.appserver.jaxwsTest-2.3; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.websphere.appserver.jaxws-2.3; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-App-ForceRestart: uninstall,install
+IBM-API-Package: org.apache.cxf; type="internal",
+ org.apache.cxf.phase; type="internal",
+ org.apache.cxf.message; type="internal",
+ org.apache.cxf.frontend; type="internal",
+ org.apache.cxf.endpoint; type="internal",
+ org.apache.cxf.transport; type="internal",
+ org.apache.cxf.transport.http; type="internal",
+ org.apache.cxf.transports.http.configuration; type="internal",
+ org.apache.cxf.configuration.security; type="internal",
+ org.apache.cxf.configuration.jsse; type="internal"
+Subsystem-Name: %name
+Subsystem-Description: %description
+Subsystem-Localization: OSGI-INF/l10n/subsystem
+

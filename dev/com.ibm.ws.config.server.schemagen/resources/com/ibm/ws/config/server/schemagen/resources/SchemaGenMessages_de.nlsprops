@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenMessages.nlsprops
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere Server Config Schema 
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+## Message prefix block: CWWKG3001 - CWWKG3050
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntax: {0} Server
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Das erforderliche Argument {0} fehlt.
+argument.unrecognized=Das Argument {0} wurde nicht erkannt.
+argument.unrecognized.expected=Das Argument {0} wurde nicht erkannt. M\u00f6glicherweise meinten Sie {1}.
+argument.invalid.value=Unzul\u00e4ssiger Argumentwert: {0}={1}. Zul\u00e4ssige Werte: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKG3001E: Der Server {0} wurde nicht gefunden. Er wurde an der folgenden Position erwartet: {1}. Stellen Sie sicher, dass die Serverkonfiguration in dem in der Nachricht angegebenen Verzeichnis vorhanden ist.
+server.not.found.explanation= Der im Befehl serverSchemaGen angegebene Server wurde nicht gefunden. Die erwartete Position des Verzeichnisses f\u00fcr die Serverkonfiguration ist in der Nachricht angegeben.
+server.not.found.useraction=Stellen Sie sicher, dass die Serverkonfiguration in dem in der Nachricht angegebenen Verzeichnis vorhanden ist. \u00c4ndern Sie gegebenenfalls die Variable WLP_USER_DIR oder WLP_INSTALL_DIR so, dass der richtige Pfad zum Auffinden der Serverkonfigurationsdateien verwendet wird.
+
+local.connector.not.found=CWWKG3002E: Der Server {0} akzeptiert gem\u00e4\u00df seiner Konfiguration keine lokalen JMX-Anforderungen. Stellen Sie sicher, dass die Serverkonfiguration das Feature localConnector enth\u00e4lt und dass der Server gestartet ist.
+local.connector.not.found.explanation=Der mit dem Befehl serverSchemaGen angegebene Server ist nicht f\u00fcr die Annahme lokaler JMX-Anforderungen konfiguriert.
+local.connector.not.found.useraction=Stellen Sie sicher, dass die Serverkonfiguration das Feature localConnector enth\u00e4lt und dass der Server gestartet ist. Die f\u00fcr den Aufbau einer lokalen JMX-Verbindung zu diesem Server erforderliche URL ist in der Datei WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address enthalten.
+
+local.connector.url.empty=CWWKG3003E: Der Server {0} weist ein Problem mit seiner Konfiguration des Features localConnector auf.
+local.connector.url.empty.explanation=Der mit dem Befehl serverSchemaGen angegebene Server ist nicht f\u00fcr die Annahme lokaler JMX-Anforderungen konfiguriert. Die Datei, die die zum Erstellen einer JMX-Verbindung zum Server verwendete URL enth\u00e4lt, ist leer.
+local.connector.url.empty.useraction=Stellen Sie sicher, dass die Serverkonfiguration das Feature localConnector enth\u00e4lt und dass der Server gestartet ist. Die f\u00fcr den Aufbau einer lokalen JMX-Verbindung zu diesem Server erforderliche URL ist in der Datei WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address enthalten.
+
+mbean.null.result=CWWKG3004E: Der Befehl zur Generierung des Serverschemas hat kein Ergebnis zur\u00fcckgegeben.
+mbean.null.result.explanation=Die MBean, die das Serverschema generiert, wurde aufgerufen, aber es wurden keine Ergebnisse zur\u00fcckgegeben. Das angeforderte Schema wurde m\u00f6glicherweise nicht generiert.
+mbean.null.result.useraction=Suchen Sie in den Serverprotokollen und im FFDC-Verzeichnis nach einer m\u00f6glichen Fehlernachricht oder Ausnahme. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+mbean.bad.result=CWWKG3005E: Der Befehl f\u00fcr die Generierung des Serverschemas zeigt an, dass w\u00e4hrend der Schemagenerierung ein Problem gemeldet wurde.
+mbean.bad.result.explanation=Die MBean, die das Serverschema generiert, wurde aufgerufen, aber w\u00e4hrend der Schemagenerierung wurde ein Fehler gemeldet. Das angeforderte Schema wurde m\u00f6glicherweise nicht generiert.
+mbean.bad.result.useraction=Suchen Sie in den Serverprotokollen und im FFDC-Verzeichnis nach einer Fehlernachricht oder Ausnahme. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+mbean.missing.result=CWWKG3006E: Der Befehl f\u00fcr die Generierung des Serverschemas hat nicht gemeldet, ob es erfolgreich ausgef\u00fchrt wurde.
+mbean.missing.result.explanation=Die MBean, die das Serverschema generiert, wurde aufgerufen, aber im Ergebnis wurde kein Antwortcode zur\u00fcckgegeben. Das angeforderte Schema wurde m\u00f6glicherweise nicht generiert.
+mbean.missing.result.useraction=Suchen Sie in den Serverprotokollen und im FFDC-Verzeichnis nach einer m\u00f6glichen Fehlernachricht oder Ausnahme. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+mbean.missing.output.dir=CWWKG3007E: Der Befehl f\u00fcr die Generierung des Serverschemas hat keinen Ausgabeverzeichnisnamen zur\u00fcckgegeben.
+mbean.missing.output.dir.explanation=Die MBean, die das Serverschema generiert, wurde aufgerufen, aber das zum Schreiben des Schemas verwendete Ausgabeverzeichnis wurde nicht in der Antwort angegeben. Das angeforderte Schema wurde m\u00f6glicherweise nicht generiert.
+mbean.missing.output.dir.useraction=Suchen Sie im Ausgabeverzeichnis des Zielservers nach dem generierten Schema. Das Ausgabeverzeichnis wird im Serverprozess mit der Variablen WLP_OUTPUT_DIR angegeben. Das Schema wird in einem schemagen-Verzeichnis im Ausgabeverzeichnis generiert. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+mbean.output.dir=CWWKG3008I: Das angeforderte Serverschema wurde im folgenden Verzeichnis generiert: {0}
+mbean.output.dir.explanation=Das angeforderte Serverschema wurde generiert und befindet sich in dem in der Nachricht angegebenen Verzeichnis.
+mbean.output.dir.useraction=Es ist keine Benutzeraktion erforderlich.
+
+mbean.not.found=CWWKG3009W: Die MBean, die das Serverschema generiert, ist nicht im Server {0} aktiv.
+mbean.not.found.explanation=Es wurde eine JMX-Verbindung zum Zielserver aufgebaut, aber die MBean f\u00fcr Generierung des Serverschemas wurde nicht gefunden. 
+mbean.not.found.useraction=Suchen Sie in den Serverprotokollen und im FFDC-Verzeichnis nach einer m\u00f6glichen Fehlernachricht oder Ausnahme. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+exception.catch=CWWKG3010E: Der Befehl f\u00fcr die Generierung des Serverschemas hat eine Ausnahme ausgel\u00f6st: {0}
+exception.catch.explanation=Es wurde eine unerwartete Ausnahme vom Befehl f\u00fcr die Generierung des Serverschemas ausgel\u00f6st. Der Ausnahme-Stack-Trace wurde in der Standardfehlerprotokolldatei ausgegeben. Das Dienstprogramm stellt die Verarbeitung ein.
+exception.catch.useraction=Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+server.output.logs.dir.not.found=CWWKG3011E: Das Protokollverzeichnis f\u00fcr den Server mit dem Namen {0} wurde nicht gefunden. Es wurde an der folgenden Position erwartet: {1}. Der Wert des Protokollverzeichnisses wird anhand der Variablen WLP_OUTPUT_DIR berechnet. 
+server.output.logs.dir.not.found.explanation=Das Protokollverzeichnis muss verf\u00fcgbar sein, damit der Befehl die JMX-Verbindungsinformationen lokalisieren kann. Dieser Fehler tritt m\u00f6glicherweise auf, wenn der Wert der Variablen WLP_OUTPUT_DIR in der aktuellen Umgebung nicht mit dem vom Server verwendeten Wert \u00fcbereinstimmt. 
+server.output.logs.dir.not.found.useraction=Stellen Sie sicher, dass der Wert der Variablen WLP_OUTPUT_DIR mit dem vom Server verwendeten Wert \u00fcbereinstimmt und das Protokollverzeichnis vorhanden ist. 
+

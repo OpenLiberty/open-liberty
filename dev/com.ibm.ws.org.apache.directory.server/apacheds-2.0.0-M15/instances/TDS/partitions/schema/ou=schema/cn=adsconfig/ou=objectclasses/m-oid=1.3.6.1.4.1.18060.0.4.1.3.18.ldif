@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.18,ou=objectClasses,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.18
+m-name: ads-transport
+m-description: A transport (TCP or UDP)
+m-supobjectclass: ads-base
+m-must: ads-transportId
+m-must: ads-systemPort
+m-must: ads-transportAddress
+entryUUID: ee2bd5ab-e5b1-402e-a005-042f344a9c29
+m-may: ads-transportBacklog
+m-may: ads-transportEnableSSL
+m-may: ads-transportNbThreads
+m-typeobjectclass: ABSTRACT
+entryCSN: 20130919065344.735000Z#000001#000#000000
+entryParentId: 87769cc1-b86e-404a-8d67-bcb407eabaf2
+createTimestamp: 20130919065352.711Z

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- JMS Activation Spec -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsActivationSpec">
+  <Object ocdref="com.ibm.ws.jca.jmsActivationSpec" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsActivationSpec" ibm:alias="jmsActivationSpec" ibm:any="1" ibm:extends="com.ibm.ws.jca.activationSpec.supertype" ibm:supportExtensions="true" name="%jmsActivationSpec" description="%jmsActivationSpec.desc">
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsActivationSpec.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Activation Spec Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsActivationSpec.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsActivationSpec.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsActivationSpec.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Connection Factory -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsConnectionFactory">
+  <Object ocdref="com.ibm.ws.jca.jmsConnectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsConnectionFactory" ibm:alias="jmsConnectionFactory" ibm:any="1" ibm:extends="com.ibm.ws.jca.connectionFactory.supertype" ibm:supportExtensions="true" name="%jmsConnectionFactory" description="%jmsConnectionFactory.desc">
+  <AD id="creates.objectClass"                type="String"  default="javax.jms.ConnectionFactory" cardinality="1" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsConnectionFactory.properties" ibm:flat="true" name="internal" description="internal use only"/>
+  <AD id="javaCompDefaultName"             type="String"  required="false" name="internal" description="internal use only" /> 
+ </OCD>
+
+ <!-- JMS Connection Factory Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsConnectionFactory.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsConnectionFactory.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsConnectionFactory.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Destination -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsDestination">
+  <Object ocdref="com.ibm.ws.jca.jmsDestination" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsDestination" ibm:alias="jmsDestination" ibm:any="1" ibm:extends="com.ibm.ws.jca.adminObject.supertype" ibm:supportExtensions="true" name="%jmsDestination" description="%jmsDestination.desc">
+  <AD id="creates.objectClass"                type="String"  default="javax.jms.Destination" cardinality="1" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsDestination.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Destination Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsDestination.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsDestination.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsDestination.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Queue -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsQueue">
+  <Object ocdref="com.ibm.ws.jca.jmsQueue" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsQueue" ibm:alias="jmsQueue" ibm:any="1" ibm:extends="com.ibm.ws.jca.adminObject.supertype" ibm:supportExtensions="true" name="%jmsQueue" description="%jmsQueue.desc">
+  <AD id="creates.objectClass"                type="String"  default="javax.jms.Queue,javax.jms.Destination" cardinality="2" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsQueue.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Queue Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsQueue.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsQueue.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsQueue.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Queue Connection Factory -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsQueueConnectionFactory">
+  <Object ocdref="com.ibm.ws.jca.jmsQueueConnectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsQueueConnectionFactory" ibm:alias="jmsQueueConnectionFactory" ibm:any="1" ibm:extends="com.ibm.ws.jca.connectionFactory.supertype" ibm:supportExtensions="true" name="%jmsQueueConnectionFactory" description="%jmsQueueConnectionFactory.desc">
+  <AD id="creates.objectClass"                type="String"  default="javax.jms.QueueConnectionFactory,javax.jms.ConnectionFactory" cardinality="2" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsQueueConnectionFactory.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Queue Connection Factory Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsQueueConnectionFactory.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsQueueConnectionFactory.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsQueueConnectionFactory.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Topic -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsTopic">
+  <Object ocdref="com.ibm.ws.jca.jmsTopic" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsTopic" ibm:alias="jmsTopic" ibm:any="1" ibm:extends="com.ibm.ws.jca.adminObject.supertype" ibm:supportExtensions="true" name="%jmsTopic" description="%jmsTopic.desc">
+  <AD id="creates.objectClass"                type="String"  default="javax.jms.Topic,javax.jms.Destination" cardinality="2" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsTopic.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Topic Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsTopic.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsTopic.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsTopic.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Topic Connection Factory -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsTopicConnectionFactory">
+  <Object ocdref="com.ibm.ws.jca.jmsTopicConnectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsTopicConnectionFactory" ibm:any="1" ibm:alias="jmsTopicConnectionFactory" ibm:extends="com.ibm.ws.jca.connectionFactory.supertype" ibm:supportExtensions="true" name="%jmsTopicConnectionFactory" description="%jmsTopicConnectionFactory.desc">
+  <AD id="creates.objectClass"                type="String"  default="javax.jms.TopicConnectionFactory,javax.jms.ConnectionFactory" cardinality="2" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsTopicConnectionFactory.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- JMS Topic Connection Factory Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.jmsTopicConnectionFactory.properties">
+  <Object ocdref="com.ibm.ws.jca.jmsTopicConnectionFactory.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.jmsTopicConnectionFactory.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

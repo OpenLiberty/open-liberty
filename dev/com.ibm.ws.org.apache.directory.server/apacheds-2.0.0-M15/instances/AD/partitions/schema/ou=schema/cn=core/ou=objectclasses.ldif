@@ -1,0 +1,10 @@
+version: 1
+dn: ou=objectClasses,cn=core,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 0472417b-d9d5-4773-adb4-bd63258ecb89
+entryCSN: 20130919081858.561000Z#000003#000#000000
+entryParentId: 6859d013-3b10-4df1-b16e-36a6a479716a
+ou: objectclasses
+createTimestamp: 20130919081908.997Z

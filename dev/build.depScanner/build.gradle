@@ -1,0 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+task createDepScanDir {
+	mkdir cnf.file('generated/dep_scan/')
+}
+
+task runDepScanner(type: Exec) {
+    dependsOn assemble
+    dependsOn createDepScanDir
+    group = "Execution"
+    description = "Run the output executable jar with ExecTask"
+    commandLine "java", "-jar", jar.archiveFile.get(), buildImage.file('wlp'), cnf.file('generated/dep_scan/')
+}

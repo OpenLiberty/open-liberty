@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: El mecanismo o mecanismos de autenticaci\u00f3n especificados en la seguridad del cliente {0} no son v\u00e1lidos. Los valores v\u00e1lidos son GSSUP o LTPA o GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=El mecanismo o mecanismos de capa de autenticaci\u00f3n de seguridad del cliente especificados no est\u00e1n soportados.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Aseg\u00farese de que el mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado sea GSSUP o LTPA o GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: El mecanismo de capa de autenticaci\u00f3n especificado en la seguridad del cliente es nulo.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=El mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado es nulo.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Aseg\u00farese de que el mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado sea GSSUP o LTPA o GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: El mecanismo o mecanismos de autenticaci\u00f3n especificados en la pol\u00edtica de seguridad del servidor {0} no son v\u00e1lidos. Los valores v\u00e1lidos son GSSUP o LTPA o GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=El mecanismo o mecanismos de capa de autenticaci\u00f3n de pol\u00edtica de seguridad del servidor especificados no est\u00e1n soportados.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Aseg\u00farese de que el mecanismo de capa de autenticaci\u00f3n de pol\u00edtica de seguridad del servidor especificado sea GSSUP o LTPA o GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: El mecanismo de capa de autenticaci\u00f3n especificado en la seguridad del cliente es nulo.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=El mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado es nulo.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Aseg\u00farese de que el mecanismo de capa de autenticaci\u00f3n de seguridad del cliente especificado sea GSSUP o LTPA o GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: La configuraci\u00f3n SSL {0} de la capa de transporte CSIv2 entrante no corresponde a la configuraci\u00f3n SSL del punto final IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=La capa de transporte CSIv2 entrante utiliza una configuraci\u00f3n SSL, pero el punto final IIOP no utiliza la misma configuraci\u00f3n SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Aseg\u00farese de que la configuraci\u00f3n SSL en la capa de transporte CSIv2 entrante en el archivo server.xml sea una de las configuraciones SSL que utiliza el punto final IIOP.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: El punto final IIOP no tiene una configuraci\u00f3n SSL y la capa de transporte CSIv2 entrante requiere que se utilice la configuraci\u00f3n SSL de {0} en el punto final IIOP.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=El punto final IIOP no tiene al menos un elemento iiopsOptions con una configuraci\u00f3n SSL a la que pueda hacer referencia la capa de transporte CSIv2 entrante.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Aseg\u00farese de que el punto final IIOP tenga al menos un elemento iiopsOptions con la misma configuraci\u00f3n SSL que utiliza la capa de transporte CSIv2 entrante.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: El cliente no puede crear la se\u00f1al de aserci\u00f3n de identidad ITTDistinguishedName para el nombre distinguido {0}. El mensaje de excepci\u00f3n es: {1}.
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=El sujeto del usuario que se est\u00e1 declarando no contiene un nombre distinguido v\u00e1lido por lo que la aserci\u00f3n de identidad no puede realizarse. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Revise el mensaje de excepci\u00f3n, aseg\u00farese de que el registro de usuario configurado en el archivo server.xml da soporte a nombres distinguidos y vuelva a autenticar el usuario.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: El cliente no puede crear la se\u00f1al de aserci\u00f3n de identidad ITTX509CertChain. El mensaje de excepci\u00f3n es: {0}.
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=El sujeto del usuario que se est\u00e1 declarando no contiene un certificado v\u00e1lido por lo que la aserci\u00f3n de identidad no puede realizarse. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Revise el mensaje de excepci\u00f3n y aseg\u00farese de que el almac\u00e9n de claves, SSL y la capa de transporte de pol\u00edticas del servidor est\u00e9n configurados en el archivo server.xml y vuelva a autenticar el usuario.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: La cadena de certificado de cliente no est\u00e1 disponible para continuar con la aserci\u00f3n de identidad.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=El sujeto del usuario que se est\u00e1 declarando no contiene un certificado v\u00e1lido por lo que la aserci\u00f3n de identidad no puede realizarse. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Aseg\u00farese de que el almac\u00e9n de claves, SSL y la capa de transporte de pol\u00edticas del servidor est\u00e9n configurados en el archivo server.xml y vuelva a autenticar el usuario.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: El elemento orb con el atributo id {0} requiere un registro de usuarios, pero no se ha habilitado ning\u00fan registro de usuarios despu\u00e9s de {1} segundos. Como resultado, no se iniciar\u00e1 ninguna aplicaci\u00f3n. Aseg\u00farese de configurar un registro de usuarios adecuado en el archivo server.xml.
+NO_USER_REGISTRY.explanation=No se ha iniciado ninguna aplicaci\u00f3n porque hay un ORB (Object Request Broker) en un servidor que requiere un registro de usuarios, pero no se ha encontrado ning\u00fan registro de usuarios. Cuando se haya configurado un registro de usuarios adecuado, las aplicaciones se iniciar\u00e1n.
+NO_USER_REGISTRY.useraction=Aseg\u00farese de configurar un registro de usuarios adecuado para el entorno.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: La capa de autenticaci\u00f3n CSIv2 est\u00e1 inhabilitada porque el valor de establishTrustInClient es {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Cuando establishTrustInClient est\u00e1 establecido en Never, la capa de autenticaci\u00f3n CSIv2 est\u00e1 inhabilitada.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Para habilitar la capa de autenticaci\u00f3n CSIv2, establezca el valor de establishTrustInClient en Supported o Required.
+
+

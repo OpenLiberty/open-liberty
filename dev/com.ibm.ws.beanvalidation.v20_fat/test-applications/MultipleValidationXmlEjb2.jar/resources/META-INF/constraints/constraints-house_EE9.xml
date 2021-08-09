@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mappings xmlns="http://xmlns.jcp.org/xml/ns/validation/mapping"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/validation/mapping
+            http://xmlns.jcp.org/xml/ns/validation/mapping/validation-mapping-2.0.xsd"
+        version="2.0">
+  <default-package>bval.v20.ejb2.web.beans</default-package>
+
+  <bean class="AValidationXMLTestBean2" ignore-annotations="true">
+    <field name="builder2">
+      <constraint annotation="jakarta.validation.constraints.NotNull" />
+    </field>
+
+    <field name="address2">
+      <constraint annotation="jakarta.validation.constraints.NotNull" />
+
+      <constraint annotation="jakarta.validation.constraints.Size">
+        <element name="min">5</element>
+        <element name="max">80</element>
+      </constraint>
+    </field>
+    
+    <method name="testMethodParmConstraintEJB2" ignore-annotations="true">
+      <parameter type="java.lang.String">
+	    <constraint annotation="jakarta.validation.constraints.NotNull"/>
+	    <constraint annotation="jakarta.validation.constraints.Size">
+          <element name="min">3</element>
+          <element name="max">3</element>
+        </constraint>
+	  </parameter>
+	</method>
+    
+  </bean>
+</constraint-mappings>

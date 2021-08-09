@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry/resources/com/ibm/ws/security/registry/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3000 - CWWKS3099
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID=CWWKS3000E: Es ist eine Konfigurationsausnahme eingetreten. Es ist kein refId-Parameter f\u00fcr die userRegistry-Konfiguration konfiguriert.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.explanation=Das Konfigurationselement userRegistry referenziert bestimmte UserRegistry-Instanzen anhand der zugeh\u00f6rigen ID-Werte.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.useraction=Geben Sie einen refId-Parameter in der userRegistry-Konfiguration an.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID=CWWKS3001E: Es ist eine Konfigurationsausnahme eingetreten. Die angeforderte UserRegistry-Instanz mit der ID {0} wurde nicht gefunden.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.explanation=Jede UserRegistry-Konfiguration gibt einen ID-Parameter an.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.useraction=Geben Sie den ID-Parameter f\u00fcr ein konfiguriertes Element an oder erstellen Sie die erforderliche Konfiguration.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE=CWWKS3002E: Es ist eine Konfigurationsausnahme eingetreten. Die angeforderte UserRegistry-Factory des Typs {0} wurde nicht gefunden.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.explanation=Jedes UserRegistry-Implementierungsbundle gibt den zugeh\u00f6rigen bereitgestellten Typ an.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.useraction=Geben Sie einen unterst\u00fctzten Typ an oder installieren Sie das Bundle, das die UserRegistry-Instanz des angeforderten Typs bereitstellt.
+
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID=CWWKS3003E: Es ist eine Konfigurationsausnahme eingetreten. In einer Konfiguration f\u00fcr den Registry-Typ {0} ist keine ID definiert.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.explanation=Die Konfiguration f\u00fcr den Registry-Typ definiert keine ID.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.useraction=Definieren Sie eine ID f\u00fcr die Konfiguration des Registry-Typs.
+
+USER_REGISTRY_SERVICE_WITHOUT_TYPE=CWWKS3004E: Es ist eine interne Ausnahme eingetreten. Der Service {0} definiert den Typ der von ihm implementierten Registry nicht.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.explanation=Der Service definiert nicht die Eigenschaft com.ibm.ws.security.registry.type.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.useraction=Definieren Sie die Eigenschaft com.ibm.ws.security.registry.type f\u00fcr den Service.
+
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE=CWWKS3005E: Es ist eine Konfigurationsausnahme eingetreten. Es ist kein UserRegistry-Implementierungsservice verf\u00fcgbar. Stellen Sie sicher, dass Sie eine Benutzerregistry konfiguriert haben.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.explanation=Es ist keine UserRegistry-Implementierung \u00fcber die OSGi-Service-Registry verf\u00fcgbar.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.useraction=Geben Sie ein UserRegistry-Implementierungsfeature an.
+
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE=CWWKS3006E: Es ist eine Konfigurationsausnahme eingetreten. Es sind mehrere UserRegistry-Implementierungsservices verf\u00fcgbar. Der zu verwendende Service kann vom System nicht bestimmt werden.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.explanation=Es sind mehrere UserRegistry-Implementierungen \u00fcber die OSGi-Service-Registry verf\u00fcgbar.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.useraction=Geben Sie nur ein UserRegistry-Implementierungsfeature an. Wenn Sie mehrere Benutzerregistrys ausw\u00e4hlen, m\u00fcssen Sie das Einbindungsfeature f\u00fcr die Einbindung von Benutzerregistrys einschlie\u00dfen.
+
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE=CWWKS3007E: Es ist eine Konfigurationsausnahme eingetreten. Eine Konfiguration des Typs {0} mit der ID {1} steht mit der Konfiguration des Typs {2} mit der ID {3} in Konflikt. Die Konfiguration des Typs {0} mit der ID {1} wird ignoriert.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.explanation=Mehrere Registry-Konfigurationen definieren dieselbe ID. Dies wird nicht unterst\u00fctzt.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.useraction=\u00c4ndern Sie die ID einer der in Konflikt stehenden Registry-Konfigurationen so, dass sie eindeutig ist.
+
+FEDERATING_REGISTRY=CWWKS3008I: Die Benutzerregistry mit der ID {0} wurde eingebunden.
+FEDERATING_REGISTRY.explanation=Das Einbinden der Benutzerregistry ist aktiviert und die konfigurierte Benutzerregistry wurde eingebunden.
+FEDERATING_REGISTRY.useraction=Wenn das Einbinden von Repositorys nicht erforderlich ist, aktualisieren Sie die Konfiguration in der Datei server.xml so, dass die Einbindung inaktiviert wird.
+
+REMOVE_FEDERATED_REGISTRY=CWWKS3009I: Die Benutzerregistry mit der ID {0} wurde aus der Einbindung entfernt.
+REMOVE_FEDERATED_REGISTRY.explanation=Die Einbindung der Benutzerregistry ist aktiviert und die zuvor eingebundene konfigurierte Benutzerregistry wurde aus der Einbindung entfernt.
+REMOVE_FEDERATED_REGISTRY.useraction=Wenn das Einbinden von Repositorys nicht erforderlich ist, aktualisieren Sie die Konfiguration in der Datei server.xml so, dass die Einbindung inaktiviert wird.
+
+USER_REGISTRY_SERVICE_FEDERATION_FAILED=CWWKS3010E: Es ist eine unerwartete Ausnahme beim Einbinden der Benutzerregistrys eingetreten: {0}
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.explanation=Der Versuch, Benutzerregistrys einzubinden, ist fehlgeschlagen.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf der Support-Webseite f\u00fcr WebSphere Application Server Support (http://www.ibm.com/software/webservers/appserv/was/support) an.

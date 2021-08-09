@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<ejb-jar
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd"
+    version="2.1"
+    id="EJBJar_ID"
+>
+  <enterprise-beans>
+    <session id="Stateless2xLocalBean_ID">
+      <ejb-name>Stateless2xLocalBean</ejb-name>
+      <local-home>com.ibm.ejb2x.ejbinwar.webejb2x.Stateless2xLocalHome</local-home>
+      <local>com.ibm.ejb2x.ejbinwar.webejb2x.Stateless2xLocal</local>
+      <ejb-class>com.ibm.ejb2x.ejbinwar.webejb2x.Stateless2xBean</ejb-class>
+      <session-type>Stateless</session-type>
+    </session>
+
+    <session id="Stateless2xRemoteBean_ID">
+      <ejb-name>Stateless2xRemoteBean</ejb-name>
+      <home>com.ibm.ejb2x.ejbinwar.intf.Stateless2xRemoteHome</home>
+      <remote>com.ibm.ejb2x.ejbinwar.intf.Stateless2xRemote</remote>
+      <ejb-class>com.ibm.ejb2x.ejbinwar.webejb2x.Stateless2xBean</ejb-class>
+      <session-type>Stateless</session-type>
+
+      <ejb-local-ref id="EJBLocalRef_Stateless2xRemoteBean_Stateless2xLocal_ID">
+        <ejb-ref-name>ejb/Stateless2xLocal</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local-home>com.ibm.ejb2x.ejbinwar.webejb2x.Stateless2xLocalHome</local-home>
+        <ejb-link>Stateless2xLocalBean</ejb-link>
+      </ejb-local-ref>
+
+      <ejb-local-ref id="EJBLocalRef_Stateless2xRemoteBean_Stateful2xLocal_ID">
+        <ejb-ref-name>ejb/Stateful2xLocal</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local-home>com.ibm.ejb2x.ejbinwar.webejb2x.Stateful2xLocalHome</local-home>
+        <ejb-link>Stateful2xLocalBean</ejb-link>
+      </ejb-local-ref>
+    </session>
+
+    <session id="Stateful2xLocalBean_ID">
+      <ejb-name>Stateful2xLocalBean</ejb-name>
+      <local-home>com.ibm.ejb2x.ejbinwar.webejb2x.Stateful2xLocalHome</local-home>
+      <local>com.ibm.ejb2x.ejbinwar.webejb2x.Stateful2xLocal</local>
+      <ejb-class>com.ibm.ejb2x.ejbinwar.webejb2x.Stateful2xBean</ejb-class>
+      <session-type>Stateful</session-type>
+    </session>
+
+    <session id="Stateful2xRemoteBean_ID">
+      <ejb-name>Stateful2xRemoteBean</ejb-name>
+      <home>com.ibm.ejb2x.ejbinwar.intf.Stateful2xRemoteHome</home>
+      <remote>com.ibm.ejb2x.ejbinwar.intf.Stateful2xRemote</remote>
+      <ejb-class>com.ibm.ejb2x.ejbinwar.webejb2x.Stateful2xBean</ejb-class>
+      <session-type>Stateful</session-type>
+    </session>
+  </enterprise-beans>
+
+  <assembly-descriptor>
+    <container-transaction>
+      <method>
+        <ejb-name>Stateful2xLocalBean</ejb-name>
+        <method-name>test</method-name>
+      </method>
+
+      <trans-attribute>RequiresNew</trans-attribute>
+    </container-transaction>
+  </assembly-descriptor>
+</ejb-jar>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0">
+
+<!-- Parent 1, has child test.config.childalias.child.1 in bundle B that uses childAlias -->
+
+	<OCD name="test.config.childalias.parent.6" id="test.config.childalias.parent.6"
+		ibm:supportExtensions="true" ibm:alias="testCAParent6">
+		<AD id="testAttribute6" type="String" description="test attribute 6" />
+	</OCD>
+
+	<Designate factoryPid="test.config.childalias.parent.6">
+		<Object ocdref="test.config.childalias.parent.6" />
+	</Designate>
+
+
+	<!-- Child 1, uses childAlias of testCAChild, parent is in bundle C -->
+	<OCD name="test.config.childalias.child.5" id="test.config.childalias.child.5"
+		ibm:parentPid="test.config.childalias.parent.5" ibm:childAlias="testCAChild">
+		<AD id="testAttribute5" name="Attribute 5" description="Attribute 5"
+			type="String" default="Attribute 5" />
+		<AD id="defaultFive" name="Default Attribute" description="Default Attribute"
+			type="String" default="defaultValueFive"/>
+	</OCD>
+
+	<Designate factoryPid="test.config.childalias.child.5">
+		<Object ocdref="test.config.childalias.child.5" />
+	</Designate>
+	
+
+</metatype:MetaData>

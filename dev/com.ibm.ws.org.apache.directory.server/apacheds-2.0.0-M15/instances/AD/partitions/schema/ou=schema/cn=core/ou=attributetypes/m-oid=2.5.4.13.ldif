@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.4.13,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.13
+m-name: description
+m-description: RFC2256: descriptive information
+m-obsolete: FALSE
+entryUUID: 7b13faf5-89d7-482c-b33c-aaf19ed47931
+entryCSN: 20130919081858.569000Z#000001#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081909.001Z

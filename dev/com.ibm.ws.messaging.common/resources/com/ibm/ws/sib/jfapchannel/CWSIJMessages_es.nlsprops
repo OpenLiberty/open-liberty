@@ -1,0 +1,600 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 92072           2013-19-02 venugopv L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIJ0001=CWSIJ0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIJ0000-CWSIJ9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIJ0001-CWSIJ9998   com.ibm.ws.sib.jfapchannel
+#   CWSIJ9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.43,0,10/10/14,01:07:38
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/jfapchannel/CWSIJMessages.nlsprops
+#COMPONENTPREFIX CWSIJ
+#COMPONENTNAMEFOR CWSIJ Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: Se ha producido un error interno. No se ha podido crear un objeto de clase {0} debido a la excepci\u00f3n: {1}.
+EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: No se puede invocar el m\u00e9todo {0} de clase {1} debido a la excepci\u00f3n: {2}
+EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: Se ha producido un error interno. No se ha podido crear un objeto de clase {0} debido a la excepci\u00f3n: {1}.
+EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: No se puede invocar el m\u00e9todo {0} de clase {1} debido a la excepci\u00f3n: {2}
+EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: No se puede encontrar una instancia de servicio Channel Framework para utilizarla para las comunicaciones.
+CF_NOT_AVAILABLE_SICJ0005.explanation=No se puede encontrar una instancia del servicio Channel Framework.  No es posible la comunicaci\u00f3n de red.
+CF_NOT_AVAILABLE_SICJ0005.useraction=Aseg\u00farese de que el servidor de destino est\u00e1 iniciado y utilizando el puerto de rutina de carga por omisi\u00f3n 2809 en la m\u00e1quina local. Si no lo est\u00e1, ejecute el mandato launchClient de nuevo con el par\u00e1metro -CCBootstrapPort especificando el n\u00famero de puerto correcto y el par\u00e1metro -CCBootstrapHost especificando el nombre de host correcto del servidor de destino. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+EXCP_CONN_FAIL_NO_CF_SICJ0007=CWSIJ0007E: Error en la conexi\u00f3n porque no se ha podido inicializar el componente Communications.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.explanation=Se ha intentado realizar una conexi\u00f3n de red, pero ha fallado porque el componente Communications no ha podido inicializarse correctamente.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.useraction=Examine los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 el componente Communications no se ha inicializado correctamente.  Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_OUTBOUND_SICJ0008=CWSIJ0008W: La cadena de canal de mensajer\u00eda de salida por omisi\u00f3n {0} no se ha definido para este servidor de aplicaciones.
+NO_DEFAULT_OUTBOUND_SICJ0008.explanation=La cadena de canal de mensajer\u00eda de salida por omisi\u00f3n no se ha definido para este servidor de aplicaciones.  Quiz\u00e1 este servidor de aplicaciones no pueda establecer conexiones con motores de mensajer\u00eda de pasarela remotos.
+NO_DEFAULT_OUTBOUND_SICJ0008.useraction=Defina una cadena de mensajer\u00eda de salida por omisi\u00f3n para este servidor de aplicaciones.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009=CWSIJ0009W: La cadena de canal de mensajer\u00eda de salida segura por omisi\u00f3n {0} no se ha definido para este servidor de aplicaciones.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.explanation=La cadena de canal de mensajer\u00eda de salida segura por omisi\u00f3n no se ha definido para este servidor de aplicaciones.  Quiz\u00e1 este servidor de aplicaciones no pueda establecer conexiones con motores de mensajer\u00eda de pasarela remotos.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.useraction=Defina una cadena de mensajer\u00eda de salida segura por omisi\u00f3n para este servidor de aplicaciones.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010=CWSIJ0010W: La cadena de canal de mensajer\u00eda de salida a trav\u00e9s de t\u00fanel por omisi\u00f3n {0} no se ha definido para este servidor de aplicaciones.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.explanation=La cadena de canal de mensajer\u00eda de salida a trav\u00e9s de t\u00fanel por omisi\u00f3n no se ha definido para este servidor de aplicaciones.  Quiz\u00e1 este servidor de aplicaciones no pueda establecer conexiones con motores de mensajer\u00eda de pasarela remotos.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Defina una cadena de mensajer\u00eda de salida a trav\u00e9s de t\u00fanel por omisi\u00f3n para este servidor de aplicaciones.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: La cadena de canal de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel por omisi\u00f3n {0} no se ha definido para este servidor de aplicaciones
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=La cadena de canal de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel por omisi\u00f3n no se ha definido para este servidor de aplicaciones.  Quiz\u00e1 este servidor de aplicaciones no pueda establecer conexiones con motores de mensajer\u00eda de pasarela remotos.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Defina una cadena de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel por omisi\u00f3n para este servidor de aplicaciones.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the SSL properties file.
+NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: El archivo de propiedades ''{0}'' utilizado para determinar la seguridad a nivel de transporte de mensajer\u00eda inicial del cliente no se ha podido localizar.
+NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=El archivo de propiedades que contiene informaci\u00f3n que se utiliza cuando se establecen conexiones de mensajer\u00eda del cliente seguras no se puede localizar.  Se asumir\u00e1 un conjunto de valores por omisi\u00f3n.  Quiz\u00e1 no sea posible establecer conexiones de mensajer\u00eda del cliente seguras.
+NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Configure el archivo de propiedades para la seguridad del nivel de transporte de mensajer\u00eda del cliente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Se ha producido un error interno. No se ha localizado una representaci\u00f3n de la clase {0}.
+NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
+NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: Se ha producido un error interno. No se ha localizado una representaci\u00f3n de la clase {0}.
+NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
+NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: Se ha producido un error interno. No se ha localizado una representaci\u00f3n de la clase {0}.
+NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
+NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: Se ha producido un error interno. No se ha localizado una representaci\u00f3n de la clase {0}.
+NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
+NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: Se ha producido un error interno. No se ha localizado una representaci\u00f3n de la clase {0}.
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: No se ha podido crear la cadena de canal de mensajer\u00eda de salida por omisi\u00f3n {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: No se ha podido crear la cadena de canal de mensajer\u00eda de salida segura {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: No se ha podido crear la cadena de canal de mensajer\u00eda de salida a trav\u00e9s de t\u00fanel {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: No se ha podido crear la cadena de canal de mensajer\u00eda de salida segura a trav\u00e9s de t\u00fanel {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: No se puede iniciar ninguna cadena de canal de mensajer\u00eda de entrada para este servidor de aplicaciones.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=No se ha podido iniciar ninguna cadena de canal de mensajer\u00eda de entrada, posiblemente porque no se ha definido ninguna para este servidor de aplicaciones.  Los clientes de mensajer\u00eda u otros motores de mensajer\u00eda quiz\u00e1 no puedan establecer correctamente conexiones con este servidor de aplicaciones.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.useraction=Defina cadenas de canal de entrada adicionales en el servidor de aplicaciones para fines de mensajer\u00eda.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The minimum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028=CWSIJ0028W: El intervalo de pulso de {0} configurado para el canal {1} es inferior al valor m\u00ednimo de {2}.  Se ha inhabilitado el uso de pulsos.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.explanation=Se ha especificado un valor incorrecto para un atributo de canal de configuraci\u00f3n.  Como consecuencia, el uso de pulsos para todas las comunicaciones en la cadena del canal asociado se ha inhabilitado.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.useraction=Se ha especificado un valor de intervalo de pulso incorrecto.  Modifique este valor de forma que est\u00e9 en el intervalo de valores aceptados.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The maximum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029=CWSIJ0029W: El intervalo de pulso de {0} configurado para el canal {1} es superior al valor m\u00e1ximo de {2}.  Se ha inhabilitado el uso de pulsos.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.explanation=Se ha especificado un valor incorrecto para un atributo de canal de configuraci\u00f3n.  Como consecuencia, el uso de pulsos para todas las comunicaciones en la cadena del canal asociado se ha inhabilitado.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.useraction=Se ha especificado un valor de intervalo de pulso incorrecto.  Modifique este valor de forma que est\u00e9 en el intervalo de valores aceptados.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030=CWSIJ0030W: El tiempo de espera de pulso de {0} configurado para el canal {1} es inferior al valor m\u00ednimo de {2}.  Se ha inhabilitado el uso de pulsos.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.explanation=Se ha especificado un valor incorrecto para un atributo de canal de configuraci\u00f3n.  Como consecuencia, el uso de pulsos para todas las comunicaciones en la cadena del canal asociado se ha inhabilitado.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.useraction=Se ha especificado un valor de tiempo de espera de pulso incorrecto.  Modifique este valor de forma que est\u00e9 en el intervalo de valores aceptados.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031=CWSIJ0031W: El tiempo de espera de pulso de {0} configurado para el canal {1} es superior al valor m\u00e1ximo de {2}.  Se ha inhabilitado el uso de pulsos.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.explanation=Se ha especificado un valor incorrecto para un atributo de canal de configuraci\u00f3n.  Como consecuencia, el uso de pulsos para todas las comunicaciones en la cadena del canal asociado se ha inhabilitado.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=Se ha especificado un valor de tiempo de espera de pulso incorrecto.  Modifique este valor de forma que est\u00e9 en el intervalo de valores aceptados.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032=CWSIJ0032E: An internal error occurred.  An object of class {0} cannot be created because of exception: {1}.
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.explanation=CMSG0001
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: Se ha producido un error interno. No se ha podido crear un objeto de clase {0} debido a la excepci\u00f3n: {1}.
+NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
+NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: Se ha producido un error interno. No se ha podido crear un objeto de clase {0} debido a la excepci\u00f3n: {1}.
+NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
+NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: Un motor de mensajer\u00eda, conectado anteriormente desde el host, {0} en la cadena de transporte {1}, se ha desconectado inesperadamente.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.explanation=Se ha desconectado un motor de mensajer\u00eda de este servidor de aplicaciones sin seguir los protocolos de desconexi\u00f3n esperados.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036=CWSIJ0036E: Un cliente, conectado anteriormente desde el host, {0} en la cadena de transporte {1}, se ha desconectado inesperadamente.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.explanation=Se ha desconectado un cliente de este servidor de aplicaciones sin seguir los protocolos de desconexi\u00f3n esperados.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_RECEIVED_SICJ0037=CWSIJ0037E: Se ha interrumpido una conexi\u00f3n del motor de mensajer\u00eda establecida debido a que se han recibido datos no v\u00e1lidos del host {0} en la cadena de transporte {1}.
+ME_BAD_DATA_RECEIVED_SICJ0037.explanation=Se ha desconectado una conexi\u00f3n del motor de mensajer\u00eda del host especificado por transmitir datos no v\u00e1lidos.
+ME_BAD_DATA_RECEIVED_SICJ0037.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_ON_CONNECT_SICJ0038=CWSIJ0038E: Se ha interrumpido una conexi\u00f3n del motor de mensajer\u00eda debido a que se han recibido datos iniciales no v\u00e1lidos del host {0} en la cadena de transporte {1}.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.explanation=Se ha desconectado una conexi\u00f3n del motor de mensajer\u00eda del host especificado por transmitir datos no v\u00e1lidos.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_RECEIVED_SICJ0039=CWSIJ0039E: Se ha interrumpido una conexi\u00f3n establecida debido a que se han recibido datos no v\u00e1lidos del host {0} en la cadena de transporte {1}.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.explanation=Se ha desconectado una conexi\u00f3n del host especificado por transmitir datos no v\u00e1lidos.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040=CWSIJ0040E: Se ha interrumpido una conexi\u00f3n debido a que se han recibido datos iniciales no v\u00e1lidos del host {0} en la cadena de transporte {1}.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.explanation=Se ha desconectado una conexi\u00f3n del host especificado por transmitir datos no v\u00e1lidos.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+ME_NOT_RESPONDING_SICJ0041=CWSIJ0041E: Se ha interrumpido una conexi\u00f3n del motor de mensajer\u00eda del host {0}en la cadena de transporte {1} porque no ha respondido durante {2} segundos.
+ME_NOT_RESPONDING_SICJ0041.explanation=Se ha desconectado una conexi\u00f3n del motor de mensajer\u00eda del host especificado porque no respond\u00eda.
+ME_NOT_RESPONDING_SICJ0041.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+CLIENT_NOT_RESPONDING_SICJ0042=CWSIJ0042E: Se ha interrumpido una conexi\u00f3n del host {0} en la cadena de transporte {1} porque no ha respondido durante {2} segundos.
+CLIENT_NOT_RESPONDING_SICJ0042.explanation=Se ha desconectado una conexi\u00f3n del host especificado porque no respond\u00eda.
+CLIENT_NOT_RESPONDING_SICJ0042.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: Se ha producido un error interno.
+CONNECTION_INTERNAL_SICJ0043.explanation=CMSG0001
+CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: Se ha intentado realizar una conexi\u00f3n que ya est\u00e1 cerrada.
+CONNECTION_CLOSED_SICJ0044.explanation=Se ha intentado realizar una operaci\u00f3n en un recurso de conexi\u00f3n que se hab\u00eda cerrado previamente.  Este problema puede deberse a un error de programaci\u00f3n de la aplicaci\u00f3n o a que el sistema ha cerrado el recurso de conexi\u00f3n en respuesta a la detecci\u00f3n de una condici\u00f3n de error.
+CONNECTION_CLOSED_SICJ0044.useraction=Examine los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n. Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain
+CONVERSATIONIMPL_INVALIDATE_SICJ0045=CWSIJ0045E: Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n a la red desde el host {0} utilizando la cadena {1}.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.explanation=Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=Examine todas las excepciones enlazadas y los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n de red.  Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: Se ha producido un error interno.
+CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=CMSG0001
+CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: Se ha intentado realizar una conexi\u00f3n que ya est\u00e1 cerrada.
+CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=Se ha intentado realizar una operaci\u00f3n en un recurso de conexi\u00f3n que se hab\u00eda cerrado previamente.  Este problema puede deberse a un error de programaci\u00f3n de la aplicaci\u00f3n o a que el sistema ha cerrado el recurso de conexi\u00f3n en respuesta a la detecci\u00f3n de una condici\u00f3n de error.
+CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=Examine los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n. Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: Se ha producido un error interno.
+CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=CMSG0001
+CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: Se ha producido un error interno.
+EXCHANGERL_INTERNAL_SICJ0049.explanation=CMSG0001
+EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: Se ha producido un error interno.
+IDTABLE_INTERNAL_SICJ0050.explanation=CMSG0001
+IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name
+INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n a la red desde el host {0} utilizando la cadena {1}.
+INBOUNDCONV_INVALIDATE_SICJ0051.explanation=Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.  Consulte todas las excepciones enlazadas para obtener m\u00e1s informaci\u00f3n.
+INBOUNDCONV_INVALIDATE_SICJ0051.useraction=Examine todas las excepciones enlazadas y los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n de red. Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: Se ha producido un error interno.
+INBOUNDCONV_INTERNAL_SICJ0052.explanation=CMSG0001
+INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name and {1} is the chain name.
+TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: Se ha terminado una conexi\u00f3n de red despu\u00e9s de que el igual ha enviado informaci\u00f3n con el formato incorrecto.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.explanation=Ha terminado una conexi\u00f3n de red desde el host en la cadena de transporte despu\u00e9s de que se haya recibido informaci\u00f3n con un formato incorrecto.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: Se ha producido un error interno.
+TRANSPARSER_INTERNAL_SICJ0054.explanation=CMSG0001
+TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: La falta de recursos ha impedido que se establezca una nueva conexi\u00f3n.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=No se puede establecer una nueva conexi\u00f3n debido a la falta de recursos necesarios.  Este problema se debe a que hay un gran n\u00famero de conexiones activas establecidas.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.useraction=Reduzca los recursos que las aplicaciones est\u00e9n utilizando cerrando cualquier conexi\u00f3n que no sea necesaria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name
+OUTBOUNDCONV_INVALIDATE_SICJ0056=CWSIJ0056E: Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n a la red con el host {0} en el puerto {1} utilizando la cadena {2}.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.explanation=Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=Examine todas las excepciones enlazadas y los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n de red. Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: Se ha producido un error interno.
+PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=CMSG0001
+PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: Se ha producido un error interno.
+REQIDTABLE_INTERNAL_SICJ0058.explanation=CMSG0001
+REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: Se ha producido un error interno.
+SVRCONNMGR_INTERNAL_SICJ0059.explanation=CMSG0001
+SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: Se ha producido un error interno.
+TRANSDATA_INTERNAL_SICJ0060.explanation=CMSG0001
+TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: Se ha producido un error interno.
+TRANSDATAIT_INTERNAL_SICJ0061.explanation=CMSG0001
+TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: Se ha producido un error interno.
+CONNDATAGROUP_INTERNAL_SICJ0062.explanation=CMSG0001
+CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the hostname, {1} is the port.
+CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: No se puede establecer una conexi\u00f3n de red con el nombre del host {0}, puerto {1}.
+CONNDATAGROUP_CONNFAILED_SICJ0063.explanation=No se puede establecer una conexi\u00f3n de red con el nombre de host y puerto especificados.
+CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=Determine si el nombre de host especificado es v\u00e1lido y si hay un proceso a la escucha de conexiones en el puerto especificado. El problema de conexi\u00f3n SSL detectado al utilizar el cliente ligero para JMS con WebSphere Application Server o Resource Adapter para JMS con WebSphere Application Server puede diagnosticarse con mayor facilidad si se configura la propiedad el sistema javax.net.debug=all (Sun JSSE) o javax.net.debug=true (IBM JSSE) y se vuelve a ejecutar el cliente de aplicaciones.
+
+# -------------------------------------------------------------------------------------------------
+OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: Se ha producido un error interno.
+OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=CMSG0001
+OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Se ha producido un error interno.
+CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
+CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: No se puede localizar una cadena de transportes denominada {0} desde la que obtener una configuraci\u00f3n SSL que puede ser necesaria para establecer una conexi\u00f3n con un host remoto denominado {1}.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=La informaci\u00f3n necesaria para establecer una conexi\u00f3n a un igual basada en SSL (Secure Sockets Layer) no existe en la configuraci\u00f3n actual.  Esta informaci\u00f3n se obtiene normalmente de una definici\u00f3n de cadena de transporte adecuada. Esta definici\u00f3n de cadena tiene un nombre que coincide con una cadena que existe en el igual remoto.  No se puede encontrar dicha cadena de transporte.  Es posible que no se pueda establecer la conexi\u00f3n.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Defina las cadenas de transporte adicionales.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: La cadena de transporte denominada {0} no contiene ninguna configuraci\u00f3n SSL que puede ser necesaria para establecer una conexi\u00f3n con el host remoto denominado {1}.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=La informaci\u00f3n necesaria para establecer una conexi\u00f3n a un igual basada en SSL (Secure Sockets Layer) no existe en la configuraci\u00f3n actual.  Esta informaci\u00f3n se obtiene normalmente de una definici\u00f3n de cadena de transporte adecuada. Esta definici\u00f3n de cadena tiene un nombre que coincide con una cadena que existe en el igual remoto.  No se puede encontrar dicha cadena de transporte.  Es posible que no se pueda establecer la conexi\u00f3n.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Configure los canales de transporte SSL para la cadena de transporte especificada.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=CMSG0001
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: Se ha producido un error interno. No se ha podido crear una instancia del canal {0} debido a la excepci\u00f3n: {1}.
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=CMSG0001
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: Se ha interrumpido una conexi\u00f3n del motor de mensajer\u00eda del host {0} en el puerto {1} utilizando la cadena de transporte {2} porque no ha respondido durante {3} segundos.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.explanation=Se ha desconectado una conexi\u00f3n del motor de mensajer\u00eda del host especificado porque no respond\u00eda.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071=CWSIJ0071E: Se ha interrumpido una conexi\u00f3n con el host {0} en el puerto {1} utilizando la cadena de transporte {2} porque no ha respondido durante {3} segundos.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.explanation=Se ha desconectado una conexi\u00f3n del host especificado porque no respond\u00eda.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port and {2} is the chain
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072=CWSIJ0072E: Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n a la red con el host {0} en el puerto {1} utilizando la cadena {2}.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.explanation=Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=Examine todas las excepciones enlazadas y los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n de red. Consulte los mensajes de error adjuntos para obtener m\u00e1s informaci\u00f3n y corregir el problema si es posible.
+
+# -------------------------------------------------------------------------------------------------
+# *** ignore this message - it is no longer used in the code. ***
+# {0} is the host, {1} is the port and {2} is the transport chain name
+#OUTOFMEMORY_SICJ0073=CWSIJ0073E: The available heap memory was exhausted while attempting to allocate storage for a message received from host {0} on port {1} using chain {2}.
+#OUTOFMEMORY_SICJ0073.explanation=Insufficient heap memory was available to store message data received from the specified remote process.  The connection to the remote process was closed.
+#OUTOFMEMORY_SICJ0073.useraction=Investigate the message throughput, message size and load of your application server.  Consider reducing message throughput, message size, application server load or increasing the amount of heap allocated by your server process.
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: Se ha producido un error interno.
+BUFFER_NOT_VALID_SICJ0074.explanation=CMSG0001
+BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: Se ha producido un error interno.
+BUFFER_NOT_PREPARED_SICJ0075.explanation=CMSG0001
+BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: Se ha producido un error interno.
+BUFFER_ALREADY_RELEASED_SICJ0076.explanation=CMSG0001
+BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+PRIORITY_QUEUE_PURGED_SICJ0077.explanation=Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+PRIORITY_QUEUE_PURGED_SICJ0077.useraction=Examine todas las excepciones enlazadas y los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n de red. Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAIN_SICJ0078=CWSIJ0078E: Una excepci\u00f3n no esperada {0} ha impedido que se inicie la cadena de transporte {1}.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.explanation=La cadena de transporte especificada no se puede iniciar debido a la excepci\u00f3n especificada.  Otros procesos no podr\u00e1n establecer conexiones de red con este servidor, mediante la cadena de transporte especificada.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.useraction=Examine la excepci\u00f3n nombrada en el mensaje y determine si contiene informaci\u00f3n suficiente para solucionar el problema. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079=CWSIJ0079I: No se ha iniciado la cadena de transporte de mensajer\u00eda {0}.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.explanation=No se ha iniciado la cadena de transporte debido a que no se ha definido ning\u00fan bus en la c\u00e9lula que permita el uso de la cadena.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.useraction=Revise los transportes permitidos por sus buses.
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_CONNFAILED_SICJ0080=CWSIJ0080E: No se ha podido establecer una conexi\u00f3n de memoria cruzada en el proceso adjunto de regi\u00f3n de control.
+CONNDATAGROUP_CONNFAILED_SICJ0080.explanation=No se ha podido establecer una conexi\u00f3n de memoria cruzada, esto puede ser debido al inicio as\u00edncrono de los procesos del servidor de aplicaciones.
+CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=No se requerir\u00e1 ninguna acci\u00f3n si este mensaje aparece debido al inicio as\u00edncrono del proceso del servidor de aplicaciones.  Se este mensaje se genera de forma persistente, p\u00f3ngase en contacto con el servicio t\u00e9cnico de IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: Se ha producido un error interno. No se puede crear un objeto de clase {0} debido a la excepci\u00f3n: {1}.
+EXCP_DURING_INIT_SICJ0081.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: Se ha producido un error interno. La excepci\u00f3n recibida fue {0}.
+EXCP_DURING_INIT_SICJ0082.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+NETWORK_FAILURE_SICJ0083=CWSIJ0083E: Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+NETWORK_FAILURE_SICJ0083.explanation=Una condici\u00f3n inesperada ha provocado que se cierre una conexi\u00f3n con la red.
+NETWORK_FAILURE_SICJ0083.useraction=Examine todas las excepciones enlazadas y los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n de red.  Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084=CWSIJ0084E: Una excepci\u00f3n no esperada {0} ha impedido que se detenga correctamente la cadena de transporte {1}.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.explanation=La cadena de transporte especificada puede que no se haya detenido correctamente debido a la excepci\u00f3n especificada. Si no se ha podido detener la cadena de transporte quiz\u00e1 otros procesos puedan a\u00fan establecer conexiones de red con este servidor, mediante la cadena de transporte especificada.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Examine la excepci\u00f3n nombrada en el mensaje y determine si contiene informaci\u00f3n suficiente para solucionar el problema. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: Se ha detenido la cadena de transporte de mensajer\u00eda {0}.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=Se ha detenido la cadena de transporte despu\u00e9s de un cambio de configuraci\u00f3n de seguridad lo que significa que ning\u00fan bus definido en la c\u00e9lula permitir\u00e1 ya el uso de la cadena.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=No es necesaria ninguna acci\u00f3n. 
+
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIJ9999=CWSIJ9999E: {0}
+TEMPORARY_CWSIJ9999.explanation=Si el mensaje no proporciona suficiente informaci\u00f3n, consulte los mensajes de error que se adjuntan para obtener m\u00e1s informaci\u00f3n.
+TEMPORARY_CWSIJ9999.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086=CWSIJ0086I: Una excepci\u00f3n no esperada {0} ha impedido que se detenga correctamente la cadena de transporte {1}.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086.explanation=La cadena de transporte especificada puede que no se haya detenido correctamente debido a la excepci\u00f3n especificada. Si no se ha podido detener la cadena de transporte quiz\u00e1 otros procesos puedan a\u00fan establecer conexiones de red con este servidor, mediante la cadena de transporte especificada.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0086.useraction=Examine la excepci\u00f3n nombrada en el mensaje y determine si contiene informaci\u00f3n suficiente para solucionar el problema. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+missingPorts.ChainDisabled=CWSIJ0086W: La cadena de transporte de mensajer\u00eda {0} se ha inhabilitado.
+missingPorts.ChainDisabled.explanation=La cadena de transporte especificada se ha inhabilitado porque el puerto configurado es menor que 0.
+missingPorts.ChainDisabled.useraction=Corrija el puerto asignado a la cadena de transporte en la configuraci\u00f3n de las comunicaciones JMS para que sea mayor o igual que 0.
+
+# -------------------------------------------------------------------------------------------------
+missingSslOptions.ChainNotStarted=CWSIJ0087W: No puede iniciarse la cadena de transporte de mensajer\u00eda {0}.
+missingSslOptions.ChainNotStarted.explanation=La cadena de transporte especificada no puede iniciarse debido a un problema en la lectura de la configuraci\u00f3n SSL.
+missingSslOptions.ChainNotStarted.useraction= Aseg\u00farese de configurar la configuraci\u00f3n SSL correctamente.
+
+
+
+

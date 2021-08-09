@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.4
+Created-By: pwa6460sr11-20120806_01 (SR11) (IBM Corporation)
+Archive-Root: wlp/
+Bundle-Vendor: IBM
+Import-Package: javax.xml.parsers,org.w3c.dom
+Main-Class: wlp.lib.extract.SelfExtract
+Map-Based-Self-Extractor: wlp.lib.extract.MapBasedSelfExtractor
+Extract-Installer: true

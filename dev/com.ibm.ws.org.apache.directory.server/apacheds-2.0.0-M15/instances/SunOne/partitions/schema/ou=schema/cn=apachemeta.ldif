@@ -1,0 +1,7 @@
+version: 1
+dn: cn=apachemeta,ou=schema
+cn: apachemeta
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=No se puede convertir {0} de tipo {1} a {2}
+error.compare=No se puede comparar {0} con {1}
+error.function=Problemas al llamar a la funci\u00f3n ''{0}''
+error.unreachable.base=Destino inalcanzable, el identificador ''{0}'' se ha resuelto en nulo
+error.unreachable.property=Destino inalcanzable, ''{0}'' ha devuelto nulo
+error.resolver.unhandled=ELResolver no ha manejado el tipo: {0} con la propiedad de ''{1}''
+error.resolver.unhandled.null=ELResolver no puede manejar un objeto de base nulo con el identificador ''{0}''
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression es un literal y no se puede escribir en \u00e9l: {0}
+
+# ExpressionFactoryImpl
+error.null=La expresi\u00f3n no puede ser nula
+error.mixed=La expresi\u00f3n no puede contener ''#''{..}'' y ''$''{..}'' al mismo tiempo: {0}
+error.method=No es una MethodExpression v\u00e1lida: {0}
+error.method.nullParms=Los tipos de par\u00e1metro no pueden ser nulos
+error.value.expectedType=El tipo esperado no puede ser nulo
+
+# ExpressionBuilder
+error.parseFail=No se ha podido analizar la expresi\u00f3n [{0}]
+
+# ValueSetVisitor
+error.syntax.set=Sintaxis no permitida para operaci\u00f3n de conjunto
+
+# ReflectionUtil
+error.method.notfound=No se ha encontrado el m\u00e9todo: {0}.{1}({2})
+error.method.ambiguous=No se ha podido encontrar el m\u00e9todo no ambiguo: {0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=La expresi\u00f3n utiliza funciones, pero no se ha proporcionado ning\u00fan FunctionMapper
+error.fnMapper.method=No se ha encontrado la funci\u00f3n ''{0}''
+error.fnMapper.paramcount=La funci\u00f3n ''{0}'' especifica {1} par\u00e1metros, pero se han declarado {2}
+
+# ExpressionImpl
+error.context.null=ELContext era nulo
+
+# Parser
+error.funciton.tooManyMethodParameterSets=Hay varios conjuntos de par\u00e1metros especificados para la funci\u00f3n [{0}]
+error.identifier.notjava=El identificador [{0}] no es un identificador Java v\u00e1lido seg\u00fan requiere la secci\u00f3n 1.19 de la especificaci\u00f3n de lenguaje de expresi\u00f3n (EL) (Identificador ::= identificador de lenguaje Java). Se puede inhabilitar esta comprobaci\u00f3n estableciendo la propiedad del sistema property org.apache.el.parser.SKIP_IDENTIFIER_CHECK en true.
+error.lambda.tooManyMethodParameterSets=Hay m\u00e1s conjuntos de par\u00e1metros de m\u00e9todo especificados que expresiones lambda anidadas
+
+# Stream
+stream.compare.notComparable=Los elementos de corriente deben implementar Comparable
+stream.optional.empty=No se permite llamar a get() en un elemento opcional vac\u00edo
+stream.optional.paramNotLambda=El par\u00e1metro del m\u00e9todo [{0}] debe ser una expresi\u00f3n lambda

@@ -1,0 +1,6 @@
+version: 1
+dn: ou=comparators,cn=collective,ou=schema
+ou: comparators
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

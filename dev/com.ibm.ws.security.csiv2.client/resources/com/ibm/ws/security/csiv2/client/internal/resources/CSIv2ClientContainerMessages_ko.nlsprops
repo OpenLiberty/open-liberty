@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: \ud074\ub77c\uc774\uc5b8\ud2b8 \ubcf4\uc548 {0}\uc5d0 \uc9c0\uc815\ub41c \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc62c\ubc14\ub978 \uac12\uc740 GSSUP\uc785\ub2c8\ub2e4.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=\uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8 \ubcf4\uc548 \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=\uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8 \ubcf4\uc548 \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc774 GSSUP\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: \ud074\ub77c\uc774\uc5b8\ud2b8 \ubcf4\uc548\uc5d0 \uc9c0\uc815\ub41c \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc774 \ub110\uc785\ub2c8\ub2e4.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=\uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8 \ubcf4\uc548 \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc774 \ub110\uc785\ub2c8\ub2e4.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=\uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8 \ubcf4\uc548 \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc774 GSSUP\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: \ub2e4\uc74c \uc18d\uc131\uc774 IIOP \ud074\ub77c\uc774\uc5b8\ud2b8 \uc815\ucc45\uc5d0\uc11c \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub204\ub77d\ub41c \uc18d\uc131\uc740 [{0}]\uc785\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \ud504\ub85c\uadf8\ub7a8\uc758 \ub85c\uadf8\uc778\uc744 \uad6c\ud604\ud558\uc9c0 \uc54a\uc740 \uacbd\uc6b0 \ud574\ub2f9 \uc18d\uc131\uc774 client.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=\uc9c0\uc815\ub41c IIOP \ud074\ub77c\uc774\uc5b8\ud2b8 \uc815\ucc45 \uc778\uc99d \uacc4\uce35 \uba54\ucee4\ub2c8\uc998\uc5d0 \ub204\ub77d\ub41c \uc18d\uc131\uc774 \uc788\uc2b5\ub2c8\ub2e4.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=\uac12\uc744 \uc81c\uacf5\ud558\uae30 \uc704\ud574 \ud544\uc694\ud55c \uc18d\uc131\uc774 \uc124\uc815\ub418\uc5c8\uac70\ub098 \ud504\ub85c\uadf8\ub7a8\uc758 \ub85c\uadf8\uc778\uc774 \uc0ac\uc6a9\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: establishTrustInClient\uc758 \uac12\uc774 {0}\uc774\uae30 \ub54c\ubb38\uc5d0 CSIv2 \uc778\uc99d \uacc4\uce35\uc740 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=establishTrustInClient\uac00 \uc0ac\uc6a9\ub418\uc9c0 \uc54a\uc74c\uc73c\ub85c \uc124\uc815\ub418\uba74 CSIv2 \uc778\uc99d \uacc4\uce35\uc740 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4. 
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=CSIv2 \uc778\uc99d \uacc4\uce35\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 establishTrustInClient\uc758 \uac12\uc744 Supported \ub610\ub294 Required\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+

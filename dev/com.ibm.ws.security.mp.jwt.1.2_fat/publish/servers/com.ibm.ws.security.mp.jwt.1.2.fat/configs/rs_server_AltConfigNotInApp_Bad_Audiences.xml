@@ -1,0 +1,34 @@
+
+<server>
+
+	<include location="${shared.config.dir}/mpConfigFeatures.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
+		
+	<include location="${shared.config.dir}/microProfileMPConfigNotInApps.xml"/>
+
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
+	<mpJwt
+		id="mpJwt_1"
+        authFilterRef="mpJwtAppAuthFilter"
+		jwksUri="${mpJwt_jwksUri}"
+		sslRef="ssl_allSigAlg"
+		keyName="rs256"
+		signatureAlgorithm="RS256"
+		audiences="client03, client04"
+		issuer="testIssuer">
+	</mpJwt>
+
+    <authFilter id="mpJwtAppAuthFilter">
+        <requestUrl
+             id="mpJwtRequestUrl"
+             urlPattern="MicroProfileApp"
+             matchType="contains" />
+    </authFilter>
+    
+</server>

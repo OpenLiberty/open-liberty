@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere Web Cache SPI
+Bundle-Description: WebSphere Web Cache SPI, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.webCache
+
+Import-Package: com.ibm.wsspi.cache.web
+
+Export-Package: com.ibm.wsspi.cache.web
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.webCache/pom.xml=com.ibm.websphere.appserver.spi.webCache.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.dynacache.web

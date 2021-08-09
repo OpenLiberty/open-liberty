@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: A logstash adatgy\u0171jt\u0151 nem tudott csatlakozni a logstash kiszolg\u00e1l\u00f3hoz a megadott {0} hoszton \u00e9s {1} portsz\u00e1mon. 
+LOGSTASH_CONNECTION_FAILED.explanation=A csatlakoz\u00e1s a logstash kiszolg\u00e1l\u00f3hoz meghi\u00fasult, mert a logstash kiszolg\u00e1l\u00f3 nem futott a megadott hoszton, a konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3k, mint a hosztn\u00e9v \u00e9s portsz\u00e1m, helytelenek voltak, vagy a lumberjack bemenet nincs konfigur\u00e1lva a logstash kiszolg\u00e1l\u00f3n.  
+LOGSTASH_CONNECTION_FAILED.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kat, \u00e9s ind\u00edtsa el a logstash kiszolg\u00e1l\u00f3t a megadott hoszton. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lumberjack bemenet helyesen van be\u00e1ll\u00edtva, \u00e9s a server.xml f\u00e1jlban a logstash adatgy\u0171jt\u0151 konfigur\u00e1ci\u00f3ban megadott hoszt \u00e9s portsz\u00e1m megegyezik a megfelel\u0151 logstash kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3val.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: A logstash adatgy\u0171jt\u0151 nem tudott esem\u00e9nyeket k\u00fcldeni a logstash kiszolg\u00e1l\u00f3nak. Esem\u00e9nyek k\u00fcld\u00e9s\u00e9hez kapcsolat sz\u00fcks\u00e9ges a logstash kiszolg\u00e1l\u00f3val.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Nem siker\u00fclt esem\u00e9nyeket k\u00fcldeni, mert a logstash kiszolg\u00e1l\u00f3hoz nem \u00e9rhet el a kapcsolat. A kapcsolat kor\u00e1bban l\u00e9trej\u00f6hetett, azonban \u00fagy t\u0171nik, hogy most bontva van. A rendszer tov\u00e1bb fog pr\u00f3b\u00e1lkozni, \u00e9s csatlakozni fog a logstash kiszolg\u00e1l\u00f3hoz, amikor az el\u00e9rhet\u0151v\u00e9 v\u00e1lik.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a logstash kiszolg\u00e1l\u00f3 fut a hoszton.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: A logstash adatgy\u0171jt\u0151 csatlakozik a logstash kiszolg\u00e1l\u00f3hoz a megadott {0} hoszton \u00e9s {1} portsz\u00e1mon.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=A logstash adatgy\u0171jt\u0151 sikeresen csatlakozott a logstash kiszolg\u00e1l\u00f3hoz.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Semmit sem kell tennie.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: A logstash adatgy\u0171jt\u0151 kapcsolata megsz\u0171nt a logstash kiszolg\u00e1l\u00f3val.
+LOGSTASH_CONNECTION_CLOSED.explanation=A logstash adatgy\u0171jt\u0151 lez\u00e1rja \u00e9s ism\u00e9t l\u00e9trehozza a kapcsolatot a logstash kiszolg\u00e1l\u00f3val, amikor a logstash adatgy\u0171jt\u0151 konfigur\u00e1ci\u00f3ja friss\u00edt\u00e9sre ker\u00fcl, a f\u00fcgg\u0151 SSL rejtjelk\u00e9szlet \u00e9s kulcst\u00e1rol\u00f3-konfigur\u00e1ci\u00f3 valamennyi v\u00e1ltoz\u00e1s\u00e1t is bele\u00e9rtve. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Semmit sem kell tennie.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: A logstash adatgy\u0171jt\u0151 nem ismeri fel a megadott {0} forr\u00e1st.
+LOGSTASH_SOURCE_UNKNOWN.explanation=A megadott forr\u00e1s nem a Liberty fut\u00e1si k\u00f6rnyezet \u00e1ltal biztos\u00edtott alap\u00e9rtelmezett forr\u00e1s.  Lehet, hogy a forr\u00e1s egy olyan Liberty szolg\u00e1ltat\u00e1s r\u00e9sze, amely nem szerepel a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kat. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy t\u00e1mogatott forr\u00e1s ker\u00fclt megad\u00e1sra az adatgy\u0171jt\u0151 sz\u00e1m\u00e1ra.
+

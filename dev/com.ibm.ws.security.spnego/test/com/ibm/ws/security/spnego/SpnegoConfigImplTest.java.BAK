@@ -1,0 +1,383 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.spnego;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+
+import test.common.SharedOutputManager;
+
+import com.ibm.ws.security.spnego.internal.Krb5DefaultFile;
+import com.ibm.ws.security.spnego.internal.SpnegoConfigImpl;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+
+public class SpnegoConfigImplTest {
+
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    @Rule
+    public TestRule managerRule = outputMgr;
+
+    private final Mockery mock = new JUnit4Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    private final AtomicServiceReference<ConfigurationAdmin> configAdminRef = mock.mock(AtomicServiceReference.class, "configAdmin");
+    private final ConfigurationAdmin configAdmin = mock.mock(ConfigurationAdmin.class);
+    private final WsLocationAdmin locationAdmin = mock.mock(WsLocationAdmin.class);
+    private final WsResource wsResource = mock.mock(WsResource.class);
+    private final Configuration config = mock.mock(Configuration.class);
+    final static String ID = "mySpnego";
+    private static final String KRB5_CONF = "/myKrb5.conf";
+    private static final String KRB5_KEYTAB = "/myKrb5.keytab";
+    private static final String SPNS = "host1.austin.ibm.com@KRB5EALM";
+    private static final String AUTH_FILTER = "myAuthFilter";
+
+    @Before
+    public void setUp() throws Exception {
+        final Dictionary<String, String> dict = new Hashtable<String, String>();
+        dict.put(SpnegoConfigImpl.KEY_ID, AUTH_FILTER);
+        mock.checking(new Expectations() {
+            {
+                allowing(locationAdmin).resolveResource(KRB5_CONF);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(KRB5_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(configAdminRef).getService();
+                will(returnValue(configAdmin));
+                allowing(configAdmin).getConfiguration(AUTH_FILTER);
+                will(returnValue(config));
+
+                allowing(config).getProperties();
+                will(returnValue(dict));
+            }
+        });
+    }
+
+    @Test
+    public void testProcessPropsNull() throws Exception {
+        final String methodName = "testProcessPropsNull";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                }
+            });
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, null);
+            assertNull(SpnegoConfigImpl.KEY_ID + " should be null", spnegoConfig.getId());
+            assertNull("spn GSSCredential should be null", spnegoConfig.getSpnGSSCredential("myHost"));
+            assertTrue("spn GSSCredential should be emptied", spnegoConfig.isSpnGssCredentialEmpty());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testProcessPropsWithTrue() throws Exception {
+        final String methodName = "testProcessPropsWithTrue";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                }
+            });
+            Map<String, Object> props = createProps(true);
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertEquals(SpnegoConfigImpl.KEY_ID + " should be " + ID, ID, spnegoConfig.getId());
+            assertTrue(SpnegoConfigImpl.KEY_ALLOW_LOCAL_HOST + " should be true", spnegoConfig.getAllowLocalHost());
+            assertTrue(SpnegoConfigImpl.KEY_CANONICAL_HOST_NAME + " should be true", spnegoConfig.isCanonicalHostName());
+            assertEquals(SpnegoConfigImpl.KEY_KRB5_CONFIG + " should be " + KRB5_CONF, KRB5_CONF, spnegoConfig.getKrb5Config());
+            assertEquals(SpnegoConfigImpl.KEY_KRB5_KEYTAB + " should be " + KRB5_KEYTAB, KRB5_KEYTAB, spnegoConfig.getKrb5Keytab());
+            assertTrue(SpnegoConfigImpl.KEY_SKIP_FOR_UNPROTECTED_URI + "should be true", spnegoConfig.getSkipForUnprotectedURI());
+            assertTrue(SpnegoConfigImpl.KEY_DISABLE_FAIL_OVER_TO_APP_AUTH_TYPE + " should be true", spnegoConfig.getDisableFailOverToAppAuthType());
+            assertTrue(SpnegoConfigImpl.KEY_INVOKE_AFTER_SSO + " should be true", spnegoConfig.isInvokeAfterSSO());
+            assertTrue(SpnegoConfigImpl.KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL + " should be true", spnegoConfig.isTrimKerberosRealmNameFromPrincipal());
+            assertTrue(SpnegoConfigImpl.KEY_INCLUDE_CLIENT_GSS_CREDENTIAL_IN_SUBJECT + " should be true", spnegoConfig.isIncludeClientGSSCredentialInSubject());
+            assertNull(SpnegoConfigImpl.KEY_SPNEGO_NOT_SUPPORTED_ERROR_PAGE_URL + " should be null", spnegoConfig.getSpnegoNotSupportedErrorPageURL());
+            assertNull(SpnegoConfigImpl.KEY_NTLM_TOKEN_RECEIVED_ERROR_PAGE_URL + " should be null", spnegoConfig.getNtlmTokenReceivedErrorPageURL());
+            assertTrue(SpnegoConfigImpl.KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT + " should be true", spnegoConfig.isIncludeCustomCacheKeyInSubject());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testProcessPropsWithFalse() throws Exception {
+        final String methodName = "testProcessPropsWithFalse";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                }
+            });
+            Map<String, Object> props = createProps(false);
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertEquals(SpnegoConfigImpl.KEY_ID + " should be " + ID, ID, spnegoConfig.getId());
+            assertFalse(SpnegoConfigImpl.KEY_ALLOW_LOCAL_HOST + " should be false", spnegoConfig.getAllowLocalHost());
+            assertFalse(SpnegoConfigImpl.KEY_CANONICAL_HOST_NAME + " should be false", spnegoConfig.isCanonicalHostName());
+            assertEquals(SpnegoConfigImpl.KEY_KRB5_CONFIG + " should be " + KRB5_CONF, KRB5_CONF, spnegoConfig.getKrb5Config());
+            assertEquals(SpnegoConfigImpl.KEY_KRB5_KEYTAB + " should be " + KRB5_KEYTAB, KRB5_KEYTAB, spnegoConfig.getKrb5Keytab());
+            assertFalse(SpnegoConfigImpl.KEY_SKIP_FOR_UNPROTECTED_URI + "should be false", spnegoConfig.getSkipForUnprotectedURI());
+            assertFalse(SpnegoConfigImpl.KEY_DISABLE_FAIL_OVER_TO_APP_AUTH_TYPE + " should be false", spnegoConfig.getDisableFailOverToAppAuthType());
+            assertFalse(SpnegoConfigImpl.KEY_INVOKE_AFTER_SSO + " should be false", spnegoConfig.isInvokeAfterSSO());
+            assertFalse(SpnegoConfigImpl.KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL + " should be false", spnegoConfig.isTrimKerberosRealmNameFromPrincipal());
+            assertFalse(SpnegoConfigImpl.KEY_INCLUDE_CLIENT_GSS_CREDENTIAL_IN_SUBJECT + " should be false", spnegoConfig.isIncludeClientGSSCredentialInSubject());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testSpecifiedKrb5FilesButNotFound() throws Exception {
+        final String methodName = "testSpecifiedKrb5FilesButNotFound";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(false));
+                }
+            });
+            Map<String, Object> props = createProps(false);
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertNull(SpnegoConfigImpl.KEY_KRB5_CONFIG + " should be null", spnegoConfig.getKrb5Config());
+            assertNull(SpnegoConfigImpl.KEY_KRB5_KEYTAB + " should be null", spnegoConfig.getKrb5Keytab());
+
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4305E:"));
+
+            assertTrue("Expected message was not logged",
+                       outputMgr.checkForMessages("CWWKS4303E:"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testSpecifiedKrb5FilesFound() throws Exception {
+        final String methodName = "testSpecifiedKrb5FilesFound";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                }
+            });
+            Map<String, Object> props = createProps(false);
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertEquals(SpnegoConfigImpl.KEY_KRB5_CONFIG + " should be " + KRB5_CONF, KRB5_CONF, spnegoConfig.getKrb5Config());
+            assertEquals(SpnegoConfigImpl.KEY_KRB5_KEYTAB + " should be " + KRB5_KEYTAB, KRB5_KEYTAB, spnegoConfig.getKrb5Keytab());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+//    @Test
+    public void testDefaultKrb5FilesFound() throws Exception {
+        final String methodName = "testDefaultKrb5FilesFound";
+        try {
+            Map<String, Object> props = createProps(false);
+            props.remove(SpnegoConfigImpl.KEY_KRB5_CONFIG);
+            props.remove(SpnegoConfigImpl.KEY_KRB5_KEYTAB);
+            mockDefaultKrb5Files(true);
+
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertNotNull(SpnegoConfigImpl.KEY_KRB5_CONFIG + " should not be null", spnegoConfig.getKrb5Config());
+            assertNotNull(SpnegoConfigImpl.KEY_KRB5_KEYTAB + " should not be null", spnegoConfig.getKrb5Keytab());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testResolveServicePrincipalNamesNull() throws Exception {
+        final String methodName = "testResolveServicePrincipalNamesNull";
+        final Dictionary<Object, Object> prps = new Properties();
+        prps.put("id", AUTH_FILTER);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                    allowing(config).getProperties();
+                    will(returnValue(prps));
+                }
+            });
+
+            Map<String, Object> props = createProps(true);
+            props.remove(SpnegoConfigImpl.KEY_SERVICE_PRINCIPAL_NAMES);
+
+            SpnegoConfigImpl spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            List<String> spns = spnegoConfig.resolveServicePrincipalNames(null);
+
+            assertEquals("Fist spn should be HTTP/localhost", "HTTP/localhost", spns.get(0));
+            assertTrue("Second spn should be HTTP/*", spns.get(1).contains("HTTP/"));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testResolveServicePrincipalNames() throws Exception {
+        final String methodName = "testResolveServicePrincipalNames";
+        final Dictionary<Object, Object> prps = new Properties();
+        prps.put("id", AUTH_FILTER);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                    allowing(config).getProperties();
+                    will(returnValue(prps));
+                }
+            });
+
+            Map<String, Object> props = createProps(true);
+            props.remove(SpnegoConfigImpl.KEY_SERVICE_PRINCIPAL_NAMES);
+
+            SpnegoConfigImpl spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            List<String> spns = spnegoConfig.resolveServicePrincipalNames("host1@REALM1,host2@REALM2");
+
+            assertEquals("First spn should be HTTP/host1@REALM1", "HTTP/host1@REALM1", spns.get(0));
+            assertEquals("Second spn should be HTTP/host2@REALM2", "HTTP/host2@REALM2", spns.get(1));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetHostName() throws Exception {
+        final String methodName = "testGetHostName";
+        final Dictionary<Object, Object> prps = new Properties();
+        prps.put("id", AUTH_FILTER);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                    allowing(config).getProperties();
+                    will(returnValue(prps));
+                }
+            });
+
+            Map<String, Object> props = createProps(false);
+
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertNotNull("authFilter name should not be null", spnegoConfig.getHostName());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetErrorPageConfig() throws Exception {
+        final String methodName = "testGetErrorPageConfig";
+        final Dictionary<Object, Object> prps = new Properties();
+        prps.put("id", AUTH_FILTER);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(wsResource).exists();
+                    will(returnValue(true));
+                    allowing(config).getProperties();
+                    will(returnValue(prps));
+                }
+            });
+
+            Map<String, Object> props = createProps(false);
+
+            SpnegoConfig spnegoConfig = new SpnegoConfigImpl(locationAdmin, props);
+            assertNotNull("Error page config object should not be null", spnegoConfig.getErrorPageConfig());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    public static Map<String, Object> createProps(boolean value) {
+        final Map<String, Object> props = new Hashtable<String, Object>();
+        props.put(SpnegoConfigImpl.KEY_ID, ID);
+        props.put(SpnegoConfigImpl.KEY_AUTH_FILTER_REF, AUTH_FILTER);
+        props.put(SpnegoConfigImpl.KEY_ALLOW_LOCAL_HOST, value);
+        props.put(SpnegoConfigImpl.KEY_CANONICAL_HOST_NAME, value);
+        props.put(SpnegoConfigImpl.KEY_KRB5_CONFIG, KRB5_CONF);
+        props.put(SpnegoConfigImpl.KEY_KRB5_KEYTAB, KRB5_KEYTAB);
+        props.put(SpnegoConfigImpl.KEY_SERVICE_PRINCIPAL_NAMES, SPNS);
+        props.put(SpnegoConfigImpl.KEY_SKIP_FOR_UNPROTECTED_URI, value);
+        props.put(SpnegoConfigImpl.KEY_DISABLE_FAIL_OVER_TO_APP_AUTH_TYPE, value);
+        props.put(SpnegoConfigImpl.KEY_INVOKE_AFTER_SSO, value);
+        props.put(SpnegoConfigImpl.KEY_TRIM_KERBEROS_REALM_NAME_FROM_PRINCIPAL, value);
+        props.put(SpnegoConfigImpl.KEY_INCLUDE_CLIENT_GSS_CREDENTIAL_IN_SUBJECT, value);
+        props.put(SpnegoConfigImpl.KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, value);
+        return props;
+    }
+
+    public void mockDefaultKrb5Files(final boolean value) throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINNT_INI);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINNT_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINDOWS_INI);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.WINDOWS_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.LINUX_CONF);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.LINUX_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.ISERIES_CONF);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.ISERIES_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.ZOS_AND_OTHER_UNIX_CONF);
+                will(returnValue(wsResource));
+                allowing(locationAdmin).resolveResource(Krb5DefaultFile.ZOS_AND_OTHER_UNIX_KEYTAB);
+                will(returnValue(wsResource));
+
+                allowing(wsResource).exists();
+                will(returnValue(value));
+            }
+        });
+    }
+}

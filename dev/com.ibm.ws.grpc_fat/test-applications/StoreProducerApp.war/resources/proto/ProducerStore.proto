@@ -1,0 +1,120 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ibm.test.g3store.grpc";
+option java_outer_classname = "AppProducerProto";
+
+import "Store.proto";
+import "google/protobuf/empty.proto";
+
+
+package test.g3store.grpc;
+
+
+// The service definition.
+service AppProducerService {
+  /*
+    This will be unary
+    This will not use security
+    This will add the db or dynacache with one entry
+    */
+  rpc createApp(AppRequest) returns (AppResponse) {}
+  /*
+    This will be unary
+    This will use Baic Auth
+    This will delete the db or dynacache with one entry
+    */
+  rpc deleteApp(DeleteRequest) returns (DeleteResponse) {}
+  
+  /*
+    This will be server streaming
+    Basic auth
+    This will delete the apps , the server will respond each success or failure of each delete with the app name.
+    */
+  rpc deleteAllApps(google.protobuf.Empty) returns (stream DeleteResponse){}
+  
+  /*
+    This will be client streaming
+    This will be run from the client to test and populate multiple entries, no REST
+    No security
+    This will be update the db or dynacache with multiple entry
+    */
+  rpc createApps(stream AppRequest) returns (MultiCreateResponse){}
+  
+  /*
+  Client will stream a changing message over and over to the server.  Size and number of messages streamed
+    can be change in the client code.
+  At the end the server responses with a message containing some of what was streamed for verification
+  No security
+  */
+  rpc clientStreamA(stream StreamRequestA) returns (StreamReplyA) {}
+  
+  rpc serverStreamA(StreamRequestA) returns (stream StreamReplyA) {}
+  
+  rpc twoWayStreamA(stream StreamRequestA) returns (stream StreamReplyA) {}
+
+  rpc twoWayStreamAsyncThread(stream StreamRequestA) returns (stream StreamReplyA) {}
+  
+}
+
+message AppResponse{
+   string id = 1;
+}
+
+
+message AppRequest{ 
+   RetailApp retailApp = 1;
+}
+
+message DeleteRequest{
+	string appName = 1;
+}
+
+message DeleteResponse{
+	string result = 1;
+}
+
+message MultiCreateResponse{
+	string result = 1;
+}
+
+// The streaming request message 
+message StreamRequestA {
+  string message = 1;
+}
+
+// The streaming response message 
+message StreamReplyA {
+  string message = 1;
+}
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+ 
+
+    
+
+   

@@ -1,0 +1,20 @@
+<ejb-jar
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd"
+  version="3.2"
+>
+
+  
+    <enterprise-beans>
+	         <session>
+
+	         <ejb-name>JavamailTestBean</ejb-name>
+      		<business-local>fvtweb.ejb.JavamailTestLocal</business-local>
+            <ejb-class>fvtweb.ejb.JavamailTestBean</ejb-class>
+         	<session-type>Stateless</session-type>
+        </session>
+        
+     </enterprise-beans>
+     
+</ejb-jar>

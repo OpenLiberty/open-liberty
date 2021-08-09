@@ -1,0 +1,37 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+	<basicRegistry id="basic" realm="BasicRealm">
+        <user name="userA" password="userApass" />
+    </basicRegistry>
+
+	<application type="ear" id="AutoNPTimerContextPropApp" name="AutoNPTimerContextPropApp" location="AutoNPTimerContextPropApp.ear">
+    	<application-bnd>
+            <security-role name="Role1">
+                <user name="userA"/>
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <contextService id="EJBTimerSecurityContextService" jndiName="timerService/${id}">
+    	<securityContext />
+    </contextService>
+
+    <contextService id="NoEJBTimerContextService" jndiName="timerService/${id}"/>
+
+    <ejbContainer startEJBsAtAppStart="true" cacheSize="1024">
+        <timerService nonPersistentMaxRetries="0">
+        </timerService>
+    </ejbContainer>
+
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="javax.security.auth.AuthPermission" name="createLoginContext.WSLogin"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="javax.security.auth.AuthPermission" name="createLoginContext.WSLogin"/>
+</server>

@@ -1,0 +1,13 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="intercept.abstract">
+
+    <decision-state id="CheckContext">
+        <if test="ContextCheckPredicate.apply(opensamlProfileRequestContext)"
+            then="proceed" else="ContextCheckDenied" />
+    </decision-state>
+    
+    <bean-import resource="../../../system/flows/intercept/context-check-beans.xml" />
+
+</flow>

@@ -1,0 +1,146 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/RESTClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Client
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0200-CWWKX0259
+	
+jmx.rest.client.request.error=CWWKX0201E: Klient REST WebSphere Java Management Extensions zjistil chybu p\u0159i p\u0159\u00edprav\u011b po\u017eadavku na server pro adresu URL {0} na p\u0159ipojen\u00ed {1}
+jmx.rest.client.request.error.explanation=Klient REST WebSphere Java Management Extensions zjistil chybu p\u0159i p\u0159\u00edprav\u011b po\u017eadavku na server
+jmx.rest.client.request.error.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed informace.
+
+jmx.rest.client.response.error=CWWKX0202E: Klientovi REST WebSphere Java Management Extensions se nezda\u0159ilo zpracovat odezvu ze serveru pro adresu URL {0} na p\u0159ipojen\u00ed {1}
+jmx.rest.client.response.error.explanation=Klientovi REST WebSphere Java Management Extensions se nezda\u0159ilo zpracovat odezvu ze serveru
+jmx.rest.client.response.error.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed informace.
+
+jmx.rest.client.response.code.error=CWWKX0203E: Klient REST WebSphere Java Management Extensions p\u0159ijal od serveru pro adresu URL {2} na p\u0159ipojen\u00ed {3} neo\u010dek\u00e1van\u00fd k\u00f3d odezvy {0} se zpr\u00e1vou ''{1}''
+jmx.rest.client.response.code.error.explanation=Klient REST WebSphere Java Management Extensions p\u0159ijal od serveru neo\u010dek\u00e1van\u00fd k\u00f3d odezvy
+jmx.rest.client.response.code.error.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed informace.
+
+jmx.rest.client.server.throwable.exception=CWWKX0204E: Nelze analyzovat objekt Throwable z proudu chyb serveru.
+jmx.rest.client.server.throwable.exception.explanation=Server vr\u00e1til v\u00fdjimku p\u0159i zpracov\u00e1n\u00ed \u017e\u00e1dosti klienta, ale klient nedok\u00e1zat analyzovat objekt Throwable z proudu chyb serveru. Mo\u017en\u00e1 nen\u00ed t\u0159\u00edda objekt\u016f Throwable pro klienta dostupn\u00e1.
+jmx.rest.client.server.throwable.exception.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed informace.
+
+jmx.rest.client.not.connected=CWWKX0206E: Klient nen\u00ed p\u0159ipojen k serveru.
+jmx.rest.client.not.connected.explanation=P\u0159ipojen\u00ed k serveru bylo uzav\u0159eno nebo se nezda\u0159ilo.
+jmx.rest.client.not.connected.useraction=Zkontrolujte, zda je na serveru povolena funkce konektoru REST, a z\u00edskejte nov\u00e9 p\u0159ipojen\u00ed k serveru.
+
+jmx.rest.client.url.not.found=CWWKX0207E: Server ohl\u00e1sil, \u017ee adresa URL, kterou klient po\u017eaduje, nebyla nalezena.
+jmx.rest.client.url.not.found.explanation=Mo\u017en\u00e1 m\u00e1 klient zastaral\u00e9 informace nebo m\u016f\u017ee b\u00fdt na serveru zak\u00e1z\u00e1na funkce konektoru REST.
+jmx.rest.client.url.not.found.useraction=Zkontrolujte, zda je na serveru povolena funkce konektoru REST, a z\u00edskejte nov\u00e9 p\u0159ipojen\u00ed k serveru.
+
+jmx.rest.client.class.name.null=CWWKX0208E: Argument n\u00e1zev t\u0159\u00eddy m\u011bl hodnotu null.
+jmx.rest.client.class.name.null.explanation=Argument n\u00e1zev t\u0159\u00eddy nesm\u00ed m\u00edt hodnotu null.
+jmx.rest.client.class.name.null.useraction=P\u0159i vol\u00e1n\u00ed t\u00e9to metody zadejte n\u00e1zev t\u0159\u00eddy s jinou hodnotou ne\u017e null.
+
+jmx.rest.client.attribute.name.null=CWWKX0209E: Argument n\u00e1zev atributu m\u011bl hodnotu null.
+jmx.rest.client.attribute.name.null.explanation=Argument n\u00e1zev atributu nesm\u00ed m\u00edt hodnotu null.
+jmx.rest.client.attribute.name.null.useraction=P\u0159i vol\u00e1n\u00ed t\u00e9to metody zadejte n\u00e1zev atributu s jinou hodnotou ne\u017e null.
+
+jmx.rest.client.attribute.names.null=CWWKX0210E: Argument obsahuj\u00edc\u00ed pole s n\u00e1zvy atribut\u016f m\u011bl hodnotu null.
+jmx.rest.client.attribute.names.null.explanation=Argument obsahuj\u00edc\u00ed pole s n\u00e1zvy atribut\u016f nesm\u00ed m\u00edt hodnotu null.
+jmx.rest.client.attribute.names.null.useraction=P\u0159i vol\u00e1n\u00ed t\u00e9to metody zadejte pole s n\u00e1zvy atribut\u016f s jinou hodnotou ne\u017e null.
+
+jmx.rest.client.attribute.null=CWWKX0211E: Argument Attribute m\u011bl hodnotu null.
+jmx.rest.client.attribute.null.explanation=Argument Attribute nesm\u00ed m\u00edt hodnotu null.
+jmx.rest.client.attribute.null.useraction=P\u0159i vol\u00e1n\u00ed t\u00e9to metody zadejte argument Attribute s jinou hodnotou ne\u017e null.
+
+jmx.rest.client.attribute.list.null=CWWKX0212E: Argument AttributeList m\u011bl hodnotu null.
+jmx.rest.client.attribute.list.null.explanation=Argument AttributeList nesm\u00ed m\u00edt hodnotu null.
+jmx.rest.client.attribute.list.null.useraction=P\u0159i vol\u00e1n\u00ed t\u00e9to metody zadejte argument AttributeList s jinou hodnotou ne\u017e null.
+
+jmx.rest.client.object.name.null=CWWKX0213E: Argument ObjectName m\u011bl hodnotu null.
+jmx.rest.client.object.name.null.explanation=Argument ObjectName nesm\u00ed m\u00edt hodnotu null.
+jmx.rest.client.object.name.null.useraction=P\u0159i vol\u00e1n\u00ed t\u00e9to metody zadejte argument ObjectName s jinou hodnotou ne\u017e null.
+
+jmx.rest.client.unexpected.server.throwable=CWWKX0214E: Ze serveru se vr\u00e1til neo\u010dek\u00e1van\u00fd objekt Throwable.
+jmx.rest.client.unexpected.server.throwable.explanation=Ve v\u00fdjimce je zabalen objekt Throwable vr\u00e1cen\u00fd ze serveru, kter\u00fd u t\u00e9to operace obvykle nen\u00ed o\u010dek\u00e1v\u00e1n.
+jmx.rest.client.unexpected.server.throwable.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed informace.
+
+jmx.rest.client.bad.credentials=CWWKX0215E: Do\u0161lo k probl\u00e9mu se zadan\u00fdm jm\u00e9nem u\u017eivatele nebo heslem. Server odpov\u011bd\u011bl k\u00f3dem {0} a zpr\u00e1vou ''{1}''.
+jmx.rest.client.bad.credentials.explanation=Pov\u011b\u0159en\u00ed uveden\u00e1 p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed byla chybn\u00e1. Mo\u017en\u00e1 u\u017eivatel neexistuje, nem\u00e1 opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup k serveru nebo je \u0161patn\u00e9 heslo.
+jmx.rest.client.bad.credentials.useraction=Opravte jm\u00e9no u\u017eivatele nebo heslo a pot\u00e9 z\u00edskejte nov\u00e9 p\u0159ipojen\u00ed.
+
+jmx.rest.client.object.name.pattern=CWWKX0216E: Argument ObjectName ''{0}'' je vzor."
+jmx.rest.client.object.name.pattern.explanation=Argument ObjectName je vzor, ale tato metoda vy\u017eaduje ObjectName odpov\u00eddaj\u00edc\u00ed pr\u00e1v\u011b jednomu objektu typu MBean.
+jmx.rest.client.object.name.pattern.useraction=Zadejte argument ObjectName bez z\u00e1stupn\u00fdch znak\u016f, kter\u00fd odpov\u00edd\u00e1 pr\u00e1v\u011b jednomu objektu typu MBean.
+
+jmx.rest.client.instance.not.found=CWWKX0217E: Aktu\u00e1ln\u011b nen\u00ed registrovan\u00fd \u017e\u00e1dn\u00fd objekt typu MBean s dan\u00fdm atributem ObjectName ''{0}''.
+jmx.rest.client.instance.not.found.explanation=Operace vy\u017eaduje registrovan\u00fd objekt typu MBean, ale \u017e\u00e1dn\u00fd objekt typu MBean s uveden\u00fdm atributem ObjectName nebyl zaregistrov\u00e1n.
+jmx.rest.client.instance.not.found.useraction=Ne\u017e se pokus\u00edte prov\u00e1d\u011bt na objektu typu MBean operace spr\u00e1vy, zajist\u011bte, aby byl zaregistrovan\u00fd.
+
+jmx.rest.client.attribute.not.found=CWWKX0218E: Objekt typu MBean ''{0}'' nem\u00e1 atribut s n\u00e1zvem ''{1}''.
+jmx.rest.client.attribute.not.found.explanation=Objekt typu MBean nem\u00e1 atribut s dan\u00fdm n\u00e1zvem.
+jmx.rest.client.attribute.not.found.useraction=Z\u00edskejte informace o objektu typu MBean a ov\u011b\u0159te, jak\u00e9 atributy tento objekt typu MBean m\u00e1.
+
+jmx.rest.client.operation.not.found=CWWKX0219E: Objekt typu MBean ''{0}'' nem\u00e1 operaci s n\u00e1zvem ''{1}''.
+jmx.rest.client.operation.not.found.explanation=Objekt typu MBean nem\u00e1 operaci s dan\u00fdm n\u00e1zvem.
+jmx.rest.client.operation.not.found.useraction=Z\u00edskejte informace o objektu typu MBean a ov\u011b\u0159te, jak\u00e9 operace tento objekt typu MBean m\u00e1.
+
+jmx.rest.client.listener.not.found=CWWKX0220E: Dan\u00fd modul NotificationListener nen\u00ed v sou\u010dasn\u00e9 dob\u011b registrovan\u00fd pro p\u0159\u00edjem ozn\u00e1men\u00ed z objektu typu MBean ''{0}''.
+jmx.rest.client.listener.not.found.explanation=Modul NotificationListener nebyl p\u0159id\u00e1n nebo ji\u017e byl odebr\u00e1n a v sou\u010dasnosti nen\u00ed registrov\u00e1n pro p\u0159\u00edjem ozn\u00e1men\u00ed z dan\u00e9ho objektu typu MBean.
+jmx.rest.client.listener.not.found.useraction=Ujist\u011bte se, \u017ee k\u00f3d vol\u00e1n\u00ed sleduje, kter\u00e9 moduly NotificationListener byly p\u0159id\u00e1ny a odebr\u00e1ny, nebo tuto v\u00fdjimku zachy\u0165te a o\u0161et\u0159ete.
+
+jmx.rest.client.notification.lost=CWWKX0221I: Ozn\u00e1men\u00ed nebylo mo\u017en\u00e9 doru\u010dit.
+jmx.rest.client.notification.lost.explanation=Nebylo mo\u017en\u00e9 doru\u010dit ozn\u00e1men\u00ed nejm\u00e9n\u011b jednomu modulu NotificationListener, proto\u017ee nebyl nalezen registrovan\u00fd modul NotificationListener nebo p\u0159i doru\u010dov\u00e1n\u00ed ozn\u00e1men\u00ed do\u0161lo k v\u00fdjimce.
+jmx.rest.client.notification.lost.useraction=Pokud m\u011blo b\u00fdt ozn\u00e1men\u00ed doru\u010deno registrovan\u00e9mu modulu NotificationListener, zkontrolujte, zda protokoly neobsahuj\u00ed v\u00fdjimky.
+
+jmx.rest.client.connection.failed=CWWKX0222I: P\u0159ipojen\u00ed k serveru se nezda\u0159ilo.
+jmx.rest.client.connection.failed.explanation=Server se stal nedostupn\u00fdm a v nakonfigurovan\u00e9m maxim\u00e1ln\u00edm povolen\u00e9m \u010dase nebyl znovu dostupn\u00fd.
+jmx.rest.client.connection.failed.useraction=Zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed a ujist\u011bte se, \u017ee je server spu\u0161t\u011bn a je povolena funkce konektoru REST. 
+
+jmx.rest.client.connection.temporarily.lost=CWWKX0223I: P\u0159ipojen\u00ed k serveru bylo do\u010dasn\u011b ztraceno.
+jmx.rest.client.connection.temporarily.lost.explanation=Server se stal nedostupn\u00fdm, ale klient se bude pokou\u0161et obnovit p\u0159ipojen\u00ed po dobu nakonfigurovan\u00e9ho maxim\u00e1ln\u00edho povolen\u00e9ho \u010dasu.
+jmx.rest.client.connection.temporarily.lost.useraction=Pokud je server \u00famysln\u011b restartov\u00e1n, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Jinak zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed a ujist\u011bte se, \u017ee je server spu\u0161t\u011bn a je povolena funkce konektoru REST.
+
+jmx.rest.client.connection.restored.with.exceptions=CWWKX0224I: P\u0159ipojen\u00ed bylo obnoveno, ale p\u0159i p\u0159id\u00e1v\u00e1n\u00ed modul\u016f NotificationListener se vyskytly v\u00fdjimky.
+jmx.rest.client.connection.restored.with.exceptions.explanation=P\u0159ipojen\u00ed k serveru bylo do\u010dasn\u011b ztraceno, ale bylo \u00fasp\u011b\u0161n\u011b obnoveno. P\u0159i p\u0159id\u00e1v\u00e1n\u00ed modul\u016f NotificationListener se vyskytly v\u00fdjimky, tak\u017ee mo\u017en\u00e1 nebudou p\u0159ijata n\u011bkter\u00e1 ozn\u00e1men\u00ed.
+jmx.rest.client.connection.restored.with.exceptions.useraction=Zkontrolujte v\u00fdjimky uveden\u00e9 u ozn\u00e1men\u00ed a po opraven\u00ed probl\u00e9m\u016f znovu zaregistrujte moduly NotificationListener.
+
+jmx.rest.client.connection.restored=CWWKX0225I: P\u0159ipojen\u00ed bylo \u00fasp\u011b\u0161n\u011b obnoveno.
+jmx.rest.client.connection.restored.explanation=P\u0159ipojen\u00ed k serveru bylo do\u010dasn\u011b ztraceno, ale bylo \u00fasp\u011b\u0161n\u011b obnoveno. V\u0161echny zaregistrovan\u00e9 moduly NotificationListener budou i nad\u00e1le p\u0159ij\u00edmat ozn\u00e1men\u00ed.
+jmx.rest.client.connection.restored.useraction=Nen\u00ed
+
+jmx.rest.client.connection.illegal.argument=CWWKX0226E: Parametr typu JMXServiceURL nem\u016f\u017ee b\u00fdt null.
+jmx.rest.client.connection.illegal.argument.explanation=Hodnota parametru 'serviceURL' nem\u016f\u017ee b\u00fdt null.
+jmx.rest.client.connection.illegal.argument.useraction=Znovu se p\u0159ipojte ke konektoru JMX REST Connector pomoc\u00ed nenulov\u00e9 hodnoty JMXServiceURL.
+
+jmx.rest.client.connection.invalid.endpoint=CWWKX0227E: D\u00e1le uveden\u00e9 nen\u00ed platnou hodnotou koncov\u00e9ho bodu: {0}
+jmx.rest.client.connection.invalid.endpoint.explanation=Ur\u010den\u00e1 hodnota koncov\u00e9ho bodu nen\u00ed platn\u00e1.
+jmx.rest.client.connection.invalid.endpoint.useraction=Znovu se p\u0159ipojte ke konektoru JMX REST Connector pomoc\u00ed platn\u00e9 hodnoty koncov\u00e9ho bodu, kter\u00e1 je typem String a je ve form\u00e1tu "host:port".
+
+jmx.rest.client.connection.no.endpoints=CWWKX0228E: Nelze naj\u00edt \u017e\u00e1dn\u00e9 dostupn\u00e9 koncov\u00e9 body pro inicializaci konektoru.
+jmx.rest.client.connection.no.endpoints.explanation=\u017d\u00e1dn\u00fd z uveden\u00fdch koncov\u00fdch bod\u016f nebyl k dispozici b\u011bhem inicializace konektoru JMX REST Connector.
+jmx.rest.client.connection.no.endpoints.useraction=Znovu se p\u0159ipojte ke konektoru JMX REST Connector pomoc\u00ed alespo\u0148 1 dostupn\u00e9ho koncov\u00e9ho bodu.
+
+jmx.rest.client.bad.user.credentials=CWWKX0229E: Do\u0161lo k probl\u00e9mu se zadan\u00fdmi u\u017eivatelsk\u00fdmi pov\u011b\u0159en\u00edmi. Server odpov\u011bd\u011bl k\u00f3dem {0} a zpr\u00e1vou ''{1}''.
+jmx.rest.client.bad.user.credentials.explanation=Zadan\u00e1 pov\u011b\u0159en\u00ed jsou chybn\u00e1, vypr\u0161ela platnost, ne\u00fapln\u00e1 nebo byl odep\u0159ena autorizace.
+jmx.rest.client.bad.user.credentials.useraction=Ov\u011b\u0159te, \u017ee u\u017eivatelsk\u00e1 pov\u011b\u0159en\u00ed maj\u00ed spr\u00e1vn\u00e9 ov\u011b\u0159en\u00ed a autorizaci, potom z\u00edskejte nov\u00e9 p\u0159ipojen\u00ed.
+
+jmx.rest.client.connection.connect=CWWKX0230I: \u010clen kolektivu otev\u0159el klienta JMX ke kolektivn\u00edmu \u0159adi\u010di: {0}
+jmx.rest.client.connection.connect.explanation=\u010clen p\u0159ipojen\u00fd k \u0159adi\u010di.
+jmx.rest.client.connection.connect.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+ 
+jmx.rest.client.connection.disconnect=CWWKX0231I: \u010clen kolektivu zav\u0159el klienta JMX z kolektivn\u00edho \u0159adi\u010de: {0}
+jmx.rest.client.connection.disconnect.explanation=\u010clen odpojen\u00fd od \u0159adi\u010de.
+jmx.rest.client.connection.disconnect.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+

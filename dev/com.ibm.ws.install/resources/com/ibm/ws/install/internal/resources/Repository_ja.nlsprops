@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2014, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/Repository.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Repositor
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1500 to 1699 are reserved for the InstallKernel.
+
+ERROR_DIRECTORY_NOT_EXISTS=CWWKF1500E: \u6307\u5b9a\u3055\u308c\u305f\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc {0} \u304c\u5b58\u5728\u3057\u307e\u305b\u3093\u3002
+ERROR_DIRECTORY_NOT_EXISTS.explanation=\u30b7\u30b9\u30c6\u30e0\u306f\u3001\u6307\u5b9a\u3055\u308c\u305f\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u3092\u898b\u3064\u3051\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3002
+ERROR_DIRECTORY_NOT_EXISTS.useraction=\u6709\u52b9\u306a\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u3092\u6307\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+ERROR_PATH_IS_FILE=CWWKF1501E: {0} \u306f\u30d5\u30a1\u30a4\u30eb\u3067\u3059\u3002\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u30fb\u30d1\u30b9\u304c\u5fc5\u8981\u3067\u3059\u3002
+ERROR_PATH_IS_FILE.explanation=\u30b7\u30b9\u30c6\u30e0\u306b\u306f\u3001\u6709\u52b9\u306a\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u304c\u5fc5\u8981\u3067\u3059\u3002
+ERROR_PATH_IS_FILE.useraction=\u6709\u52b9\u306a\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u3092\u6307\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+ERROR_INVALID_INDEX_FILE=CWWKF1502E: {0} \u306f\u7121\u52b9\u306a\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u30fb\u30d5\u30a1\u30a4\u30eb\u3067\u3059\u3002
+ERROR_INVALID_INDEX_FILE.explanation=\u30a4\u30f3\u30c7\u30c3\u30af\u30b9\u30fb\u30d5\u30a1\u30a4\u30eb\u306f\u7834\u640d\u3057\u3066\u3044\u308b\u304b\u3001\u305d\u306e\u5f62\u5f0f\u304c\u6b63\u3057\u304f\u3042\u308a\u307e\u305b\u3093\u3002
+ERROR_INVALID_INDEX_FILE.useraction=\u6b21\u306e WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8\u306e\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044: http://www.ibm.com/software/webservers/appserv/was/support
+
+ERROR_FILEPATH_NOT_EXISTS=CWWKF1503E: \u6307\u5b9a\u3055\u308c\u305f\u30d5\u30a1\u30a4\u30eb\u30fb\u30d1\u30b9\u306f\u5b58\u5728\u3057\u307e\u305b\u3093: {0}\u3002\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u30fb\u30d9\u30fc\u30b9\u30fb\u30ea\u30dd\u30b8\u30c8\u30ea\u30fc\u306e\u6709\u52b9\u306a\u30d1\u30b9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+ERROR_FILEPATH_NOT_EXISTS.explanation=\u30b7\u30b9\u30c6\u30e0\u306f\u6307\u5b9a\u3055\u308c\u305f\u30d5\u30a1\u30a4\u30eb\u30fb\u30d1\u30b9\u3092\u898b\u3064\u3051\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3002\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u307e\u305f\u306f ZIP \u30d5\u30a1\u30a4\u30eb\u306e\u6709\u52b9\u306a\u30d1\u30b9\u304c\u5fc5\u8981\u3067\u3059\u3002
+ERROR_FILEPATH_NOT_EXISTS.useraction=\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u30fb\u30d9\u30fc\u30b9\u30fb\u30ea\u30dd\u30b8\u30c8\u30ea\u30fc\u306e\u6709\u52b9\u306a\u30d1\u30b9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002

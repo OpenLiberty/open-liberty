@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: Typ zpr\u00e1vy {0} t\u00e9to d\u00e1vkov\u00e9 zpr\u00e1vy JMS nen\u00ed podporov\u00e1n. Tento po\u017eadavek nebude zpracov\u00e1n. Obsah t\u00e9to zpr\u00e1vy je {1}
+warning.unsupported.message.type.explanation=Tento typ zpr\u00e1vy nen\u00ed nepodporov\u00e1n, proto\u017ee nen\u00ed typem JMS MapMessage. 
+warning.unsupported.message.type.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+ 
+warning.unsupported.operation=CWWKY0201W: Operace {0} je nepodporovanou operac\u00ed d\u00e1vkov\u00e9 zpr\u00e1vy JMS. Tento po\u017eadavek nebude zpracov\u00e1n. Obsah t\u00e9to zpr\u00e1vy je {1}
+warning.unsupported.operation.explanation=Podporov\u00e1ny jsou pouze operace 'Start' a 'Restart'.
+warning.unsupported.operation.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: Koncov\u00fd bod zpr\u00e1v pro d\u00e1vkov\u00fd listener {0} JMS nelze aktivovat, proto\u017ee d\u00e1vkov\u00e1 specifikace aktivace {1} neexistuje v konfiguraci serveru. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat d\u00e1vkov\u00e9 pr\u00e1vy, dokud nebude d\u00e1vkov\u00e1 specifikace aktivace k dispozici. 
+warning.batch.activation.spec.not.found.explanation=Server spou\u0161t\u00ed d\u00e1vkov\u00fd listener JMS, ale nem\u016f\u017ee aktivovat koncov\u00fd bod zpr\u00e1v, proto\u017ee v konfiguraci serveru nelze naj\u00edt specifikaci aktivace. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat d\u00e1vkov\u00e9 zpr\u00e1vy, dokud nebude mo\u017en\u00e9 aktivovat koncov\u00fd bod.
+warning.batch.activation.spec.not.found.useraction=Vytvo\u0159te specifikaci aktivace s ur\u010den\u00fdm n\u00e1zvem v konfiguraci serveru ru\u010dn\u011b nebo pomoc\u00ed administrativn\u00edho centra.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: Koncov\u00fd bod zpr\u00e1v pro d\u00e1vkov\u00fd listener {0} JMS nelze aktivovat, proto\u017ee c\u00edlovou frontu {1} neexistuje. Koncov\u00fd bod zpr\u00e1v neobdr\u017e\u00ed \u017e\u00e1dnou d\u00e1vkovou zpr\u00e1vu JMS, dokud nebude c\u00edl dostupn\u00fd.
+warning.batch.destination.queue.not.found.explanation=Server spustil d\u00e1vkov\u00fd listener JMS, ale nedok\u00e1zal aktivovat koncov\u00fd bod zpr\u00e1v, proto\u017ee nenalezl c\u00edlovou frontu. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat d\u00e1vkov\u00e9 zpr\u00e1vy JMS, dokud nebude mo\u017en\u00e9 aktivovat koncov\u00fd bod.
+warning.batch.destination.queue.not.found.useraction=Vytvo\u0159te c\u00edlovou frontu s ur\u010den\u00fdm n\u00e1zvem v konfiguraci serveru ru\u010dn\u011b nebo pomoc\u00ed administrativn\u00edho centra.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: D\u00e1vkov\u00e9ho dispe\u010dera JMS nelze spustit, proto\u017ee tov\u00e1rna p\u0159ipojen\u00ed {0} neexistuje. D\u00e1vkov\u00fd dispe\u010der JMS neode\u0161le d\u00e1vkov\u00e9 zpr\u00e1vy JMS, dokud nebude tov\u00e1rna p\u0159ipojen\u00ed k dispozici. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=Server spou\u0161t\u00ed d\u00e1vkov\u00e9ho dispe\u010dera JMS, ale nedok\u00e1zal ho spustit,? proto\u017ee nenalezl d\u00e1vkovou tov\u00e1rnu p\u0159ipojen\u00ed JMS. D\u00e1vkov\u00fd dispe\u010der JMS neode\u0161le d\u00e1vkov\u00e9 zpr\u00e1vy JMS, dokud nebude tov\u00e1rna p\u0159ipojen\u00ed k dispozici.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Vytvo\u0159te tov\u00e1rnu p\u0159ipojen\u00ed s ur\u010den\u00fdm n\u00e1zvem v konfiguraci serveru ru\u010dn\u011b nebo pomoc\u00ed administrativn\u00edho centra.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: D\u00e1vkov\u00e9ho dispe\u010dera JMS nelze spustit, proto\u017ee fronta {0} neexistuje. D\u00e1vkov\u00fd dispe\u010der JMS neode\u0161le d\u00e1vkov\u00e9 zpr\u00e1vy JMS, dokud nebude fronta k dispozici.
+warning.batch.dispatcher.queue.not.found.explanation=Server spou\u0161t\u00ed d\u00e1vkov\u00e9ho dispe\u010dera JMS, ale nedok\u00e1zal ho spustit, proto\u017ee nenalezl d\u00e1vkovou frontu JMS. D\u00e1vkov\u00fd dispe\u010der JMS neode\u0161le d\u00e1vkov\u00e9 zpr\u00e1vy JMS, dokud nebude fronta k dispozici.
+warning.batch.dispatcher.queue.not.found.useraction=Vytvo\u0159te frontu s ur\u010den\u00fdm n\u00e1zvem v konfiguraci serveru ru\u010dn\u011b nebo pomoc\u00ed administrativn\u00edho centra.
+
+error.unable.to.rollback.start=CWWKY0206E: D\u00e1vkov\u00fd dispe\u010der JMS narazil p\u0159i odbavov\u00e1n\u00ed po\u017eadavku na spu\u0161t\u011bn\u00ed instance \u00falohy {0} na v\u00fdjimku a nemohl vr\u00e1tit operaci zp\u011bt. V\u00fdjimka: {1}.
+error.unable.to.rollback.start.explanation=D\u00e1vkov\u00fd dispe\u010der JMS nemohl vr\u00e1tit svou operaci zp\u011bt.
+error.unable.to.rollback.start.useraction=Zadejte \u00falohu znovu.
+
+error.unable.to.rollback.restart=CWWKY0207E: D\u00e1vkov\u00fd dispe\u010der JMS narazil p\u0159i odbavov\u00e1n\u00ed po\u017eadavku na restartov\u00e1n\u00ed proveden\u00ed \u00falohy {0} na v\u00fdjimku a nemohl operaci vr\u00e1tit zp\u011bt. V\u00fdjimka: {1}.
+error.unable.to.rollback.restart.explanation=D\u00e1vkov\u00fd dispe\u010der JMS nemohl vr\u00e1tit svou operaci zp\u011bt.
+error.unable.to.rollback.restart.useraction=Zadejte \u00falohu znovu.
+
+error.endpoint.unable.process.message=CWWKY0208E: D\u00e1vkov\u00fd listener JMS rozpoznal p\u0159i zpracov\u00e1n\u00ed zpr\u00e1vy {0} v\u00fdjimku. V\u00fdjimka: {1}.
+error.endpoint.unable.process.message.explanation=D\u00e1vkov\u00fd listener JMS nedok\u00e1zal zpracovat zpr\u00e1vu d\u00e1vkov\u00e9ho po\u017eadavku JMS.
+error.endpoint.unable.process.message.useraction=Zadejte \u00falohu znovu. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: D\u00e1vkov\u00fd listener JMS rozpoznal v\u00fdjimku p\u0159i zpracov\u00e1n\u00ed operace spu\u0161t\u011bn\u00ed \u00falohy pro instanci \u00falohy {0}. V\u00fdjimka: {1}.
+error.endpoint.unable.process.start.request.explanation=D\u00e1vkov\u00fd listener JMS nedok\u00e1zal zpracovat po\u017eadavek na spu\u0161t\u011bn\u00ed \u00falohy.
+error.endpoint.unable.process.start.request.useraction=Zadejte \u00falohu znovu.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: D\u00e1vkov\u00fd listener JMS rozpoznal v\u00fdjimku p\u0159i zpracov\u00e1n\u00ed operace restartu \u00falohy pro prov\u00e1d\u011bn\u00ed \u00falohy {0}. V\u00fdjimka: {1}.
+error.endpoint.unable.process.restart.request.explanation=D\u00e1vkov\u00fd listener JMS nedok\u00e1zal zpracovat po\u017eadavek na restartov\u00e1n\u00ed \u00falohy.
+error.endpoint.unable.process.restart.request.useraction=Zadejte \u00falohu znovu.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: D\u00e1vkov\u00e9 b\u011bhov\u00e9 prost\u0159ed\u00ed nem\u016f\u017ee publikovat ud\u00e1lost t\u00e9matu {0} pro objekt {1}. V\u00fdjimka: {2}.
+warning.batch.events.unable.to.publish.explanation=Ud\u00e1lost nem\u016f\u017ee b\u00fdt publikov\u00e1na kv\u016fli v\u00fdjimce.
+warning.batch.events.unable.to.publish.useraction=Souvisej\u00edc\u00ed chyba viz protokoly serveru.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Nelze vytvo\u0159it prost\u0159edek JMS pro vydavatele d\u00e1vkov\u011b zpracov\u00e1van\u00fdch ud\u00e1lost\u00ed. V\u00fdjimka: {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Prost\u0159edek JMS pro aktivaci vydavatele d\u00e1vkov\u011b zpracov\u00e1van\u00fdch ud\u00e1lost\u00ed nelze vytvo\u0159it kv\u016fli v\u00fdjimce. 
+error.batch.events.publisher.jms.resource.activate.useraction=Zkontrolujte konfiguraci tov\u00e1rny p\u0159ipojen\u00ed JMS nakonfigurovan\u00e9 pomoc\u00ed prvku batchJmsDispatcher (bu\u010f v\u00fdchoz\u00ed tov\u00e1rny batchConnectionFactory, nebo explicitn\u011b odkazovan\u00e9 tov\u00e1rny). Zkontrolujte konektivitu JMS a v protokolech serveru vyhledejte souvisej\u00edc\u00ed chybu.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Nelze vytvo\u0159it prost\u0159edek JMS pro dispe\u010dera d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed. V\u00fdjimka: {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Kv\u016fli v\u00fdjimce nelze vytvo\u0159it prost\u0159edek JMS pro aktivaci dispe\u010dera d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, tak\u017ee server nem\u016f\u017ee odbavovat \u00falohy ani logick\u00e9 oblasti prost\u0159ednictv\u00edm JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Zkontrolujte konfiguraci fronty a tov\u00e1rny p\u0159ipojen\u00ed JMS nakonfigurovan\u00e9 pomoc\u00ed prvku batchJmsDispatcher (bu\u010f v\u00fdchoz\u00ed tov\u00e1rny batchConnectionFactory, nebo explicitn\u011b odkazovan\u00e9 tov\u00e1rny). Zkontrolujte konektivitu JMS a v protokolech serveru vyhledejte souvisej\u00edc\u00ed chybu.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Zpr\u00e1va s p\u0159idru\u017een\u00fdm ID proveden\u00ed \u00falohy {0} bude vy\u0159azena, proto\u017ee se nejedn\u00e1 o nejnov\u011bj\u0161\u00ed proveden\u00ed.
+warning.endpoint.listener.stale.message.explanation=Zastaral\u00e1 zpr\u00e1va p\u0159idru\u017een\u00e1 k proveden\u00ed \u00falohy je vy\u0159azena, proto\u017ee se nejedn\u00e1 o nejnov\u011bj\u0161\u00ed proveden\u00ed.
+warning.endpoint.listener.stale.message.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+error.start.partition.request=CWWKY0215E: D\u00e1vkovou oblast nelze spustit kv\u016fli v\u00fdjimce. V\u00fdjimka: {0}.
+error.start.partition.request.explanation=D\u00e1vkovou oblast nelze spustit kv\u016fli v\u00fdjimce. 
+error.start.partition.request.useraction=Zastavte p\u0159idru\u017eenou \u00falohu, zkontrolujte konfiguraci a konektivitu JMS a v protokolech serveru vyhledejte souvisej\u00edc\u00ed chybu.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Nelze vytvo\u0159it tov\u00e1rnu p\u0159ipojen\u00ed JMS pro prov\u00e1d\u011bn\u00ed vzd\u00e1len\u00fdch logick\u00fdch oblast\u00ed. V\u00fdjimka: {0}
+error.batch.executor.jms.create.failure.explanation=Nezda\u0159ilo se p\u0159ipojit k tov\u00e1rn\u011b p\u0159ipojen\u00ed JMS odpov\u011bd\u00ed pou\u017e\u00edvan\u00e9 k odes\u00edl\u00e1n\u00ed odpov\u011bd\u00ed pro prov\u00e1d\u011bn\u00ed vzd\u00e1len\u00fdch oblast\u00ed. Dokud nebude probl\u00e9m vy\u0159e\u0161en, tento server nebude moci prov\u00e1d\u011bt \u00falohy ani oblasti odbavovan\u00e9 prost\u0159ednictv\u00edm JMS.
+error.batch.executor.jms.create.failure.useraction=Zkontrolujte konfiguraci tov\u00e1rny p\u0159ipojen\u00ed JMS nakonfigurovan\u00e9 pomoc\u00ed prvku batchJmsDispatcher (bu\u010f v\u00fdchoz\u00ed tov\u00e1rny batchConnectionFactory, nebo explicitn\u011b odkazovan\u00e9 tov\u00e1rny). Pokud u\u017eivatel oblasti nevyu\u017e\u00edv\u00e1, je mo\u017en\u00e9 tuto konfiguraci souvisej\u00edc\u00ed se vzd\u00e1lenou oblast\u00ed JMS odebrat z konfigurace serveru.
+
+error.batch.executor.activate.failure=CWWKY0217E: Prov\u00e1d\u011bc\u00ed modul JMS v koncov\u00e9m bod\u011b nelze aktivovat kv\u016fli v\u00fdjimce {0}
+error.batch.executor.activate.failure.explanation=Kv\u016fli v\u00fdjimce se nezda\u0159ilo aktivovat prov\u00e1d\u011bc\u00ed modul JMS v koncov\u00e9m bod\u011b.
+error.batch.executor.activate.failure.useraction=Dokud nebude probl\u00e9m vy\u0159e\u0161en, tento server nebude moci prov\u00e1d\u011bt \u00falohy ani oblasti odbavovan\u00e9 prost\u0159ednictv\u00edm JMS. Zkontrolujte konfiguraci tov\u00e1rny p\u0159ipojen\u00ed JMS nakonfigurovan\u00e9 pomoc\u00ed prvku batchJmsDispatcher (bu\u010f v\u00fdchoz\u00ed tov\u00e1rny batchConnectionFactory, nebo explicitn\u011b odkazovan\u00e9 tov\u00e1rny). Zkontrolujte konektivitu JMS a konfiguraci koncov\u00e9ho bodu a v protokolech serveru vyhledejte souvisej\u00edc\u00ed chybu.
+
+info.batch.events.publish.topic=CWWKY0218I: D\u00e1vkov\u00e9 b\u011bhov\u00e9 prost\u0159ed\u00ed bude publikovat ud\u00e1losti do ko\u0159ene t\u00e9matu JMS {0}.
+info.batch.events.publish.topic.explanation=Informa\u010dn\u00ed zpr\u00e1va. D\u00e1vkov\u00e9 b\u011bhov\u00e9 prost\u0159ed\u00ed bude publikovat ud\u00e1losti do uveden\u00e9ho ko\u0159ene t\u00e9matu JMS d\u00e1vky.
+info.batch.events.publish.topic.useraction=Ko\u0159en t\u00e9matu JMS d\u00e1vky lze upravovat. Zkontrolujte nakonfigurovan\u00e9 volby pou\u017eit\u00e9 pro batchJmsEvents.

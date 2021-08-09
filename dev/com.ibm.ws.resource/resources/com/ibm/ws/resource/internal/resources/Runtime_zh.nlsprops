@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.resource/resources/com/ibm/ws/resource/internal/resources/Runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Message numbers WSVR8nnn are reserved for this file.
+#
+# WSVR messages are defined in the com.ibm.ws.resource project.
+# WSVR8nnn:	    com.ibm.ws.resource.internal.resources.runtime
+# -------------------------------------------------------------------------------------------------
+#
+PARTIAL_RESULT_OBTAINED_WSVR8000=WSVR8000E: JNDI \u540d\u79f0\u4e3a {0} \u7684\u8d44\u6e90\u67e5\u627e\u672a\u6210\u529f\u5b8c\u6210\u3002
+PARTIAL_RESULT_OBTAINED_WSVR8000.explanation=\u7531\u4e8e\u89e3\u6790\u671f\u95f4\u53d1\u751f\u9519\u8bef\uff0c\u65e0\u6cd5\u8fd4\u56de\u6240\u8bf7\u6c42\u7684\u8d44\u6e90\u3002
+PARTIAL_RESULT_OBTAINED_WSVR8000.useraction=\u8bf7\u4e0e IBM \u652f\u6301\u673a\u6784\u8054\u7cfb\u3002

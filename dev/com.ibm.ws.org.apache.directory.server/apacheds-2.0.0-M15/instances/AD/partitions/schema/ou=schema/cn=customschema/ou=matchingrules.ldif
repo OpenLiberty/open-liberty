@@ -1,0 +1,9 @@
+dn: ou=matchingRules, cn=customschema, ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsName: 
+entryUUID: 560234c0-2633-4105-97cf-15d2f36a2825
+entryCSN: 20131001134022.023000Z#000000#001#000000
+entryParentId: cba9e093-3f47-44c7-be7b-64d8c3ba2a7b
+ou: matchingrules
+createTimestamp: 20131001134022.023Z

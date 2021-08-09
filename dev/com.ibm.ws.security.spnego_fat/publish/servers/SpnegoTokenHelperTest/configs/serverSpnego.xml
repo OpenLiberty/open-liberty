@@ -1,0 +1,47 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+    <featureManager>
+        <feature>spnego-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+	<feature>servlet-3.1</feature>
+    </featureManager>
+	
+	<include location="imports/jaas_loginmodule_serversettings/jdk8_jaasLoginModule.xml"/>
+	        
+	<include location="imports/configs/basicRegistry.xml"/>
+	
+	<include location="imports/application_definition/spnegoTokenHelperFvt_location.xml"/>
+	
+	<include location="imports/configs/keystore.xml"/>
+
+	<include location="imports/configs/fatTestPorts.xml"/>
+
+	<authFilter id="myAuthFilter">
+        <requestUrl id="myRequestUrl" urlPattern="/SPNEGOTokenHelperServlet|SimpleServlet"
+            matchType="contains" />
+    </authFilter>
+
+	<spnego id="mySpnego"
+        allowLocalHost="true"
+        servicePrincipalNames="HTTP/${security.spnego.test.system.host.name}, HTTP/localhost"
+        krb5Config="${server.config.dir}/resources/security/kerberos/krb5.conf"
+        krb5Keytab="${server.config.dir}/resources/security/kerberos/krb5.keytab"
+        authFilterRef="myAuthFilter"
+        trimKerberosRealmNameFromPrincipal="true"
+    />  
+
+</server>

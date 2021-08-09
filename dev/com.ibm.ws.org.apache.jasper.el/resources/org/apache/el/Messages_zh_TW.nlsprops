@@ -1,0 +1,67 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#CMVCPATHNAME com.ibm.ws.apache.el-3.0/resources/org/apache/el/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# General Errors
+error.convert=\u7121\u6cd5\u5c07 {1} \u985e\u578b\u7684 {0} \u8f49\u63db\u70ba {2}
+error.compare=\u7121\u6cd5\u5c07 {0} \u8207 {1} \u76f8\u4e92\u6bd4\u8f03
+error.function=\u547c\u53eb\u51fd\u6578 ''{0}'' \u6642\u767c\u751f\u554f\u984c
+error.unreachable.base=\u7121\u6cd5\u547c\u53eb\u5230\u76ee\u6a19\uff0cID ''{0}'' \u5df2\u89e3\u6790\u70ba\u7a7a\u503c
+error.unreachable.property=\u7121\u6cd5\u547c\u53eb\u5230\u76ee\u6a19\uff0c''{0}'' \u50b3\u56de\u7a7a\u503c
+error.resolver.unhandled=ELResolver \u672a\u8655\u7406\u5177\u6709 ''{1}'' \u5167\u5bb9\u7684 {0} \u985e\u578b
+error.resolver.unhandled.null=ELResolver \u7121\u6cd5\u8655\u7406 ID \u662f ''{0}'' \u7684\u7a7a\u503c\u57fa\u672c\u7269\u4ef6
+
+# ValueExpressionLiteral
+error.value.literal.write=ValueExpression \u662f\u6587\u5b57\uff0c\u4e14\u7121\u6cd5\u5beb\u5165\uff1a{0}
+
+# ExpressionFactoryImpl
+error.null=\u8868\u793a\u5f0f\u4e0d\u80fd\u70ba\u7a7a\u503c
+error.mixed=\u8868\u793a\u5f0f\u4e0d\u80fd\u540c\u6642\u5305\u542b ''#''{..}'' \u548c ''$''{..}''\uff1a{0}
+error.method=\u4e0d\u662f\u6709\u6548\u7684 MethodExpression\uff1a{0}
+error.method.nullParms=\u53c3\u6578\u985e\u578b\u4e0d\u80fd\u662f\u7a7a\u503c
+error.value.expectedType=\u9810\u671f\u985e\u578b\u4e0d\u80fd\u662f\u7a7a\u503c
+
+# ExpressionBuilder
+error.parseFail=\u7121\u6cd5\u5256\u6790\u8868\u793a\u5f0f [{0}]
+
+# ValueSetVisitor
+error.syntax.set=\u8a2d\u5b9a\u4f5c\u696d\u7684\u8a9e\u6cd5\u7121\u6548
+
+# ReflectionUtil
+error.method.notfound=\u627e\u4e0d\u5230\u65b9\u6cd5\uff1a{0}.{1}({2})
+error.method.ambiguous=\u627e\u4e0d\u5230\u660e\u78ba\u65b9\u6cd5\uff1a{0}.{1}({2})
+
+# ValidatingVisitor
+error.fnMapper.null=\u8868\u793a\u5f0f\u4f7f\u7528\u51fd\u6578\uff0c\u4f46\u537b\u6c92\u6709\u63d0\u4f9b\u4efb\u4f55 FunctionMapper
+error.fnMapper.method=\u627e\u4e0d\u5230\u51fd\u6578 ''{0}''
+error.fnMapper.paramcount=\u51fd\u6578 ''{0}'' \u6307\u5b9a {1} \u500b\u53c3\u6578\uff0c\u4f46\u662f\u5df2\u5ba3\u544a\u4e86 {2} \u500b
+
+# ExpressionImpl
+error.context.null=ELContext \u662f\u7a7a\u503c
+
+# Parser
+error.funciton.tooManyMethodParameterSets=\u6307\u5b9a\u4e86\u591a\u7d44\u53c3\u6578\u7d66\u51fd\u6578 [{0}]
+error.identifier.notjava=ID [{0}] \u4e0d\u662f EL \u898f\u683c\u7684\u7b2c 1.19 \u7bc0\u6240\u8981\u6c42\u7684\u6709\u6548\u7684 Java ID\uff08ID ::= Java \u8a9e\u8a00 ID\uff09\u3002\u53ef\u5c07 org.apache.el.parser.SKIP_IDENTIFIER_CHECK \u7cfb\u7d71\u5167\u5bb9\u8a2d\u5b9a\u70ba true\uff0c\u4f86\u505c\u7528\u9019\u9805\u6aa2\u67e5\u3002
+error.lambda.tooManyMethodParameterSets=\u6307\u5b9a\u7684\u65b9\u6cd5\u53c3\u6578\u7d44\u8d85\u904e\u5de2\u72c0 lambda \u8868\u793a\u5f0f
+
+# Stream
+stream.compare.notComparable=\u4e32\u6d41\u5143\u7d20\u5fc5\u9808\u5be6\u4f5c Comparable
+stream.optional.empty=\u5c0d\u7a7a\u767d\u9078\u7528\u9078\u9805\u547c\u53eb get() \u662f\u7121\u6548\u7684
+stream.optional.paramNotLambda=\u65b9\u6cd5 [{0}] \u7684\u53c3\u6578\u61c9\u70ba lambda \u8868\u793a\u5f0f

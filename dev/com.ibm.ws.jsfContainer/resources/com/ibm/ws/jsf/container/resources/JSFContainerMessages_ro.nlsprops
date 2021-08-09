@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME none
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
+
+# 0: JSF provider type (will be either MOJARRA or MYFACES)
+# 1: application name
+jsf.container.init=JSFG0100I: Liberty a ini\u0163ializat integr\u0103rile JSF pentru furnizorul JSF {0} pe aplica\u0163ia {1}.
+jsf.container.init.explanation=Integr\u0103rile JSF pentru Liberty sunt ini\u0163ializate pentru aplica\u0163ia indicat\u0103, ceea ce permite func\u0163ionarea integr\u0103rilor CDI \u015fi JSF.
+jsf.container.init.useraction=Mesaj informativ. Nu este necesar\u0103 nicio ac\u0163iune din partea utilizatorului.
+
+# 0: application name
+# 1: required ApplicationFactory implementations
+jsf.container.no.jsf.impl=JSFG0101E: Nu a fost g\u0103sit\u0103 nicio implementare JSF \u00een aplica\u0163ia {0}. Trebuie s\u0103 fie disponibil\u0103 o implementare JSF care con\u0163ine una din urm\u0103toarele implement\u0103ri javax.faces.application.ApplicationFactory pentru aplica\u0163ia {1}.
+jsf.container.no.jsf.impl.explanation=Integr\u0103rile JSF pentru Liberty sunt suportate doar pentru un set specific de implement\u0103ri JSF ter\u0163\u0103 parte. Una din implement\u0103rile ApplicationFactory listate trebuie s\u0103 fie disponibile aplica\u0163iei indicate.
+jsf.container.no.jsf.impl.useraction=Include\u0163i una din implement\u0103rile JSF, Apache MyFaces sau Mojarra, \u00een aplica\u0163ia indicat\u0103. Alternativ, dac\u0103 dori\u0163i s\u0103 folosi\u0163i implementarea JSF implicit\u0103 care este furnizat\u0103 de Liberty, Apache MyFaces, utiliza\u0163i caracteristica jsf-2.2 \u00een locul caracteristicii jsfContainer-2.2.
+
+# 0: application name
+jsf.container.no.app.name=JSFG0102E: Liberty nu poate ob\u0163ine numele aplica\u0163iei din aplica\u0163ia JSF {0} utiliz\u00e2nd JNDI.
+jsf.container.no.app.name.explanation=\u00cenregistrarea unei aplica\u0163ii cu containerul JSF Liberty cere ca numele aplica\u0163iei s\u0103 fie disponibil prin realizarea unei c\u0103ut\u0103ri JNDI pentru "java:app/AppName".
+jsf.container.no.app.name.useraction=Verifica\u0163i c\u0103 este activat\u0103 caracteristica jndi-1.0 \u015fi asigura\u0163i-v\u0103 c\u0103 execu\u0163ia unei c\u0103ut\u0103ri JNDI, cum ar fi InitialContext.doLookup("java:app/AppName"), func\u0163ioneaz\u0103 \u00een aplica\u0163ie.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.spec.api.version=JSFG0103E: Versiunea de API a specifica\u0163iei JSF disponibil\u0103 aplica\u0163iei {0} este {2}, dar trebuie s\u0103 fie \u00een intervalul de versiuni {1}. Asigura\u0163i-v\u0103 c\u0103 JSF API care este \u00eempachetat \u00een aplica\u0163ia indicat\u0103 corespunde cu versiunea pentru jsfContainer activat. Liberty determin\u0103 versiunea JSF API verific\u00e2nd atributul manifestului Specification-Version al fi\u015fierului .jar care con\u0163ine clasa JSF API.
+jsf.container.bad.spec.api.version.explanation=Versiunea pentru jsfContainer care este activat trebuie s\u0103 corespund\u0103 cu aceea\u015fi versiune de JSF API \u00eempachetat\u0103 cu aplica\u0163ia indicat\u0103.
+jsf.container.bad.spec.api.version.useraction=Asigura\u0163i-v\u0103 c\u0103 JSF API care este \u00eempachetat \u00een aplica\u0163ia indicat\u0103 corespunde cu versiunea pentru jsfContainer activat. Liberty determin\u0103 versiunea JSF API verific\u00e2nd atributul manifestului Specification-Version al fi\u015fierului .jar care con\u0163ine clasa JSF API.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.impl.version=JSFG0104E: Versiunea implement\u0103rii JSF disponibil\u0103 aplica\u0163iei {0} este {2}, dar trebuie s\u0103 fie \u00een intervalul de versiuni {1}. Asigura\u0163i-v\u0103 c\u0103 implementarea care este \u00eempachetat\u0103 \u00een aplica\u0163ia indicat\u0103 corespunde cu versiunea pentru jsfContainer activat. Liberty determin\u0103 versiunea implement\u0103rii JSF verific\u00e2nd atributul manifestului Specification-Version al fi\u015fierului .jar care con\u0163ine clasa MyFaces sau Mojarra ApplicationFactory.
+jsf.container.bad.impl.version.explanation=Versiunea pentru jsfContainer care este activat trebuie s\u0103 corespund\u0103 cu aceea\u015fi versiune de implementare JSF \u00eempachetat\u0103 cu aplica\u0163ia indicat\u0103.
+jsf.container.bad.impl.version.useraction=Asigura\u0163i-v\u0103 c\u0103 implementarea care este \u00eempachetat\u0103 \u00een aplica\u0163ia indicat\u0103 corespunde cu versiunea pentru jsfContainer activat. Liberty determin\u0103 versiunea implement\u0103rii JSF verific\u00e2nd atributul manifestului Specification-Version al fi\u015fierului .jar care con\u0163ine clasa MyFaces sau Mojarra ApplicationFactory.

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: La operaci\u00f3n del registro de usuarios no ha podido completarse. El formato del valor de la propiedad {0} no es v\u00e1lido. El valor de la propiedad debe tener un tipo de datos y un formato correctos.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=El formato del valor de la propiedad no es v\u00e1lido. Por ejemplo, una propiedad tiene el tipo de entero, pero el valor no es un entero v\u00e1lido.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=Aseg\u00farese de que el valor de la propiedad tenga el tipo de datos correcto.
+
+ENTITY_NOT_FOUND=CWIML4001E: La operaci\u00f3n del registro de usuarios no ha podido completarse. No se ha encontrado la entidad {0}. Especifique la entidad correcta o cree la entidad que falta.
+ENTITY_NOT_FOUND.explanation=No se ha encontrado el nombre de entidad especificado, que puede ser un uniqueName o un uniqueId, en el repositorio subyacente. La operaci\u00f3n de registro de usuarios no puede continuar sin encontrar esta entidad.
+ENTITY_NOT_FOUND.useraction=Aseg\u00farese de que la entidad existe en el repositorio subyacente. Si la entidad existe, verifique si el permiso de lectura se ha establecido para la entidad y vuelva a intentarlo.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Hay m\u00e1s de un registro para el nombre de principal {0} en los registros de usuarios configurados. El nombre de principal debe ser exclusivo en todos los registros de usuarios.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Se han encontrado varios principales para el nombre de principal especificado. El proceso de inicio de sesi\u00f3n no puede continuar.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Aseg\u00farese de que se ha especificado el nombre de principal correcto. Por ejemplo, si especifica el nombre de principal como un nombre exclusivo, se puede evitar este tipo de excepci\u00f3n.

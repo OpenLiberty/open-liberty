@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=Uso: java [opciones JVM] -jar {0} [opciones] archivoSalida  
+
+use.options=Opciones:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.ignorePids=--ignorePidsFile
+option-desc.ignorePids=Un nombre de archivo que contiene una lista de pids a ignorar
+option-key.encoding=--encoding
+option-desc.encoding=La codificaci\u00f3n de caracteres a utilizar para la salida
+option-key.locale=--locale
+option-desc.locale=El entorno local a utilizar para la salida
+option-key.compactoutput=--compactOutput
+option-desc.compactoutput=El esquema de salida no incluir\u00e1 espacios de indentaci\u00f3n, nuevos saltos de l\u00ednea ni comentarios XML
+option-key.productExtension=--productExtension
+option-desc.productExtension=El nombre de extensi\u00f3n del producto que se van a procesar.                            \n\
+Si la extensi\u00f3n del producto est\u00e1 instalada en la ubicaci\u00f3n de usuario por omisi\u00f3n,\n\
+utilice la palabra clave: usr.                                                  \n\
+Si no se especifica esta opci\u00f3n, la acci\u00f3n se realiza en el n\u00facleo de Liberty.

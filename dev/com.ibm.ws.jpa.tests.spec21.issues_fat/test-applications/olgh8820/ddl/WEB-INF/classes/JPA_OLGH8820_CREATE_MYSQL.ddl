@@ -1,0 +1,1 @@
+CREATE PROCEDURE ${schemaname}.simple_order_procedure ( in_param_one VARCHAR(10), in_param_two VARCHAR(10), in_param_three VARCHAR(10), OUT out_param_one VARCHAR(30)) BEGIN SET out_param_one = CONCAT('One: ',in_param_one,' Two: ',in_param_two,' Three: ',in_param_three); END

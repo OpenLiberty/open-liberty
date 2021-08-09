@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: \u017d\u00e1dn\u00fd objekt IdentityStore nepodporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele. Ujist\u011bte se, \u017ee alespo\u0148 jeden objekt IdentityStore podporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nebyl nalezen \u017e\u00e1dn\u00fd objekt IdentityStore pro ov\u011b\u0159en\u00ed platnosti u\u017eivatele. Proto nem\u016f\u017ee b\u00fdt u\u017eivatel ov\u011b\u0159en.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Ujist\u011bte se, \u017ee alespo\u0148 jeden objekt IdentityStore podporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Objekt HttpAuthenticationMechanism pro modul {0} v aplikaci {1} nelze vytvo\u0159it.
+JAVAEESEC_ERROR_NO_HAM.explanation=P\u0159\u00ed\u010dina, pro\u010d nelze vytvo\u0159it objekt HttpAuthenticationMechanism, se li\u0161\u00ed. Chybov\u00e9 zpr\u00e1vy pro objekt HttpAuthenticationMechanism poskytuj\u00ed informace o tom, pro\u010d nelze vytvo\u0159it objekt HttpAuthenticationMechanizm.
+JAVAEESEC_ERROR_NO_HAM.useraction=Prozkoumejte v\u0161echny chybov\u00e9 zpr\u00e1vy z objektu HttpAuthenticationMechanism a prove\u010fte opravy zalo\u017een\u00e9 na chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: V\u00fdraz EL (Expression Language) pro atribut ''{0}'' anotace \u00falo\u017ei\u0161t\u011b identit nelze interpretovat na platnou hodnotu. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. M\u00edsto toho je pou\u017eita v\u00fdchoz\u00ed hodnota atributu ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=P\u0159\u00ed\u010dinou t\u00e9to chyby je neshoda typu mezi v\u00fdsledkem EL a o\u010dek\u00e1vanou hodnotou atributu. Je-li nap\u0159\u00edklad o\u010dek\u00e1van\u00fdm typem atributu \u0158et\u011bzec, v\u00fdsledkem EL bude \u0159et\u011bzec.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Ujist\u011bte se, \u017ee v\u00fdrazy EL jsou platn\u00e9, \u017ee jak\u00e9koli odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9 a \u017ee typ v\u00fdsledku odpov\u00edd\u00e1 atributu.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Parametr hashAlgorithm poskytnut\u00fd pro algoritmus hashAlgorithm {0} je v chybn\u00e9m form\u00e1tu. P\u0159ijat\u00fd parametr je {1}. Po\u017eadovan\u00fd form\u00e1t je n\u00e1zev=hodnota.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Seznam parametr\u016f hashAlgorithm je v chybn\u00e9m form\u00e1tu a nelze jej analyzovat.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Opravte prvek hashAlgorithmParameters v anotaci DatabaseIdentityStore.
+
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Pov\u011b\u0159en\u00ed pro volaj\u00edc\u00edho {0} nelze ov\u011b\u0159it. Objektu DatabaseIdentityStore se nezda\u0159ilo spustit dotaz ''{1}'' s chybou: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=Vyhled\u00e1v\u00e1n\u00ed volaj\u00edc\u00edho se nezda\u0159ilo s chybou.
+JAVAEESEC_ERROR_GEN_DB.useraction=Zkontrolujte chybovou zpr\u00e1vu a prove\u010fte opravy k vyhled\u00e1n\u00ed zalo\u017een\u00e9ho chybov\u00e9 zpr\u00e1v\u011b.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Objektu DatabaseIdentityStore se nezda\u0159ilo spustit dotaz ''{1}'' pro z\u00edsk\u00e1n\u00ed skupin pro volaj\u00edc\u00edho {0}. D\u00edl\u010d\u00ed seznam skupin je {2}. Chyba: {3}
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Je vr\u00e1cen d\u00edl\u010d\u00ed seznam skupin pro volaj\u00edc\u00edho nam\u00edsto \u00fapln\u00e9ho seznamu skupin, proto\u017ee do\u0161lo k chyb\u011b v dotazu.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=P\u0159ezkoumejte poskytnutou chybu a prove\u010fte opravy na dotaz tak, aby mohl b\u00fdt vr\u00e1cen \u00fapln\u00fd seznam skupin pro volaj\u00edc\u00edho. 
+
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro objekt IdentityStore nen\u00ed t\u0159\u00eddou UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro objekt IdentityStore nen\u00ed t\u0159\u00eddou UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=P\u0159ezkoumejte typ pov\u011b\u0159en\u00ed p\u0159edan\u00e9ho do objektu IdentityStore pomoc\u00ed implementace HttpAuthMechanism.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Objekt typu hash algorithm bean nebyl pro t\u0159\u00eddu {0} nalezen.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Ha\u0161ovac\u00ed algoritmus uveden\u00fd v prvku hashAlgorithm v anotaci DatabaseIdentityStoreDefinition nebyl nalezen.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=P\u0159idejte vlastn\u00ed ha\u0161ovac\u00ed algoritmus jako objekt typu bean, kter\u00fd je dostupn\u00fd pro aplikaci.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Dotaz ''{1}'' nevr\u00e1til heslo pro volaj\u00edc\u00edho {0} v \u00falo\u017ei\u0161ti DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=Dotaz nevr\u00e1til heslo pro poskytnut\u00fd dotaz volaj\u00edc\u00edho.
+JAVAEESEC_WARNING_NO_PWD.useraction=Pokud bylo o\u010dek\u00e1v\u00e1no heslo, zkontrolujte dotaz volaj\u00edc\u00edho a obsah datab\u00e1ze.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Dotaz ''{1}'' vr\u00e1til v\u00edce v\u00fdsledk\u016f pro volaj\u00edc\u00edho {0} v \u00falo\u017ei\u0161ti DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Pro po\u017eadovan\u00e9ho volaj\u00edc\u00edho bylo vr\u00e1ceno v\u00edce v\u00fdsledk\u016f. Dotaz volaj\u00edc\u00edho by m\u011bl vr\u00e1tit pouze jeden v\u00fdsledek.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Zrevidujte dotaz volaj\u00edc\u00edho a obsah datab\u00e1ze. Zm\u011b\u0148te dotaz volaj\u00edc\u00edho tak, aby vr\u00e1til jeden v\u00fdsledek.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND=CWWKS3400W: Vazba s volaj\u00edc\u00edm {0} se nezda\u0159ila. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.explanation=P\u0159i v\u00e1z\u00e1n\u00ed s poskytnut\u00fdm volaj\u00edc\u00edm do\u0161lo k v\u00fdjimce.
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.useraction=Zkontrolujte poskytnutou v\u00fdjimku.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH=CWWKS3401E: Hled\u00e1n\u00ed pro volaj\u00edc\u00edho {0} s filtrem {1} a vyhled\u00e1vac\u00ed b\u00e1z\u00ed {2} se nezda\u0159ilo. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {3}
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.explanation=P\u0159i vyhled\u00e1v\u00e1n\u00ed poskytnut\u00e9ho volaj\u00edc\u00edho do\u0161lo k v\u00fdjimce.
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.useraction=Zkontrolujte poskytnutou v\u00fdjimku.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH=CWWKS3402E: Vyhled\u00e1v\u00e1n\u00ed skupin {0} se nezda\u0159ilo. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.explanation=P\u0159i vyhled\u00e1v\u00e1n\u00ed skupin uveden\u00e9ho u\u017eivatele do\u0161lo k v\u00fdjimce.
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.useraction=Zkontrolujte poskytnutou v\u00fdjimku.
+
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP=CWWKS3403W: Bylo vr\u00e1ceno v\u00edce v\u00fdsledk\u016f pro volaj\u00edc\u00edho {0} na objektu LdapIdentityStore pomoc\u00ed filtru {1} a vyhled\u00e1vac\u00ed b\u00e1ze {2}.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.explanation=Pro po\u017eadovan\u00e9ho volaj\u00edc\u00edho bylo vr\u00e1ceno v\u00edce v\u00fdsledk\u016f. Hled\u00e1n\u00ed volaj\u00edc\u00edho by m\u011blo vr\u00e1tit pouze jeden v\u00fdsledek.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.useraction=Zkontrolujte obsah callerSearchFilter, searchBase (vyhled\u00e1vac\u00ed b\u00e1ze) a \u00falo\u017ei\u0161t\u011b.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3404W: Hled\u00e1n\u00ed atributu {1} v entit\u011b {0} se nezda\u0159ilo. Do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {2}
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=P\u0159i vyhled\u00e1v\u00e1n\u00ed atribut\u016f na zadan\u00e9 entit\u011b do\u0161lo k v\u00fdjimce.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Zkontrolujte poskytnutou v\u00fdjimku.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3405W: Volaj\u00edc\u00edmu {0} chyb\u00ed {1} callerNameAttribute.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=Zadan\u00fd volaj\u00edc\u00ed nem\u00e1 uveden\u00fd atribut nastaven\u00fd v objektu LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Zrevidujte obsah callerNameAttribute a \u00falo\u017ei\u0161t\u011b.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3406W: Skupin\u011b {0} chyb\u00ed {1} groupNameAttribute.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=Zadan\u00e1 skupina nem\u00e1 uveden\u00fd atribut nastaven\u00fd v objektu LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Zrevidujte obsah groupNameAttribute a \u00falo\u017ei\u0161t\u011b.

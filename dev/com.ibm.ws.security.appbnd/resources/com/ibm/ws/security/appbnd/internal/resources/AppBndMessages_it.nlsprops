@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Durante l''avvio dell''applicazione, l''applicazione non \u00e8 riuscita ad avviarsi poich\u00e9 sono state trovate pi\u00f9 applicazioni con il nome {0}. Le politiche di autorizzazione della sicurezza richiedono che i nomi siano univoci. Esaminare la configurazione delle applicazioni nel file server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=I nomi applicazione devono essere univoci affinch\u00e9 la politica di autorizzazione della sicurezza possa essere applicata.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Esaminare la configurazione per verificare che le applicazioni abbiano nomi univoci, quindi avviare di nuovo l'applicazione.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: Si \u00e8 verificato un errore interno durante l''avvio dell''applicazione. Non \u00e8 stato possibile creare la tabella di autorizzazione per l''applicazione {0}, pertanto nessun utente sar\u00e0 autorizzato ad accedere alle risorse protette.
+AUTHZ_TABLE_NOT_CREATED.explanation=La tabella di autorizzazione per un'applicazione non \u00e8 stata creata, pertanto nessun utente sar\u00e0 autorizzato ad accedere alle risorse protette.
+AUTHZ_TABLE_NOT_CREATED.useraction=Esaminare la configurazione di autorizzazione dell'applicazione per determinare perch\u00e9 la tabella di autorizzazione non \u00e8 stata creata.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Configurazione dell''identit\u00e0 di esecuzione non valida per il nome ruolo della sicurezza {0} nell''applicazione {1}. Controllare la configurazione per l''identit\u00e0 di esecuzione e confermare che l''ID utente e la password sono configurati correttamente. L''identit\u00e0 del chiamante iniziale verr\u00e0 utilizzata per l''autorizzazione perch\u00e9 non \u00e8 stato possibile applicare il ruolo runAs.
+RUNAS_INVALID_CONFIG.explanation= La configurazione dell'identit\u00e0 di esecuzione per il nome ruolo della sicurezza non \u00e8 valida per l'applicazione. Controllare la configurazione dell'identit\u00e0 di esecuzione e verificare che l'ID utente e la password siano configurati correttamente.
+RUNAS_INVALID_CONFIG.useraction=Esaminare la configurazione dell'identit\u00e0 di esecuzione dell'applicazione per il nome ruolo della sicurezza per assicurarsi che il nome utente e la password siano configurati correttamente. 

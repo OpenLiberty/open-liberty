@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Arbortext, Inc., 1988-2006, v.4002-->
+<?Pub Sty _display FontColor="red"?>
+<map id="zero.core_toc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://docs.oasis-open.org/dita/v1.0.1/schema/map.xsd">
+
+<topicref format="html" href="transporthttp.htm" id="com.ibm.ws.transport.http" navtitle="Transport HTTP Package" />
+
+</map>
+<?Pub *0000007040?>

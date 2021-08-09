@@ -1,0 +1,139 @@
+# This is the spec file for rpm openliberty creation
+ 
+%define name        openliberty
+%define version     @SPEC_VERSION@
+%define _topdir     %(echo $PWD)
+%define buildroot   %{_topdir}/BUILDROOT/%{name}-root
+
+
+Summary:        Open Liberty
+License:        EPL-1.0
+Name:           %{name}
+Version:        %{version}
+Release:        1
+Source:         %{name}-%{version}.tar.gz
+BuildArch:      noarch
+URL:            https://openliberty.io
+Packager:       IBM
+AutoReqProv:    no
+#Suggests:       java >= 1:1.8.0
+
+%description
+A lightweight open framework for building fast and efficient cloud-native Java microservices.
+ 
+%install
+
+#Unpacking the tar into the openliberty folder
+mkdir -p %{buildroot}/opt/ol
+tar -zxf %{_topdir}/SOURCES/%{name}-%{version}.tar.gz -C %{buildroot}/opt/ol
+
+#Creating the share folder and moving defaultServer tar to /usr/share/openliberty
+mkdir -p %{buildroot}/usr/share/%{name}
+cp %{_topdir}/SOURCES/defaultServer.tar %{buildroot}/usr/share/%{name}
+
+#Creating the scripts
+mkdir -p %{buildroot}/usr/libexec
+cp %{_topdir}/SOURCES/scripts/openliberty %{buildroot}/usr/libexec
+mkdir -p %{buildroot}/etc/init.d
+cp %{_topdir}/SOURCES/scripts/openliberty %{buildroot}/etc/init.d
+
+#Creating the service
+mkdir -p %{buildroot}/usr/lib/systemd/system
+cp %{_topdir}/SOURCES/scripts/openliberty@.service %{buildroot}/usr/lib/systemd/system
+exit 0
+ 
+%files
+#%defattr(-,root,root)
+/etc
+%exclude %dir /etc/init.d
+/opt/ol
+/usr/libexec
+/usr/share/%{name}
+/usr/lib/systemd/system
+
+%preun
+pidDir=/var/run/openliberty
+if ( ls $pidDir/*.pid > /dev/null 2>&1 ); then 
+    printf "Your server(s) are still running. Stop them before uninstalling/upgrading!\n"
+    for pidFiles in $pidDir/*.pid
+    do
+        server=$(basename $pidFiles)
+        serverName="${server%.*}"
+        echo "Server - $serverName with process id $(cat $pidFiles)"
+    done
+    exit 1
+fi
+exit 0
+
+%post
+#echo "Adding group - openliberty"
+if (! getent group openliberty > /dev/null 2>&1); then
+    groupadd --system openliberty
+fi
+
+#echo "Adding user - openliberty"
+if (! id openliberty > /dev/null 2>&1); then
+    adduser --system --home-dir /usr/share/openliberty --no-create-home -g openliberty --shell /bin/bash openliberty  
+fi
+
+#echo "Setting up the systemd openliberty service"
+if [ -x "/usr/bin/systemctl" ] && [ -x "/usr/libexec/openliberty" ] && [ -r "/usr/lib/systemd/system/openliberty@.service" ]; then
+    #only enable defaultServer service if any openliberty@ services exist. 
+    NUM_EXISTING_SERVICE=`ls /etc/systemd/system/multi-user.target.wants/ |grep openliberty@ | wc -l`
+    if [ "${NUM_EXISTING_SERVICE}" -eq "0" ]; then
+        systemctl daemon-reload
+        systemctl enable openliberty@defaultServer.service
+    fi
+else
+#    echo "Setting up the other openliberty service"
+    chkconfig --add openliberty
+fi
+
+echo "Creating the license directory"
+mkdir -p /usr/share/doc/openliberty
+cp /opt/ol/LICENSE /usr/share/doc/openliberty
+cp /opt/ol/NOTICES /usr/share/doc/openliberty
+
+#echo "Creating server,log and run directory"
+mkdir -p /var/lib/openliberty/usr/servers
+mkdir -p /var/run/openliberty
+mkdir -p /var/log/openliberty
+
+#echo "Setting up defaultServer for user"
+if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
+    tar -xf /usr/share/openliberty/defaultServer.tar -C /var/lib/openliberty/usr/servers
+    printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
+fi
+
+#echo "Setting permissions to files/folders"
+chmod -R a+r /opt/ol/
+chmod -R o+X /opt/ol/lib/versions
+chmod 755 /usr/libexec/openliberty
+chmod 755 /opt/ol/etc/
+chmod -R 755 /opt/ol/templates/
+chown -R openliberty:openliberty /var/lib/openliberty
+chmod -R u+w /var/lib/openliberty
+chown -R openliberty:openliberty /var/run/openliberty
+chmod -R u+w /var/run/openliberty
+chown -R openliberty:openliberty /var/log/openliberty
+chmod -R u+w /var/log/openliberty
+exit 0
+
+%postun
+#echo "Removing leftover license and run directories"
+if [ -d "/usr/share/doc/openliberty" ]; then
+    rm -rf /usr/share/doc/openliberty
+fi
+if [ -d "/var/run/openliberty" ]; then
+    rm -rf /var/run/openliberty
+fi
+if [ -x "/usr/bin/systemctl" ]; then
+#    echo "Reloading systemctl services after uninstall of openliberty"
+    systemctl daemon-reload
+#else 
+#    echo "removing openliberty service"
+#    chkconfig --del openliberty
+fi
+
+exit 0
+

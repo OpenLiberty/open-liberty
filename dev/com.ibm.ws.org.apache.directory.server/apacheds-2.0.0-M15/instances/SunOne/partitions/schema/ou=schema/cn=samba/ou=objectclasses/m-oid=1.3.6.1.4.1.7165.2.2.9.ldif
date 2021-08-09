@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.2.9,ou=objectClasses,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.2.9
+m-name: sambaSidEntry
+m-description: Structural Class for a SID
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: top
+m-typeobjectclass: STRUCTURAL
+m-must: sambaSID
+creatorsname: uid=admin,ou=system

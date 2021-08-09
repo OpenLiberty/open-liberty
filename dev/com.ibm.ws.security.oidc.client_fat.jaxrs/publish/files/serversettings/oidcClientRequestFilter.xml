@@ -1,0 +1,197 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="noJWT_AuthFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="JaxRSClient"
+			matchType="contains" />
+		<requestUrl
+			id="myRequestUrl_a"
+			urlPattern="JaxRSClient_"
+			matchType="notContain" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_noJWT"
+		scope="openid profile"
+		clientId="client01_noJWT"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="noJWT_AuthFilter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="Injecter_AuthFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="JaxRSClient_Injecter"
+			matchType="contains" />
+		<requestUrl
+			id="myRequestUrl_a"
+			urlPattern="JaxRSClient_Injecter_"
+			matchType="notContain" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_injecter"
+		scope="openid profile"
+		clientId="client01_injecter"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="Injecter_AuthFilter"
+	>
+		<jwt
+			builder="jwtInjecter"
+			claims="realmName,uniqueSecurityName,sub" />
+	</openidConnectClient>
+
+	<jwtBuilder
+		id="jwtInjecter"
+		signatureAlgorithm="${oidcSignAlg}"
+		audiences="client01"
+		sharedKey="secret" />
+
+	<jwtBuilder
+		id="jwtInjecter2"
+		signatureAlgorithm="${oidcSignAlg}"
+		audiences="client01"
+		sharedKey="secret" />
+
+	<jwtBuilder
+		id="extraInjecter"
+		signatureAlgorithm="${oidcSignAlg}"
+		audiences="client02"
+		sharedKey="secret" />
+
+	<authFilter id="noClaims_AuthFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="JaxRSClient_Injecter_noClaims"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_noClaims"
+		scope="openid profile"
+		clientId="client01_injecter"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="noClaims_AuthFilter"
+	>
+		<jwt builder="jwtInjecter" />
+	</openidConnectClient>
+
+	<authFilter id="emptyClaims_AuthFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="JaxRSClient_Injecter_emptyClaims"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_emptyClaims"
+		scope="openid profile"
+		clientId="client01_injecter"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="emptyClaims_AuthFilter"
+	>
+		<jwt
+			builder="jwtInjecter"
+			claims="" />
+	</openidConnectClient>
+
+	<authFilter id="madeUpClaims_AuthFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="JaxRSClient_Injecter_madeUpClaims"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_madeUpClaims"
+		scope="openid profile"
+		clientId="client01_injecter"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="madeUpClaims_AuthFilter"
+	>
+		<jwt
+			builder="jwtInjecter"
+			claims="realmName,madeUpClaim,uniqueSecurityName,sub" />
+	</openidConnectClient>
+
+	<authFilter id="rpHeaderName_AuthFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="JaxRSClient_Injecter_rpHeaderName"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_rpHeaderName"
+		scope="openid profile"
+		clientId="client01_injecter"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		headerName="rpHeaderName"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rpHeaderName_AuthFilter"
+	>
+		<jwt
+			builder="jwtInjecter"
+			claims="realmName,madeUpClaim,uniqueSecurityName,sub" />
+	</openidConnectClient>
+
+</server>

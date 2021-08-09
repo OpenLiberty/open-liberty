@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="..."
+      version="3.0">     
+
+  	<!-- run-as role conflict in web-fragment.xml files for same servlet -->
+  	<servlet id="Servlet_1">
+    	<description></description>
+    	<display-name>WebFragmentDeploymentFailureForRunAs</display-name>
+    	<servlet-name>WebFragmentDeploymentFailureForRunAs</servlet-name>
+    	<servlet-class>web.webfragmentdeploymentfailureforrunas.WebFragmentDeploymentFailureForRunAs</servlet-class>
+    	<run-as>
+      		<role-name>Employee</role-name>
+    	</run-as>
+  	</servlet>
+  	<servlet-mapping id="ServletMapping_1">
+    	<servlet-name>WebFragmentDeploymentFailureForRunAs</servlet-name>
+    	<url-pattern>/WebFragmentDeploymentFailureForRunAs</url-pattern>
+  	</servlet-mapping>
+  	<security-role id="SecurityRole_1">
+    	<description>Employee role</description>
+    	<role-name>Employee</role-name>
+  	</security-role>
+                 
+</web-fragment>

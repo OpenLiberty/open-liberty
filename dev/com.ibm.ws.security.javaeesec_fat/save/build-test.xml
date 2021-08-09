@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.security.javaeesec_fat" default="buildandrun" basedir=".">
+	<!-- The javaeesec tests should only run if we're using Java 8 or higher -->
+	<property name="minimum.java.level.for.test.execution" value="1.8"/>
+	<property name="feature.requiring.minimum.java.level" value="appSecurity-3.0"/>
+	
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+	<property name="publish.server.root" value="${basedir}/publish/servers/" />
+    <property name="fat.image.type" value="use-full-image"/> 
+    
+    <!-- User feature location 
+	<property name="jaspi.test.feature.dir" value="${basedir}/../com.ibm.ws.security.jaspic_fat/publish/features/" />
+	<property name="jaspi.test.bundle.dir" value="${basedir}/../com.ibm.ws.security.jaspic_fat/publish/bundles/" />
+	<property name="jacc.test.bundle.dir" value="${basedir}/../com.ibm.ws.security.authorization.jacc.testprovider/build/lib/" />
+	<property name="jacc.test.feature.dir" value="${basedir}/../com.ibm.ws.security.authorization.jacc.testprovider/publish/usr/extension/lib/features/" />
+-->
+
+	<target name="addRequiredFiles">
+	<!--Copy JACC provider feature to this test bucket
+		<copy todir="${jaspi.test.bundle.dir}">
+		    <fileset dir="${jacc.test.bundle.dir}" includes="com.ibm.ws.security.authorization.jacc.provider_1.0.jar"/>
+		</copy>
+		<copy todir="${jaspi.test.feature.dir}">
+		    <fileset dir="${jacc.test.feature.dir}" includes="jaccTestProvider-1.0.mf"/>
+		</copy>
+-->
+	</target>
+	
+	<!--This solves the fatServer.xsd validation problem-->
+	<target name="validate-server-xmls"/> 
+
+	<target name="addRequiredLibraries">
+		<copy todir="${required.lib.dir}" overwrite="yes">
+			<fileset dir="../build.image/wlp/lib" includes="com.ibm.ws.logging_*.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-codec-1.4.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-logging-1.1.1.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="httpclient-4.1.2.jar"/>
+			<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="httpcore-4.1.2.jar"/>
+			<fileset dir="../build.image/wlp/dev/api/spec" includes="com.ibm.websphere.javaee.servlet.3.0_*.jar"/>
+			<!-- <fileset dir="../com.ibm.ws.security.audit_fat.common.tooling/collectedJars" includes="*.jar"/> -->
+		</copy>
+	</target>
+	
+    <target name="build-bucket-single">
+            <antcall target="test.build.fat.bucket.build-bucket-single" inheritAll="true" inheritRefs="true"/>
+            <echo>Add additional files to autoFVT.zip</echo>
+
+            <!-- Determine if this target was entered to process zautoFVT.zip -->
+            <!-- This is done by checking build.type which is set by the caller. -->
+            <!-- If processing zautoFVT.zip set a property as a flag. -->
+            <condition property="processing.zfat">
+                <or>
+                <contains string="${build.type}" substring="zfattest"/>
+                <contains string="${build.type}" substring="zunittest"/>                
+                </or>
+            </condition>
+
+            <!-- If processing zautoFVT.zip set then set property holding the zip name -->
+            <!-- to zautoFVT.zip.  Otherwise set to autoFVT.zip. -->
+            <if if="processing.zfat">
+                    <property name="autofvt.zipfile" location="build/lib/zautoFVT.zip" />
+                <else>
+                    <property name="autofvt.zipfile" location="build/lib/autoFVT.zip" />
+                </else>
+            </if>
+        
+            <zip destfile="${autofvt.zipfile}" update="true">
+                <zipfileset dir="${basedir}/../com.ibm.ws.security.audit_fat.common.tooling/build/lib/" prefix="autoFVT/lib" includes="com.ibm.ws.security.audit_fat.common.tooling.jar" />
+            </zip>      
+        
+            <unzip src="${autofvt.zipfile}" dest="." />
+            
+    </target>
+
+</project>

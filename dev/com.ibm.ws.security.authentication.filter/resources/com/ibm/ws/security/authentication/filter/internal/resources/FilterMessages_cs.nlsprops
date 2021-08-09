@@ -1,0 +1,61 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Filter service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4350 - CWWKS4399
+AUTH_FILTER_INIT_NULL_STRING=CWWKS4350E: \u0158et\u011bzec s hodnotou null nen\u00ed platn\u00fdm pravidlem filtrace ov\u011b\u0159en\u00ed.
+AUTH_FILTER_INIT_NULL_STRING.explanation=Pro filtr ov\u011b\u0159en\u00ed byl v souboru server.xml zad\u00e1n \u0159et\u011bzec s hodnotou null.
+AUTH_FILTER_INIT_NULL_STRING.useraction=Opravte pravidlo filtrov\u00e1n\u00ed ov\u011b\u0159en\u00ed.
+
+AUTH_FILTER_MALFORMED_CONDITION=CWWKS4351E: Podm\u00ednka filtru je chybn\u00e1. s1 = {0};  s2 = {1}; s3 = {2}.
+AUTH_FILTER_MALFORMED_CONDITION.explanation=Podm\u00ednka filtru je chybn\u00e1, nem\u016f\u017ee m\u00edt uvedenu v\u00edce ne\u017e jednu hodnotu.
+AUTH_FILTER_MALFORMED_CONDITION.useraction=Ov\u011b\u0159te hodnotu filtru v souboru server.xml.
+
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE=CWWKS4352E: Typ shody filtru by m\u011bl b\u00fdt jednou z n\u00e1sleduj\u00edc\u00edch hodnot: ==, !=, %=, > nebo <. Pou\u017eit\u00fd typ shody byl {0}.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.explanation=Typ shody filtru by m\u011bl b\u00fdt jednou z n\u00e1sleduj\u00edc\u00edch hodnot: ==, !=, %=, > nebo <.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.useraction=Ov\u011b\u0159te typ shody filtru v souboru server.xml.
+
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE=CWWKS4353E: Typ shody filtru by m\u011bl b\u00fdt jednou z n\u00e1sleduj\u00edc\u00edch hodnot: equals, notContain, contains, greaterThan nebo lessThan. Pou\u017eit\u00fd typ shody byl {0}.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.explanation=Typ shody filtru by m\u011bl b\u00fdt jednou z n\u00e1sleduj\u00edc\u00edch hodnot: equals, notContain, contains, greaterThan nebo lessThan.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.useraction=Ov\u011b\u0159te typ shody filtru v souboru server.xml.
+
+AUTH_FILTER_MALFORMED_IP_RANGE=CWWKS4354E: Byl zad\u00e1n chybn\u00fd rozsah adres IP. M\u00edsto z\u00e1stupn\u00e9ho znaku byla nalezena polo\u017eka {0}.
+AUTH_FILTER_MALFORMED_IP_RANGE.explanation=Byl zad\u00e1n chybn\u00fd rozsah adres IP. Rozsah adres IP mus\u00ed po prvn\u00edm rozsahu obsahovat pouze z\u00e1stupn\u00e9 znaky.
+AUTH_FILTER_MALFORMED_IP_RANGE.useraction=Zajist\u011bte, aby po prvn\u00edm zadan\u00e9m rozsahu n\u00e1sledovaly pouze z\u00e1stupn\u00e9 znaky.
+
+AUTH_FILTER_UNKNOWN_HOST=CWWKS4355E: Pro adresu IP {0} byla vyd\u00e1na v\u00fdjimka pro nezn\u00e1m\u00e9ho hostitele.
+AUTH_FILTER_UNKNOWN_HOST.explanation=Pro uvedenou adresu IP nelze z\u00edskat n\u00e1zev hostitele.
+AUTH_FILTER_UNKNOWN_HOST.useraction=Ov\u011b\u0159te zadan\u00fd rozsah adres IP.
+
+AUTH_FILTER_IP_STRING_CONVERT_ERROR=CWWKS4356E: Hodnotu atributu IP {0} nelze p\u0159ev\u00e9st na adresu IP.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.explanation=P\u0159i p\u0159evodu hodnoty atributu IP na adresu IP do\u0161lo k chyb\u011b p\u0159evodu.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.useraction=Ov\u011b\u0159te atribut IP uveden\u00fd v souboru server.xml.
+
+AUTH_FILTER_NOT_CONFIG=CWWKS4357I: Prvek authFilter nen\u00ed uveden v souboru server.xml.
+AUTH_FILTER_NOT_CONFIG.explanation=Prvek authFilter nen\u00ed uveden v souboru server.xml.
+AUTH_FILTER_NOT_CONFIG.useraction=Ujist\u011bte se, \u017ee je prvek authFilter uveden v souboru server.xml.
+
+AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: Konfigurace filtru ov\u011b\u0159en\u00ed {0} byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+AUTH_FILTER_CONFIG_PROCESSED.explanation=Konfigurace filtru ov\u011b\u0159en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+AUTH_FILTER_CONFIG_PROCESSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: Konfigurace filtru ov\u011b\u0159en\u00ed {0} byla \u00fasp\u011b\u0161n\u011b zm\u011bn\u011bna.
+AUTH_FILTER_CONFIG_MODIFIED.explanation=Konfigurace filtru ov\u011b\u0159en\u00ed byla \u00fasp\u011b\u0161n\u011b zm\u011bn\u011bna.
+AUTH_FILTER_CONFIG_MODIFIED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+AUTH_FILTER_MISSING_ID=CWWKS4360E: V prvku authFilter uveden\u00e9m v souboru server.xml chyb\u00ed po\u017eadovan\u00fd atribut ID {0}
+AUTH_FILTER_MISSING_ID.explanation=V prvku authFilter uveden\u00e9m v souboru server.xml chyb\u00ed po\u017eadovan\u00fd atribut ID, tak\u017ee nelze tento prvek authFilter pou\u017e\u00edt.
+AUTH_FILTER_MISSING_ID.useraction=Ujist\u011bte se, \u017ee prvek authFilter uveden\u00fd v souboru server.xml obsahuje atribut ID.

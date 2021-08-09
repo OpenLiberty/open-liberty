@@ -1,0 +1,40 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>sessionCache-1.0</feature>
+        <feature>mpMetrics-2.0</feature> <!-- one of the Infinispan JARs has a hard dependency on MicroProfile Metrics API -->
+        <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
+    <httpSessionCache libraryRef="InfinispanLib" writeContents="ALL_SESSION_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-config-lacking-http-session-cache-name.xml"/>
+
+    <application location="sessionCacheApp.war">
+        <!-- <classloader commonLibraryRef="InfinispanLib"/> causes Weld (implicitly enabled by mpMetrics) to process CDI annotations within Infinispan JARs, which causes failures -->
+    </application>
+    
+    <library id="InfinispanLib">
+        <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
+    </library>
+	
+	<!-- Perms needed because the application uses OSGi reflectively to access the same caches as HTTP Session persistence. -->
+	<!-- Applications should never do this. We are only granting it to the test app for purposes of verifying cached values. -->
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
+
+    <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
+
+    <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+</server>

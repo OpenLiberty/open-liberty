@@ -1,0 +1,3 @@
+IBM-API-Package: com.ibm.websphere.logging.hpel.reader;  type="ibm-api",
+ com.ibm.websphere.logging.hpel.reader.filters;  type="ibm-api",
+ com.ibm.websphere.logging.hpel.writer;  type="ibm-api"

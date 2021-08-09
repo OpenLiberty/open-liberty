@@ -1,0 +1,197 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: Edi\u0163ie: {0} Nivel: {1}
+WPM_SPLASH_CWSIU0000.explanation=Acest mesaj afi\u015feaz\u0103 edi\u0163ia de build mesagerie curent\u0103 \u015fi nivelul.
+WPM_SPLASH_CWSIU0000.useraction=F\u0103r\u0103.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: Proprietatea runtime {0} a fost modificat\u0103 la valoarea {1}.
+RUNTIME_CWSIU0001.explanation=O proprietate runtime a fost modificat\u0103 cu o valoare care nu este implicit\u0103.
+RUNTIME_CWSIU0001.useraction=F\u0103r\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: Apari\u0163iile viitoare ale mesajului {0} vor fi suprimate pentru urm\u0103toarele {1} minute.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=Pentru a evita umplerea istoricelor cu copii identice ale mesajului, apari\u0163iile viitoare ale mesajului vor fi suprimate.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: Apari\u0163iile viitoare ale mesajului {0} vor fi suprimate.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=Pentru a evita umplerea istoricelor cu copii identice ale mesajului, toate apari\u0163iile viitoare ale mesajului vor fi suprimate.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: Mesajul {0} a ap\u0103rut de {1} ori \u00een ultimele {2} minute \u00eentre {3} \u015fi {4}. \
+Apari\u0163iile viitoare ale acestui mesaj vor fi suprimate pentru urm\u0103toarele {5} minute.
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=Mesajul a ap\u0103rut de mai multe ori, dar afi\u015farea mesajului a fost suprimat\u0103.
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: Apari\u0163iile viitoare ale urm\u0103torului mesaj vor fi suprimate pentru urm\u0103toarele {1} minute:  {0} 
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=Pentru a evita umplerea istoricelor cu copii identice ale mesajului, apari\u0163iile viitoare ale mesajului vor fi suprimate.
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: Apari\u0163iile viitoare ale urm\u0103torului mesaj vor fi suprimate:  {0}.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=Pentru a evita umplerea istoricelor cu copii identice ale mesajului, toate apari\u0163iile viitoare ale mesajului vor fi suprimate.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: Mesajul {0} a ap\u0103rut de {1} ori \u00een ultimele {2} minute \u00eentre {3} \u015fi {4}. \
+Apari\u0163iile viitoare ale acestui mesaj vor fi suprimate pentru urm\u0103toarele {5} minute.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=Mesajul a ap\u0103rut de mai multe ori, dar afi\u015farea mesajului a fost suprimat\u0103.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: Caracterul {0} nu este permis \u00eentr-un \u015fir de metacaractere al subiectului SIB {1}.
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=Caracterele semne de \u00eentrebare nu sunt permise \u00een sintaxa metacaractere subiect SIB.
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=\u00cenl\u0103tura\u0163i instan\u0163ele de caractere semne de \u00eentrebare din \u015firul de metacaractere subiect furnizat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: \u015eirul subiect {0} nu a putut fi convertit \u00een sintax\u0103 SIB deoarece con\u0163ine un caracter asterisc neseparat.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=Caracterele asterisc nu sunt permise \u00een sintaxa metacaractere SIB dec\u00e2t dac\u0103 sunt complet separate de slash.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un slash de fiecare parte a asteriscului \u00een \u015firul de caractere furnizat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: Fi\u015fierul de propriet\u0103\u0163i {0} nu poate fi \u00eenc\u0103rcat datorit\u0103 excep\u0163iei: {1}.
+EXCP_DURING_LOAD_CWSIU0050.explanation=MSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: A ap\u0103rut o eroare intern\u0103.  Un obiect din clasa {0} nu poate fi creat din cauza excep\u0163iei: {1}
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=MSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: O apari\u0163ie anterioar\u0103 a mesajului {0} a fost suprimat\u0103 la {1}.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=Mesajul a avut apari\u0163ii anterioare, dar cea mai recent\u0103 apari\u0163ie a fost suprimat\u0103.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=F\u0103r\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: Mesajul {0} a ap\u0103rut de {1} ori \u00eentre {2} \u015fi {3} dar a fost suprimat.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=Mesajul a ap\u0103rut de mai multe ori, dar afi\u015farea mesajului a fost suprimat\u0103.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=F\u0103r\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: O apari\u0163ie anterioar\u0103 a "{0}" a fost suprimat\u0103 la {1}.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=Mesajul a avut apari\u0163ii anterioare, dar cea mai recent\u0103 apari\u0163ie dinaintea mesajului curent a fost suprimat\u0103.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=F\u0103r\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: "{0}" a ap\u0103rut de {1} ori \u00eentre {2} \u015fi {3} dar a fost suprimat.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=Mesajul a ap\u0103rut de mai multe ori, dar afi\u015farea mesajului a fost suprimat\u0103.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=F\u0103r\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: \u015eirul hexazecimal {0} este formatat incorect.
+BAD_HEX_STRING_CWSIU0200.explanation=O \u00eencercare de conversie de la un \u015fir la o matrice de octe\u0163i a e\u015fuat din cauza \u015firului, care fie con\u0163ine caractere non-hexazecimale, fie un num\u0103r impar de caractere.
+BAD_HEX_STRING_CWSIU0200.useraction=Verifica\u0163i con\u0163inutul \u015firului pentru care conversia a e\u015fuat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=Dac\u0103 mesajul nu furnizeaz\u0103 informa\u0163ii suficiente, pentru mai multe informa\u0163ii verifica\u0163i mesajele anterioare.
+TEMPORARY_CWSIU9999.useraction=Dac\u0103 nu sunte\u0163i capabil s\u0103 rezolva\u0163i problema cere\u0163i administratorului vostru de sistem s\u0103 v\u0103 ajute s\u0103 rezolva\u0163i problema.
+

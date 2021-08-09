@@ -1,0 +1,97 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Descrizione:
+global.actions=Azioni:
+global.options=Opzioni:
+global.usage=Uso:
+global.required=Richiesta:
+global.options.statement=\tUtilizzare il comando help [nomeAzione] per informazioni dettagliate sulle opzioni di ciascuna azione.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tStampare le informazioni della guida per l''azione specificata.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [nomeAzione]
+
+# -------- AUDITREADER OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+auditreader.desc=\tProgramma di utilit\u00e0 per decodificare e annullare la firma dei record di verifica codificati e firmati.\n\
+\t\u00c8 necessario specificare l''ubicazione del log di verifica da leggere e\n\
+\tl''ubicazione del file di output.\n\
+\n\
+\tParametri richiesti:\n\
+\t   --auditFileLocation\n\
+\t   --outputFileLocation\n\
+\n\
+\t   Facoltativamente:\n\
+\t      Per la decodifica:\n\
+\t         --encrypted=true\n\
+\t         --encKeyStorePassword=XXX\n\
+\t         --encKeyStoreType=XXX\n\
+\t         --encKeyStoreLocation=XXX\n\
+\t      Per l''annullamento della firma:\n\
+\t         --signed=true\n\
+\t         --signingKeyStorePassword=YYY\n\
+\t         --signingKeyStoreType=YYY\n\
+\t         --signingKeyStoreLocation=YYYY\n\
+\n\
+\t  Per abilitare la traccia:\n\
+\t	--debug=true
+auditreader.usage.options=\t{0} auditReader [opzioni]
+auditreader.option-key.auditFileLocation=\ \ \ \ --auditFileLocation=[ubicazione del log di verifica codificato e/o firmato]
+auditreader.option-desc.auditFileLocation=\tL''ubicazione completa del log di verifica da decodificare o di cui annullare la firma.
+auditreader.option-key.outputFileLocation=\ \ \ \ --outputFileLocation=[ubicazione del log di verifica decodificato e senza firma risultante]
+auditreader.option-desc.outputFileLocation=\tL''ubicazione completa del log di output risultante
+auditreader.option-key.encrypted=\ \ \ \ --encrypted=[true|false]
+auditreader.option-desc.encrypted=\tSpecificare se il log di verifica \u00e8 codificato.
+auditreader.option-key.encryptedKeyStoreLocation=\ \ \ \ --encKeyStoreLocation=[Ubicazione URL file completo del keystore utilizzato per archiviare il certificato utilizzato per decodificare i record di verifica.]
+auditreader.option-desc.encryptedKeyStoreLocation=\tSpecificare l''ubicazione URL file completo del keystore che memorizza il certificato utilizzato per decodificare i record di verifica.
+auditreader.option-key.encryptedKeyStorePassword=\ \ \ \ --encKeyStorePassword=[password]
+auditreader.option-desc.encryptedKeyStorePassword=\tSpecificare la password per il keystore contenente il certificato utilizzato per decodificare i record di verifica.
+auditreader.option-key.encryptedKeyStoreType=\ \ \ \ --encKeyStoreType=[tipo keystore]
+auditreader.option-desc.encryptedKeyStoreType=\tSpecificare il tipo del keystore di codifica [JKS|JCEKS|PKCS12]
+auditreader.option-key.signed=\ \ \ \ --signed=[true|false]
+auditreader.option-desc.signed=\tSpecificare se il log di verifica \u00e8 firmato.
+auditreader.option-key.signingKeyStoreLocation=\ \ \ \ --signingKeyStoreLocation=[Ubicazione URL file completo del keystore utilizzato per archiviare il certificato utilizzato per annullare la firma dei record di verifica. \
+\
+]
+auditreader.option-desc.signingKeyStoreLocation=\tSpecificare l''ubicazione URL file completo del keystore che memorizza il certificato utilizzato per annullare la firma dei record di verifica.
+auditreader.option-key.signingKeyStorePassword=\ \ \ \ --signingKeyStorePassword=[password]
+auditreader.option-desc.signingKeyStorePassword=\tSpecificare la password per il keystore contenente il certificato utilizzato per annullare la firma dei record di verifica.
+auditreader.option-key.signingKeyStoreType=\ \ \ \ --signingKeyStoreType=[tipo keystore]
+auditreader.option-desc.signingKeyStoreType=\tSpecificare il tipo del keystore di firma [JKS|JCEKS|PKCS12]
+auditreader.option-key.debug=\ \ \ \ --debug=[true|false]
+auditreader.option-desc.debug=\tSpecificare che il debug \u00e8 abilitato se \u00e8 necessaria la traccia.\
+Il debug \u00e8 disabilitato per impostazione predefinita.

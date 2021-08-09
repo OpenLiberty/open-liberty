@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=\u540d\u79f0\u4e0d\u80fd\u4e3a Null\u3002
+empty.name=\u540d\u79f0\u4e0d\u80fd\u4e3a\u7a7a\u3002
+
+jndi.entry.bad.name=CWWKN0001W: \u672a\u80fd\u89e3\u6790\u540d\u79f0 [{0}]\uff0c\u53d1\u751f\u6545\u969c\uff0c\u5f02\u5e38\u4e3a [{1}]\u3002
+jndi.entry.bad.name.explanation=\u540d\u79f0\u4e0d\u7b26\u5408\u5fc5\u9700\u7684\u8bed\u6cd5\u3002\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+jndi.entry.bad.name.useraction=\u8bf7\u5c06\u540d\u79f0\u4fee\u6b63\u4e3a\u7b26\u5408\u5fc5\u9700\u7684\u8bed\u6cd5\u3002
+
+jndi.entry.bad.value=CWWKN0002W: \u672a\u80fd\u5c06\u503c [{0}] \u89e3\u6790\u4e3a\u7c7b\u578b [{1}]\u3002
+jndi.entry.bad.value.explanation=\u63d0\u4f9b\u7684\u503c\u4e0d\u7b26\u5408\u5176\u6240\u58f0\u660e\u7c7b\u578b\u3002
+jndi.entry.bad.value.useraction=\u8bf7\u5c06\u8be5\u503c\u66f4\u6539\u4e3a\u9002\u5408\u8be5\u7c7b\u578b\uff0c\u6216\u5c06\u8be5\u7c7b\u578b\u66f4\u6539\u4e3a\u9002\u5408\u8be5\u503c\u3002
+
+jndi.entry.bad.type=CWWKN0003W: \u672a\u80fd\u521b\u5efa JNDI \u6761\u76ee\uff0c\u8fd9\u662f\u56e0\u4e3a\u5b83\u7528\u672a\u8bc6\u522b\u7684\u7c7b\u578b [{0}] \u8fdb\u884c\u914d\u7f6e\u3002
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=\u8be5\u7c7b\u578b\u5fc5\u987b\u4e3a\u9884\u671f\u7684\u503c\u3002\u6709\u6548\u503c\u4e3a auto\u3001boolean\u3001byte\u3001char\u3001double\u3001float\u3001int\u3001long\u3001short \u6216 string\u3002
+jndi.entry.bad.type.useraction=\u8bf7\u9009\u62e9\u6709\u6548\u7c7b\u578b\u89c4\u8303\u3002
+
+jndi.entry.bind.failed=CWWKN0004W: \u7528\u4e8e\u5c06\u503c [{0}] \u7ed1\u5b9a\u5230\u540d\u79f0 [{1}] \u7684\u8c03\u7528\u5931\u8d25\uff0c\u5f02\u5e38\u4e3a [{3}]
+jndi.entry.bind.failed.explanation=\u7ed1\u5b9a\u64cd\u4f5c\u672a\u80fd\u7ee7\u7eed\u8fdb\u884c\u3002\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+jndi.entry.bind.failed.useraction=\u8bf7\u68c0\u67e5\u662f\u540c\u65f6\u7ed1\u5b9a\u4e86\u5176\u4ed6\u4e00\u4e9b\u5185\u5bb9\u8fd8\u662f\u7ed1\u5b9a\u4e86\u4e2d\u95f4\u540d\u79f0\uff0c\u7136\u540e\u89e3\u51b3\u8be5\u51b2\u7a81\u3002
+
+jndi.osgi.bind.failed=CWWKN0005W: \u5c06\u6ce8\u518c\u8868\u5bf9\u8c61\u81ea\u52a8\u7ed1\u5b9a\u5230\u540d\u79f0 {0} \u5931\u8d25\uff0c\u5f02\u5e38\u4e3a {1}\u3002
+jndi.osgi.bind.failed.explanation=\u67d0\u79cd\u56e0\u7d20\u5df2\u963b\u6b62\u5c06\u6ce8\u518c\u8868\u5bf9\u8c61\u7ed1\u5b9a\u5230\u8be5\u540d\u79f0\u3002
+jndi.osgi.bind.failed.useraction=\u8bf7\u68c0\u67e5\u5f02\u5e38\u4ee5\u786e\u5b9a\u6545\u969c\u7684\u539f\u56e0\uff0c\u5e76\u89e3\u51b3\u8be5\u6545\u969c\u3002
+
+jndi.objectfactory.no.class=CWWKN0006E: \u627e\u4e0d\u5230\u7528\u4e8e\u4e3a\u7c7b {1} \u521b\u5efa ObjectFactory {0} \u7684\u7c7b\u3002
+jndi.objectfactory.no.class.explanation=\u65e0\u6cd5\u521b\u5efa\u6307\u5b9a\u7684 ObjectFactory\uff0c\u56e0\u4e3a\u627e\u4e0d\u5230\u8be5\u7c7b\u3002
+jndi.objectfactory.no.class.useraction=\u8bf7\u786e\u4fdd {0} \u5728 WebSphere Application Server \u8fd0\u884c\u65f6\u73af\u5883\u4e2d\u53ef\u7528\u3002
+
+jndi.objectfactory.create.failed=CWWKN0007E: \u65e0\u6cd5\u4e3a\u7c7b {1} \u521b\u5efa ObjectFactory {0}\u3002
+jndi.objectfactory.create.failed.explanation=\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+jndi.objectfactory.create.failed.useraction=\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+
+jndi.servicereference.failed=CWWKN0008E: \u65e0\u6cd5\u83b7\u5f97\u540d\u79f0\u4e3a {0} \u7684\u5bf9\u8c61\u3002
+jndi.servicereference.failed.explanation=\u83b7\u53d6\u6307\u5b9a\u540d\u79f0\u7684\u5bf9\u8c61\u65f6\u51fa\u73b0\u9519\u8bef\u3002
+jndi.servicereference.failed.useraction=\u8bf7\u67e5\u770b\u65e9\u4e9b\u65f6\u5019\u7684\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+
+jndi.objectfactory.create.exception=CWWKN0009E: \u65e0\u6cd5\u4e3a\u7c7b {0} \u521b\u5efa ObjectFactory\u3002\u5f02\u5e38\u4e3a\uff1a{1}
+jndi.objectfactory.create.exception.explanation=\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+jndi.objectfactory.create.exception.useraction=\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002
+
+jndi.url.create.exception=CWWKN0010E: \u7cfb\u7edf\u65e0\u6cd5\u6839\u636e {0} \u5b57\u7b26\u4e32\u521b\u5efa java.net.URL \u503c\u3002\u6b64 URL \u914d\u7f6e\u4e3a\u7ed1\u5b9a\u5230 {1} JNDI \u540d\u79f0\u3002\u6536\u5230\u4ee5\u4e0b\u5f02\u5e38\uff1a{2}
+jndi.url.create.exception.explanation=JNDI \u540d\u79f0\u7684\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684 URL \u5b57\u7b26\u4e32\u65e0\u6548\u6216\u65e0\u6cd5\u7ed1\u5b9a\u5230 JNDI \u540d\u79f0\u7a7a\u95f4\u3002
+jndi.url.create.exception.useraction=\u8bf7\u4e3a URL \u5b57\u7b26\u4e32\u6307\u5b9a\u6709\u6548\u503c\u3002\u5f02\u5e38\u9519\u8bef\u63d0\u4f9b\u6709\u5173\u65e0\u6548 JNDI \u540d\u79f0\u7684\u8be6\u7ec6\u4fe1\u606f\u3002
+
+jndi.decode.failed=CWWKN0011E: \u5bf9 {0} \u5bc6\u7801\u8fdb\u884c\u7f16\u7801\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002\u8bf7\u9a8c\u8bc1\u662f\u5426\u5bf9\u5bc6\u7801\u8fdb\u884c\u4e86\u6b63\u786e\u7f16\u7801\u3002\u5f02\u5e38\u4e3a\uff1a{1}\u3002
+jndi.decode.failed.explanation=\u672a\u5bf9\u5bc6\u7801\u8fdb\u884c\u6b63\u786e\u7f16\u7801\u3002
+jndi.decode.failed.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5bf9\u5bc6\u7801\u8fdb\u884c\u4e86\u6b63\u786e\u7f16\u7801\u3002\u8bf7\u53c2\u9605\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002

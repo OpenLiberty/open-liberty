@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: \ud544\uc218 Collective \uc81c\uc5b4\uae30 \uae30\ub2a5 MBean\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc73c\ubbc0\ub85c \uc6f9 \uc11c\ubc84 \ud50c\ub7ec\uadf8\uc778 \uad6c\uc131 \ud30c\uc77c\uc744 \uc0dd\uc131\ud558\ub294 \uc694\uccad\uc774 \ud074\ub7ec\uc2a4\ud130 {0}\uc5d0 \ub300\ud574 \ucc98\ub9ac\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+collective.mbean.not.available.explanation=\uc694\uccad\uc744 \ucc98\ub9ac\ud558\ub824\uba74 Collective \uc81c\uc5b4\uae30 \uae30\ub2a5\uc774 \uc11c\ubc84\uc5d0 \ub300\ud574 \uc0ac\uc6a9 \uac00\ub2a5\ud574\uc57c \ud569\ub2c8\ub2e4. 
+collective.mbean.not.available.useraction=\ub300\uc0c1 \uc11c\ubc84\uc5d0\uc11c Collective \uc81c\uc5b4\uae30 \uae30\ub2a5\uc744 \uc0ac\uc6a9 \uac00\ub2a5\ud558\ub3c4\ub85d \ud558\uac70\ub098 \uc774\ubbf8 \uc0ac\uc6a9 \uac00\ub2a5\ud55c Collective \uc81c\uc5b4\uae30 \uae30\ub2a5\uc774 \uc788\ub294 \uc11c\ubc84\ub85c \uc694\uccad\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: \ud544\uc218 Java \uc11c\ube14\ub9bf \uae30\ub2a5 MBean\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc73c\ubbc0\ub85c \uc6f9 \uc11c\ubc84 \ud50c\ub7ec\uadf8\uc778 \uad6c\uc131 \ud30c\uc77c\uc744 \uc0dd\uc131\ud558\ub294 \uc694\uccad\uc774 \uc774 \uc11c\ubc84\uc5d0 \ub300\ud574 \ucc98\ub9ac\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+appserver.mbean.not.available.explanation=\uc694\uccad\uc744 \ucc98\ub9ac\ud558\ub824\uba74 Java \uc11c\ube14\ub9bf \uae30\ub2a5 3.0 \ub610\ub294 3.1\uc774 \uc11c\ubc84\uc5d0 \ub300\ud574 \uc0ac\uc6a9 \uac00\ub2a5\ud574\uc57c \ud569\ub2c8\ub2e4.
+appserver.mbean.not.available.useraction=\ub300\uc0c1 \uc11c\ubc84\uc5d0\uc11c Java \uc11c\ube14\ub9bf \uae30\ub2a5 3.0 \ub610\ub294 3.1\uc744 \uc0ac\uc6a9 \uac00\ub2a5\ud558\ub3c4\ub85d \ud558\uac70\ub098 \uc774\ubbf8 \uc0ac\uc6a9 \uac00\ub2a5\ud55c Java \uc11c\ube14\ub9bf \uae30\ub2a5\uc774 \uc788\ub294 \uc11c\ubc84\ub85c \uc694\uccad\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------- 

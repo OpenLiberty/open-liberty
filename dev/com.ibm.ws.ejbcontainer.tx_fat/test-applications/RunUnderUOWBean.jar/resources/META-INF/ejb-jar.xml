@@ -1,0 +1,77 @@
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>BMTSL</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.tx.rununderuow.ejb.RunUnderUOWBMTBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <env-entry>
+        <env-entry-name>BeanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>BMTSL</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>CMTSL</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.tx.rununderuow.ejb.RunUnderUOWCMTBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <env-entry>
+        <env-entry-name>BeanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>CMTSL</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>BMTSF</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.tx.rununderuow.ejb.RunUnderUOWBMTBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <transaction-type>Bean</transaction-type>
+      <env-entry>
+        <env-entry-name>BeanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>BMTSF</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>CMTSF</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.tx.rununderuow.ejb.RunUnderUOWCMTBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <env-entry>
+        <env-entry-name>BeanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>CMTSF</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>BMTSG</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.tx.rununderuow.ejb.RunUnderUOWBMTBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <transaction-type>Bean</transaction-type>
+      <env-entry>
+        <env-entry-name>BeanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>BMTSG</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>CMTSG</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.tx.rununderuow.ejb.RunUnderUOWCMTBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <env-entry>
+        <env-entry-name>BeanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>CMTSG</env-entry-value>
+      </env-entry>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

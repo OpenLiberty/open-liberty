@@ -1,0 +1,15 @@
+<server>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>servlet-3.1</feature>
+		<feature>transportSecurity-1.0</feature>
+		<feature>openidConnectClient-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>jaxrs-2.0</feature>
+		<!-- jaxrs-1.1 is not required. Testing defect 152627 -->
+	</featureManager>
+
+</server>
+    

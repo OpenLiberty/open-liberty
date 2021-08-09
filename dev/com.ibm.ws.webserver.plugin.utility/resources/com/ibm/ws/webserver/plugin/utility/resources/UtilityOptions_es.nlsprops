@@ -1,0 +1,124 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+#------------------------------------------------------------------------------
+# Global options used multiple times when help operation is used. 
+#------------------------------------------------------------------------------
+global.description=Descripci\u00f3n:
+global.actions=Acciones:
+global.options=Opciones:
+global.usage=Uso:
+global.options.statement=\tUtilice help [action] para obtener informaci\u00f3n detallada de las opciones de cada acci\u00f3n.
+
+help.desc=\tImprimir informaci\u00f3n de ayuda para la acci\u00f3n especificada.
+
+help.usage.options=\t{0} help [nombreAcci\u00f3n]
+
+#------------------------------------------------------------------------------
+# generate operation options (generateWebServerPluginTask)
+#------------------------------------------------------------------------------
+generateWebServerPluginTask.required-option-key.serverName=\ \ \ \ <nombreServidor>
+generateWebServerPluginTask.required-option-desc.serverName=\tOpcional. Nombre del servidor local de WebSphere Liberty para el que se debe\n\
+\tgenerar el archivo de configuraci\u00f3n de plugin de servidor web. Si no se\n\
+\tespecifica <nombreServidor>, se utiliza "defaultServer" para \n\
+\t<nombreServidor>. El servidor se inicia si no est\u00e1 en ejecuci\u00f3n \n\
+\ty se detiene una vez generado el archivo de configuraci\u00f3n de plugin.
+
+generateWebServerPluginTask.required-option-key.targetPath=\ \ \ \ --targetPath=path
+generateWebServerPluginTask.required-option-desc.targetPath=\tOpcional. V\u00eda de acceso v\u00e1lida del directorio donde se debe\n\
+\tgenerar el archivo de configuraci\u00f3n de plugin del servidor web. Si no se especifica el\n\
+\tvalor de --targetPath, se utiliza el directorio de trabajo actual.
+
+generateWebServerPluginTask.usage.options=\t{0} get [opciones]
+
+generateWebServerPluginTask.desc=\tGenera el archivo de configuraci\u00f3n de plugin del servidor web\n\
+\tpara el servidor especificado de WebSphere Liberty.
+
+#------------------------------------------------------------------------------
+# merge operation options (MergePluginFilesTask)
+#------------------------------------------------------------------------------
+MergePluginFilesTask.usage.options=\t{0} merge [opciones]
+
+MergePluginFilesTask.required-option-key.sourcePath=\ \ \ \ --sourcePath=directorio|(lista separada por comas de archivos de plugin)
+MergePluginFilesTask.required-option-desc.sourcePath=\tObligatorio. Ubicaci\u00f3n del directorio de origen donde residen todos los\n\
+\tarchivos de plugin o una lista separada por comas de nombres de archivo de plugin con\n\
+\tla v\u00eda de acceso completa respectiva.
+
+MergePluginFilesTask.required-option-key.targetPath=\ \ \ \ --targetPath=directorio|(nombre de archivo con v\u00eda de acceso completa)
+MergePluginFilesTask.required-option-desc.targetPath=\tOpcional. De forma predeterminada, el archivo de configuraci\u00f3n del plugin se\n\
+\tgenera en el directorio actual con el nombre merged-plugin-cfg.xml. Los usuarios pueden \n\
+\tespecificar el nombre del directorio donde debe ubicarse el archivo merged-plugin-cfg.xml \n\
+\to un nombre de archivo totalmente calificado. Si ya existe un archivo denominado\n\
+\tmerged-plugin-cfg.xml o ya existe el nombre de archivo especificado,\n\
+\tse sobrescribe el contenido del archivo.
+
+MergePluginFilesTask.desc=\tFusiona los m\u00faltiples archivos de configuraci\u00f3n de plugin del servidor web en un solo archivo.
+
+#------------------------------------------------------------------------------
+# generate operation options (GeneratePluginTask)
+#------------------------------------------------------------------------------
+GeneratePluginTask.desc=\tEste mandato genera un archivo de configuraci\u00f3n de plugin para un \n \tservidor de aplicaciones o para un cl\u00faster de servidores. 
+
+GeneratePluginTask.usage.options=\t{0} generate [opciones]
+
+
+GeneratePluginTask.required-option-key.serverLoginAddress=\ \ \ \ --server=<id servidor>
+
+GeneratePluginTask.required-option-desc.serverLoginAddress=\tObligatorio. \
+El servidor debe estar en ejecuci\u00f3n.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal1=\tPara servidores locales: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal2=\t\tNombre del servidor.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote1=\tPara un servidor remoto: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2=\t\t<usuario>:<contrase\u00f1a>@<host>:<puerto>
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.User=\n\
+\t\t<usuario>: el administrador del servidor destino. El programa \n\t\t de utilidad le solicitar\u00e1 un valor si no lo facilita. \n\t\tNo utilice los dos puntos (:) en el <usuario>.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Password=\n\
+\t\t<contrase\u00f1a>: contrase\u00f1a del administrador del servidor destino.\n\
+\t\t El programa de utilidad le solicitar\u00e1 dos veces el valor\n\
+\t\tsi no lo facilita. Las contrase\u00f1as deben coincidir.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Host=\n\
+\t\t<host>: El host del servidor destino. No utilice el s\u00edmbolo @ \n \t\ten el valor de host. Fallar\u00e1 si falta el valor de host.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Port=\n\
+\t\t<puerto>: El n\u00famero de puerto del servidor destino. \n \t\tFallar\u00e1 si falta el valor de puerto.
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress=\ \ \ \ --collective=<usuario>:<sontrase\u00f1a>@<host>:<puerto>
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress1=\ \ \ \ --collective=<id servidor>
+
+GeneratePluginTask.required-option-key.cluster=\ \ \ \ --cluster=<NombreCl\u00faster>
+GeneratePluginTask.required-option-desc.cluster=\tOpcional. Nombre del cl\u00faster de servidores. Si especifica \n \t un nombre de cl\u00faster, la opci\u00f3n de servidor debe especificar \n \t un controlador colectivo.  
+
+
+GeneratePluginTask.optional-option-key.targetPath=\ \ \ \ --targetPath=directorio|(nombre de archivo con v\u00eda de acceso completa)
+GeneratePluginTask.optional-option-desc.targetPath=\tOpcional. Por omisi\u00f3n, el archivo de configuraci\u00f3n del plugin \n \tse genera en el directorio actual con el nombre \n \t<NombreCl\u00faster>-plugin-cfg.xml si es un cl\u00faster o plugin-cfg.xml si es un servidor. \n\
+\tPuede especificar el nombre de directorio donde se debe situar\n\
+\tel archivo, o un nombre de archivo totalmente calificado.\n\
+\tUn archivo nuevo sustituye un archivo existente.
+
+GeneratePluginTask.optionl-option-key.local=\ \ \ \ --local
+
+GeneratePluginTask.optionl-option-desc.local=\tOpcional. \
+Indica que la opci\u00f3n --local especifica un servidor local.
+
+#------------------------------------------------------------------------------

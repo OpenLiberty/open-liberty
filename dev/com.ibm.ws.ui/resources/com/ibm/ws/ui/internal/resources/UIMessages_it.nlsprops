@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.ui/resources/com/ibm/ws/ui/internal/resources/UIMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR Liberty Toolbox
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Message prefix block: CWWKX1000 - CWWKX1899
+
+LOADED_DEFAULT_CATALOG=CWWKX1000I: Catalogo predefinito del centro di gestione caricato.
+LOADED_DEFAULT_CATALOG.explanation=Caricato il catalogo predefinito perch\u00e9 non \u00e8 stato ancora creato alcun catalogo. 
+LOADED_DEFAULT_CATALOG.useraction=Non \u00e8 richiesta alcuna azione.
+
+TOOL_NOT_FOUND=CWWKX1001E: Strumento {0} non trovato nel catalogo del centro di gestione.
+TOOL_NOT_FOUND.explanation=Il catalogo non contiene uno strumento con l'ID strumento specificato.
+TOOL_NOT_FOUND.useraction=Non \u00e8 richiesta alcuna azione.
+TOOL_NOT_FOUND.developeraction=Lo strumento richiesto non \u00e8 stato trovato nel catalogo. L'ID strumento potrebbe non essere corretto. Confermare che l'ID strumento \u00e8 nel formato corretto. Lo strumento potrebbe essere stato rimosso dal catalogo.
+
+UNABLE_TO_LOAD_CATALOG_SYNTAX=CWWKX1002E: Non \u00e8 stato possibile caricare il catalogo del centro di gestione dallo storage persistente. La sintassi del contenuto persistente sembra danneggiata. Verr\u00e0 caricato il catalogo predefinito.
+UNABLE_TO_LOAD_CATALOG_SYNTAX.explanation=Il prodotto non pu\u00f2 analizzare il contenuto del catalogo del centro di gestione memorizzato nel livello di permanenza sottostante. La sintassi dei dati sembra danneggiata. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_CATALOG_SYNTAX.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_LOAD_CATALOG_CONTENT=CWWKX1003E: Non \u00e8 stato possibile caricare il catalogo del centro di gestione dallo storage persistente. Il contenuto persistente sembra danneggiato. Verr\u00e0 caricato il catalogo predefinito.
+UNABLE_TO_LOAD_CATALOG_CONTENT.explanation=Il contenuto memorizzato nel livello di persistenza sottostante per il catalogo del centro di gestione non corrisponde al tipo previsto. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_CATALOG_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_LOAD_CATALOG_ACCESS=CWWKX1004E: Non \u00e8 stato possibile caricare il catalogo del centro di gestione dallo storage persistente. Il livello di persistenza sottostante ha rilevato un errore I/O. Verr\u00e0 caricato il catalogo predefinito.
+UNABLE_TO_LOAD_CATALOG_ACCESS.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante il caricamento del catalogo del centro di gestione. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_CATALOG_ACCESS.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+LOADED_CATALOG_NOT_VALID=CWWKX1005E: Il catalogo del centro di gestione caricato dallo storage persistente non \u00e8 valido. Verr\u00e0 caricato il catalogo predefinito.
+LOADED_CATALOG_NOT_VALID.explanation=Il catalogo del centro di gestione persistente \u00e8 incompleto. Si tratta di un errore irreversibile.
+LOADED_CATALOG_NOT_VALID.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+LOADED_PERSISTED_CATALOG=CWWKX1006I: Catalogo del centro di gestione caricato.
+LOADED_PERSISTED_CATALOG.explanation=Catalogo del centro di gestione caricato dallo storage persistente. 
+LOADED_PERSISTED_CATALOG.useraction=Non \u00e8 richiesta alcuna azione.
+
+TOOL_ALREADY_EXIST=CWWKX1007E: Lo strumento {0} gi\u00e0 esiste nel catalogo del centro di gestione.
+TOOL_ALREADY_EXIST.explanation=Il catalogo contiene gi\u00e0 uno strumento con l'ID strumento specificato.
+TOOL_ALREADY_EXIST.useraction=Nel catalogo esiste gi\u00e0 uno strumento con lo stesso nome e la stessa versione. Specificare un nome o una versione dello strumento alternativi e ripetere l'operazione.
+TOOL_ALREADY_EXIST.developeraction=Uno strumento con questo ID esiste gi\u00e0 nel catalogo. Se si sta tentando di aggiungere un nuovo strumento, modificare il nome o la versione dello strumento. Se si sta tentando di aggiornare lo strumento, modificare la voce dello strumento esistente con una richiesta PUT.
+
+TOOL_OBJECT_NOT_VALID=CWWKX1008E: Lo strumento non verr\u00e0 aggiunto al catalogo del centro di gestione. L''oggetto strumento non ha superato la regola di convalida: {0}
+TOOL_OBJECT_NOT_VALID.explanation=L'oggetto strumento da aggiungere al catalogo non ha superato una o pi\u00f9 regole di convalida. Il messaggio contiene informazioni sulla prima regola che non \u00e8 stata superata. 
+TOOL_OBJECT_NOT_VALID.useraction=Eseguire l'azione di correzione necessaria per risolvere la regola specificata e inoltrare nuovamente la richiesta.
+TOOL_OBJECT_NOT_VALID.developeraction=L'oggetto JSON che rappresenta lo strumento da aggiungere al catalogo ha violato una delle regole di convalida. Eseguire l'azione di correzione necessaria per risolvere la regola specificata e inoltrare nuovamente la richiesta. Ci\u00f2 pu\u00f2 verificarsi se l'oggetto JSON \u00e8 incompleto o se uno dei campi contiene un valore del tipo errato, sintassi o caratteri non supportati.
+
+FILE_PERSISTENCE_BAD_JSON=CWWKX1009E: Il livello di persistenza del centro di gestione ha tentato di caricare {0}. Il contenuto del file non \u00e8 nella sintassi JSON valida. Il centro di gestione non pu\u00f2 presentare le informazioni corrette. Contenuto del file: {1}
+FILE_PERSISTENCE_BAD_JSON.explanation=Il prodotto non pu\u00f2 analizzare il file perch\u00e9 il contenuto del file non utilizza la sintassi JSON valida.
+FILE_PERSISTENCE_BAD_JSON.useraction=Ripristinare il file da un backup. Il file verr\u00e0 sovrascritto con una copia valida se si apportano delle modifiche al centro di gestione.
+
+FILE_PERSISTENCE_WRONG_CLASS=CWWKX1010E: Il livello di persistenza del centro di gestione ha tentato di caricare {0}. Il file non \u00e8 una classe {1}. Il centro di gestione non pu\u00f2 presentare le informazioni corrette. Contenuto del file: {2}
+FILE_PERSISTENCE_WRONG_CLASS.explanation=Il file contiene JSON valido, ma il tentativo di associare l'oggetto JSON alla classe specificata non \u00e8 riuscito.
+FILE_PERSISTENCE_WRONG_CLASS.useraction=Ripristinare il file da un backup. Il file verr\u00e0 sovrascritto con una copia valida se si apportano delle modifiche al centro di gestione.
+
+FILE_PERSISTENCE_IO_ERROR=CWWKX1011E: Il livello di persistenza del centro di gestione non pu\u00f2 caricare {0}. Impossibile accedere al file. Il centro di gestione non pu\u00f2 presentare le informazioni corrette. Si \u00e8 verificato il seguente errore: {1}
+FILE_PERSISTENCE_IO_ERROR.explanation=Il prodotto non pu\u00f2 accedere al file.
+FILE_PERSISTENCE_IO_ERROR.useraction=Verificare le autorizzazioni del file, che il file non sia bloccato e che il file system e l'hardware sottostanti funzionino correttamente.
+
+STORE_CATALOG_TO_PERSISTENCE_ERROR=CWWKX1012E: Il catalogo del centro di gestione non pu\u00f2 essere persistente a causa di un errore I/O: {0}
+STORE_CATALOG_TO_PERSISTENCE_ERROR.explanation=Il prodotto non pu\u00f2 memorizzare le ultime modifiche al catalogo del centro di gestione. Il prodotto tenter\u00e0 di memorizzare le modifiche future al catalogo del centro di gestione.
+STORE_CATALOG_TO_PERSISTENCE_ERROR.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+STORE_CATALOG_TO_MARSHALL_ERROR=CWWKX1013E: Il catalogo del centro di gestione non pu\u00f2 essere persistente a causa di un errore di marshalling JSON: {0}
+STORE_CATALOG_TO_MARSHALL_ERROR.explanation=Il prodotto non pu\u00f2 memorizzare le ultime modifiche al catalogo del centro di gestione. Il prodotto tenter\u00e0 di memorizzare le modifiche future al catalogo del centro di gestione.
+STORE_CATALOG_TO_MARSHALL_ERROR.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+INVALID_TOOL_CONTENT_WARNING=CWWKX1013W: Lo strumento {0} caricato dallo storage persistente viene rimosso dal catalogo del centro di gestione a causa di un errore: {1} 
+INVALID_TOOL_CONTENT_WARNING.explanation=Il prodotto ha rimosso lo strumento nello storage persistente dal catalogo perch\u00e9 i relativi dati non sono validi o sono incompleti. 
+INVALID_TOOL_CONTENT_WARNING.useraction=Ripristinare il catalogo da un backup. Il catalogo viene sovrascritto con una copia valida se si apportano delle modifiche al centro di gestione.
+
+FILE_PERSISTENCE_STORE_IO_ERROR=CWWKX1014E: Il livello di persistenza del centro di gestione non pu\u00f2 memorizzare {0}. Impossibile accedere al file. Si \u00e8 verificato il seguente errore: {1}
+FILE_PERSISTENCE_STORE_IO_ERROR.explanation=Il prodotto non pu\u00f2 accedere al file.
+FILE_PERSISTENCE_STORE_IO_ERROR.useraction=Verificare le autorizzazioni del file, che il file non sia bloccato e che il file system e l'hardware sottostanti funzionino correttamente.
+
+STORAGE_INITIALIZED=CWWKX1015I: Livello di persistenza {0} inizializzato per il centro di gestione.
+STORAGE_INITIALIZED.explanation=Il prodotto ha inizializzato il livello di persistenza per il centro di gestione.
+STORAGE_INITIALIZED.useraction=Non \u00e8 richiesta alcuna azione.
+
+UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER=CWWKX1016E: Il centro di gestione non pu\u00f2 ottenere il nome di visualizzazione dell''utente {0}.
+UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER.explanation=Il server ha tentato di identificare il nome di visualizzazione dell'utente, ma il tentativo non \u00e8 riuscito.
+UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER.useraction=Verificare che l'utente specificato esista. In caso affermativo, controllare i messaggi di traccia e ffdc per individuare una possibile azione di correzione.
+
+OP_REQUIRES_URL=CWWKX1017E: Per l''operazione richiesta {0} \u00e8 necessario un URL valido. L''URL non \u00e8 stato specificato.
+OP_REQUIRES_URL.explanation=L'operazione richiede che il parametro della richiesta "url" sia un URL.
+OP_REQUIRES_URL.useraction=Inoltrare nuovamente la richiesta specificando un URL valido.
+
+# 0 - operation name, 1 - exception text
+OP_BAD_URL=CWWKX1018E: Per l''operazione richiesta {0} \u00e8 necessario un URL valido. L''URL specificato causa un errore: {1}
+OP_BAD_URL.explanation=Il parametro URL fornito non \u00e8 un URL valido.
+OP_BAD_URL.useraction=Inoltrare nuovamente la richiesta specificando un URL valido.
+
+POST_REQUIRES_JSON_PAYLOAD=CWWKX1019E: Per l''operazione richiesta \u00e8 necessario un payload JSON di tipo {0}. Non \u00e8 stato specificato alcun payload JSON.
+POST_REQUIRES_JSON_PAYLOAD.explanation=L'operazione non ha contenuto payload. L'operazione richiede un payload con sintassi JSON valida del tipo appropriato.
+POST_REQUIRES_JSON_PAYLOAD.useraction=Inoltrare nuovamente la richiesta con un payload che utilizza la sintassi JSON valida del tipo appropriato.
+
+POST_BAD_JSON_PAYLOAD=CWWKX1020E: Per l''operazione richiesta \u00e8 necessario un payload JSON di tipo {0}. Il payload specificato non utilizza la sintassi JSON valida.
+POST_BAD_JSON_PAYLOAD.explanation=Il contenuto del payload dell'operazione non utilizza la sintassi JSON valida.
+POST_BAD_JSON_PAYLOAD.useraction=Inoltrare nuovamente la richiesta con un payload che utilizza la sintassi JSON valida del tipo appropriato.
+
+POST_WRONG_JSON_PAYLOAD=CWWKX1021E: Per l''operazione richiesta \u00e8 necessario un payload JSON di tipo {0}. Il payload specificato non \u00e8 del tipo richiesto.
+POST_WRONG_JSON_PAYLOAD.explanation=Il prodotto non considera il contenuto del payload dell'operazione come del tipo richiesto.
+POST_WRONG_JSON_PAYLOAD.useraction=Inoltrare nuovamente la richiesta con un payload che utilizza la sintassi JSON valida del tipo appropriato.
+
+TOOL_NOT_FOUND_TOOLBOX=CWWKX1022E: Lo strumento {0} non \u00e8 stato trovato nella casella degli strumenti per l''utente {1}.
+TOOL_NOT_FOUND_TOOLBOX.explanation=La casella degli strumenti per l'utente specificato non contiene lo strumento richiesto.
+TOOL_NOT_FOUND_TOOLBOX.useraction=Non \u00e8 richiesta alcuna azione.
+TOOL_NOT_FOUND_TOOLBOX.developeraction=Il prodotto non trova lo strumento richiesto nella casella degli strumenti. L'ID strumento potrebbe non essere corretto. Confermare che l'ID strumento \u00e8 nel formato corretto. Lo strumento potrebbe non essere pi\u00f9 nella casella degli strumenti.
+
+CATALOG_RESET_SUCCESSFUL=CWWKX1023I: Il catalogo \u00e8 stato reimpostato correttamente.
+CATALOG_RESET_SUCCESSFUL.explanation=Il prodotto ha ripristinato le impostazioni predefinite del catalogo in memoria e dello stato persistente.
+CATALOG_RESET_SUCCESSFUL.useraction=Non \u00e8 richiesta alcuna azione.
+
+CATALOG_RESET_MUST_BE_CONFIRMED=CWWKX1024E: Per reimpostare il catalogo, specificare il parametro della richiesta HTTP "resetCatalog=true".
+CATALOG_RESET_MUST_BE_CONFIRMED.explanation=Il catalogo supporta un'operazione di reimpostazione mediante il metodo HTTP DELETE. Per far s\u00ec che i cataloghi vengano cancellati solo quando lo si desidera, specificare anche un parametro di richiesta di conferma.
+CATALOG_RESET_MUST_BE_CONFIRMED.useraction=Non \u00e8 richiesta alcuna azione.
+CATALOG_RESET_MUST_BE_CONFIRMED.developeraction=Quando si reimposta il catalogo, richiedere la conferma all'utente. Con l'operazione di reimpostazione di un catalogo, vengono reimpostati completamente il catalogo in memoria e il catalogo persistente. Eseguire questa operazione con cautela.
+
+TOOL_ALREADY_EXIST_TOOLBOX=CWWKX1025E: Lo strumento {0} gi\u00e0 esiste nella casella degli strumenti.
+TOOL_ALREADY_EXIST_TOOLBOX.explanation=La casella degli strumenti contiene gi\u00e0 uno strumento con l'ID strumento specificato.
+TOOL_ALREADY_EXIST_TOOLBOX.useraction=Nella casella degli strumenti esiste gi\u00e0 uno strumento con lo stesso nome e la stessa versione. Specificare un nome o una versione dello strumento alternativi e ripetere l'operazione.
+TOOL_ALREADY_EXIST_TOOLBOX.developeraction=Uno strumento con questo ID esiste gi\u00e0 nella casella degli strumenti. Se si sta tentando di aggiungere un nuovo strumento, modificare il nome o la versione dello strumento. Se si sta tentando di aggiornare lo strumento, modificare la voce dello strumento esistente con una richiesta PUT.
+
+TOOL_OBJECT_NOT_VALID_TOOLBOX=CWWKX1026E: Lo strumento non verr\u00e0 aggiunto alla casella degli strumenti. L''oggetto strumento non ha superato la regola di convalida: {0}
+TOOL_OBJECT_NOT_VALID_TOOLBOX.explanation=L'oggetto strumento da aggiungere alla casella degli strumenti non ha superato una o pi\u00f9 regole di convalida. Il messaggio contiene informazioni sulla prima regola che non \u00e8 stata superata. 
+TOOL_OBJECT_NOT_VALID_TOOLBOX.useraction=Eseguire l'azione di correzione necessaria per risolvere la regola specificata e inoltrare nuovamente la richiesta.
+TOOL_OBJECT_NOT_VALID_TOOLBOX.developeraction=L'oggetto JSON che rappresenta lo strumento da aggiungere alla casella degli strumenti ha violato una delle regole di convalida. Eseguire l'azione di correzione necessaria per risolvere la regola specificata e inoltrare nuovamente la richiesta. Ci\u00f2 pu\u00f2 verificarsi se l'oggetto JSON \u00e8 incompleto o se uno dei campi contiene un valore del tipo errato, sintassi o caratteri non supportati.
+
+TOOLBOX_RESET_SUCCESSFUL=CWWKX1027I: La casella degli strumenti \u00e8 stata reimpostata correttamente.
+TOOLBOX_RESET_SUCCESSFUL.explanation=Il prodotto ha ripristinato le impostazioni predefinite della casella degli strumenti in memoria e dello stato persistente.
+TOOLBOX_RESET_SUCCESSFUL.useraction=Non \u00e8 richiesta alcuna azione.
+
+TOOLBOX_RESET_MUST_BE_CONFIRMED=CWWKX1028E: Per reimpostare la casella degli strumenti, specificare il parametro della richiesta HTTP "resetToolbox=true".
+TOOLBOX_RESET_MUST_BE_CONFIRMED.explanation=La casella degli strumenti supporta un'operazione di reimpostazione mediante il metodo HTTP DELETE. Per far s\u00ec che le caselle degli strumenti vengano cancellate solo quando lo si desidera, specificare anche un parametro di richiesta di conferma.
+TOOLBOX_RESET_MUST_BE_CONFIRMED.useraction=Non \u00e8 richiesta alcuna azione.
+TOOLBOX_RESET_MUST_BE_CONFIRMED.developeraction=Quando si reimposta la casella degli strumenti, richiedere la conferma all'utente. Con l'operazione di reimpostazione di una casella degli strumenti, vengono reimpostate completamente la casella degli strumenti in memoria e la casella degli strumenti persistente. Eseguire questa operazione con cautela.
+
+LOADED_DEFAULT_TOOLBOX=CWWKX1029I: Caricata la casella degli strumenti predefinita Centro di gestione per l''utente {0}.
+LOADED_DEFAULT_TOOLBOX.explanation=Viene caricata la casella degli strumenta predefinita perch\u00e9 l'utente specificato non dispone ancora di una casella degli strumenti.
+LOADED_DEFAULT_TOOLBOX.useraction=Non \u00e8 richiesta alcuna azione.
+
+UNABLE_TO_LOAD_TOOLBOX_SYNTAX=CWWKX1030E: Non \u00e8 stato possibile caricare la casella degli strumenti Centro di gestione per l''utente {0} dallo storage persistente. La sintassi del contenuto persistente sembra danneggiata. Verr\u00e0 caricata la casella degli strumenti predefinita.
+UNABLE_TO_LOAD_TOOLBOX_SYNTAX.explanation=Il prodotto non pu\u00f2 analizzare il contenuto della casella degli strumenti Centro di gestione memorizzata nel livello di persistenza  sottostante. La sintassi dei dati sembra danneggiata. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_TOOLBOX_SYNTAX.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_LOAD_TOOLBOX_CONTENT=CWWKX1031E: Non \u00e8 stato possibile caricare la casella degli strumenti Centro di gestione per l''utente {0} dallo storage persistente. Il contenuto persistente sembra danneggiato. Verr\u00e0 caricata la casella degli strumenti predefinita.
+UNABLE_TO_LOAD_TOOLBOX_CONTENT.explanation=Il contenuto memorizzato nel livello di persistenza sottostante per la casella degli strumenti Centro di gestione non corrisponde al tipo previsto. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_TOOLBOX_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_LOAD_TOOLBOX_ACCESS=CWWKX1032E: Non \u00e8 stato possibile caricare la casella degli strumenti Centro di gestione per l''utente {0} dallo storage persistente. Il livello di persistenza sottostante ha rilevato un errore I/O. Verr\u00e0 caricata la casella degli strumenti predefinita.
+UNABLE_TO_LOAD_TOOLBOX_ACCESS.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante il caricamento della casella degli strumenti del centro di gestione. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_TOOLBOX_ACCESS.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+LOADED_TOOLBOX_NOT_VALID=CWWKX1033E: La casella degli strumenti Centro di gestione per l''utente {0} caricata dallo storage persistente non \u00e8 valida. Verr\u00e0 caricata la casella degli strumenti predefinita.
+LOADED_TOOLBOX_NOT_VALID.explanation=La casella degli strumenti Centro di gestione persistente \u00e8 incompleta. Si tratta di un errore irreversibile.
+LOADED_TOOLBOX_NOT_VALID.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+LOADED_PERSISTED_TOOLBOX=CWWKX1034I: Caricata la casella degli strumenti Centro di gestione per l''utente {0}.
+LOADED_PERSISTED_TOOLBOX.explanation=La casella degli strumenti Centro di gestione per l'utente specificato \u00e8 stata caricata dallo storage persistente.
+LOADED_PERSISTED_TOOLBOX.useraction=Non \u00e8 richiesta alcuna azione.
+
+INVALID_TOOL_CONTENT_WARNING_TOOLBOX=CWWKX1035W: Lo strumento {0} caricato dallo storage persistente viene rimosso dalla casella degli strumenti Centro di gestione per l''utente {1} a causa di un errore: {2} 
+INVALID_TOOL_CONTENT_WARNING_TOOLBOX.explanation=Il prodotto ha rimosso lo strumento nello storage persistente dalla casella degli strumenti perch\u00e9 i relativi dati non sono validi o sono incompleti. 
+INVALID_TOOL_CONTENT_WARNING_TOOLBOX.useraction=Ripristinare la casella degli strumenti da un backup. La casella degli strumenti viene sovrascritta con una copia valida se l'utente modifica la casella degli strumenti.
+
+STORE_TOOLBOX_TO_PERSISTENCE_ERROR=CWWKX1036E: La casella degli strumenti Centro di gestione per l''utente {0} non pu\u00f2 essere persistente a causa di un errore I/O: {1}
+STORE_TOOLBOX_TO_PERSISTENCE_ERROR.explanation=Il prodotto non pu\u00f2 memorizzare le ultime modifiche alla casella degli strumenti Centro di gestione. Il prodotto tenter\u00e0 di memorizzare le modifiche future alla casella degli strumenti Centro di gestione.
+STORE_TOOLBOX_TO_PERSISTENCE_ERROR.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+TOOLBOX_TOOL_NO_LONGER_AVAILABLE=CWWKX1037W: Lo strumento {0} caricato dallo storage persistente viene rimosso dalla casella degli strumenti Centro di gestione per l''utente {1} perch\u00e9 non \u00e8 pi\u00f9 disponibile nel catalogo. 
+TOOLBOX_TOOL_NO_LONGER_AVAILABLE.explanation=Il prodotto ha rimosso lo strumento nello storage persistente dalla casella degli strumenti perch\u00e9 lo strumento non \u00e8 pi\u00f9 disponibile nel catalogo. 
+TOOLBOX_TOOL_NO_LONGER_AVAILABLE.useraction=Lo strumento non \u00e8 stato rimosso dalla casella degli strumenti perch\u00e9 non \u00e8 pi\u00f9 disponibile nel catalogo. Per ripristinare lo strumento, installarlo nuovamente nel catalogo.
+
+CATALOG_FILE_PROMOTED_TO_COLLECTIVE=CWWKX1038I: Il catalogo del centro di gestione \u00e8 stato caricato dal livello di persistenza {0} e memorizzato nel livello di persistenza {1}. 
+CATALOG_FILE_PROMOTED_TO_COLLECTIVE.explanation=Il prodotto ha caricato il catalogo del centro di gestione dal livello di persistenza precedente e ha memorizzato una copia nel nuovo livello di persistenza. La copia nel nuovo livello di persistenza verr\u00e0 caricata dal successivo accesso allo storage persistente.
+CATALOG_FILE_PROMOTED_TO_COLLECTIVE.useraction=Non \u00e8 richiesta alcuna azione.
+
+TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE=CWWKX1039I: La casella degli strumenti Centro di gestione per l''utente {0} \u00e8 stata caricata dal livello di persistenza {1} e memorizzata nel livello di persistenza {2}. 
+TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE.explanation=Il prodotto ha caricato la casella degli strumenti Centro di gestione dal livello di persistenza precedente e ha memorizzato una copia nel nuovo livello di persistenza. La copia nel nuovo livello di persistenza verr\u00e0 caricata dal successivo accesso allo storage persistente.
+TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE.useraction=Non \u00e8 richiesta alcuna azione.
+
+POST_MAX_JSON_SIZE=CWWKX1040E: Il payload JSON per la richiesta supera la lunghezza massima consentita di {0}.
+POST_MAX_JSON_SIZE.explanation=Il prodotto non pu\u00f2 analizzare il payload JSON perch\u00e9 supera la dimensione massima consentita per l'operazione.
+POST_MAX_JSON_SIZE.useraction=Ridurre la dimensione del payload JSON.
+
+TOOL_AND_TYPE_NOT_FOUND=CWWKX1041E: Lo strumento {0} di tipo {1} non \u00e8 stato trovato nel catalogo Centro di gestione.
+TOOL_AND_TYPE_NOT_FOUND.explanation=Il catalogo non contiene uno strumento con l'ID strumento e il tipo specificati.
+TOOL_AND_TYPE_NOT_FOUND.useraction=Non \u00e8 richiesta alcuna azione.
+TOOL_AND_TYPE_NOT_FOUND.developeraction=Lo strumento richiesto non \u00e8 stato trovato nel catalogo. La coppia ID strumento e tipo potrebbe non essere corretta. Verificare che l'ID strumento sia nel formato appropriato e che il tipo sia corretto. Lo strumento potrebbe non essere pi\u00f9 nel catalogo.
+
+FEATURE_TOOL_DELETED_FROM_CATALOG=CWWKX1042I: Lo strumento {0} non \u00e8 pi\u00f9 nel catalogo perch\u00e9 la funzione corrispondente {1} \u00e8 stata disinstallata. 
+FEATURE_TOOL_DELETED_FROM_CATALOG.explanation=Il prodotto ha disinstallato la funzione strumento e rimosso lo strumento dal catalogo. 
+FEATURE_TOOL_DELETED_FROM_CATALOG.useraction=Non \u00e8 richiesta alcuna azione.
+
+TOOL_LIST_NOT_MATCH_TOOLBOX=CWWKX1043E: L''elenco degli strumenti della casella degli strumenti non \u00e8 stato aggiornato. Il numero di strumenti {0} da aggiornare non corrisponde al numero di strumenti {1} dalla casella degli strumenti corrente.
+TOOL_LIST_NOT_MATCH_TOOLBOX.explanation=L'elenco di strumenti da aggiornare non corrisponde all'elenco di strumenti dalla casella degli strumenti corrente.
+TOOL_LIST_NOT_MATCH_TOOLBOX.useraction=Correggere l'elenco di strumenti della casella degli strumenti e inoltrare nuovamente la richiesta.
+TOOL_LIST_NOT_MATCH_TOOLBOX.developeraction=L'oggetto JSON che rappresenta l'elenco di strumenti da aggiornare nella casella degli strumenti non corrisponde all'elenco corrente di strumenti dalla casella degli strumenti. Correggere l'elenco di strumenti della casella degli strumenti e inoltrare nuovamente la richiesta. 
+
+TOOL_LIST_DUPLICATE_TOOL=CWWKX1044E: L''elenco di strumenti da aggiornare contiene la voce duplicata {0}.
+TOOL_LIST_DUPLICATE_TOOL.explanation=L'elenco di strumenti da aggiornare contiene gi\u00e0 uno strumento con l'ID strumento specificato.
+TOOL_LIST_DUPLICATE_TOOL.useraction=Nell'elenco  esiste gi\u00e0 uno strumento con lo stesso nome e la stessa versione. Specificare un nome strumento univoco (o versione) e ripetere l'operazione.
+TOOL_LIST_DUPLICATE_TOOL.developeraction=Uno strumento con questo ID esiste gi\u00e0 nell'elenco di aggiornamento. Se si sta tentando di aggiornare lo strumento, modificare la voce dello strumento esistente con una richiesta PUT.
+
+TOOL_NOT_FOUND_FROM_TOOLBOX=CWWKX1045E: Strumento {0} di tipo {1} non trovato nella casella degli strumenti corrente. 
+TOOL_NOT_FOUND_FROM_TOOLBOX.explanation=La casella degli strumenti non contiene uno strumento con l'ID strumento e il tipo specificati.
+TOOL_NOT_FOUND_FROM_TOOLBOX.useraction=Aggiungere lo strumento o correggere l'ID strumento e il tipo, quindi inoltrare nuovamente la richiesta. 
+TOOL_NOT_FOUND_FROM_TOOLBOX.developeraction=Il prodotto non ha trovato lo strumento di aggiornamento nella casella degli strumenti corrente. La coppia ID strumento e tipo potrebbe non essere corretta. Verificare che l'ID strumento sia nel formato appropriato e che il tipo sia corretto. Lo strumento potrebbe non essere pi\u00f9 nella casella degli strumenti.
+
+TOOLBOX_UPDATE_SUCCESSFUL=CWWKX1046I: L'elenco di voci strumento nella casella degli strumenti \u00e8 stato aggiornato correttamente.
+TOOLBOX_UPDATE_SUCCESSFUL.explanation=Il prodotto ha memorizzato la casella degli strumenti in memoria e lo stato persistente nelle nuove impostazioni.
+TOOLBOX_UPDATE_SUCCESSFUL.useraction=Non \u00e8 richiesta alcuna azione.
+
+PASSWORD_VALIDATION_EXCEPTION=CWWKX1047W: Si \u00e8 verificato un errore durante la convalida della password: {0}
+PASSWORD_VALIDATION_EXCEPTION.explanation=L'errore ha impedito la convalida della password di login.
+PASSWORD_VALIDATION_EXCEPTION.useraction=Controllare il log per conoscere i dettagli.  Risolvere il problema indicato nell'errore e riprovare.
+
+LOADED_PERSISTED_TOOL_DATA=CWWKX1048I: Dati strumento {1} per l''utente {0} caricati.
+LOADED_PERSISTED_TOOL_DATA.explanation=I dati strumento per l'utente e lo strumento specificati sono stati caricati dallo storage persistente.
+LOADED_PERSISTED_TOOL_DATA.useraction=Non \u00e8 richiesta alcuna azione.
+
+UNABLE_TO_LOAD_TOOL_DATA_CONTENT=CWWKX1049E: I dati strumento {1} per l''utente {0} non sono stati caricatiper dallo storage persistente. Il contenuto persistente potrebbe essere danneggiato.
+UNABLE_TO_LOAD_TOOL_DATA_CONTENT.explanation=Il contenuto memorizzato nel livello di persistenza sottostante per lo strumento non corrisponde al tipo previsto. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_TOOL_DATA_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_LOAD_TOOL_DATA_SYNTAX=CWWKX1050E: I dati strumento {1} per l''utente {0} non sono stati caricatiper dallo storage persistente. La sintassi del contenuto persistente potrebbe essere danneggiata.
+UNABLE_TO_LOAD_TOOL_DATA_SYNTAX.explanation=Il prodotto non pu\u00f2 analizzare il contenuto dei dati strumento memorizzati nel livello di permanenza sottostante. La sintassi dei dati potrebbe essere danneggiata. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_TOOL_DATA_SYNTAX.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_LOAD_TOOL_DATA_ACCESS=CWWKX1051E: I dati strumento {1} per l''utente {0} non sono stati caricatiper dallo storage persistente. Il livello di persistenza sottostante ha rilevato un errore I/O.
+UNABLE_TO_LOAD_TOOL_DATA_ACCESS.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante il caricamento dei dati strumento. Si tratta di un errore irreversibile.
+UNABLE_TO_LOAD_TOOL_DATA_ACCESS.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+POSTED_TOOL_DATA=CWWKX1052I: I dati strumento {1} per l''utente {0} sono stati inviati allo storage.
+POSTED_TOOL_DATA.explanation=Dati strumento correttamente inviati allo storage.
+POSTED_TOOL_DATA.useraction=Nessuna azione richiesta.
+
+UNABLE_TO_PARSE_TOOL_ID=CWWKX1053E: Il prodotto non pu\u00f2 ottenere il nome strumento dall''id strumento {0}.
+UNABLE_TO_PARSE_TOOL_ID.explanation=L'id strumento non \u00e8 in un formato che il prodotto pu\u00f2 analizzare. 
+UNABLE_TO_PARSE_TOOL_ID.useraction=Contattare il provider dello strumento per le possibili azioni di correzione.
+
+POST_MAX_TEXT_SIZE=CWWKX1054E: Il payload per la richiesta supera la lunghezza massima consentita di {0}. Ridurre la dimensione del payload.
+POST_MAX_TEXT_SIZE.explanation=Il prodotto non pu\u00f2 leggere il payload perch\u00e9 supera la dimensione massima consentita per l'operazione.
+POST_MAX_TEXT_SIZE.useraction=Ridurre la dimensione del payload.
+
+POST_NO_PAYLOAD=CWWKX1055E: Il payload per la richiesta \u00e8 vuoto.
+POST_NO_PAYLOAD.explanation=Il prodotto non pu\u00f2 leggere il payload perch\u00e9 \u00e8 vuoto.
+POST_NO_PAYLOAD.useraction=Aggiungere il payload alla richiesta.
+
+TOOLDATA_DELETE_SUCCESSFUL=CWWKX1056I: Il prodotto ha correttamente eliminato i dati strumento {1} per l''utente {0}.
+TOOLDATA_DELETE_SUCCESSFUL.explanation=Dati strumento correttamente eliminati dal livello di persistenza.
+TOOLDATA_DELETE_SUCCESSFUL.useraction=Non sono richieste azioni da parte dell'utente.
+
+TOOLDATA_DELETE_UNSUCCESSFUL=CWWKX1057E: Il prodotto non pu\u00f2 eliminare i dati strumento {1} per l''utente {0} perch\u00e9 un altro programma li sta utilizzando. Interrompere l''utilizzo da parte di altri programmi del file di dati strumento e ripetere la richiesta di eliminazione.
+TOOLDATA_DELETE_UNSUCCESSFUL.explanation=Il file che contiene i dati strumento \u00e8 bloccato da un altro processo, ci\u00f2 causa un errore quando il prodotto tenta di eliminare i dati strumento dal livello di persistenza.
+TOOLDATA_DELETE_UNSUCCESSFUL.useraction=Interrompere l'utilizzo da parte di altri programmi del file di dati strumento e ripetere la richiesta di eliminazione. Se questa operazione non risolve il problema, consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE=CWWKX1058W: Il prodotto non pu\u00f2 eliminare la cartella dei dati strumento {0} perch\u00e9 un altro programma potrebbe stare utilizzando la cartella.
+TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE.explanation=La cartella specificata non pu\u00f2 essere eliminata.
+TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE.useraction=Se la cartella \u00e8 utilizzata da altri programmi, interrompere l'utilizzo e ripetere la richiesta di eliminazione.
+
+DELETED_PERSISTED_TOOL_DATA=CWWKX1059I: Il prodotto ha eliminato i dati strumento {1} per l''utente {0}.
+DELETED_PERSISTED_TOOL_DATA.explanation=I dati strumento per l'utente e lo strumento specificati sono stati eliminati dallo storage persistente.
+DELETED_PERSISTED_TOOL_DATA.useraction=Non \u00e8 richiesta alcuna azione.
+
+UNABLE_TO_DELETE_PERSISTED_TOOL_DATA=CWWKX1060W: Il prodotto non pu\u00f2 eliminare i dati strumento {1} per l''utente {0} dallo storage persistente. Il livello di persistenza sottostante ha rilevato un errore I/O.
+UNABLE_TO_DELETE_PERSISTED_TOOL_DATA.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante l'eliminazione dei dati strumento.
+UNABLE_TO_DELETE_PERSISTED_TOOL_DATA.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_POST_TOOL_DATA_CONTENT=CWWKX1061E: Il prodotto non pu\u00f2 inviare i dati strumento {1} per l''utente {0} allo storage persistente. Il livello di persistenza sottostante ha rilevato un errore I/O.
+UNABLE_TO_POST_TOOL_DATA_CONTENT.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante la memorizzazione dei dati strumento.
+UNABLE_TO_POST_TOOL_DATA_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_POST_TOOL_JSON_DATA_CONTENT=CWWKX1063E: Il prodotto non pu\u00f2 inviare i dati strumento {1} per l''utente {0} allo storage persistente a causa di un errore di marshalling JSON.
+UNABLE_TO_POST_TOOL_JSON_DATA_CONTENT.explanation=Si \u00e8 verificato un errore di marshalling JSON durante l'accesso al livello di persistenza sottostante durante la memorizzazione dei dati strumento.
+UNABLE_TO_POST_TOOL_JSON_DATA_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH=CWWKX1062E: Il prodotto non pu\u00f2 aggiornare i dati strumento {1} per l''utente {0} dallo storage persistente.  Il valore ETag dell''intestazione richiesta non corrisponde al checksum dei dati strumento dallo storage persistente.   
+TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH.explanation=I dati strumento dallo storage persistente sono stati modificati dopo l'ultima chiamata GET del client.
+TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH.useraction=Richiedere una chiamata GET per ottenere la versione pi\u00f9 recente dei dati strumento, quindi eseguire l'operazione PUT.
+
+STORAGE_INITIALIZED_PLAINTEXT_LOADER=CWWKX1063I: Livello di persistenza {0} inizializzato per il programma di caricamento dei dati strumento del centro di gestione.
+STORAGE_INITIALIZED_PLAINTEXT_LOADER.explanation=Il prodotto ha inizializzato il livello di persistenza per il centro di gestione per il programma di caricamento dei dati strumento.
+STORAGE_INITIALIZED_PLAINTEXT_LOADER.useraction=Non \u00e8 richiesta alcuna azione.
+
+UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT=CWWKX1064E: Il prodotto non pu\u00f2 promuovere i dati strumento {1} per l''utente {0} dalla persistenza FILE alla persistenza COLLECTIVE.  Il prodotto ha rilevato un errore I/O.
+UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante la promozione dei dati strumento dalla persistenza FILE alla persistenza COLLECTIVE.
+UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT=CWWKX1067E: Il prodotto non pu\u00f2 promuovere i dati strumento {1} per l''utente {0} dalla persistenza FILE alla persistenza COLLECTIVE.  Il prodotto ha rilevato un errore di marshalling JSON.
+UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT.explanation=Si \u00e8 verificato un problema durante l'accesso al livello di persistenza sottostante durante la promozione dei dati strumento dalla persistenza FILE alla persistenza COLLECTIVE.
+UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT.useraction=Consultare i messaggi di log precedenti per le possibili azioni di correzione.
+
+UNSUPPORTED_SSL_SOCKET_FACTORY=CWWKX1065E: La JVM in uso specifica una classe di implementazione SSLSocketFactory che non \u00e8 disponibile in Liberty Profile.
+UNSUPPORTED_SSL_SOCKET_FACTORY.explanation=Non \u00e8 stata trovata una classe di implementazione SSLSocketFactory.
+UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Acquisire una JVM che supporti i prodotti Liberty Profile e SSL dalle offerte Installation Manager o developerWorks. In alternativa, controllare la propriet\u00e0\u00a0ssl.SocketFactory.provider nel file java.security JVM.
+
+OSGI_SERVICE_ERROR=CWWKX1066E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Questo errore interno del server si verifica perch\u00e9 il servizio specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione clean.

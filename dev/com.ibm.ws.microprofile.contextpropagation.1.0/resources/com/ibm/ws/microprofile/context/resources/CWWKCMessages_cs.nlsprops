@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: Stejn\u00fd typ kontextu podprocesu, {0}, je poskytov\u00e1n v\u00edce poskytovateli kontextu podprocesu, kte\u0159\u00ed jsou k dispozici pro danou aplikaci. Poskytovatel\u00e9 kontextu podprocesu jsou: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=Specifikace \u0161\u00ed\u0159en\u00ed kontextu MicroProfile nepovoluje pro ka\u017ed\u00fd typ kontextu v\u00edce ne\u017e jednu polo\u017eku ThreadContextProvider.
+CWWKC1150.duplicate.context.useraction=Aktualizujte dostupnou aplikaci, knihovny nebo oboj\u00ed tak, aby neexistoval v\u00edce ne\u017e jeden ThreadContextProvider uveden\u00e9ho typu.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: Konfigurace ManagedExecutor zahrnuje n\u00e1sleduj\u00edc\u00ed typy kontextu podprocesu, kter\u00e9 jsou nakonfigurov\u00e1ny tak, aby byly vymaz\u00e1ny i \u0161\u00ed\u0159eny: {0}
+CWWKC1151.context.lists.overlap.explanation=Typ kontextu podprocesu m\u016f\u017ee b\u00fdt konfigurov\u00e1n ve v\u00edce ne\u017e jedn\u00e9 kategorii p\u0159i sestavov\u00e1n\u00ed nebo vkl\u00e1d\u00e1n\u00ed parametru ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Zkontrolujte a opravte kategorizaci typ\u016f kontextu podprocesu v tv\u016frci ManagedExecutor nebo anotaci ManagedExecutorConfig.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: N\u00e1sleduj\u00edc\u00ed typy kontextu podprocesu jsou nakonfigurov\u00e1ny ve v\u00edce ne\u017e jedn\u00e9 kategorii (jsou smaz\u00e1ny, \u0161\u00ed\u0159eny, nezm\u011bn\u011bny): {0}.
+CWWKC1152.context.lists.overlap.explanation=Typ kontextu podprocesu m\u016f\u017ee b\u00fdt konfigurov\u00e1n ve v\u00edce ne\u017e jedn\u00e9 kategorii p\u0159i sestavov\u00e1n\u00ed nebo vkl\u00e1d\u00e1n\u00ed parametru ThreadContext.
+CWWKC1152.context.lists.overlap.useraction=Zkontrolujte a opravte kategorizaci typ\u016f kontextu podprocesu v tv\u016frci ThreadContext nebo anotaci ThreadContextConfig.
+
+CWWKC1155.unknown.context=CWWKC1155E: Typy kontextu podprocesu {0} jsou nakonfigurov\u00e1ny tak, aby byly vymaz\u00e1ny nebo \u0161\u00ed\u0159eny, ale pro danou aplikaci nejsou k dispozici \u017e\u00e1dn\u00ed poskytovatel\u00e9 kontextu podprocesu pro tyto typy. Dostupn\u00e9 typy kontextu podprocesu jsou: {1}.
+CWWKC1155.unknown.context.explanation=Pro ka\u017ed\u00fd nakonfigurovan\u00fd typ kontextu podprocesu, kter\u00fd nen\u00ed poskytov\u00e1n serverem, mus\u00ed b\u00fdt k dispozici poskytovatel kontextu podprocesu v zavad\u011b\u010di t\u0159\u00edd kontextu podprocesu aplikace. Mezi typy kontextu podprocesu poskytovan\u00e9 serverem pat\u0159\u00ed: Aplikace, CDI, Zabezpe\u010den\u00ed, Transakce.
+CWWKC1155.unknown.context.useraction=Aktualizujte aplikaci, knihovny nebo oboj\u00ed, aby obsahovaly poskytovatele kontextu podprocesu pro ka\u017ed\u00fd nakonfigurovan\u00fd typ kontextu podprocesu, kter\u00fd nen\u00ed poskytnut\u00fd serverem. Voliteln\u011b aktualizujte aplikaci tak, aby pou\u017e\u00edvala pouze typy kontextu, kter\u00e9 jsou k dispozici.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: \u0160\u00ed\u0159en\u00ed transakc\u00ed do kontextov\u00fdch akc\u00ed a \u00faloh nen\u00ed podporov\u00e1no.
+CWWKC1157.cannot.propagate.tx.explanation=ManagedExecutor nebo ThreadContext nakonfigurovan\u00e9 pro \u0161\u00ed\u0159en\u00ed kontext\u016f transakc\u00ed mohou \u0161\u00ed\u0159it pouze pr\u00e1zdn\u00e9 kontexty transakc\u00ed. Proto v r\u00e1mci transakce nelze vytv\u00e1\u0159et kontextov\u00e9 akce a \u00falohy.
+CWWKC1157.cannot.propagate.tx.useraction=Vytvo\u0159te kontextovou akci nebo \u00falohu mimo transakci. Voliteln\u011b nakonfigurujte ManagedExecutor nebo ThreadContext tak, aby nep\u0159enesly kontexty transakc\u00ed.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

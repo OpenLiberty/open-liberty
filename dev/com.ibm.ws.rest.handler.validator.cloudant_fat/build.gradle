@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+    cloudant
+    cloudantOld
+    cloudantCommonDeps
+}
+
+dependencies {
+      cloudant            'com.cloudant:cloudant-client:2.16.0',
+      			          'com.cloudant:cloudant-http:2.16.0'
+      cloudantOld         'com.cloudant:cloudant-client:2.8.0',
+                          'com.cloudant:cloudant-http:2.8.0'
+      cloudantCommonDeps  project(':com.ibm.ws.org.apache.commons.io'),
+      					  'com.google.code.gson:gson:2.8.0'
+}
+
+task copyCloudant(type: Copy) {
+  shouldRunAfter jar
+  from configurations.cloudant
+  from configurations.cloudantCommonDeps
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.rest.handler.validator.cloudant.fat/cloudant')
+}
+
+task copyCloudantOld(type: Copy) {
+  shouldRunAfter jar
+  from configurations.cloudantOld
+  from configurations.cloudantCommonDeps
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.rest.handler.validator.cloudant.fat/cloudantold')
+}
+addRequiredLibraries.dependsOn copyCloudant
+addRequiredLibraries.dependsOn copyCloudantOld
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addJakartaTransformer

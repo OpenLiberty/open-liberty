@@ -1,0 +1,9 @@
+dn: ou=objectClasses, cn=customschema, ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsName: 
+entryUUID: ec57ebf4-3eb1-48d8-b664-105f1dcbdb39
+entryCSN: 20131001134022.043000Z#000000#001#000000
+entryParentId: cba9e093-3f47-44c7-be7b-64d8c3ba2a7b
+ou: objectClasses
+createTimestamp: 20131001134022.043Z

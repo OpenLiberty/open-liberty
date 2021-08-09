@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenMessages.nlsprops
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere Server Config Schema 
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+## Message prefix block: CWWKG3001 - CWWKG3050
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Sk\u0142adnia: {0} serwer
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Brak wymaganego argumentu: {0}.
+argument.unrecognized=Nierozpoznany argument: {0}.
+argument.unrecognized.expected=Nierozpoznany argument: {0}. By\u0107 mo\u017ce chodzi\u0142o o: {1}.
+argument.invalid.value=Niedopuszczalna warto\u015b\u0107 argumentu: {0}={1}. Dopuszczalne warto\u015bci: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKG3001E: Nie znaleziono serwera o nazwie {0}. Oczekiwano, \u017ce b\u0119dzie si\u0119 on znajdowa\u0107 w nast\u0119puj\u0105cym katalogu: {1}. Upewnij si\u0119, \u017ce mo\u017cliwe jest znalezienie konfiguracji serwera w katalogu okre\u015blonym w komunikacie.
+server.not.found.explanation= Nie mo\u017cna znale\u017a\u0107 serwera okre\u015blonego w komendzie serverSchemaGen. Oczekiwane po\u0142o\u017cenie katalogu konfiguracji serwera znajduje si\u0119 w komunikacie.
+server.not.found.useraction=Upewnij si\u0119, \u017ce mo\u017cliwe jest znalezienie konfiguracji serwera w katalogu okre\u015blonym w komunikacie.  Je\u015bli to konieczne, zmodyfikuj zmienne WLP_USER_DIR lub WLP_INSTALL_DIR, aby do znajdowania plik\u00f3w konfiguracyjnych serwera u\u017cywana by\u0142a poprawna \u015bcie\u017cka.
+
+local.connector.not.found=CWWKG3002E: Serwer o nazwie {0} nie jest skonfigurowany do akceptowania lokalnych \u017c\u0105da\u0144 JMX. Upewnij si\u0119, \u017ce konfiguracja serwera zawiera sk\u0142adnik localConnector i \u017ce serwer jest uruchomiony.
+local.connector.not.found.explanation=Serwer okre\u015blony w komendzie serverSchemaGen nie jest skonfigurowany do akceptowania lokalnych \u017c\u0105da\u0144 JMX.
+local.connector.not.found.useraction=Upewnij si\u0119, \u017ce konfiguracja serwera zawiera sk\u0142adnik localConnector i \u017ce serwer jest uruchomiony. Adres URL wymagany do nawi\u0105zania lokalnego po\u0142\u0105czenia JMX z tym serwerem znajduje si\u0119 w pliku WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+local.connector.url.empty=CWWKG3003E: Istnieje problem z konfiguracj\u0105 sk\u0142adnika localConnector dla serwera o nazwie {0}.
+local.connector.url.empty.explanation=Serwer okre\u015blony w komendzie serverSchemaGen nie jest skonfigurowany do akceptowania lokalnych \u017c\u0105da\u0144 JMX. Plik zawieraj\u0105cy adres URL u\u017cywany do tworzenia po\u0142\u0105czenia JMX z serwerem jest pusty.
+local.connector.url.empty.useraction=Upewnij si\u0119, \u017ce konfiguracja serwera zawiera sk\u0142adnik localConnector i \u017ce serwer jest uruchomiony. Adres URL wymagany do nawi\u0105zania lokalnego po\u0142\u0105czenia JMX z tym serwerem znajduje si\u0119 w pliku WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+mbean.null.result=CWWKG3004E: Komenda do generowania schematu serwera nie zwr\u00f3ci\u0142a \u017cadnego wyniku.
+mbean.null.result.explanation=Wywo\u0142ano komponent MBean generuj\u0105cy schemat serwera, ale nie zosta\u0142y zwr\u00f3cone \u017cadne wyniki. \u017b\u0105dany schemat m\u00f3g\u0142 nie zosta\u0107 wygenerowany.
+mbean.null.result.useraction=Sprawd\u017a dzienniki serwera i katalog FFDC pod k\u0105tem potencjalnego komunikatu o b\u0142\u0119dzie lub wyj\u0105tku. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKG3005E: Komenda do generowania schematu serwera wskaza\u0142a, \u017ce podczas generowania schematu zg\u0142oszono problem.
+mbean.bad.result.explanation=Wywo\u0142ano komponent MBean generuj\u0105cy schemat serwera, ale podczas generowania schematu serwera zosta\u0142 zg\u0142oszony b\u0142\u0105d. \u017b\u0105dany schemat m\u00f3g\u0142 nie zosta\u0107 wygenerowany.
+mbean.bad.result.useraction=Sprawd\u017a dzienniki serwera i katalog FFDC pod k\u0105tem komunikatu o b\u0142\u0119dzie lub wyj\u0105tku. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKG3006E: Komenda do generowania schematu serwera nie zg\u0142osi\u0142a informacji o pomy\u015blnym zako\u0144czeniu pracy.
+mbean.missing.result.explanation=Wywo\u0142ano komponent MBean generuj\u0105cy schemat serwera, ale w wyniku nie zosta\u0142 zwr\u00f3cony kod odpowiedzi. \u017b\u0105dany schemat m\u00f3g\u0142 nie zosta\u0107 wygenerowany.
+mbean.missing.result.useraction=Sprawd\u017a dzienniki serwera i katalog FFDC pod k\u0105tem potencjalnego komunikatu o b\u0142\u0119dzie lub wyj\u0105tku. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKG3007E: Komenda do generowania schematu serwera nie zwr\u00f3ci\u0142a nazwy katalogu wyj\u015bciowego.
+mbean.missing.output.dir.explanation=Wywo\u0142ano komponent MBean generuj\u0105cy schemat serwera, ale w odpowiedzi nie zosta\u0142 podany katalog wyj\u015bciowy u\u017cyty do zapisania schematu. \u017b\u0105dany schemat m\u00f3g\u0142 nie zosta\u0107 wygenerowany.
+mbean.missing.output.dir.useraction=Sprawd\u017a katalog wyj\u015bciowy serwera docelowego pod k\u0105tem wygenerowanego schematu serwera. Katalog wyj\u015bciowy jest okre\u015blony w procesie serwera poprzez ustawienie zmiennej WLP_OUTPUT_DIR. Schemat serwera jest generowany do katalogu schemagen w katalogu wyj\u015bciowym. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKG3008I: \u017b\u0105dany schemat serwera zosta\u0142 wygenerowany w nast\u0119puj\u0105cym katalogu: {0}
+mbean.output.dir.explanation=\u017b\u0105dany schemat serwera zosta\u0142 wygenerowany i znajduje si\u0119 w katalogu wskazanym w komunikacie.
+mbean.output.dir.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+mbean.not.found=CWWKG3009W: Komponent MBean generuj\u0105cy schemat serwera nie jest aktywny na serwerze {0}.
+mbean.not.found.explanation=Nawi\u0105zano po\u0142\u0105czenie JMX z serwerem docelowym, ale nie znaleziono komponentu MBean do generowania schematu serwera. 
+mbean.not.found.useraction=Sprawd\u017a dzienniki serwera i katalog FFDC pod k\u0105tem potencjalnego komunikatu o b\u0142\u0119dzie lub wyj\u0105tku. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKG3010E: Komenda do generowania schematu serwera zg\u0142osi\u0142a wyj\u0105tek: {0}
+exception.catch.explanation=Komenda do generowania schematu serwera zg\u0142osi\u0142a nieoczekiwany wyj\u0105tek. Stos wywo\u0142a\u0144 wyj\u0105tku zostanie wydrukowany do pliku dziennika standardowego wyj\u015bcia b\u0142\u0119d\u00f3w. Program narz\u0119dziowy zatrzyma przetwarzanie.
+exception.catch.useraction=Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKG3011E: Nie znaleziono katalogu dziennik\u00f3w dla serwera o nazwie {0}. Oczekiwano, \u017ce b\u0119dzie si\u0119 on znajdowa\u0107 w nast\u0119puj\u0105cym katalogu: {1}. Warto\u015b\u0107 katalogu dziennik\u00f3w jest obliczona przy u\u017cyciu zmiennej WLP_OUTPUT_DIR. 
+server.output.logs.dir.not.found.explanation=Katalog dziennik\u00f3w musi by\u0107 dost\u0119pny dla komendy, aby mo\u017cna by\u0142o znale\u017a\u0107 informacje o po\u0142\u0105czeniu JMX serwera. Ten b\u0142\u0105d mo\u017ce wyst\u0105pi\u0107, je\u015bli warto\u015b\u0107 zmiennej WLP_OUTPUT_DIR w bie\u017c\u0105cym \u015brodowisku nie jest taka sama, jak warto\u015b\u0107 u\u017cywana przez serwer. 
+server.output.logs.dir.not.found.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 zmiennej WLP_OUTPUT_DIR jest zgodna z warto\u015bci\u0105 u\u017cywan\u0105 przez serwer i upewnij si\u0119, \u017ce istnieje katalog dziennik\u00f3w. 
+

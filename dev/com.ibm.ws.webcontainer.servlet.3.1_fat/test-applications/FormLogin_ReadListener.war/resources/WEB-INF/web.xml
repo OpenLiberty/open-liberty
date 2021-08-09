@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="FormLoginServlet" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>Form Login servlets and JSPs</display-name>
+  <description>This is for servlets and JSPs to test form login.</description>
+
+
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/TestAsyncReadServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+        <role-name>servlet31Test_basic</role-name>
+     </auth-constraint>
+  </security-constraint>
+    
+  <!-- CHALLENGE TYPE -->
+  <login-config>
+  	<auth-method>FORM</auth-method>
+  	<realm-name>Test Realm</realm-name>
+    <form-login-config id="FormLoginConfig_1">
+    	<form-login-page>/login.jsp</form-login-page>
+        <form-error-page>/loginError.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+
+
+</web-app>

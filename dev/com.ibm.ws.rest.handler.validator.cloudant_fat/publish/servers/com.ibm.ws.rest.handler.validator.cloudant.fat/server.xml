@@ -1,0 +1,55 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>restConnector-2.0</feature>
+    <feature>cloudant-1.0</feature>
+  </featureManager>
+  
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+    
+  <library id="CloudantLib">
+    <fileset dir="${server.config.dir}/cloudant"/>
+  </library>
+  
+  <library id="CloudantLibOld">
+    <fileset dir="${server.config.dir}/cloudantold"/>
+  </library>
+	
+  <authData id="cloudantAuthData" user="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
+  <authData id="travisAuthData" user="travis" password="password"/>
+  <authData id="kevinAuthData" user="kevin" password="password"/>
+  <authData id="invalidAuthData" user="baduser" password="badpassword"/>
+	
+  <cloudant id="cloudantProps" jndiName="cloudant/cloudantProps" username="${CLOUDANT_USER}" password="${CLOUDANT_PASS}" libraryRef="CloudantLib" url="${CLOUDANT_URL}"/>
+  <cloudant id="oldCloudant" jndiName="cloudant/oldCloudant" libraryRef="CloudantLibOld" url="${CLOUDANT_URL}" containerAuthDataRef="cloudantAuthData"/>
+  <cloudant id="cloudantContainerAuth" jndiName="cloudant/cloudantContainerAuth" libraryRef="CloudantLib" url="${CLOUDANT_URL}">
+    <containerAuthData user="${CLOUDANT_USER}" password="${CLOUDANT_PASS}"/>
+  </cloudant>
+  <cloudant id="cloudantNoAuth" jndiName="cloudant/cloudantNoAuth" libraryRef="CloudantLib" url="${CLOUDANT_URL}"/>
+
+  <cloudantDatabase jndiName="cloudant/dbNoAuth" cloudantRef="cloudantNoAuth" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbAuthProps" jndiName="cloudant/dbAuthProps" cloudantRef="cloudantProps" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbCtrAuth" jndiName="cloudant/dbCtrAuth" cloudantRef="cloudantContainerAuth" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbIncorrectName" jndiName="cloudant/dbIncorrectName" cloudantRef="cloudantProps" databaseName="invalidDBName" create="false"/>
+  <cloudantDatabase id="dbCloudantOld" jndiName="cloudant/dbCloudantOld" cloudantRef="oldCloudant" databaseName="${CLOUDANT_DB_NAME}" create="true"/>
+  <cloudantDatabase id="dbTestAuth" jndiName="cloudant/dbTestAuth" cloudantRef="cloudantNoAuth" databaseName="testauthdb" create="false"/>
+    
+  <include location="../fatTestPorts.xml"/>
+    
+  <variable name="onError" value="FAIL"/>
+  
+  <javaPermission codebase="${server.config.dir}cloudant/cloudant-client-2.16.0.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}cloudantold/cloudant-client-2.8.0.jar" className="java.security.AllPermission"/>
+</server>

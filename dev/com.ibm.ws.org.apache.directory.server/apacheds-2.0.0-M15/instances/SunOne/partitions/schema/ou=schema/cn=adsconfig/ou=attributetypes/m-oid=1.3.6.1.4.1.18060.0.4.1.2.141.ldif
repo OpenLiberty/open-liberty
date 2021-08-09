@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.141,ou=attributeTypes,cn=adsconfig,ou=schema
+m-name: ads-journalRotation
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.141
+m-description: The size before a journal rotation occurs.
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-equality: integerMatch
+m-ordering: integerOrderingMatch
+m-singlevalue: TRUE
+m-length: 0
+creatorsname: uid=admin,ou=system

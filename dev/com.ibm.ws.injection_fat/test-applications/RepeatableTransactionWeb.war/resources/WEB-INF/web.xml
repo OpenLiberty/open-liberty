@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+    
+    <!-- Listeners -->
+    <listener>
+        <display-name>AdvRepeatableTransactionHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener</listener-class>
+    </listener>
+
+    <listener>
+        <display-name>AdvRepeatableTransactionHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvRepeatableTransactionServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvRepeatableTransactionServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvRepeatableTransactionServletRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvRepeatableTransactionRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <!-- Filters -->
+    <filter>
+        <display-name>AdvRepeatableTransactionFilter</display-name>
+        <filter-name>AdvRepeatableTransactionFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdvRepeatableTransactionFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+
+    <!-- ###############  Servlet: BasicUserTransactionServlet ############ -->
+    <!-- UserTransaction injection targets -->
+	<resource-env-ref>
+		<resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableUserTransactionServlet/UserTranFldXML</resource-env-ref-name>
+		<resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+		<injection-target>
+			<injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableUserTransactionServlet</injection-target-class>
+			<injection-target-name>UserTranFldXML</injection-target-name>
+		</injection-target>
+	</resource-env-ref>
+	
+	<resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableUserTransactionServlet/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableUserTransactionServlet</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ###############  Servlet: BasicTranSynchRegistryServlet ############ -->
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableTranSynchRegistryServlet/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableTranSynchRegistryServlet</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableTranSynchRegistryServlet/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.BasicRepeatableTranSynchRegistryServlet</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ################ Listener: AdvRepeatableTransactionRequestListener ############## -->
+	<!-- UserTransaction injection targets -->
+	<resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestListener</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ################ Listener: AdvRepeatableTransactionServletRequestAttributeListener ############## -->
+    <!-- UserTransaction injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ################ Listener: AdvRepeatableTransactionHttpSessionListener ############## -->
+    <!-- UserTransaction injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionListener</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ################ Listener: AdvRepeatableTransactionHttpSessionAttributeListener ############## -->
+    <!-- UserTransaction injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ################ Listener: AdvRepeatableTransactionServletContextListener ############## -->
+    <!-- UserTransaction injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextListener</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- ################ Listener: AdvRepeatableTransactionServletContextAttributeListener ############## -->
+    <!-- UserTransaction injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionServletContextAttributeListener</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <!-- ################ Listener: AdvRepeatableTransactionFilter ############## -->
+    <!-- UserTransaction injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter/UserTranFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter</injection-target-class>
+            <injection-target-name>UserTranFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter/UserTranMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.UserTransaction</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter</injection-target-class>
+            <injection-target-name>userTranMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <!-- TranSynchRegistry injection targets -->
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter/TranSynchRegFldXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter</injection-target-class>
+            <injection-target-name>TranSynchRegFldXML</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+
+    <resource-env-ref>
+        <resource-env-ref-name>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter/TranSynchRegMthdXML</resource-env-ref-name>
+        <resource-env-ref-type>javax.transaction.TransactionSynchronizationRegistry</resource-env-ref-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.repeatable.transaction.web.AdvRepeatableTransactionFilter</injection-target-class>
+            <injection-target-name>tranSynchRegMthdXMLMethod</injection-target-name>
+        </injection-target>
+    </resource-env-ref>
+</web-app>

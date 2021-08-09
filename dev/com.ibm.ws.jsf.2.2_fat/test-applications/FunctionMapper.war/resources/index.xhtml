@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+<title>index</title>
+</h:head>
+<h:body>
+
+  <div> FunctionMapper Exists (Expecting true): <h:outputText value="#{bean.functionMapperExists}"/> </div>
+ 
+<h:form id="form1">
+  <h:commandButton id="button1" value="submit" action="#{bean.execute()}"/>
+</h:form>
+
+</h:body>
+</html>

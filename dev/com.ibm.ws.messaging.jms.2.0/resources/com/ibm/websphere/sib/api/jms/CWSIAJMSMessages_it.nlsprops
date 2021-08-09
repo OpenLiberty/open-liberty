@@ -1,0 +1,1007 @@
+###############################################################################
+# Copyright (c) 2012, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d341984         2006-01-27 holdeni  Remove unused messages
+# d353701         2006-08-15 matrober Warn application writers they may be leaking JMS resources
+# SIB0121.jms.3   2007-01-29 jamessid Adding exception text for producer-guarantee violations
+# SIB0121.jms.4   2007-02-26 jamessid Remove 'guarantee' prop value, add forwarder flag to ActSpec
+# 431745          2007-04-13 jamessid Information development updates
+# 490428          2008-01-15 susana   Fail more helpfully at an unknown property on decode
+# 499445          2008-02-21 susana   Fix up any 'non-IBM-approved' terms
+# 99986           2013-05-23 Chetan   Proper error message on authentication exception
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.websphere.sib.api.jms.CWSIAJMSMessages.props
+#
+# SIB.api.jms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIA0001=CWSIA0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSIA0000-CWSIA0500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSIA0001-CWSIA0020   com.ibm.ws.sib.api.jms.impl.JmsFactoryFactoryImpl
+#   CWSIA0021-CWSIA0040   com.ibm.ws.sib.api.jms.impl.JmsConnectionImpl
+#   CWSIA0041-CWSIA0060   com.ibm.ws.sib.api.jms.impl.JmsSessionImpl
+#   CWSIA0061-CWSIA0080   com.ibm.ws.sib.api.jms.impl.JmsMsgProducerImpl
+#   CWSIA0081-CWSIA0100   com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl
+#   CWSIA0101-CWSIA0120   com.ibm.ws.sib.api.jms.impl.JmsMessageImpl
+#   CWSIA0121-CWSIA0140   com.ibm.ws.sib.api.jms.impl.JmsObjectMessageImpl
+#   CWSIA0141-CWSIA0160   com.ibm.ws.sib.api.jms.impl.JmsQueueBrowserImpl
+#   CWSIA0161-CWSIA0180   com.ibm.ws.sib.api.jms.impl.JmsStreamMessageImpl
+#   CWSIA0181-CWSIA0200   com.ibm.ws.sib.api.jms.impl.JmsBytesMessageImpl
+#   CWSIA0201-CWSIA0220   com.ibm.ws.sib.api.jms.impl.JmsInternalsFactory
+#   CWSIA0221-CWSIA0240   com.ibm.ws.sib.api.jms.impl.JmsDurableSubscriberImpl
+#   CWSIA0241-CWSIA0260   com.ibm.ws.sib.api.jms.impl.JmsManagedConnectionFactoryImpl
+#   CWSIA0261-CWSIA0280   com.ibm.ws.sib.api.jms.impl.JmsConnectionFactoryImpl
+#   CWSIA0281-CWSIA0300   com.ibm.ws.sib.api.jms.impl.JmsDestinationImpl
+#   CWSIA0301-CWSIA0320   com.ibm.ws.sib.api.jms.impl.ProducerProperties
+#   CWSIA0321-CWSIA0340   com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+#   CWSIA0341-CWSIA0359   com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+#   CWSIA0360-CWSIA0380   com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+#   CWSIA0381-CWSIA0390   com.ibm.ws.sib.api.jms.impl.URIDestinationCreator
+#   CWSIA0391-CWSIA0400   com.ibm.ws.sib.api.jms.impl.MQRequestReplyUtilsImpl & factory
+#   CWSIA0481-CWSIA0500   common messages
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jms/CWSIAJMSMessages.nlsprops
+#COMPONENTPREFIX CWSIA
+#COMPONENTNAMEFOR CWSIA SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# JmsFactoryFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0201 for JmsInternalsFactory
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0008 for JmsFactoryFactoryImpl
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0391 for MQRequestReplyUtils
+UNABLE_TO_CREATE_FACTORY_CWSIA0001=CWSIA0001E: Si \u00e8 verificato un errore interno. Impossibile creare un oggetto di classe {0} perch\u00e9 il file JAR {1} non \u00e8 stato trovato.
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception.
+INITIALIZATION_ERROR_CWSIA0002=CWSIA0002E: Si \u00e8 verificato un errore interno. Impossibile istanziare una classe richiesta: {0}
+INITIALIZATION_ERROR_CWSIA0002.explanation=CMSG0001
+INITIALIZATION_ERROR_CWSIA0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0003=CWSIA0003E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0003.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0003.useraction=Immettere un valore supportato per la propriet\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the supplied user name
+AUTHENTICATION_FAILED_CWSIA0004=CWSIA0004E: L''autenticazione per il nome utente fornito {0} e la password associata non \u00e8 riuscita.
+AUTHENTICATION_FAILED_CWSIA0004.explanation=L'autenticazione non \u00e8 riuscita utilizzando i dettagli forniti perch\u00e9 il nome utente o la password non sono corretti.
+AUTHENTICATION_FAILED_CWSIA0004.useraction=Per ulteriori informazioni, consultare il messaggio collegato. Verificare che il nome utente e la password siano corretti e che siano stati definiti sul sistema.
+
+# -------------------------------------------------------------------------------------------------
+JCA_RESOURCE_EXC_CWSIA0005=CWSIA0005E: Il runtime JCA non \u00e8 riuscito ad assegnare una connessione.
+JCA_RESOURCE_EXC_CWSIA0005.explanation=Un tentativo di creare una connessione JMS non \u00e8 riuscito a causa di un'eccezione dall'ambiente runtime JCA.
+JCA_RESOURCE_EXC_CWSIA0005.useraction=Per ulteriori informazioni, consultare l'eccezione collegata.
+
+# -------------------------------------------------------------------------------------------------
+AUTHORIZATION_FAILED_CWSIA0006=CWSIA0006E: L'autorizzazione per il nome utente fornito non \u00e8 riuscita.
+AUTHORIZATION_FAILED_CWSIA0006.explanation=Il nome utente non \u00e8 autorizzato per l'accesso alla risorsa.
+AUTHORIZATION_FAILED_CWSIA0006.useraction=Consultare il messaggio di errore collegato per il nome utente. Verificare che sia correttamente autorizzato per la risorsa richiesta sul sistema.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0007=CWSIA0007E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0007.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0007.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008=CWSIA0008E: Si \u00e8 verificato un errore interno. Impossibile creare un oggetto di classe {0} perch\u00e9 il file JAR {1} non \u00e8 stato trovato.
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+AUTHENTICATION_FAILED_CWSIA0009=CWSIA0009E: L'autenticazione per il nome utente fornito non \u00e8 riuscita.
+AUTHENTICATION_FAILED_CWSIA0009.explanation=L'autenticazione non \u00e8 riuscita utilizzando i dettagli forniti perch\u00e9 il nome utente o la password non sono corretti.
+AUTHENTICATION_FAILED_CWSIA0009.useraction=Per ulteriori informazioni, consultare il messaggio collegato. Verificare che il nome utente e la password siano corretti e che siano stati definiti sul sistema.
+ 
+# -------------------------------------------------------------------------------------------------
+
+# JmsConnectionImpl
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0021=CWSIA0021E: Questa connessione \u00e8 chiusa.
+CONNECTION_CLOSED_CWSIA0021.explanation=Un'applicazione ha richiamato un metodo che non deve essere utilizzato dopo aver chiuso la connessione.
+CONNECTION_CLOSED_CWSIA0021.useraction=Verificare che la connessione non sia chiusa prima di richiamare questo metodo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+# {1} is the name of the method which received it, and is effectively a unique probe ID for this message.
+# This message is cloned widely within this file.
+EXCEPTION_RECEIVED_CWSIA0022=CWSIA0022E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0022.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0022.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_FIXED_CWSIA0023=CWSIA0023E: L'ID client di questa connessione \u00e8 in sola lettura.
+CLIENT_ID_FIXED_CWSIA0023.explanation=Un'applicazione ha provato ad impostare l'ID client, che \u00e8 gi\u00e0 stato impostato o configurato in modo amministrativo.
+CLIENT_ID_FIXED_CWSIA0023.useraction=Verificare che l'ID client non venga impostato se \u00e8 gi\u00e0 stato precedentemente impostato o configurato.
+
+# -------------------------------------------------------------------------------------------------
+JCA_CREATE_SESS_CWSIA0024=CWSIA0024E: Il runtime JCA non \u00e8 riuscito a creare una sessione.
+JCA_CREATE_SESS_CWSIA0024.explanation=Una chiamata all'ambiente runtime JCA per la creazione di una sessione ha generato un errore.
+JCA_CREATE_SESS_CWSIA0024.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that is not permitted to call in this container.
+# This message is cloned as MGD_ENV_CWSIA0052 and MGD_ENV_CWSIA0084.
+MGD_ENV_CWSIA0025=CWSIA0025E: Il metodo {0} non \u00e8 consentito in questo contenitore.
+MGD_ENV_CWSIA0025.explanation=\u00c8 stato richiamato un metodo non consentito nel contenitore corrente.
+MGD_ENV_CWSIA0025.useraction=Rimuovere il richiamo al metodo.
+
+# -------------------------------------------------------------------------------------------------
+# clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0026=CWSIA0026E: {0} non \u00e8 supportato in questa release.
+UNSUPPORTED_FUNC_CWSIA0026.explanation=L'applicazione ha tentato di utilizzare una funzione o capability che non \u00e8 supportata dalla release corrente del software.
+UNSUPPORTED_FUNC_CWSIA0026.useraction=Rimuovere il codice che prova ad utilizzare questa capability oppure eseguire l'aggiornamento del software ad una release successiva, se disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Sessions that are currently open on the connection.
+# {1} is the line of application code that created the latest session
+MANY_SESSIONS_WARNING_CWSIA0027=CWSIA0027W: Attualmente sono aperte {0} sessioni JMS per la connessione. Ci\u00f2 pu\u00f2 indicare che le sessioni non sono state chiuse quando l''applicazione ha terminato di utilizzarle. La sessione \u00e8 stata creata in {1}
+MANY_SESSIONS_WARNING_CWSIA0027.explanation=Un numero elevato di sessioni aperte su una connessione pu\u00f2 influire in modo negativo sulle prestazioni.
+MANY_SESSIONS_WARNING_CWSIA0027.useraction=Verificare che l'applicazione chiuda le sessioni non pi\u00f9 richieste.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028=CWSIA0028E: L''Id client {0} non \u00e8 valido dato che una connessione con lo stesso Id client \u00e8 gi\u00e0 in esecuzione.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.explanation=L'Id client impostato dall'applicazione \u00e8 lo stesso Id client di una connessione attiva.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.useraction=Assicurarsi che l'Id client fornito sia univoco.
+
+# JmsSessionImpl
+
+# clone of 222
+CONN_CLOSED_CWSIA0041=CWSIA0041E: Connessione chiusa
+CONN_CLOSED_CWSIA0041.explanation=La connessione \u00e8 stata chiusa durante l'esecuzione di questo metodo.
+CONN_CLOSED_CWSIA0041.useraction=Ripetere la chiamata utilizzando una nuova connessione.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a nontransacted session.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042=CWSIA0042E: Non \u00e8 consentito richiamare il metodo {0} su una sessione non sottoposta a transazione.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.explanation=L'applicazione ha richiamato un metodo che non deve essere richiamato su una sessione non sottoposta a transazione.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.useraction=Modificare il programma dell'applicazione per eliminare questa funzionalit\u00e0.
+
+DSUB_LOCKED_CWSIA0043=CWSIA0043E: Sottoscrizione bloccata
+DSUB_LOCKED_CWSIA0043.explanation=Non \u00e8 possibile annullare la sottoscrizione durevole con consumer attivo o che contiene messaggi bloccati in una transazione attiva.
+DSUB_LOCKED_CWSIA0043.useraction=Verificare che non sia presente alcun consumer attivo, quindi provare ad eseguire di nuovo il metodo di annullamento della sottoscrizione.
+
+NOT_AUTH_CWSIA0044=CWSIA0044E: La richiesta di annullamento della sottoscrizione dalla sottoscrizione durevole non pu\u00f2 essere completata perch\u00e9 non \u00e8 autorizzata.
+NOT_AUTH_CWSIA0044.explanation=L'utente corrente non \u00e8 autorizzato ad annullare la sottoscrizione dalla sottoscrizione durevole.
+NOT_AUTH_CWSIA0044.useraction=Verificare che l'utente corrente disponga dell'accesso richiesto alle risorse necessarie. Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation which is not supported
+UNSUPPORTED_OPERATION_CWSIA0045=CWSIA0045E: L''operazione JMS facoltativa {0} non \u00e8 supportata da questa implementazione.
+UNSUPPORTED_OPERATION_CWSIA0045.explanation=L'applicazione ha richiamato un metodo facoltativo nella specifica JMS e questa operazione non \u00e8 supportata da questa implementazione.
+UNSUPPORTED_OPERATION_CWSIA0045.useraction=Rimuovere le chiamate ai metodi denominati da questa applicazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object instance which is not supported.
+FOREIGN_IMPLEMENTATION_CWSIA0046=CWSIA0046E: Il parametro {0} proviene da un''implementazione esterna che non \u00e8 supportata.
+FOREIGN_IMPLEMENTATION_CWSIA0046.explanation=L'applicazione dell'utente \u00e8 stata inviata in una classe di implementazione da un provider JMS non supportato.
+FOREIGN_IMPLEMENTATION_CWSIA0046.useraction=Sostituire l'oggetto con uno supportato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object type which was being created.
+MALFORMED_DESCRIPTOR_CWSIA0047=CWSIA0047E: Il nome {1} non descrive un tipo di oggetto {0}.
+MALFORMED_DESCRIPTOR_CWSIA0047.explanation=\u00c8 stato fornito un nome coda ad una chiamata createTopic oppure \u00e8 stato fornito un nome topic ad una chiamata createQueue.
+MALFORMED_DESCRIPTOR_CWSIA0047.useraction=Modificare il nome con il tipo di oggetto corretto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0048=CWSIA0048E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0048.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0048.useraction=Immettere un valore supportato per la propriet\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+SESSION_CLOSED_CWSIA0049=CWSIA0049E: Questa sessione \u00e8 chiusa.
+SESSION_CLOSED_CWSIA0049.explanation=Un'applicazione ha richiamato un metodo che non deve essere utilizzato dopo aver chiuso la sessione.
+SESSION_CLOSED_CWSIA0049.useraction=Verificare che la sessione non sia chiusa prima di richiamare questo metodo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a transacted session
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050=CWSIA0050E: Non \u00e8 consentito richiamare il metodo {0} su una sessione sottoposta a transazione.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.explanation=L'applicazione ha richiamato un metodo che non deve essere richiamato su una sessione  sottoposta a transazione.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.useraction=Modificare il programma dell'applicazione per eliminare questa funzionalit\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0051=CWSIA0051E: Questa connessione associata alla sessione \u00e8 chiusa.
+CONNECTION_CLOSED_CWSIA0051.explanation=L'applicazione ha richiamato un metodo su un oggetto sessione per cui la connessione associata \u00e8 stata chiusa.
+CONNECTION_CLOSED_CWSIA0051.useraction=Verificare che la connessione non sia chiusa prima di richiamare questo metodo.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 64
+# {0} is the destination which does not exist
+DESTINATION_DOES_NOT_EXIST_CWSIA0052=CWSIA0052E: La destinazione {0} non esiste.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.explanation=L'applicazione ha tentato di connettersi a una destinazione che non \u00e8 definita.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.useraction=Definire la destinazione richiesta e ripetere l'operazione.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0053=CWSIA0053E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0053.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0053.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription in question.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054=CWSIA0054E: La sottoscrizione durevole con nome sottoscrizione {0} non esiste.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.explanation=L'applicazione ha tentato di annullare una sottoscrizione durevole che non esiste.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.useraction=Non \u00e8 richiesta alcuna azione a meno che l'applicazione prevista esista, in tal caso dovrebbe essere stata gi\u00e0 creata.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Producers that are currently open on the session.
+# {1} is the line of application code that created the latest producer
+MANY_PRODUCERS_WARNING_CWSIA0055=CWSIA0055W: Attualmente sono aperti {0} producer JMS per la sessione. Ci\u00f2 pu\u00f2 indicare che i producer non sono stati chiusi quando l''applicazione ha terminato di utilizzarli. Il producer \u00e8 stato creato in {1}
+MANY_PRODUCERS_WARNING_CWSIA0055.explanation=Un numero elevato di producer aperti pu\u00f2 influire in modo negativo sulle prestazioni.
+MANY_PRODUCERS_WARNING_CWSIA0055.useraction=Verificare che l'applicazione chiuda i producer non pi\u00f9 richiesti.
+
+# -------------------------------------------------------------------------------------------------
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056=CWSIA0056E: \u00c8 stato specificato un valore null o vuoto per la propriet\u00e0 durableSubscriptionHome di ConnectionFactory
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.explanation=\u00c8 necessario impostare la propriet\u00e0 durableSubscriptionHome prima che venga creta una connessione che utilizza le sottoscrizioni durevoli.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.useraction=Impostare la propriet\u00e0 ConnectionFactory durableSubscriptionHome con il nome del motore di messaggistica in cui dovrebbe trovarsi la sottoscrizione.
+
+# -------------------------------------------------------------------------------------------------
+# Clone of CWSIA0006, with userID inserted
+# {0} UserID that failed to be autherised
+AUTHORIZATION_FAILED_CWSIA0057=CWSIA0057E: L''autorizzazione per {0} non ha avuto esito positivo.
+AUTHORIZATION_FAILED_CWSIA0057.explanation=Il nome utente non \u00e8 autorizzato per l'accesso alla risorsa.
+AUTHORIZATION_FAILED_CWSIA0057.useraction=Consultare il messaggio di errore collegato per il nome utente e verificare che sia correttamente autorizzato per la risorsa richiesta sul sistema.
+
+
+DEST_LOCKED_CWSIA0058=CWSIA0058E: L'argomento temporaneo \u00e8 bloccato
+DEST_LOCKED_CWSIA0058.explanation=Non \u00e8 possibile eliminare il topic temporaneo. Potrebbe avere sottoscrittori attivi.
+DEST_LOCKED_CWSIA0058.useraction=Chiudere eventuali sottoscrittori per il topic e riprovare la chiamata.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Consumers that are currently open on the session.
+# {1} is the line of application code that created the latest consumer
+MANY_CONSUMERS_WARNING_CWSIA0059=CWSIA0059W: Attualmente sono aperti {0} consumer JMS per la sessione. Ci\u00f2 pu\u00f2 indicare che i consumer non sono stati chiusi quando l''applicazione ha terminato di utilizzarli. Il consumer \u00e8 stato creato in {1}
+MANY_CONSUMERS_WARNING_CWSIA0059.explanation=Un numero elevato di consumer aperti su una sessione pu\u00f2 influire in modo negativo sulle prestazioni.
+MANY_CONSUMERS_WARNING_CWSIA0059.useraction=Verificare che l'applicazione chiuda i consumer non pi\u00f9 necessari.
+
+
+# JmsMsgProducerImpl
+# -------------------------------------------------------------------------------------------------
+PRODUCER_CLOSED_CWSIA0061=CWSIA0061E: Il producer di questo messaggio \u00e8 chiuso.
+PRODUCER_CLOSED_CWSIA0061.explanation=Un'applicazione ha richiamato un metodo che non deve essere utilizzato dopo aver chiuso il producer del messaggio.
+PRODUCER_CLOSED_CWSIA0061.useraction=Verificare che il producer del messaggio non sia chiuso prima di richiamare questo metodo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MP_CREATE_FAILED_CWSIA0062=CWSIA0062E: Impossibile creare un MessageProducer per {0}
+MP_CREATE_FAILED_CWSIA0062.explanation=\u00c8 stato rilevato un problema durante la creazione di un MessageProducer.
+MP_CREATE_FAILED_CWSIA0062.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+SEND_FAILED_CWSIA0063=CWSIA0063E: Invio a {0} non riuscito
+SEND_FAILED_CWSIA0063.explanation=\u00c8 stato rilevato un problema durante l'invio di un messaggio.
+SEND_FAILED_CWSIA0063.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# 64 deleted
+
+# -------------------------------------------------------------------------------------------------
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065=CWSIA0065E: \u00c8 necessario specificare una destinazione quando si esegue un invio da questo producer.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.explanation=Il producer \u00e8 stato creato con una destinazione null e non \u00e8 stata fornita alcuna destinazione sul metodo di invio.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.useraction=Modificare l'applicazione in modo che venga utilizzato un metodo di invio che specifica una destinazione oppure indicare una destinazione durante la creazione del producer.
+
+# -------------------------------------------------------------------------------------------------
+DEST_SPECIFIED_ON_SEND_CWSIA0066=CWSIA0066E: Non \u00e8 consentito specificare una destinazione quando si esegue un invio da questo producer.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.explanation=Il producer \u00e8 stato creato con una destinazione specificata; non \u00e8 consentito specificare nuovamente una destinazione quando si invia un messaggio.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.useraction=Modificare l'applicazione in modo che venga utilizzato un metodo di invio che non specifica una destinazione oppure indicare una destinazione null durante la creazione del producer.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0067=CWSIA0067E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0067.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0067.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0068=CWSIA0068E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0068.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0068.useraction=Immettere un valore supportato per la propriet\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+PRODUCER_AUTH_ERROR_CWSIA0069=CWSIA0069E: L'utente non \u00e8 autorizzato ad eseguire l'azione richiesta. Per ulteriori dettagli consultare l'eccezione collegata.
+PRODUCER_AUTH_ERROR_CWSIA0069.explanation=Il messaggio di errore collegato contiene i dettagli relativi all'autorizzazione richiesta per eseguire questa operazione.
+PRODUCER_AUTH_ERROR_CWSIA0069.useraction=L'amministratore deve concedere l'autorizzazione richiesta all'utente.
+
+
+# -------------------------------------------------------------------------------------------------
+#{0} Delivery delay time
+#{1} Expiry time or time to live
+INVALID_VALUE_CWSIA0070=CWSIA0070E: Il valore deliverDelay di {0} non pu\u00f2 essere maggiore del valore timeToLive di {1}.
+INVALID_VALUE_CWSIA0070.explanation=Se il valore timeToLive \u00e8 inferiore al valore deliveryDelay, la scadenza del messaggio si verificher\u00e0 per prima. Alla scadenza, il messaggio verr\u00e0 eliminato.
+INVALID_VALUE_CWSIA0070.useraction=Impostare il valore deliverDelay in modo che sia inferiore al valore timeToLive.
+
+
+# JmsMsgConsumerImpl
+# -------------------------------------------------------------------------------------------------
+CONSUMER_CLOSED_CWSIA0081=CWSIA0081E: Il consumer di questo messaggio \u00e8 chiuso.
+CONSUMER_CLOSED_CWSIA0081.explanation=Un'applicazione ha richiamato un metodo che non deve essere utilizzato dopo aver chiuso il consumer del messaggio.
+CONSUMER_CLOSED_CWSIA0081.useraction=Verificare che il consumer del messaggio non sia chiuso prima di richiamare questo metodo.
+
+# -------------------------------------------------------------------------------------------------
+# conflict between asynchronous message delivery and a synchronous call
+# {0} the call which triggered the exception
+ASYNC_IN_PROGRESS_CWSIA0082=CWSIA0082E: La chiamata del metodo sincrono non \u00e8 consentita quando una sessione \u00e8 in uso in modo asincrono: {0}
+ASYNC_IN_PROGRESS_CWSIA0082.explanation=La specifica JMS non consente l'utilizzo di una sessione per i metodi sincroni quando \u00e8 in esecuzione la consegna asincrona del messaggio.
+ASYNC_IN_PROGRESS_CWSIA0082.useraction=Se si desidera utilizzare contemporaneamente i metodi sincroni e la consegna asincrona, creare una sessione separata.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SELECTOR_CWSIA0083=CWSIA0083E: Il selettore non \u00e8 valido.
+INVALID_SELECTOR_CWSIA0083.explanation=\u00c8 stato fornito un selettore messaggi non corretto.
+INVALID_SELECTOR_CWSIA0083.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of MGD_ENV_CWSIA0025.
+MGD_ENV_CWSIA0084=CWSIA0084E: Il metodo {0} non \u00e8 consentito in questo contenitore.
+MGD_ENV_CWSIA0084.explanation=\u00c8 stato richiamato un metodo non consentito nel contenitore corrente.
+MGD_ENV_CWSIA0084.useraction=Rimuovere il richiamo al metodo.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0085=CWSIA0085E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0085.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0085.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MC_CREATE_FAILED_CWSIA0086=CWSIA0086E: Impossibile creare un MessageConsumer per {0}
+MC_CREATE_FAILED_CWSIA0086.explanation=Si \u00e8 verificato un problema durante la creazione di un MessageConsumer.
+MC_CREATE_FAILED_CWSIA0086.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# 87 deleted, replaced
+
+# This is used as a WARNING message if a receive times out whilst the connection is stopped.
+# {0} is the class/line number of method which called the message consumer (finger of blame).
+MC_CONN_STOPPED_CWSIA0087=CWSIA0087W: Si \u00e8 tentato di inviare al destinatario un messaggio durante l''arresto della connessione. Il seguente metodo ha richiamato il consumer messaggio: {0}.
+MC_CONN_STOPPED_CWSIA0087.explanation=Una connessione che \u00e8 stata arrestata non pu\u00f2 consegnare messaggi ai consumer. Un tentativo di inviare messaggi ad un destinatario da una connessione arrestata potrebbe indicare un errore nella logica dell'applicazione.
+MC_CONN_STOPPED_CWSIA0087.useraction=Verificare se l'invio dei messaggi ad un destinatario \u00e8 un funzionamento previsto dell'applicazione. In caso contrario, correggere l'applicazione.
+
+# -------------------------------------------------------------------------------------------------
+# 88 deleted
+
+# -------------------------------------------------------------------------------------------------
+# RuntimeException thrown by onMessage
+ML_THREW_EXCPTN_CWSIA0089=CWSIA0089E: \u00c8 stata generata una RuntimeException da MessageListener.onMessage
+ML_THREW_EXCPTN_CWSIA0089.explanation=Un MessageConsumer con un MessageListener registrato ha ricevuto un messaggio di errore dal metodo onMessage.
+ML_THREW_EXCPTN_CWSIA0089.useraction=Modificare il metodo onMessage in modo da evitare la generazione di eccezioni.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+CONSUMER_AUTH_ERROR_CWSIA0090=CWSIA0090E: L'utente non \u00e8 autorizzato ad eseguire l'azione richiesta. Per ulteriori dettagli consultare l'eccezione collegata.
+CONSUMER_AUTH_ERROR_CWSIA0090.explanation=Il messaggio di errore collegato indica l'autorizzazione necessaria per eseguire questa operazione.
+CONSUMER_AUTH_ERROR_CWSIA0090.useraction=L'amministratore deve concedere l'autorizzazione richiesta all'utente.
+
+
+# JmsMessageImpl
+
+# 101 deleted
+
+# -------------------------------------------------------------------------------------------------
+# Used when an inappropriate type of object is given to setObjectProperty
+# {0} is the class of object.
+# {1} is the name of the property
+INVALID_OBJECT_TYPE_CWSIA0102=CWSIA0102E: Il tipo {0} non \u00e8 valido per essere utilizzato come propriet\u00e0 oggetto {1}.
+INVALID_OBJECT_TYPE_CWSIA0102.explanation=Un'applicazione ha tentato di impostare una propriet\u00e0 oggetto utilizzando un tipo di oggetto che non \u00e8 consentito dalla specifica JMS.
+INVALID_OBJECT_TYPE_CWSIA0102.useraction=Utilizzare un tipo di oggetto consentito, ad esempio una delle classi wrapper primitive oppure oggetti String.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0103=CWSIA0103E: Si \u00e8 verificata un''eccezione durante la ricezione di un messaggio: {0}.
+INBOUND_MSG_ERROR_CWSIA0103.explanation=Durante la ricezione di un messaggio, si \u00e8 verificato un errore che ha impedito l'esecuzione dell'operazione.
+INBOUND_MSG_ERROR_CWSIA0103.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the item which is being converted
+# {1} is the actual type of the item
+# {2} is the type that the user has requested it be converted to.
+INVALID_TYPE_CONVERSION_CWSIA0104=CWSIA0104E: La conversione dell''elemento {0} dal tipo {1} al tipo {2} non \u00e8 consentita.
+INVALID_TYPE_CONVERSION_CWSIA0104.explanation=La specifica JMS non consente la conversione tra i due tipi di dati specificati.
+INVALID_TYPE_CONVERSION_CWSIA0104.useraction=Recuperare l'elemento denominato utilizzando una delle conversioni consentite.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+FIELD_NOT_SET_CWSIA0105=CWSIA0105E: Il campo del messaggio {0} non \u00e8 stato impostato.
+FIELD_NOT_SET_CWSIA0105.explanation=Un'applicazione ha tentato di recuperare il valore di un campo che non \u00e8 stato impostato.
+FIELD_NOT_SET_CWSIA0105.useraction=Impostare il valore del campo prima di recuperarlo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+INVALID_FIELD_NAME_CWSIA0106=CWSIA0106E: Un nome campo stringa null o vuoto non \u00e8 consentito.
+INVALID_FIELD_NAME_CWSIA0106.explanation=Un'applicazione utente ha tentato di impostare un campo utilizzando un nome non valido, ad esempio String null o vuoto.
+INVALID_FIELD_NAME_CWSIA0106.useraction=Utilizzare un nome campo valido.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_BODY_CWSIA0107=CWSIA0107E: Il sistema non pu\u00f2 richiamare il metodo {0} sul messaggio, perch\u00e9 il corpo del messaggio \u00e8 di sola lettura.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.explanation=Un'applicazione utente ha provato a modificare il corpo di un messaggio che, attualmente, \u00e8 di sola lettura.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.useraction=Modificare l'applicazione per rimuovere questa funzionalit\u00e0 oppure impostare il corpo del messaggio in modo che sia scrivibile richiamando prima il metodo clearBody.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108=CWSIA0108E: Il sistema non pu\u00f2 richiamare il metodo {0} sul messaggio, perch\u00e9 le propriet\u00e0\u00a0del messaggio sono di sola lettura.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.explanation=Un'applicazione utente ha provato a modificare la propriet\u00e0 di un messaggio che, attualmente, \u00e8 di sola lettura.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.useraction=Modificare l'applicazione per rimuovere questa funzionalit\u00e0 oppure impostare la propriet\u00e0 del messaggio in modo che sia scrivibile richiamando prima il metodo clearProperties.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109=CWSIA0109E: Non \u00e8 consentito richiamare il metodo {0} sul messaggio, perch\u00e9 il corpo del messaggio \u00e8 di sola scrittura.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.explanation=Un'applicazione utente ha tentato di leggere il corpo di un messaggio che \u00e8 di sola scrittura.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.useraction=Modificare il programma dell'applicazione per eliminare questa funzionalit\u00e0 o richiamare prima il metodo reset.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the action which was invalid
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110=CWSIA0110E: \u00c8 consentito unicamente richiamare l''operazione {0} su un messaggio ottenuto utilizzando una chiamata di ricezione o su un messaggio presentato a un MessageListener.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.explanation=Il messaggio \u00e8 stato creato dall'applicazione oppure \u00e8 stato ottenuto utilizzando un browser della coda e quindi non supporta l'operazione indicata.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.useraction=Verificare che le applicazioni richiamino questa operazione solo sui messaggi ottenuti utilizzando una chiamata di ricezione oppure su messaggi presentati ad un MessageListener.
+
+# -------------------------------------------------------------------------------------------------
+MSG_CREATE_FAILED_CWSIA0111=CWSIA0111E: Si \u00e8 verificato un errore nel tentativo di creare il messaggio. Per ulteriori informazioni consultare l'eccezione collegata.
+MSG_CREATE_FAILED_CWSIA0111.explanation=Non \u00e8 stato possibile creare un'istanza del messaggio in JMS perch\u00e9 si \u00e8 verificato un errore in un'altra parte del sistema.
+MSG_CREATE_FAILED_CWSIA0111.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+INVALID_PROPNAME_CWSIA0112=CWSIA0112E: Il nome propriet\u00e0 {0} non \u00e8 un identificativo Java valido.
+INVALID_PROPNAME_CWSIA0112.explanation=Il nome della propriet\u00e0 fornito non \u00e8 conforme al formato descritto nella specifica JMS.
+INVALID_PROPNAME_CWSIA0112.useraction=Modificare il nome della propriet\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+RESERVED_PROPNAME_CWSIA0113=CWSIA0113E: Il nome propriet\u00e0 {0} \u00e8 riservato e non pu\u00f2 essere impostato.
+RESERVED_PROPNAME_CWSIA0113.explanation=Il nome propriet\u00e0 fornito inizia con il prefisso JMS, ma non \u00e8 una delle propriet\u00e0 possibili supportate.
+RESERVED_PROPNAME_CWSIA0113.useraction=Modificare il nome della propriet\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+# {1} is the type of the variable eg. Integer.class
+JMS_IBM_INVALID_TYPE_CWSIA0114=CWSIA0114E: La propriet\u00e0 {0} dovrebbe essere impostata utilizzando il tipo {1}, non {2}.
+JMS_IBM_INVALID_TYPE_CWSIA0114.explanation=Le propriet\u00e0 JMS_IBM devono essere impostate utilizzando tipi di variabili specifici.
+JMS_IBM_INVALID_TYPE_CWSIA0114.useraction=Correggere il codice dell'applicazione in modo da utilizzare il tipo di variabile richiesto per impostare questa propriet\u00e0 JMS_IBM.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0115=CWSIA0115E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0115.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0115.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0116=CWSIA0116E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0116.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0116.useraction=Immettere un valore supportato per la propriet\u00e0.
+# -------------------------------------------------------------------------------------------------
+STREAM_MESSAGE_CWSIA0117=CWSIA0117E: Messaggio StreamMessage 
+STREAM_MESSAGE_CWSIA0117.explanation=Il messaggio ricevuto \u00e8 di tipo StreamMessage.
+STREAM_MESSAGE_CWSIA0117.useraction=Nessuna azione richiesta.
+# -------------------------------------------------------------------------------------------------
+# {0} The type to which the message body will be assigned
+INVALID_CLASS_TYPE_CWSIA0118=CWSIA0118E: Il corpo del messaggio non pu\u00f2 essere assegnato al tipo specificato {0} 
+INVALID_CLASS_TYPE_CWSIA0118.explanation= Il corpo del messaggio non \u00e8 compatibile con il tipo di messaggio specificato
+INVALID_CLASS_TYPE_CWSIA0118.useraction=Fornire un tipo di messaggio valido.
+# -------------------------------------------------------------------------------------------------
+NO_MSG_BODY_CWSIA0119=CWSIA0119E: Il messaggio non ha un corpo.
+NO_MSG_BODY_CWSIA0119.explanation= Il messaggio ricevuto non ha un corpo.
+NO_MSG_BODY_CWSIA0119.useraction=Nessuna azione richiesta.
+# -------------------------------------------------------------------------------------------------
+GET_MSG_BODY_FAILED_CWSIA0120=CWSIA0120E: Impossibile richiamare il corpo del messaggio.
+GET_MSG_BODY_FAILED_CWSIA0120.explanation= Impossibile richiamare il corpo del messaggio a causa di un errore interno
+GET_MSG_BODY_FAILED_CWSIA0120.useraction=Nessuna azione richiesta.
+# -------------------------------------------------------------------------------------------------
+
+# JmsObjectMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+SERIALIZATION_EXCEPTION_CWSIA0121=CWSIA0121E: Si \u00e8 verificata un''eccezione durante la serializzazione dell''oggetto: {0}.
+SERIALIZATION_EXCEPTION_CWSIA0121.explanation=Non \u00e8 stato possibile serializzare l'oggetto a causa di un errore.
+SERIALIZATION_EXCEPTION_CWSIA0121.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+DESERIALIZATION_EXCEPTION_CWSIA0122=CWSIA0122E: Si \u00e8 verificata un''eccezione durante la deserializzazione di un messaggio, eccezione: {0}.
+DESERIALIZATION_EXCEPTION_CWSIA0122.explanation=Non \u00e8 stato possibile deserializzare il messaggio a causa dell'eccezione visualizzata.
+DESERIALIZATION_EXCEPTION_CWSIA0122.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# JmsQueueBrowserImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+NO_MESSAGE_AVAILABLE_CWSIA0141=CWSIA0141E: Nel browser della coda non \u00e8 disponibile alcun messaggio.
+NO_MESSAGE_AVAILABLE_CWSIA0141.explanation=L'applicazione ha richiesto un messaggio da un browser della coda quando non era disponibile alcun messaggio.
+NO_MESSAGE_AVAILABLE_CWSIA0141.useraction=Modificare l'applicazione in modo da gestire questo errore oppure utilizzare il metodo hasMoreElements per verificare se sono disponibili ulteriori messaggi.
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_CLOSED_CWSIA0142=CWSIA0142E: Questo browser della coda \u00e8 chiuso.
+BROWSER_CLOSED_CWSIA0142.explanation=Un'applicazione ha richiamato un metodo che non deve essere utilizzato dopo aver chiuso il browser della coda.
+BROWSER_CLOSED_CWSIA0142.useraction=Verificare che il browser della coda non sia chiuso prima di richiamare questo metodo.
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_CREATE_BSESSION_CWSIA0143=CWSIA0143E: Si \u00e8 verificato un errore interno.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.explanation=Il richiamo di createBrowserSession ha restituito null invece di un oggetto BrowserSession valido.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.useraction=CMSG0001
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0144=CWSIA0144E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0144.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0144.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+BROWSE_FAILED_CWSIA0145=CWSIA0145E: Impossibile esplorare la destinazione {0}
+BROWSE_FAILED_CWSIA0145.explanation=Si \u00e8 verificato un problema durante l'esplorazione della destinazione.
+BROWSE_FAILED_CWSIA0145.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# 146 deleted
+
+# -------------------------------------------------------------------------------------------------
+# clone of 83
+INVALID_SELECTOR_CWSIA0147=CWSIA0147E: Il selettore non \u00e8 valido.
+INVALID_SELECTOR_CWSIA0147.explanation=\u00c8 stato fornito un selettore messaggi non corretto.
+INVALID_SELECTOR_CWSIA0147.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 103
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0148=CWSIA0148E: Si \u00e8 verificata un''eccezione durante la ricezione di un messaggio: {0}.
+INBOUND_MSG_ERROR_CWSIA0148.explanation=Durante la ricezione di un messaggio, si \u00e8 verificato un errore che ha impedito l'esecuzione dell'operazione.
+INBOUND_MSG_ERROR_CWSIA0148.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+BROWSER_AUTH_ERROR_CWSIA0149=CWSIA0149E: L'utente non \u00e8 autorizzato ad eseguire l'azione richiesta. Per ulteriori dettagli consultare l'eccezione collegata.
+BROWSER_AUTH_ERROR_CWSIA0149.explanation=Il messaggio di errore collegato contiene i dettagli relativi all'autorizzazione richiesta per eseguire questa operazione.
+BROWSER_AUTH_ERROR_CWSIA0149.useraction=L'amministratore deve concedere l'autorizzazione richiesta all'utente.
+
+
+
+# JmsStreamMessageImpl
+# -------------------------------------------------------------------------------------------------
+NULL_BUFFER_CWSIA0161=CWSIA0161E: Il buffer di lettura \u00e8 null.
+NULL_BUFFER_CWSIA0161.explanation=Un riferimento null \u00e8 stato inviato al metodo StreamMessage.readBytes, quindi non \u00e8 stato restituito alcun dato.
+NULL_BUFFER_CWSIA0161.useraction=Inviare un buffer di dimensioni giuste al metodo readBytes.
+
+# -------------------------------------------------------------------------------------------------
+END_STREAM_CWSIA0162=CWSIA0162I: \u00c8 stata raggiunta la fine del flusso di messaggi.
+END_STREAM_CWSIA0162.explanation=\u00c8 stata raggiunta la fine del contenuto del messaggio. \u00c8 normale se l'applicazione di lettura non conosce il numero di dati previsto.
+END_STREAM_CWSIA0162.useraction=Nessuna azione richiesta.
+
+# -------------------------------------------------------------------------------------------------
+INCOMPLETE_BYTE_ARRAY_CWSIA0163=CWSIA0163E: L'array di byte StreamMessage non \u00e8 stato letto interamente.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.explanation=\u00c8 stato eseguito un tentativo di lettura del campo successivo da StreamMessage prima che il campo dell'array di byte corrente sia stato letto completamente.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.useraction=Verificare che il codice utente legga completamente l'array di byte prima di provare a leggere il campo successivo.
+
+# -------------------------------------------------------------------------------------------------
+NULL_CHAR_CWSIA0164=CWSIA0164E: Non \u00e8 possibile restituire null come carattere.
+NULL_CHAR_CWSIA0164.explanation=\u00c8 stato effettuato un tentativo di lettura di un campo StreamMessage contenente null mediante il metodo readChar.
+NULL_CHAR_CWSIA0164.useraction=Evitare di leggere null mediante il metodo readChar.
+
+# JmsBytesMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding string
+BAD_ENCODING_CWSIA0181=CWSIA0181E: La codifica non \u00e8 valida per la stringa {0}.
+BAD_ENCODING_CWSIA0181.explanation=Il valore fornito non ha una codifica nota.
+BAD_ENCODING_CWSIA0181.useraction=Verificare che l'applicazione fornisca un valore dall'elenco di codifiche definite.
+
+# -------------------------------------------------------------------------------------------------
+DATA_STREAM_PROBLEM_CWSIA0182=CWSIA0182E: Si \u00e8 verificato un errore interno durante la scrittura nel flusso di dati.
+DATA_STREAM_PROBLEM_CWSIA0182.explanation=Si \u00e8 verificato un problema con i flussi di dati utilizzati per la conversione formato dei valori float e double.
+DATA_STREAM_PROBLEM_CWSIA0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+END_BYTESMESSAGE_CWSIA0183=CWSIA0183I: Si \u00e8 tentato di leggere oltre la fine del messaggio.
+END_BYTESMESSAGE_CWSIA0183.explanation=Si \u00e8 tentato di leggere oltre la fine del messaggio. Questa condizione potrebbe essere normale se un'applicazione \u00e8 stata codificata in modo da leggere i dati di lunghezza variabile utilizzando la specifica JMS 1.0.2.
+END_BYTESMESSAGE_CWSIA0183.useraction=Se necessario, codificare nuovamente l'applicazione in modo da utilizzare il metodo getBodyLength.
+
+# -------------------------------------------------------------------------------------------------
+UTF8_CONV_CWSIA0184=CWSIA0184E: La conversione UTF-8 non \u00e8 riuscita.
+UTF8_CONV_CWSIA0184.explanation=Si \u00e8 verificato un problema durante la lettura o la scrittura di una stringa UTF-8. Il problema pi\u00f9 diffuso \u00e8 tentare di scrivere una stringa che supera i 65535 caratteri.
+UTF8_CONV_CWSIA0184.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsBytesMessageImpl - clones CWSIA0188 and CWSIA0189 created
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0185=CWSIA0185E: \u00c8 stato fornito un oggetto non corretto di tipo {0}.
+BAD_OBJECT_CWSIA0185.explanation=Al metodo writeObject \u00e8 stato fornito un parametro oggetto che non era un tipo di wrapper primitivo.
+BAD_OBJECT_CWSIA0185.useraction=Correggere l'applicazione per assicurarsi che vengano inviati solo oggetti di tipo consentito come parametri per il metodo writeObject.
+
+# -------------------------------------------------------------------------------------------------
+WRITE_PROBLEM_CWSIA0186=CWSIA0186E: Si \u00e8 verificato un errore interno. Esiste un problema nella scrittura del messaggio.
+WRITE_PROBLEM_CWSIA0186.explanation=Si \u00e8 verificato un errore durante il tentativo di scrittura di un elemento nel messaggio.
+WRITE_PROBLEM_CWSIA0186.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#ENCS_TOSTR_CWSIA0187=Integer encoding: {0}, floating point encoding {1}
+#ENCS_TOSTR_CWSIA0187.explanation=This message is for informational purposes only.
+#ENCS_TOSTR_CWSIA0187.useraction=No action required.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsMapMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0188=CWSIA0188E: \u00c8 stato fornito un oggetto non corretto di tipo {0}.
+BAD_OBJECT_CWSIA0188.explanation=Al metodo writeObject \u00e8 stato fornito un parametro oggetto che non era un tipo di wrapper primitivo.
+BAD_OBJECT_CWSIA0188.useraction=Correggere l'applicazione per assicurarsi che vengano inviati solo oggetti di tipo consentito come parametri per il metodo writeObject.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsStreamMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0189=CWSIA0189E: \u00c8 stato fornito un oggetto non corretto di tipo {0}.
+BAD_OBJECT_CWSIA0189.explanation=Al metodo writeObject \u00e8 stato fornito un parametro oggetto che non era un tipo di wrapper primitivo.
+BAD_OBJECT_CWSIA0189.useraction=Correggere l'applicazione per assicurarsi che vengano inviati solo oggetti di tipo consentito come parametri per il metodo writeObject.
+
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0190=CWSIA0190E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0190.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0190.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+
+# com.ibm.ws.sib.api.jms.JmsInternalsFactory
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201=CWSIA0201E: Si \u00e8 verificato un errore interno. Impossibile creare un oggetto di classe {0} perch\u00e9 il file JAR {1} non \u00e8 stato trovato.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.useraction=CMSG0002
+
+
+# com.ibm.websphere.sib.api.jms.JmsDurableSubscriberImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0221=CWSIA0221E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0221.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0221.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+
+CONN_CLOSED_CWSIA0222=CWSIA0222E: Connessione chiusa
+CONN_CLOSED_CWSIA0222.explanation=La connessione \u00e8 stata chiusa durante l'esecuzione di questo metodo.
+CONN_CLOSED_CWSIA0222.useraction=Ripetere la chiamata utilizzando una nuova connessione.
+
+DEST_LOCKED_CWSIA0223=CWSIA0223E: Sottoscrizione bloccata
+DEST_LOCKED_CWSIA0223.explanation=La sottoscrizione durevole non accetta consumer. La sottoscrizione potrebbe gi\u00e0 avere un sottoscrittore attivo oppure \u00e8 stata amministrativamente disabilitata. Per ulteriori informazioni, consultare il messaggio di errore collegato.
+DEST_LOCKED_CWSIA0223.useraction=Verificare se nelle applicazioni esistono pi\u00f9 tentativi di accesso ad una singola sottoscrizione durevole. Ci\u00f2 non \u00e8 consentito dalla specifica JMS, ma, se assolutamente necessario, consultare l'opzione shareDurableSubscriptions nel factory di connessione.
+
+NOT_AUTH_CWSIA0224=CWSIA0224E: Utente non autorizzato ad accedere alla sottoscrizione durevole
+NOT_AUTH_CWSIA0224.explanation=L'utente corrente non dispone dell'autorizzazione necessaria per l'accesso alla sottoscrizione durevole.
+NOT_AUTH_CWSIA0224.useraction=Controllare che l'ID utente abbia l'accesso richiesto alle risorse necessarie. Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+BAD_SELECT_CWSIA0225=CWSIA0225E: Il selettore messaggi fornito non era valido.
+BAD_SELECT_CWSIA0225.explanation=\u00c8 stato rilevato un problema di interpretazione della stringa selettore fornita.
+BAD_SELECT_CWSIA0225.useraction=Controllare la stringa selettore e correggere eventuali errori.
+
+BAD_TOPICSPACE_CWSIA0226=CWSIA0226E: Impossibile creare un sottoscrittore durevole per l'argomento specificato.
+BAD_TOPICSPACE_CWSIA0226.explanation=Non \u00e8 stato possibile creare un sottoscrittore durevole a causa di un problema relativo allo spazio topic.
+BAD_TOPICSPACE_CWSIA0226.useraction=Per i dettagli, consultare il messaggio di errore collegato. Se lo spazio topic non esiste, crearne uno oppure utilizzarne uno esistente. Se il topic \u00e8 temporaneo, utilizzare un sottoscrittore non durevole oppure passare ad un topic permanente.
+
+# com.ibm.websphere.sib.api.jms.JmsManagedConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0241=CWSIA0241E: Si \u00e8 verificata un''eccezione durante il richiamo del metodo {1}: {0}.
+EXCEPTION_RECEIVED_CWSIA0241.explanation=Un altro componente ha rilevato un errore durante l'esecuzione del metodo specificato.
+EXCEPTION_RECEIVED_CWSIA0241.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+
+# com.ibm.websphere.sib.api.jms.JmsConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0261=CWSIA0261E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0261.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0261.useraction=Sostituire con un valore supportato dalla propriet\u00e0.
+
+# com.ibm.websphere.sib.api.jms.JmsDestinationImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0281=CWSIA0281E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0281.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0281.useraction=Sostituire con un valore supportato dalla propriet\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+# Generic error message for a blocked destination
+# {0} is the reason code for the blocking of the destination
+DESTINATION_BLOCKED_CWSIA0283=CWSIA0283E: Alla destinazione in questione sono impedite le operazioni di invio/ricezione dei messaggi con codice di errore {0}
+DESTINATION_BLOCKED_CWSIA0283.explanation=L'oggetto della destinazione non dispone di informazioni sufficienti per la produzione e l'utilizzo di messaggi.
+DESTINATION_BLOCKED_CWSIA0283.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Specific message for destination blockage due to missing PSB reply data (no broker input stream)
+# {0} is the string form of the JMS Destination
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284=CWSIA0284E: Non ci sono informazioni sufficienti per instradare un messaggio a questa destinazione {0}:
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.explanation=L'associazione di topic del profilo broker pubblicazione/sottoscrizione utilizzata per trasferire la pubblicazione originaria da MQ non contiene una coda di input del broker.
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.useraction=Aggiungere il nome della coda di input del broker all'associazione di topic del profilo broker appropriata.
+
+
+# com.ibm.ws.sib.api.jms.impl.ProducerProperties
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0301=CWSIA0301E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0301.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0301.useraction=Immettere un valore supportato per la propriet\u00e0.
+
+# com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0321=CWSIA0321E: Il valore specificato {1} non \u00e8 consentito per {0}.
+INVALID_VALUE_CWSIA0321.explanation=Il valore fornito non \u00e8 consentito per la propriet\u00e0 specificata.
+INVALID_VALUE_CWSIA0321.useraction=Immettere un valore supportato per la propriet\u00e0.
+
+
+# com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+# -------------------------------------------------------------------------------------------------
+# Generic message for when an exception occurs during core processing for async delivery
+ASYNC_EXCEPTION_CWSIA0341=CWSIA0341E: Eccezione ricevuta durante l''elaborazione asincrona: {0}
+ASYNC_EXCEPTION_CWSIA0341.explanation=\u00c8 stata generata un'eccezione all'esterno del codice utente durante l'esecuzione della consegna asincrona.
+ASYNC_EXCEPTION_CWSIA0341.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# The messaging engine is shutting down
+ME_QUIESCE_CWSIA0342=CWSIA0342E: \u00c8 in corso la chiusura del motore di messaggistica.
+ME_QUIESCE_CWSIA0342.explanation=Il motore di messaggistica a cui \u00e8 collegata l'applicazione \u00e8 stato chiuso.
+ME_QUIESCE_CWSIA0342.useraction=Questo \u00e8 un segnale che indica all'applicazione di scollegarsi dal motore di messaggistica.
+
+# -------------------------------------------------------------------------------------------------
+# The connection is closed due to a communications failure.
+# {0} is the exception passed to the commsFailure notification method.
+COMMS_FAILURE_CWSIA0343=CWSIA0343E: La connessione \u00e8 stata chiusa a causa della seguente eccezione: {0}
+COMMS_FAILURE_CWSIA0343.explanation=Un errore di comunicazione ha provocato la perdita della connessione al motore di messaggistica.
+COMMS_FAILURE_CWSIA0343.useraction=Per ulteriori informazioni, consultare il messaggio di errore collegato.
+
+# -------------------------------------------------------------------------------------------------
+# This method is called when a connection is closed because the messaging engine has terminated.
+ME_TERMINATED_CWSIA0344=CWSIA0344E: La connessione \u00e8 stata chiusa perch\u00e9 il motore di messaggistica \u00e8 chiuso.
+ME_TERMINATED_CWSIA0344.explanation=Il motore di messaggistica \u00e8 stato chiuso rendendo la connessione inutilizzabile.
+ME_TERMINATED_CWSIA0344.useraction=Riavviare il motore di messaggistica e riconnettersi.
+
+
+# com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+# -------------------------------------------------------------------------------------------------
+# Could not find the required character set for this utility class (UTF-8)
+UNSUPPORTED_ENCODING_CWSIA0360=CWSIA0360E: La codifica dell''insieme di caratteri richiesti {0} non \u00e8 supportata.
+UNSUPPORTED_ENCODING_CWSIA0360.explanation=L'insieme di caratteri specificato \u00e8 richiesto per questa funzione, ma non \u00e8 stato possibile trovarlo.
+UNSUPPORTED_ENCODING_CWSIA0360.useraction=Rendere disponibile l'insieme di caratteri specificato da utilizzare con questo JVM.
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is the invalid value that was supplied
+# {1} is the property/method parameter for which it was supplied.
+INTERNAL_INVALID_VALUE_CWSIA0361=CWSIA0361E: Si \u00e8 verificato un errore interno perch\u00e9 {0} \u00e8 stato specificato per {1}
+INTERNAL_INVALID_VALUE_CWSIA0361.explanation=CMSG0001
+INTERNAL_INVALID_VALUE_CWSIA0361.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is a probeID to enable service to identify the problem location.
+# {1} and {2} are additional information to enable problem diagnosis.
+INTERNAL_ERROR_CWSIA0362=CWSIA0362E: Si \u00e8 verificato un errore interno. ProbeID: {0}. Ulteriori informazioni: {1} : {2}
+INTERNAL_ERROR_CWSIA0362.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0362.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An unknown property name has been found in the encoded JMS destination or replyTo field
+# {0} is the unknown name found
+UNKNOWN_PROPERTY_CWSIA0363=CWSIA0363E: JMSDestination o JMSReplyTo contiene un nome propriet\u00e0 sconosciuto: {0}.
+UNKNOWN_PROPERTY_CWSIA0363.explanation=\u00c8 stato ricevuto un messaggio JMS da una release successiva del server delle applicazioni ed \u00e8 stato fornito ad una applicazione. \
+L'applicazione ha, quindi, tentato di richiamare l'intestazione del messaggio JMSDestination o JMSReplyTo dal messaggio. \
+Il campo di intestazione del messaggio non pu\u00f2 essere richiamato in quanto una delle relative propriet\u00e0 non \u00e8 supportata in questa release.
+UNKNOWN_PROPERTY_CWSIA0363.useraction=Rimuovere la propriet\u00e0 non supportata da JMSDestination o JMSReplyTo utilizzata dall'applicazione di invio. \
+La propriet\u00e0 non supportata potrebbe essere stata specificata direttamente dall'applicazione di invio o potrebbe essere stata specificata sulla configurazione della coda JMS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the malformed URI element
+# {1} is the full URI from which {0} has been identified
+MALFORMED_URI_ELEMENT_CWSIA0382=CWSIA0382E: L''elemento URI {0} non \u00e8 corretto nell''URI {1}
+MALFORMED_URI_ELEMENT_CWSIA0382.explanation=L'elemento della coppia nome-valore non \u00e8 corretto, probabilmente perch\u00e9 non contiene un nome ed un valore.
+MALFORMED_URI_ELEMENT_CWSIA0382.useraction=Verificare che l'elemento della coppia nome-valore sia formato correttamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the reserved destination prefix
+# {1} is the full URI from which {0} has been identified
+RESERVED_DEST_PREFIX_CWSIA0383=CWSIA0383E: Il prefisso di destinazione riservato {0} \u00e8 stato trovato nell''URI {1}
+RESERVED_DEST_PREFIX_CWSIA0383.explanation=Il prefisso di destinazione identificato \u00e8 riservato.
+RESERVED_DEST_PREFIX_CWSIA0383.useraction=Utilizzare il prefisso 'queue://' per una destinazione coda o 'topic://' per una destinazione topic.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name in the URI element
+# {1} is the property value in the URI element
+# {2} is the full URI from which {0} and {1} have been identified
+INVALID_URI_ELEMENT_CWSIA0384=CWSIA0384E: Non \u00e8 stato possibile impostare l''elemento URI {0}={1} come una propriet\u00e0 sull''oggetto di destinazione, dall''URI {2}
+INVALID_URI_ELEMENT_CWSIA0384.explanation=Non \u00e8 stato possibile decodificare la propriet\u00e0 del nome dell'elemento URI identificato in una propriet\u00e0 di destinazione valida.
+INVALID_URI_ELEMENT_CWSIA0384.useraction=Assicurarsi che la propriet\u00e0 nome identificata sia una propriet\u00e0 valida per gli oggetti di destinazione.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI with the illegal MA88 queue manager specified
+INVALID_URI_ELEMENT_CWSIA0385=CWSIA0385E: Non \u00e8 consentito ad un URI di destinazione di specificare un gestore code, come rilevato nell''URI: {0}
+INVALID_URI_ELEMENT_CWSIA0385.explanation=L'utilizzo di gestori code come specificato nell'URI di destinazione non \u00e8 supportato.
+INVALID_URI_ELEMENT_CWSIA0385.useraction=Specificare un URI che non utilizza un gestore code.
+
+# -------------------------------------------------------------------------------------------------
+# The code has entered an inconsistent state
+INTERNAL_ERROR_CWSIA0386=CWSIA0386E: Si \u00e8 verificato un errore interno.
+INTERNAL_ERROR_CWSIA0386.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0386.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Found an escaped character which shouldn't have been escaped
+# {0} is the string containing the problem
+BAD_ESCAPE_CHAR_CWSIA0387=CWSIA0387E: La stringa conteneva una sequenza di escape non adeguata: {0}
+BAD_ESCAPE_CHAR_CWSIA0387.explanation=CMSG0001
+BAD_ESCAPE_CHAR_CWSIA0387.useraction=CMSG0002
+
+# MQRequestReplyUtils
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391=CWSIA0391E: Si \u00e8 verificato un errore interno. Impossibile creare un oggetto di classe {0} perch\u00e9 il file JAR {1} non \u00e8 stato trovato.
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.useraction=CMSG0002
+
+# Common
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueSessionImpl - clone 0483 created for JmsTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0481=CWSIA0481E: Non \u00e8 consentito richiamare il metodo {0} sulla classe {1}.
+INVALID_OP_FOR_CLASS_CWSIA0481.explanation=L'applicazione ha richiamato un metodo che non \u00e8 supportato dalla specifica JMS.
+INVALID_OP_FOR_CLASS_CWSIA0481.useraction=Modificare il programma dell'applicazione per eliminare questa funzionalit\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueConnectionImpl - clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0482=CWSIA0482E: {0} non \u00e8 supportato in questa release.
+UNSUPPORTED_FUNC_CWSIA0482.explanation=L'applicazione ha tentato di utilizzare una funzione o capability che non \u00e8 supportata dalla release corrente del software.
+UNSUPPORTED_FUNC_CWSIA0482.useraction=Rimuovere il codice che prova ad utilizzare questa capability oppure eseguire l'aggiornamento del software ad una release successiva, se disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0481 created for use in JmsQueueTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0483=CWSIA0483E: Non \u00e8 consentito richiamare il metodo {0} sulla classe {1}.
+INVALID_OP_FOR_CLASS_CWSIA0483.explanation=L'applicazione ha richiamato un metodo che non \u00e8 supportato dalla specifica JMS.
+INVALID_OP_FOR_CLASS_CWSIA0483.useraction=Modificare il programma dell'applicazione per eliminare questa funzionalit\u00e0.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0482 created for use in JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0484=CWSIA0484E: {0} non \u00e8 supportato in questa release.
+UNSUPPORTED_FUNC_CWSIA0484.explanation=L'applicazione ha tentato di utilizzare una funzione o capability che non \u00e8 supportata dalla release corrente del software.
+UNSUPPORTED_FUNC_CWSIA0484.useraction=Rimuovere il codice che prova ad utilizzare questa capability oppure eseguire l'aggiornamento del software ad una release successiva, se disponibile.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property or variable
+# {1} is the value of the property or variable
+INTERNAL_ERROR_CWSIA0499=CWSIA0499E: Si \u00e8 verificato un errore interno. Il valore {1} non \u00e8 valido per il parametro o la variabile {0}.
+INTERNAL_ERROR_CWSIA0499.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0499.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIA0500=CWSIA0500E: {0}
+TEMPORARY_CWSIA0500.explanation=Per ulteriori informazioni, consultare i messaggi di errore collegati.
+TEMPORARY_CWSIA0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the BytesMessage method that was called
+PROMISE_BROKEN_EXCEPTION_CWSIA0510=CWSIA0510E: Le chiamate al metodo BytesMessage {0} non sono consentite perch\u00e9 \u00e8 stata abilitata l''opzione ''producerDoesNotModifyPayloadAfterSet'' della propriet\u00e0 ConnectionFactory o ActivationSpecification.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.explanation=Il producer del messaggio ha deciso di non modificare i payload di messaggi, una volta impostati. Le chiamate ad alcuni metodi agli oggetti messaggio non rispettano tale regola.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.useraction=Modificare il codice dell'applicazione in modo da rimuovere la chiamata errata oppure modificare l'opzione di gestione che indica la scelta del producer. La disabilitazione dell'opzione di gestione potrebbe ridurre le prestazioni.
+
+# -------------------------------------------------------------------------------------------------
+PROMISE_BROKEN_EXCEPTION_CWSIA0511=CWSIA0511E: Non \u00e8 possibile richiamare BytesMessage.writeBytes(byte[]) pi\u00f9 di una volta perch\u00e9 \u00e8 stata abilitata l'opzione 'producerDoesNotModifyPayloadAfterSet' della propriet\u00e0 ConnectionFactory o ActivationSpecification.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.explanation=Il producer del messaggio ha deciso di non modificare i payload di messaggi, una volta impostati. In questa situazione, \u00e8 consentita una sola chiamata a BytesMessage.writeBytes(byte[] valore).
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.useraction=Per risolvere il problema, sono disponibili tre azioni: 1) modificare il codice dell'applicazione in modo da rimuovere la chiamata errata, 2) richiamare BytesMessage.clearBody() dopo la prima chiamata oppure 3) modificare l'opzione di gestione che indica la scelta del produttore. La disabilitazione dell'opzione di gestione potrebbe ridurre le prestazioni.
+# -------------------------------------------------------------------------------------------------
+# The error message CWSIA0512E is not required in JMS 2 feature,  it is moved to com.ibm.ws.cdi-1.2.jms project and some modifcation in wordings had done
+# {0} method name
+#JMSCONTEXT_INJECTED_CWSIA0512=CWSIA0512E: The method {0} is not permitted if the JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.explanation= A method was called that is not permitted if JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.useraction= Remove the call to the method.
+# -------------------------------------------------------------------------------------------------
+CREATECONTEXT_IN_CONTAINER_CWSIA0513=CWSIA0513E: createContext non deve essere utilizzato dalle applicazioni in esecuzione nei contenitori EJB o Java EE Web.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.explanation= All'applicazione non deve essere permesso di creare pi\u00f9 di un oggetto sessione attivo per connessione.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.useraction=Il metodo createContext non deve essere utilizzato se le applicazioni sono in esecuzione nei contenitori EJB o Java EE Web.
+# -------------------------------------------------------------------------------------------------
+# {0} the acknowledgement mode
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514=CWSIA0514E: Modalit\u00e0 conferma ricezione non valida {0}.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.explanation= La modalit\u00e0 di conferma ricezione non \u00e8 valida.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.useraction=Utilizzare la modalit\u00e0 di conferma ricezione valida.
+# -------------------------------------------------------------------------------------------------
+# {0} method name
+INVALID_METHOD_CWSIA0515=CWSIA0515E: I metodi CompletionListener non devono chiamare {0} sui propri JMSContext, Session o Connection.
+INVALID_METHOD_CWSIA0515.explanation= I metodi CompletionListener (onComplete/OnException) non devono chiamare close sui propri JMSContext, Session o Connection. Se si tenta di chiamare queste operazioni dai propri JMSContext, Session o Connection, viene emessa un'eccezione perch\u00e9 il provider JMS non consente tali operazioni finch\u00e9 non sono completati tutti gli invii di messaggi.
+INVALID_METHOD_CWSIA0515.useraction= Non chiamare il metodo {0} dai propri JMSContext, Session o Connection.
+# -------------------------------------------------------------------------------------------------
+INVALID_MESSAGE_ACCESS_CWSIA0516=CWSIA0516E: Impossibile accedere agli oggetti messaggio quando \u00e8 in corso l'invio asincrono.
+INVALID_MESSAGE_ACCESS_CWSIA0516.explanation= In base alla specifica JMS 2.0, non \u00e8 possibile accedere agli oggetti messaggio quando l'invio asincrono \u00e8 ancora in corso.
+INVALID_MESSAGE_ACCESS_CWSIA0516.useraction= Accedere agli oggetti messaggio una volta risolto l'invio asincrono, cio\u00e8 dopo che \u00e8 stato chiamato onCompletion o OnException.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0517=CWSIA0517E: MessageListener non deve tentare di chiamare il metodo di arresto sulla propria connessione o JMSContext.
+INVALID_METHOD_CWSIA0517.explanation=Viene generata un'eccezione se il listener di messaggi prova ad interrompere la propria connessione o JMSContext.
+INVALID_METHOD_CWSIA0517.useraction= MessageListener non deve chiamare il metodo di arresto sulla propria connessione o JMSContext.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0518=CWSIA0518E: MessageListener non deve tentare di chiamare il metodo di chiusura sulla propria connessione, sessione o JMSContext.
+INVALID_METHOD_CWSIA0518.explanation=Viene generata un'eccezione se il listener di messaggi prova a chiudere la propria connessione, sessione o JMSContext.
+INVALID_METHOD_CWSIA0518.useraction= MessageListener non deve chiamare il metodo di chiusura sulla propria connessione, sessione o JMSContext.
+# -------------------------------------------------------------------------------------------------

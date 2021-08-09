@@ -1,0 +1,15 @@
+<server description="IBM InfoSphere Information Server">
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>jsp-2.3</feature>
+		<feature>jaxrs-2.0</feature>
+		<feature>json-1.0</feature>
+		<feature>jaxb-2.2</feature>
+	</featureManager>
+	
+	<webContainer deferServletLoad="false"/>
+	<application context-root="/ibm/iis/isf" id="isf-servlets" location="48881.L6Q.000.isf-servlets.war" name="isf-servlets" type="war"/>
+	
+	<include location="../fatTestPorts.xml"/>
+	 
+</server>

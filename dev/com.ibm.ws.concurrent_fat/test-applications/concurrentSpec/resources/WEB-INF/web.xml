@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>EE Concurrency Utilities BVT</display-name>
+  <description>This servlet includes BVT tests for Java EE Concurrency Utilities</description>
+
+  <!-- ENV ENTRIES -->
+  <env-entry>
+    <env-entry-name>java:comp/env/entry1</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>value1</env-entry-value>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>java:comp/env/entryA</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>100</env-entry-value>
+  </env-entry>
+
+  <!-- RESOURCE ENV REFERENCES -->
+  <resource-env-ref>
+    <resource-env-ref-name>concurrent/threadFactory-jee-metadata-context</resource-env-ref-name>
+    <resource-env-ref-type>java.util.concurrent.ThreadFactory</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>java:module/env/concurrent/threadFactory-jee-metadata-context-ref</resource-env-ref-name>
+    <resource-env-ref-type>javax.enterprise.concurrent.ManagedThreadFactory</resource-env-ref-type>
+    <lookup-name>concurrent/threadFactory-jee-metadata-context</lookup-name>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>java:app/env/concurrent/schedxsvc-classloader-context-ref</resource-env-ref-name>
+    <resource-env-ref-type>javax.enterprise.concurrent.ManagedScheduledExecutorService</resource-env-ref-type>
+    <lookup-name>concurrent/schedxsvc-classloader-context</lookup-name>
+  </resource-env-ref>
+</web-app>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<Designate pid="ffdc.source.handler.FFDCHandlerImpl">
+	<Object ocdref="ffdc.source.handler.config" />
+</Designate>  
+
+<OCD name="%ffdcHandlerImpl" description="%ffdcHandlerImpl.desc" 
+			id="ffdc.source.handler.config" ibm:alias="ffdcHandler">
+	
+	<AD name="%source" description="%source.desc" id="source" required="true" type="String" default="message" cardinality="1024"/>			
+				
+	<AD name="%hostName" description="%hostName.desc" id="hostName" required="true" type="String"/>	
+				
+	<AD name="%port" description="%port.desc" id="port" required="true" type="Integer" min="1" max="65535"/>	
+	
+	<AD name="%sslRef" description="%sslRef.desc" id="sslRef" required="false" type="String"/>
+
+</OCD>	
+
+</metatype:MetaData>

@@ -1,0 +1,8 @@
+##
+## Velocity Template for communicating the logout propagation result to the master controller
+##
+## Velocity context will contain the following properties
+## logoutPropCtx - LogoutPropagationContext
+## encoder - HTMLEncoder class
+##
+{ "result": "$logoutPropCtx.result"#if($logoutPropCtx.detail), "detail": "$encoder.encodeForHTML($logoutPropCtx.detail)"#end }

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/j2ee/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+
+  <tlib-version>1.2</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>IBM TSX Tag Library</short-name>
+  <uri></uri>
+  <description>
+  </description>
+
+  <tag>
+    <name>repeat</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.RepeatTag</tag-class>
+    <tei-class>com.ibm.ws.jsp.tsx.tag.RepeatTagExtraInfo</tei-class>
+    <description>
+    </description>
+    <attribute>
+      <name>index</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>start</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>end</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>dbconnect</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.DBConnectTag</tag-class>
+    <description>
+    </description>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>userid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>passwd</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>url</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>driver</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>jndiname</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>dbquery</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.DBQueryTag</tag-class>
+    <tei-class>com.ibm.ws.jsp.tsx.tag.DBQueryTagExtraInfo</tei-class>
+    <description>
+    </description>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>connection</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>limit</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>getProperty</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.GetPropertyTag</tag-class>
+    <description>
+    </description>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>userid</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.UseridTag</tag-class>
+    <description>
+    </description>
+  </tag>
+
+  <tag>
+    <name>passwd</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.PasswdTag</tag-class>
+    <description>
+    </description>
+  </tag>
+
+  <tag>
+    <name>dbmodify</name>
+    <tag-class>com.ibm.ws.jsp.tsx.tag.DBModifyTag</tag-class>
+    <description>
+    </description>
+    <attribute>
+      <name>connection</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>

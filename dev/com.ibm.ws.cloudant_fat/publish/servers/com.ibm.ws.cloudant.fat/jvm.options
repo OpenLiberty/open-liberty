@@ -1,0 +1,2 @@
+# Force the use of TLS1.2 for supporting Java 16 which removes TLS1.0 and 1.1 
+-Dhttps.protocols=TLSv1.2

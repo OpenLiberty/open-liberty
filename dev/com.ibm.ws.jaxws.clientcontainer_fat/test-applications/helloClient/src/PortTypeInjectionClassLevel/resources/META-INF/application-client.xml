@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
+<application-client id="Application-client_ID">
+	<display-name>PortTypeInjectionClassLevel</display-name>
+
+	<service-ref>
+		<service-ref-name>services/portTypeInjectionClassLevel</service-ref-name>
+		<service-interface>
+			com.ibm.ws.jaxws.test.wsr.server.stub.PeopleService
+		</service-interface>
+	</service-ref>
+
+</application-client>

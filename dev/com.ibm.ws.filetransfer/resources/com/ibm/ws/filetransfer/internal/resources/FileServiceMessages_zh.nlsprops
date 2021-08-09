@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: \u5df2\u62d2\u7edd\u5bf9\u8def\u5f84 {0} \u7684\u8bbf\u95ee\u3002
+ACCESS_DENIED_ERROR.explanation=\u5c1d\u8bd5\u8bbf\u95ee\u6240\u914d\u7f6e\u8bfb/\u5199\u533a\u57df\u4ee5\u5916\u7684\u8def\u5f84\u3002
+ACCESS_DENIED_ERROR.useraction=\u8bf7\u786e\u4fdd\u8bf7\u6c42\u7684\u8def\u5f84\u4f4d\u4e8e\u6240\u914d\u7f6e\u8bfb/\u5199\u533a\u57df\u4ee5\u5185\u3002
+
+PATH_ERROR=CWWKX7901E: \u6587\u4ef6\u7cfb\u7edf\u8def\u5f84 {0} \u65e0\u6548\u3002
+PATH_ERROR.explanation=\u65e0\u6cd5\u89e3\u6790\u6307\u5b9a\u7684\u6587\u4ef6\u7cfb\u7edf\u8def\u5f84\u3002
+PATH_ERROR.useraction=\u8bf7\u63d0\u4f9b\u6709\u6548\u7684\u6587\u4ef6\u7cfb\u7edf\u8def\u5f84\u3002
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: \u5bf9\u4e8e\u6e90\u8def\u5f84 {0}\uff0c\u5df2\u62d2\u7edd\u901a\u8fc7\u6587\u4ef6\u4f20\u8f93 MBean \u521b\u5efa\u5f52\u6863\u3002
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=\u5c1d\u8bd5\u4ece\u6240\u914d\u7f6e\u8bfb\u53d6\u533a\u57df\u5916\u90e8\u7684\u8def\u5f84\u8bfb\u53d6\u4fe1\u606f\u3002
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: \u5bf9\u4e8e\u76ee\u6807\u8def\u5f84 {0}\uff0c\u5df2\u62d2\u7edd\u901a\u8fc7\u6587\u4ef6\u4f20\u8f93 MBean \u521b\u5efa\u5f52\u6863\u3002
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=\u5c1d\u8bd5\u5c06\u4fe1\u606f\u5199\u81f3\u6240\u914d\u7f6e\u5199\u5165\u533a\u57df\u5916\u90e8\u7684\u8def\u5f84\u3002
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: \u5df2\u6210\u529f\u901a\u8fc7 {0} \u521b\u5efa\u5f52\u6863 {1}\u3002
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=\u5df2\u6210\u529f\u521b\u5efa\u8be5\u5f52\u6863\u3002
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: \u672a\u80fd\u901a\u8fc7 {0} \u521b\u5efa\u5f52\u6863 {1}\u3002
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=\u5f52\u6863\u521b\u5efa\u8bf7\u6c42\u5931\u8d25\u3002
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: \u5bf9\u4e8e\u6e90\u8def\u5f84 {0}\uff0c\u5df2\u62d2\u7edd\u5f52\u6863\u6269\u5c55\u3002
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=\u5c1d\u8bd5\u4ece\u6240\u914d\u7f6e\u8bfb\u53d6\u533a\u57df\u5916\u90e8\u7684\u8def\u5f84\u8bfb\u53d6\u4fe1\u606f\u3002
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: \u5bf9\u4e8e\u76ee\u6807\u8def\u5f84 {0}\uff0c\u5df2\u62d2\u7edd\u5f52\u6863\u6269\u5c55\u3002
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=\u5c1d\u8bd5\u5c06\u4fe1\u606f\u5199\u81f3\u6240\u914d\u7f6e\u5199\u5165\u533a\u57df\u5916\u90e8\u7684\u8def\u5f84\u3002
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: \u5df2\u6210\u529f\u5c06\u5f52\u6863 {0} \u6269\u5c55\u81f3 {1}\u3002
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=\u5df2\u6210\u529f\u6269\u5c55\u8be5\u5f52\u6863\u3002
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: \u672a\u80fd\u5c06\u5f52\u6863 {0} \u6269\u5c55\u81f3 {1}\u3002
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=\u5f52\u6863\u6269\u5c55\u8bf7\u6c42\u5931\u8d25\u3002
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: \u4ec5\u5f53\u901a\u8fc7 IBM \u7684 JMX REST \u8fde\u63a5\u5668\u8bbf\u95ee\u6b64 MBean \u65f6\uff0c\u64cd\u4f5c\u201c{0}\u201d\u624d\u53ef\u7528\u3002
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=\u4ec5\u5f53\u901a\u8fc7 IBM \u7684 JMX REST \u8fde\u63a5\u5668\u8bbf\u95ee\u65f6\uff0c\u624d\u80fd\u5bf9\u6307\u5b9a\u7684 MBean \u64cd\u4f5c\u8fdb\u884c\u8bbf\u95ee\u3002
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=\u8bf7\u901a\u8fc7 IBM \u7684 JMX REST \u8fde\u63a5\u5668\u8bbf\u95ee\u6b64 MBean\u3002
+
+OSGI_SERVICE_ERROR=CWWKX7911E: OSGi \u670d\u52a1 {0} \u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.explanation=\u60a8\u63a5\u6536\u5230\u6b64\u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u662f\u56e0\u4e3a\u6307\u5b9a\u7684\u670d\u52a1\u4e0d\u53ef\u7528\u3002
+OSGI_SERVICE_ERROR.useraction=\u8bf7\u4f7f\u7528\u201cclean\u201d\u9009\u9879\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002
+
+ATTRIBUTE_UPDATED=CWWKX7912I: \u5df2\u6210\u529f\u66f4\u65b0 FileServiceMXBean \u5c5e\u6027 {0}\u3002
+ATTRIBUTE_UPDATED.explanation=\u5df2\u6210\u529f\u66f4\u65b0 FileServiceMXBean \u4e2d\u7684\u6307\u5b9a\u5c5e\u6027\u3002
+ATTRIBUTE_UPDATED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002 

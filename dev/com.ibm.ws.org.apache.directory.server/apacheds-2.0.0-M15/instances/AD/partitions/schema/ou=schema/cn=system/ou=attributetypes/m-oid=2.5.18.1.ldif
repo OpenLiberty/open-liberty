@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.18.1,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: generalizedTimeMatch
+m-ordering: generalizedTimeOrderingMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DIRECTORY_OPERATION
+m-oid: 2.5.18.1
+m-name: createTimestamp
+m-description: RFC2252: time which object was created
+m-obsolete: FALSE
+entryUUID: 6dc70822-7fe2-4519-b509-6f79c1a513a6
+entryCSN: 20130919081859.229000Z#000001#000#000000
+entryParentId: 00d07a58-ce34-4e15-b277-c443ee6d991b
+createTimestamp: 20130919081908.352Z

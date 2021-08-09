@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=2.5.4.36,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.8
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.36
+m-name: userCertificate
+m-description: RFC2256: X.509 user certificate, use ;binary
+m-obsolete: FALSE
+entryUUID: ce7558ac-9448-4a3a-88b4-7c34c7637614
+entryCSN: 20130919081858.580000Z#000001#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081910.688Z

@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: Beim Versuch, die JMX-Verbindung an {0} weiterzuleiten, konnte der Verbundcontroller den SSL-Kontext nicht erstellen. Ausnahme: {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=Mit dem SSL-Zertifikat des Servers konnte kein SSL-Kontext erstellt werden. 
+jmx.connector.server.rest.router.ssl.exception.useraction=\u00dcberpr\u00fcfen Sie die SSL-Konfiguration des Servers, und registrieren Sie den Server erneut beim Verbundcontroller.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: Die JMX-Authentifizierungsdaten sind nicht im Verbundcontroller-Repository f\u00fcr den Zielserver {0} auf dem Host {1} im Verzeichnis {2} verf\u00fcgbar. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=Die JMX-Authentifizierungsinformationen werden ben\u00f6tigt, um eine JMX-Verbindung zum angegebenen Zielserver herzustellen.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=\u00dcberpr\u00fcfen Sie, ob das Bootstrapping des Zielservers beim Verbundcontroller erfolgreich war.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E: Die Hostnamenseigenschaft der JMX-Authentifizierungsinformationen ist nicht im Verbundcontroller-Repository f\u00fcr den Zielserver {0} auf dem Host {1} im Verzeichnis {2} vorhanden.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=Die Hostnamenseigenschaft der JMX-Authentifizierungsinformationen wird ben\u00f6tigt, um eine JMX-Verbindung zum angegebenen Zielserver herzustellen.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=\u00dcberpr\u00fcfen Sie, ob das Bootstrapping des Zielservers beim Verbundcontroller erfolgreich war.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: Die Porteigenschaft der JMX-Authentifizierungsinformationen ist nicht im Verbundcontroller-Repository f\u00fcr den Zielserver {0} auf dem Host {1} im Verzeichnis {2} vorhanden.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=Die Portnummer der JMX-Authentifizierungsinformationen wird ben\u00f6tigt, um eine JMX-Verbindung zum angegebenen Zielserver herzustellen.
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=\u00dcberpr\u00fcfen Sie, ob das Bootstrapping des Zielservers beim Verbundcontroller erfolgreich war.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: Der erforderliche Keystore {0} ist nicht konfiguriert.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=Der erforderliche Keystore f\u00fcr das JMX-Routing ist nicht konfiguriert.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Stellen Sie sicher, dass der Keystore in der Datei server.xml angegeben ist.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: Das Eingabeprogramm f\u00fcr das Verbundcontroller-Repository ist nicht verf\u00fcgbar.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=Das erforderliche Eingabeprogramm f\u00fcr das Verbundcontroller-Repository ist nicht gestartet.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, und stellen Sie sicher, dass die erforderlichen Features f\u00fcr das JMX-Routing vorhanden sind.

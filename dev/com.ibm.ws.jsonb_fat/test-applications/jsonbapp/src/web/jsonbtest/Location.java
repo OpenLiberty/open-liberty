@@ -1,0 +1,40 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package web.jsonbtest;
+
+/**
+ * Interface for application class that can be marshalled/unmarshalled to/from JSON.
+ */
+public interface Location {
+    String getBuilding();
+
+    String getCity();
+
+    short getFloor();
+
+    String getState();
+
+    String getStreetAddress();
+
+    int getZipCode();
+
+    void setBuilding(String b);
+
+    void setCity(String c);
+
+    void setFloor(short f);
+
+    void setState(String s);
+
+    void setStreetAddress(String s);
+
+    void setZipCode(int z);
+}

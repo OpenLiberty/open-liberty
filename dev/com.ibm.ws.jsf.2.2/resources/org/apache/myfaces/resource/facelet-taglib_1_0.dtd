@@ -1,0 +1,35 @@
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ $Id: facelet-taglib_1_0.dtd 796947 2009-07-23 05:10:10Z lu4242 $
+-->
+
+<!ELEMENT facelet-taglib (library-class|(namespace,(tag|function)+))>
+<!ATTLIST facelet-taglib xmlns CDATA #FIXED "http://java.sun.com/JSF/Facelet">
+<!ELEMENT namespace (#PCDATA)>
+<!ELEMENT library-class (#PCDATA)>
+<!ELEMENT tag (tag-name,(handler-class|component|converter|validator|source))>
+<!ELEMENT tag-name (#PCDATA)>
+<!ELEMENT handler-class (#PCDATA)>
+<!ELEMENT component (component-type,renderer-type?,handler-class?)>
+<!ELEMENT component-type (#PCDATA)>
+<!ELEMENT renderer-type (#PCDATA)>
+<!ELEMENT converter (converter-id, handler-class?)>
+<!ELEMENT converter-id (#PCDATA)>
+<!ELEMENT validator (validator-id, handler-class?)>
+<!ELEMENT validator-id (#PCDATA)>
+<!ELEMENT source (#PCDATA)>
+<!ELEMENT function (function-name,function-class,function-signature)>
+<!ELEMENT function-name (#PCDATA)>
+<!ELEMENT function-class (#PCDATA)>
+<!ELEMENT function-signature (#PCDATA)>

@@ -1,0 +1,112 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.persistence.utility/resources/com/ibm/ws/persistence/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD WebSphere Persistence Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199: com.ibm.ws.persistence.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# {0} = scriptName, {1}=action.all
+usage=\nUsage: {0} '{'{1}'}' serverName
+action.all=generate|help
+
+actions=\nActions:\n\n
+action-key.generate=\ \ \ \ generate\n
+action-desc.generate=\
+\tGenerate DDL for all configured features that require DDL for the    \n\
+\tprovided server.\n\n
+
+action-key.help=\ \ \ \ help\n
+action-desc.help=\
+\tPrint help information for the specified action.\n
+
+generate.help=\
+Usage:\n\
+\tddlGen generate serverName\n\
+\n\
+Description:\n\
+\tGenerate the data definition language (DDL) for each feature that is\n\
+\tconfigured in the server that requires access to a database.
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Missing required argument: {0}.
+action.unrecognized=Unknown action: {0}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKD0100E: The server named {0} was not found. It was expected to be at the following location: {1}
+server.not.found.explanation= Could not find the server specified on the ddlGen command. You can find expected location of the directory for the server configuration in the message.
+server.not.found.useraction=Ensure that you can find the server configuration in the directory provided by the message.  If necessary, modify the WLP_USER_DIR or WLP_INSTALL_DIR variables so that the correct path is used to find the server configuration files.
+
+local.connector.not.found=CWWKD0101E: The server named {0} is not configured to accept local JMX requests.
+local.connector.not.found.explanation=The server specified on the ddlGen command is not configured to accept local JMX requests.
+local.connector.not.found.useraction=Ensure that the server configuration includes the localConnector feature, and that the server is started. The URL required to establish a local JMX connection to this server is located in the WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address file.
+
+local.connector.url.empty=CWWKD0102E: The server named {0} has a problem with its configuration of the localConnector feature.
+local.connector.url.empty.explanation=The server specified on the ddlGen command is not configured to accept local JMX requests. The file containing the URL used to create a JMX connection to the server is empty.
+local.connector.url.empty.useraction=Ensure that the server configuration includes the localConnector feature, and that the server is started. The URL required to establish a local JMX connection to this server is located in the WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address file.
+
+mbean.null.result=CWWKD0103E: The DDL generation utility did not return a result.
+mbean.null.result.explanation=The MBean that generates DDL was invoked, but no results were returned. The requested DDL might not have been generated.
+mbean.null.result.useraction=Check the server logs and FFDC directory for a possible error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKD0104E: The DDL generation utility indicated that a problem was reported during DDL generation.
+mbean.bad.result.explanation=The MBean that generates DDL was invoked, but an error was reported while generating DDL. The requested DDL might not have been generated.
+mbean.bad.result.useraction=Check the server logs and FFDC directory for an error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKD0105E: The DDL generation utility did not report whether it completed successfully.
+mbean.missing.result.explanation=The MBean that generates DDL was invoked, but no response code was returned in the result. The requested DDL might not have been generated.
+mbean.missing.result.useraction=Check the server logs and FFDC directory for a possible error message or exception. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKD0106E: The DDL generation utility did not return an output directory name.
+mbean.missing.output.dir.explanation=The MBean which generates DDL was invoked, but the output directory used to write the DDL was not provided in the response. The requested DDL might not have been generated.
+mbean.missing.output.dir.useraction=Check the target server output directory for the generated DDL. The output directory is specified in the server process by setting the WLP_OUTPUT_DIR variable. The DDL is generated into a ddl directory in the output directory. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKD0107I: The requested DDL was generated in the following directory: {0}
+mbean.output.dir.explanation=The requested DDL was generated and is located in the directory indicated in the message.
+mbean.output.dir.useraction=No user action is required.
+
+mbean.not.found=CWWKD0108W: The MBean that generates DDL is not active in server {0}.
+mbean.not.found.explanation=A JMX connection was established with the target server, but the DDL generation MBean was not found. This action could be expected if no features in the server configuration require access to a database.
+mbean.not.found.useraction=Verify that a feature which requires DDL generation is configured in the target server. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKD0109E: An exception was thrown by the DDL generation utility: {0}
+exception.catch.explanation=An unexpected exception was thrown by the DDL generation utility. The exception stack trace is printed to the stderr log file. The utility will stop processing.
+exception.catch.useraction=If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.output.generated=CWWKD0110W: The DDL generation utility did not produce any output for server {0} because no features or resources that require DDL are present in the server configuration, or the server configuration contained errors.
+no.output.generated.explanation=The DDL generation utility completed successfully, but no features that require DDL are present in the server configuration. It is possible that part of the server configuration is missing or contains a syntactic error.
+no.output.generated.useraction=Verify that a feature that requires DDL generation is configured in the target server. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKD0111E: The logs directory for the server named {0} was not found. It was expected to be at the following location: {1}. The value of the logs directory is computed using the WLP_OUTPUT_DIR variable. 
+server.output.logs.dir.not.found.explanation=The logs directory must be available for the command to be able to locate the server's JMX connection information. This error may occur if the value of the WLP_OUTPUT_DIR variable in the current environment is not the same as the value used by the server. 
+server.output.logs.dir.not.found.useraction=Ensure that the value of the WLP_OUTPUT_DIR variable matches the value used by the server and ensure that the logs directory exists. 

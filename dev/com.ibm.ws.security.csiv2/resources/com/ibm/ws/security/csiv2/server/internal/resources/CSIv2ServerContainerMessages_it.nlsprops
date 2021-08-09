@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: Meccanismi del livello di autenticazione non validi specificati nella sicurezza client {0}. I valori validi sono GSSUP o LTPA o GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=I meccanismi del livello di autenticazione di sicurezza del client specificati non sono supportati.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Verificare che i meccanismi del livello di autenticazione di sicurezza del client specificati siano GSSUP o LTPA o GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: I meccanismi del livello di autenticazione specificati nella sicurezza client sono null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=I meccanismi del livello di autenticazione di sicurezza del client specificati sono null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Verificare che i meccanismi del livello di autenticazione di sicurezza del client specificati siano GSSUP o LTPA o GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: Meccanismi del livello di autenticazione non validi specificati nella politica di sicurezza del server {0}. I valori validi sono GSSUP o LTPA o GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=I meccanismi del livello di autenticazione della politica di sicurezza del server specificati non sono supportati.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Verificare che i meccanismi del livello di autenticazione della politica di sicurezza del server specificati siano GSSUP o LTPA o GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: I meccanismi del livello di autenticazione specificati nella sicurezza client sono null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=I meccanismi del livello di autenticazione di sicurezza del client specificati sono null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Verificare che i meccanismi del livello di autenticazione di sicurezza del client specificati siano GSSUP o LTPA o GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: La configurazione SSL {0} nel livello di trasporto CSIv2 in entrata non corrisponde a una configurazione SSL nell''endpoint IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=Il livello di trasporto CSIv2 in entrata utilizza una configurazione SSL, ma l'endpoint IIOP non utilizza la stessa configurazione SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Verificare che la configurazione SSL nel livello di trasporto CSIv2 in entrata nel file server.xml sia una delle configurazioni SSL utilizzate dall'endpoint IIOP.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: L''endpoint IIOP non dispone di una configurazione SSL e il livello di trasporto CSIv2 in entrata richiede che venga utilizzata la configurazione SSL {0} nell''endpoint IIOP.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=L'endpoint IIOP non dispone di almeno un elemento iiopsOptions con una configurazione SSL a cui pu\u00f2 fare riferimento il livello di trasporto CSIv2 in entrata.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Verificare che l'endpoint IIOP disponga di almeno un elemento iiopsOptions con la stessa configurazione SSL utilizzata dal livello di trasporto CSIv2 in entrata.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: Il client non pu\u00f2 creare il token di asserzione di identit\u00e0 ITTDistinguishedName per il DN (distinguished name) {0}. Il messaggio di eccezione \u00e8: {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=Il soggetto per l'utente di cui si sta eseguendo l'asserzione non contiene un DN valido e non \u00e8 possibile eseguire l'asserzione di identit\u00e0. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Esaminare il messaggio di eccezione, assicurarsi che il registro utenti configurato nel file server.xml supporti i DN (Distinguished Name) ed eseguire di nuovo l'autenticazione dell'utente.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: Il client non pu\u00f2 creare il token di asserzione di identit\u00e0 ITTX509CertChain. Il messaggio di eccezione \u00e8: {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=Il soggetto per l'utente di cui si sta eseguendo l'asserzione non contiene un certificato valido e non \u00e8 possibile eseguire l'asserzione di identit\u00e0. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Esaminare il messaggio di eccezione e assicurarsi che il livello di trasporto della politica del server, SSL, keystore sia configurato nel file server.xml ed eseguire di nuovo l'autenticazione dell'utente.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: La catena certificato client non \u00e8 disponibile per continuare con l'asserzione identit\u00e0.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=Il soggetto per l'utente di cui si sta eseguendo l'asserzione non contiene un certificato valido e non \u00e8 possibile eseguire l'asserzione di identit\u00e0. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Assicurarsi che il livello di trasporto della politica del server, SSL, keystore sia configurato nel file server.xml ed eseguire di nuovo l'autenticazione dell'utente.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: L''elemento orb con l''attributo id {0} richiede un registro utente, ma non \u00e8 diventato disponibile alcun registro utente entro {1} secondi.   Di conseguenza, non verr\u00e0 avviata alcuna applicazione. Verificare che sia stato configurato un registro utente appropriato nel file server.xml.
+NO_USER_REGISTRY.explanation=Non \u00e8 stata avviata alcuna applicazione perch\u00e9 un ORB (Object Request Broker) protetto su un server richiede un registro utente, ma non \u00e8 stato trovato alcun registro utente. Dopo aver configurato un registro utente appropriato, le applicazioni verranno avviate.
+NO_USER_REGISTRY.useraction=Verificare che sia stato configurato un registro utente appropriato per il proprio ambiente.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: Il livello autenticazione CSIv2 \u00e8 disabilitato perch\u00e9 il valore di establishTrustInClient \u00e8 {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Quando establishTrustInClient \u00e8 impostato su Mai, il livello autenticazione CSIv2 \u00e8 disabilitato.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Per abilitare il livello autenticazione CSIv2, impostare il valore di establishTrustInClient su Supportato o Obbligatorio.
+
+

@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La demande de noeud final de jeton a \u00e9chou\u00e9. Impossible de valider le jeton JWT demand\u00e9 par le [{0}] en raison d''une signature manquante dans le jeton JWT. Le fournisseur OpenID Connect a sp\u00e9cifi\u00e9 l''algorithme [{1}] et s''attend \u00e0 ce que le jeton JWT soit sign\u00e9.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Impossible de v\u00e9rifier le jeton JWT car le jeton n'est pas sign\u00e9. Le fournisseur OpenID Connect s'attend \u00e0 ce que le jeton soit sign\u00e9.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=V\u00e9rifiez la configuration du client OpenID Connect pour vous assurer qu'il signe le jeton JWT.
+
+#inuse
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La demande de noeud final de jeton a \u00e9chou\u00e9. Impossible de valider le jeton JWT demand\u00e9 par le [{0}] en raison d''une non concordance des algorithmes de signature entre le fournisseur OpenID Connect [{1}] et le client OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Impossible de v\u00e9rifier le jeton JWT vu que le fournisseur et le client OpenID Connect utilisent des algorithmes de signature diff\u00e9rents pour signer/v\u00e9rifier le jeton.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Corrigez la configuration du client OpenID Connect en sp\u00e9cifiant un algorithme de signature correspondant \u00e0 celui du fournisseur OpenID Connect.
+ 
+# inuse
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La demande de noeud final de jeton a \u00e9chou\u00e9. Un jeton JWT sign\u00e9 doit comporter 3 segments s\u00e9par\u00e9s par le signe ''.'', mais ce jeton JWT en comporte [{0}].
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Un jeton JWT sign\u00e9 doit comporter exactement 3 segments s\u00e9par\u00e9s par un signe '.'. Ce jeton JWT a un nombre de segments non conforme.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=V\u00e9rifiez que le jeton JWT est valide et comporte 3 segments.
+
+# inuse
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La demande de noeud final de jeton a \u00e9chou\u00e9. La validation du jeton JWT demand\u00e9 par le [{0}] a \u00e9chou\u00e9. Une exception InvalidJwtException a \u00e9t\u00e9 \u00e9mise avec le message : [{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Un jeton JWT n'a pas pu \u00eatre valid\u00e9 en raison de l'exception InvalidJwtException indiqu\u00e9e dans le message.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrigez l'erreur signal\u00e9e dans le message.
+
+# inuse
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La demande de noeud final de jeton a \u00e9chou\u00e9. Un jeton JWT requis n'a pas \u00e9t\u00e9 d\u00e9tect\u00e9 dans la demande.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La demande doit fournir un jeton JWT mais celui-ci est introuvable dans la demande de noeud final de jeton.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Fournissez un jeton JWT valide dans la demande de noeud final de jeton.
+
+#inuse
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Une exception s''est produite lors de la tentative d''ex\u00e9cution de RunAsSubject. L''exception \u00e9tait : [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Une exception s'est produite lors de l'obtention de RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=V\u00e9rifiez que le serveur est configur\u00e9 et a d\u00e9marr\u00e9 correctement.
+

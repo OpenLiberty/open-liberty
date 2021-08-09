@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="HelloworldServlet" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<display-name>JAX-RS Servlet Coexist application</display-name>
+	<description>Server-side application to test jax-rs 2.0 coexist with user servlet.</description>
+
+	<servlet>
+		<servlet-name>javax.ws.rs.core.Application</servlet-name>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>javax.ws.rs.core.Application</servlet-name>
+		<url-pattern>/servletcoexist1/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>hello</servlet-name>
+		<servlet-class>com.ibm.ws.jaxrs.fat.servletcoexist1.WebServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>hello</servlet-name>
+		<url-pattern>/webservlet</url-pattern>
+	</servlet-mapping>
+</web-app>
+
+
+
+  

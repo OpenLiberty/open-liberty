@@ -1,0 +1,3 @@
+dependencies {
+  requiredLibs project(':com.ibm.ws.logging.hpel')
+}

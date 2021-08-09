@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=La espera se ha interrumpido. {0}Mensaje: [{1}]
+
+2002=Error de espera en ServerSession.
+
+2003=Error de espera en ClientSession.
+
+2004=Se ha intentado una se\u00f1al antes de wait() en ConcurrencyManager. Esto normalmente significa que se ha realizado un intento de {0}confirmar o retrotraer una transacci\u00f3n antes de iniciarla, o de retrotraer una transacci\u00f3n dos veces.
+
+2005=Error de espera en el manejador de conexi\u00f3n de secuenciaci\u00f3n para DatabaseSession.
+
+2006=Se han intentado adquirir valores de secuenciaci\u00f3n a trav\u00e9s de una sola conexi\u00f3n ({0}) simult\u00e1neamente en varias hebras
+
+2007=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto: {0}.  No se ha podido clonar el objeto.
+
+2008=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto: {0}.  No se ha podido fusionar la transacci\u00f3n.
+
+2009=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto.  No se ha podido crear el objeto. La hebra: {0} tiene un bloqueo en el objeto pero la hebra: {1} est\u00e1 creando el objeto.
+
+2010=El bloqueo ya ha cambiado a un bloqueo aplazado.  La hebra: {0} ha solicitado un segundo intento de cambiar el bloqueo durante la fusi\u00f3n.
+

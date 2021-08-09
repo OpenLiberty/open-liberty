@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: A felhaszn\u00e1l\u00f3meghat\u00e1roz\u00e1s \u00e9rv\u00e9nytelen: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=A felhaszn\u00e1l\u00f3k meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <user name="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=M\u00f3dos\u00edtsa a felhaszn\u00e1l\u00f3meghat\u00e1roz\u00e1st a konfigur\u00e1ci\u00f3ban.
+USER_MUST_DEFINE_NAME=Egy user (felhaszn\u00e1l\u00f3) elemnek meg kell hat\u00e1roznia egy nevet.
+USER_MUST_DEFINE_PASSWORD=A(z) "{0}" nev\u0171 felhaszn\u00e1l\u00f3i elemnek meg kell adnia egy jelsz\u00f3t.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: A csoportmeghat\u00e1roz\u00e1s \u00e9rv\u00e9nytelen: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=A csoportok meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <group name="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=M\u00f3dos\u00edtsa a csoportmeghat\u00e1roz\u00e1st a konfigur\u00e1ci\u00f3ban.
+GROUP_MUST_DEFINE_NAME=A group elemnek meg kell hat\u00e1roznia egy nevet.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: A tagmeghat\u00e1roz\u00e1s \u00e9rv\u00e9nytelen: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=A tag meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <member name="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=M\u00f3dos\u00edtsa a tagmeghat\u00e1roz\u00e1st a konfigur\u00e1ci\u00f3ban.
+MEMBER_MUST_DEFINE_NAME=A member elemnek meg kell hat\u00e1roznia egy nevet.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Nincsenek meghat\u00e1rozva felhaszn\u00e1l\u00f3k a(z) {0} azonos\u00edt\u00f3j\u00fa BasicRegistry konfigur\u00e1ci\u00f3hoz.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=A konfigur\u00e1ci\u00f3hoz nincsenek meghat\u00e1rozva felhaszn\u00e1l\u00f3k. Ez lehet sz\u00e1nd\u00e9kos, de val\u00f3sz\u00edn\u0171leg konfigur\u00e1ci\u00f3s hib\u00e1t jelez.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Sz\u00fcks\u00e9g eset\u00e9n hat\u00e1rozzon meg legal\u00e1bb egy felhaszn\u00e1l\u00f3t a konfigur\u00e1ci\u00f3ban.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: T\u00f6bb felhaszn\u00e1l\u00f3 van megadva a(z) "{0}" n\u00e9vvel. Az ezen felhaszn\u00e1l\u00f3hoz tartoz\u00f3 bejegyz\u00e9sek nem ker\u00fclnek haszn\u00e1latra.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=A felhaszn\u00e1l\u00f3neveknek egyedieknek kell lenni\u00fck.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=A megadott n\u00e9vvel csak egy felhaszn\u00e1l\u00f3t hat\u00e1rozzon meg.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: T\u00f6bb csoport felhaszn\u00e1l\u00f3 van megadva a(z) "{0}" n\u00e9vvel. Az ezen csoporthoz tartoz\u00f3 bejegyz\u00e9sek nem ker\u00fclnek haszn\u00e1latra.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=A csoportneveknek egyedieknek kell lenni\u00fck.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=A megadott n\u00e9vvel csak egy csoportot hat\u00e1rozzon meg.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: T\u00f6bb ''{0}'' nev\u0171 tag bejegyz\u00e9s van meghat\u00e1rozva a(z) ''{1}'' csoporthoz.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=A csoportok felhaszn\u00e1l\u00f3nevenk\u00e9nt csak egy tagbejegyz\u00e9st t\u00e1mogatnak.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Csak egy tagbejegyz\u00e9st hat\u00e1rozzon meg a felhaszn\u00e1l\u00f3hoz a megadott csoportban.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: A(z) "{1}" csoport "{0}" nev\u0171 tagbejegyz\u00e9se nem felel meg a megadott felhaszn\u00e1l\u00f3nak.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=A tagbejegyz\u00e9s sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nem felel meg egyetlen megadott felhaszn\u00e1l\u00f3nak sem.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Ellen\u0151rizze a tag nev\u00e9nek helyes\u00edr\u00e1s\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel a nyilv\u00e1ntart\u00e1sban megadott felhaszn\u00e1l\u00f3nak.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Az alap nyilv\u00e1ntart\u00e1ssal nincs \u00f6sszerendelve egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=Az X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u00e9si m\u00f3d be\u00e1ll\u00edt\u00e1sa CUSTOM, de nincs egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 az alap nyilv\u00e1ntart\u00e1shoz rendelve. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a certificateMapperId attrib\u00fatum az alap nyilv\u00e1ntart\u00e1sban \u00e9rv\u00e9nyes egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151re mutasson.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Az X.509 egy\u00e9ni tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 \u00e1ltal visszaadott sz\u0171r\u0151 vagy a(z) ''{0}'' megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v nem felel meg felhaszn\u00e1l\u00f3nak a nyilv\u00e1ntart\u00e1sban.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=Az X.509 egy\u00e9ni tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 \u00e1ltal visszaadott \u00e9rt\u00e9k nem felel meg felhaszn\u00e1l\u00f3nak az alap nyilv\u00e1ntart\u00e1sban.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 l\u00e9tezik az alap nyilv\u00e1ntart\u00e1sban, \u00e9s hogy a lek\u00e9pez\u00e9s \u00e9rv\u00e9nyes.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapNotSupportedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapNotSupportedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Ha ez egy v\u00e1ratlan hiba, vizsg\u00e1lja fel\u00fcl az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st, \u00e9s v\u00e9gezze el a sz\u00fcks\u00e9ges m\u00f3dos\u00edt\u00e1sokat.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapFailedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapFailedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Ha ez egy v\u00e1ratlan hiba, vizsg\u00e1lja fel\u00fcl az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st, \u00e9s v\u00e9gezze el a sz\u00fcks\u00e9ges m\u00f3dos\u00edt\u00e1sokat.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: A(z) ''{0}'' megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (DN) nem egyezik \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val az alap nyilv\u00e1ntart\u00e1sban.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=A tulajdonos azonos\u00edt\u00f3 DN az X.509 tan\u00fas\u00edtv\u00e1nyban nem egyezik \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val az alap nyilv\u00e1ntart\u00e1sban. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a tulajdonos azonos\u00edt\u00f3 DN tartalmazzon egy 'cn' relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett nevet (RDN), \u00e9s hogy az RDN \u00e9rt\u00e9ke megfeleljen egy \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3nak az alap nyilv\u00e1ntart\u00e1sban. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Az alap nyilv\u00e1ntart\u00e1s az X.509 tan\u00fas\u00edtv\u00e1nyhiteles\u00edt\u00e9si k\u00e9r\u00e9sek mell\u0151z\u00e9s\u00e9re van be\u00e1ll\u00edtva.
+BASIC_REGISTRY_CERT_IGNORED.explanation=Az alap nyilv\u00e1ntart\u00e1s certificateMapMode konfigur\u00e1ci\u00f3s attrib\u00fatuma IGNORE \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Annak \u00e9rdek\u00e9ben, hogy az alap nyilv\u00e1ntart\u00e1s feldolgozza az X.509 tan\u00fas\u00edtv\u00e1nyhiteles\u00edt\u00e9si k\u00e9r\u00e9seket, m\u00f3dos\u00edtsa a certificateMapMode konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9k\u00e9t a feldolgoz\u00e1st lehet\u0151 tev\u0151 \u00e9rt\u00e9kre.

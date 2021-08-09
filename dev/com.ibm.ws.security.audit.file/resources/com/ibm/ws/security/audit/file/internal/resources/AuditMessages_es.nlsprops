@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: El sistema no ha podido crear el archivo {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Un componente del servidor de aplicaciones no ha podido realizar una operaci\u00f3n en un recurso necesario.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Aseg\u00farese de que el nombre de archivo especificado sea un nombre de archivo v\u00e1lido. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones disponga de acceso de escritura al directorio del recurso y que el disco no est\u00e9 lleno. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: El sistema no ha podido crear el archivo {0} debido a la siguiente excepci\u00f3n: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Error al intentar abrir el recurso especificado. La excepci\u00f3n indica la causa ra\u00edz del error.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examine la excepci\u00f3n para determinar la causa ra\u00edz. Aseg\u00farese de que el nombre de archivo especificado sea un nombre de archivo v\u00e1lido. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones disponga de acceso de escritura al directorio del recurso y que el disco no est\u00e9 lleno. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: El sistema no ha podido suprimir el archivo {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Un componente del servidor de aplicaciones no ha podido realizar una operaci\u00f3n en un recurso necesario.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Aseg\u00farese de que el nombre de archivo especificado sea un nombre de archivo v\u00e1lido. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones disponga de acceso de escritura al directorio del recurso y que el disco no est\u00e9 lleno. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: El sistema no ha podido suprimir {0} debido a la siguiente excepci\u00f3n: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Un intento de suprimir el recurso especificado ha fallado. La excepci\u00f3n indica la causa ra\u00edz del error.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examine la excepci\u00f3n para determinar la causa ra\u00edz. Aseg\u00farese de que el tiempo de ejecuci\u00f3n del servidor de aplicaciones tenga permiso de escritura en el directorio para el recurso. Si esto no soluciona el problema, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Se est\u00e1 iniciando el servicio de manejador de archivos de auditor\u00eda.
+AUDIT_FILEHANDLER_STARTING.explanation=El servicio de manejador de archivos de auditor\u00eda est\u00e1 en el proceso de inicio. Este proceso podr\u00eda tardar varios minutos si se produce una inicializaci\u00f3n de una sola vez.
+AUDIT_FILEHANDLER_STARTING.useraction=No se requiere ninguna acci\u00f3n.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: El servicio de manejador de archivos de auditor\u00eda est\u00e1 listo.
+AUDIT_FILEHANDLER_READY.explanation=Este mensaje es meramente informativo.
+AUDIT_FILEHANDLER_READY.useraction=No se requiere ninguna acci\u00f3n.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: El servicio de manejador de archivos de auditor\u00eda se ha detenido.
+AUDIT_FILEHANDLER_STOPPED.explanation=Este mensaje es meramente informativo.
+AUDIT_FILEHANDLER_STOPPED.useraction=No se requiere ninguna acci\u00f3n.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: El servicio de auditor\u00eda no se puede iniciar porque la configuraci\u00f3n del manejador de auditor\u00edas para el cifrado de los registros de auditor\u00edas no es correcta. Configure una referencia de almac\u00e9n de claves y un alias de certificado correctos. Compruebe que exista el almac\u00e9n de claves al que {1} hace referencia y que el nombre de alias {0} del certificado que utiliza para cifrar los registros de auditor\u00edas exista en el almac\u00e9n de claves.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=El servicio de auditor\u00eda no se puede iniciar debido a un error en la configuraci\u00f3n del manejador de auditor\u00edas para el cifrado de los registros de auditor\u00edas. Para obtener m\u00e1s informaci\u00f3n, consulte la excepci\u00f3n en el mensaje del error de la activaci\u00f3n de servicio anterior. Especifique una referencia de almac\u00e9n de claves v\u00e1lida y compruebe que el alias de certificado haga referencia a un certificado que exista en el almac\u00e9n de claves.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=En la configuraci\u00f3n del manejador de auditor\u00edas compruebe que se hayan especificado una referencia de almac\u00e9n de claves y un alias de certificado para cifrar los registros de auditor\u00edas. Aseg\u00farese de que el almac\u00e9n de claves exista, la contrase\u00f1a se haya especificado correctamente y el almac\u00e9n de claves contenga el certificado al que hace referencia el alias de certificado de cifrado.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: El servicio de auditor\u00eda no se puede iniciar porque la configuraci\u00f3n del manejador de auditor\u00edas para firmar registros de auditor\u00edas no es correcta. Configure una referencia de almac\u00e9n de claves y un alias de certificado personal correctos. Compruebe que exista el almac\u00e9n de claves al que {1} hace referencia y que el nombre de alias {0} del certificado personal que utiliza para firmar los registros de auditor\u00edas exista en el almac\u00e9n de claves.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=El servicio de auditor\u00eda no se puede iniciar debido a un error en la configuraci\u00f3n del manejador de auditor\u00edas para firmar los registros de auditor\u00edas. Para obtener m\u00e1s informaci\u00f3n, consulte la excepci\u00f3n en el mensaje del error de la activaci\u00f3n de servicio anterior. Especifique una referencia de almac\u00e9n de claves v\u00e1lida y compruebe que el alias de certificado personal haga referencia a un certificado personal que exista en el almac\u00e9n de claves.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=En la configuraci\u00f3n del manejador de auditor\u00edas compruebe que se hayan especificado una referencia de almac\u00e9n de claves y un alias de certificado personal para firmar los registros de auditor\u00edas. Aseg\u00farese de que el almac\u00e9n de claves exista, la contrase\u00f1a se haya especificado correctamente y el almac\u00e9n de claves contenga el certificado personal al que hace referencia el alias de certificado de firma.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: El servicio de auditor\u00eda no se puede iniciar porque se ha producido un error mientras el servicio inicializaba el manejador de auditor\u00edas para cifrar los registros de auditor\u00edas. La excepci\u00f3n es {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=El servicio de auditor\u00eda no se puede iniciar debido a un error durante la configuraci\u00f3n de la inicializaci\u00f3n del manejador de auditor\u00edas para el cifrado de los registros de auditor\u00edas. Para obtener m\u00e1s informaci\u00f3n, consulte la excepci\u00f3n del mensaje.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Consulte la excepci\u00f3n para determinar la causa del error.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: El servicio de auditor\u00eda no se puede iniciar porque se ha producido un error mientras el servicio inicializaba el manejador de auditor\u00edas para firmar los registros de auditor\u00edas. La excepci\u00f3n es {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=El servicio de auditor\u00eda no se puede iniciar debido a un error durante la configuraci\u00f3n de la inicializaci\u00f3n del manejador de auditor\u00edas para firmar los registros de auditor\u00edas. Para obtener m\u00e1s informaci\u00f3n, consulte la excepci\u00f3n que se menciona en el mensaje.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Consulte la excepci\u00f3n para determinar la causa del error.

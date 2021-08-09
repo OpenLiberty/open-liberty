@@ -1,0 +1,17 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#
+# Disabled since this causes an extreme amount of SSL system output to be printed
+# in the messages.log on PPC64LE systems. This leads to 30 minute suites taking
+# over 3 hours to complete. 
+#
+#-Djavax.net.debug=all

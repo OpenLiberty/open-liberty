@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nem tal\u00e1lhat\u00f3 a t\u00edpusazonos\u00edt\u00f3 ID eleme a(z) [{0}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{1}] nev\u0171 t\u00edpushoz.
+
+45001=Hiba t\u00f6rt\u00e9nt az import\u00e1l\u00e1s feldolgoz\u00e1sakor a(z) [{0}] s\u00e9mahellyel \u00e9s a(z) [{1}] n\u00e9vt\u00e9rrel.
+
+45002=Hiba t\u00f6rt\u00e9nt a tartalmaz\u00e1s feldolgoz\u00e1sakor a(z) [{0}] s\u00e9mahellyel.
+
+45003=Nem tal\u00e1lhat\u00f3 hivatkozott tulajdons\u00e1g a(z) [{0}] uri azonos\u00edt\u00f3val \u00e9s [{1}] n\u00e9vvel.
+
+45004=A m\u00f3dos\u00edt\u00e1s \u00f6sszegz\u00e9s\u00e9ben r\u00e9gi szekvencia tal\u00e1lhat\u00f3.
+
+45005=A(z) [{0}] nev\u0171 tulajdon\u00e1g \u00e9rt\u00e9ke csak egy DataObject lehet
+
+45006=A szekvencia nem lehet null, ha a type.isSequenced() true \u00e9rt\u00e9k\u0171.
+
+45007=Nem lett be\u00e1ll\u00edtva t\u00edpus a(z) [{0}] nev\u0171 tulajdons\u00e1ghoz
+
+45008=IOException kiv\u00e9tel t\u00f6rt\u00e9nt.
+
+45009=Nem tal\u00e1lhat\u00f3 [{0}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{1}] nev\u0171 t\u00edpus
+
+45010=Nem tal\u00e1lhat\u00f3 t\u00edpus a(z) [{0}] fel\u00fcletoszt\u00e1lyhoz. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00edpus meg van hat\u00e1rozva.  Tov\u00e1bb\u00e1 a fel\u00fclet oszt\u00e1lybet\u00f6lt\u0151j\u00e9nek a seg\u00e9d kontextus oszt\u00e1lybet\u00f6lt\u0151 hierarchia tagj\u00e1nak kell lennie: \u00fagy t\u0171nik, mintha ez [{1}] lenne.
+
+45011=Nem hozhat\u00f3 l\u00e9tre DataObject a(z) [{0}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{1}] nev\u0171 t\u00edpushoz, mivel a type.isAbstract() met\u00f3dus true \u00e9rt\u00e9ket ad vissza.
+
+45012=Nem hozhat l\u00e9tre DataObject a(z) [{0}] fel\u00fclethez, k\u00eds\u00e9rlet egy DataObject l\u00e9trehoz\u00e1s\u00e1ra a(z) [{1}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{2}] nev\u0171 t\u00edpushoz 
+
+45013=Nem kereshet\u0151k ki alkalmaz\u00e1sinform\u00e1ci\u00f3k null argumentum eset\u00e9n.
+
+45014=Nem hat\u00e1rozhat\u00f3 meg t\u00edpus.  T\u00edpusok csak olyan DataObject objektumokhoz hat\u00e1rozhat\u00f3k meg, melyek t\u00edpusa commonj.sdo.Type t\u00edpusra van be\u00e1ll\u00edtva.
+
+45015=Nem hat\u00e1rozhat\u00f3 meg null nev\u0171 t\u00edpus.
+
+45016=A changesummary XML f\u00e1jlban l\u00e9v\u0151 egyik m\u00f3dos\u00edtott objektumb\u00f3l hi\u00e1nyzik egy ref attrib\u00fatum, vagy az \u00e9rt\u00e9k nincs megadva.
+
+45017=Hiba t\u00f6rt\u00e9nt a(z) [{0}] xpath feldolgoz\u00e1sakor.
+
+45018=T\u00f6bbsz\u00f6r\u00f6s bejegyz\u00e9s hozz\u00e1ad\u00e1sa az \u00f6sszetett [{1}] egyed\u00fcli be\u00e1ll\u00edt\u00e1s eset\u00e9n egy szekvenci\u00e1hoz a(z) [{0}] poz\u00edci\u00f3ban nem t\u00e1mogatott.
+
+45019=Egy [{0}] attrib\u00fatum tulajdons\u00e1g hozz\u00e1ad\u00e1sa egy szekvenci\u00e1hoz nem t\u00e1mogatott.
+
+45020=Nem tal\u00e1lhat\u00f3 szekvencia a(z) [{0}] \u00fatvonal eset\u00e9n.
+
+45021=Hiba t\u00f6rt\u00e9nt egy Sequence objektum egy null dataObject p\u00e9ld\u00e1nymez\u0151vel t\u00f6rt\u00e9n\u0151 p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+
+45022=A(z) [{0}] tulajdons\u00e1ghoz nincs t\u00e1mogatott szekvencia.
+
+45023=Nem \u00e1ll\u00edthat\u00f3 be a(z) [{0}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{1}] nev\u0171 t\u00edpussal rendelkez\u0151 tulajdons\u00e1g a(z) [{2}] oszt\u00e1ly \u00e9rt\u00e9k\u00e9re
+
+45024=\u00c1talak\u00edt\u00e1si hiba t\u00f6rt\u00e9nt.
+
+45025=Nem tal\u00e1lhat\u00f3 tulajdons\u00e1g a(z) [{0}] indexn\u00e9l
+
+45026=Nem hajthat\u00f3 v\u00e9gre a(z) [{0}] m\u0171velet null param\u00e9teren.
+
+45027=Nem tal\u00e1lhat\u00f3 oszt\u00e1ly a(z) [{0}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{1}] nev\u0171 t\u00edpushoz.
+
+45028=Nem \u00e1ll\u00edthat\u00f3 be t\u00edpus nyitottra \u00e9s adatt\u00edpusra.  Hiba a(z) [{0}] uri azonos\u00edt\u00f3j\u00fa \u00e9s [{1}] nev\u0171 t\u00edpus eset\u00e9n.
+
+45029=\u00c9rv\u00e9nytelen [{0}] index lett \u00e1tadva a(z) [{1}] met\u00f3dusnak.
+
+45030=Hiba t\u00f6rt\u00e9nt a konstruktor megh\u00edv\u00e1sakor egy String argumentummal a(z) [{0}] oszt\u00e1lyhoz.
+
+45031=Nem \u00e1ll\u00edthat\u00f3 be \u00e9rv\u00e9nytelen [{0}] c\u00e9lt\u00edpus a(z) [{1}] tulajdons\u00e1ghoz, mert a c\u00e9l type.dataType \u00e9rt\u00e9ke true.
+
+45032=XMLMarshalException kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{1}] uri \u00e9s [{2}] helyi n\u00e9v eset\u00e9n.  Kiv\u00e9tel: [{0}]
+
+45033=Hiba t\u00f6rt\u00e9nt a t\u00edpusok el\u0151\u00e1ll\u00edt\u00e1sakor. Hivatkoz\u00e1s a(z) [{1}] n\u00e9vvel \u00e9s [{0}] n\u00e9vt\u00e9r URI azonos\u00edt\u00f3val rendelkez\u0151 XML s\u00e9ma \u00f6sszetev\u0151re, azonban ez soha nem lett meghat\u00e1rozva.  Lehets\u00e9ges, hogy az XML s\u00e9m\u00e1b\u00f3l hi\u00e1nyzik egy import\u00e1l\u00e1s vagy tartalmaz\u00e1s a(z) [{0}] n\u00e9vt\u00e9r URI eset\u00e9n.
+
+45034=Az options param\u00e9ter \u00e9rt\u00e9ke csak egy [{0}] uri azonos\u00edt\u00f3j\u00fa [{1}] nev\u0171 t\u00edpus\u00fa DataObject lehet.
+
+45035=A "type" tulajdons\u00e1gnak megfelel\u0151 \u00e9rt\u00e9knek egy Type objektumnak kell lennie.
+
+45036=A bet\u00f6ltend\u0151 XML csom\u00f3pontnak megfelel\u0151 egyik glob\u00e1lis tulajdons\u00e1g nem tal\u00e1lhat\u00f3.
+
+45037=A(z) [{0}] el\u0151tag haszn\u00e1latban van, azonban nincs deklar\u00e1lva az XML s\u00e9m\u00e1ban.
+
+45038=Nem hajthat\u00f3 v\u00e9gre m\u0171velet a(z) [{0}] tulajdons\u00e1gon, mivel az nem \u00e9rhet\u0151 el a(z) [{1}] \u00fatvonalr\u00f3l. Az \u00fatvonal \u00e9rv\u00e9nytelen, vagy az \u00fatvonalon legal\u00e1bb egy adatobjektum null.
+
+45039=Hiba t\u00f6rt\u00e9nt a(z) [{0}] externalizableDelegator mez\u0151 el\u00e9r\u00e9sekor a DataObject objektumhoz.
+
+45040=Nem hajthat\u00f3 v\u00e9gre [{0}] m\u0171velet null [{1}] param\u00e9terrel.
+
+45041=A(z) [{1}] oszt\u00e1ly [{0}] \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen a(z) [{3}] t\u00edpus\u00fa [{2}] tulajdons\u00e1g eset\u00e9n.
+
+45100=Hiba t\u00f6rt\u00e9nt a k\u00e9rt SDOHelperContext visszaad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Egy akt\u00edv WebLogic p\u00e9ld\u00e1nyban az alkalmaz\u00e1sn\u00e9v sz\u00fcks\u00e9ges a seg\u00e9d kontextus gyors\u00edt\u00f3t\u00e1r kikeres\u00e9sekhez.  Az alkalmaz\u00e1sn\u00e9v nem hat\u00e1rozhat\u00f3 meg, mert a(z) {0} kikeres\u00e9s meghi\u00fasult.
+
+45101=Hiba t\u00f6rt\u00e9nt a k\u00e9rt SDOHelperContext visszaad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Egy akt\u00edv WebLogic p\u00e9ld\u00e1nyban az alkalmaz\u00e1sn\u00e9v sz\u00fcks\u00e9ges a seg\u00e9d kontextus gyors\u00edt\u00f3t\u00e1r kikeres\u00e9sekhez.  Az alkalmaz\u00e1sn\u00e9v nem hat\u00e1rozhat\u00f3 meg, mert a(z) {0} nem h\u00edvhat\u00f3 meg reflekt\u00edven a k\u00f6vetkez\u0151h\u00f6z: {1}.
+
+45102=Hiba t\u00f6rt\u00e9nt a k\u00e9rt SDOHelperContext visszaad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Egy akt\u00edv WebLogic p\u00e9ld\u00e1nyban az alkalmaz\u00e1sn\u00e9v sz\u00fcks\u00e9ges a seg\u00e9d kontextus gyors\u00edt\u00f3t\u00e1r kikeres\u00e9sekhez.  Az alkalmaz\u00e1sn\u00e9v nem hat\u00e1rozhat\u00f3 meg, mert a(z) {0} eset\u00e9n nem volt l\u00e9trehozhat\u00f3/visszaadhat\u00f3 egy ObjectName.
+
+45103=Hiba t\u00f6rt\u00e9nt a k\u00e9rt SDOHelperContext visszaad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Egy akt\u00edv WebLogic p\u00e9ld\u00e1nyban az alkalmaz\u00e1sn\u00e9v sz\u00fcks\u00e9ges a seg\u00e9d kontextus gyors\u00edt\u00f3t\u00e1r kikeres\u00e9sekhez.  Az alkalmaz\u00e1sn\u00e9v nem hat\u00e1rozhat\u00f3 meg, mert nem p\u00e9ld\u00e1nyos\u00edthat\u00f3 egy InitialContext.
+
+45200=SDO/JAXB - Nem tal\u00e1lhat\u00f3 OXM le\u00edr\u00f3, amely megfelel a(z) [{0}] SDO t\u00edpusnak, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy le van k\u00e9pezve egy Java oszt\u00e1ly a(z) [{1}] XML t\u00edpusra.
+
+45201=SDO/JAXB - Nem tal\u00e1lhat\u00f3 OXM lek\u00e9pez\u00e9s, amely megfelel a(z) [{0}] SDO tulajdons\u00e1gnak, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy le van k\u00e9pezve egy Java tulajdons\u00e1g a(z) [{1}] XML csom\u00f3pontra.
+
+45202=SDO/JAXB - Nem tal\u00e1lhat\u00f3 SDO t\u00edpus, amely megfelelne a(z) [{0}] Java oszt\u00e1lynak.
+
+45203=SDO/JAXB - A(z) [{0}] Java oszt\u00e1ly le\u00edr\u00f3j\u00e1hoz be kell \u00e1ll\u00edtani egy s\u00e9mahivatkoz\u00e1st.
+
+45204=SDO/JAXB - A(z) [{0}] Java oszt\u00e1ly le\u00edr\u00f3j\u00e1ra vonatkoz\u00f3 s\u00e9mahivatkoz\u00e1shoz be kell \u00e1ll\u00edtani egy s\u00e9makontextust.
+
+45205=SDO/JAXB - Nem tal\u00e1lhat\u00f3 SDO t\u00edpus, amely megfelel a(z) [{0}] Java oszt\u00e1lynak, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van egy SDO t\u00edpus, amely megfelel a(z) [{1}] XML t\u00edpusnak.
+
+45206=SDO/JAXB - Hiba t\u00f6rt\u00e9nt egy JAXB Unmarshaller l\u00e9trehoz\u00e1sakor.
+
+45207=Hiba t\u00f6rt\u00e9nt egy s\u00e9ma felold\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a biztos\u00edtott SchemaResolver haszn\u00e1lat\u00e1val.
+
+45208=Nem lehet lek\u00e9pezni a(z) {0} tulajdons\u00e1got a(z) {1} t\u00edpusb\u00f3l. A DataHandler t\u00edpus\u00fa tulajdons\u00e1gok lek\u00e9pz\u00e9s\u00e9hez a javax.activation \u00e9s a javax.mail csomagok sz\u00fcks\u00e9gesek. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindk\u00e9t csomag el\u00e9rhet\u0151 az oszt\u00e1ly\u00fatvonalon.
+
+45209=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt az ApplicationResolver p\u00e9ld\u00e1ny alaphelyzetbe \u00e1ll\u00edt\u00e1s\u00e1ra az SDOHelperContext objektumon.  Csak egyetlen be\u00e1ll\u00edt\u00e1s enged\u00e9lyezett.
+
+45210=A rendezend\u0151 DataObject nem ugyanabb\u00f3l a HelperContext objektumb\u00f3l sz\u00e1rmazik, mint az XMLHelper.
+
+45211=A t\u00edpus nem hat\u00e1rozhat\u00f3 meg a [{0}] n\u00e9vvel. A n\u00e9v nem \u00e9rv\u00e9nyes XML n\u00e9v.
+
+45212=A tulajdons\u00e1g nem hat\u00e1rozhat\u00f3 meg a [{0}] n\u00e9vvel. A n\u00e9v nem \u00e9rv\u00e9nyes XML n\u00e9v.
+

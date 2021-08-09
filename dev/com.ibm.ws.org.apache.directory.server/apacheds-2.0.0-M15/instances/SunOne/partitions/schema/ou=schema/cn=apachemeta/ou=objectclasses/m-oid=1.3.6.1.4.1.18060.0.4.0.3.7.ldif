@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.7,ou=objectClasses,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.7
+m-name: metaNameForm
+m-description: meta definition of the NameForm object
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: metaTop
+m-typeobjectclass: STRUCTURAL
+m-must: m-oc
+m-must: m-must
+m-may: m-name
+m-may: m-obsolete
+m-may: m-may
+creatorsname: uid=admin,ou=system

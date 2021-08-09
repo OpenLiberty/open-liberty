@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openid20/internal/resources/OpenIDMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1500 - CWWKS1519
+OPENID_RP_SERVICE_ACTIVATE=CWWKS1500I: OpenID megb\u00edzhat\u00f3 partner szolg\u00e1ltat\u00e1s aktiv\u00e1lva. 
+OPENID_RP_SERVICE_ACTIVATE.explanation=Az OpenID megb\u00edzhat\u00f3 partner szolg\u00e1ltat\u00e1s aktiv\u00e1l\u00e1sra ker\u00fclt.
+OPENID_RP_SERVICE_ACTIVATE.useraction=Nincs.
+
+OPENID_RP_SERVICE_DEACTIVATE=CWWKS1501I: OpenID megb\u00edzhat\u00f3 partner szolg\u00e1ltat\u00e1s le\u00e1ll\u00edtva. 
+OPENID_RP_SERVICE_DEACTIVATE.explanation=Az OpenID megb\u00edzhat\u00f3 partner szolg\u00e1ltat\u00e1s le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+OPENID_RP_SERVICE_DEACTIVATE.useraction=Nincs.
+
+OPENID_RP_CONFIG_PROCESSED=CWWKS1502I: OpenID megb\u00edzhat\u00f3 partner konfigur\u00e1ci\u00f3ja sikeresen feldolgozva.
+OPENID_RP_CONFIG_PROCESSED.explanation=Az OpenID megb\u00edzhat\u00f3 partner konfigur\u00e1ci\u00f3ja sikeresen feldolgoz\u00e1sra ker\u00fclt.
+OPENID_RP_CONFIG_PROCESSED.useraction=Nincs.
+
+OPENID_RP_CONFIG_MODIFIED=CWWKS1503I: OpenID megb\u00edzhat\u00f3 partner konfigur\u00e1ci\u00f3ja sikeresen m\u00f3dos\u00edtva.
+OPENID_RP_CONFIG_MODIFIED.explanation=Az OpenID megb\u00edzhat\u00f3 partner konfigur\u00e1ci\u00f3ja sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
+OPENID_RP_CONFIG_MODIFIED.useraction=Nincs.
+
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID=CWWKS1504W: Az OpenID megb\u00edzhat\u00f3 partner konfigur\u00e1ci\u00f3ja \u00e9rv\u00e9nytelen, ha a maxAssociationAttempts \u00e9rt\u00e9ke nulla \u00e9s az allowStateless \u00e9rt\u00e9ke hamis. \u00c1ll\u00edtsa vissza a maxAssociationAttempts alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9t.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.explanation=A maxAssociationAttempts nem \u00e1ll\u00edthat\u00f3 be nulla, az allowStateless pedig hamis \u00e9rt\u00e9kre.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.useraction=Adjon meg \u00e9rv\u00e9nyes OpenID megb\u00edzhat\u00f3 partner be\u00e1ll\u00edt\u00e1st a maxAssociationAttempts \u00e9s allowStateless attrib\u00fatumokhoz.
+
+OPENID_VERSION_NOT_TEST=CWWKS1505W: Az OpenID szolg\u00e1ltat\u00f3 v\u00e1ltozat ({0}) nem ker\u00fcl tesztel\u00e9sre, ez\u00e9rt lehet, hogy nem fog megfelel\u0151en m\u0171k\u00f6dni.
+OPENID_VERSION_NOT_TEST.explanation=Az OpenID szolg\u00e1ltat\u00f3 ezen v\u00e1ltozata nem ker\u00fclt tesztel\u00e9sre. Lehet, hogy funkci\u00f3i nem fognak megfelel\u0151en m\u0171k\u00f6dni. Csak saj\u00e1t felel\u0151ss\u00e9gre futtassa. 
+OPENID_VERSION_NOT_TEST.useraction=Nincs. Csak saj\u00e1t felel\u0151ss\u00e9gre futtassa.
+
+OPENID_RP_NO_RESULT_ERR=CWWKS1506E: Az OpenID nem tud \u00e9rv\u00e9nyes eredm\u00e9nyt lek\u00e9rdezni a(z) {0} ig\u00e9nyazonos\u00edt\u00f3hoz. 
+OPENID_RP_NO_RESULT_ERR.explanation=Az OpenID szolg\u00e1ltat\u00f3 nem adott vissza \u00e9rv\u00e9nyes eredm\u00e9nyt. Ennek oka az lehet, hogy a felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se nem siker\u00fclt vagy a felhaszn\u00e1l\u00f3 a hiteles\u00edt\u00e9st visszautas\u00edtotta.
+OPENID_RP_NO_RESULT_ERR.useraction=Nincs.
+
+OPENID_RP_CONFIG_INVALID_SSLREF=CWWKS1507E: Az OpenID konfigur\u00e1ci\u00f3 SSL-t ig\u00e9nyel, de a(z) {0} sslRef  nem l\u00e9tezik vagy \u00fcres.
+OPENID_RP_CONFIG_INVALID_SSLREF.explanation=Az OpenID konfigur\u00e1ci\u00f3 enforceHttps attrib\u00fatuma igaz \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, de az sslRef nem l\u00e9tezik.
+OPENID_RP_CONFIG_INVALID_SSLREF.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az sslRef \u00e9rv\u00e9nyes SSL konfigur\u00e1ci\u00f3ra hivatkozzon.
+
+OPENID_HTTPS_WITHOUT_SSL_SERVICE=CWWKS1508E: Az OpenID konfigur\u00e1ci\u00f3 SSL-t ig\u00e9nyel, de az SSL szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. 
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.explanation=Az OpenID konfigur\u00e1ci\u00f3 enforceHttps attrib\u00fatuma igaz \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. Nincs azonban el\u00e9rhet\u0151 SSL szolg\u00e1ltat\u00e1s.
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a helyes SSL inform\u00e1ci\u00f3k tal\u00e1lhat\u00f3k.
+
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1509E: Az OpenID konfigur\u00e1ci\u00f3 SSL-t ig\u00e9nyel, de az SSL nincs megfelel\u0151en be\u00e1ll\u00edtva. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Az OpenID konfigur\u00e1ci\u00f3 enforceHttps attrib\u00fatuma igaz \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. Lehet, hogy a keyStore elem hi\u00e1nyzik vagy helytelen\u00fcl van megadva. Lehet, hogy az SSL szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a helyes SSL inform\u00e1ci\u00f3k tal\u00e1lhat\u00f3k.
+
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS=CWWKS1510E: A megb\u00edzhat\u00f3 partner SSL-t ig\u00e9nyel, de az openID szolg\u00e1ltat\u00f3 URL protokollja {0}.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.explanation=A megb\u00edzhat\u00f3 partner SSL-t ig\u00e9nyel, de az openID szolg\u00e1ltat\u00f3 URL protokollja nem HTTPS.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az openID szolg\u00e1ltat\u00f3 t\u00e1mogatja az SSL-t. Ha az openID szolg\u00e1ltat\u00f3 a HTTPS protokollt nem t\u00e1mogatja, akkor \u00e1ll\u00edtsa az enforceHttps attrib\u00fatumot hamis \u00e9rt\u00e9kre.
+
+OPENID_RP_CAN_NOT_ACCESS_OP=CWWKS1511E: A(z) {0} OpenID szolg\u00e1ltat\u00f3 nem \u00e9rhet\u0151 el.
+OPENID_RP_CAN_NOT_ACCESS_OP.explanation=Az OpenID szolg\u00e1ltat\u00f3 nem \u00e9rhet\u0151 el.
+OPENID_RP_CAN_NOT_ACCESS_OP.useraction=Adjon meg \u00e9rv\u00e9nyes OpenID szolg\u00e1ltat\u00f3t.
+
+OPENID_RP_REQUEST_IDENTIFIER_NULL=CWWKS1512E: Az OpenID v\u00e1laszol\u00f3 partner k\u00e9r\u00e9sazonos\u00edt\u00f3ja null.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.explanation=Az OpenID v\u00e1laszol\u00f3 partner k\u00e9r\u00e9sazonos\u00edt\u00f3ja null.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.useraction=Nincs.
+
+OPENID_AUTHENTICATE_FAILED=CWWKS1513E: Az OpenID hiteles\u00edt\u00e9s a(z) {0} azonos\u00edt\u00f3 eset\u00e9ben nem siker\u00fclt.
+OPENID_AUTHENTICATE_FAILED.explanation=Az OpenID hiteles\u00edt\u00e9s az azonos\u00edt\u00f3 eset\u00e9ben nem siker\u00fclt.
+OPENID_AUTHENTICATE_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonos\u00edt\u00f3 \u00e9rv\u00e9nyes.
+
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY=CWWKS1514E: Nem tal\u00e1lhat\u00f3 gyors\u00edt\u00f3t\u00e1r bejegyz\u00e9s a(z) {0} egyedi kulcshoz.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.explanation= Nem tal\u00e1lhat\u00f3 gyors\u00edt\u00f3t\u00e1r bejegyz\u00e9s az egyedi kulcshoz.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a b\u00f6ng\u00e9sz\u00e9si inform\u00e1ci\u00f3k gyors\u00edt\u00f3t\u00e1r maxSize \u00e9rt\u00e9ke el\u00e9g nagy az \u00f6sszes k\u00e9r\u00e9s gyors\u00edt\u00f3t\u00e1raz\u00e1s\u00e1hoz b\u00e1rmely id\u0151pontban.
+
+OPENID_VERIFY_RESPONSE_FAILED=CWWKS1515E: Az OpenID nem tudja ellen\u0151rizni az OP v\u00e1laszt az ig\u00e9nyelt {0} azonos\u00edt\u00f3 eset\u00e9ben.
+OPENID_VERIFY_RESPONSE_FAILED.explanation=  Az OpenID nem tudja ellen\u0151rizni az OP v\u00e1laszt az ig\u00e9nyelt azonos\u00edt\u00f3 eset\u00e9ben.
+OPENID_VERIFY_RESPONSE_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az openID megb\u00edzhat\u00f3 partner k\u00e9pes kommunik\u00e1lni az openID szolg\u00e1ltat\u00f3val.

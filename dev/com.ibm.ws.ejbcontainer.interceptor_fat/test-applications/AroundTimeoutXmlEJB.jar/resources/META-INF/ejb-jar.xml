@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- F743-17764 -->
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="true" version="3.1">
+   <display-name>AroundTimeoutXMLTestEJB</display-name>
+   <enterprise-beans id="enterprise_beans_id">
+   <session id="AdvancedAroundTimeoutBean">
+         <ejb-name>AdvancedAroundTimeoutBean</ejb-name>
+         <business-local>
+            com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.AdvancedInterface
+         </business-local>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.AdvancedAroundTimeoutBean
+         </ejb-class>
+         <session-type>Singleton</session-type>
+         <timeout-method>
+            <method-name>timeoutMethod</method-name>
+            <method-params>
+               <method-param>javax.ejb.Timer</method-param>
+            </method-params>
+         </timeout-method>
+         <timer>
+            <schedule>
+               <second>*</second>
+               <minute>*</minute>
+               <hour>*</hour>
+            </schedule>
+            <timeout-method>
+               <method-name>autoTimeoutMethod</method-name>
+               <method-params>
+                  <method-param>javax.ejb.Timer</method-param>
+               </method-params>
+            </timeout-method>
+            <persistent>false</persistent>
+            <info>automaticTimer</info>
+         </timer>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+         <around-timeout>
+            <method-name>superAdvancedAroundTimeout</method-name>
+         </around-timeout>
+         <resource-ref>
+            <res-ref-name>TimerService</res-ref-name>
+             <res-type>javax.ejb.TimerService</res-type>
+             <res-auth>Container</res-auth>
+             <res-sharing-scope>Shareable</res-sharing-scope>
+             <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.AdvancedAroundTimeoutBean</injection-target-class>
+               <injection-target-name>ivTimerService</injection-target-name>
+             </injection-target>
+         </resource-ref>
+      </session>
+   </enterprise-beans>
+   <interceptors>
+      <interceptor id="interceptor_0">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.CL1Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      
+      <interceptor  id="interceptor_1">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.CL2Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      
+      <interceptor id="interceptor_2">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.ML1Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      
+      <interceptor  id="interceptor_3">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.ML2Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      
+      <interceptor id="interceptor_4">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.SuperCL2Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>superAroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      
+      <interceptor  id="interceptor_5">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.SuperML1Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>superAroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      <interceptor id="interceptor_6">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.Default1Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+      
+      <interceptor  id="interceptor_7">
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.Default2Interceptor</interceptor-class>
+         <around-timeout>
+            <method-name>aroundTimeout</method-name>
+         </around-timeout>
+      </interceptor>
+   </interceptors> 
+   
+   <assembly-descriptor id="AssemblyDescriptor_1">
+      <interceptor-binding id="interceptor_binding_id_0">
+         <ejb-name>*</ejb-name>
+         <interceptor-class>
+            com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.Default1Interceptor
+         </interceptor-class>
+         <interceptor-class>
+            com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.Default2Interceptor
+         </interceptor-class>
+      </interceptor-binding>
+      
+      <interceptor-binding id="interceptor_binding_id_1">
+      	<ejb-name>AdvancedAroundTimeoutBean</ejb-name>
+      	<interceptor-class>
+      		com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.CL1Interceptor
+      	</interceptor-class>
+      	<interceptor-class>
+            com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.SuperCL2Interceptor
+         </interceptor-class>
+      	<interceptor-class>
+      		com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.CL2Interceptor
+      	</interceptor-class>
+      </interceptor-binding>
+
+      <interceptor-binding id="interceptor_binding_id_2">
+         <ejb-name>AdvancedAroundTimeoutBean</ejb-name>
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.SuperML1Interceptor</interceptor-class>
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.ML1Interceptor</interceptor-class>
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.ML2Interceptor</interceptor-class>
+         <method>
+            <method-name>timeoutMethod</method-name>
+         </method>
+      </interceptor-binding>
+
+      <interceptor-binding id="interceptor_binding_id_3">
+         <ejb-name>AdvancedAroundTimeoutBean</ejb-name>
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.SuperML1Interceptor</interceptor-class>
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.ML1Interceptor</interceptor-class>
+         <interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.ML2Interceptor</interceptor-class>
+         <method>
+            <method-name>autoTimeoutMethod</method-name>
+         </method>
+      </interceptor-binding> 
+   </assembly-descriptor> 
+</ejb-jar>

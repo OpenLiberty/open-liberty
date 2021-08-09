@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.16.840.1.113730.3.1.2,ou=attributeTypes,cn=inetorgperson,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113730.3.1.2
+m-name: departmentNumber
+m-description: RFC2798: identifies a department within an organization
+m-obsolete: FALSE
+entryUUID: 9221e4b4-f07c-4b2e-8c1c-90082d9eb652
+entryCSN: 20130919065345.324000Z#000001#000#000000
+entryParentId: 4a583820-a15a-48a1-9b6c-8575d6c12daf
+createTimestamp: 20130919065352.167Z

@@ -1,0 +1,1 @@
+DROP PROCEDURE ${schemaname}.simple_order_procedure

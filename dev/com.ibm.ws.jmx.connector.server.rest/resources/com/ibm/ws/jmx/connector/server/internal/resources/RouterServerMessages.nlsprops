@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: Collective controller could not create the SSL context when trying to route the jmx connection to {0}.  The exception is: {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=An SSL context could not be created with the server's SSL certificate. 
+jmx.connector.server.rest.router.ssl.exception.useraction=Check the server's SSL configuration and re-register the server to the collective controller.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: The JMX authentication information is not available in the collective controller repository for the target server {0} on host {1} in directory {2}. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=The JMX authentication information is required to make a JMX connection to the specified target server.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=Check if the target server is successfully bootstrapped to the collective controller.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E: The host name property of the JMX authentication information is not available in the collective controller repository for target server {0} on host {1} in directory {2}.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=The host name property of the JMX authentication information is required to make a JMX connection to the specified target server.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=Check if the target server is successfully bootstrapped to the collective controller.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: The port property of the JMX authentication information is not available in collective controller repository for target server {0} on host {1} in directory {2}.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=The port number of the JMX authentication information is required to make a JMX connection to the specified target server.
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=Check if the target server is successfully bootstrapped to the collective controller.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: The required keystore {0} is not configured.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=The required keystore for JMX routing is not configured.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Ensure the keystore is specified in the server.xml file.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: The collective controller repository reader is not available.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=The required collective controller repository reader is not started.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=Check server configuration to make sure required features for JMX routing are present.

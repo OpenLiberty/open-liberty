@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: byte buffer support
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/bytebuffer/internal/resources/ByteBufferMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### WSBB will use message ids from 0600-0799
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: Proprietatea personalizat\u0103 {0} are valoarea {1}. Aceast\u0103 valoare nu este valid\u0103.
+NOT_VALID_CUSTOM_PROPERTY.explanation=S-a specificat o proprietate personalizat\u0103 cu o valoare care este \u00een afara intervalului de valori valide.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Corecta\u0163i eroarea de configurare.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: Proprietatea personalizat\u0103 {0} specificat\u0103 pentru componenta WsByteBuffer nu este valid\u0103.
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=S-a specificat incorect o proprietate personalizat\u0103.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Corecta\u0163i eroarea de configurare.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: Componenta WsByteBuffer a generat o excep\u0163ie NumberFormatException la procesarea urm\u0103toarei propriet\u0103\u0163i: Nume proprietate: {0}  Valoare: {1}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=O valoare de proprietate de configurare WsByteBuffer nu este un num\u0103r valid.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corecta\u0163i eroarea de configurare.
+
+POOL_MISMATCH=CWWKO0603E: Specifica\u0163iile de ad\u00e2ncimi \u015fi dimensiuni de pool WsByteBuffer nu au acela\u015fi num\u0103r de intr\u0103ri. Dimensiuni: {0}  Ad\u00e2ncimi: {1}
+POOL_MISMATCH.explanation=Dimensiunile sau ad\u00e2ncimile de pool au fost specificate incorect.
+POOL_MISMATCH.useraction=Corecta\u0163i eroarea de configurare.

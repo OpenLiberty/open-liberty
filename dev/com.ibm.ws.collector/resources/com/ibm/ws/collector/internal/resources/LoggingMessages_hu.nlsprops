@@ -1,0 +1,40 @@
+#/*******************************************************************************
+# * Copyright (c) 2016, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: A logstashCollector \u00e9s a bluemixLogCollector bet\u0171kb\u0151l \u00e9s sz\u00e1mokb\u00f3l \u00e1ll\u00f3, egyetlen sz\u00f3t tartalmaz\u00f3 c\u00edmk\u00e9ket haszn\u00e1lhat. A k\u00f6vetkez\u0151 c\u00edmk\u00e9k figyelmen k\u00edv\u00fcl maradnak: {0}
+TAGS_FILTERING_WARNING.explanation= A figyelmen k\u00edv\u00fcl hagyott c\u00edmk\u00e9k sz\u00f3k\u00f6zt, k\u00f6t\u0151jelet vagy ford\u00edtott t\u00f6rtvonal karaktereket tartalmaznak.
+TAGS_FILTERING_WARNING.userAction= Ezekb\u0151l a c\u00edmk\u00e9kb\u0151l t\u00e1vol\u00edtsa el a sz\u00f3k\u00f6z, k\u00f6t\u0151jel vagy ford\u00edtott t\u00f6rtvonal karaktereket.
+
+SSLREF_NOTFOUND=TRAS4302E: A logstashCollector vagy a bluemixLogCollector elem sslRef attrib\u00fatuma nincs megadva, vagy az sslRef azonos\u00edt\u00f3 nem tal\u00e1lhat\u00f3.
+SSLREF_NOTFOUND.explanation=Nem tal\u00e1lhat\u00f3 SSL konfigur\u00e1ci\u00f3 a logstashCollector vagy bluemixLogCollector szolg\u00e1ltat\u00e1shoz.
+SSLREF_NOTFOUND.userAction=Hozzon l\u00e9tre egy SSL konfigur\u00e1ci\u00f3t, \u00e9s adja meg az azonos\u00edt\u00f3t az sslRef attrib\u00fatum haszn\u00e1lat\u00e1val a logstashCollector vagy a bluemixLogCollector elemben.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: A logstashCollector \u00e9s a bluemixLogCollector olyan maxEvents \u00e9rt\u00e9ket haszn\u00e1lhat, amelyek eg\u00e9sz sz\u00e1m \u00e9rt\u00e9ke a 0-2147483647 tartom\u00e1nyba esik. Az adott maxEvents \u00e9rt\u00e9k figyelmen k\u00edv\u00fcl marad: {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= A maxEvents \u00e9rt\u00e9ke k\u00edv\u00fcl van a megengedett tartom\u00e1nyon \u00e9n nem 0 \u00e9s 2147483647 k\u00f6z\u00f6tti eg\u00e9sz sz\u00e1m.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= Jav\u00edtsa a maxEvents \u00e9rt\u00e9ket. Ellenkez\u0151 esetben nem ker\u00fcl sor leszab\u00e1lyoz\u00e1sra.
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Az esem\u00e9nyl\u00e9trehoz\u00e1s meghaladja a maxim\u00e1lis kezel\u00e9si sebess\u00e9get a(z) {0} sz\u00e1lon. A rendszer {1} esem\u00e9nyt fog kezelni m\u00e1sodpercenk\u00e9nt, am\u00edg az esem\u00e9ny restancia meg nem sz\u0171nik.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= A feldolgozand\u00f3 esem\u00e9nyek sz\u00e1ma meghaladja a megadott maxEvents/m\u00e1sodperc sebess\u00e9get.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= Ha meg k\u00edv\u00e1nja v\u00e1ltoztatni az esem\u00e9nykezel\u00e9si sebess\u00e9get, akkor m\u00f3dos\u00edtsa a maxEvents be\u00e1ll\u00edt\u00e1s\u00e1t a server.xml f\u00e1jlban.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: Az esem\u00e9ny restancia megsz\u0171nt. Az \u00faj esem\u00e9nyek k\u00e9sleltet\u00e9s n\u00e9lk\u00fcl lesznek kezelve.
+MAXEVENTS_NOTEXCEED_RATE.explanation= Az esem\u00e9nyek feldolgoz\u00e1sa a maxim\u00e1lis kezel\u00e9si sebess\u00e9ggel befejez\u0151d\u00f6tt.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  Nem kell semmit tennie.

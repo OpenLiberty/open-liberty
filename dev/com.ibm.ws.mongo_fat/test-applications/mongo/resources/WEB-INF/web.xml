@@ -1,0 +1,219 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    version="3.0">
+
+    <servlet>
+        <servlet-name>RESOURCEENVREF</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.JNDIResourceEnvRef</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RESOURCEENVREF</servlet-name>
+        <url-pattern>/RESOURCEENVREF</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>JNDI</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.MongoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JNDI</servlet-name>
+        <url-pattern>/JNDI</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>INJECTED</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.InjectedMongoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>INJECTED</servlet-name>
+        <url-pattern>/INJECTED</url-pattern>
+    </servlet-mapping>
+  
+    <servlet>
+        <servlet-name>NO_SSLREF</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.NoSSLRefMongoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NO_SSLREF</servlet-name>
+        <url-pattern>/NO_SSLREF</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>NO_SSL_FEATURE</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.NoSSLFeatureServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NO_SSL_FEATURE</servlet-name>
+        <url-pattern>/NO_SSL_FEATURE</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>NESTED_SSL</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.NestedSSLServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NESTED_SSL</servlet-name>
+        <url-pattern>/NESTED_SSL</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>SSLENABLED_FALSE</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLEnabledFalseMongoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SSLENABLED_FALSE</servlet-name>
+        <url-pattern>/SSLENABLED_FALSE</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>SSLENABLED_FALSE_SSLREF</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLEnabledFalseSSLRefMongoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SSLENABLED_FALSE_SSLREF</servlet-name>
+        <url-pattern>/SSLENABLED_FALSE_SSLREF</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>DIFFERENT_SSLREF</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.DifferentSSLRefServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DIFFERENT_SSLREF</servlet-name>
+        <url-pattern>/DIFFERENT_SSLREF</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>INVALID_TRUSTSTORE</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.InvalidTruststoreMongoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>INVALID_TRUSTSTORE</servlet-name>
+        <url-pattern>/INVALID_TRUSTSTORE</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CERT_ALIAS_INV</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthInvalidAliasServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_ALIAS_INV</servlet-name>
+        <url-pattern>/CERT_ALIAS_INV</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_ALIAS_VALID</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthValidAliasServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_ALIAS_VALID</servlet-name>
+        <url-pattern>/CERT_ALIAS_VALID</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_ALIAS_NOT_IN_KEYSTORE</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthAliasNotInKeystoreServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_ALIAS_NOT_IN_KEYSTORE</servlet-name>
+        <url-pattern>/CERT_ALIAS_NOT_IN_KEYSTORE</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_ALIAS_MISSING</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthNoAliasButReqdServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_ALIAS_MISSING</servlet-name>
+        <url-pattern>/CERT_ALIAS_MISSING</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_ALIAS_NOT_REQD</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthNoAliasReqdServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_ALIAS_NOT_REQD</servlet-name>
+        <url-pattern>/CERT_ALIAS_NOT_REQD</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_TRUST_INV</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthInvalidTrustServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_TRUST_INV</servlet-name>
+        <url-pattern>/CERT_TRUST_INV</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_PASSWORD_INV</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthParmsPasswordServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_PASSWORD_INV</servlet-name>
+        <url-pattern>/CERT_PASSWORD_INV</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CERT_USER_INV</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthParmsUseridServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_USER_INV</servlet-name>
+        <url-pattern>/CERT_USER_INV</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CERT_SSLENABLED_NOT_SET</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthNoSSLEnabledServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_SSLENABLED_NOT_SET</servlet-name>
+        <url-pattern>/CERT_SSLENABLED_NOT_SET</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CERT_SSLENABLED_FALSE</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthSSLEnabledFalseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_SSLENABLED_FALSE</servlet-name>
+        <url-pattern>/CERT_SSLENABLED_FALSE</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CERT_INVALID_SCENARIOS</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthInvalidScenarios</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_INVALID_SCENARIOS</servlet-name>
+        <url-pattern>/CERT_INVALID_SCENARIOS</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CERT_INVALID_DRIVER_LEVEL</servlet-name>
+        <servlet-class>com.ibm.ws.mongo.servlet.SSLCertAuthInvalidDriverLevelServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CERT_INVALID_DRIVER_LEVEL</servlet-name>
+        <url-pattern>/CERT_INVALID_DRIVER_LEVEL</url-pattern>
+    </servlet-mapping>
+    
+    <resource-env-ref>
+        <resource-env-ref-name>mongo/testdb-jndi-resource-env-ref</resource-env-ref-name>
+        <resource-env-ref-type>com.mongodb.DB</resource-env-ref-type>
+    </resource-env-ref>
+    <resource-ref>
+        <res-ref-name>mongo/testdb-jndi</res-ref-name>
+        <res-type>com.mongodb.DB</res-type>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>mongo/testdb-auth-jndi</res-ref-name>
+        <res-type>com.mongodb.DB</res-type>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>mongo/mongo/testdb-nested</res-ref-name>
+        <res-type>com.mongodb.DB</res-type>
+    </resource-ref> 
+</web-app>

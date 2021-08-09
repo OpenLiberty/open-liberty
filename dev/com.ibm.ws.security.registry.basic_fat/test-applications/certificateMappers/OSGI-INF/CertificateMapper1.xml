@@ -1,0 +1,8 @@
+<component name="CertificateMapper1">
+  <implementation class="test.cert.mappers.CertificateMapper1"/>
+  <service>
+     <provide interface="com.ibm.websphere.security.X509CertificateMapper"/>
+  </service>
+  <property name="x509.certificate.mapper.id" type="String" value="mapper1"/>
+  <property name="service.vendor" type="String" value="IBM"/>
+</component>

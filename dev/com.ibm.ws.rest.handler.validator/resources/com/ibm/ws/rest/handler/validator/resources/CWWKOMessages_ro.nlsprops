@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: Nu este furnizat\u0103 validare pentru elementele de configura\u0163ie de tipul {0}.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=Tipul specificat de element de configura\u0163ie nu are abilitatea de a-i valida configura\u0163ie.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=Nu \u00eencerca\u0163i s\u0103 valida\u0163i acest tip de element de configura\u0163ie.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Una sau mai multe dependen\u0163e nu sunt satisf\u0103cute sau caracteristica care activeaz\u0103 resursa nu este activat\u0103, sau nu este posibil s\u0103 se valideze acest tip de resurs\u0103.
+CWWKO1551_CANNOT_VALIDATE.explanation=Cererea de validare pentru configura\u0163ia specificat\u0103 nu poate fi finalizat\u0103. Aceasta ar putea fi din cauza unei dependen\u0163e nesatisf\u0103cute, o caracteristic\u0103 lips\u0103 care activeaz\u0103 un element de configura\u0163ie, sau elementul de configura\u0163ie s-ar putea s\u0103 nu suporte validarea.
+CWWKO1551_CANNOT_VALIDATE.useraction=Verifica\u0163i c\u0103 este activat\u0103 caracteristica care furnizeaz\u0103 elementul de configura\u0163ie, c\u0103 nu exist\u0103 dependen\u0163e lips\u0103 \u015fi c\u0103 elementul de configura\u0163ie suport\u0103 validarea.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Antetul X-Login-Config-Props necesit\u0103 un caracter de semn de egalitate (=) ca un delimitator \u00eentre numele propriet\u0103\u0163ii de configura\u0163ie de logare \u015fi valoarea sa.
+CWWKO1552_MISSING_DELIMITER.explanation=Delimitatorul semn de egalitate este necesar pentru a determina ce parte din antetul X-Login-Config-Props este numele propriet\u0103\u0163ii de configura\u0163ie de logare \u015fi ce parte este valoarea ei.
+CWWKO1552_MISSING_DELIMITER.useraction=Actualiza\u0163i antetul X-Login-Config-Props pentru a include un semn de egalitate (=) \u00eentre numele propriet\u0103\u0163ii de configura\u0163ie pentru logare \u015fi valoarea sa.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Nu exist\u0103 niciun handler \u00eenregistrat care se potrive\u015fte URL-ului cerut {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=S-a f\u0103cut o \u00eencercare de a accesa un URL care nu se potrivea cu niciunul din handlerele \u00eenregistrate.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corecta\u0163i URL-ul pentru a se potrivi unui handler \u00eenregistrat.

@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: \ud604\uc7ac \uc2a4\ub808\ub4dc\uac00 Java Enterprise Edition \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\uc640 \uc5f0\uad00\ub418\uc9c0 \uc54a\uae30 \ub54c\ubb38\uc5d0 java:comp/env \uc774\ub984\uc5d0 \ub300\ud55c JNDI \uc870\uc791\uc774 \uc644\ub8cc\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. java:comp/env \uc774\ub984\uc744 \uc0ac\uc6a9\ud558\ub294 JNDI \ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uc11c\ubc84 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc694\uccad\uc758 \uc2a4\ub808\ub4dc\uc5d0\uc11c \ubc1c\uc0dd\ud558\uc9c0 \uc54a\uc744 \ub54c \uc774 \uc870\uac74\uc774 \ubc1c\uc0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc815\uc801 \ucf54\ub4dc \ube14\ub85d\uc774\ub098 \ud574\ub2f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc791\uc131\ud55c \uc2a4\ub808\ub4dc\uc758 java:comp/env \uc774\ub984\uc5d0 \ub300\ud574 Java EE \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 JNDI \uc870\uc791\uc744 \uc2e4\ud589\ud558\uc9c0 \uc54a\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uadf8\ub7f0 \ucf54\ub4dc\uac00 \uc11c\ubc84 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc694\uccad\uc758 \uc2a4\ub808\ub4dc\uc5d0\uc11c \ubc18\ub4dc\uc2dc \uc2e4\ud589\ub420 \ud544\uc694\ub294 \uc5c6\uc73c\ubbc0\ub85c java:comp/env \uc774\ub984\uc5d0\uc11c JNDI \uc870\uc791\uc5d0 \uc758\ud574 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=java:comp/env \uc774\ub984\uc5d0 \ub300\ud55c JNDI \uc870\uc791\uc740 Java EE \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\uc640 \uc5f0\uad00\ub41c \uc2a4\ub808\ub4dc\uc5d0\uc11c\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=Java EE \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucef4\ud3ec\ub10c\ud2b8\uc640 \uc5f0\uad00\ub41c \uc2a4\ub808\ub4dc\uc5d0\uc11c JNDI \uc870\uc791\uc774 \ubc1c\uc0dd\ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: {0} JNDI \uc774\ub984\uc774 \ucc38\uc870\ud558\ub294 \uc624\ube0c\uc81d\ud2b8\ub97c \uc778\uc2a4\ud134\uc2a4\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ucc38\uc870 \uc774\ub984\uc774 JNDI \uac80\uc0c9\uc744 \uc218\ud589\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c \ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130 \ubc14\uc778\ub529\uc758 JNDI \uc774\ub984\uc5d0 \ub9f5\ud551\ud558\ub294 \uacbd\uc6b0, \ubc30\uce58 \ub514\uc2a4\ud06c\ub9bd\ud130 \ubc14\uc778\ub529\uc758 JNDI \uc774\ub984 \ub9f5\ud551\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. JNDI \uc774\ub984 \ub9f5\ud551\uc774 \uc62c\ubc14\ub978 \uacbd\uc6b0 \uae30\ubcf8 \ucd08\uae30 \ucee8\ud14d\uc2a4\ud2b8\uc640 \uc0c1\ub300\uc801\uc73c\ub85c \uc9c0\uc815\ub41c \uc774\ub984\uc73c\ub85c \ub300\uc0c1 \uc790\uc6d0\uc744 \ud574\uc11d\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=\uc9c0\uc815\ub41c JNDI \uc774\ub984\uc5d0 \uc758\ud55c \uc624\ube0c\uc81d\ud2b8 \ucc38\uc870\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=\uc624\ub958\uc5d0 \uad00\ud55c \uc790\uc138\ud55c \uc815\ubcf4\ub294 \uc911\ucca9\ub41c \uc608\uc678 \ub610\ub294 \uc774\uc804 \uc624\ub958\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: {1} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c META-INF/application.xml \ud30c\uc77c\uc5d0 \uc120\uc5b8\ub41c {0} \ucc38\uc870\uac00 java:global \ub610\ub294 java:app \ucee8\ud14d\uc2a4\ud2b8\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=META-INF/application.xml \ud30c\uc77c\uc5d0 \uc120\uc5b8\ub41c \ucc38\uc870\ub294 java:global \ub610\ub294 java:app \ucee8\ud14d\uc2a4\ud2b8\uc758 \uc774\ub984\ub9cc \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=\ucc38\uc870\ub97c \uc81c\uac70\ud558\uac70\ub098 \ucc38\uc870 \uc774\ub984\uc5d0 java:global/ \ub610\ub294 java:app/ \uc811\ub450\ubd80\uac00 \ud3ec\ud568\ub418\ub3c4\ub85d \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: \uc11c\ubc84\ub294 {2} \ucc38\uc870\uc5d0 \ub300\ud55c {1} \uc720\ud615\uc758 {0} \ubc14\uc778\ub529\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=\uc11c\ubc84\ub294 \uc9c0\uc815\ub41c \uc774\ub984\uacfc \uc720\ud615\uc758 \ubc14\uc778\ub529\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=\uc9c0\uc815\ub41c \uc774\ub984\uc758 \uc790\uc6d0\uc744 \uc815\uc758\ud558\uac70\ub098 \uc774\ubbf8 \uc815\uc758\ud55c \uc790\uc6d0\uc744 \uc0ac\uc6a9\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc14\uc778\ub529\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: \uc11c\ubc84\ub294 {2} \ucc38\uc870\uc5d0 \ub300\ud55c {1} \uc720\ud615\uc758 {0} \uae30\ubcf8 \ubc14\uc778\ub529\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=\uc11c\ubc84\ub294 \uc9c0\uc815\ub41c \uc774\ub984\uacfc \uc720\ud615\uc758 \ubc14\uc778\ub529\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ubc14\uc778\ub529 \uc774\ub984\uc744 \uc9c0\uc815\ud558\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \uae30\ubcf8 \ubc14\uc778\ub529 \uc774\ub984\uc744 \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=\uc9c0\uc815\ub41c \uc774\ub984\uc758 \uc790\uc6d0\uc744 \uc815\uc758\ud558\uac70\ub098 \uc774\ubbf8 \uc815\uc758\ud55c \uc790\uc6d0\uc744 \uc0ac\uc6a9\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ubc14\uc778\ub529\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: \uc11c\ubc84\ub294 {2} \ucc38\uc870\uc5d0 \ub300\ud55c {1} \uc720\ud615\uc758 {0} \ubc14\uc778\ub529\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {3} \uc11c\ube44\uc2a4\uc5d0\uc11c \ubc14\uc778\ub529\uc744 \uc9c0\uc815\ud588\uc2b5\ub2c8\ub2e4.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=\uc11c\ubc84\ub294 \uc9c0\uc815\ub41c \uc774\ub984\uacfc \uc720\ud615\uc758 \ubc14\uc778\ub529\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=\uc11c\ube44\uc2a4 \uc81c\uacf5\uc790\uc5d0\uac8c \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: \uc11c\ubc84\ub294 {1} \uc720\ud615\uc758 {0} \ubc14\uc778\ub529\uc5d0 \ub300\ud55c \uc624\ube0c\uc81d\ud2b8\ub97c \uc5bb\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678 \uba54\uc2dc\uc9c0: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=\uc11c\ubc84\ub294 \uc9c0\uc815\ub41c \uc774\ub984\uacfc \uc720\ud615\uc758 \ubc14\uc778\ub529\uc744 \ucc3e\uc558\uc9c0\ub9cc \uc561\uc138\uc2a4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=\uc790\uc138\ud55c \uc124\uba85\uc740 \uc608\uc678 \uba54\uc2dc\uc9c0 \ud14d\uc2a4\ud2b8\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: {3} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 {2} \ubaa8\ub4c8\uc5d0 \uc788\ub294 {1} \ucef4\ud3ec\ub10c\ud2b8\uc5d0\uc11c {0} EJB \ucc38\uc870\ub97c \uc9c0\uc6d0\ud558\ub294 \uae30\ub2a5\uc774 \uc11c\ubc84 \uad6c\uc131\uc5d0 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc138\uc158 EJB\uc5d0 \ub300\ud55c \ucc38\uc870\ub97c \uc120\uc5b8\ud558\uc9c0\ub9cc, \uc11c\ubc84\uac00 \uc138\uc158 EJB\ub97c \uc9c0\uc6d0\ud558\ub294 \uae30\ub2a5\uc744 \uac00\uc9c0\ub3c4\ub85d \uad6c\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=\uc11c\ubc84 \uad6c\uc131\uc744 \uc218\uc815\ud558\uc5ec \uc138\uc158 EJB\ub97c \uc9c0\uc6d0\ud558\ub294 \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624. \uc608\ub97c \ub4e4\uc5b4, ejbLite-3.1 \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: \ubc14\uc778\ub529\uc5d0 \uc790\uccb4 \ucc38\uc870\ud558\ub294 \uac04\uc811 \uac80\uc0c9\uc774 \uc788\uc2b5\ub2c8\ub2e4.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=\ubc14\uc778\ub529\uc5d0 \uc790\uccb4 \ucc38\uc870\ud558\ub294 \uac04\uc811 \uac80\uc0c9\uc774 \uc788\uc2b5\ub2c8\ub2e4. \uc608\ub97c \ub4e4\uc5b4 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc0ac\uc6a9\ub41c \uacbd\uc6b0 \uc774\ub984\uc5d0 \ub0b4\uc7ac\ub41c java:comp/env/ \uc811\ub450\ubd80\uac00 \uc788\uc73c\ubbc0\ub85c \uac80\uc0c9 \ubb38\uc790\uc5f4\uc740 \uc790\uc6d0 \ucc38\uc870\ub97c \ucc38\uc870\ud558\uba70 \uc774\ub807\uac8c \ud558\uba74 \ubb34\ud55c \ub8e8\ud504\uac00 \uc791\uc131\ub429\ub2c8\ub2e4.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=\ub300\uc0c1 \uc790\uc6d0\uc758 \uac80\uc0c9 \ub610\ub294 \ubc14\uc778\ub529 \uc774\ub984\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624. \uc608\ub97c \ub4e4\uc5b4 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc0ac\uc6a9\ub41c \uacbd\uc6b0 \uac80\uc0c9\uc744 jdbc/ds\ub85c \ubcc0\uacbd\ud560 \uc218 \uc788\uc73c\uba70 \uc774\ub807\uac8c \ud558\uba74 \uae30\ubcf8 \ub124\uc784\uc2a4\ud398\uc774\uc2a4\uc5d0\uc11c \uc790\uc6d0\uc744 \ucc3e\uc2b5\ub2c8\ub2e4.

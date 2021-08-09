@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd"
+        version="1.1">
+
+  <session name="FirstBean">
+    <resource-ref name="jdbc/dsref">
+      <custom-login-configuration name="ejb1login">
+        <property name="shape" value="nonagon"/>
+        <property name="sides" value="9"/>
+        <property name="sumOfAngles" value="1260"/>
+      </custom-login-configuration>
+    </resource-ref>
+  </session>
+    
+</ejb-jar-bnd>

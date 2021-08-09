@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: Nie powiod\u0142o si\u0119 pobranie konfiguracji SSL przez atrybut sslRef={0}.
+err.when.get.ssl.config.explanation=Atrybut sslRef okre\u015blony w pliku ibm-ws-bnd.xml nie mo\u017ce odwo\u0142a\u0107 si\u0119 do elementu ssl w pliku server.xml lub zawarto\u015b\u0107 przywo\u0142ywanego elementu ssl jest niepoprawna.
+err.when.get.ssl.config.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 atrybutu sslRef jest zgodna z identyfikatorem elementu ssl w pliku server.xml lub zawarto\u015b\u0107 przywo\u0142ywanego elementu ssl jest poprawna.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: Nie powiod\u0142a si\u0119 pr\u00f3ba pobrania w\u0142a\u015bciwo\u015bci SSLSocketFactory przez atrybut sslRef={0} dla komunikatu {1}.
+err.when.get.ssl.socket.factory.explanation=Niepoprawna konfiguracja elementu magazynu kluczy lub magazynu zaufanych certyfikat\u00f3w w pliku server.xml mo\u017ce spowodowa\u0107 wyj\u0105tek, poniewa\u017c atrybut sslRef okre\u015blony w pliku ibm-ws-bnd.xml odwo\u0142uje si\u0119 do konfiguracji SSL w pliku server.xml.
+err.when.get.ssl.socket.factory.useraction=Upewnij si\u0119, \u017ce po\u0142o\u017cenie i has\u0142o elementu magazynu kluczy lub magazynu zaufanych certyfikat\u00f3w s\u0105 poprawnie okre\u015blone w pliku server.xml, oraz \u017ce alias certyfikatu jest poprawny w pliku ibm-ws-bnd.xml. 
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: Element login-config zdefiniowany w pliku ibm-ws-bnd.xml jest ignorowany, poniewa\u017c aplikacja jest aplikacj\u0105 WWW i powinna by\u0107 zdefiniowana w pliku web.xml.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=Element login-config mo\u017cna skonfigurowa\u0107 tylko w pliku web.xml aplikacji WWW, a element login-config zdefiniowany w pliku ibm-ws-bnd.xml jest ignorowany.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=Upewnij si\u0119, \u017ce element login-config jest skonfigurowany tylko w pliku web.xml aplikacji WWW. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: Typ metody auth-method {0} nie jest obs\u0142ugiwany w pliku ibm-ws-bnd.xml.
+ibm.ws.bnd.auth.method.not.support.explanation=Plik ibm-ws-bnd.xml obs\u0142uguje tylko typy BASIC i CLIENT_CERT metody auth-method.
+ibm.ws.bnd.auth.method.not.support.useraction=Upewnij si\u0119, \u017ce warto\u015bci\u0105 typu metody auth-method zdefiniowanego w pliku ibm-ws-bnd.xml jest BASIC lub CLIENT_CERT.

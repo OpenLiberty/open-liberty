@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E:  Ocorreu um erro de autentica\u00e7\u00e3o ao recriar o assunto do contexto de seguran\u00e7a desserializado. A exce\u00e7\u00e3o \u00e9: {0}. Como resultado, o assunto n\u00e3o autenticado ser\u00e1 usado para esse contexto de seguran\u00e7a. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation= Ao recriar os assuntos que estavam no contexto de seguran\u00e7a, ocorreu um erro de autentica\u00e7\u00e3o. Como resultado, o assunto que n\u00e3o foi autenticado ser\u00e1 usado no lugar.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction= Revise a exce\u00e7\u00e3o e os logs para entender porque a autentica\u00e7\u00e3o falhou.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E:  Ao obter o diretor do assunto, foi descoberto que o assunto tinha mais de um diretor do tipo WSPrincipal. Apenas um WSPrincipal pode existir no assunto.  Os nomes dos WSPrincipals s\u00e3o: {0}. Como resultado, o contexto de seguran\u00e7a n\u00e3o ser\u00e1 desserializado no encadeamento.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation= O contexto de seguran\u00e7a n\u00e3o p\u00f4de ser desserializado porque o assunto tem muitos diretores do tipo WSPrincipal. Apenas um diretor desse tipo \u00e9 suportado.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Revise o aplicativo para entender porque o assunto tem mais de um WSPrincipal.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: Ao serializar o contexto de seguran\u00e7a, a chave de cache customizado {0} n\u00e3o p\u00f4de ser serializada devido \u00e0 exce\u00e7\u00e3o a seguir: {1}. Como resultado, o contexto de seguran\u00e7a n\u00e3o conter\u00e1 a chave de cache customizado.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=A chave de cache customizado para o assunto n\u00e3o p\u00f4de ser serializada ao serializar o contexto de seguran\u00e7a. Embora o contexto de seguran\u00e7a n\u00e3o conter\u00e1 a chave de cache customizado, isso n\u00e3o afeta a serializa\u00e7\u00e3o do contexto de seguran\u00e7a em si.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Revise os logs para entender a raz\u00e3o pela qual a serializa\u00e7\u00e3o da chave de cache customizado falhou.

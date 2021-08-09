@@ -1,0 +1,43 @@
+<flow xmlns="http://www.springframework.org/schema/webflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+    parent="intercept.abstract">
+
+    <!--
+    This is the intercept subflow. It handles invocation of all context-populated intercept subflows
+    before returning control to the calling (profile) flow.
+    -->
+
+    <!--
+    The select action is the "dispatching" step. Anything starting with "intercept/"
+    is a flow descriptor that we send control to. If there are no flows available or
+    remaining to be executed, control passes back to the calling (profile) flow.
+    -->
+    <action-state id="SelectInterceptFlow">
+        <evaluate expression="FilterFlowsByNonBrowserSupport" />
+        <evaluate expression="SelectInterceptFlow" />
+        <evaluate expression="'proceed'" />
+
+        <!-- Call a subflow with the same ID as the event. -->
+        <transition on="#{currentEvent.id.startsWith('intercept/')}" to="CallInterceptFlow" />
+        
+        <transition on="proceed" to="proceed" />
+    </action-state>
+
+    <!--
+    This invokes a flow. Anything but proceed is an error, otherwise control passes
+    back to this flow to select another flow to be executed.
+    -->
+    <subflow-state id="CallInterceptFlow" subflow="#{currentEvent.id}">
+        <input name="calledAsSubflow" value="true" />
+        <transition on="proceed" to="WriteResultToStorage" />
+    </subflow-state>
+    
+    <action-state id="WriteResultToStorage">
+        <evaluate expression="WriteResultToStorage" />
+        <evaluate expression="'proceed'" />
+        <transition on="proceed" to="SelectInterceptFlow" />
+    </action-state>
+
+    <bean-import resource="intercept-beans.xml" />
+
+</flow>

@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: WS-Security nem alkalmazhat\u00f3 b\u00e1rmelyik webszolg\u00e1ltat\u00e1sra.  Hiba t\u00f6rt\u00e9nt a WS-Security ir\u00e1nyelv bet\u00f6lt\u0151 CXF keretrendszerbe t\u00f6rt\u00e9n\u0151 bejegyz\u00e9s\u00e9nek k\u00eds\u00e9rlete sor\u00e1n: [{0}]
+error.policy.notloaded.explanation=A WS-Security ir\u00e1nyelv bet\u00f6lt\u0151 nem jegyezhet\u0151 be a CXF keretrendszerbe kiszolg\u00e1l\u00f3ind\u00edt\u00e1s sor\u00e1n.  A hiba miatt a WS-Security fut\u00e1si k\u00f6rnyezet nem ker\u00fcl megh\u00edv\u00e1sra SOAP \u00fczenetekhez, \u00e9s nem lesznek hozz\u00e1adva WS-Security megszor\u00edt\u00e1sok.
+error.policy.notloaded.useraction=Jav\u00edtsa az \u00fczenetben le\u00edrt hib\u00e1t.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security nem alkalmazhat\u00f3 b\u00e1rmelyik webszolg\u00e1ltat\u00e1s \u00fcgyf\u00e9lalkalmaz\u00e1sra.  A WS-Security \u00fcgyf\u00e9lbe\u00e1ll\u00edt\u00e1si eleme, a wsSecurityClient nem l\u00e9tezik a server.xml f\u00e1jlban.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=A wsSecurity-1.1 szolg\u00e1ltat\u00e1s enged\u00e9lyezett, de a WS-Security \u00f6sszetev\u0151 nem tal\u00e1lja a wsSecurityClient elemet a server.xml f\u00e1jlban.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Ha WS-Security megszor\u00edt\u00e1sok sz\u00fcks\u00e9gesek egy \u00fcgyf\u00e9l webszolg\u00e1ltat\u00e1s alkalmaz\u00e1shoz, akkor adja hozz\u00e1 a wsSecurityClient konfigur\u00e1ci\u00f3s elemet a server.xml f\u00e1jlhoz.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: WS-Security nem alkalmazhat\u00f3 b\u00e1rmelyik webszolg\u00e1ltat\u00e1s szolg\u00e1ltat\u00f3 alkalmaz\u00e1sra. A WS-Security szolg\u00e1ltat\u00f3 be\u00e1ll\u00edt\u00e1si eleme, a wsSecurityProvider nem l\u00e9tezik a server.xml f\u00e1jlban.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=A wsSecurity-1.1 szolg\u00e1ltat\u00e1s enged\u00e9lyezett, de a WS-Security \u00f6sszetev\u0151 nem tal\u00e1lja a wsSecurityProvider elemet a server.xml f\u00e1jlban.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Ha WS-Security megszor\u00edt\u00e1sok sz\u00fcks\u00e9gesek egy szolg\u00e1ltat\u00f3 webszolg\u00e1ltat\u00e1s alkalmaz\u00e1shoz, akkor adja hozz\u00e1 a wsSecurityProvider konfigur\u00e1ci\u00f3s elemet a server.xml f\u00e1jlhoz.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Egy h\u00edv\u00f3 token be\u00e1ll\u00edt\u00e1s nem alkalmazhat\u00f3 webszolg\u00e1ltat\u00e1s szolg\u00e1ltat\u00f3 alkalmaz\u00e1sokra.  A server .xml f\u00e1jlban a wsSecurityProvider be\u00e1ll\u00edt\u00e1sban a callerToken elemhez megadott [{0}] n\u00e9v \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=A callerToken elemhez megadott n\u00e9v a server.xml f\u00e1jl wsSecurityProvider be\u00e1ll\u00edt\u00e1s\u00e1ban \u00e9rv\u00e9nytelen.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Biztos\u00edtsa azt, hogy a server.xml f\u00e1jlban a callerToken elem sz\u00e1m\u00e1ra t\u00e1mogatott \u00e9rt\u00e9k legyen megadva. Az \u00e9rv\u00e9nyes t\u00edpusok a hiba\u00fczenetben l\u00e1that\u00f3k.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz.  A callerToken nem azonos\u00edthat\u00f3 a bej\u00f6v\u0151  \u00fczenetben, mert t\u00f6bb UsernameToken tal\u00e1lhat\u00f3 a SOAP biztons\u00e1gi fejl\u00e9cben.
+multiple_unt_exist_err.explanation=A server.xml f\u00e1jl callerToken elem\u00e9nek be\u00e1ll\u00edt\u00e1sa UsernameToken, a bej\u00f6v\u0151 SOAP \u00fczenet pedig t\u00f6bb UsernameToken elemet tartalmaz.  Emiatt a WS-Security fut\u00e1si k\u00f6rnyezet nem tudja meg\u00e1llap\u00edtani, hogy melyik UsernameToken elemet kell haszn\u00e1lni a h\u00edv\u00f3 tokenhez.
+multiple_unt_exist_err.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) M\u00f3dos\u00edtsa az \u00fcgyf\u00e9lbe\u00e1ll\u00edt\u00e1st \u00fagy, hogy az csak egy UsernameToken elemet k\u00fcldj\u00f6n 2) T\u00e1vol\u00edtsa el a callerToken be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlb\u00f3l
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz.  Be van \u00e1ll\u00edtva egy {0} callerToken, de nincsen {0} token a bej\u00f6v\u0151 SOAP biztons\u00e1gi fejl\u00e9cben.  Egy h\u00edv\u00f3 token nem v\u00e1laszthat\u00f3 ki.
+no_caller_exist_err.explanation=A server.xml f\u00e1jl callerToken eleme nincs jelen a SOAP biztons\u00e1gi fejl\u00e9cben. 
+no_caller_exist_err.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) M\u00f3dos\u00edtsa az \u00fcgyf\u00e9lbe\u00e1ll\u00edt\u00e1st \u00fagy, hogy az a helyes h\u00edv\u00f3tokent k\u00fcldje el 2) T\u00e1vol\u00edtsa el a callerToken be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlb\u00f3l
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz [{0}] miatt.
+error_authenticate.explanation=A SOAP biztons\u00e1gi fejl\u00e9cb\u0151l lek\u00e9rt h\u00edv\u00f3 token biztons\u00e1gi t\u00e1rgya nem hozhat\u00f3 l\u00e9tre.  A hiba oka az \u00fczenetben van le\u00edrva.
+error_authenticate.useraction=Jav\u00edtsa az \u00fczenetben le\u00edrt hib\u00e1t.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz.  A h\u00edv\u00f3 token nem azonos\u00edthat\u00f3 a bej\u00f6v\u0151 \u00fczenetben.  A server.xml f\u00e1jlban a callerToken be\u00e1ll\u00edt\u00e1sa X509Token, az endorsingSupportingToken be\u00e1ll\u00edt\u00e1sa true (alap\u00e9rtelmez\u00e9s), \u00e9s t\u00f6bb EndorsingSupportingToken tal\u00e1lhat\u00f3 a bej\u00f6v\u0151 SOAP biztons\u00e1gi fejl\u00e9cben.
+multiple_endorsing_token_err.explanation=A server.xml f\u00e1jlban a callerToken be\u00e1ll\u00edt\u00e1sa X509Token, az endorsingSupportingToken be\u00e1ll\u00edt\u00e1sa true (alap\u00e9rtelmez\u00e9s), \u00e9s t\u00f6bb EndorsingSupportingToken tal\u00e1lhat\u00f3 a bej\u00f6v\u0151 SOAP biztons\u00e1gi fejl\u00e9cben.  Mivel egyetlen h\u00edv\u00f3 tokennek l\u00e9teznie kell az \u00fczenetben, hogy egy h\u00edv\u00f3 tokent sikeresen ki lehessen v\u00e1lasztani, a t\u00f6bb EndorsingSupportingToken nem enged\u00e9lyezett.                                   
+multiple_endorsing_token_err.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) M\u00f3dos\u00edtsa az ir\u00e1nyelvet \u00fagy, hogy az  \u00fczenet csak egy endorsingSupportingToken elemet tartalmazzon 2) T\u00e1vol\u00edtsa el a callerToken be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlb\u00f3l 3) \u00c1ll\u00edtsa a server.xml f\u00e1jl callerToken be\u00e1ll\u00edt\u00e1s\u00e1ban az endorsingSupportingToken \u00e9rt\u00e9k\u00e9t false-ra.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz.  A h\u00edv\u00f3 token nem azonos\u00edthat\u00f3 a bej\u00f6v\u0151 \u00fczenetben.  A server.xml f\u00e1jlban a callerToken be\u00e1ll\u00edt\u00e1sa X509Token, az endorsingSupportingToken be\u00e1ll\u00edt\u00e1sa false, \u00e9s t\u00f6bb Aszimmetrikus al\u00e1\u00edr\u00e1s token tal\u00e1lhat\u00f3 a bej\u00f6v\u0151 SOAP biztons\u00e1gi fejl\u00e9cben.
+multiple_asymmetric_token_err.explanation=A server.xml f\u00e1jlban a callerToken be\u00e1ll\u00edt\u00e1sa X509Token, az endorsingSupportingToken be\u00e1ll\u00edt\u00e1sa false, \u00e9s t\u00f6bb Aszimmetrikus al\u00e1\u00edr\u00e1s token tal\u00e1lhat\u00f3 a bej\u00f6v\u0151 SOAP biztons\u00e1gi fejl\u00e9cben.  Mivel egyetlen h\u00edv\u00f3 tokennek l\u00e9teznie kell az \u00fczenetben, hogy egy h\u00edv\u00f3 tokent sikeresen ki lehessen v\u00e1lasztani, a t\u00f6bb Aszimmetrikus al\u00e1\u00edr\u00e1s token nem enged\u00e9lyezett.                                   
+multiple_asymmetric_token_err.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) M\u00f3dos\u00edtsa az ir\u00e1nyelvet \u00fagy, hogy az  \u00fczenet csak egy Aszimmetrikus al\u00e1\u00edr\u00e1s tokent tartalmazzon 2) T\u00e1vol\u00edtsa el a callerToken be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlb\u00f3l 3) \u00c1ll\u00edtsa a server.xml f\u00e1jl callerToken be\u00e1ll\u00edt\u00e1s\u00e1ban az endorsingSupportingToken \u00e9rt\u00e9k\u00e9t false-ra.
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: Az SAML tokenben a NotBefore igazol\u00e1s [{0}] k\u00edv\u00fcl esik a tartom\u00e1nyon. Az aktu\u00e1lis id\u0151: [{1}]. Az \u00f3raelt\u00e9r\u00e9s aktu\u00e1lis be\u00e1ll\u00edt\u00e1sa [{2}] m\u00e1sodperc.
+saml_token_not_yet_valid.explanation=Az SAML tokenben a NotBefore igazol\u00e1s adja meg azt az id\u0151t, amikor a token \u00e9rv\u00e9nyess\u00e9 v\u00e1lik; a token nem haszn\u00e1lhat\u00f3 ezel\u0151tt. Ennek az SAML tokennek a haszn\u00e1lat\u00e1hoz a NotBefore igazol\u00e1s \u00e9rt\u00e9k\u00e9nek m\u00faltbeli id\u0151pontnak kell lennie. A hiba lehets\u00e9ges oka az, hogy a vev\u0151 \u00f3r\u00e1ja nincs szinkronban az \u00e9rv\u00e9nyes\u00edt\u00e9s l\u00e9trehoz\u00f3j\u00e1nak az \u00f3r\u00e1j\u00e1val.
+saml_token_not_yet_valid.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonoss\u00e1gszolg\u00e1ltat\u00f3n l\u00e9v\u0151 d\u00e1tum \u00e9s id\u0151 szinkroniz\u00e1lva van ezzel a SAML webes egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00f3val, vagy n\u00f6velje az \u00f3raelt\u00e9r\u00e9st.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: Az SAML tokenben a NotOnOrAfter igazol\u00e1s [{0}] k\u00edv\u00fcl esik a tartom\u00e1nyon. Az aktu\u00e1lis id\u0151: [{1}]. Az \u00f3raelt\u00e9r\u00e9s aktu\u00e1lis be\u00e1ll\u00edt\u00e1sa [{2}] m\u00e1sodperc.
+saml_token_expired.explanation=Az SAML tokenben a NotOnOrAfter igazol\u00e1s adja meg azt az id\u0151t, amikor a token lej\u00e1r. A tokent ezel\u0151tt kell haszn\u00e1lni. A hiba lehets\u00e9ges oka az, hogy a vev\u0151 \u00f3r\u00e1ja nincs szinkronban az \u00e9rv\u00e9nyes\u00edt\u00e9s l\u00e9trehoz\u00f3j\u00e1nak az \u00f3r\u00e1j\u00e1val.
+saml_token_expired.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonoss\u00e1gszolg\u00e1ltat\u00f3n l\u00e9v\u0151 d\u00e1tum \u00e9s id\u0151 szinkroniz\u00e1lva van ezzel a SAML webes egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00f3val, vagy n\u00f6velje az \u00f3raelt\u00e9r\u00e9st.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: A SAML tokenben tal\u00e1lhat\u00f3 [{0}] IssueInstant k\u00edv\u00fcl esik a tartom\u00e1nyon. Az aktu\u00e1lis id\u0151: [{1}]. Az \u00f3raelt\u00e9r\u00e9s aktu\u00e1lis be\u00e1ll\u00edt\u00e1sa [{2}] m\u00e1sodperc.
+saml_token_issued_too_long_ago.explanation=Az SAML tokenben az IssueInstant igazol\u00e1s t\u00fal messze volt a m\u00faltban, hogy a token haszn\u00e1lhat\u00f3 legyen. Egy SAML tokent a kiad\u00e1sa ut\u00e1n egy be\u00e1ll\u00edtott id\u0151n bel\u00fcl kell haszn\u00e1lni. A hiba lehets\u00e9ges oka az, hogy a vev\u0151 \u00f3r\u00e1ja nincs szinkronban az \u00e9rv\u00e9nyes\u00edt\u00e9s l\u00e9trehoz\u00f3j\u00e1nak az \u00f3r\u00e1j\u00e1val.
+saml_token_issued_too_long_ago.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonoss\u00e1gszolg\u00e1ltat\u00f3n l\u00e9v\u0151 d\u00e1tum \u00e9s id\u0151 szinkroniz\u00e1lva van ezzel a SAML webes egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00f3val, vagy n\u00f6velje az \u00f3raelt\u00e9r\u00e9st.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: A SAML tokenben tal\u00e1lhat\u00f3 [{0}] IssueInstant j\u00f6v\u0151beli, ez\u00e9rt k\u00edv\u00fcl esik a tartom\u00e1nyon. Az aktu\u00e1lis id\u0151: [{1}]. Az \u00f3raelt\u00e9r\u00e9s aktu\u00e1lis be\u00e1ll\u00edt\u00e1sa [{2}] m\u00e1sodperc.
+saml_token_issue_instant_in_future.explanation=Az SAML tokenben az IssueInstant igazol\u00e1s j\u00f6v\u0151beli id\u0151pontra van be\u00e1ll\u00edtva, ez\u00e9rt nem min\u0151s\u00fcl \u00e9rv\u00e9nyesnek. Az IssueInstant \u00e9rt\u00e9k\u00e9nek a m\u00faltban kell lennie, hogy az SAML token \u00e9rv\u00e9nyes legyen. A hiba lehets\u00e9ges oka az, hogy a vev\u0151 \u00f3r\u00e1ja nincs szinkronban az \u00e9rv\u00e9nyes\u00edt\u00e9s l\u00e9trehoz\u00f3j\u00e1nak az \u00f3r\u00e1j\u00e1val.
+saml_token_issue_instant_in_future.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonoss\u00e1gszolg\u00e1ltat\u00f3n l\u00e9v\u0151 d\u00e1tum \u00e9s id\u0151 szinkroniz\u00e1lva van ezzel a SAML webes egypontos bejelentkez\u00e9s (SSO) szolg\u00e1ltat\u00f3val, vagy n\u00f6velje az \u00f3raelt\u00e9r\u00e9st.
+
+failed_to_extract_saml_element=CWWKW0218W: Kiv\u00e9tel t\u00f6rt\u00e9nt az SAML elemnek a megadott SAML tokenb\u0151l kinyer\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: [{0}]
+failed_to_extract_saml_element.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az SAML token \u00e9rtelmez\u00e9sekor. Lehet, hogy a token rossz form\u00e1tum\u00fa, vagy bels\u0151 hiba t\u00f6rt\u00e9nt a token karakterl\u00e1nc\u00e1nak \u00e9rtelmez\u00e9sekor.
+failed_to_extract_saml_element.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt n\u00e9zze meg a kiszolg\u00e1l\u00f3 napl\u00f3it.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: Kiv\u00e9tel t\u00f6rt\u00e9nt, am\u00edg megk\u00eds\u00e9relte kinyerni az SAML tokent a t\u00e1rgyb\u00f3l. A kiv\u00e9tel: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az SAML token kinyer\u00e9sekor a t\u00e1rgyb\u00f3l.
+failed_to_extract_saml_token_from_subject.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt n\u00e9zze meg a kiszolg\u00e1l\u00f3 napl\u00f3it.
+
+failed_to_obtain_subject_info=CWWKW0220E: A hiteles\u00edt\u00e9s sikertelen volt, mert kiv\u00e9tel t\u00f6rt\u00e9nt a t\u00e1rgyinform\u00e1ci\u00f3k beolvas\u00e1sakor az SAML igazol\u00e1sb\u00f3l. A kiv\u00e9tel: [{0}]
+failed_to_obtain_subject_info.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott SAML tokenb\u0151l a t\u00e1rgy inform\u00e1ci\u00f3inak beolvas\u00e1sakor.
+failed_to_obtain_subject_info.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt n\u00e9zze meg a kiszolg\u00e1l\u00f3 napl\u00f3it.
+
+failed_to_authenticate=CWWKW0221E: A hiteles\u00edt\u00e9s nem v\u00e1rt kiv\u00e9tel miatt meghi\u00fasult. A kiv\u00e9tel: [{0}].
+failed_to_authenticate.explanation=Val\u00f3sz\u00edn\u0171leg probl\u00e9ma fordult el\u0151 a t\u00e1rgy vagy azonoss\u00e1g inform\u00e1ci\u00f3inak beolvas\u00e1sakor a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1ssal folytatott kommunik\u00e1ci\u00f3 sor\u00e1n.
+failed_to_authenticate.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt n\u00e9zze meg a kiszolg\u00e1l\u00f3 napl\u00f3it. Gondoskodjon arr\u00f3l, hogy az SAML token t\u00e1rgyinform\u00e1ci\u00f3i a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban a v\u00e1rt \u00e9rt\u00e9kekre legyenek lek\u00e9pezve.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: A token \u00e9rv\u00e9nyes\u00edt\u00e9se sikertelen, mert a kapott UsernameToken jelsz\u00f3t\u00edpus [{0}] nem egyezik a sz\u00fcks\u00e9ges jelsz\u00f3t\u00edpussal [{0}].
+password_type_mismatch.explanation=A UsernameToken jelsz\u00f3t\u00edpusa nem egyezett a WS-Security ir\u00e1nyelvben megadott sz\u00fcks\u00e9ges jelsz\u00f3t\u00edpussal. Ezeknek a t\u00edpusoknak azonosaknak kell lenni\u00fck; Az \u00e9rv\u00e9nyes\u00edt\u00e9s sikeress\u00e9g\u00e9hez a webszolg\u00e1ltat\u00e1s \u00fcgyfel\u00e9nek ugyanazt a jelsz\u00f3t\u00edpust kell haszn\u00e1lnia, ami a WS-Security ir\u00e1nyelvben meg van adva.
+password_type_mismatch.useraction=Gondoskodjon arr\u00f3l, hogy a webszolg\u00e1ltat\u00e1s \u00fcgyfele ugyanazt a jelsz\u00f3t\u00edpust haszn\u00e1lja, mint ami a WS-Security ir\u00e1nyelvben meg van adva.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: A token \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult, mert egy\u00e9ni jelsz\u00f3t\u00edpus \u00e9szlelhet\u0151, de a k\u00e9r\u00e9sben megadott konfigur\u00e1ci\u00f3s adatok szerint az egy\u00e9ni jelsz\u00f3t\u00edpusok nem t\u00e1mogatottak.
+cannot_handle_custom_password_types.explanation=A UsernameToken jelszava nem kivonatolt \u00e9s nem sima sz\u00f6veg, ez\u00e9rt egy\u00e9ni jelsz\u00f3t\u00edpusnak min\u0151s\u00fcl. A k\u00e9r\u00e9s adatainak be\u00e1ll\u00edt\u00e1sai szerint az egy\u00e9ni jelsz\u00f3t\u00edpusok nem t\u00e1mogatottak.
+cannot_handle_custom_password_types.useraction=Gondoskodjon arr\u00f3l, hogy a webszolg\u00e1ltat\u00e1s \u00fcgyfele a UsernameToken profilban megadott jelsz\u00f3t\u00edpust haszn\u00e1ljon, vagy \u00e1ll\u00edtsa be a webszolg\u00e1ltat\u00f3t, hogy elfogadjon egy\u00e9ni jelsz\u00f3t\u00edpusokat.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: A UsernameToken \u00e9rt\u00e9kek\u00e9nt megadott felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 \u00fcres volt. Ellen\u0151rizze a UsernameToken \u00e9rt\u00e9k\u00e9t \u00e9s biztos\u00edtsa, hogy nem \u00fcres felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 legyen megadva a tokenben.
+empty_user_or_password.explanation=A UsernameToken \u00e9rt\u00e9kek\u00e9nt megadott felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 bejegyz\u00e9sek \u00fcresek voltak.
+empty_user_or_password.useraction=Ellen\u0151rizze, hogy meg van-e adva felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 a tokenben. Ha nem volt megadva felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3, akkor szerezzen be \u00faj UsernameToken-t.
+
+registry_exception_checking_password=CWWKW0225E: Kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s el\u00e9r\u00e9sekor vagy a(z) [{0}] felhaszn\u00e1l\u00f3 jelszav\u00e1nak ellen\u0151rz\u00e9sekor. A kiv\u00e9tel: [{1}]
+registry_exception_checking_password.explanation=Hiba t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s referenci\u00e1j\u00e1nak beolvas\u00e1sakor a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s szolg\u00e1ltat\u00e1sb\u00f3l, vagy kiv\u00e9tel t\u00f6rt\u00e9nt a megadott felhaszn\u00e1l\u00f3 jelszav\u00e1nak ellen\u0151rz\u00e9sekor.
+registry_exception_checking_password.useraction=A kiv\u00e9tellel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a hibanapl\u00f3kat. Gondoskodjon arr\u00f3l, hogy a megadott felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 helyes legyen, \u00e9s a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egy bejegyz\u00e9s\u00e9nek feleljen meg.
+
+check_password_failed=CWWKW0226E: A(z) [{0}] felhaszn\u00e1l\u00f3 nem \u00e9rv\u00e9nyes\u00edthet\u0151. Ellen\u0151rizze, hogy a megadott felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 hiteles\u00edt\u0151 adatok helyesek-e.
+check_password_failed.explanation=A megadott felhaszn\u00e1l\u00f3 nem \u00e9rv\u00e9nyes\u00edthet\u0151 a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1ssal. Ez val\u00f3sz\u00edn\u0171leg az\u00e9rt van, mert egy felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 nem egyezik.
+check_password_failed.useraction=A megadott hiteles\u00edt\u0151 adatok ellen\u0151rz\u00e9s\u00e9vel biztos\u00edtsa, hogy a felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 megfeleljenek a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egy bejegyz\u00e9s\u00e9nek.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: A jelsz\u00f3 visszah\u00edv\u00e1s-kezel\u0151je null \u00e9rt\u00e9k\u0171 jelsz\u00f3t adott vissza.
+no_password_returned_by_callback.explanation=A jelsz\u00f3 visszah\u00edv\u00e1s-kezel\u0151j\u00e9nek nem null \u00e9rt\u00e9k\u0171t jelsz\u00f3t kell visszaadnia a PasswordDigest t\u00edpus\u00fa jelsz\u00f3kra egy UsernameToken-ben.
+no_password_returned_by_callback.useraction=Gondoskodjon arr\u00f3l, hogy a jelsz\u00f3 visszah\u00edv\u00e1s-kezel\u0151je nem null \u00e9rt\u00e9k\u0171 \u00e9s nem \u00fcres jelsz\u00f3t adjon vissza egy \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3ra.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: A SAML igazol\u00e1s nem tartalmaz [{0}] attrib\u00fatumot.  Egy [{0}] attrib\u00fatum sz\u00fcks\u00e9ges, mert a h\u00edv\u00f3 konfigur\u00e1ci\u00f3ja ezt [{1}] azonos\u00edt\u00f3k\u00e9nt adta meg. 
+SAML20_ATTRIBUTE_ERR.explanation=Vagy hi\u00e1nyzik az SAML igazol\u00e1sb\u00f3l az attrib\u00fatum, vagy a h\u00edv\u00f3 konfigur\u00e1ci\u00f3ja rossz \u00e9rt\u00e9ket adott meg az eml\u00edtett azonos\u00edt\u00f3hoz.
+SAML20_ATTRIBUTE_ERR.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1)Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az attrib\u00fatum l\u00e9tezik az SAML igazol\u00e1sban. 2) \u00c1ll\u00edtsa be az callerToken-t, hogy az azonos\u00edt\u00f3t\u00f3l k\u00fcl\u00f6nb\u00f6z\u0151 attrib\u00fatumot adjon meg.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: A SAML igazol\u00e1s nem tartalmaz [{0}] elemet.  Egy [{0}] elem megad\u00e1sa k\u00f6telez\u0151.  
+SAML20_ELEMENT_ERR.explanation=Az SAML igazol\u00e1sb\u00f3l hi\u00e1nyzik egy elem, amit a WS-Security fut\u00e1si k\u00f6rnyezet megk\u00f6vetel a h\u00edv\u00f3 token feldolgoz\u00e1s\u00e1hoz.
+SAML20_ELEMENT_ERR.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1)Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a sz\u00fcks\u00e9ges elem l\u00e9tezik az SAML igazol\u00e1sban. 2) \u00c1ll\u00edtsa be a callerToken-t, hogy adjon meg \u00e9rt\u00e9ket az elemhez.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: A UserCredentialResolver nem tudja feloldani a SAML igazol\u00e1st, \u00e9s UserIdentityException kiv\u00e9telt dob a k\u00f6vetkez\u0151 \u00fczenettel: [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=A felhaszn\u00e1l\u00f3 szolg\u00e1ltat\u00e1s \u00e1ltal biztos\u00edtott UserCredentialResolver szolg\u00e1ltat\u00e1s nem tudta megfelel\u0151en lek\u00e9pezni a SAML igazol\u00e1st, \u00e9s egy UserIdentityException kiv\u00e9telt dobott.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a UserCredentialResolver szolg\u00e1ltat\u00e1s megfelel\u0151en van be\u00e1ll\u00edtva, ha nem v\u00e1rta a UserIdentityException kiv\u00e9tel dob\u00e1s\u00e1t.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz.  A callerToken nem azonos\u00edthat\u00f3 a bej\u00f6v\u0151  \u00fczenetben, mert t\u00f6bb Saml igazol\u00e1s tal\u00e1lhat\u00f3 a SOAP biztons\u00e1gi fejl\u00e9cben.
+multiple_saml_exist_err.explanation=A server.xml f\u00e1jl callerToken elem\u00e9nek be\u00e1ll\u00edt\u00e1sa SamlToken, a bej\u00f6v\u0151 SOAP \u00fczenet pedig t\u00f6bb Saml igazol\u00e1st tartalmaz.  Emiatt a WS-Security fut\u00e1si k\u00f6rnyezet nem tudja meg\u00e1llap\u00edtani, hogy melyik Saml igazol\u00e1st kell haszn\u00e1lni a h\u00edv\u00f3 tokenhez.
+multiple_saml_exist_err.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) M\u00f3dos\u00edtsa az \u00fcgyf\u00e9lbe\u00e1ll\u00edt\u00e1st \u00fagy, hogy az csak egy Saml igazol\u00e1st k\u00fcldj\u00f6n 2) T\u00e1vol\u00edtsa el a callerToken be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlb\u00f3l
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a webszolg\u00e1ltat\u00e1shoz [{0}] felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3val.
+error_authenticate_maptouser.explanation=A SOAP biztons\u00e1gi fejl\u00e9cb\u0151l lek\u00e9rt h\u00edv\u00f3 token biztons\u00e1gi t\u00e1rgya nem hozhat\u00f3 l\u00e9tre. Gondoskodjon arr\u00f3l, hogy az \u00fczenetben megadott felhaszn\u00e1l\u00f3 l\u00e9tezzen a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban.
+error_authenticate_maptouser.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) Gondoskodjon arr\u00f3l, hogy a felhaszn\u00e1l\u00f3 l\u00e9tezzen a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban a server.xml f\u00e1jlban. 2) Ne \u00e1ll\u00edtsa be a mapToUserRegistry attrib\u00fatumot a callerToken konfigur\u00e1ci\u00f3ban.
+
+no_callbacks_provided=CWWKW0233E: Nem volt megadva visszah\u00edv\u00e1s a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez.
+no_callbacks_provided.explanation=SAML token feldolgoz\u00e1s\u00e1hoz \u00e9s visszaad\u00e1s\u00e1hoz legal\u00e1bb egy visszah\u00edv\u00e1st \u00e1t kell adni a visszah\u00edv\u00e1s-kezel\u0151 sz\u00e1m\u00e1ra.
+no_callbacks_provided.useraction=Ebben az esetben nincs felhaszn\u00e1l\u00f3i teend\u0151.
+
+no_saml_found_in_subject=CWWKW0234E: A sz\u00fcks\u00e9ges SAML token hi\u00e1nyzik a t\u00e1rgyb\u00f3l.
+no_saml_found_in_subject.explanation=Hiba t\u00f6rt\u00e9nt az SAML token kinyer\u00e9sekor a t\u00e1rgyb\u00f3l vagy egy SAML elem nem tal\u00e1lhat\u00f3 az aktu\u00e1lis t\u00e1rgyban.
+no_saml_found_in_subject.useraction=Ha l\u00e9trehozza a futtat\u00e1s (run-as) t\u00e1rgyat, akkor \u00fcgyeljen arra, hogy az SAML token hozz\u00e1 legyen adva a t\u00e1rgyhoz. Ellenkez\u0151 esetben az SAML konfigur\u00e1ci\u00f3ban az includeTokenInSubject attrib\u00fatum ellen\u0151rz\u00e9s\u00e9vel gondoskodjon arr\u00f3l, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja t\u00e1mogassa az SAML token hozz\u00e1ad\u00e1s\u00e1t a t\u00e1rgyhoz.

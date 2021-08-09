@@ -1,0 +1,41 @@
+<server description="JavaEESec Multiple Module FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsf-2.3</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <basicRegistry id="basic1" realm="NoJavaEESecRealm">
+        <user name="basicuser1" password="s3cur1ty" />
+        <user name="basicuser2" password="s3cur1ty" />
+        <user name="basicrunasuser1" password="s3cur1ty" />
+        <group name="basicgroup1">
+            <member name="basicuser1" />
+        </group>
+    </basicRegistry>
+
+
+    <application type="ear" id="multipleModuleRunAsMixed" name="multipleModuleRunAsMixed" location="multipleModuleRunAsMixed.ear">
+        <application-bnd>
+            <security-role name="grantedgroup">
+                <group name="grantedgroup" access-id="grantedgroup"/>
+            </security-role>
+            <security-role name="javaeesec_runas">
+                <run-as userid="runasuser1" />
+            </security-role>
+            <security-role name="javaeesec_runas2">
+                <run-as userid="anotherrunasuser1" password="{xor}PjFvKzc6LSxsPCotbism" />
+            </security-role>
+            <security-role name="basicgroup1">
+                <group name="basicgroup1" />
+            </security-role>
+            <security-role name="nojavaeesec_runas">
+                <run-as userid="basicrunasuser1" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

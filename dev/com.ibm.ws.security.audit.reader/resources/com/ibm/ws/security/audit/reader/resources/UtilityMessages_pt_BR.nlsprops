@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Erro: {0}
+error.inputConsoleNotAvailable=O console de entrada n\u00e3o est\u00e1 dispon\u00edvel.
+error.missingIO=Erro, dispositivo de E/S ausente: {0}.
+
+usage=Uso: {0}
+task.unknown=Tarefa desconhecida: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Existem muitos argumentos.
+insufficientArgs=Argumentos insuficientes.
+invalidArg=O argumento {0} \u00e9 inv\u00e1lido.
+invalidValue=O valor {0} \u00e9 inv\u00e1lido para o argumento {1}.
+missingArg=O argumento {0} est\u00e1 ausente.
+missingValue=Um valor est\u00e1 ausente para o argumento {0}.
+missingArg2=Use o argumento {0} ou o argumento {1} deve ser fornecido.
+exclusiveArg=O argumento {0} ou o argumento {1} deve ser especificado, mas n\u00e3o ambos.
+serverNotFound=O servidor especificado {0} n\u00e3o foi encontrado no local {1}.
+missingArgs= Os argumentos a seguir est\u00e3o ausentes: {0} e {1}.
+missingArgs3=Os argumentos a seguir est\u00e3o ausentes: {0}, {1} e {2}.
+invalidFileLocations=O caminho completo {0} especificado para o argumento --auditFileLocation \u00e9 o mesmo que o caminho completo {1} especificado para o argumento --outputFileLocation.  Ambos os caminhos devem ser exclusivos.
+invalidURLFormat=O valor {0} especificado para o argumento {1} n\u00e3o est\u00e1 no formato completo de URL do arquivo.
+
+password.enterText=Inserir senha:
+password.reenterText=Inserir senha novamente:
+password.readError=Erro ao ler senha.
+password.entriesDidNotMatch=As senhas n\u00e3o corresponderam.
+
+audit.NonWriteableOuputFile=O valor {0} especificado para --outputFileLocation \u00e9 um arquivo n\u00e3o grav\u00e1vel.  Assegure-se de que o local especificado para o arquivo de sa\u00edda seja grav\u00e1vel.
+audit.NoKeyStorePasswordValue=Nenhuma senha do keystore foi especificada para o armazenamento de chaves de auditoria {0}.
+audit.MismatchingEncrypt=O log de auditoria, {0}, est\u00e1 criptografado, mas o argumento --encrypted n\u00e3o foi especificado ou foi especificado e configurado para false.
+audit.MismatchingSign=O log de auditoria, {0}, est\u00e1 assinado, mas o argumento --signed n\u00e3o foi especificado ou foi especificado e configurado para false.
+audit.MismatchingEncryptSign=O log de auditoria, {0}, est\u00e1 criptografado e assinado, mas o argumento --signed ou --encrypted n\u00e3o foi especificado ou foi especificado e configurado para false.
+security.audit.UnsupportedKeyStoreType=O valor de tipo de keystore {0} para o argumento {1} n\u00e3o \u00e9 suportado.
+security.audit.UnknownHost=Falha ao obter o nome do host da m\u00e1quina na qual o Audit Reader Utility est\u00e1 em execu\u00e7\u00e3o. 
+security.audit.KeyStoreException=Foi levantada uma exce\u00e7\u00e3o ao tentar obter uma inst\u00e2ncia do armazenamento de chaves com o tipo de armazenamento de chaves e o tipo de provedor especificados.
+security.audit.NoSuchProviderException=Foi levantada uma exce\u00e7\u00e3o ao tentar obter uma inst\u00e2ncia do armazenamento de chaves com o provedor especificado.  N\u00e3o existe provedor desse tipo.
+security.audit.MalformedURLException=A exce\u00e7\u00e3o foi levantada ao tentar abrir o armazenamento de chaves.  O local do armazenamento de chaves tem formato incorreto. 
+security.audit.CertificateException=A exce\u00e7\u00e3o de certificado foi levantada ao tentar carregar o armazenamento de chaves.
+security.audit.NoSuchAlgorithmException=A exce\u00e7\u00e3o foi levantada ao carregar o armazenamento de chaves.  Um algoritmo criptogr\u00e1fico espec\u00edfico foi solicitado, mas n\u00e3o est\u00e1 dispon\u00edvel.
+security.audit.FileNotFound=O arquivo nomeado {0} n\u00e3o existe. 
+security.audit.ErrorLoadingKeystore=Erro ao carregar o keystore {0}. A senha pode ter sido incorretamente especificada. 
+security.audit.MismatchingEncKeystores=O valor de entrada, {0}, para o keystore especificado para conter o certificado usado para decriptografar registros de auditoria n\u00e3o corresponde ao keystore, {1}, especificado no log de auditoria.
+security.audit.MismatchingSigningKeystores=O valor de entrada, {0}, para o keystore especificado para conter o certificado usado para remover a assinatura de registros de auditoria n\u00e3o corresponde ao keystore, {1}, especificado no log de auditoria.
+security.audit.CannotFindCertificate=O alias de certificado {0} n\u00e3o existe no keystore {1}.

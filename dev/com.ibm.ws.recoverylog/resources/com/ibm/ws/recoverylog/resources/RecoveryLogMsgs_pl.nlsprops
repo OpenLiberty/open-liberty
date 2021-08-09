@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Us\u0142uga dziennika odtwarzania zosta\u0142a zawieszona ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=Us\u0142uga dziennika odtwarzania jest w stanie oczekiwania, aby umo\u017cliwi\u0107 systemowi utworzenie kopii zapasowych plik\u00f3w dziennika odtwarzania.
+CWRLS0001_SUSPEND_RLS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Us\u0142uga dziennika odtwarzania zosta\u0142a wznowiona ({0}).
+CWRLS0002_RESUME_RLS.explanation=Zawieszona wcze\u015bniej us\u0142uga dziennika odtwarzania zosta\u0142a prze\u0142\u0105czona w stan dzia\u0142ania.
+CWRLS0002_RESUME_RLS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Ten kod komunikatu s\u0142u\u017cy do obs\u0142ugi komunikat\u00f3w, kt\u00f3rym nie przydzielono jeszcze ich w\u0142asnych kod\u00f3w.
+CWRLS0003_GENERIC_ERROR.useraction=Wi\u0119cej informacji zawiera tekst komunikatu.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Nie mo\u017cna utworzy\u0107 pliku dziennika odtwarzania {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=Us\u0142uga dziennika odtwarzania nie mo\u017ce utworzy\u0107 pliku wskazanego w komunikacie. Katalog docelowy jest niedost\u0119pny lub system nie ma uprawnie\u0144 wystarczaj\u0105cych do utworzenia wymaganego pliku.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Sprawd\u017a, czy wymagana hierarchia katalog\u00f3w jest poprawna i dost\u0119pna dla us\u0142ugi dziennika odtwarzania.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Nie mo\u017cna uzyska\u0107 blokady na wy\u0142\u0105czno\u015b\u0107 w przypadku pliku {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=Us\u0142uga dziennika odtwarzania nie mo\u017ce zablokowa\u0107 na wy\u0142\u0105czno\u015b\u0107 pliku wskazanego w komunikacie.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Tworzenie nowego pliku dziennika odtwarzania {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=Ustanowiono nowy plik dziennika odtwarzania w celu zapisywania danych trwa\u0142ych.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: W po\u0142o\u017ceniu {0} nie znaleziono \u017cadnych istniej\u0105cych plik\u00f3w dziennika odtwarzania. Jest wykonywana operacja zimnego startu dziennika odtwarzania.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Poprzednio usuni\u0119to pliki dziennika odtwarzania lub pliki dziennika odtwarzania s\u0105 zapisywane w tym po\u0142o\u017ceniu po raz pierwszy. W obu przypadkach powi\u0105zana us\u0142uga nie uruchomi ani nie wykona operacji odtwarzania.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Dziennik odtwarzania zostanie oznaczony jako uszkodzony. [{0} {1}]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Dziennik odtwarzania zosta\u0142 uszkodzony i dalszy dost\u0119p do niego nie jest mo\u017cliwy. Komunikat wskazuje komponent i odpowiedni wyj\u0105tek.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Aby mo\u017cliwa by\u0142a naprawa dziennika, konieczny jest restart serwera. Spr\u00f3buj naprawi\u0107 wszystkie warunki wskazane w komunikacie wyj\u0105tku.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Szczeg\u00f3\u0142y dotycz\u0105ce niepowodzenia zwi\u0105zanego z dziennikiem odtwarzania: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Ten komunikat jest wy\u015bwietlany razem z komunikatem CWRLS0008E, aby wskaza\u0107 szczeg\u00f3\u0142y dotycz\u0105ce niepowodzenia zwi\u0105zanego z dziennikiem odtwarzania.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=U\u017cyj informacji zawartej w tym komunikacie oraz w komunikacie CWRLS0008E, aby poprawi\u0107 warunek, kt\u00f3ry spowodowa\u0142 niepowodzenie zwi\u0105zane z dziennikiem odtwarzania.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Trwa przetwarzanie operacji odtwarzania w przypadku lokalnego serwera produktu WebSphere ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=Us\u0142uga dziennika odtwarzania kieruje przetwarzaniem operacji odtwarzania powi\u0105zanych us\u0142ug klienta.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Trwa przetwarzanie operacji odtwarzania w przypadku serwera r\u00f3wnorz\u0119dnego produktu WebSphere ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=Us\u0142uga dziennika odtwarzania kieruje przetwarzaniem operacji odtwarzania powi\u0105zanych us\u0142ug klienta dla serwera r\u00f3wnorz\u0119dnego.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Wszystkie us\u0142ugi trwa\u0142e zosta\u0142y skierowane do przetwarzania operacji odtwarzania dla tego serwera produktu WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=Us\u0142uga dziennika odtwarzania spowodowa\u0142a rozpocz\u0119cie operacji odtwarzania przez wszystkie powi\u0105zane us\u0142ugi klienta.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Wszystkie us\u0142ugi trwa\u0142e zosta\u0142y skierowane do przetwarzania operacji odtwarzania dla serwera r\u00f3wnorz\u0119dnego produktu WebSphere ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=Us\u0142uga dziennika odtwarzania spowodowa\u0142a rozpocz\u0119cie operacji odtwarzania dla serwera r\u00f3wnorz\u0119dnego przez wszystkie us\u0142ugi klienta.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Trwa zatrzymywanie przetwarzania operacji odtwarzania w przypadku serwera r\u00f3wnorz\u0119dnego produktu WebSphere ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=Przetwarzanie operacji odtwarzania jest przekazywane do innego serwera aplikacji. Taka sytuacja wyst\u0119puje zwykle, je\u015bli serwer jest restartowany i odbiera prawo w\u0142asno\u015bci do swoich dziennik\u00f3w odtwarzania.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Blokowanie pliku dziennika odtwarzania zosta\u0142o wy\u0142\u0105czone we w\u0142a\u015bciwo\u015bciach niestandardowych us\u0142ugi transakcji.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=Jawnie wy\u0142\u0105czono mechanizm blokowania plik\u00f3w, kt\u00f3ry jest u\u017cywany przez us\u0142ug\u0119 dziennika odtwarzania w celu zapewniania wy\u0142\u0105cznego dost\u0119pu do plik\u00f3w dziennika odtwarzania.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Sprawd\u017a, czy istniej\u0105 odpowiednie ograniczenia umo\u017cliwiaj\u0105ce obs\u0142ug\u0119 tego ustawienia konfiguracji.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: W przypadku pliku nie mo\u017cna uzyska\u0107 blokady na wy\u0142\u0105czno\u015b\u0107, kt\u00f3ra jest niezb\u0119dna do przetwarzania operacji odtwarzania dla serwera {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Serwer docelowy jest aktywny lub konfiguracja dziennika odtwarzania jest niepoprawna.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Sprawd\u017a, czy konfiguracja dziennika odtwarzania jest poprawna.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Przerwano pr\u00f3b\u0119 uzyskania blokady pliku na wy\u0142\u0105czno\u015b\u0107, kt\u00f3ra jest niezb\u0119dna do przetwarzania operacji odtwarzania dla serwera {0}.   W celu przetworzenia operacji odtwarzania zostanie aktywowany inny serwer.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Sterowanie dziennikiem odtwarzania zosta\u0142o przekazane mi\u0119dzy dwoma serwerami aplikacji.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: Przerwano pr\u00f3b\u0119 zatrzymania operacji odtwarzania transakcyjnego i przekazania przetwarzania serwerowi lokalnemu ({0}).
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=Us\u0142uga dziennika odtwarzania uniemo\u017cliwi\u0142a serwerowi lokalnemu przekazanie sterowania swoimi dziennikami odtwarzania. Przyczyn\u0105 tej sytuacji mo\u017ce by\u0107 konfiguracja strategii grupy podstawowej.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Upewnij si\u0119, \u017ce konfiguracja strategii nie przypisuje prawa w\u0142asno\u015bci dziennika odtwarzania aktywnego serwera do innego serwera.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: W niestandardowych w\u0142a\u015bciwo\u015bciach us\u0142ugi transakcji us\u0142uga dziennika odtwarzania zosta\u0142a skonfigurowana jako us\u0142uga, w przypadku kt\u00f3rej mo\u017cna bezpiecznie tworzy\u0107 obrazy stanu.
+CWRLS0019_SNAPSHOT_SAFE.explanation=W przypadku \u017c\u0105dania wykonania stanu obrazu plik\u00f3w dziennika wszystkie dzia\u0142ania rejestruj\u0105ce transakcje zostaj\u0105 zawieszone na czas wykonywania stanu obrazu, aby pliki dziennika by\u0142y w znanym stanie sp\u00f3jnym z innymi systemami uwzgl\u0119dnionymi w obrazie stanu.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: W niestandardowych w\u0142a\u015bciwo\u015bciach us\u0142ugi transakcji us\u0142uga dziennika odtwarzania NIE zosta\u0142a skonfigurowana jako us\u0142uga, w przypadku kt\u00f3rej mo\u017cna bezpiecznie tworzy\u0107 obrazy stanu.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Podczas wykonywania obrazu stanu plik\u00f3w dziennika stan plik\u00f3w dziennika mo\u017ce nie by\u0107 sp\u00f3jny z innymi systemami uwzgl\u0119dnionymi w obrazie stanu.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Us\u0142uga dziennika odtwarzania zosta\u0142a wywo\u0142ana do wznowienia ({0}), ale istniej\u0105 inne oczekuj\u0105ce zawieszenia.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=Us\u0142uga dziennika odtwarzania zostanie wznowiona tylko wtedy, gdy nie b\u0119dzie \u017cadnych oczekuj\u0105cych operacji zawieszenia.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: Operacja zawieszenia us\u0142ugi dziennika odtwarzania przekroczy\u0142a limit czasu ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Je\u015bli nie ma oczekuj\u0105cych operacji zawieszenia, us\u0142uga dziennika odtwarzania zostanie wznowiona.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: Us\u0142uga dziennika odtwarzania zosta\u0142a wznowiona po przekroczeniu limitu czasu operacji zawieszenia.
+CWRLS0023_RESUME_RLS.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+CWRLS0023_RESUME_RLS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Wychwycono wyj\u0105tek podczas odtwarzania. {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= Wykryto wyj\u0105tek podczas pr\u00f3by odtworzenia spowodowanej poprzedni\u0105 awari\u0105 serwera.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: Uruchamianie serwera w trybie odtwarzania nie jest mo\u017cliwe przy w\u0142\u0105czonej us\u0142udze wysokiej dost\u0119pno\u015bci.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=W przypadku zastosowania konfiguracji wysokiej dost\u0119pno\u015bci odtwarzanie serwera mo\u017ce by\u0107 inicjowane automatycznie na serwerze r\u00f3wnorz\u0119dnym.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Serwera z w\u0142\u0105czon\u0105 us\u0142ug\u0105 wysokiej dost\u0119pno\u015bci nie pr\u00f3buj uruchamia\u0107 w trybie odtwarzania.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Nie mo\u017cna uzyska\u0107 blokady na wy\u0142\u0105czno\u015b\u0107 w przypadku pliku {0}. Ponawianie pr\u00f3by.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=Podczas odtwarzania us\u0142uga dziennika odtwarzania nie mog\u0142a zablokowa\u0107 na wy\u0142\u0105czno\u015b\u0107 pliku wskazanego w komunikacie, poniewa\u017c plik jest prawdopodobnie u\u017cywany. Us\u0142uga odtwarzania b\u0119dzie okresowo podejmowa\u0142a pr\u00f3by zablokowania na wy\u0142\u0105czno\u015b\u0107, aby mo\u017cna by\u0142o kontynuowa\u0107 odtwarzanie. Je\u015bli plik dziennika odtwarzania jest jednym z g\u0142\u00f3wnych dziennik\u00f3w odtwarzania serwera, proces uruchamiania zostanie zawieszony do czasu, a\u017c b\u0119dzie mo\u017cliwe uzyskanie dost\u0119pu do dziennik\u00f3w.  Je\u015bli plik dziennika odtwarzania nale\u017cy do innego serwera r\u00f3wnorz\u0119dnego, inny serwer mo\u017ce uzyska\u0107 blokady i przeprowadza\u0107 odtwarzanie r\u00f3wnoleg\u0142e. W takim przypadku ten serwer nie b\u0119dzie ju\u017c ponawia\u0142 pr\u00f3b odtwarzania.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Sprawd\u017a wszystkie pokrewne komunikaty, aby ustali\u0107 przyczyn\u0119 problemu. Je\u015bli nie ma powi\u0105zanych komunikat\u00f3w, sprawd\u017a po\u0142o\u017cenie dziennik\u00f3w odtwarzania i upewnij si\u0119, \u017ce nie uzyskuje do nich dost\u0119pu inny serwer. Taka sytuacja mo\u017ce na przyk\u0142ad wyst\u0105pi\u0107, je\u015bli wi\u0119cej ni\u017c jeden serwer zosta\u0142 skonfigurowany pod k\u0105tem korzystania z dziennik\u00f3w odtwarzania innego serwera.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Dla serwer\u00f3w {1} i {2} zdefiniowano wsp\u00f3lny katalog dziennik\u00f3w transakcji ({0}).
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Dzienniki transakcji dw\u00f3ch serwer\u00f3w korzystaj\u0105 ze wsp\u00f3lnej konfiguracji katalogu. Z tego powodu mo\u017ce istnie\u0107 rywalizacja dotycz\u0105ca blokady odtwarzania lub wyst\u0105pi\u0107 problem z integralno\u015bci\u0105 danych. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Dla ka\u017cdego serwera skonfiguruj osobne \u015bcie\u017cki do katalogu dziennik\u00f3w.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Dla serwer\u00f3w {1} i {2} zdefiniowano wsp\u00f3lny katalog dziennik\u00f3w kompensacji ({0}).
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Dzienniki kompensacji dw\u00f3ch serwer\u00f3w korzystaj\u0105 ze wsp\u00f3lnej konfiguracji katalogu. Z tego powodu mo\u017ce istnie\u0107 rywalizacja dotycz\u0105ca blokady odtwarzania lub wyst\u0105pi\u0107 problem z integralno\u015bci\u0105 danych. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Dla ka\u017cdego serwera skonfiguruj osobne \u015bcie\u017cki do katalogu dziennik\u00f3w.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Nie mo\u017cna przetworzy\u0107 operacji odtwarzania w przypadku serwera lokalnego produktu WebSphere. Dzia\u0142anie serwera zostanie zako\u0144czone.
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=Us\u0142uga dziennika odtwarzania nie mog\u0142a wykona\u0107 lub zako\u0144czy\u0107 operacji odtwarzania w przypadku serwera lokalnego. Nie mo\u017cna kontynuowa\u0107 pracy, wi\u0119c dzia\u0142anie serwera zostanie zako\u0144czone.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Trwa oczekiwanie na aktywowanie procesu odtwarzania dla serwera lokalnego produktu WebSphere przez mened\u017cer wysokiej dost\u0119pno\u015bci.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=Us\u0142uga dziennika odtwarzania nie mo\u017ce zainicjowa\u0107 procesu odtwarzania dla serwera lokalnego, poniewa\u017c oczekuje, aby mened\u017cer wysokiej dost\u0119pno\u015bci aktywowa\u0142 przypisanie do grupy dla dziennik\u00f3w odtwarzania tego serwera lokalnego.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Sprawd\u017a wszystkie pokrewne komunikaty, aby ustali\u0107 przyczyn\u0119 problemu. Je\u015bli nie ma powi\u0105zanych komunikat\u00f3w, sprawd\u017a konfiguracj\u0119 ustawie\u0144 domy\u015blnej grupy podstawowej oraz powi\u0105zane definicje strategii dla us\u0142ugi dziennika odtwarzania serwera. Je\u015bli na przyk\u0142ad strategia Zarz\u0105dzanie ruchem w klastrze zosta\u0142a ustawiona w taki spos\u00f3b, \u017ce nie jest obs\u0142ugiwane prze\u0142\u0105czanie poawaryjne, inny serwer mo\u017ce utrzymywa\u0107 dost\u0119p do dziennik\u00f3w i w ten spos\u00f3b uniemo\u017cliwia\u0107 aktywowanie tego serwera.
+

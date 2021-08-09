@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Apply Gradle Build Scan plugin.
+ * See: https://docs.gradle.com/build-scan-plugin/
+ */
+import com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin
+import com.gradle.scan.plugin.BuildScanPlugin
+import org.gradle.util.GradleVersion
+
+initscript {
+    def pluginVersion = "3.3.4"
+
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("com.gradle:gradle-enterprise-gradle-plugin:${pluginVersion}")
+    }
+}
+
+def isTopLevelBuild = gradle.getParent() == null
+
+if (isTopLevelBuild) {
+    def gradleVersion = GradleVersion.current().baseVersion
+    def atLeastGradle5 = gradleVersion >= GradleVersion.version("5.0")
+    def atLeastGradle6 = gradleVersion >= GradleVersion.version("6.0")
+
+    if (atLeastGradle6) {
+        beforeSettings {
+            if (!it.pluginManager.hasPlugin("com.gradle.enterprise")) {
+                it.pluginManager.apply(GradleEnterprisePlugin)
+            }
+            configureExtension(it.extensions["gradleEnterprise"])
+        }
+    } else if (atLeastGradle5) {
+        rootProject {
+            pluginManager.apply(BuildScanPlugin)
+            configureExtension(extensions["gradleEnterprise"])
+        }
+    }
+}
+
+void configureExtension(extension) {
+    def acceptFile = new File(gradle.gradleUserHomeDir, "build-scans/open-liberty/gradle-scans-license-agree.txt")
+    boolean isCiServer = System.getenv().containsKey("CI")
+    boolean hasAccepted = isCiServer || acceptFile.exists() && acceptFile.text.trim() == 'yes'
+    extension.buildScan.with {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        if (hasAccepted) {
+            termsOfServiceAgree = "yes"
+        }
+    }
+}

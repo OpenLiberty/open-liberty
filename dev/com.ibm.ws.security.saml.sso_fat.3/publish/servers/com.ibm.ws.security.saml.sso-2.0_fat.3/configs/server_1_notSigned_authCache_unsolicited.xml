@@ -1,0 +1,26 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+	<include location="${server.config.dir}/imports/saml_only_features.xml" />
+	<include location="${server.config.dir}/imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="${server.config.dir}/imports/misc.xml" />
+	<include location="${server.config.dir}/imports/samlProvider1_notSigned_unsolicited.xml" />
+	<include location="${server.config.dir}/imports/samlTestApplication.xml" />
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+
+	<authCache
+		initialSize="100"
+		maxSize="1000"
+		timeout="10s" />
+
+</server>

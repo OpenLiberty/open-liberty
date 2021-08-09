@@ -1,0 +1,426 @@
+/*******************************************************************************
+ * Copyright (c) 2018,2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+def featurePropertiesMap
+def gaFeatures
+def noShipFeatures
+def betaFeatures
+def gaPublicFeatures
+def getFeatureMap = {
+    if (featurePropertiesMap == null) {
+        Map<String,Properties> map = new TreeMap()
+        Set<String> featuresGa = new TreeSet()
+        Set<String> featuresBeta = new TreeSet()
+        Set<String> featuresNoShip = new TreeSet()
+        Set<String> publicFeatures = new TreeSet()
+        project(':com.ibm.websphere.appserver.features').fileTree(dir: '.', include: 'visibility/**/*.feature').each { featureFile ->
+            Properties featureProps = new Properties()
+            featureFile.withInputStream { featureProps.load(it) }
+            map.put(featureProps['symbolicName'], featureProps)
+            if ('ga'.equals(featureProps['kind'])) {
+                featuresGa.add(featureProps['symbolicName'])
+                if ('public'.equals(featureProps['visibility'])) {
+                    publicFeatures.add(featureProps['IBM-ShortName'])
+                }
+            } else if ('beta'.equals(featureProps['kind'])) {
+                featuresBeta.add(featureProps['symbolicName'])
+            } else if ('noship'.equals(featureProps['kind'])) {
+                featuresNoShip.add(featureProps['symbolicName'])
+            }
+        }
+        featurePropertiesMap = map
+        gaFeatures = featuresGa
+        betaFeatures = featuresBeta
+        noShipFeatures = featuresNoShip
+        gaPublicFeatures = publicFeatures
+    }
+    featurePropertiesMap
+}
+
+rootProject.ext.featureMap = { getFeatureMap() }
+
+def getGaFeatures = {
+    if (gaFeatures == null) {
+        getFeatureMap()
+    }
+    gaFeatures
+}
+
+rootProject.ext.gaFeatures = { useShortName ->
+    if (useShortName) {
+        if (gaFeatures == null) {
+            getFeatureMap()
+        }
+        gaPublicFeatures
+    } else {
+        getGaFeatures()
+    }
+}
+
+rootProject.ext.betaFeatures = {
+    if (betaFeatures == null) {
+        getFeatureMap()
+    }
+    betaFeatures
+}
+
+rootProject.ext.noShipFeatures = {
+    if (noShipFeatures == null) {
+        getFeatureMap()
+    }
+    noShipFeatures
+}
+
+copyPiiFiles {
+  doLast {
+    def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
+    featureFiles.each { featureFile ->
+      File featureFolder = featureFile.getParentFile()
+
+      Properties props = new Properties()
+      props.load(new FileInputStream(featureFile))
+
+      String featureName = props['symbolicName']
+
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
+        copy {
+          from new File(featureFolder, 'resources')
+          into rootProject.file('build.pii.package/nlssrc/' + featureName)
+          include 'l10n/*.properties'
+        }
+      }
+    }
+  }
+}
+
+Set<String> obtain(Map<String, Set<String>> featureToEditions, String edition) {
+  Set<String> features = featureToEditions.get(edition)
+  if (features == null) {
+    features = new TreeSet<String>()
+    if ('core'.equals(edition) || 'nd.controller'.equals(edition)) {
+      features.add('com.ibm.websphere.appserver.adminCenter-1.0')
+    }
+    featureToEditions.put(edition, features)
+  }
+  return features
+}
+
+def generateFeatureForEdition = {
+  Map<String,Set<String>> featureToEditions = new HashMap<String,Set<String>>()
+  Map<String,Properties> map = getFeatureMap()
+  map.keySet().each { featureName ->
+    Properties featureProps = map[featureName]
+    if ('public'.equals(featureProps['visibility'])) {
+      String kind = featureProps['kind']
+      if ('ga'.equals(kind)) {
+        String edition = featureProps['edition']
+        if (edition != null) {
+          Set<String> features = obtain(featureToEditions, edition)
+          features.add(featureProps['symbolicName'])
+        }
+        String selector = featureProps['selector']
+        if (selector != null) {
+          Set<String> features = obtain(featureToEditions, selector);
+          features.add(featureProps['symbolicName'])
+        }
+      } else if ('beta'.equals(kind)) {
+        Set<String> features = obtain(featureToEditions, 'beta');
+        features.add(featureProps['symbolicName'])
+      }
+    }
+  }
+
+  Properties props = new Properties()
+  featureToEditions.each { edition, features ->
+    props.put(edition + '.features', features.join(','))
+  }
+
+  // Store props to file
+  File propsFile = project.file('build/gen.features')
+  propsFile.createNewFile()
+  props.store(propsFile.newWriter(), null)
+}
+
+task createFeatureResources {
+  dependsOn parent.subprojects.minus(project).assemble
+
+  def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
+  inputs.files(featureFiles).skipWhenEmpty()
+  outputs.dir buildImage.file('wlp/lib/features')
+  doFirst {
+    buildImage.mkdir('wlp/lib/features')
+  }
+  doLast {
+    featureBndTaskdef(ant)
+    repositoryContentTaskdef(ant)
+
+    generateFeatureForEdition()
+
+    featureFiles.each { featureFile ->
+      File featureFolder = featureFile.getParentFile()
+
+      Properties props = new Properties()
+      props.load(new FileInputStream(featureFile))
+
+      String symbolicName = props['symbolicName']
+      String kind = props['kind']
+      if (kind == null) {
+        throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
+      }
+      String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
+        copy {
+          from l10nResources 
+          into buildImage.file('wlp/lib/features/l10n')
+        }
+      }
+      File iconsResources = new File(featureFolder, 'resources/icons')
+      if (iconsResources.exists()) {
+        copy {
+          from iconsResources
+          into buildImage.file('wlp/lib/features/icons')
+        }
+      }
+
+      ant.featureBnd(bnd: featureFile.getPath(),
+              workspaceDir: bndWorkspace.getBase(),
+              createESA: "false",
+              dir: buildImage.file('wlp'),
+              esaDir: new File(project.buildDir, 'tmp'),
+              createFor: kind,
+              buildType: kind,
+              junit: new File(project.buildDir, 'report/featureChecks.xml')) {
+        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+                licensePath: buildImage.file('lafiles/featureTerms'),
+                version: version,
+                licenseType: "EPL",
+                displayVersion: "OpenLiberty")
+        edition(baseEdition: "beta")
+        edition(baseEdition: "core",
+                validEditions: "")
+        edition(baseEdition: "base",
+                validEditions: "BASE,BASE_ILAN,BLUEMIX,DEVELOPERS,EXPRESS,ND,zOS")
+        edition(baseEdition: "nd",
+                validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
+        edition(baseEdition: "zos",
+                validEditions: "zOS")
+        edition(baseEdition: "bluemix",
+                validEditions: "BLUEMIX")
+        edition(baseEdition: "full")
+        edition(baseEdition: "unsupported")
+      }
+    }
+  }
+}
+
+assemble.dependsOn createFeatureResources
+
+task publishFeatureResources {
+  dependsOn parent.subprojects.assemble
+
+  def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
+  inputs.files(featureFiles).skipWhenEmpty()
+  outputs.dir buildImage.file('wlp/lib/features')
+  outputs.dir new File(project.buildDir, 'repo')
+  doFirst {
+    buildImage.mkdir('wlp/lib/features')
+    project.mkdir(new File(project.buildDir, 'repo'))
+  }
+  doLast {
+    featureBndTaskdef(ant)
+    repositoryContentTaskdef(ant)
+
+    generateFeatureForEdition()
+
+    featureFiles.each { featureFile ->
+      File featureFolder = featureFile.getParentFile()
+
+      Properties props = new Properties()
+      props.load(new FileInputStream(featureFile))
+
+      String symbolicName = props['symbolicName']
+      String kind = props['kind']
+      if (kind == null) {
+        throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
+      }
+      String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
+        copy {
+          from l10nResources
+          into buildImage.file('wlp/lib/features/l10n')
+        }
+      }
+      File iconsResources = new File(featureFolder, 'resources/icons')
+      if (iconsResources.exists()) {
+        copy {
+          from iconsResources
+          into buildImage.file('wlp/lib/features/icons')
+        }
+      }
+
+      ant.featureBnd(bnd: featureFile.getPath(),
+              workspaceDir: bndWorkspace.getBase(),
+              createESA: "true",
+              dir: buildImage.file('wlp'),
+              esaDir: new File(project.buildDir, 'repo'),
+              createFor: kind,
+              buildType: kind,
+              junit: new File(project.buildDir, 'report/featureChecks.xml')) {
+        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+                licensePath: buildImage.file('lafiles/featureTerms'),
+                version: version,
+                licenseType: "EPL",
+                displayVersion: "OpenLiberty")
+        edition(baseEdition: "beta")
+        edition(baseEdition: "core",
+                validEditions: "")
+        edition(baseEdition: "base",
+                validEditions: "Open")
+        edition(baseEdition: "full")
+      }
+
+      delete "${buildDir}/repo/description.html"
+      ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
+        entry(key: "licenseType", value: "UNSPECIFIED")
+      }
+      ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
+              descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
+              generateKnowledgeCentreLinks: "true",
+              licenseType: "EPL")
+      ant.zip(destfile: "${buildDir}/repo/${symbolicName}.esa.metadata.zip") {
+        fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
+        zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
+      }
+      delete "${buildDir}/repo/description.html"
+      delete "${buildDir}/repo/assetInfo.properties"
+    }
+  }
+}
+
+publishing {
+  publications {
+    Map<String,Properties> map = getFeatureMap()
+    map.keySet().each { featureName ->
+      Properties featureProps = map[featureName]
+      "feature-${featureName}" (MavenPublication) {
+        artifactId featureName
+        version project.version
+        artifact(new File(project.buildDir, 'repo/' + featureName + ".esa")) {
+          extension 'esa'
+          builtBy publishFeatureResources
+        }
+        artifact(new File(project.buildDir, 'repo/' + featureName + ".esa.metadata.zip")) {
+          extension 'esa.metadata.zip'
+          builtBy publishFeatureResources
+        }
+      }
+    }
+  }
+}
+
+def modifiedgaFeatureList = project.file('build/temp/gaFeaturesList.txt')
+task generateModifiedGAFeatureList {
+    dependsOn publishFeatureResources
+    inputs.dir new File(project.buildDir, 'repo')
+    outputs.file modifiedgaFeatureList
+    doLast {
+        project.mkdir('build/temp')
+        String features = ""
+        getGaFeatures().each { gaFeature ->
+            features += gaFeature + "*.esa\n"
+
+        }
+        modifiedgaFeatureList.text = features
+    }
+}
+
+publishing {
+    publications {
+        modifiedFeatureList(MavenPublication) {
+            artifactId 'openliberty-modifiedgaFeatureList'
+            version project.version
+            artifact(modifiedgaFeatureList) {
+                extension 'txt'
+                builtBy generateModifiedGAFeatureList
+            }
+        }
+    }
+}
+
+if (isAutomatedBuild) {
+    def singleOpenLibertyJsonRepo = project.file('build/temp/SingleJson.json')
+    task generateSingleJsonRepo {
+        dependsOn publishFeatureResources
+        inputs.dir new File(project.buildDir, 'repo')
+        outputs.file singleOpenLibertyJsonRepo
+        doLast {
+            project.mkdir('build/temp')
+
+            repositoryGeneratorTaskdef(ant)
+
+            getGaFeatures().each { gaFeature ->
+                ant.singleJsonRepo(assetFile: project.file("build/libs/repo/${gaFeature}.esa"),
+                        assetType: 'FEATURE',
+                        metadataFile: project.file("build/libs/repo/${gaFeature}.esa.metadata.zip"),
+                        jsonFile: singleOpenLibertyJsonRepo)
+            }
+        }
+    }
+
+    publishing {
+        publications {
+            newJsonArtifact(MavenPublication) {
+                artifactId 'openliberty-singleJson'
+                version project.version
+                artifact(singleOpenLibertyJsonRepo) {
+                    extension 'json'
+                    builtBy generateSingleJsonRepo
+                }
+            }
+        }
+    }
+
+    task generateMavenArtifact {
+        dependsOn generateSingleJsonRepo
+        doLast {
+            mavenRepoTaskdef(ant)
+
+            project.delete('build/temp/mavenArtifact')
+            project.mkdir('build/temp/mavenArtifact')
+            ant.libertyFeaturesToMavenRepo(inputDirPath: project.file('build/libs/repo'),
+                    outputDirPath: project.file('build/temp/mavenArtifact'),
+                    openLibertyJson: singleOpenLibertyJsonRepo)
+        }
+    }
+
+    task zipOpenLibertyMavenRepo(type: Zip) {
+        dependsOn generateMavenArtifact
+        from project.file('build/temp/mavenArtifact')
+        include "io/**"
+        archiveName 'openliberty-mavenArtifact.zip'
+        destinationDir distsDir
+    }
+
+    publishing {
+        publications {
+            newMavenArtifact(MavenPublication) {
+                artifactId 'openliberty-MavenArtifact'
+                version project.version
+                artifact zipOpenLibertyMavenRepo
+            }
+        }
+    }
+}

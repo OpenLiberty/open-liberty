@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      
+<h:head>
+    <title>Tests exception thrown from MethodExpressionValueChangeListener.processValueChange() and MethodExpressionActionListener.processAction() in JSF 2.2</title>
+</h:head>
+<h:body>
+	
+	<h:form id="testForm" prependId="false">
+		Write a word:
+		<h:inputText value="#{methodExpressionBean.word}" id="wordInput" valueChangeListener="#{methodExpressionBean.throwExceptionFromProcessValueChange}" />
+		<br/>
+		Write a name:
+		<h:inputText value="#{methodExpressionBean.name}" id="nameInput" valueChangeListener="#{methodExpressionBean.throwNullException}" />
+		<br/>
+		<h:commandButton id="submitButton" value="Submit" action="#{methodExpressionBean.showResult}" actionListener="#{methodExpressionBean.throwExceptionFromProcessAction}"/>
+	</h:form>
+	 
+</h:body>
+</html>

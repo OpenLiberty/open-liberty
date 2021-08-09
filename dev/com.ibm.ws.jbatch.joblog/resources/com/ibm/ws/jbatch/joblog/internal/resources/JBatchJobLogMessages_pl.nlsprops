@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: Rejestrowanie zada\u0144 wsadowych nie zosta\u0142o uruchomione dla zadania {0}, instancji zadania {1}, wykonania zadania {2} z powodu wyj\u0105tku.\n{3}
+job.logging.create.new.explanation=Rejestrowanie zada\u0144 wsadowych nie utworzy\u0142o pliku dziennika. Rejestrowanie zada\u0144 wsadowych nie powiod\u0142o si\u0119 z powodu wyj\u0105tku.
+job.logging.create.new.useraction=Przejrzyj wyj\u0105tek, sprawd\u017a status systemu plik\u00f3w i podejmij dzia\u0142ania naprawcze. Wykonywanie zadania wsadowego b\u0119dzie kontynuowane bez rejestrowania zada\u0144.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: Rejestrowanie zada\u0144 wsadowych nie utworzy\u0142o dodatkowych plik\u00f3w cz\u0119\u015bci dziennika z powodu wyj\u0105tku.\n{0}\n Rejestrowanie zada\u0144 wsadowych podejmie pr\u00f3b\u0119 kontynuowania dzia\u0142ania z bie\u017c\u0105cym plikiem. 
+job.logging.create.next.explanation=Rejestrowanie zada\u0144 wsadowych nie utworzy\u0142o dodatkowych plik\u00f3w cz\u0119\u015bci dziennika. Utworzenie nowego pliku przez rejestrowanie zada\u0144 wsadowych nie powiod\u0142o si\u0119 z powodu wyj\u0105tku.\n Rejestrowanie zada\u0144 wsadowych podejmie pr\u00f3b\u0119 kontynuowania dzia\u0142ania z bie\u017c\u0105cym plikiem.
+job.logging.create.next.useraction=Przejrzyj wyj\u0105tek, sprawd\u017a status systemu plik\u00f3w i podejmij dzia\u0142ania naprawcze. Rejestrowanie zada\u0144 wsadowych podejmie pr\u00f3b\u0119 kontynuowania dzia\u0142ania z bie\u017c\u0105cym plikiem.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: Podczas operacji rejestrowania zadania wsadowego nie zosta\u0142 odczytany plik cz\u0119\u015bci dziennika z powodu wyj\u0105tku.\n{0}
+job.logging.read.log.explanation=Podczas operacji rejestrowania zadania wsadowego nie zosta\u0142 odczytany plik cz\u0119\u015bci dziennika.  Odczytanie pliku cz\u0119\u015bci podczas operacji rejestrowania zadania wsadowego nie powiod\u0142o si\u0119 z powodu wyj\u0105tku.\nOperacja rejestrowania zadania wsadowego b\u0119dzie kontynuowa\u0107 dzia\u0142anie bez publikowania zdarzenia dziennika zadania.
+job.logging.read.log.useraction=Przejrzyj wyj\u0105tek, sprawd\u017a status systemu plik\u00f3w i podejmij dzia\u0142ania naprawcze. \nOperacja rejestrowania zadania wsadowego b\u0119dzie kontynuowa\u0107 dzia\u0142anie bez publikowania zdarzenia dziennika zadania.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: Podczas operacji rejestrowania zadania wsadowego nie zosta\u0142 usuni\u0119ty nast\u0119puj\u0105cy katalog lub plik cz\u0119\u015bci dziennika: {0}. 
+job.logging.delete.log.explanation=Podczas operacji rejestrowania zadania wsadowego nie zosta\u0142 usuni\u0119ty katalog lub plik cz\u0119\u015bci dziennika.\nOperacja rejestrowania zadania wsadowego b\u0119dzie kontynuowa\u0107 dzia\u0142anie bez usuwania pliku lub katalogu.
+job.logging.delete.log.useraction=Przejrzyj wyj\u0105tek, sprawd\u017a status systemu plik\u00f3w i podejmij dzia\u0142ania naprawcze. \nOperacja rejestrowania zadania wsadowego b\u0119dzie kontynuowa\u0107 dzia\u0142anie bez usuwania pliku lub katalogu.

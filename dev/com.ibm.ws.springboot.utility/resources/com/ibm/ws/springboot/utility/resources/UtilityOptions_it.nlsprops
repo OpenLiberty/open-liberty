@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Descrizione:
+global.actions=Azioni:
+global.options=Opzioni:
+global.usage=Uso:
+global.required=Richiesta:
+global.options.statement=\tUtilizzare il comando help [nomeAzione] per informazioni dettagliate sulle opzioni di ciascuna azione.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tStampare le informazioni della guida per l''azione specificata.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [nomeAzione]
+
+
+# -------- THIN OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+thin.desc=\tCrea un''applicazione thin per l''uso da parte della configurazione del server. 
+#Note to translator the word "thin" should not be translated
+thin.usage.options=\t{0} thin --sourceAppPath=path [opzioni]
+
+thin.required-key.sourceapp=\ \ \ \ --sourceAppPath=file
+thin.required-desc.sourceapp=\tIl percorso del file applicazione di origine per il thin.
+
+thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=file
+#Note to translator the word ".spring" should not be translated
+thin.optional-desc.targetthinapp=\tIl percorso utilizzato per salvare il file applicazione thin.\n\
+\tSe questa opzione non viene specificata, verr\u00e0 creato un nuovo file con estensione .spring\n\
+\tnella directory parent dell''applicazione di origine. 
+
+thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
+#Note to translator the word "lib.index.cache" should not be translated
+thin.optional-desc.targetlibcache=\tIl percorso directory utilizzato per salvare la cache libreria.\n\
+\tSe questa opzione non viene specificata, verr\u00e0 creata una directory denominata lib.index.cache\n\
+\tnella directory parent dell''applicazione di origine.
+
+thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=directory
+thin.optional-desc.parentlibcache=\tIl percorso directory della cache libreria di sola lettura parent.\n\
+\tViene esaminata prima la cache libreria parent per individuare le librerie\n\
+\tesistenti. Se non si trova la libreria, viene memorizzata\n\
+\tnella cache libreria scrivibile specificata\n\
+\tdall''opzione --targetLibCachePath. Se questa opzione non \u00e8 specificata, non verr\u00e0 esaminata\n\
+\talcuna cache libreria parent.
+
+
+

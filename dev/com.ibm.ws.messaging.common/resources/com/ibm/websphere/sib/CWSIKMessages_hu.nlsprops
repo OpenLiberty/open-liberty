@@ -1,0 +1,519 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Message component file for Exception messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SIRC0001=CWSIK0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - All msgs are for use by the Exception Destination mechanism. These messages
+#       - will be exposed to the user when a message cannot be delivered.
+#
+#   - Developers: Please ensure that every message in this message file is
+#       - only used once. Servicability requirements mean we need to be able
+#       - determine exactly who decided to reroute a message to the exception
+#       - destination. In addition, please ensure that you add as much useful
+#       - information as possible. Remember that the exception destination
+#       - may be on a different server.
+#
+#		**** IMPORTANT ***
+#       Please ensure EVERY message added has a corresponding reason code
+#		in com/ibm/websphere/sib/SIRCConstants.java
+#       ******************
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4
+#
+#CMVCPATHNAME ws/code/sib.mfp.api/com/ibm/websphere/sib/CWSIKMessages.nlsprops
+#COMPONENTPREFIX CWSIK
+#COMPONENTNAMEFOR CWSIK SIBus Return Codes
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# SIRC (Service Integration Return Code) messages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# Note to developers: Notice that this message has NO useful inserts. It is the default used by
+# by SICoreException if no exception reason is provided to the SICoreException. NO CODE MAY
+# CONSTRUCT AN SICOREEXCEPTION WITHOUT PROVIDING AN EXCEPTION REASON. ANY CODE THAT DOES WILL
+# BE CAUSING A SERVICABILITY PROBLEM AND (IF DISCOVERED) WILL RESULT IN A DEFECT
+DELIVERY_ERROR_SIRC_1=CWSIK0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+DELIVERY_ERROR_SIRC_1.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_1.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_2=CWSIK0002E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy sor, de a csatlakoz\u00f3 alkalmaz\u00e1s egy t\u00e9mak\u00f6rter\u00fcletet k\u00e9rt.
+DELIVERY_ERROR_SIRC_2.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_2.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_3=CWSIK0003E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy sor, de a csatlakoz\u00f3 alkalmaz\u00e1s egy szolg\u00e1ltat\u00e1st k\u00e9rt.
+DELIVERY_ERROR_SIRC_3.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_3.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_4=CWSIK0004E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy sor, de a csatlakoz\u00f3 alkalmaz\u00e1s egy portot k\u00e9rt.
+DELIVERY_ERROR_SIRC_4.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_4.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_5=CWSIK0005E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy szolg\u00e1ltat\u00e1s, de a csatlakoz\u00f3 alkalmaz\u00e1s egy sort k\u00e9rt.
+DELIVERY_ERROR_SIRC_5.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_5.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_6=CWSIK0006E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy szolg\u00e1ltat\u00e1s, de a csatlakoz\u00f3 alkalmaz\u00e1s egy t\u00e9mak\u00f6rter\u00fcletet k\u00e9rt.
+DELIVERY_ERROR_SIRC_6.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_6.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_7=CWSIK0007E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy szolg\u00e1ltat\u00e1s, de a csatlakoz\u00f3 alkalmaz\u00e1s egy portot k\u00e9rt.
+DELIVERY_ERROR_SIRC_7.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_7.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_8=CWSIK0008E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy port, de a csatlakoz\u00f3 alkalmaz\u00e1s egy sort k\u00e9rt.
+DELIVERY_ERROR_SIRC_8.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_8.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_9=CWSIK0009E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy port, de a csatlakoz\u00f3 alkalmaz\u00e1s egy t\u00e9mak\u00f6rter\u00fcletet k\u00e9rt.
+DELIVERY_ERROR_SIRC_9.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_9.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_10=CWSIK0010E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy port, de a csatlakoz\u00f3 alkalmaz\u00e1s egy szolg\u00e1ltat\u00e1st k\u00e9rt.
+DELIVERY_ERROR_SIRC_10.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_10.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_11=CWSIK0011E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy t\u00e9mak\u00f6rter\u00fclet, de a csatlakoz\u00f3 alkalmaz\u00e1s egy sort k\u00e9rt.
+DELIVERY_ERROR_SIRC_11.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_11.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_12=CWSIK0012E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy t\u00e9mak\u00f6rter\u00fclet, de a csatlakoz\u00f3 alkalmaz\u00e1s egy szolg\u00e1ltat\u00e1st k\u00e9rt.
+DELIVERY_ERROR_SIRC_12.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_12.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_13=CWSIK0013E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l egy t\u00e9mak\u00f6rter\u00fclet, de a csatlakoz\u00f3 alkalmaz\u00e1s egy portot k\u00e9rt.
+DELIVERY_ERROR_SIRC_13.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_13.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# {0} The destination name
+# {1} The messaging engine name.
+# {2} The destination Type
+# {3} The expected destination type
+DELIVERY_ERROR_SIRC_14=CWSIK0014E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l {2} t\u00edpus\u00fa, de a csatlakoz\u00f3 alkalmaz\u00e1s egy ismeretlen {3} t\u00edpust k\u00e9rt.
+DELIVERY_ERROR_SIRC_14.explanation=Egy alkalmaz\u00e1s csatlakozott az \u00fczenetkezel\u00e9si alrendszerhez \u00e9s egy olyan c\u00e9lt\u00edpust k\u00e9rt, amely nem felel meg az alapul szolg\u00e1l\u00f3 c\u00e9lt\u00edpusnak.
+DELIVERY_ERROR_SIRC_14.useraction=Jav\u00edtsa ki a csatlakoz\u00f3 alkalmaz\u00e1st, vagy v\u00e1ltoztassa meg a c\u00e9lt a k\u00edv\u00e1nt t\u00edpus\u00fara az adminisztr\u00e1ci\u00f3s konzol haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# {0} is the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_15=CWSIK0015E: A(z) {0} c\u00e9l nem tal\u00e1lhat\u00f3 a(z) {1} \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_15.explanation=A megnevezett c\u00e9l ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_15.useraction=Ellen\u0151rizze, hogy a c\u00e9l neve helyes-e, \u00e9s hogy l\u00e9trehozta-e a c\u00e9lt a buszon.  Ha a c\u00e9l l\u00e9tezik egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszeren, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kommunik\u00e1ci\u00f3 m\u0171k\u00f6dik a m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel.
+
+# -------------------------------------------------------------------------------------------------
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# {0} The destination address
+DELIVERY_ERROR_SIRC_16=CWSIK0016E: A(z) {0} c\u00e9lon k\u00fcld\u00e9shez haszn\u00e1lt tranzakci\u00f3 m\u00e1r befejez\u0151d\u00f6tt.
+DELIVERY_ERROR_SIRC_16.explanation=Egy olyan tranzakci\u00f3 haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely m\u00e1r befejez\u0151d\u00f6tt.
+DELIVERY_ERROR_SIRC_16.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a haszn\u00e1lt tranzakci\u00f3 egy \u00faj tranzakci\u00f3.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_17=CWSIK0017E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} nev\u0171 c\u00e9l a k\u00fcld\u00e9sre nem enged\u00e9lyezett.
+DELIVERY_ERROR_SIRC_17.explanation=Egy \u00fczenet egy c\u00e9lhoz k\u00fcld\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt \u00e9s egy ellen\u0151rz\u00e9s t\u00f6rt\u00e9nt annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy ez a c\u00e9l k\u00fcld\u00e9sre enged\u00e9lyezett.  Az ellen\u0151rz\u00e9s meghi\u00fasult, mert a c\u00e9l k\u00fcld\u00e9sre nem enged\u00e9lyezett.
+DELIVERY_ERROR_SIRC_17.useraction=Friss\u00edtse a c\u00e9lt \u00fagy, hogy k\u00fcld\u00e9sre enged\u00e9lyezett legyen, majd k\u00fcldje \u00fajra az \u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# {0} The destination name
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_18=CWSIK0018E: A(z) {0} c\u00e9lhoz k\u00fcld\u00e9si hozz\u00e1f\u00e9r\u00e9s visszautas\u00edt\u00e1sra ker\u00fclt a felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra a(z) {1} t\u00e1rggyal.
+DELIVERY_ERROR_SIRC_18.explanation=Egy felhaszn\u00e1l\u00f3 nem jogosult a c\u00e9lhoz k\u00fcld\u00e9sre.
+DELIVERY_ERROR_SIRC_18.useraction=Ha a felhaszn\u00e1l\u00f3nak rendelkeznie kellene \u00fczenetk\u00fcld\u00e9si jogosults\u00e1ggal az adott c\u00e9l eset\u00e9n, akkor friss\u00edtse a felhaszn\u00e1l\u00f3k c\u00e9lhoz tartoz\u00f3 jogosults\u00e1gait.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# {0} The destination prefix
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_19=CWSIK0019E: A(z) {1} felhaszn\u00e1l\u00f3 nem jogosult a(z) {0} el\u0151taggal rendelkez\u0151 ideiglenes c\u00e9lokhoz k\u00fcld\u00e9sre.
+DELIVERY_ERROR_SIRC_19.explanation=Egy felhaszn\u00e1l\u00f3 nem jogosult a megnevezett el\u0151taggal rendelkez\u0151 ideiglenes c\u00e9lokhoz k\u00fcld\u00e9sre.
+DELIVERY_ERROR_SIRC_19.useraction=Ha a felhaszn\u00e1l\u00f3nak rendelkeznie kellene \u00fczenetk\u00fcld\u00e9si jogosults\u00e1ggal az adott ideiglenes c\u00e9l eset\u00e9n, akkor friss\u00edtse a felhaszn\u00e1l\u00f3k ideiglenes c\u00e9lhoz tartoz\u00f3 jogosults\u00e1gait.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# {0} The destination name
+# {1} The discriminator name
+# {2} The user attempting the operation
+DELIVERY_ERROR_SIRC_20=CWSIK0020E: A(z) {0} c\u00e9lon l\u00e9v\u0151 {1} megk\u00fcl\u00f6nb\u00f6ztet\u0151h\u00f6z k\u00fcld\u00e9si hozz\u00e1f\u00e9r\u00e9s visszautas\u00edt\u00e1sra ker\u00fclt a felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra a(z) {2} t\u00e1rggyal.
+DELIVERY_ERROR_SIRC_20.explanation=Egy felhaszn\u00e1l\u00f3 nem jogosult a c\u00e9lhoz k\u00fcld\u00e9sre a megadott t\u00e9mak\u00f6r haszn\u00e1lat\u00e1val.
+DELIVERY_ERROR_SIRC_20.useraction=Ha a felhaszn\u00e1l\u00f3nak rendelkeznie kellene \u00fczenetk\u00fcld\u00e9si jogosults\u00e1ggal az adott t\u00e9mak\u00f6r eset\u00e9n, akkor friss\u00edtse a felhaszn\u00e1l\u00f3k adott c\u00e9lhoz tartoz\u00f3 jogosults\u00e1gait.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_21=CWSIK0021E: Az el\u0151\u00e1ll\u00edt\u00f3-munkamenet bez\u00e1r\u00e1sra ker\u00fclt a(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9lon, \u00e9s nem haszn\u00e1lhat\u00f3.
+DELIVERY_ERROR_SIRC_21.explanation=Az el\u0151\u00e1ll\u00edt\u00f3 bez\u00e1r\u00e1sra ker\u00fclt, \u00e9s nem haszn\u00e1lhat\u00f3 a megadott c\u00e9lon.
+DELIVERY_ERROR_SIRC_21.useraction=Hozzon l\u00e9tre egy \u00faj el\u0151\u00e1ll\u00edt\u00f3-munkamenetet a megadott c\u00e9lhoz.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# {0} The messaging engine name
+DELIVERY_ERROR_SIRC_22=CWSIK0022E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat bez\u00e1r\u00e1sra ker\u00fclt \u00e9s nem haszn\u00e1lhat\u00f3.
+DELIVERY_ERROR_SIRC_22.explanation=A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt \u00e9s semmilyen m\u0171velethez sem haszn\u00e1lhat\u00f3.
+DELIVERY_ERROR_SIRC_22.useraction=Hozzon l\u00e9tre egy \u00faj kapcsolatot az \u00fczenetkezel\u00e9si alrendszerhez.
+
+# -------------------------------------------------------------------------------------------------
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# {0}  The destination name that could not be found
+# {1} The reason for failing to put the message to the exception destination
+# {2} The related error
+# {3} The current destination
+DELIVERY_ERROR_SIRC_23=CWSIK0023E: Egy \u00fczenet {3} c\u00e9lon l\u00e9v\u0151 kiv\u00e9teli c\u00e9lhoz k\u00fcld\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amelyet a(z) {0} tov\u00e1bb\u00edt\u00e1si \u00fatvonalc\u00e9l {1} ok miatti {2} kapcsol\u00f3d\u00f3 hib\u00e1val meghi\u00fasul\u00e1sa okozott.
+DELIVERY_ERROR_SIRC_23.explanation=A tov\u00e1bb\u00edt\u00e1si \u00fatvonalban a k\u00f6vetkez\u0151 c\u00e9l nem tal\u00e1lhat\u00f3. Az \u00fczenet a kiv\u00e9teli c\u00e9lhoz lett tov\u00e1bb\u00edtva, de ek\u00f6zben hiba t\u00f6rt\u00e9nt.
+DELIVERY_ERROR_SIRC_23.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# {0} the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_24=CWSIK0024E: A(z) {0} c\u00e9l k\u00fcld\u00e9sre nem enged\u00e9lyezett a(z) {1} \u00fczenetkezel\u00e9si alrendszer eset\u00e9n.
+DELIVERY_ERROR_SIRC_24.explanation=Egy \u00fczenet egy c\u00e9lhoz k\u00fcld\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt \u00e9s egy ellen\u0151rz\u00e9s t\u00f6rt\u00e9nt annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy el\u00e9rhet\u0151-e sorpont ehhez a c\u00e9lhoz.  Az ellen\u0151rz\u00e9s meghi\u00fasult, mert az ezen c\u00e9l egyetlen sorpontja k\u00fcld\u00e9sre nem enged\u00e9lyezett.
+DELIVERY_ERROR_SIRC_24.useraction=Friss\u00edtse a c\u00e9l sorpontj\u00e1t \u00fagy, hogy az k\u00fcld\u00e9sre enged\u00e9lyezett legyen, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# {0} is the name of the Destination
+# {1} The name of the messaging engine.
+DELIVERY_ERROR_SIRC_25=CWSIK0025E: A(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9l nem \u00e9rhet\u0151 el, mert ezen c\u00e9l \u00fczeneteinek sz\u00e1ma el\u00e9rte a hozz\u00e1 tartoz\u00f3 magas korl\u00e1tot.
+DELIVERY_ERROR_SIRC_25.explanation=Vagy a megnevezett c\u00e9l minden sorpontja, vagy ezen az \u00fczenetkezel\u00e9si alrendszeren a megnevezett c\u00e9lhoz vezet\u0151 \u00e1tviteli sorok el\u00e9rt\u00e9k a be\u00e1ll\u00edtott magas korl\u00e1tjukat, \u00edgy az \u00fczenet nem fogadhat\u00f3 el.
+DELIVERY_ERROR_SIRC_25.useraction=Ellen\u0151rizze, hogy a c\u00e9l be\u00e1ll\u00edtott magas \u00fczenetkorl\u00e1tai helyesek-e.  Ha a c\u00e9l l\u00e9tezik egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszeren, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kommunik\u00e1ci\u00f3 m\u0171k\u00f6dik a m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel.
+
+# -------------------------------------------------------------------------------------------------
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_26=CWSIK0026E: Nem tal\u00e1lhat\u00f3 megengedett c\u00edmezhet\u0151 \u00fczenetpont a(z) {0} c\u00e9lhoz.
+DELIVERY_ERROR_SIRC_26.explanation=Egy c\u00e9l haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, de a c\u00e9lnak megszor\u00edt\u00e1sok miatt nem volt c\u00edmezhet\u0151 \u00fczenetpontja, val\u00f3sz\u00edn\u0171leg egy \u00e1ln\u00e9v vagy k\u00f6t\u00e9s haszn\u00e1lata \u00fatj\u00e1n egy most t\u00f6r\u00f6lt \u00fczenetponthoz.
+DELIVERY_ERROR_SIRC_26.useraction=Ha ez egy v\u00e1lasz\u00fczenet, akkor lehet, hogy egy \u00fczenetkezel\u00e9si alrendszer volt megadva az eredeti k\u00e9r\u00e9s\u00fczenetben, \u00e9s az\u00f3ta lehet, hogy a c\u00e9l \u00fczenetpontja t\u00f6rl\u00e9sre ker\u00fclt. Ha egy olyan \u00e1ln\u00e9vc\u00e9l volt haszn\u00e1lva, ami korl\u00e1tozza a c\u00e9l c\u00edmezhet\u0151 \u00fczenetpontjait, akkor jav\u00edtsa ki az \u00e1lnevet, hogy az \u00fczenetpontok helyes k\u00e9szlet\u00e9t azonos\u00edtsa.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# {0} is the destination name
+DELIVERY_ERROR_SIRC_27=CWSIK0027E: A(z) {0} nev\u0171 c\u00e9l s\u00e9r\u00fclt.
+DELIVERY_ERROR_SIRC_27.explanation=A megadott n\u00e9vvel rendelkez\u0151 c\u00e9l s\u00e9r\u00fclt \u00e9s nem haszn\u00e1lhat\u00f3.
+DELIVERY_ERROR_SIRC_27.useraction=\u00c1ll\u00edtsa alaphelyzetbe a c\u00e9lt az adminisztr\u00e1ci\u00f3s konzolb\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+# {2} is the alias resolution path
+DELIVERY_ERROR_SIRC_28=CWSIK0028E: A(z) {0} \u00e1ln\u00e9vc\u00e9l nem bonthat\u00f3 fel, mert a(z) {1} c\u00e9l nem l\u00e9tezik a(z) {2} \u00e1ln\u00e9v\u00fatvonalban.
+DELIVERY_ERROR_SIRC_28.explanation=Az \u00e1ln\u00e9v\u00fatvonalban l\u00e9v\u0151 c\u00e9l ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_28.useraction=Hat\u00e1rozza meg a c\u00e9lt, vagy jav\u00edtsa ki a helytelen \u00e1lnevet az adminisztr\u00e1ci\u00f3s konzolban.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# {0} is the name of the alias destination
+# {1} is the name of the service destination
+# {2} is the alias resolution path
+# {3} The name of the messaging engine bus
+DELIVERY_ERROR_SIRC_29=CWSIK0029E: Hiba t\u00f6rt\u00e9nt, mert a(z) {0} \u00e1ln\u00e9vc\u00e9l c\u00e9lja a(z) {3} \u00fczenetkezel\u00e9si alrendszerbuszon a(z) {2} \u00fatvonalon l\u00e9v\u0151 {1} szolg\u00e1ltat\u00e1sc\u00e9l.
+DELIVERY_ERROR_SIRC_29.explanation=Az \u00e1ln\u00e9vc\u00e9l \u00e9rv\u00e9nytelen, mert a c\u00e9lja egy szolg\u00e1ltat\u00e1sc\u00e9l.
+DELIVERY_ERROR_SIRC_29.useraction=T\u00e1vol\u00edtsa el a szolg\u00e1ltat\u00e1sc\u00e9lt a felbont\u00e1si \u00fatvonalban l\u00e9v\u0151 \u00e1lnevek m\u00f3dos\u00edt\u00e1s\u00e1val az adminisztr\u00e1ci\u00f3s konzolban.
+
+# -------------------------------------------------------------------------------------------------
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# {0} is the name of the link
+# {1} is the link UUID
+# {2} is the Bus Name
+DELIVERY_ERROR_SIRC_30=CWSIK0030E: A(z) {0} n\u00e9vvel \u00e9s {1} UUID azonos\u00edt\u00f3val rendelkez\u0151 \u00f6sszek\u00f6ttet\u00e9s nem volt tal\u00e1lhat\u00f3 a(z) {2} busz l\u00e9trehoz\u00e1sa sor\u00e1n.
+DELIVERY_ERROR_SIRC_30.explanation=A megnevezett \u00f6sszek\u00f6ttet\u00e9s ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren, \u00edgy a megnevezett busz l\u00e9trehoz\u00e1sa meghi\u00fasult.
+DELIVERY_ERROR_SIRC_30.useraction=Ellen\u0151rizze, hogy az \u00f6sszek\u00f6ttet\u00e9s neve helyes-e \u00e9s meg van-e hat\u00e1rozva a busz adminisztr\u00e1ci\u00f3s konzolj\u00e1ban.  Ellen\u0151rizze, hogy az \u00fczenetkezel\u00e9si alrendszer eset\u00e9n a leg\u00fajabb be\u00e1ll\u00edt\u00e1sok ker\u00fcltek-e alkalmaz\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_31=CWSIK0031E: A(z) {0} c\u00e9l m\u00e1r l\u00e9tezik.
+DELIVERY_ERROR_SIRC_31.explanation=A megnevezett c\u00e9l m\u00e1r ismert a helyi \u00fczenetkezel\u00e9si alrendszeren, \u00edgy a l\u00e9trehoz\u00e1s meghi\u00fasult.
+DELIVERY_ERROR_SIRC_31.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a c\u00e9lbe\u00e1ll\u00edt\u00e1s helyes az adminisztr\u00e1ci\u00f3s konzolban, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# {0} is the name of the destination
+# {1} The messaging engine name
+DELIVERY_ERROR_SIRC_32=CWSIK0032E: A(z) {0} c\u00e9l- vagy idegen s\u00edn a(z) {1} \u00fczenetkezel\u0151 alrendszeren t\u00f6r\u00f6lve lett.
+DELIVERY_ERROR_SIRC_32.explanation=A c\u00e9l- vagy idegen s\u00edn m\u00e1r nem haszn\u00e1lhat\u00f3, mert el lett t\u00e1vol\u00edtva.
+DELIVERY_ERROR_SIRC_32.useraction=Az \u00fczenet k\u00fcld\u00e9s\u00e9n\u00e9l adjon meg egy \u00e9rv\u00e9nyes c\u00e9l- vagy idegen s\u00ednt.
+
+# -------------------------------------------------------------------------------------------------
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# {0}  The messages reliability
+# {1}  The destinations reliability
+# {2}  The destinations name.
+# {3}  The messaging engine name.
+DELIVERY_ERROR_SIRC_33=CWSIK0033E: A(z) {0} \u00fczenetmegb\u00edzhat\u00f3s\u00e1gi \u00e9rt\u00e9k nagyobb, mint a(z) {3} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {2} c\u00e9l {1} c\u00e9lmegb\u00edzhat\u00f3s\u00e1gi \u00e9rt\u00e9ke.
+DELIVERY_ERROR_SIRC_33.explanation=Egy \u00fczenet egy c\u00e9lhoz tov\u00e1bb\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, de az \u00fczenet nagyobb megb\u00edzhat\u00f3s\u00e1g\u00fa, mint amit a c\u00e9l t\u00e1mogatni tud.
+DELIVERY_ERROR_SIRC_33.useraction=Friss\u00edtse a c\u00e9lt \u00fagy, hogy t\u00e1mogatni tudja a magasabb megb\u00edzhat\u00f3s\u00e1g\u00fa \u00fczeneteket, vagy cs\u00f6kkentse az elk\u00fcldend\u0151 \u00fczenet megb\u00edzhat\u00f3s\u00e1g\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+# {0} the name of the service destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_34=CWSIK0034E: A tov\u00e1bb\u00edt\u00e1si \u00fatvonal nem tartalmaz bejegyz\u00e9st a(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} szolg\u00e1ltat\u00e1sc\u00e9l sz\u00e1m\u00e1ra.
+DELIVERY_ERROR_SIRC_34.explanation=Egy szolg\u00e1ltat\u00e1sc\u00e9l haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amikor a tov\u00e1bb\u00edt\u00e1si \u00fatvonal \u00fcres volt.
+DELIVERY_ERROR_SIRC_34.useraction=Egy szolg\u00e1ltat\u00e1sc\u00e9lnak rendelkeznie kell k\u00f6zvet\u00edtett c\u00e9lokkal a tov\u00e1bb\u00edt\u00e1si \u00fatvonal\u00e1ban. Jav\u00edtsa ki az \u00fatvonalat, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination to which we were delivering
+# {1} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_35=CWSIK0035E: Egy \u00fczenet nem k\u00e9zbes\u00edthet\u0151 a(z) {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} c\u00e9lhoz, mert t\u00f6bbsz\u00f6r ker\u00fclt visszag\u00f6rget\u00e9sre az \u00fajrak\u00e9zbes\u00edt\u00e9si k\u00fcsz\u00f6b\u00e9rt\u00e9k\u00e9n\u00e9l.
+DELIVERY_ERROR_SIRC_35.explanation=Ez az \u00fczenet nem k\u00e9zbes\u00edthet\u0151, mert az \u00fczenetet k\u00e9zbes\u00edt\u0151 tranzakci\u00f3 minden v\u00e9gleges\u00edt\u00e9si k\u00eds\u00e9rlete meghi\u00fasult.
+DELIVERY_ERROR_SIRC_35.useraction=Der\u00edtse ki a tranzakci\u00f3 visszag\u00f6rget\u00e9s\u00e9nek ok\u00e1t. Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webserver/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination from which the message was rerouted
+# {2} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_36=CWSIK0036E: A(z) {0} \u00fczenet adminisztr\u00e1ci\u00f3s okokb\u00f3l tov\u00e1bb\u00edt\u00e1sra ker\u00fclt a(z) {2} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {1} c\u00e9lr\u00f3l.
+DELIVERY_ERROR_SIRC_36.explanation=Az \u00fczenet elt\u00e1vol\u00edt\u00e1sra ker\u00fclt az adott c\u00e9lr\u00f3l \u00e9s \u00e1thelyez\u00e9sre ker\u00fclt a kiv\u00e9teli c\u00e9lhoz.
+DELIVERY_ERROR_SIRC_36.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the destination that was invalid
+# {1} identifies the messaging engine where the destination is located
+# {2} identifies the last valid destination in the path
+# {3} identified the exception caused by the invalid destination
+DELIVERY_ERROR_SIRC_37=CWSIK0037E: Az \u00fczenetet nem lehetett k\u00e9zbes\u00edteni, mert a tov\u00e1bb\u00edt\u00e1si \u00fatvonala a(z) {0} helytelen c\u00e9lt tartalmazta. A(z) {3} \u00fczenetkezel\u00e9si alrendszeren a legut\u00f3bbi \u00e9rv\u00e9nyes c\u00e9l a(z) {2} volt. A c\u00e9l helytelen volt a(z) {3} kiv\u00e9tel miatt.
+DELIVERY_ERROR_SIRC_37.explanation=Egy \u00fczenet nem tudott \u00e1tjelentkezni a megadott tov\u00e1bb\u00edt\u00e1si \u00fatvonal\u00e1n, mert az \u00fatvonal helytelen c\u00e9lt tartalmaz.
+DELIVERY_ERROR_SIRC_37.useraction=Ellen\u0151rizze, hogy a c\u00e9lok el\u00e9rhet\u0151k-e a tov\u00e1bb\u00edt\u00e1si \u00fatvonalon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_38=CWSIK0038E: A(z) {0} idegen busz nem tal\u00e1lhat\u00f3 a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_38.explanation=A megnevezett idegen busz ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_38.useraction=Ellen\u0151rizze, hogy az idegen busz neve helyes-e.  Ellen\u0151rizze, hogy az idegen busz \u00f6sszek\u00f6ttet\u00e9s meghat\u00e1roz\u00e1sra ker\u00fclt-e, majd pr\u00f3b\u00e1lja meg \u00fajra a parancsot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_39=CWSIK0039E: A(z) {0} idegen busz nem tal\u00e1lhat\u00f3 a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszeren a(z) {3} hiba miatt.
+DELIVERY_ERROR_SIRC_39.explanation=A megnevezett idegen busz ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_39.useraction=Ellen\u0151rizze, hogy az idegen busz neve helyes-e.  Ellen\u0151rizze, hogy az idegen busz \u00f6sszek\u00f6ttet\u00e9s meghat\u00e1roz\u00e1sra ker\u00fclt-e, majd pr\u00f3b\u00e1lja meg \u00fajra a parancsot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus link
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_40=CWSIK0040E: A(z) {0} idegen busz \u00f6sszek\u00f6ttet\u00e9s nem tal\u00e1lhat\u00f3 a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_40.explanation=A megnevezett idegen busz \u00f6sszek\u00f6ttet\u00e9s ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_40.useraction=Ellen\u0151rizze, hogy az idegen busz neve helyes-e \u00e9s meg vannak-e hat\u00e1rozva \u00f6sszek\u00f6ttet\u00e9sek.  Ha nincsenek \u00f6sszek\u00f6ttet\u00e9sek meghat\u00e1rozva, akkor adjon meg \u00faj idegen busz \u00f6sszek\u00f6ttet\u00e9st a k\u00e9t busz k\u00f6z\u00f6tt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_41=CWSIK0041E: Nincsenek \u00f6sszek\u00f6ttet\u00e9sek meghat\u00e1rozva a(z) {2} buszon {1} \u00fczenetkezel\u00e9si alrendszeren l\u00e9v\u0151 {0} idegen buszhoz csatlakoz\u00e1shoz a(z) {3} hiba miatt.
+DELIVERY_ERROR_SIRC_41.explanation=Egy alkalmaz\u00e1s megk\u00eds\u00e9relt egy idegen buszon l\u00e9v\u0151 c\u00e9lnak \u00fczenetet k\u00fcldeni, de nincsenek a helyi \u00e9s az idegen busz k\u00f6z\u00f6tt \u00f6sszek\u00f6ttet\u00e9sek meghat\u00e1rozva.
+DELIVERY_ERROR_SIRC_41.useraction=Hat\u00e1rozzon meg egy \u00f6sszek\u00f6ttet\u00e9st a helyi \u00e9s az idegen busz k\u00f6z\u00f6tt az adminisztr\u00e1ci\u00f3s konzolban, \u00e9s k\u00fcldje \u00fajra az \u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the uuid of the mqlink
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_42=CWSIK0042E: A(z) {0} UUID azonos\u00edt\u00f3val rendelkez\u0151 MQ \u00f6sszek\u00f6ttet\u00e9s nem tal\u00e1lhat\u00f3 a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_42.explanation=A megnevezett MQ \u00f6sszek\u00f6ttet\u00e9s ismeretlen a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_42.useraction=Ellen\u0151rizze, hogy az MQ \u00f6sszek\u00f6ttet\u00e9s neve meg van-e hat\u00e1rozva valamint a kis- \u00e9s nagybet\u0171 helyesen van-e \u00edrva.  Ha az MQ \u00f6sszek\u00f6ttet\u00e9s meghat\u00e1rozatlan, akkor vagy haszn\u00e1ljon egy l\u00e9tez\u0151 MQ \u00f6sszek\u00f6ttet\u00e9st, vagy hat\u00e1rozzon meg egy \u00fajat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the current maximum forward routing path depth
+DELIVERY_ERROR_SIRC_43=CWSIK0043E: Egy \u00fczenet nem volt k\u00e9zbes\u00edthet\u0151 egy c\u00e9lhoz a tov\u00e1bb\u00edt\u00e1si \u00fatvonalon, mert a(z) {0} tov\u00e1bb\u00edt\u00e1si \u00fatvonal m\u00e9lys\u00e9ge meghaladta a maximumot.
+DELIVERY_ERROR_SIRC_43.explanation=Egy \u00fczenet \u00e1tir\u00e1ny\u00edt\u00e1sra ker\u00fclt egy tov\u00e1bb\u00edt\u00e1si \u00fatvonal ment\u00e9n. Az \u00e1tir\u00e1ny\u00edt\u00e1sok sz\u00e1ma meghaladta a maxim\u00e1lis megengedhet\u0151t. Az \u00fczenet ez\u00e9rt a kiv\u00e9teli c\u00e9lhoz ker\u00fclt elk\u00fcld\u00e9sre.
+DELIVERY_ERROR_SIRC_43.useraction=A ciklusok\u00e9rt ellen\u0151rizze a tov\u00e1bb\u00edt\u00e1si \u00fatvonalat. Vagy az egy\u00e9ni tulajdons\u00e1gon kereszt\u00fcl n\u00f6velje a sib.processor.maxForwardRoutingPath maxim\u00e1lis \u00e9rt\u00e9k\u00e9t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination to which we were delivering
+# {1} is the bus from the message originated
+DELIVERY_ERROR_SIRC_44=CWSIK0044E: Egy \u00fczenet nem volt k\u00e9zbes\u00edthet\u0151 a(z) {0} c\u00edmzettnek, mert ennek a c\u00edmzettnek a sorpontja egy WebSphere MQ kiszolg\u00e1l\u00f3 s\u00edntagj\u00e1n van fenntartva, \u00e9s az \u00fczenet a(z) {1} idegen s\u00ednr\u0151l \u00e9rkezett.
+DELIVERY_ERROR_SIRC_44.explanation=Idegen s\u00ednr\u0151l k\u00f6zvetlen\u00fcl nem k\u00fcldhet\u0151k \u00fczenetek egy olyan c\u00edmzettnek, amelynek sorpontja WebSphere MQ \u00fczenetkezel\u0151n van, \u00e9s WebSphere MQ kiszolg\u00e1l\u00f3 s\u00edntag haszn\u00e1lat\u00e1val \u00e9rik el. 
+DELIVERY_ERROR_SIRC_44.useraction=Vagy a k\u00fcld\u0151 alkalmaz\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t m\u00f3dos\u00edtsa oly m\u00f3don, hogy az a helyi s\u00ednre csatlakozzon, vagy enged\u00e9lyezze a WebSphere MQ c\u00edmzett el\u00e9r\u00e9s\u00e9t egy WebSphere MQ idegens\u00edn-kapcsolat haszn\u00e1lat\u00e1val, \u00e9s tov\u00e1bb\u00edtsa az \u00fczenetet az idegen s\u00ednen \u00e9s ne a WebSphere MQ kiszolg\u00e1l\u00f3 s\u00edntagon \u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+DELIVERY_ERROR_SIRC_45=CWSIK0045E: A(z) {0} \u00e1ln\u00e9vc\u00e9l nem bonthat\u00f3 fel, mert a(z) {1} c\u00e9l nem l\u00e9tezik.
+DELIVERY_ERROR_SIRC_45.explanation=A c\u00e9l nem \u00e9rhet\u0151 el a helyi \u00fczenetkezel\u00e9si alrendszeren.
+DELIVERY_ERROR_SIRC_45.useraction=Adja meg a helyes c\u00e9lt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination to which the message was rerouted
+# {2} identifies the mediation that caused the message to be rerouted
+# {3} identifies the destination at which the message was mediated
+# {4} identifies the exception that mediation generated that caused the message to be rerouted
+DELIVERY_ERROR_SIRC_101=CWSIK0101W: A(z) {0} \u00fczenet tov\u00e1bb\u00edt\u00e1sra ker\u00fclt a(z) {1} kiv\u00e9teli c\u00e9lhoz, mert a(z) {2} k\u00f6zvet\u00edt\u00e9s a(z) {3} c\u00e9lon {4} kiv\u00e9telt okozott.
+DELIVERY_ERROR_SIRC_101.explanation=Az \u00fczenet \u00e1tad\u00e1sra ker\u00fclt a megadott k\u00f6zvet\u00edt\u00e9shez. Ez a k\u00f6zvet\u00edt\u00e9s egy kiv\u00e9telt \u00e1ll\u00edtott el\u0151 \u00e9s ennek eredm\u00e9nyek\u00e9nt az \u00fczenet tov\u00e1bb\u00edt\u00e1sra ker\u00fclt a kiv\u00e9teli c\u00e9lhoz.
+DELIVERY_ERROR_SIRC_101.useraction=Ha a k\u00f6zvet\u00edt\u00e9snek nem kellett volna tov\u00e1bb\u00edtania az \u00fczenetet, akkor der\u00edtse ki a kiv\u00e9tel ok\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+# {3} identifies the message format to which the message does not conform
+DELIVERY_ERROR_SIRC_102=CWSIK0102E: A(z) {0} \u00fczenet nem tud tov\u00e1bbhaladni a tov\u00e1bb\u00edt\u00e1si \u00fatvonal\u00e1n a(z) {2} c\u00e9lon a(z) {1} k\u00f6zvet\u00edt\u00e9s \u00e1ltal k\u00f6zvet\u00edt\u00e9s\u00e9t k\u00f6vet\u0151en, mert az \u00fczenet nem felel meg a(z) {3} \u00fczenetform\u00e1tumnak.
+DELIVERY_ERROR_SIRC_102.explanation=A megadott k\u00f6zvet\u00edt\u00e9s \u00e1ltal k\u00f6zvet\u00edt\u00e9s\u00e9t k\u00f6vet\u0151en az \u00fczenet nem felelt meg a megadott \u00fczenetform\u00e1tumnak. A k\u00f6zvet\u00edt\u00e9s m\u00f3dos\u00edtotta az \u00fczenet tartalm\u00e1t, az \u00fczenet form\u00e1tum\u00e1t, vagy ezek k\u00f6z\u00fcl mindkett\u0151t. Az \u00fczenet eredeti v\u00e1ltozata tov\u00e1bb\u00edt\u00e1sra ker\u00fclt a kiv\u00e9teli c\u00e9lhoz.
+DELIVERY_ERROR_SIRC_102.useraction=Der\u00edtse ki, hogy a megadott k\u00f6zvet\u00edt\u00e9s hogyan \u00e9s mi\u00e9rt m\u00f3dos\u00edtotta az \u00fczenetet \u00fagy, hogy az nem felel meg a megadott \u00fczenetform\u00e1tumnak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+DELIVERY_ERROR_SIRC_103=CWSIK0103E: A(z) {0} \u00fczenet nem tud tov\u00e1bbhaladni a tov\u00e1bb\u00edt\u00e1si \u00fatvonal\u00e1n a(z) {2} c\u00e9lon a(z) {1} k\u00f6zvet\u00edt\u00e9s \u00e1ltal k\u00f6zvet\u00edt\u00e9s\u00e9t k\u00f6vet\u0151en, mert az \u00fczenet nem megfelel\u0151 form\u00e1tum\u00fa.
+DELIVERY_ERROR_SIRC_103.explanation=A megadott k\u00f6zvet\u00edt\u00e9s \u00e1ltal k\u00f6zvet\u00edt\u00e9s\u00e9t k\u00f6vet\u0151en az \u00fczenet tulajdons\u00e1gai olyan objektumokat tartalmaztak, amelyek nem p\u00e9ld\u00e1nyos\u00edthat\u00f3k, vagy az adatdiagram \u00e9rv\u00e9nytelen.
+DELIVERY_ERROR_SIRC_103.useraction=Der\u00edtse ki, hogy a megadott k\u00f6zvet\u00edt\u00e9s hogyan \u00e9s mi\u00e9rt m\u00f3dos\u00edtotta az \u00fczenetet \u00fagy, hogy az m\u00e1r nem \u00e9rv\u00e9nyes.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_104=CWSIK0104E: Az \u00fczenet t\u00fal nagy ahhoz, hogy a t\u00e1voli MQ rendszer kezelni tudja. Elk\u00fcld\u00e9sre ker\u00fcl a kiv\u00e9teli c\u00e9lhoz. Az \u00fczenete m\u00e9rete {0}, maxim\u00e1lis \u00fczenetm\u00e9ret {1}.
+DELIVERY_ERROR_SIRC_104.explanation=Az \u00fczenet t\u00fal nagy.
+DELIVERY_ERROR_SIRC_104.useraction=Ellen\u0151rizze az MQ be\u00e1ll\u00edt\u00e1sait.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_105=CWSIK0105E: \u00dczenetform\u00e1tum-hiba t\u00f6rt\u00e9nt.
+DELIVERY_ERROR_SIRC_105.explanation=Az \u00fczenet nem dolgozhat\u00f3 fel egy form\u00e1tumhiba miatt.
+DELIVERY_ERROR_SIRC_105.useraction=Ellen\u0151rizze a kapcsolatot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the WebSphere MQ return code
+# {1} identifies the WebSphere MQ reason code
+DELIVERY_ERROR_SIRC_106=CWSIK0106E: A WebSphere MQ hib\u00e1t \u00e9szlelt. A WebSphere MQ visszat\u00e9r\u00e9si \u00e9s ok k\u00f3dok {0} \u00e9s {1}, \u00e9rtelemszer\u0171en.  
+DELIVERY_ERROR_SIRC_106.explanation=Az \u00fczenet feldolgoz\u00e1sa sikertelen, a WebSphere MQ \u00e1ltal \u00e9szlelt hiba miatt.  
+DELIVERY_ERROR_SIRC_106.useraction=Vizsg\u00e1lja meg a WebSphere MQ visszat\u00e9r\u00e9si \u00e9s ok k\u00f3dokat \u00e9s a WebSphere MQ hibanapl\u00f3kat a hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben. Ha nem tudja megoldani a probl\u00e9m\u00e1t, akkor k\u00e9rje a WebSphere MQ adminisztr\u00e1tor seg\u00edts\u00e9g\u00e9t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name of the Object which cannot be serialized.
+DELIVERY_ERROR_SIRC_200=CWSIK0200E: Egy {0} objektumoszt\u00e1ly be\u00e1ll\u00edt\u00e1sra ker\u00fclt az \u00fczenet hasznos tartalm\u00e1ba, de nem soros\u00edthat\u00f3.
+DELIVERY_ERROR_SIRC_200.explanation=Egy a kapcsolatgy\u00e1r\u00e1n enged\u00e9lyezett producerDoesNotModifyPayloadAfterSet jelz\u0151vel elk\u00fcld\u00f6tt objektum \u00fczenet olyan hasznos tartalommal lett elk\u00fcldve, ami a rendszer \u00e1ltal nem volt soros\u00edthat\u00f3.  Ezek az \u00fczenet adatok elvesztek.
+DELIVERY_ERROR_SIRC_200.useraction=Tiltsa le a producerDoesNotModifyPayloadAfterSet jelz\u0151t a kapcsolatgy\u00e1ron.  Az enged\u00e9lyezett jelz\u0151 n\u00e9lk\u00fcl az objektumot az \u00fczenetbe be\u00e1ll\u00edt\u00f3 JMS alkalmaz\u00e1s azonnal soros\u00edt\u00e1si kiv\u00e9telt fog kapni.
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0001
+# {0} The class name
+# {1} The PROBE ID.
+DELIVERY_ERROR_SIRC_900=CWSIK0900E: Bels\u0151 \u00fczenetkezel\u00e9si hiba t\u00f6rt\u00e9nt a(z) {0} oszt\u00e1lyban l\u00e9v\u0151 {1} vizsg\u00e1l\u00f3ban.
+DELIVERY_ERROR_SIRC_900.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_900.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0002
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+DELIVERY_ERROR_SIRC_901=CWSIK0901E: Bels\u0151 \u00fczenetkezel\u00e9si hiba t\u00f6rt\u00e9nt a(z) {0} oszt\u00e1lyban l\u00e9v\u0151 {1} vizsg\u00e1l\u00f3ban a(z) {2} kiv\u00e9tel alapj\u00e1n.
+DELIVERY_ERROR_SIRC_901.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_CONFIGURATION_ERROR_CWSIP0006
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+DELIVERY_ERROR_SIRC_905=CWSIK0905E: Bels\u0151 c\u00e9lbe\u00e1ll\u00edt\u00e1si hiba t\u00f6rt\u00e9nt a(z) {0} oszt\u00e1lyban a(z) {1} vizsg\u00e1l\u00f3ban l\u00e9v\u0151 {2} c\u00e9l eset\u00e9n.
+DELIVERY_ERROR_SIRC_905.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_905.useraction=CMSG0002

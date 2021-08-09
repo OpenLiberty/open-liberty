@@ -1,0 +1,209 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<!-- If you update SP configs in this file, please update the equivalent 
+		SP's in the unsolicited version of this file (samlProvider_customLogoutSPs_unsolicited.xml) -->
+
+	<!-- postLogoutRedirectUrl set to empty string -->
+	<samlWebSso20
+		id="customLogout_emptyString"
+		authFilterRef="myAuthFilterCL1"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		spCookieName="WASSamlSP_customLogout_emptyString"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl=" ">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<!-- postLogoutRedirectUrl set to an invalid URL string -->
+	<samlWebSso20
+		id="customLogout_invalidURL"
+		authFilterRef="myAuthFilterCL2"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		spCookieName="WASSamlSP_customLogout_invalidURL"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="some thing">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<!-- postLogoutRedirectUrl set to a valid relative URL path -->
+	<samlWebSso20
+		id="customLogout_relativePath"
+		authFilterRef="myAuthFilterCL3"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		spCookieName="WASSamlSP_customLogout_relativePath"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="/samlclient/customLogout.jsp">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="customLogout_specialRelativePath"
+		authFilterRef="myAuthFilterCL3b"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		spCookieName="WASSamlSP_customLogout_specialRelativePath"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="../specialResources/customLogout2.jsp">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<!-- postLogoutRedirectUrl set to a relative path that doesn't exist -->
+	<samlWebSso20
+		id="customLogout_invalidRelativePath"
+		authFilterRef="myAuthFilterCL4"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		spCookieName="WASSamlSP_customLogout_invalidRelativePath"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="../someOther location/customLogout.jsp">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="customLogout_absLocalURL"
+		authFilterRef="myAuthFilterCL5"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		spCookieName="WASSamlSP_customLogout_absLocalURL"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="http://localhost:${bvt.prop.HTTP_default}/samlclient/customLogout.jsp">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="customLogout_absExternalURL"
+		authFilterRef="myAuthFilterCL6"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		spCookieName="WASSamlSP_customLogout_absExternalURL"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="https://example.com">
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="ALL_ISSUERS" />
+	</samlWebSso20>
+
+	<samlWebSso20
+		id="sp5"
+		authFilterRef="myAuthFilterCL5s"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		userIdentifier=""
+		groupIdentifier=""
+		userUniqueIdentifier=""
+		realmIdentifier=""
+		includeTokenInSubject="true"
+		mapToUserRegistry="No"
+		spCookieName="WASSamlSP_sp5"
+		nameIDFormat="unspecified"
+		postLogoutRedirectUrl="somethingNotFound"
+		>
+	</samlWebSso20>
+
+</server>    

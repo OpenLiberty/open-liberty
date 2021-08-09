@@ -1,0 +1,64 @@
+###############################################################################
+# Copyright (c) 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSInn0000=CWSIO0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WebSphere Composable Server (Transaction server)
+#CMVCPATHNAME com.ibm.ws.transaction/resources/com/ibm/ws/transaction/services/TransactionMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# Message:       CWLIB0001E: UserTransaction service reference is null.
+# -----------------------------------------------------------------------
+USERTRAN_IS_NULL=CWLIB0001E: Die UserTransaction-Servicereferenz ist null.
+USERTRAN_IS_NULL.explanation=Es wurde eine Anforderung zum Anfordern des UserTransaction-Service abgesetzt, aber ist kein UserTransaction-Service mit diesem Bundle verbunden.
+USERTRAN_IS_NULL.useraction=Wenn der Zugriff auf die UserTransaction erforderlich ist, verwenden Sie die OSGi-Konsole, um zu ermitteln, warum kein UserTransaction-Service mit diesem Bundle verbunden wurde. 
+
+
+# {0} is the error that happened
+UNEXPECTED_TRAN_ERROR=CWLIB0002E: Unerwarteter Transaktionsfehler: {0}
+UNEXPECTED_TRAN_ERROR.explanation=Es wurde eine Anforderung zum Abrufen des Transaction-Objekts abgesetzt, aber es ist ein unerwarteter Fehler aufgetreten. 
+UNEXPECTED_TRAN_ERROR.useraction=Suchen Sie in den Protokollen nach vorherigen Fehlern oder FFDCs.
+
+# {0} is the TransactionRolledbackException thrown
+GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Eine globale Transaktion wurde wegen einer \u00dcberschreitung des zul\u00e4ssigen Zeitlimits r\u00fcckg\u00e4ngig gemacht: {0}
+GLOBAL_TRAN_ROLLBACK.explanation=Die aktuelle globale Transaktion hat das zul\u00e4ssige Zeitlimit \u00fcberschritten und wurde deshalb r\u00fcckg\u00e4ngig gemacht.
+GLOBAL_TRAN_ROLLBACK.useraction=Stellen Sie sicher, dass die globale Transaktion innerhalb des zul\u00e4ssigen Zeitrahmens abgeschlossen werden kann, oder erh\u00f6hen Sie das Zeitlimit.

@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere SIP Container
+Bundle-Description: WebSphere SIP Container, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.sipServlet.1.1
+
+Import-Package: com.ibm.websphere.sip,com.ibm.websphere.sip.resolver,com.ibm.websphere.sip.resolver.events,com.ibm.websphere.sip.resolver.exception,com.ibm.websphere.sip.unmatchedMessages,com.ibm.websphere.sip.unmatchedMessages.events
+
+Export-Package: com.ibm.websphere.sip,com.ibm.websphere.sip.resolver,com.ibm.websphere.sip.resolver.events,com.ibm.websphere.sip.resolver.exception,com.ibm.websphere.sip.unmatchedMessages,com.ibm.websphere.sip.unmatchedMessages.events
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.sipServlet.1.1/pom.xml=com.ibm.websphere.appserver.api.sipServlet.1.1.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.ws.sipcontainer;version=latest

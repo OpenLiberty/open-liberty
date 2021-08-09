@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: Mai multe resurse au numele {0}. Politica de autoriza\u0163ie nu poate fi determinat\u0103.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=Exist\u0103 mai multe resurse cu acela\u015fi nume \u015fi politica de autorizare corect\u0103 nu poate fi determinat\u0103. Numele resurselor trebuie s\u0103 fie unice.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=Modifica\u0163i numele unuia dintre numele de resurse astfel \u00eenc\u00e2t toate resursele s\u0103 fie unice.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: Defini\u0163ia de rol nu este valid\u0103: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=Sintaxa pentru definirea unui rol este <{1} nume="..." />.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=Modifica\u0163i defini\u0163ie rolului \u00een configura\u0163ie.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: Au fost g\u0103site mai multe elemente {0} cu numele {1}
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=Este permis\u0103 numai o defini\u0163ie a unui rol dat
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=\u00cenl\u0103tura\u0163i defini\u0163ia (defini\u0163iile) de rol duplicat(e) din configura\u0163ie.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: Rolul {0} are un utilizator, grup sau subiect special ad\u0103ugat mai mult de o dat\u0103
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=Este permis\u0103 numai o defini\u0163ie a unui membru per rol
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=\u00cenl\u0103tura\u0163i defini\u0163ia (defini\u0163iile) de membri de rol duplicat(e) din configura\u0163ie.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: Decizia de autorizare pentru resursele din aplica\u0163ia {0} va fi f\u0103cut\u0103 utiliz\u00e2nd numele de grup al utilizatorului care se potrive\u015fte cu numele de roluri necesare pentru a accesa acea resurs\u0103.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=Aplica\u0163ia nu are nicio tabel\u0103 de autorizare definit\u0103, prin urmare numele rolului necesar pentru a accesa resursa va fi tratat ca numele de grup pentru verificarea de acces. De exemplu, dac\u0103 numele de rol necesar pentru a accesa resursa este Manager, atunci, dac\u0103 utilizatorul autentificat apar\u0163ine grupului Manager, accesul va fi acordat.  
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=Verificarea implicit\u0103 de autorizare poate fi dezactivat\u0103 prin setarea atributului useGroupToRoleName elementului de autorizare la false \u00een server.xml.   

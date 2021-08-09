@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: byte buffer support
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/bytebuffer/internal/resources/ByteBufferMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### WSBB will use message ids from 0600-0799
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: A(z) {0} egy\u00e9ni tulajdons\u00e1g \u00e9rt\u00e9ke {1}. Ez az \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Egy egy\u00e9ni tulajdons\u00e1g olyan \u00e9rt\u00e9kkel lett megadva, amely k\u00edv\u00fcl esik az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek tartom\u00e1ny\u00e1n.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: A WsByteBuffer \u00f6sszetev\u0151h\u00f6z megadott {0} egy\u00e9ni tulajdons\u00e1g \u00e9rv\u00e9nytelen.
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Az egy\u00e9ni tulajdons\u00e1g helytelen\u00fcl lett megadva.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: A WsByteBuffer egy NumberFormatException kiv\u00e9telt \u00e1ll\u00edtott el\u0151 a k\u00f6vetkez\u0151 tulajdons\u00e1g feldolgoz\u00e1sakor: Tulajdons\u00e1gn\u00e9v: {0}  \u00c9rt\u00e9k: {1}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=A WsByteBuffer konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9ke nem egy \u00e9rv\u00e9nyes sz\u00e1m.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+POOL_MISMATCH=CWWKO0603E: A WsByteBuffer k\u00e9szlet m\u00e9ret\u00e9re \u00e9s a k\u00e9szlet m\u00e9lys\u00e9g\u00e9re vonatkoz\u00f3 specifik\u00e1ci\u00f3k elt\u00e9r\u0151 sz\u00e1m\u00fa bejegyz\u00e9st tartalmaznak. M\u00e9ret: {0}  M\u00e9lys\u00e9g: {1}
+POOL_MISMATCH.explanation=A k\u00e9szlet m\u00e9retei \u00e9s a k\u00e9szlet m\u00e9lys\u00e9gei helytelen\u00fcl lettek megadva.
+POOL_MISMATCH.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.

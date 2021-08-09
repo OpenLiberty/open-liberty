@@ -1,0 +1,6 @@
+version: 1
+dn: ou=syntaxes,cn=apachedns,ou=schema
+ou: syntaxes
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,948 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.mfp.CWSIFMessages.props
+#
+# SIB.mfp component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIF0001=CWSIF0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIF0001-CWSIF0010 belong to class com.ibm.ws.sib.mfp.JsMessageFactory & JsMessageFactoryImpl
+#   - Msgs in the range CWSIF0011-CWSIF0020 belong to class com.ibm.ws.sib.mfp.JsJmsMessageFactory
+#   - Msgs in the range CWSIF0021-CWSIF0030 belong to class com.ibm.ws.sib.mfp.trm.TrmMessageFactory
+#   - Msgs in the range CWSIF0031-CWSIF0040 belong to classes com.ibm.ws.sib.mfp.impl.JsMessageHandle*
+#   - Msgs in the range CWSIF0041-CWSIF0050 belong to class com.ibm.ws.sib.mfp.mp.ControlMessageFactory
+#   - Msgs in the range CWSIF0051-CWSIF0060 belong to class com.ibm.ws.sib.mfp.CompHandshakeFactory
+#   - Msgs in the range CWSIF0101-CWSIF0180 belong to class com.ibm.ws.sib.mfp.impl.JsMessageImpl
+#   - Msgs in the range CWSIF0181-CWSIF0190 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0191-CWSIF0199 belong to class com.ibm.ws.sib.mfp.impl.JsApiMessageImpl
+#   - Msgs in the range CWSIF0200-CWSIF0210 belong to class com.ibm.ws.sib.mfp.util.HexString
+#   - Msgs in the range CWSIF0211-CWSIF0220 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulation
+#   - Msgs in the range CWSIF0221-CWSIF0230 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulationManager
+#   - Msgs in the range CWSIF0231-CWSIF0240 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0241-CWSIF0250 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0251-CWSIF0260 belong to class com.ibm.ws.sib.mfp.sdo.mediators.BlobMediator
+#   - Msgs in the range CWSIF0271-CWSIF0280 belong to package com.ibm.ws.sib.mfp.sdo.soap
+#   - Msgs in the range CWSIF0281-CWSIF0290 belong to package com.ibm.ws.sib.mfp.sdo.soap.write
+#   - Msgs in the range CWSIF0291-CWSIF0310 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0311-CWSIF0320 belong to class com.ibm.ws.sib.mfp.sdo.mediators.JmfDataMediator
+#   - Msgs in the range CWSIF0321-CWSIF0350 belong to package com.ibm.ws.sib.mfp.sdo.bean
+#   - Msgs in the range CWSIF0351-CWSIF0360 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0361-CWSIF0370 belong to class com.ibm.ws.sib.mfp.sdo.DataGraphFactoryImpl
+#   - Msgs in the range CWSIF0371-CWSIF0380 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+#   - Msgs in the range CWSIF0381-CWSIF0390 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+#   - Msgs in the range CWSIF0391-CWSIF0410 are no longer allocated
+#   - Msgs in the range CWSIF0411-CWSIF0420 are no longer allocated
+#   - Msgs in the range CWSIF0421-CWSIF0430 are no longer allocated
+#   - Msgs in the range CWSIF0431-CWSIF0439 belong to package com.ibm.ws.sib.mfp.sdo.resource
+#   - Msgs in the range CWSIF0500-CWSIF0510 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0600-CWSIF0610 belong to class com.ibm.ws.sib.mfp.sdo.repository.WSDLMetaData
+#   - Msgs in the range CWSIF0700-CWSIF0710 belong to class com.ibm.ws.sib.mfp.mqimpl.MQJmsMapMessageEncapsulation
+#   - Msgs in the range CWSIF0711-CWSIF0720 belong to package com.ibm.ws.sib.mfp.sdo.jms
+#   - Msgs in the range CWSIF0721-CWSIF0730 belong to package com.ibm.ws.sib.mfp*
+#   - CWSIF9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/mfp/CWSIFMessages.nlsprops
+#COMPONENTPREFIX CWSIF
+#COMPONENTNAMEFOR CWSIF SIBus MFP
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIF0001=CWSIF0001E: Egy JsMessageFactoryImpl p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+NO_DATASLICES_IN_LIST_CWSIF0002=CWSIF0002E: Null\u00e9rt\u00e9k\u0171 vagy \u00fcres DataSlice lista ker\u00fclt \u00e1tad\u00e1sra az \u00fczenet vissza\u00e1ll\u00edt\u00e1snak.
+NO_DATASLICES_IN_LIST_CWSIF0002.explanation=CMSG0001
+NO_DATASLICES_IN_LIST_CWSIF0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011=CWSIF0011E: Egy JsJmsMessageFactoryImpl p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.explanation=CMSG0001
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021=CWSIF0021E: Egy TrmMessageFactoryImpl p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.explanation=CMSG0001
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031=CWSIF0031E: Egy JsMessageHandleFactoryImpl p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.explanation=CMSG0001
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the type of bad data that was passed (NULL or Empty String)
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032=CWSIF0032E: {0} ker\u00fclt \u00e1tad\u00e1sra az SIMessageHandleRestorer elemnek.
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.explanation=CMSG0001
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033=CWSIF0033E: Az SIMessageHandleRestorer.restoreFromBytes elemnek \u00e1tadott adatok hossza \u00e9rv\u00e9nytelen.
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.explanation=CMSG0001
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034=CWSIF0034E: Az SIMessageHandleRestorer.restoreFromBytes elemnek \u00e1tadott adatok nem rendelkeznek \u00e9rv\u00e9nyes verzi\u00f3sz\u00e1m inform\u00e1ci\u00f3kkal.
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.explanation=CMSG0001
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035=CWSIF0035E: Az SIMessageHandleRestorer.restoreFromBytes elemnek \u00e1tadott adatok nem teljes\u00edtik a bels\u0151 hossz\u00e9rv\u00e9nyes\u00edt\u00e9si ellen\u0151rz\u00e9seket.
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.explanation=CMSG0001
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041=CWSIF0041E: Egy ControlMessageFactoryImpl p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.explanation=CMSG0001
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051=CWSIF0051E: Egy CompHandshakeImpl p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.explanation=CMSG0001
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the implementation class, {1} is the value of the Exception
+UNABLE_TO_CREATE_CWSIF0061=CWSIF0061E: Egy {0} p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {1}.
+UNABLE_TO_CREATE_CWSIF0061.explanation=CMSG0001
+UNABLE_TO_CREATE_CWSIF0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the system message id of the message.
+NOT_API_MESSAGE_CWSIF0101=CWSIF0101E: Az \u00fczenetv\u00e1laszt\u00f3k nem t\u00e1mogatottak a(z) {0} \u00fczenet eset\u00e9n.
+NOT_API_MESSAGE_CWSIF0101.explanation=Az \u00fczenetv\u00e1laszt\u00f3k csak az API \u00fczenetek eset\u00e9n t\u00e1mogatottak.
+NOT_API_MESSAGE_CWSIF0101.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s nem haszn\u00e1l \u00fczenetv\u00e1laszt\u00f3kat a nem API \u00fczenetekhez.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message type found
+# {1} is the expected message type
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102=CWSIF0102E: A(z) {1} \u00fczenett\u00edpus volt az elv\u00e1rt, de a(z) {0} \u00fczenett\u00edpus volt tal\u00e1lhat\u00f3.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.explanation=Az \u00fczenet egyik \u00fczenett\u00edpusr\u00f3l egy m\u00e1sikra \u00e1talak\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt. Ez az \u00e1talak\u00edt\u00e1s nem t\u00e1mogatott.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181=CWSIF0181E: Az SDO adatdiagram nem szerezhet\u0151 meg az \u00fczenet hasznos tartalm\u00e1b\u00f3l.
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.explanation=CMSG0001
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect class name
+INCORRECT_ENCAPSULATION_CWSIF0182=CWSIF0182E: Az \u00fczenet a(z) {0} helytelen be\u00e1gyaz\u00e1si oszt\u00e1lyt tartalmazza.
+INCORRECT_ENCAPSULATION_CWSIF0182.explanation=CMSG0001
+INCORRECT_ENCAPSULATION_CWSIF0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# This is an almost exact copy of CWSIA0114E in file CWSIAJMSMessages.nlsprops
+# {0} is the property name
+# {1} is the expected type of the property value
+# {2} is thetype of the property value given
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183=CWSIF0183E: A(z) {0} tulajdons\u00e1got a(z) {1}, nem a(z) {2} t\u00edpus haszn\u00e1lat\u00e1val kell be\u00e1ll\u00edtani.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.explanation=A JMS_IBM_MQMD tulajdons\u00e1gokat specifikus v\u00e1ltoz\u00f3t\u00edpusok haszn\u00e1lat\u00e1val kell be\u00e1ll\u00edtani.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.useraction=Jav\u00edtsa ki az alkalmaz\u00e1s k\u00f3dj\u00e1t, hogy a sz\u00fcks\u00e9ges v\u00e1ltoz\u00f3t\u00edpust haszn\u00e1lja ezen JMS_IBM_MQMD tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0191=CWSIF0191E: A(z) {0} hexadecim\u00e1lis karaktersorozat form\u00e1tuma helytelen a viszony\u00edt\u00e1si azonos\u00edt\u00f3 sz\u00e1m\u00e1ra.
+BAD_HEX_STRING_CWSIF0191.explanation=A karaktersorozat egy \u00e9rv\u00e9nytelen hexadecim\u00e1lis viszony\u00edt\u00e1si azonos\u00edt\u00f3. A k\u00f6vetkez\u0151 form\u00e1tum\u00fanak kell lennie: egy azonos\u00edt\u00f3, amelyet csak p\u00e1ros sz\u00e1m\u00fa hexadecim\u00e1lis karakter k\u00f6vethet.
+BAD_HEX_STRING_CWSIF0191.useraction=Jav\u00edtsa ki azt a karaktersorozatot, amely eset\u00e9n az \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0200=CWSIF0200E: A(z) {0} hexadecim\u00e1lis karaktersorozat form\u00e1tuma helytelen.
+BAD_HEX_STRING_CWSIF0200.explanation=Egy karaktersorozatr\u00f3l byte-t\u00f6mbb\u00e9 \u00e1talak\u00edt\u00e1s meghi\u00fasult, mert a karaktersorozat nem hexadecim\u00e1lis karaktereket, vagy p\u00e1ratlan sz\u00e1m\u00fa karaktert tartalmazott.
+BAD_HEX_STRING_CWSIF0200.useraction=Ellen\u0151rizze azon karaktersorozat tartalm\u00e1t, amely eset\u00e9n az \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+FORMAT_NOT_FOUND_CWSIF0211=CWSIF0211E: Az \u00fczenet form\u00e1tuma nem azonos\u00edthat\u00f3. Kiv\u00e9tel: {0}.
+FORMAT_NOT_FOUND_CWSIF0211.explanation=CMSG0001
+FORMAT_NOT_FOUND_CWSIF0211.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+GET_LENGTH_FAILED_CWSIF0212=CWSIF0212E: Az \u00fczenet hossza nem sz\u00e1m\u00edthat\u00f3 ki. Kiv\u00e9tel: {0}.
+GET_LENGTH_FAILED_CWSIF0212.explanation=CMSG0001
+GET_LENGTH_FAILED_CWSIF0212.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+WRITE_FAILED_CWSIF0213=CWSIF0213E: Az \u00fczenet nem sz\u00e1m\u00edthat\u00f3 ki. Kiv\u00e9tel: {0}.
+WRITE_FAILED_CWSIF0213.explanation=CMSG0001
+WRITE_FAILED_CWSIF0213.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+UNASSEMBLE_FAILED_CWSIF0214=CWSIF0214E: A JMF \u00fczenet nem bonthat\u00f3 sz\u00e9t. Kiv\u00e9tel: {0}.
+UNASSEMBLE_FAILED_CWSIF0214.explanation=CMSG0001
+UNASSEMBLE_FAILED_CWSIF0214.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+SCHEMA_ID_ERROR_CWSIF0221=CWSIF0221E: JMF s\u00e9maazonos\u00edt\u00f3-hiba. Kiv\u00e9tel: {0}.
+SCHEMA_ID_ERROR_CWSIF0221.explanation=CMSG0001
+SCHEMA_ID_ERROR_CWSIF0221.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+PARSE_FAILED_CWSIF0222=CWSIF0222E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Kiv\u00e9tel: {0}.
+PARSE_FAILED_CWSIF0222.explanation=CMSG0001
+PARSE_FAILED_CWSIF0222.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_WSDL_CWSIF0232=CWSIF0232E: A(z) {0} WSDL f\u00e1jl nem import\u00e1lhat\u00f3. Kiv\u00e9tel: {1}.
+INVALID_WSDL_CWSIF0232.explanation=A WSDL import\u00e1l\u00f3 nem tudta import\u00e1lni a f\u00e1jlt.
+INVALID_WSDL_CWSIF0232.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes WSDL f\u00e1jlokat import\u00e1l \u00e9s, hogy a WSDL szabv\u00e1ny t\u00e1mogatott v\u00e1ltozat\u00e1t haszn\u00e1lja.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+INVALID_WSDL_CWSIF0233=CWSIF0233E: Nem tal\u00e1lhat\u00f3 a(z) {0} nev\u0171 \u00e9s {1} n\u00e9vter\u0171 t\u00edpus.
+INVALID_WSDL_CWSIF0233.explanation=A WSDL import\u00e1l\u00f3 nem tudott megtal\u00e1lni egy t\u00edpusmeghat\u00e1roz\u00e1st.
+INVALID_WSDL_CWSIF0233.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WSDL t\u00edpusok r\u00e9szben felvette a t\u00edpus XML s\u00e9mameghat\u00e1roz\u00e1s\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the namespace
+INVALID_WSDL_CWSIF0234=CWSIF0234E: Nem tal\u00e1lhat\u00f3 a(z) {0} nev\u0171 \u00e9s {1} n\u00e9vter\u0171 elem.
+INVALID_WSDL_CWSIF0234.explanation=A WSDL import\u00e1l\u00f3 nem tudott megtal\u00e1lni egy elemmeghat\u00e1roz\u00e1st.
+INVALID_WSDL_CWSIF0234.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WSDL t\u00edpusok r\u00e9szben felvette az elem XML s\u00e9mameghat\u00e1roz\u00e1s\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_INPUT_CWSIF0235=CWSIF0235E: A(z) {0} URI bemeneti adatfolyam\u00e1nak el\u00e9r\u00e9se le van tiltva.
+BLOCKED_INPUT_CWSIF0235.explanation=A fut\u00e1si k\u00f6rnyezet letiltotta az adott URI el\u00e9r\u00e9s\u00e9t. Ezt egy olyan XML s\u00e9ma bet\u00f6lt\u00e9se okozta, amely nem ker\u00fclt telep\u00edt\u00e9sre az SDO lerakatba.
+BLOCKED_INPUT_CWSIF0235.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy telep\u00edtette a megfelel\u0151 WSDL \u00e9s XML s\u00e9maf\u00e1jlokat az SDO lerakatba.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_OUTPUT_CWSIF0236=CWSIF0236E: A(z) {0} URI kimenet adatfolyam\u00e1nak el\u00e9r\u00e9se le van tiltva.
+BLOCKED_OUTPUT_CWSIF0236.explanation=CMSG0001
+BLOCKED_OUTPUT_CWSIF0236.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI, {1} is the exception
+NESTED_ERROR_CWSIF0237=CWSIF0237E: Kiv\u00e9tel t\u00f6rt\u00e9nt a tartalmazott er\u0151forr\u00e1s bet\u00f6lt\u00e9se sor\u00e1n. Er\u0151forr\u00e1s URI azonos\u00edt\u00f3ja {0}, kiv\u00e9tel: {1}.
+NESTED_ERROR_CWSIF0237.explanation=A f\u00e1jl egy be\u00e1gyazott er\u0151forr\u00e1st tartalmazott \u00e9s hib\u00e1k fordultak el\u0151 a be\u00e1gyazott er\u0151forr\u00e1s bet\u00f6lt\u00e9se sor\u00e1n.
+NESTED_ERROR_CWSIF0237.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace, {1} is the location, {2} is the exception
+RESOURCE_ERROR_CWSIF0238=CWSIF0238E: Kiv\u00e9tel t\u00f6rt\u00e9nt az Ecore modell keres\u00e9se sor\u00e1n. C\u00e9l n\u00e9vtere: {0}, helytipp: {1}, kiv\u00e9tel: {2}.
+RESOURCE_ERROR_CWSIF0238.explanation=Kiv\u00e9tel j\u00f6tt l\u00e9tre az Ecore modell kikeres\u00e9se sor\u00e1n.
+RESOURCE_ERROR_CWSIF0238.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WSDL defintion type (Message, Port Type, Binding or Operation), {1} is the name of the defintion, {2} is the location.
+INVALID_WSDL_CWSIF0240=CWSIF0240E: Nem tal\u00e1lhat\u00f3 a(z) {1} n\u00e9vvel rendelkez\u0151 {0} WSDL. A meghat\u00e1roz\u00e1sra a(z) {2} f\u00e1jl hivatkozott.
+INVALID_WSDL_CWSIF0240.explanation=A WSDL import\u00e1l\u00f3 nem tudott megtal\u00e1lni egy meghat\u00e1roz\u00e1st, amelyre a WSDL f\u00e1jl hivatkozott.
+INVALID_WSDL_CWSIF0240.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WSDL meghat\u00e1roz\u00e1sok teljesek \u00e9s, hogy felvette az \u00f6sszes hivatkozott WSDL f\u00e1jlt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_XSD_CWSIF0241=CWSIF0241E: A(z) {0} XML s\u00e9maf\u00e1jl nem import\u00e1lhat\u00f3. Kiv\u00e9tel: {1}.
+INVALID_XSD_CWSIF0241.explanation=Az XML s\u00e9maimport\u00e1l\u00f3 nem tudta import\u00e1lni a f\u00e1jlt.
+INVALID_XSD_CWSIF0241.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML s\u00e9maf\u00e1jlokat import\u00e1l \u00e9s, hogy az XML s\u00e9maszabv\u00e1ny t\u00e1mogatott v\u00e1ltozat\u00e1t haszn\u00e1lja.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error
+INVALID_XSD_CWSIF0242=CWSIF0242E: Hiba a(z) {0} XML s\u00e9ma bet\u00f6lt\u00e9se sor\u00e1n.
+INVALID_XSD_CWSIF0242.explanation=Az XML s\u00e9maimport\u00e1l\u00f3 nem tudta bet\u00f6lteni a f\u00e1jlt.
+INVALID_XSD_CWSIF0242.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML s\u00e9maf\u00e1jlokat import\u00e1l \u00e9s, hogy az XML s\u00e9maszabv\u00e1ny t\u00e1mogatott v\u00e1ltozat\u00e1t haszn\u00e1lja.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error message
+XSD_ERROR_CWSIF0243=CWSIF0243E: {0}
+XSD_ERROR_CWSIF0243.explanation=Hiba t\u00f6rt\u00e9nt egy XML s\u00e9ma import\u00e1l\u00e1sa sor\u00e1n.
+XSD_ERROR_CWSIF0243.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_PARSE_FAILURE_CWSIF0251=CWSIF0251E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Kiv\u00e9tel: {0}.
+BLOB_PARSE_FAILURE_CWSIF0251.explanation=CMSG0001
+BLOB_PARSE_FAILURE_CWSIF0251.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_LENGTH_FAILURE_CWSIF0252=CWSIF0252E: Az \u00fczenet hossza nem sz\u00e1m\u00edthat\u00f3 ki. Kiv\u00e9tel: {0}.
+BLOB_LENGTH_FAILURE_CWSIF0252.explanation=CMSG0001
+BLOB_LENGTH_FAILURE_CWSIF0252.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_WRITE_FAILURE_CWSIF0253=CWSIF0253E: Az \u00fczenet nem \u00edrhat\u00f3. Kiv\u00e9tel: {0}.
+BLOB_WRITE_FAILURE_CWSIF0253.explanation=CMSG0001
+BLOB_WRITE_FAILURE_CWSIF0253.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+BLOB_MODEL_FAILURE_CWSIF0254=CWSIF0254E: Helytelen, {0} t\u00edpus\u00fa \u00e9s {1} n\u00e9vter\u0171 \u00fczenetmodell.
+BLOB_MODEL_FAILURE_CWSIF0254.explanation=CMSG0001
+BLOB_MODEL_FAILURE_CWSIF0254.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_PARSE_FAILURE_CWSIF0271=CWSIF0271E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Kiv\u00e9tel: {0}.
+SOAP_PARSE_FAILURE_CWSIF0271.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok \u00fczenet \u00e9rtelmez\u00e9sekor.
+SOAP_PARSE_FAILURE_CWSIF0271.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_LENGTH_FAILURE_CWSIF0272=CWSIF0272E: Az \u00fczenet hossza nem sz\u00e1m\u00edthat\u00f3 ki. Kiv\u00e9tel: {0}.
+SOAP_LENGTH_FAILURE_CWSIF0272.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SOAP_LENGTH_FAILURE_CWSIF0272.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_WRITE_FAILURE_CWSIF0273=CWSIF0273E: Az \u00fczenet nem \u00edrhat\u00f3. Kiv\u00e9tel: {0}.
+SOAP_WRITE_FAILURE_CWSIF0273.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok \u00fczenet \u00edr\u00e1sakor.
+SOAP_WRITE_FAILURE_CWSIF0273.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+SOAP_FORMAT_ERROR_CWSIF0274=CWSIF0274E: Helytelen {0} form\u00e1tum-karaktersorozat.
+SOAP_FORMAT_ERROR_CWSIF0274.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SOAP_FORMAT_ERROR_CWSIF0274.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet form\u00e1tuma egy SOAP \u00fczenet sz\u00e1m\u00e1ra helyes szintaxist k\u00f6veti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the buffer length, {1} is the start offset, {2} is the length
+SOAP_BUFFER_ERROR_CWSIF0275=CWSIF0275E: Helytelen puffereltol\u00e1sok: puffer hossza: {0}, kezdeti eltol\u00e1s: {1}, adatok hossza: {2}.
+SOAP_BUFFER_ERROR_CWSIF0275.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SOAP_BUFFER_ERROR_CWSIF0275.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_CREATE_FAILURE_CWSIF0276=CWSIF0276E: Nem hozhat\u00f3 l\u00e9tre \u00faj SDO adatdiagram. Kiv\u00e9tel: {0}.
+SOAP_CREATE_FAILURE_CWSIF0276.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SOAP_CREATE_FAILURE_CWSIF0276.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of child nodes
+BAD_HEADER_CHILD_CWSIF0281=CWSIF0281E: A fejl\u00e9cbejegyz\u00e9s nem megfelel\u0151 sz\u00e1m\u00fa ut\u00f3d adatobjektumot tartalmaz. 1 volt az elv\u00e1rt, de {0} tal\u00e1lhat\u00f3.
+BAD_HEADER_CHILD_CWSIF0281.explanation=Egy fejl\u00e9cbejegyz\u00e9st k\u00e9pvisel\u0151 adatobjektum nem megfelel\u0151 sz\u00e1m\u00fa ut\u00f3d adatobjektumot tartalmazott.
+BAD_HEADER_CHILD_CWSIF0281.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden egyes fejl\u00e9cbejegyz\u00e9s pontosan egy ut\u00f3dot tartalmaz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error URI, {1} is the error code, {2} is the additional data
+SOAP_PARSE_ERROR_CWSIF0291=CWSIF0291E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Hiba URI azonos\u00edt\u00f3ja: {0}, hibak\u00f3d: {1}, tov\u00e1bbi adatok: {2}.
+SOAP_PARSE_ERROR_CWSIF0291.explanation=Az XML \u00e9rtelmez\u0151 hib\u00e1t jelentett egy SOAP \u00fczenet feldolgoz\u00e1sa sor\u00e1n.
+SOAP_PARSE_ERROR_CWSIF0291.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet szab\u00e1lyosan form\u00e1zott.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0293=CWSIF0293E: Nem v\u00e1rt elem tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0293.explanation=Az SOAP \u00e9rtelmez\u0151 egy SOAP bor\u00edt\u00e9kelemet v\u00e1rt, de a fenti elemet tal\u00e1lta.
+ENVELOPE_PARSE_ERROR_CWSIF0293.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0294=CWSIF0294E: Nem v\u00e1rt elem tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0294.explanation=Az SOAP \u00e9rtelmez\u0151 egy SOAP fejl\u00e9c- vagy t\u00f6rzselemet v\u00e1rt, de a fenti elemet tal\u00e1lta.
+ENVELOPE_PARSE_ERROR_CWSIF0294.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the mustUnderstand value
+MUST_UNDERSTAND_ERROR_CWSIF0295=CWSIF0295E: Nem v\u00e1rt mustUnderstand \u00e9rt\u00e9k tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}, mustUnderstand \u00e9rt\u00e9ke: {2}.
+MUST_UNDERSTAND_ERROR_CWSIF0295.explanation=Az SOAP \u00e9rtelmez\u0151 egy helytelen \u00e9rt\u00e9kkel rendelkez\u0151 SOAP mustUnderstand attrib\u00fatumot tal\u00e1lt.
+MUST_UNDERSTAND_ERROR_CWSIF0295.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+NON_ROOT_ERROR_CWSIF0296=CWSIF0296E: Helytelen, nem gy\u00f6k\u00e9r SOAP t\u00f6rzselem tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}.
+NON_ROOT_ERROR_CWSIF0296.explanation=Az SOAP \u00e9rtelmez\u0151 egy nem gy\u00f6k\u00e9r SOAP t\u00f6rzselemet tal\u00e1lt, de az elem nem SOAP k\u00f3dol\u00e1s\u00fa.
+NON_ROOT_ERROR_CWSIF0296.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute value
+NON_ROOT_ERROR_CWSIF0297=CWSIF0297E: Helytelen SOAP gy\u00f6k\u00e9rattrib\u00fatum tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}, SOAP gy\u00f6k\u00e9rattrib\u00fatum \u00e9rt\u00e9ke: {2}.
+NON_ROOT_ERROR_CWSIF0297.explanation=Az SOAP \u00e9rtelmez\u0151 egy helytelen SOAP gy\u00f6k\u00e9rattrib\u00fatummal rendelkez\u0151 elemet tal\u00e1lt.
+NON_ROOT_ERROR_CWSIF0297.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+NIL_DATA_ERROR_CWSIF0298=CWSIF0298E: Adatok tal\u00e1lhat\u00f3k egy nil (\u00fcres) elemben. Elem neve: {0}, elem n\u00e9vtere: {1}, adatok: {2}.
+NIL_DATA_ERROR_CWSIF0298.explanation=Az SOAP \u00e9rtelmez\u0151 egy olyan elemben tal\u00e1lt adatokat, amely xsi:nil="true" attrib\u00fatummal rendelkezett.
+NIL_DATA_ERROR_CWSIF0298.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek az XML s\u00e9mameghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the nested element name, {3} is the nested element namespace
+NIL_ELEMENT_ERROR_CWSIF0299=CWSIF0299E: Elem tal\u00e1lhat\u00f3 egy nil (\u00fcres) elemben. Elem neve: {0}, elem n\u00e9vtere: {1}, be\u00e1gyazott elem neve: {2}, be\u00e1gyazott elem n\u00e9vtere: {3}.
+NIL_ELEMENT_ERROR_CWSIF0299.explanation=Az SOAP \u00e9rtelmez\u0151 egy olyan elemben tal\u00e1lt elemet, amely xsi:nil="true" attrib\u00fatummal rendelkezett.
+NIL_ELEMENT_ERROR_CWSIF0299.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek az XML s\u00e9mameghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute name, {3} is the attribute namespace
+NIL_ATTR_ERROR_CWSIF0300=CWSIF0300E: Attrib\u00fatum tal\u00e1lhat\u00f3 egy nil (\u00fcres) elemben. Elem neve: {0}, elem n\u00e9vtere: {1}, attrib\u00fatum neve: {2}, attrib\u00fatum n\u00e9vtere: {3}.
+NIL_ATTR_ERROR_CWSIF0300.explanation=Az SOAP \u00e9rtelmez\u0151 egy olyan elemben tal\u00e1lt attrib\u00fatumot, amely xsi:nil="true" attrib\u00fatummal rendelkezett.
+NIL_ATTR_ERROR_CWSIF0300.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek az XML s\u00e9mameghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the type URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0301=CWSIF0301E: Az \u00fczenetben egy \u00e9rt\u00e9k nem \u00e9rtelmezhet\u0151. T\u00edpus neve: {0}, t\u00edpus n\u00e9vtere: {1}, adatok: {2}.
+VALUE_PARSE_ERROR_CWSIF0301.explanation=Az SOAP \u00e9rtelmez\u0151 nem tudta \u00e1talak\u00edtani az \u00e9rt\u00e9ket egy t\u00edpus p\u00e9ld\u00e1ny\u00e1v\u00e1.
+VALUE_PARSE_ERROR_CWSIF0301.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a WSDL-ben modellezett t\u00edpusokkal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0302=CWSIF0302E: V\u00e1ratlan sz\u00f6veg tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}, adatok: {2}.
+VALUE_PARSE_ERROR_CWSIF0302.explanation=Az XML elem tartalmazott sz\u00f6veget, de a WSDL modell nem enged\u00e9lyezi ezen elem sz\u00e1m\u00e1ra adatok tartalmaz\u00e1s\u00e1t.
+VALUE_PARSE_ERROR_CWSIF0302.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a WSDL-ben modellezett t\u00edpusokkal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the xsi:type value
+XSI_TYPE_ERROR_CWSIF0303=CWSIF0303E: Helytelen xsi:type attrib\u00fatum volt tal\u00e1lhat\u00f3 a(z) {0} nev\u0171, {1} n\u00e9vter\u0171, {2} xsi:type \u00e9rt\u00e9k\u0171 elem feldolgoz\u00e1sa sor\u00e1n.
+XSI_TYPE_ERROR_CWSIF0303.explanation=Az XML elem tartalmazott egy xsi:type attrib\u00fatumot, de az attrib\u00fatum \u00e9rt\u00e9ke nem volt feldolgozhat\u00f3.
+XSI_TYPE_ERROR_CWSIF0303.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek az XML s\u00e9mameghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+BODY_WSDL_MISMATCH_CWSIF0304=CWSIF0304E: Az \u00fczenett\u00f6rzs nem felelt meg egy WSDL meghat\u00e1roz\u00e1snak sem.
+BODY_WSDL_MISMATCH_CWSIF0304.explanation=Az SOAP \u00fczenetben l\u00e9v\u0151 \u00fczenett\u00f6rzs nem felelt meg egy WSDL meghat\u00e1roz\u00e1snak sem. Ez az\u00e9rt lehet, mert a SOAP \u00fczenet helytelen vagy a form\u00e1tum-karaktersorozat nem megfelel\u0151 WSDL-t azonos\u00edtott.
+BODY_WSDL_MISMATCH_CWSIF0304.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a WSDL meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+ID_ATTR_NOT_FOUND_CWSIF0305=CWSIF0305E: Nem tal\u00e1lhat\u00f3 id (azonos\u00edt\u00f3) attrib\u00fatum egy nem gy\u00f6k\u00e9r SOAP t\u00f6rzselem sz\u00e1m\u00e1ra. Az elem r\u00e9szletei: n\u00e9v: {0}, n\u00e9vt\u00e9r: {1}.
+ID_ATTR_NOT_FOUND_CWSIF0305.explanation=Minden egyes nem gy\u00f6k\u00e9r SOAP t\u00f6rzselemnek rendelkeznie kell egyedi \u00e9rt\u00e9k\u0171 id (azonos\u00edt\u00f3) attrib\u00fatummal.
+ID_ATTR_NOT_FOUND_CWSIF0305.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet a SOAP k\u00f3dol\u00e1si szab\u00e1lyait k\u00f6veti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the id attribute
+HREF_NOT_FOUND_CWSIF0306=CWSIF0306E: A(z) {0} \u00e9rt\u00e9k\u0171 id (azonos\u00edt\u00f3) attrib\u00fatummal rendelkez\u0151 elem nem ker\u00fclt hivatkoz\u00e1sra.
+HREF_NOT_FOUND_CWSIF0306.explanation=Minden egyes nem gy\u00f6k\u00e9r SOAP t\u00f6rzselemre hivatkoznia kell az \u00fczenet valamely m\u00e1s r\u00e9sz\u00e9nek.
+HREF_NOT_FOUND_CWSIF0306.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet a SOAP k\u00f3dol\u00e1si szab\u00e1lyait k\u00f6veti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the href value
+INVALID_HREF_CWSIF0307=CWSIF0307E: A(z) {0} \u00e9rt\u00e9k\u0171 href attrib\u00fatumnak megfelel\u0151 elem nem tal\u00e1lhat\u00f3.
+INVALID_HREF_CWSIF0307.explanation=Egy SOAP k\u00f3dol\u00e1s\u00fa elem egy href attrib\u00fatumot haszn\u00e1l, de nem tal\u00e1lhat\u00f3 megfelel\u0151 id (azonos\u00edt\u00f3) attrib\u00fatummal rendelkez\u0151 elem.
+INVALID_HREF_CWSIF0307.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet a SOAP k\u00f3dol\u00e1si szab\u00e1lyait k\u00f6veti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the processing instruction target
+PI_PARSE_ERROR_CWSIF0308=CWSIF0308E: V\u00e1ratlan feldolgoz\u00e1si \u00fatmutat\u00e1s tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}, c\u00e9l: {2}.
+PI_PARSE_ERROR_CWSIF0308.explanation=Az XML elem egy feldolgoz\u00e1si \u00fatmutat\u00e1st tartalmazott, de a SOAP nem enged\u00e9lyezi az elemek sz\u00e1m\u00e1ra a feldolgoz\u00e1si \u00fatmutat\u00e1sok tartalmaz\u00e1s\u00e1t.
+PI_PARSE_ERROR_CWSIF0308.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+SIMPLE_ELEMENT_ERROR_CWSIF0309=CWSIF0309E: Nem v\u00e1rt elem tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.explanation=Az XML elem egyszer\u0171 \u00e9rt\u00e9ket tartalmazott, de az \u00e9rt\u00e9k nem felel meg az adatdiagramnak.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a WSDL-ben modellezett t\u00edpusokkal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the attribute name, {3} is the attribute namespace
+ATTRIBUTE_ERROR_CWSIF0310=CWSIF0310E: V\u00e1ratlan attrib\u00fatum tal\u00e1lhat\u00f3. Elem neve: {0}, elem n\u00e9vtere: {1}, attrib\u00fatum neve: {2}, attrib\u00fatum n\u00e9vtere: {3}.
+ATTRIBUTE_ERROR_CWSIF0310.explanation=Az XML elem egy attrib\u00fatumot tartalmazott, de az attrib\u00fatum nem felel meg az adatdiagramnak.
+ATTRIBUTE_ERROR_CWSIF0310.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a WSDL-ben modellezett t\u00edpusokkal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_PARSE_FAILURE_CWSIF0311=CWSIF0311E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Kiv\u00e9tel: {0}.
+JMF_PARSE_FAILURE_CWSIF0311.explanation=CMSG0001
+JMF_PARSE_FAILURE_CWSIF0311.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_LENGTH_FAILURE_CWSIF0312=CWSIF0312E: Az \u00fczenet hossza nem sz\u00e1m\u00edthat\u00f3 ki. Kiv\u00e9tel: {0}.
+JMF_LENGTH_FAILURE_CWSIF0312.explanation=CMSG0001
+JMF_LENGTH_FAILURE_CWSIF0312.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_WRITE_FAILURE_CWSIF0313=CWSIF0313E: Az \u00fczenet nem \u00edrhat\u00f3. Kiv\u00e9tel: {0}.
+JMF_WRITE_FAILURE_CWSIF0313.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0313.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect length
+# {1} is the expected length
+JMF_WRITE_FAILURE_CWSIF0314=CWSIF0314E: A(z) {0} \u00fczenethossz nem egyezik meg a(z) {1} elv\u00e1rt hosszal.
+JMF_WRITE_FAILURE_CWSIF0314.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0314.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+JMF_FORMAT_ERROR_CWSIF0315=CWSIF0315E: Helytelen {0} form\u00e1tum-karaktersorozat.
+JMF_FORMAT_ERROR_CWSIF0315.explanation=CMSG0001
+JMF_FORMAT_ERROR_CWSIF0315.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet a JMF adathozz\u00e1f\u00e9r\u00e9si szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra helyes szintaxist k\u00f6veti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0321=CWSIF0321E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Kiv\u00e9tel: {0}.
+BEAN_PARSE_FAILURE_CWSIF0321.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_PARSE_FAILURE_CWSIF0321.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+BEAN_CREATE_FAILURE_CWSIF0322=CWSIF0322E: A k\u00f6vetkez\u0151 jellemz\u0151kkel rendelkez\u0151 adatobjektum l\u00e9trehoz\u00e1sa meghi\u00fasult: sz\u00fcl\u0151t\u00edpus neve: {2}, tulajdons\u00e1g neve: {0}, n\u00e9vt\u00e9r: {1}.
+BEAN_CREATE_FAILURE_CWSIF0322.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_CREATE_FAILURE_CWSIF0322.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy import\u00e1lta az \u00fczenet WSDL vagy XML s\u00e9mameghat\u00e1roz\u00e1sait.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+BEAN_PARSE_FAILURE_CWSIF0323=CWSIF0323E: A(z) {0} nev\u0171, {1} n\u00e9vter\u0171 sz\u00e1rmaztatott t\u00edpus alapt\u00edpusa nem hat\u00e1rozhat\u00f3 meg.
+BEAN_PARSE_FAILURE_CWSIF0323.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_PARSE_FAILURE_CWSIF0323.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet WSDL vagy XML s\u00e9mameghat\u00e1roz\u00e1sai helyesek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the accessor method name
+# {3} is the target Java class name
+BEAN_WRITE_FAILURE_CWSIF0324=CWSIF0324E: Egy met\u00f3dus megszerz\u00e9se \u00e9s megh\u00edv\u00e1sa meghi\u00fasult egy felsorol\u00e1s t\u00edpust k\u00e9pvisel\u0151 objektum elemz\u00e9se sor\u00e1n. T\u00edpus neve: {0}, n\u00e9vt\u00e9r: {1}, met\u00f3dus neve: {2}, c\u00e9loszt\u00e1ly neve: {3}.
+BEAN_WRITE_FAILURE_CWSIF0324.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_WRITE_FAILURE_CWSIF0324.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott objektumokban el\u00e9rhet\u0151 a megfelel\u0151 hozz\u00e1f\u00e9r\u0151-met\u00f3dus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0325=CWSIF0325E: Az \u00fczenet nem \u00edrhat\u00f3. Kiv\u00e9tel: {0}.
+BEAN_WRITE_FAILURE_CWSIF0325.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_WRITE_FAILURE_CWSIF0325.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0326=CWSIF0326E: Egy met\u00f3dus megszerez\u00e9se \u00e9s megh\u00edv\u00e1sa meghi\u00fasult egy komponensobjektum elemz\u00e9se sor\u00e1n. Sz\u00fcl\u0151t\u00edpus neve: {2}, tulajdons\u00e1g neve: {0}, n\u00e9vt\u00e9r: {1}, met\u00f3dus neve: {3}, c\u00e9loszt\u00e1ly neve: {4}.
+GET_FIELD_FAILURE_CWSIF0326.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+GET_FIELD_FAILURE_CWSIF0326.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott objektumokban el\u00e9rhet\u0151 a megfelel\u0151 hozz\u00e1f\u00e9r\u0151-met\u00f3dus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0327=CWSIF0327E: Egy met\u00f3dus megszerez\u00e9se \u00e9s megh\u00edv\u00e1sa meghi\u00fasult egy komponensobjektum elemz\u00e9se sor\u00e1n. Sz\u00fcl\u0151t\u00edpus neve: {2}, tulajdons\u00e1g neve: {0}, n\u00e9vt\u00e9r: {1}, met\u00f3dus neve: {3}, c\u00e9loszt\u00e1ly neve: {4}.
+SET_FIELD_FAILURE_CWSIF0327.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SET_FIELD_FAILURE_CWSIF0327.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott objektumokban el\u00e9rhet\u0151 a megfelel\u0151 hozz\u00e1f\u00e9r\u0151-met\u00f3dus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0328=CWSIF0328E: Egy met\u00f3dus megszerez\u00e9se \u00e9s megh\u00edv\u00e1sa meghi\u00fasult egy komponensobjektum elemz\u00e9se sor\u00e1n. Sz\u00fcl\u0151t\u00edpus neve: {2}, tulajdons\u00e1g neve: {0}, n\u00e9vt\u00e9r: {1}, met\u00f3dus neve: {3}, c\u00e9loszt\u00e1ly neve: {4}.
+SET_FIELD_FAILURE_CWSIF0328.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SET_FIELD_FAILURE_CWSIF0328.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott objektumokban el\u00e9rhet\u0151 a megfelel\u0151 hozz\u00e1f\u00e9r\u0151-met\u00f3dus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+MIME_PARSE_FAILURE_CWSIF0329=CWSIF0329E: Egy MIME mell\u00e9klet \u00e9rtelmez\u00e9se meghi\u00fasult. Tartalom t\u00edpusa: {0}.
+MIME_PARSE_FAILURE_CWSIF0329.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+MIME_PARSE_FAILURE_CWSIF0329.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott objektumok megfelel\u0151ek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the fault feature name
+# {1} is the namespace
+# {2} is the location
+FAULT_PARSE_FAILURE_CWSIF0330=CWSIF0330E: Az SOAP hiba\u00fczenet sz\u00e1m\u00e1ra az adatobjektum l\u00e9trehoz\u00e1sa meghi\u00fasult. Hibaszolg\u00e1ltat\u00e1s neve: {0}, n\u00e9vt\u00e9r: {1}, hely: {2}.
+FAULT_PARSE_FAILURE_CWSIF0330.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+FAULT_PARSE_FAILURE_CWSIF0330.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WSDL vagy XML s\u00e9mameghat\u00e1roz\u00e1sok el\u00e9rhet\u0151k az \u00fczenet sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0331=CWSIF0331E: Egy met\u00f3dus megszerez\u00e9se \u00e9s megh\u00edv\u00e1sa meghi\u00fasult egy komponensobjektum elemz\u00e9se sor\u00e1n. Sz\u00fcl\u0151t\u00edpus neve: {2}, tulajdons\u00e1g neve: {0}, n\u00e9vt\u00e9r: {1}, met\u00f3dus neve: {3}, c\u00e9loszt\u00e1ly neve: {4}.
+GET_FIELD_FAILURE_CWSIF0331.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+GET_FIELD_FAILURE_CWSIF0331.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott objektumokban el\u00e9rhet\u0151 a megfelel\u0151 hozz\u00e1f\u00e9r\u0151-met\u00f3dus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the Java class name
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332=CWSIF0332E: Egy komponensobjektum \u00faj p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sa meghi\u00fasult. Sz\u00fcl\u0151t\u00edpus neve: {2}, tulajdons\u00e1g neve: {0}, n\u00e9vt\u00e9r: {1}, oszt\u00e1ly neve: {3}.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a komponensobjektum p\u00e9ld\u00e1nyos\u00edthat\u00f3 Class.newInstance() haszn\u00e1lat\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333=CWSIF0333E: Az SOAP k\u00f3dol\u00e1s\u00fa t\u00f6mb\u00fczenetet k\u00e9pvisel\u0151 adatobjektum l\u00e9trehoz\u00e1s\u00e1nak modellj\u00e9nek megkeres\u00e9se meghi\u00fasult. N\u00e9vt\u00e9r: {0}, hely: {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WSDL vagy XML s\u00e9mameghat\u00e1roz\u00e1sok el\u00e9rhet\u0151k az \u00fczenet sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334=CWSIF0334E: Az SOAP k\u00f3dol\u00e1s\u00fa t\u00f6mb\u00fczenetet k\u00e9pvisel\u0151 adatobjektum l\u00e9trehoz\u00e1s\u00e1nak modellj\u00e9nek megkeres\u00e9se meghi\u00fasult. N\u00e9vt\u00e9r: {0}, hely: {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WSDL vagy XML s\u00e9mameghat\u00e1roz\u00e1sok el\u00e9rhet\u0151k az \u00fczenet sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+# {1} is the content transfer encoding
+# {2} is the content id
+MIME_WRITE_FAILURE_CWSIF0335=CWSIF0335E: Egy MIME mell\u00e9klet \u00edr\u00e1s meghi\u00fasult. Tartalom t\u00edpusa: {0}, tartalom \u00e1tviteli k\u00f3dol\u00e1sa: {1}, tartalom azonos\u00edt\u00f3ja: {2}.
+MIME_WRITE_FAILURE_CWSIF0335.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+MIME_WRITE_FAILURE_CWSIF0335.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok megfelel\u0151ek az MIME t\u00f6rzsr\u00e9sz\u00e9nek l\u00e9trehoz\u00e1s\u00e1hoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation name
+# {1} is the message name
+FAULT_WRITE_FAILURE_CWSIF0336=CWSIF0336E: Egy hiba\u00fczenet \u00edr\u00e1sa meghi\u00fasult. \u00dczenet neve: {0}, m\u0171velet neve: {1}.
+FAULT_WRITE_FAILURE_CWSIF0336.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+FAULT_WRITE_FAILURE_CWSIF0336.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok megfelel\u0151ek a Detail (r\u00e9szlet) elem l\u00e9trehoz\u00e1s\u00e1hoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_CREATE_FAILURE_CWSIF0338=CWSIF0338E: Nem hozhat\u00f3 l\u00e9tre \u00faj SDO adatdiagram. Kiv\u00e9tel: {0}.
+BEAN_CREATE_FAILURE_CWSIF0338.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_CREATE_FAILURE_CWSIF0338.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0341=CWSIF0341E: Az \u00fczenet nem \u00e9rtelmezhet\u0151. Kiv\u00e9tel: {0}.
+BEAN_PARSE_FAILURE_CWSIF0341.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_PARSE_FAILURE_CWSIF0341.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0342=CWSIF0342E: Az \u00fczenet nem \u00edrhat\u00f3. Kiv\u00e9tel: {0}.
+BEAN_WRITE_FAILURE_CWSIF0342.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_WRITE_FAILURE_CWSIF0342.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_LENGTH_FAILURE_CWSIF0343=CWSIF0343E: Az \u00fczenet hossza nem sz\u00e1m\u00edthat\u00f3 ki. Kiv\u00e9tel: {0}.
+BEAN_LENGTH_FAILURE_CWSIF0343.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_LENGTH_FAILURE_CWSIF0343.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the attribute value
+TYPE_MAPPING_FAILURE_CWSIF0346=CWSIF0346E: Egy attrib\u00fatum\u00e9rt\u00e9k feldolgoz\u00e1sa meghi\u00fasult. T\u00edpus neve: {0}, n\u00e9vt\u00e9r: {1}, attrib\u00fatum \u00e9rt\u00e9ke: {2}.
+TYPE_MAPPING_FAILURE_CWSIF0346.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+TYPE_MAPPING_FAILURE_CWSIF0346.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott attrib\u00fatum\u00e9rt\u00e9k megfelel\u0151 t\u00edpus\u00fa.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0347=CWSIF0347E: A s\u00e9mat\u00edpus Java oszt\u00e1lly\u00e1 lek\u00e9pez\u00e9se meghi\u00fasult. T\u00edpus neve: {0}, n\u00e9vtere: {1}.
+TYPE_MAPPING_FAILURE_CWSIF0347.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+TYPE_MAPPING_FAILURE_CWSIF0347.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151 lek\u00e9pez\u00e9s ker\u00fclt megad\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0348=CWSIF0348E: A s\u00e9mat\u00edpus Java oszt\u00e1lly\u00e1 lek\u00e9pez\u00e9se meghi\u00fasult. T\u00edpus neve: {0}, n\u00e9vtere: {1}.
+TYPE_MAPPING_FAILURE_CWSIF0348.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+TYPE_MAPPING_FAILURE_CWSIF0348.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151 lek\u00e9pez\u00e9s ker\u00fclt megad\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+BEAN_FORMAT_ERROR_CWSIF0350=CWSIF0350E: Helytelen {0} form\u00e1tum-karaktersorozat.
+BEAN_FORMAT_ERROR_CWSIF0350.explanation=Hiba t\u00f6rt\u00e9nt egy webszolg\u00e1ltat\u00e1sok k\u00e9r\u00e9s, v\u00e1lasz vagy hiba feldolgoz\u00e1sakor.
+BEAN_FORMAT_ERROR_CWSIF0350.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet a komponens adathozz\u00e1f\u00e9r\u00e9si szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra helyes szintaxist k\u00f6veti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+MESSAGE_FEATURE_CWSIF0353=CWSIF0353E: Nem siker\u00fclt megtal\u00e1lni az \u00fczenet metaadatait. Szolg\u00e1ltat\u00e1s n\u00e9vtere: {0}, szolg\u00e1ltat\u00e1s neve: {1}, port neve: {2}, m\u0171velet neve: {3}, \u00fczenet neve: {4}.
+MESSAGE_FEATURE_CWSIF0353.explanation=Az SOAP \u00e9rtelmez\u0151 nem tal\u00e1lta meg az adott \u00fczenet metaadatait.
+MESSAGE_FEATURE_CWSIF0353.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy import\u00e1lta az \u00fczenet WSDL meghat\u00e1roz\u00e1sait.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the element name, {2} is the element namespace
+MIME_ELEM_ERROR_CWSIF0354=CWSIF0354E: Nem v\u00e1rt elem tal\u00e1lhat\u00f3 az \u00fczenetr\u00e9szben. \u00dczenetr\u00e9sz neve: {0}, elem neve: {1}, elem n\u00e9vtere: {2}.
+MIME_ELEM_ERROR_CWSIF0354.explanation=Az SOAP \u00e9rtelmez\u0151 egy olyan \u00fczenetr\u00e9szt dolgozott fel, amely tartalma egy MIME mell\u00e9klethez ker\u00fclt \u00e1tad\u00e1sra, de a r\u00e9sz be\u00e1gyazott elemet is tartalmazott.
+MIME_ELEM_ERROR_CWSIF0354.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attribute name, {2} is the attribute namespace
+MIME_ATTR_ERROR_CWSIF0355=CWSIF0355E: Nem v\u00e1rt attrib\u00fatum tal\u00e1lhat\u00f3 az \u00fczenetr\u00e9szben. \u00dczenetr\u00e9sz neve: {0}, attrib\u00fatum neve: {1}, attrib\u00fatum n\u00e9vtere: {2}.
+MIME_ATTR_ERROR_CWSIF0355.explanation=Az SOAP \u00e9rtelmez\u0151 egy olyan \u00fczenetr\u00e9szt dolgozott fel, amely tartalma egy MIME mell\u00e9klethez ker\u00fclt \u00e1tad\u00e1sra, de a r\u00e9sz egy nem v\u00e1rt attrib\u00fatumot is tartalmazott.
+MIME_ATTR_ERROR_CWSIF0355.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the exception
+MIME_REF_ERROR_CWSIF0356=CWSIF0356E: Egy MIME mell\u00e9klet nem dolgozhat\u00f3 fel. \u00dczenetr\u00e9sz neve: {0}, kiv\u00e9tel: {1}.
+MIME_REF_ERROR_CWSIF0356.explanation=Az SOAP \u00e9rtelmez\u0151 egy kiv\u00e9telt tal\u00e1lt az \u00fczenetr\u00e9sz \u00e1ltal hivatkozott MIME mell\u00e9klet feldolgoz\u00e1sa sor\u00e1n.
+MIME_REF_ERROR_CWSIF0356.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attachment reference
+MIME_REF_NOT_FOUND_CWSIF0357=CWSIF0357E: Egy MIME mell\u00e9klet nem tal\u00e1lhat\u00f3. \u00dczenetr\u00e9sz neve: {0}, hivatkoz\u00e1s: {1}.
+MIME_REF_NOT_FOUND_CWSIF0357.explanation=Az SOAP \u00e9rtelmez\u0151 nem tal\u00e1lta meg az \u00fczenetr\u00e9sz \u00e1ltal hivatkozott MIME mell\u00e9kletet.
+MIME_REF_NOT_FOUND_CWSIF0357.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content id, {1} is the content type, {2} is the exception.
+MIME_IO_ERROR_CWSIF0358=CWSIF0358E: Egy MIME mell\u00e9klet nem dolgozhat\u00f3 fel. Tartalom azonos\u00edt\u00f3ja: {0}, tartalom t\u00edpusa: {1}, kiv\u00e9tel: {2}.
+MIME_IO_ERROR_CWSIF0358.explanation=Az SOAP \u00e9rtelmez\u0151 egy IOException kiv\u00e9telt \u00e9szlelt az adott tartalomazonos\u00edt\u00f3val \u00e9s -t\u00edpussal rendelkez\u0151 MIME mell\u00e9klet feldolgoz\u00e1sa sor\u00e1n.
+MIME_IO_ERROR_CWSIF0358.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben l\u00e9v\u0151 adatok kompatibilisek a SOAP meghat\u00e1roz\u00e1ssal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+NO_DATA_MEDIATOR_CWSIF0362=CWSIF0362E: A(z) {0} \u00fczenetform\u00e1tum helytelen.
+NO_DATA_MEDIATOR_CWSIF0362.explanation=A megadott \u00fczenetform\u00e1tum nem egyezik meg az elv\u00e1rt \u00fczenetform\u00e1tummal.
+NO_DATA_MEDIATOR_CWSIF0362.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy helyes \u00fczenetform\u00e1tum ker\u00fclt megad\u00e1sra.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This message is cloned as INVALID_ARGUMENT_CWSIF0381.
+INVALID_ARGUMENT_CWSIF0371=CWSIF0371E: A(z) {0} megadott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {2} met\u00f3dus {1} param\u00e9tere sz\u00e1m\u00e1ra.
+INVALID_ARGUMENT_CWSIF0371.explanation=Egy olyan param\u00e9ter\u00e9rt\u00e9k ker\u00fclt megad\u00e1sra, amely nem megengedett a meghat\u00e1rozott met\u00f3dus eset\u00e9n.
+INVALID_ARGUMENT_CWSIF0371.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes param\u00e9terek ker\u00fcltek \u00e1tad\u00e1sra a k\u00e9rd\u00e9ses met\u00f3dus sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_CONTENT_CWSIF0372=CWSIF0372E: Egy IOException kiv\u00e9tel t\u00f6rt\u00e9nt az \u00fczenetelem tartalm\u00e1nak megszerz\u00e9se sor\u00e1n.
+UNABLE_TO_GET_CONTENT_CWSIF0372.explanation=Az \u00fczenetelem p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1nak megsz\u00fcntet\u00e9se nem lehets\u00e9ges a hivatkozott IOException kiv\u00e9tel miatt.
+UNABLE_TO_GET_CONTENT_CWSIF0372.useraction=Der\u00edtse ki \u00e9s oldja meg a hivatkozott IOException kiv\u00e9tel \u00e1ltal le\u00edrt probl\u00e9m\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_COPY_ERROR_CWSIF0373=CWSIF0373E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenetelem m\u00e1sol\u00e1sa sor\u00e1n: {0}.
+ELEMENT_COPY_ERROR_CWSIF0373.explanation=Az \u00fczenetelem m\u00e1sol\u00e1sa nem lehets\u00e9ges a hivatkozott kiv\u00e9tel miatt.
+ELEMENT_COPY_ERROR_CWSIF0373.useraction=Der\u00edtse ki \u00e9s oldja meg a hivatkozott kiv\u00e9tel \u00e1ltal le\u00edrt probl\u00e9m\u00e1t.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This is a clone of INVALID_ARGUMENT_CWSIF0371.
+INVALID_ARGUMENT_CWSIF0381=CWSIF0381E: A(z) {0} megadott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {2} met\u00f3dus {1} param\u00e9tere sz\u00e1m\u00e1ra.
+INVALID_ARGUMENT_CWSIF0381.explanation=Egy olyan param\u00e9ter\u00e9rt\u00e9k ker\u00fclt megad\u00e1sra, amely nem megengedett a meghat\u00e1rozott met\u00f3dus eset\u00e9n.
+INVALID_ARGUMENT_CWSIF0381.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes param\u00e9terek ker\u00fcltek \u00e1tad\u00e1sra a k\u00e9rd\u00e9ses met\u00f3dus sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method in which the error was found.
+UNABLE_TO_GET_CONTENT_CWSIF0382=CWSIF0382E: Egy IOException kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} met\u00f3dusban l\u00e9v\u0151 \u00fczenet p\u00e9ld\u00e1nyos\u00edt\u00e1sa vagy p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1nak megsz\u00fcntet\u00e9se sor\u00e1n.
+UNABLE_TO_GET_CONTENT_CWSIF0382.explanation=Az \u00fczenetelem p\u00e9ld\u00e1nyos\u00edt\u00e1sa vagy p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1nak megsz\u00fcntet\u00e9se nem lehets\u00e9ges a hivatkozott IOException kiv\u00e9tel miatt.
+UNABLE_TO_GET_CONTENT_CWSIF0382.useraction=Der\u00edtse ki \u00e9s oldja meg a hivatkozott IOException kiv\u00e9tel \u00e1ltal le\u00edrt probl\u00e9m\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the class type of the element that was supplied.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383=CWSIF0383E: A MimeElementList (MIME elemek list\u00e1ja) csak a MimeElement (MIME elem) bejegyz\u00e9seket t\u00e1mogatja. A megadott param\u00e9ter t\u00edpusa {0} volt.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.explanation=A MimeElementList egy specializ\u00e1lt listamegval\u00f3s\u00edt\u00e1s, ami csak a MimeElement listabejegyz\u00e9seket t\u00e1mogatja.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.useraction=A param\u00e9tert tartalmaz\u00f3 MimeElement objektumot a list\u00e1hoz ad\u00e1s el\u0151tt hozza l\u00e9tre.
+
+# -------------------------------------------------------------------------------------------------
+# multipart/related should not be translated
+# {0} is the class type of the element that was supplied.
+NON_MULTIPART_MESSAGE_CWSIF0384=CWSIF0384E: A megadott \u00fczenet {0} t\u00edpus\u00fa, nem pedig a sz\u00fcks\u00e9ges multipart/related t\u00edpus\u00fa.
+NON_MULTIPART_MESSAGE_CWSIF0384.explanation=A megval\u00f3s\u00edt\u00e1s nem t\u00e1mogatja a megadott \u00fczenet t\u00edpus\u00e1t.
+NON_MULTIPART_MESSAGE_CWSIF0384.useraction=Ne adjon meg ilyen t\u00edpus\u00fa \u00fczenetet ennek a seg\u00e9dprogramnak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of contentType headers that exist in the message.
+CONTENT_HEADER_CARDINALITY_CWSIF0385=CWSIF0385E: {0} ContentType (tartalomt\u00edpus) fejl\u00e9cbejegyz\u00e9s tal\u00e1lhat\u00f3 az \u00fczenetben.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.explanation=A megval\u00f3s\u00edt\u00e1s csak azon \u00fczeneteket t\u00e1mogatja, amelyek pontosan egy ContentType fejl\u00e9cmez\u0151t tartalmaznak.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.useraction=Ne adjon meg nulla vagy egyn\u00e9l t\u00f6bb tartalomt\u00edpus mez\u0151t tartalmaz\u00f3 \u00fczenetet ezen seg\u00e9dprogram sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_LIST_COPY_ERROR_CWSIF0386=CWSIF0386E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenetelem-lista m\u00e1sol\u00e1sa sor\u00e1n: {0}.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.explanation=Az \u00fczenetelem-lista m\u00e1sol\u00e1sa nem lehets\u00e9ges a hivatkozott kiv\u00e9tel miatt.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.useraction=Der\u00edtse ki \u00e9s oldja meg a hivatkozott kiv\u00e9tel \u00e1ltal le\u00edrt probl\u00e9m\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name
+# {1} is the containing message name
+NO_TYPE_FOR_PART_CWSIF0431=CWSIF0431E: A(z) {1} \u00fczenetben l\u00e9v\u0151 {0} WSDL r\u00e9sz nem tartozik t\u00edpushoz vagy elemhez.
+NO_TYPE_FOR_PART_CWSIF0431.explanation=Egy WSDL \u00fczenet minden egyes r\u00e9sz\u00e9nek tartoznia kell egy XML s\u00e9mat\u00edpushoz vagy elemhez.
+NO_TYPE_FOR_PART_CWSIF0431.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy minden egyes \u00fczenetr\u00e9sz meghat\u00e1roz\u00e1sa tartalmazza a 'type' (t\u00edpus) vagy 'element' (elem) attrib\u00fatumot.
+
+# -------------------------------------------------------------------------------------------------
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500=CWSIF0500E: Egy JMS lek\u00e9pez\u00e9si \u00fczenet nem \u00e9rhet\u0151 el SDO adatdiagramk\u00e9nt.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.explanation=Egy JMS lek\u00e9pez\u00e9si \u00fczenet SDO-n kereszt\u00fcli el\u00e9r\u00e9se nem t\u00e1mogatott.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.useraction=\u00cdrja \u00e1t az alkalmaz\u00e1st egy t\u00e1mogatott funkci\u00f3 haszn\u00e1lat\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501=CWSIF0501E: Hiba t\u00f6rt\u00e9nt egy \u00fczenet hasznos tartalm\u00e1nak adatdiagramj\u00e1nak byte-t\u00f6mbk\u00e9nt el\u00e9r\u00e9se sor\u00e1n. A hivatkozott kiv\u00e9tel a(z) {0}.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.explanation=A hasznos tartalom DataGraph elem\u00e9nek p\u00e9ld\u00e1nyos\u00edt\u00e1sa meghi\u00fasult.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502=CWSIF0502E: Hiba t\u00f6rt\u00e9nt egy \u00fczenet hasznos tartalm\u00e1nak adatdiagramj\u00e1nak {0} form\u00e1tum haszn\u00e1lat\u00e1val, byte-t\u00f6mbb\u0151l l\u00e9trehoz\u00e1sa sor\u00e1n. A hivatkozott kiv\u00e9tel a(z) {1}.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.explanation=A byte-t\u00f6mb \u00e9rtelmez\u00e9se a DataGraph l\u00e9trehoz\u00e1s\u00e1hoz meghi\u00fasult.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the DataGraph format of the current message
+# {1} is the DataGraph format that was passed in to change the current message to
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503=CWSIF0503E: A(z) {0} form\u00e1tumr\u00f3l {1} form\u00e1tumra \u00e1tk\u00f3dol\u00e1s nem t\u00e1mogatott.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.explanation=A jelenlegi SDO \u00fczenet DataGraph form\u00e1tuma \u00e9s az \u00faj DataGraph form\u00e1tum k\u00f6zti \u00e1tk\u00f3dol\u00e1s nem t\u00e1mogatott.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.useraction=\u00cdrja \u00e1t az alkalmaz\u00e1st egy t\u00e1mogatott funkci\u00f3 haszn\u00e1lat\u00e1ra.
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504=CWSIF0504E: Hiba t\u00f6rt\u00e9nt egy \u00fczenet hasznos tartalm\u00e1nak adatdiagramj\u00e1nak {0} form\u00e1tum haszn\u00e1lat\u00e1val, null\u00e9rt\u00e9k\u0171 byte-t\u00f6mbb\u0151l l\u00e9trehoz\u00e1sa sor\u00e1n. A hivatkozott kiv\u00e9tel a(z) {1}.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.explanation=Ezen form\u00e1tum\u00fa DataGraph \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9hez egy nem null\u00e9rt\u00e9k\u0171 byte-t\u00f6mb sz\u00fcks\u00e9ges.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+WSDL_MISSING_CWSIF0600=CWSIF0600E: A form\u00e1tum-karaktersorozat egy {0} portnevet azonos\u00edtott a(z) {1} nev\u0171 szolg\u00e1ltat\u00e1sban \u00e9s {2} n\u00e9vt\u00e9rben, a(z) {3} WSDL helyen. A WSDL nem tal\u00e1lhat\u00f3.
+WSDL_MISSING_CWSIF0600.explanation=A form\u00e1tum-karaktersorozat \u00e1ltal azonos\u00edtott WSDL nem tal\u00e1lhat\u00f3. Ez az\u00e9rt lehet, mert a form\u00e1tumban l\u00e9v\u0151 hely helytelen vagy, mert a WSDL nem ker\u00fclt telep\u00edt\u00e9sre.
+WSDL_MISSING_CWSIF0600.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a form\u00e1tum-karaktersorozatban l\u00e9v\u0151 WSDL hely helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+SERVICE_MISSING_CWSIF0601=CWSIF0601E: A form\u00e1tum-karaktersorozat egy {0} portnevet azonos\u00edtott a(z) {1} nev\u0171 szolg\u00e1ltat\u00e1sban \u00e9s {2} n\u00e9vt\u00e9rben, a(z) {3} WSDL helyen. A WSDL megtal\u00e1lhat\u00f3, de nem tartalmazza a megnevezett szolg\u00e1ltat\u00e1st.
+SERVICE_MISSING_CWSIF0601.explanation=A form\u00e1tum-karaktersorozat nem felel meg a WSDL meghat\u00e1roz\u00e1soknak. Ez az\u00e9rt lehet, mert a form\u00e1tumban l\u00e9v\u0151 szolg\u00e1ltat\u00e1sn\u00e9v vagy n\u00e9vt\u00e9r helytelen vagy rossz WSDL van telep\u00edtve.
+SERVICE_MISSING_CWSIF0601.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a form\u00e1tum-karaktersorozatban l\u00e9v\u0151 szolg\u00e1ltat\u00e1sn\u00e9v \u00e9s n\u00e9vt\u00e9r megfelel a WSDL meghat\u00e1roz\u00e1soknak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+PORT_MISSING_CWSIF0602=CWSIF0602E: A form\u00e1tum-karaktersorozat egy {0} portnevet azonos\u00edtott a(z) {1} nev\u0171 szolg\u00e1ltat\u00e1sban \u00e9s {2} n\u00e9vt\u00e9rben, a(z) {3} WSDL helyen. A szolg\u00e1ltat\u00e1s megtal\u00e1lhat\u00f3, de nem tartalmazza a megnevezett portot.
+PORT_MISSING_CWSIF0602.explanation=A form\u00e1tum-karaktersorozat nem felel meg a WSDL meghat\u00e1roz\u00e1soknak. Ez az\u00e9rt lehet, mert a form\u00e1tumban l\u00e9v\u0151 portn\u00e9v helytelen vagy rossz WSDL van telep\u00edtve.
+PORT_MISSING_CWSIF0602.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a form\u00e1tum-karaktersorozatban l\u00e9v\u0151 portn\u00e9v megfelel a WSDL meghat\u00e1roz\u00e1soknak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+BINDING_MISSING_CWSIF0603=CWSIF0603E: A form\u00e1tum-karaktersorozat egy {0} portnevet azonos\u00edtott a(z) {1} nev\u0171 szolg\u00e1ltat\u00e1sban \u00e9s {2} n\u00e9vt\u00e9rben, a(z) {3} WSDL helyen. A port megtal\u00e1lhat\u00f3, de nem tartalmaz hivatkoz\u00e1st k\u00f6t\u00e9sre.
+BINDING_MISSING_CWSIF0603.explanation=A form\u00e1tum-karaktersorozat nem felel meg a WSDL meghat\u00e1roz\u00e1soknak. Ez az\u00e9rt lehet, mert a WSDL hi\u00e1nyos vagy rossz WSDL van telep\u00edtve.
+BINDING_MISSING_CWSIF0603.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a port t\u00e1rs\u00edtva van egy k\u00f6t\u00e9shez a WSDL-ben.
+
+# -------------------------------------------------------------------------------------------------
+DIFFERENT_LENGTH_LISTS_CWSIF0700=CWSIF0700E: A lek\u00e9pez\u00e9si \u00fczenet nem azonos sz\u00e1m\u00fa n\u00e9vvel \u00e9s \u00e9rt\u00e9kkel rendelkezik.
+DIFFERENT_LENGTH_LISTS_CWSIF0700.explanation=A lek\u00e9pez\u00e9si n\u00e9vlist\u00e1nak \u00e9s a lek\u00e9pez\u00e9si \u00e9rt\u00e9klist\u00e1nak azonos hossz\u00fas\u00e1g\u00fanak kell lennie.  Egy\u00fctt a lek\u00e9pez\u00e9si \u00fczenet n\u00e9v-\u00e9rt\u00e9k p\u00e1rjait k\u00e9pviselik.
+DIFFERENT_LENGTH_LISTS_CWSIF0700.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9t lista azonos hossz\u00fas\u00e1g\u00fa.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+JMS_FORMAT_ERROR_CWSIF0711=CWSIF0711E: Helytelen {0} form\u00e1tum-karaktersorozat.
+JMS_FORMAT_ERROR_CWSIF0711.explanation=A form\u00e1tum-karaktersorozat nem felel meg a JMS \u00fczenethez felismert egyik form\u00e1tum-karaktersorozatnak sem.
+JMS_FORMAT_ERROR_CWSIF0711.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetform\u00e1tum helyes a JMS \u00fczenetekhez t\u00e1mogatott \u00fczenett\u00edpus sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_WRITE_ERROR_CWSIF0712=CWSIF0712E: A JMS \u00fczenet nem p\u00e9ld\u00e1nyos\u00edthat\u00f3. Kiv\u00e9tel: {0}.
+JMS_WRITE_ERROR_CWSIF0712.explanation=A program egy JMS \u00fczenet p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rletet \u00e9s ez meghi\u00fasult.
+JMS_WRITE_ERROR_CWSIF0712.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the existing elements type name
+JMS_BAD_MODEL_ERROR_CWSIF0713=CWSIF0713E: A(z) {0} t\u00edpus\u00fa adatobjektum nem megfelel\u0151 egy JMS \u00fczenet hasznos tartalmak\u00e9nt.
+JMS_BAD_MODEL_ERROR_CWSIF0713.explanation=A program megk\u00eds\u00e9relte a megadott adatobjektum megfelel\u0151s\u00e9g\u00e9t ellen\u0151rizni egy JMS \u00fczenet hasznos tartalm\u00e1nak form\u00e1z\u00e1s\u00e1hoz.
+JMS_BAD_MODEL_ERROR_CWSIF0713.useraction=M\u00f3dos\u00edtsa a programot \u00fagy, hogy megfelel\u0151 t\u00edpus\u00fa adatobjektumot adjon meg.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_PARSER_CONFIG_ERROR_CWSIF0714=CWSIF0714E: Hiba t\u00f6rt\u00e9nt egy XML \u00e9rtelmez\u0151 JMS adatfolyam \u00fczenet olvas\u00e1s\u00e1ra be\u00e1ll\u00edt\u00e1sa k\u00f6zben. Kiv\u00e9tel: {0}.
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt egy XML \u00e9rtelmez\u0151 be\u00e1ll\u00edt\u00e1sa k\u00f6zben.
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_PARSE_ERROR_CWSIF0715=CWSIF0715E: Hiba t\u00f6rt\u00e9nt egy JMS adatfolyam \u00fczenet hasznos tartalm\u00e1nak \u00e9rtelmez\u00e9se k\u00f6zben. Kiv\u00e9tel: {0}.
+JMS_STREAM_PARSE_ERROR_CWSIF0715.explanation=A JMS adatfolyam \u00fczenet hasznos tartalma \u00e9rv\u00e9nytelen XML.
+JMS_STREAM_PARSE_ERROR_CWSIF0715.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_READ_IO_ERROR_CWSIF0716=CWSIF0716E: Egy bemeneti/kimeneti hiba t\u00f6rt\u00e9nt a JMS adathozz\u00e1f\u00e9r\u00e9si szolg\u00e1ltat\u00e1sban. Kiv\u00e9tel: {0}.
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.explanation=Egy bemeneti/kimeneti hiba t\u00f6rt\u00e9nt a SAX feldolgoz\u00e1sban egy JMS adatfolyam \u00fczenet t\u00f6rzs\u00e9nek \u00e9rtelmez\u00e9se k\u00f6zben.
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717=CWSIF0717E: Egy bemeneti/kimeneti hiba t\u00f6rt\u00e9nt a JMS adathozz\u00e1f\u00e9r\u00e9si szolg\u00e1ltat\u00e1sban. Kiv\u00e9tel: {0}.
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.explanation=Egy bemeneti/kimeneti hiba t\u00f6rt\u00e9nt egy JMS adatfolyam \u00fczenet hasznos tartalm\u00e1nak \u00edr\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben.
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_TYPE_ERROR_CWSIF0718=CWSIF0718E: Hiba t\u00f6rt\u00e9nt egy {0} t\u00edpus\u00fa elemet tartalmaz\u00f3 JMS adatfolyam \u00fczenet \u00edr\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.explanation=A k\u00e9rd\u00e9ses elem t\u00edpusa nem megengedett egy JMS adatfolyam \u00fczenetben.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.useraction=M\u00f3dos\u00edtsa a programot \u00fagy, hogy biztos\u00edtsa azt, hogy ezen t\u00edpus\u00fa objektumok ne legyenek besz\u00farva az adatfolyam \u00fczenetbe.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_WRITE_ERROR_CWSIF0719=CWSIF0719E: Hiba t\u00f6rt\u00e9nt egy JMS adatfolyam \u00fczenet hasznos tartalm\u00e1nak \u00edr\u00e1sa k\u00f6zben. Kiv\u00e9tel: {0}.
+JMS_STREAM_WRITE_ERROR_CWSIF0719.explanation=Egy v\u00e1ratlan hiba t\u00f6rt\u00e9nt egy JMS adatfolyam \u00fczenet hasznos tartalm\u00e1nak \u00edr\u00e1sa k\u00f6zben.
+JMS_STREAM_WRITE_ERROR_CWSIF0719.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz vizsg\u00e1lja meg a hivatkozott kiv\u00e9telt.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type of the supplied data
+# {1} is the supplied format
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720=CWSIF0720E: Hiba t\u00f6rt\u00e9nt a megadott {0} t\u00edpus\u00fa adatobjektum egy JMS \u00fczenet hasznos tartalm\u00e1nak {1} form\u00e1tummal form\u00e1z\u00e1s\u00e1ra megfelel\u0151s\u00e9g\u00e9nek ellen\u0151rz\u00e9sre tett k\u00eds\u00e9rlet sor\u00e1n.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.explanation=A megadott adatobjektum t\u00edpus\u00e1nak, mint egy JMS \u00fczenet hasznos tartalm\u00e1nak kompatibilisnek kell lennie az \u00fczenet form\u00e1tum\u00e1val.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.useraction=M\u00f3dos\u00edtsa a programot \u00fagy, hogy biztos\u00edtsa azt, hogy a megadott adatobjektum \u00e9s a form\u00e1tum kompatibilis legyen.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721=CWSIF0721E: Hiba t\u00f6rt\u00e9nt az oszt\u00e1ly-inicializ\u00e1l\u00e1sban. Kiv\u00e9tel: {0}.
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.explanation=CMSG0001
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIF9999=CWSIF9999E: {0}
+TEMPORARY_CWSIF9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a k\u00eds\u00e9r\u0151 \u00fczeneteket tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_CWSIF9999.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.

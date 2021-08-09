@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.5,ou=objectClasses,cn=nis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.5
+m-name: oncRpc
+m-description: Abstraction of an ONC/RPC binding
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: cn
+m-must: oncRpcNumber
+entryUUID: 182d57d1-2ec7-4662-98ae-d54bd1243a2e
+m-may: description
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081859.024000Z#000000#000#000000
+entryParentId: 8df15f8c-2157-419e-9521-c39c3dedaac8
+createTimestamp: 20130919081909.534Z

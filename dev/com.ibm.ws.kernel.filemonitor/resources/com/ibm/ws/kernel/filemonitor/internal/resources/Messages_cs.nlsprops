@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: Zadan\u00fd parametr neuv\u00e1d\u00ed platn\u00fd filtr n\u00e1zv\u016f soubor\u016f. {0} = {1}
+badFilter.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nebyla nebo nemohla b\u00fdt p\u0159evedena na hodnotu typu string.
+badFilter.useraction=Zkontrolujte hodnotu zadanou v konfiguraci serveru.
+
+badInterval=CWWKE0401W: Zadan\u00fd parametr nep\u0159edstavuje platn\u00fd interval monitorov\u00e1n\u00ed. {0} = {1}
+badInterval.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nemohla b\u00fdt analyzov\u00e1na jako interval monitorov\u00e1n\u00ed.
+badInterval.useraction=Zkontrolujte hodnotu zadanou v konfiguraci serveru a ujist\u011bte se, \u017ee hodnota je platn\u00fd interval monitorov\u00e1n\u00ed. \
+Nap\u0159\u00edklad 1s pro jednu sekundu. \
+Platn\u00e9 jednotky jsou ms=milisekundy, s=sekundy, m=minuty, h=hodiny.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: Nebylo mo\u017en\u00e9 p\u0159id\u011blit um\u00edst\u011bn\u00ed zadan\u00e9 mezipam\u011bti, ve\u0161ker\u00e9 informace o monitorovan\u00fdch souborech budou proto ulo\u017eeny v pam\u011bti. {0} = {1}
+badDiskCache.explanation=Slu\u017eba nemohla vytvo\u0159it um\u00edst\u011bn\u00ed mezipam\u011bti pro sadu monitorovan\u00fdch prost\u0159edk\u016f.
+badDiskCache.useraction=Ov\u011b\u0159te, \u017ee m\u00e1te p\u0159\u00edstup pro z\u00e1pis k adres\u00e1\u0159i serveru a pracovn\u00ed oblasti.
+
+createMonitorException=CWWKE0403W: Do\u0161lo k v\u00fdjimce p\u0159i vytv\u00e1\u0159en\u00ed monitoru pro {0}. Monitorov\u00e1n\u00ed tohoto prost\u0159edku je vypnuto. Zpr\u00e1va v\u00fdjimky: {1}
+createMonitorException.explanation=P\u0159i vytv\u00e1\u0159en\u00ed monitoru pro uveden\u00fd prost\u0159edek do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Prost\u0159edek nebude monitorov\u00e1n. 
+createMonitorException.useraction=Ov\u011b\u0159te, zda m\u00e1te k uveden\u00e9mu prost\u0159edku p\u0159\u00edstup pro \u010dten\u00ed. Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: Soubor mezipam\u011bti {0} nelze odstranit.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=Slu\u017eba nemohla odstranit um\u00edst\u011bn\u00ed mezipam\u011bti pro sadu monitorovan\u00fdch prost\u0159edk\u016f.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Ov\u011b\u0159te, \u017ee m\u00e1te p\u0159\u00edstup pro z\u00e1pis k adres\u00e1\u0159i serveru a pracovn\u00ed oblasti.
+
+fileMonitorException=CWWKE0405W: Do\u0161lo k v\u00fdjimce b\u011bhem upozor\u0148ov\u00e1n\u00ed monitoru na n\u00e1sleduj\u00edc\u00ed vytvo\u0159en\u00ed, \u00fapravy a odstran\u011bn\u00ed soubor\u016f: {0}, {1}, {2}. T\u0159\u00edda monitoru je {3}. Zpr\u00e1va v\u00fdjimky: {4}
+fileMonitorException.explanation=P\u0159i vytv\u00e1\u0159en\u00ed monitoru pro uveden\u00fd prost\u0159edek do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. 
+fileMonitorException.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+fileMonitorDisabled=CWWKE0406W: B\u011bhem upozor\u0148ov\u00e1n\u00ed monitoru na zm\u011bny do\u0161lo k v\u00edce ne\u017e {0} v\u00fdjimk\u00e1m. T\u0159\u00edda monitoru je {1}. Tento monitor soubor\u016f je nyn\u00ed zak\u00e1zan\u00fd. 
+fileMonitorDisabled.explanation=B\u011bhem upozor\u0148ov\u00e1n\u00ed monitoru uveden\u00e9ho prost\u0159edku do\u0161lo k p\u0159\u00edli\u0161 velk\u00e9mu po\u010dtu n\u00e1sledn\u00fdch v\u00fdjimek. Tento prost\u0159edek ji\u017e nebude monitorov\u00e1n. 
+fileMonitorDisabled.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimk\u00e1ch a p\u0159idru\u017een\u00fdch zpr\u00e1v\u00e1ch FFDC.

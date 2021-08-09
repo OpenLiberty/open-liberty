@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<env-entry>
+		<env-entry-name>secondName</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>mySecondName</env-entry-value>
+	</env-entry>
+	
+	  <display-name>JAX-RS Basic Jaxrs-2.0 with CDI-1.0 Sample</display-name>
+ 
+  <!-- SERVLET DEFINITIONS -->
+        <servlet>
+                <servlet-name>javax.ws.rs.core.Application</servlet-name>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>javax.ws.rs.core.Application</servlet-name>
+                <url-pattern>/rest/*</url-pattern>
+        </servlet-mapping>
+</web-app>

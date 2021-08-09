@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+    http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
+    version="2.3">
+    
+    <name>JSF23 Spec Issue 1300</name>
+    
+    <application>
+        <!-- The source-class specified in the JavaDoc for the PostConstructViewMapEvent is
+             UIViewRoot. We specify the source-class here. Without the fix for Spec Issue 1300 the PostConstructViewEventListener
+             will not be invoked because the source-class of the event will be the CustomViewRoot. However,
+             after the fix for Spec Issue 1300 the event will be published with the sourceBaseType
+             UIViewRoot.class so that the listener will actually be invoked as expected. The fix was
+             made in the MyFaces code base here : https://issues.apache.org/jira/browse/MYFACES-4158
+         -->
+        <system-event-listener>
+            <source-class>javax.faces.component.UIViewRoot</source-class>
+            <system-event-listener-class>com.ibm.ws.jsf23.fat.spec1300.PostConstructViewMapEventListener</system-event-listener-class>
+             <system-event-class>javax.faces.event.PostConstructViewMapEvent</system-event-class>
+        </system-event-listener>
+    </application>
+    
+    <component>
+        <component-type>javax.faces.ViewRoot</component-type>
+        <component-class>com.ibm.ws.jsf23.fat.spec1300.CustomViewRoot</component-class>
+    </component>
+</faces-config>

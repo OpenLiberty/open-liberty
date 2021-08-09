@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Es wurde kein Entit\u00e4tstyp {0} mit der ID {1} in der Persistenzeinheit {2} gefunden.
+
+61001=Die Entit\u00e4t, auf die sich der Link bezieht, ist nicht vorhanden. Entit\u00e4tstyp {0}, ID {1}.
+
+61002=Ung\u00fcltige Konfiguration.
+
+61003=Es wird ein Entit\u00e4tstyp {0} in der Persistenzeinheit {1} mit einer PUT-Methode erstellt, aber die Entit\u00e4t ist entweder aufgrund von Folgegenerierung oder Kaskadierung nicht idempotent.
+
+61004=Bootstrapping f\u00fcr Persistenzkontext {0} nicht m\u00f6glich.
+
+61005=Es wurde keine Klasse oder kein Klassendeskriptor f\u00fcr den Entit\u00e4tstyp {0} in der Persistenzeinheit {1} gefunden.
+
+61006=Es wurde keine entsprechende Datenbankzuordnung f\u00fcr das Attribut {0} f\u00fcr den Entit\u00e4tstyp {1} und die ID {2} in der Persistenzeinheit {3} gefunden.
+
+61007=Das Attribut {0} f\u00fcr den Entit\u00e4tstyp {1} und die ID {2} wurde nicht in der Persistenzeinheit {3} gefunden.
+
+61008=Es wurde keine Auswahlabfrage f\u00fcr das Attribut {0} f\u00fcr den Entit\u00e4tstyp {1} und die ID {2} in der Persistenzeinheit {3} gefunden.
+
+61009=Ung\u00fcltige(r) Parameter in der URL f\u00fcr Paging-Anforderung.
+
+61010=Das Attribut {0} f\u00fcr den Entit\u00e4tstyp {1} und die ID {2} in der Persistenzeinheit {3} konnte nicht aktualisiert werden.
+
+61011=Ung\u00fcltige(r) Parameter in der Anforderungs-URL f\u00fcr Attributentfernung f\u00fcr das Attribut {0} f\u00fcr den Entit\u00e4tstyp {1} und die ID {2} in der Persistenzeinheit {3}.
+
+61012=Die Antwort f\u00fcr die Suchanforderung f\u00fcr das Attribut {0} f\u00fcr den Entit\u00e4tstyp {1} und die ID {2} in der Persistenzeinheit {3} konnte nicht erfolgreich erstellt werden.
+
+61013=Die Session-Bean-Suche ist mit dem JNDI-Namen {0} fehlgeschlagen.
+
+61014=Die Antwort auf die Suchanforderung einer benannten Abfrage {0} in der Persistenzeinheit {1} konnte nicht erfolgreich aufgebaut werden.
+
+61015=Die Serviceversion {0} in der Anforderung ist ung\u00fcltig.
+
+61016=Es wurde ein Abfrageparameter f\u00fcr Paginierung (limit oder offset) f\u00fcr eine nicht-paginierbare Ressource verwendet.
+
+61017=Es ist nicht m\u00f6glich, "fields" und "excludeFields" in derselben Anforderung zu verwenden.
+
+61018=Ung\u00fcltiger Parameterwert ("{0}" = "{1}").
+
+61999={0} aufgetreten.
+

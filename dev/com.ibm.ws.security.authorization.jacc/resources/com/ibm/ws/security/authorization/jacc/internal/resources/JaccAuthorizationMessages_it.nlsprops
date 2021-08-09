@@ -1,0 +1,80 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc/resources/com/ibm/ws/security/authorization/jacc/internal/resources/JaccAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2850 - CWWKS2879
+
+JACC_SERVICE_STARTING=CWWKS2850I: Il servizio JACC \u00e8 in fase di avvio. Il nome della classe provider di politica \u00e8 {0}. Il nome della classe PolicyConfigurationFactory \u00e8 {1}.
+JACC_SERVICE_STARTING.explanation=Messaggio a solo scopo informativo.
+JACC_SERVICE_STARTING.useraction=Nessuna
+
+JACC_SERVICE_STARTED=CWWKS2851I: Il servizio JACC \u00e8 stato avviato. Il nome della classe provider di politica \u00e8 {0}. Il nome della classe PolicyConfigurationFactory \u00e8 {1}.
+JACC_SERVICE_STARTED.explanation=Messaggio a solo scopo informativo.
+JACC_SERVICE_STARTED.useraction=Nessuna
+
+JACC_SERVICE_STOPPED=CWWKS2852I: Il servizio JACC \u00e8 stato arrestato. Il nome della classe provider di politica \u00e8 {0}. Il servizio di autorizzazione integrato \u00e8 attivato.
+JACC_SERVICE_STOPPED.explanation=Messaggio a solo scopo informativo.
+JACC_SERVICE_STOPPED.useraction=Nessuna
+
+JACC_SERVICE_START_FAILURE=CWWKS2853E: Non \u00e8 stato possibile avviare il servizio JACC. Il nome della classe provider di politica \u00e8 {0}. Il nome della classe PolicyConfigurationFactory \u00e8 {1}.
+JACC_SERVICE_START_FAILURE.explanation=Non \u00e8 stato possibile avviare il servizio JACC.
+JACC_SERVICE_START_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_POLICY_IS_NOT_SET=CWWKS2854E: Impossibile inizializzare il provider JACC perch\u00e9 il nome della classe Policy non \u00e8 impostato dalla propriet\u00e0 (javax.security.jacc.policy.provider).
+JACC_POLICY_IS_NOT_SET.explanation=Impossibile inizializzare il provider JACC perch\u00e9 il nome della classe Policy non \u00e8 impostato.
+JACC_POLICY_IS_NOT_SET.useraction=Verificare che la propriet\u00e0 (javax.security.jacc.policy.provider) della funzione utente JACC imposti il nome classe appropriato.
+
+JACC_FACTORY_IS_NOT_SET=CWWKS2855E: Il provider JACC non pu\u00f2 essere inizializzato in quanto il nome della classe PolicyConfigurationFactory non \u00e8 impostato dalla propriet\u00e0 (javax.security.jacc.PolicyConfigurationFactory.provider).
+JACC_FACTORY_IS_NOT_SET.explanation=Il provider JACC non pu\u00f2 essere inizializzato in quanto il nome della classe PolicyConfigurationFactory non \u00e8 impostato.
+JACC_FACTORY_IS_NOT_SET.useraction=Verificare che la propriet\u00e0 (javax.security.jacc.PolicyConfigurationFactory.provider) della funzione utente JACC imposti il nome classe appropriato.
+
+JACC_INCONSISTENT_POLICY_CLASS=CWWKS2856W: Il nome della classe Policy {0} specificato dalla propriet\u00e0 di sistema JVM (javax.security.jacc.policy.provider) non \u00e8 identico al nome della classe {1} specificato dal provider JACC. Verr\u00e0 utilizzato {1}.
+JACC_INCONSISTENT_POLICY_CLASS.explanation=Il nome della classe Policy  specificato dalla propriet\u00e0 di sistema JVM non \u00e8 identico al nome della classe Policy specificato dalla propriet\u00e0 bundle della classe provider JACC. Il valore della propriet\u00e0\u00a0di sistema viene ignorato e viene utilizzato il valore della propriet\u00e0\u00a0bundle.
+JACC_INCONSISTENT_POLICY_CLASS.useraction=La propriet\u00e0 di sistema JVM non \u00e8 necessaria. Eliminare la propriet\u00e0 di sistema JVM e riavviare il server.
+
+JACC_INCONSISTENT_FACTORY_CLASS=CWWKS2857W: Il nome della classe PolicyConfigurationFactory {0} che \u00e8 specificato dalla propriet\u00e0 di sistema JVM (javax.security.jacc.PolicyConfigurationFactory.provider) non \u00e8 coerente con il nome classe {1} che \u00e8 specificato dal provider JACC. Verr\u00e0 utilizzato {1}.
+JACC_INCONSISTENT_FACTORY_CLASS.explanation=Il nome della classe PolicyConfigurationFactory che \u00e8 specificato dalla propriet\u00e0 di sistema JVM non \u00e8 identico al nome della classe PolicyConfigurationFactory che \u00e8 specificato dalla propriet\u00e0 bundle della classe provider JACC. Il valore della propriet\u00e0\u00a0di sistema viene ignorato e viene utilizzato il valore della propriet\u00e0\u00a0bundle.
+JACC_INCONSISTENT_FACTORY_CLASS.useraction=La propriet\u00e0 di sistema JVM non \u00e8 necessaria. Eliminare la propriet\u00e0 di sistema JVM e riavviare il server.
+
+JACC_FACTORY_INSTANTIATION_FAILURE=CWWKS2858E: Il servizio JACC non \u00e8 in grado di caricare la classe PolicyConfigurationFactory {0}.
+JACC_FACTORY_INSTANTIATION_FAILURE.explanation=Il servizio JACC non \u00e8 in grado di caricare la classe PolicyConfigurationFactory specificata.
+JACC_FACTORY_INSTANTIATION_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_POLICY_INSTANTIATION_FAILURE=CWWKS2859E: Il servizio JACC non \u00e8 in grado di impostare la classe provider Policy {0} a causa di un''eccezione {1}.
+JACC_POLICY_INSTANTIATION_FAILURE.explanation=Il servizio JACC non \u00e8 in grado di impostare la classe provider Policy a causa di un'eccezione.
+JACC_POLICY_INSTANTIATION_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_GET_POLICYCONFIGURATION_FAILURE=CWWKS2860E: Il servizio JACC non \u00e8 in grado di richiamare l''oggetto PolicyConfiguration con contextID {0}. L''eccezione \u00e8 {1}.
+JACC_GET_POLICYCONFIGURATION_FAILURE.explanation=Il servizio JACC non \u00e8 in grado di ottenere l'oggetto PolicyConfiguration del provider JACC. Potrebbe essere un errore grave nel provider JACC.
+JACC_GET_POLICYCONFIGURATION_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2861E: Il servizio JACC non \u00e8 in grado di propagare le restrizioni di sicurezza Web con il contextID {0} al provider JACC a causa dell''eccezione {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=Il servizio JACC non \u00e8 in grado di propagare le restrizioni di sicurezza Web al provider JACC a causa drll'eccezione imprevista.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_IMPLIES_FAILURE=CWWKS2862E: L''autorizzazione per la risorsa con contextID {0} ha avuto esito negativo a causa dell''eccezione {1}.
+JACC_IMPLIES_FAILURE.explanation=L'autorizzazione per la risorsa specificata ha avuto esito negativo.
+JACC_IMPLIES_FAILURE.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_NO_EJB_PLUGIN=CWWKS2863E: Il modulo per l'elaborazione dei ruoli di sicurezza EJB non \u00e8 disponibile.
+JACC_NO_EJB_PLUGIN.explanation=Il servizio JACC non \u00e8 in grado di elaborare i ruoli di sicurezza EJB perch\u00e9 il modulo richiesto non \u00e8 disponibile.
+JACC_NO_EJB_PLUGIN.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+
+JACC_NO_WEB_PLUGIN=CWWKS2864E: Il modulo per l'elaborazione dei ruoli di sicurezza Web non \u00e8 disponibile.
+JACC_NO_WEB_PLUGIN.explanation=Il servizio JACC non \u00e8 in grado di elaborare i ruoli di sicurezza Web perch\u00e9 il modulo richiesto non \u00e8 disponibile.
+JACC_NO_WEB_PLUGIN.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
+

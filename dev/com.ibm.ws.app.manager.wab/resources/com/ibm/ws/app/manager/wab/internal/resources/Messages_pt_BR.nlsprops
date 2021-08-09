@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: Ocorreu um erro ao inicializar o instalador do WAB.
+bundle.tracker.init.fail.explanation=O servidor n\u00e3o p\u00f4de inicializar o instalador do Pacote Configur\u00e1vel do Aplicativo da Web (WAB), portanto os WABs n\u00e3o foram instalados.
+bundle.tracker.init.fail.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail=CWWKZ0202E: N\u00e3o \u00e9 poss\u00edvel instalar o pacote configur\u00e1vel {0} com a raiz de contexto {1} no cont\u00eainer da web.
+wab.install.fail.explanation=O servidor n\u00e3o p\u00f4de instalar o Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web.
+wab.install.fail.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail.adapt=CWWKZ0203E: N\u00e3o \u00e9 poss\u00edvel instalar o pacote configur\u00e1vel {0} com a raiz de contexto {1} no cont\u00eainer da web.
+wab.install.fail.adapt.explanation=O servidor n\u00e3o p\u00f4de instalar o Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web.
+wab.install.fail.adapt.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail.overlay=CWWKZ0204E: N\u00e3o \u00e9 poss\u00edvel instalar o pacote configur\u00e1vel {0} com a raiz de contexto {1} no cont\u00eainer da web.
+wab.install.fail.overlay.explanation=O servidor n\u00e3o p\u00f4de instalar o Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web.
+wab.install.fail.overlay.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail.cache=CWWKZ0205E: N\u00e3o \u00e9 poss\u00edvel instalar o pacote configur\u00e1vel {0} com a raiz de contexto {1} no cont\u00eainer da web.
+wab.install.fail.cache.explanation=O servidor n\u00e3o p\u00f4de instalar o Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web.
+wab.install.fail.cache.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail.container=CWWKZ0206E: N\u00e3o \u00e9 poss\u00edvel instalar o pacote configur\u00e1vel {0} com a raiz de contexto {1} no cont\u00eainer da web.
+wab.install.fail.container.explanation=O servidor n\u00e3o p\u00f4de instalar o Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web.
+wab.install.fail.container.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail.wiring=CWWKZ0207E: N\u00e3o \u00e9 poss\u00edvel instalar o pacote configur\u00e1vel {0} com a raiz de contexto {1} no cont\u00eainer da web.
+wab.install.fail.wiring.explanation=O servidor n\u00e3o p\u00f4de instalar o Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web.
+wab.install.fail.wiring.useraction=Consulte os arquivos de log e FFDC para obter informa\u00e7\u00f5es adicionais.
+
+wab.install.fail.clash=CWWKZ0208E: O pacote configur\u00e1vel {0} com a raiz de contexto {1} n\u00e3o pode ser instalado no cont\u00eainer da web porque ele possui a mesma raiz de contexto dos seguintes pacotes configur\u00e1veis: {2}
+wab.install.fail.clash.explanation=A raiz de contexto de cada Pacote Configur\u00e1vel do Aplicativo da Web (WAB) no cont\u00eainer da web deve ser exclusiva. O servidor n\u00e3o pode instalar o WAB no cont\u00eainer da web porque sua raiz de contexto \u00e9 a mesma de outro pacote configur\u00e1vel que est\u00e1 implementado.
+wab.install.fail.clash.useraction=Use uma raiz de contexto diferente.

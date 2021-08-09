@@ -1,0 +1,12 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: defaultLogging-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.logging-1.0; visibility:=private
+Subsystem-Version: 1.0.0
+
+WebSphere-LogProvider: com.ibm.ws.logging.internal.impl.LogProviderImpl
+
+Subsystem-Content: a.b; version="[1,1.0.100)"; type="boot.jar",
+ a.b; version="[1,1.0.100)"
+
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

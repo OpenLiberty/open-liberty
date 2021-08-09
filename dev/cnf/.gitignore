@@ -1,0 +1,8 @@
+/cache/
+/bin/
+/local/
+/release/
+/generated/
+/mavenlibs/
+/bndplugins/
+/*.mvn

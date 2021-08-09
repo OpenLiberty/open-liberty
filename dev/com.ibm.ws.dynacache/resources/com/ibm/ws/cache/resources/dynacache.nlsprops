@@ -1,0 +1,831 @@
+###############################################################################
+# Copyright (c) 1997, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.21.6.11
+#CMVCPATHNAME SERV1/ws/code/dynacache/src/com/ibm/ws/cache/resources/dynacache.nlsprops
+#COMPONENTPREFIX DYNA
+#COMPONENTNAMEFOR DYNA WebSphere Dynacache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# No Comment Provided
+dynacache.priority=DYNA0001E: The priority value was not a valid number for entry {0}. Use an integer instead of {1}.
+dynacache.priority.explanation=The user entered a non-integer or non-positive integer for the priority.
+dynacache.priority.useraction=Change the priority value to a positive integer.
+
+# No Comment Provided
+dynacache.timeout=DYNA0002E: The timeout value was not a valid number for entry {0}. Use an integer instead of {1}.
+dynacache.timeout.explanation=The user entered a non-integer for the timeout.
+dynacache.timeout.useraction=Change the timeout value to a numeral integer.
+
+# No Comment Provided
+dynacache.badconfig=DYNA0003E: Not caching {0} due to misconfiguration.
+dynacache.badconfig.explanation=The servlet specified was incorrectly configured.
+dynacache.badconfig.useraction=Check that legal, non-contradictory values have been given, and that all required fields are specified.
+
+# No Comment Provided
+dynacache.questionconfig=DYNA0004E: A default cache entry generator was created, but given no configuration information. This generator will use the URI with no parameters to generate cache IDs. This information should be set in the servletcache.xml file.
+dynacache.questionconfig.explanation=A servlet was configured with trivial configuration information. This is legal, though unlikely correct, except for the simplest cases.
+dynacache.questionconfig.useraction=Verify that the servlet to be cached requires only the invocation URI to determine uniqueness.
+
+# No Comment Provided
+dynacache.externaldup=DYNA0005E: Duplicate ExternalCacheGroup entry for address {0}.
+dynacache.externaldup.explanation=A duplicate ExternalCacheGroup was entered in the configuration.
+dynacache.externaldup.useraction=Remove the duplicate group.
+
+# No Comment Provided
+dynacache.externalnotfound=DYNA0006E: ExternalCacheGroup {0} was not found.
+dynacache.externalnotfound.explanation=The external cache group to which this servlet output should be forwarded was not registered in the global cache configuration.
+dynacache.externalnotfound.useraction=Check the spelling of this external cache group. If correct, define this group in the global cache properties.
+
+# No Comment Provided
+dynacache.externaladaptererror=DYNA0007E: Error initializing external cache adapter: {0}
+dynacache.externaladaptererror.explanation=The specified error was created during the external cache adapter initialization.
+dynacache.externaladaptererror.useraction=Identify the cause of the error from the error-specific information that is provided in the message
+
+# No Comment Provided
+dynacache.notexist=DYNA0008E: CacheUnit no longer exists.
+dynacache.notexist.explanation=A message was either sent or received from a cache unit that is no longer registered with this cache unit in a cache replication group.
+dynacache.notexist.useraction=Verify that the specified cache unit should be active; if so, restart the server.
+
+# No Comment Provided
+dynacache.xmlnodoc=DYNA0009E: No element named {0} in document {1}.
+dynacache.xmlnodoc.explanation=When parsing the specified document, an expected XML element was not found.
+dynacache.xmlnodoc.useraction=Compare the XML file format to the product documentation, looking for a misconfiguration.
+
+# No Comment Provided
+dynacache.xmlnoelem=DYNA0010E: No element named {0} in {1}.
+dynacache.xmlnoelem.explanation=When parsing the specified configuration XML files, an expected XML element was not found.
+dynacache.xmlnoelem.useraction=Compare the XML file format to the product documentation, looking for a misconfiguration.
+
+# No Comment Provided
+dynacache.fileNotFound=DYNA0011E: Servlet cache file {0} not found; caching is disabled
+dynacache.fileNotFound.explanation=The specified caching properties were not specified for this application server. Caching is disabled.
+dynacache.fileNotFound.useraction=Build a cache configuration XML file with the specified name. See the product documentation for instructions on how to build a cache configuration XML file.
+
+# No Comment Provided
+dynacache.cachingEnabled=DYNA0012I: Dynamic servlet caching is enabled
+dynacache.cachingEnabled.explanation=Dynamic servlet caching is enabled.
+dynacache.cachingEnabled.useraction=None.
+
+# No Comment Provided
+dynacache.cachingDisabled=DYNA0013I: Dynamic servlet caching is disabled
+dynacache.cachingDisabled.explanation=Dynamic servlet caching is disabled.
+dynacache.cachingDisabled.useraction=None.
+
+# No Comment Provided
+dynacache.uriMatched=DYNA0014I: {0} is a cacheable URI
+dynacache.uriMatched.explanation=A servlet or JSP file initialized that has a valid cache policy configured.
+dynacache.uriMatched.useraction=None.
+
+# No Comment Provided
+dynacache.error=DYNA0015I: Dynamic Servlet Caching encountered an error: {0}
+dynacache.error.explanation=General error message.
+dynacache.error.useraction=Debug the provided error.
+
+# No Comment Provided
+dynacache.stats.dump=DYNA0016I: Dumped dynamic servlet caching statistics to: {0}
+dynacache.stats.dump.explanation=Cache statistics were written to the specified file.
+dynacache.stats.dump.useraction=None.
+
+# No Comment Provided
+dynacache.joingroup=DYNA0017I: Joined group {0}
+dynacache.joingroup.explanation=This cache unit successfully joined a group of cooperating caches.
+dynacache.joingroup.useraction=None.
+
+# No Comment Provided
+dynacache.idgeneratorerror=DYNA0018E: Error loading ID Generator {0}
+dynacache.idgeneratorerror.explanation=Error loading ID Generator.
+dynacache.idgeneratorerror.useraction=Debug the problem using the provided error message.
+
+# No Comment Provided
+dynacache.metadatageneratorerror=DYNA0019E: Error loading MetaData Generator {0}
+dynacache.metadatageneratorerror.explanation=Error loading MetaData Generator.
+dynacache.metadatageneratorerror.useraction=Debug the problem using the provided error message.
+
+# No Comment Provided
+dynacache.notSerializable=DYNA0020E: Unable to cache {0}, request attributes can not be serialized.
+dynacache.notSerializable.explanation=Servlet output was marked to be replicated between caches, which requires that all request attributes are able to be serialized.
+dynacache.notSerializable.useraction=Modify the cache policy for this servlet so that its output is not replicated, or modify the application so that all request attributes can be serialized.
+
+# No Comment Provided
+dynacache.cacheInitFailed=DYNA0021E: Unable to initialize cache unit {0}: {1}
+dynacache.cacheInitFailed.explanation=Unanticipated error initializing the cache.
+dynacache.cacheInitFailed.useraction=Debug the problem using the provided error message.
+
+# No Comment Provided
+dynacache.configerror=DYNA0022E: Error processing dynamic cache configuration: {0}
+dynacache.configerror.explanation=Unanticipated error processing cache configuration.
+dynacache.configerror.useraction=Debug the problem using the provided error message.
+
+# No Comment Provided
+dynacache.nullServletMapping=DYNA0023E: Error building cache policy {0}.  There are no servlet mappings defined for servlet {1}
+dynacache.nullServletMapping.explanation=Could not find a servlet mapping for the cache servlet or JSP file.
+dynacache.nullServletMapping.useraction=Correct the configuration error using the application assembly tool.
+
+# No Comment Provided
+dynacache.excludeerror=DYNA0024E: Error building cache policy {0}.  Exclude variables were duplicates or incorrectly defined for cache variable {1}.
+dynacache.excludeerror.explanation=Duplicate exclude variables were present.
+dynacache.excludeerror.useraction=Remove the duplicate variable or incorrectly-defined exclude variables that were specified.
+
+# No Comment Provided
+dynacache.badexternalconfig=DYNA0025E: Externally caching a servlet automatically uses all request parameters and nothing more in building cache ids.  Request parameters may be defined for externally cacheable ONLY for use with the exclude, invalidate, and dataid functions.
+dynacache.badexternalconfig.explanation=An entry was marked as externally cacheable and containes additional ID generation rules.
+dynacache.badexternalconfig.useraction=Remove the additional rules.
+
+# No Comment Provided
+DYNA0026E=DYNA0026E: Error reading element {0}.  While processing value {1}, received exception: {2}.
+DYNA0026E.explanation=An error occurred while reading the cache configuration file.
+DYNA0026E.useraction=Correct the error using the information that is provided in the error message.
+
+# No Comment Provided
+DYNA0027E=DYNA0027E: Unrecognized replication policy: {0}.
+DYNA0027E.explanation=An unrecognized replication policy was specified.
+DYNA0027E.useraction=The valid replication policies are not-shared, shared-push, shared-pull, and shared-push-pull.
+
+# No Comment Provided
+DYNA0028E=DYNA0028E: Illegal use of component {0} when idgenerator {1} is already defined.
+DYNA0028E.explanation=A cache policy specified both a component and idgenerator for the same cache ID rule.
+DYNA0028E.useraction=Use either component tags or an idgenerator, but not both simultaneously.
+
+# No Comment Provided
+DYNA0029E=DYNA0029E: Illegal use of idgenerator {0} when component {1} is already defined.
+DYNA0029E.explanation=A cache policy specified both a component and idgenerator for the same cache ID rule.
+DYNA0029E.useraction=Use either component tags or an idgenerator, but not both simultaneously.
+
+# No Comment Provided
+DYNA0030E=DYNA0030E: {0} element is missing required attribute {1}.
+DYNA0030E.explanation=A required attribute was missing in the cache configuration.
+DYNA0030E.useraction=Add the required attribute to your cache configuration file.
+
+# No Comment Provided
+DYNA0031E=DYNA0031E: Illegal use of element {0} with id {1}.  Field or method element is already present.
+DYNA0031E.explanation=The configuration file specified multiple method or field tags for the same component.
+DYNA0031E.useraction=Eliminate the duplicate method, field or both elements from the component in the configuration file.
+
+# No Comment Provided
+DYNA0032E=DYNA0032E: Element or attribute {0} must be set to either the value true or false.  Value present: {0}.
+DYNA0032E.explanation=The specified element must have a value of either true or false, but another value was specified.
+DYNA0032E.useraction=Correct the element to have a true or false value.
+
+# No Comment Provided
+DYNA0033E=DYNA0033E: Unable to introspect method {0} from class {1}.  Exception: {2}
+DYNA0033E.explanation=An error occurred while trying to locate the method as specified in the cache configuration file.
+DYNA0033E.useraction=Verify that the specified method in the cache configuration file exists in the object being invoked and that the method is public.
+
+# No Comment Provided
+DYNA0034E=DYNA0034E: Exception invoking method {0} on class {1}.  Exception: {2}
+DYNA0034E.explanation=An error occurred while invoking the specified method to generate a cache ID.
+DYNA0034E.useraction=Debug the problem using the information that is provided in the error message.
+
+# No Comment Provided
+DYNA0035E=DYNA0035E: Unable to introspect field {0} from class {1}.  Exception: {2}
+DYNA0035E.explanation=An error occurred while trying to locate the field as specified in the cache configuration file.
+DYNA0035E.useraction=Verify that the field specified in the cache configuration file exists in the object being invoked and the field is public.
+
+# No Comment Provided
+DYNA0036E=DYNA0036E: Exception retrieving field {0} from class {1}.  Exception: {2}
+DYNA0036E.explanation=An error occurred while retrieving the specified field to generate a cache ID.
+DYNA0036E.useraction=Debug the problem using the information that is provided in the error message.
+
+# No Comment Provided
+DYNA0037E=DYNA0037E: Unrecognized element {0} while processing element {1}.
+DYNA0037E.explanation=An unrecognized element was encountered while parsing the cache configuration file.
+DYNA0037E.useraction=Correct the document to match the cachespec.dtd file.
+
+# No Comment Provided
+DYNA0038E=DYNA0038E: Unrecognized component type {0} for command {1}.
+DYNA0038E.explanation=The specified component type is not valid for command caching.
+DYNA0038E.useraction=Valid component types for commands are method and field.
+
+# No Comment Provided
+DYNA0039E=DYNA0039E: Commands do not support custom metadata generating classes.  You must override the prepareMetaData() method.
+DYNA0039E.explanation=The cache configuration file specified a custom metadata generator for a command, but this is not supported.
+DYNA0039E.useraction=See the product documentation for information on implementing the CacheableCommand.prepareMetaData method.
+
+# No Comment Provided
+DYNA0040E=DYNA0040E: Illegal component type {0} servicing {1}.
+DYNA0040E.explanation=An unsupported component type was encountered while processing the specified object.
+DYNA0040E.useraction=Correct the cache configuration policy to contain only valid component types for the specified object.
+
+# No Comment Provided
+DYNA0041E=DYNA0041E: Invalid component type {0} for edgeable fragment {1}.
+DYNA0041E.explanation=A servlet or JSP was marked Edgeable, but the cache policy contains component rules which are not valid on an IBM Edge Server.
+DYNA0041E.useraction=Correct the cache policy to eliminate the rules that are not started at the IBM Edge Server, or mark the servlet or JSP file as not edgeable.
+
+# No Comment Provided
+DYNA0042E=DYNA0042E: Invalid component type {0} for servlet/jsp fragment {1}.
+DYNA0042E.explanation=An unsupported component type was encountered while processing the specified servlet or JSP file.
+DYNA0042E.useraction=Correct the cache configuration policy to contain only valid component types for the specified object.
+
+# No Comment Provided
+DYNA0043E=DYNA0043E: Configuration file {0} contained errors and will not be used.
+DYNA0043E.explanation=The specified configuration file contained critical errors and cannot be utilized.
+DYNA0043E.useraction=Correct the specified errors in the configuration file.
+
+# No Comment Provided
+DYNA0044E=DYNA0044E: XML parsing warning: {0}, while parsing file {1} at line {2}, column {3}.
+DYNA0044E.explanation=An XML parsing warning occurred while processing a cache configuration file.
+DYNA0044E.useraction=Correct the problem that is specified in the message.
+
+# No Comment Provided
+DYNA0045E=DYNA0045E: XML parsing error: {0}, while parsing file {1} at line {2}, column {3}.
+DYNA0045E.explanation=An XML parsing warning occurred while processing a cache configuration file.
+DYNA0045E.useraction=Correct the problem that is specified in the message.
+
+# No Comment Provided
+DYNA0046E=DYNA0046E: I/O exception {0} occurred while processing configuration file {1}.
+DYNA0046E.explanation=An error occurred while reading the cache configuration file.
+DYNA0046E.useraction=Correct the problem that is specified in the message.
+
+# No Comment Provided
+DYNA0047I=DYNA0047I: Successfully loaded cache-entries from cache configuration file {0}.
+DYNA0047I.explanation=A cache configuration file was successfully processed for cache entries from the specified location.
+DYNA0047I.useraction=None.
+
+# No Comment Provided
+DYNA0048I=DYNA0048I: WebSphere Dynamic Cache initialized successfully.
+DYNA0048I.explanation=The dynamic cache services successfully initialized.
+DYNA0048I.useraction=None.
+
+# No Comment Provided
+DYNA0049E=DYNA0049E: Unrecognized component type {0}.
+DYNA0049E.explanation=The specified component type was present in the cache configuration file, but is not recognized by the cache.
+DYNA0049E.useraction=Remove the unrecognized component type from the cache configuration file.
+
+# No Comment Provided
+DYNA0050E=DYNA0050E: Unrecognized value {0} for element {1}.
+DYNA0050E.explanation=The specified element in the cache configuration file contained an unrecognized value.
+DYNA0050E.useraction=Consult the product documentation for information on valid values for the specified element.
+
+# No Comment Provided
+DYNA0051E=DYNA0051E: Could not cache a CacheableCommand because WebSphere Dynamic Caching is disabled.
+DYNA0051E.explanation=An attempt was made to use a CacheableCommand, but the servlet caching in the Web container settings is disabled.
+DYNA0051E.useraction=Enable the servlet caching in the Web container settings from the administrative console.
+
+# No Comment Provided
+DYNA0052E=DYNA0052E: The cached object can not be replicated or saved to disk.  CacheID={0}   ClassName={1}   Type={2}    Exception={3}
+DYNA0052E.explanation=The object was marked for replication between caches or saved to disk which requires the object and all referenced objects within the object to be serializable.  CacheID is the ID of the cache entry that cannot be serialized.  ClassName is the class name of the cached object that cannot be serialized.  Type is the data type to indicate what data is being serialized.  Exception is the exception received during the serialization attempt.
+DYNA0052E.useraction=Modify the cache policy for this object so that it is not replicated or saved to disk or modify the application so the object and all referenced objects are serializable.
+
+# No Comment Provided
+DYNA0053I=DYNA0053I: Offload to disk is enabled for cache named {0} in directory {1}.
+DYNA0053I.explanation=The disk offload feature is enabled for the specified cache name. The disk cache is stored in the specified directory.
+DYNA0053I.useraction=None.
+
+# No Comment Provided
+DYNA0054W=DYNA0054W: Offload to disk is enabled for cache name {0}. The location {1} cannot be created. The default alternate location {2} is used instead.
+DYNA0054W.explanation=The disk offload feature is enabled for the specified cache name. The disk cache is stored in the alternate location because the specified directory cannot be created.
+DYNA0054W.useraction=None.
+
+# No Comment Provided
+DYNA0055E=DYNA0055E: Offload to disk is disabled for cache name {0} because the location {1} or {2} cannot be created. 
+DYNA0055E.explanation=The disk offload feature is disabled for the specified cache name because the disk offload location and the default alternate location cannot be created.
+DYNA0055E.useraction=Make sure the disk offload location has sufficient access privileges.
+
+# No Comment Provided
+DYNA0056W=DYNA0056W: Disk cache files have been reinitialized because of corrupted data. 
+DYNA0056W.explanation=The disk cache files were reinitialized when the server restarted due to corrupted data. This may have been caused by a Java Virtual Machine (JVM) unexpected ending or a disk exception has occurred. All old disk cache contents are lost.
+DYNA0056W.useraction=None.
+
+# No Comment Provided
+DYNA0057I=DYNA0057I: The disk cache cleanup started for the cache name {0}. The statistics are: {1} 
+DYNA0057I.explanation=The disk cache cleanup has started to remove expired cache entries.
+DYNA0057I.useraction=No user action is required.
+
+# No Comment Provided
+DYNA0058I=DYNA0058I: The disk cache cleanup finished for cache name {0}. The statistics are: {1}
+DYNA0058I.explanation=The disk cache cleanup is finished.
+DYNA0058I.useraction=No user action is required.
+
+# No Comment Provided
+DYNA0059I=DYNA0059I: The disk cache configuration for cache name {0}. The configuration is: {1}
+DYNA0059I.explanation=This shows the disk cache configuration.
+DYNA0059I.useraction=No user action is required.
+
+# No Comment Provided
+DYNA0060I=DYNA0060I: Flush to disk on stop is enabled for cache name {0}.
+DYNA0060I.explanation=The flush to disk on stop feature is enabled for the specified cache name.
+DYNA0060I.useraction=No user action is required.
+
+# No Comment Provided
+DYNA0061I=DYNA0061I: Flush to disk on stop is disabled for cache name {0}.
+DYNA0061I.explanation=The flush to disk on stop feature is disabled for the specified cache name.
+DYNA0061I.useraction=No user action is required.
+
+# No Comment Provided
+DYNA0062I=DYNA0062I: Successfully loaded cache-instances from configuration file {0}.
+DYNA0062I.explanation=A cache configuration file was successfully processed for cache-instances from the specified location.
+DYNA0062I.useraction=None.
+
+# No Comment Provided
+DYNA0063W=DYNA0063W: The disk cache size has reached the limit {0} GB for cache name {1}.  {2} cache entries were evicted from memory but not offloaded to disk.
+DYNA0063W.explanation=The cached object will not be offloaded to disk because it is over the disk cache size in GB limit.
+DYNA0063W.useraction=Modify the custom property diskCacheSizeInGB to a larger value so that it can store more caches in the disk.
+
+# No Comment Provided
+DYNA0064W=DYNA0064W: The size of cache entry is over limit {0} MB for cache name {1}. {2} cache entries were evicted from memory but not offloaded to disk.
+DYNA0064W.explanation=The cached object will not be offloaded to disk because it is over the disk cache size in MB limit.
+DYNA0064W.useraction=Modify the custom property diskCacheEntrySizeInMB to a larger value so that it can store more caches in the disk.
+
+# No Comment Provided
+DYNA0065W=DYNA0065W: The disk cache size is over limit {0} for cache name {1}.  {2} cache entries were evicted from memory but not offloaded to disk.
+DYNA0065W.explanation=The cached object will not be offloaded to disk because it is over the disk cache size limit.
+DYNA0065W.useraction=Modify the custom property diskCacheSize to a larger value so that it can store more caches in the disk.
+
+# No Comment Provided
+DYNA0066W=DYNA0066W: The feature of limiting disk cache size in GB is disabled for the cache name {0}. The custom property diskCacheSizeInGB is set to 0. Delete all disk cache files under the directory {1} before this feature is enabled.
+DYNA0066W.explanation=The disk files on the system are in an old format and the limiting disk cache size in GB feature uses a new disk format. Before enabling this feature delete all disk cache files on the system.
+DYNA0066W.useraction=Delete all disk cache files and then restart the server.
+
+# No Comment Provided
+DYNA0067W=DYNA0067W: The disk cache garbage collector is disabled and Eviction Policy is set to NONE for the cache name {0}. Delete all disk cache files under the directory {1} before this feature is enabled.
+DYNA0067W.explanation=The disk files on the system are in an old format and the disk cache garbage collection feature uses a new disk format. Before enabling this feature delete all disk cache files on the system.
+DYNA0067W.useraction=Delete all disk cache files and then restart the server.
+
+# No Comment Provided
+DYNA0068W=DYNA0068W: Invalid disk threshold set for cache name {0}. Using default values of 80% and 70% for high and low threshold limits respectively.
+DYNA0068W.explanation=The disk cache threshold limit has either been set < 0 or high threshold is lower than low threshold limit.
+DYNA0068W.useraction=The disk cache threshold should be greater than 0 and high threshold limit should be greater than low threshold limit.
+
+# No Comment Provided
+DYNA0069W=DYNA0069W: An invalid value {0} for custom property {1} in cache name {2}. The valid range is low: {3} and high: {4}. This custom property is set to {5}.
+DYNA0069W.explanation=The value for custom property is not valid. Correct the value using the range-specified low and high values in the warning message.
+DYNA0069W.useraction=Correct the value using the range-specified low and high values in the warning message.
+
+# No Comment Provided
+DYNA0070W=DYNA0070W: The disk cache garbage collector is disabled and Eviction Policy is set to NONE for the cache name {0}. This is because disk cache size or disk cache in GB limit are not set.
+DYNA0070W.explanation=It is required to set custom properties diskCacheSize or diskCacheSizeInGB in order to use the disk cache garbage collector feature.
+DYNA0070W.useraction=Set the custom properties diskCacheSize or diskCacheSizeInGB and restart the server.
+
+# No Comment Provided
+DYNA0071W=DYNA0071W: The custom property diskCacheSizeInGB for cache name {0} is set to a larger value {1} because total disk cache files size has a larger value. To set diskCacheSizeInGB to a smaller value, delete all disk cache files under the directory {2}.
+DYNA0071W.explanation=The disk cache files cannot shrink. 
+DYNA0071W.useraction=To set custom property diskCacheSizeInGB to a smaller value, delete all disk cache files and restart the server.
+
+# No Comment Provided
+DYNA0072E=DYNA0072E: Offload to disk is disabled for cache name {0} because a disk exception has occurred. The disk offload location is in {1}. Exception: {2}. 
+DYNA0072E.explanation=The disk offload feature is disabled for the specified cache name because a disk exception has occurred.
+DYNA0072E.useraction=The disk cache files for this cache instance will be deleted when the server is restarted.
+
+# No Comment Provided
+DYNA0073I=DYNA0073I: Flush to disk on stop for cache name {0} has completed. The statistics are: {1}
+DYNA0073I.explanation=The flush to disk on stop operation has completed with the statistics. 
+DYNA0073I.useraction=No user action is required.
+
+# No Comment Provided
+DYNA1001I=DYNA1001I: WebSphere Dynamic Cache instance named {0} initialized successfully.
+DYNA1001I.explanation=The named Dynamic Cache instance was successfully initialized.
+DYNA1001I.useraction=None.
+
+# No Comment Provided
+DYNA1002E=DYNA1002E: WebSphere Dynamic Cache instances can not be initialized because of error {0}.
+DYNA1002E.explanation=The dynamic cache instances cannot be initialized.  No caches instances are avaliable.
+DYNA1002E.useraction=Debug the problem using the error message.  The application server logs contain additional information.
+
+# No Comment Provided
+DYNA1003E=DYNA1003E: WebSphere Dynamic Cache instance named {0} can not be initialized because of error {1}.
+DYNA1003E.explanation=The named dynamic cache instance cannot be initialized.  The named instance is not avaliable.
+DYNA1003E.useraction=Debug the problem using the error message.  The application server logs contain additional information.
+
+# No Comment Provided
+DYNA1004E=DYNA1004E: WebSphere Dynamic Cache instance named {0} can not be initialized because it is not configured.
+DYNA1004E.explanation=The named dynamic cache instance cannot be initialized.  Dynamic caching is disabled for the named instance.
+DYNA1004E.useraction=Use the administrative console to configure the cache instance resource.
+
+# No Comment Provided
+DYNA1005E=DYNA1005E: WebSphere Dynamic Cache instance named {0} can not be accessed because it is the wrong type.
+DYNA1005E.explanation=The named dynamic cache instance cannot be used.  Dynamic caching is disabled for the named instance.
+DYNA1005E.useraction=Use the administrative console to configure the cache instance resource using the correct type.
+
+# No Comment Provided
+DYNA1006E=DYNA1006E: Method {0} caught exception: {1}
+DYNA1006E.explanation=An exception was caught in the specified method.
+DYNA1006E.useraction=None.
+
+# No Comment Provided
+DYNA1007I=DYNA1007I:  {0} service has initialized successfully. 
+DYNA1007I.explanation=The z/OS Controller Service for the dynamic cache service has initialized successfully.
+DYNA1007I.useraction=None.
+
+# No Comment Provided
+DYNA1008E=DYNA1008E: Method {0}: proxy is null.
+DYNA1008E.explanation=The specified method was unable to obtain a servant proxy for DRS.
+DYNA1008E.useraction=None.
+
+# No Comment Provided
+DYNA1009E=DYNA1009E: Method {0}: token is null.
+DYNA1009E.explanation=The specified method was passed a null servant token. 
+DYNA1009E.useraction=None.
+
+# No Comment Provided
+DYNA1010E=DYNA1010E: Method {0}: Parameter error: entryKey is null.
+DYNA1010E.explanation=The specified method was passed a null entryKey parameter. 
+DYNA1010E.useraction=None.
+
+# No Comment Provided
+DYNA1011E=DYNA1011E: Method {0}: tokenBytes is null: token = {1}  tokenBytes = {2}
+DYNA1011E.explanation=The specified method cannot call the proxy because tokenBytes is null. 
+DYNA1011E.useraction=None.
+
+# No Comment Provided
+DYNA1012E=DYNA1012E: Method {0}: eventBytes is null: event = {1}  eventBytes = {2}
+DYNA1012E.explanation=The specified method cannot call the proxy because eventBytes is null.
+DYNA1012E.useraction=None.
+
+# No Comment Provided
+DYNA1013E=DYNA1013E: Method {0}: entryKeyBytes is null: entryKey = {1}  entryKeyBytes = {2}
+DYNA1013E.explanation=The specified method cannot call the proxy because entryKeyBytes is null.
+DYNA1013E.useraction=None.
+
+# No Comment Provided
+DYNA1014E=DYNA1014E: Method {0}: Entry should have been in our push/pull table, but servant token is null. entryKey = {1}
+DYNA1014E.explanation=The specified method could not retrieve the cacheEntry from the push/pull table because the servant owner token is null.
+DYNA1014E.useraction=None.
+
+# No Comment Provided
+DYNA1015E=DYNA1015E: Method {0}: propKeyBytes is null: propKey = {1}  propKeyBytes = {2}
+DYNA1015E.explanation=The specified method cannot call the proxy because propKeyBytes is null.
+DYNA1015E.useraction=None.
+
+# No Comment Provided
+DYNA1016E=DYNA1016E: Method {0}: dbmBytes is null: dbm = {1}  dbmBytes = {2}
+DYNA1016E.explanation=The specified method cannot call the proxy because the DRSBootstrapMsg converted to bytes is null.
+DYNA1016E.useraction=None.
+                                         
+# No Comment Provided
+DYNA1017E=DYNA1017E: Method {0}: Parameter error: dbm is null.
+DYNA1017E.explanation=The specified method was passed a null dbm object. 
+DYNA1017E.useraction=None.
+
+# No Comment Provided
+DYNA1018E=DYNA1018E: Method {0}: Value tmp returned by proxy.handleBootstrapRequest is null:  tmp = {1}, token = {2} 
+DYNA1018E.explanation=For the specified method the returned value from proxy.handleBootstrapRequest is null.
+DYNA1018E.useraction=None.
+
+# No Comment Provided
+DYNA1019E=DYNA1019E: Method {0}: Parameter error: propKey is null.
+DYNA1019E.explanation=The specified method was passed a null propKey parameter. 
+DYNA1019E.useraction=None. 
+
+# No Comment Provided
+DYNA1020E=DYNA1020E: Method {0}: Parameter error: value is null.
+DYNA1020E.explanation=The specified method was passed a null for the value parameter. 
+DYNA1020E.useraction=None.
+
+# No Comment Provided
+DYNA1021E=DYNA1021E: Method {0}: Cannot convert the value parameter to bytes.
+DYNA1021E.explanation=The specified method is unable to convert the value parameter to bytes. 
+DYNA1021E.useraction=None.
+
+# No Comment Provided
+DYNA1022E=DYNA1022E: Method {0}: Parameter error:  DRSJvmId routing information is null.
+DYNA1022E.explanation=The specified method was passed a null for the DRSJvmId routing parameter. 
+DYNA1022E.useraction=None.
+
+# No Comment Provided
+DYNA1023E=DYNA1023E: Method {0}: Parameter error:  entryKeyList is null.
+DYNA1023E.explanation=The specified method was passed a null for the entryKeyList. 
+DYNA1023E.useraction=None.
+
+# No Comment Provided
+DYNA1024E=DYNA1024E: Method {0}: Cannot convert the entryKeyList to bytes - entryKeyList = {1}  entryKeyListBytes = {2}
+DYNA1024E.explanation=The specified method is unable to convert the entryKeyList parameter to a byte array.
+DYNA1024E.useraction=None.
+
+# No Comment Provided
+DYNA1025E=DYNA1025E: Method {0}: Cannot convert the DRSJvmId to bytes - jvmId  = {1}  jvmIdBytes = {2}
+DYNA1025E.explanation=The specified method is unable to convert the DRSJvmID parameter to a byte array.
+DYNA1025E.useraction=None.
+
+# No Comment Provided
+DYNA1026I=DYNA1026I: DynacacheDRSController DRS Instance {0} received event REPLICATION_UP.
+DYNA1026I.explanation=The specified DynacacheDRSController DRS Instance received event REPLICATION_UP.
+DYNA1026I.useraction=None.
+
+# No Comment Provided
+DYNA1027I=DYNA1027I: DynacacheDRSController DRS Instance {0} received event REPLICATION_DOWN.
+DYNA1027I.explanation=The specified DynacacheDRSController DRS Instance received event REPLICATION_DOWN.
+DYNA1027I.useraction=None.
+
+# No Comment Provided
+DYNA1028I=DYNA1028I: DynacacheDRSController DRS Instance {0} received event IS_CONGESTED.
+DYNA1028I.explanation=The specified DynacacheDRSController DRS Instance received event IS_CONGESTED.
+DYNA1028I.useraction=None.
+
+# No Comment Provided
+DYNA1029I=DYNA1029I: DynacacheDRSController DRS Instance {0} received event NOT_CONGESTED.
+DYNA1029I.explanation=The specified DynacacheDRSController DRS Instance received event NOT_CONGESTED.
+DYNA1029I.useraction=None.
+
+# No Comment Provided
+DYNA1030E=DYNA1030E: Invalid range values, low: {0} and high: {1} attributes must be integers
+DYNA1030E.explanation=A required attribute was missing in the cache configuration.
+DYNA1030E.useraction=Add the required attribute to your cache configuration file.
+
+# No Comment Provided
+DYNA1031E=DYNA1031E: Invalid range, low atribute: {0} is greater than high attribute: {1}.
+DYNA1031E.explanation=The low and high attribute values specified for the range are not valid.
+DYNA1031E.useraction=Correct the the low and high attributes values such that the low value is less than the high value.
+
+# No Comment Provided
+DYNA1032E=DYNA1032E: Property with name primary-storage must be set to either the value memory or disk.  Value present: {0}.
+DYNA1032E.explanation=The specified element must have a value of either memory or disk, but another value was specified.
+DYNA1032E.useraction=Correct the element to have the value memory or disk.
+
+
+# No Comment Provided
+DYNA1033W=DYNA1033W: Custom property disableDependencyId is set to {0} which does not match with the current state of disk files for cache name {1}. The custom property disableDependencyId is set to {2}. 
+DYNA1033W.explanation=The setting of custom property disableDependencyId does not match the current state of disk files.
+DYNA1033W.useraction=To set custom property disableDependencyId to your desired settings, delete all disk cache files and restart the server.
+
+# No Comment Provided
+DYNA1034W=DYNA1034W: Custom property disableTemplatesSupport is set to {0} which does not match with the current state of disk files for cache name {1}. The custom property disableTemplatesSupport is set to {2}. 
+DYNA1034W.explanation=The setting of custom property disableTemplatesSupport does not match the current state of disk files.
+DYNA1034W.useraction=To set custom property disableTemplatesSupport to your desired settings, delete all disk cache files and restart the server.
+
+# No Comment Provided
+DYNA1035I=DYNA1035I: List of {0} cache keys and their hashcodes in the memory cache for cache name {1}: {2} 
+DYNA1035I.explanation=Displays each cache key and its hashcode in the memory cache.
+DYNA1035I.useraction=None.
+
+# No Comment Provided
+DYNA1036I=DYNA1036I: List of {0} cache keys and their hashcodes in the disk cache for cache name {1}: {2} 
+DYNA1036I.explanation=Displays each cache key and its hashcode in the disk cache.
+DYNA1036I.useraction=None.
+
+# No Comment Provided
+DYNA1037I=DYNA1037I: List of {0} cache keys and their hashcodes in the PushPullTable for cache name {1}: {2} 
+DYNA1037I.explanation=Displays each cache key and its hashcode in the PushPullTable.
+DYNA1037I.useraction=None.
+
+# No Comment Provided
+DYNA1038I=DYNA1038I: Total number of cache entries in the memory cache is {0} for cache name {1}.
+DYNA1038I.explanation=Displays the total number of entries in the memory cache.
+DYNA1038I.useraction=None.
+
+# No Comment Provided
+DYNA1039I=DYNA1039I: Total number of cache entries in the disk cache is {0} for cache name {1}.
+DYNA1039I.explanation=Displays the total number of entries in the disk cache.
+DYNA1039I.useraction=None.
+
+
+# No Comment Provided
+DYNA1040I=DYNA1040I: Total number of cache IDs in the PushPullTable is {0} for cache name {1}.
+DYNA1040I.explanation=Displays the total number of cache IDs in the PushPullTable.
+DYNA1040I.useraction=None.
+
+# No Comment Provided
+DYNA1041W=DYNA1041W: Cache comparsion between server1 {0} and server2 {1} for cache name {2} failed.
+DYNA1041W.explanation=The cache comparsion failure might be caused by: (1) Offload to disk is enabled. When the cache instances bootstrap with one another at server startup, the disk cache entries are not replicated amongst themselves. (2) Congestion in the DRS might cause some cache updates to be dropped. (3) Some cache entries are not shareable within the replication domain. (4) The compareCaches() command will not work with the Push-Pull sharing policy. Use the compareCacheKeys command.
+DYNA1041W.useraction=None.
+
+# No Comment Provided
+DYNA1042E=DYNA1042E: The input cache instance {0} is not valid or is not configured.
+DYNA1042E.explanation=The input cache instance is not valid. Configure the cache instance by using either the administrative console or the cacheinstances.properties file. 
+DYNA1042E.useraction=Ensure that a cache instance is configured correctly and the name of the cache instance is correct.
+
+# No Comment Provided
+DYNA1043E=DYNA1043E: The input pattern {0} is not a valid regular expression. Exception: {1}
+DYNA1043E.explanation=The input pattern is not a valid regular expression.
+DYNA1043E.useraction=Check the java.util.regex.Pattern class.
+
+# No Comment Provided
+DYNA1044E=DYNA1044E: Internal error: Failure to create the MessageDigest for MD5 algorithm. Exception: {0}
+DYNA1044E.explanation=Internal error: Failure to create the MessageDigest for MD5 algorithm.
+DYNA1044E.useraction=Contact IBM service for debugging this problem.
+
+# No Comment Provided
+DYNA1045E=DYNA1045E: The input node {0} is not a valid node name.
+DYNA1045E.explanation=The input node name is not valid.
+DYNA1045E.useraction=Ensure that the node exists and the name is correct.
+
+# No Comment Provided
+DYNA1046E=DYNA1046E: The input server {0} is not a valid server name.
+DYNA1046E.explanation=The input server name is not valid.
+DYNA1046E.useraction=Ensure that the server exists and the name is correct.
+
+# No Comment Provided
+DYNA1047E=DYNA1047E: Internal error: Failure to create AdminService object. Exception: {0}
+DYNA1047E.explanation=Internal error: Failure to create AdminService object.
+DYNA1047E.useraction=Contact IBM service for debugging this problem.
+
+# No Comment Provided
+DYNA1048E=DYNA1048E: MBean command {0} can only run under Deployment Manager.
+DYNA1048E.explanation=MBean command CompareCaches can only run under Deployment Manager.
+DYNA1048E.useraction=Run the CompareCaches command from the Deployment Manager Dynacache MBean.
+
+# No Comment Provided
+DYNA1049E=DYNA1049E: DynaCache MBean was not found in the node {0} on which the server {1} resides.
+DYNA1049E.explanation=DynaCache MBean was not found in the node on which the server resides.
+DYNA1049E.useraction=Check the query expression for the MBean. Ensure that the node and the server names provided exist.
+
+# No Comment Provided
+DYNA1050E=DYNA1050E: Exception occurred while trying to invoke MBean command {0} in the server {1}. Exception: {2}
+DYNA1050E.explanation=Exception occurred while trying to invoke MBean command.
+DYNA1050E.useraction=Find the explanation of the exception in the server SystemOut.log file.
+
+# No Comment Provided
+DYNA1051E=DYNA1051E: The MBean command {0} cannot be performed because the disk offload feature is not enabled for named cache instance {1}. 
+DYNA1051E.explanation=The MBean command cannot be envoked because the disk offload feature is not enabled for the named cache instance. 
+DYNA1051E.useraction=Ensure that the disk offload feature is enabled for the named cache instance. See the Configuring dynamic cache disk offload article in the product documentation.
+
+# No Comment Provided
+DYNA1052E=DYNA1052E: The input name {0} is not a valid cache statistic name.
+DYNA1052E.explanation=The input cache statistic name is not valid.
+DYNA1052E.useraction=Ensure that the cache statistics name is valid.
+
+# No Comment Provided
+DYNA1053E=DYNA1053E: Exception occurred while trying to invoke MBean command {0}. Exception: {1}
+DYNA1053E.explanation=Exception occurred while trying to invoke MBean command.
+DYNA1053E.useraction=See the explanation of the exception described in the error message.
+
+# No Comment Provided
+DYNA1054I=DYNA1054I: Dynamic Cache (core cache) initialized successfully.
+DYNA1054I.explanation=The Dynamic Cache (core cache) was successfully initialized.
+DYNA1054I.useraction=None.
+
+# No Comment Provided
+DYNA1055I=DYNA1055I: Dynamic Cache (servlet cache) initialized successfully.
+DYNA1055I.explanation=The Dynamic Cache (servlet cache) was successfully initialized.
+DYNA1055I.useraction=None.
+
+# No Comment Provided
+DYNA1056I=DYNA1056I: Dynamic Cache (object cache) initialized successfully.
+DYNA1056I.explanation=The Dynamic Cache (object cache) was successfully initialized.
+DYNA1056I.useraction=None.
+
+# No Comment Provided
+DYNA1057W=DYNA1057W: Cache instance {0} defined in the {1} is not added because a cache with this name already exists. 
+DYNA1057W.explanation=The cache instance is not added because a cache with this name already exists.
+DYNA1057W.useraction=Ensure that the cache instance does not define more than once in the properties files.
+
+# No Comment Provided
+DYNA1058W=DYNA1058W: Cache replication is disabled for cache instance {0} because the Dynamic Cache service is running in a stand-alone server.
+DYNA1058W.explanation=Cache replication is disabled for cache instance because the Dynamic Cache service is running in a stand-alone server.
+DYNA1058W.useraction=None.
+
+# No Comment Provided
+DYNA1059W=DYNA1059W: Dynamic Cache instance named {0} cannot be used because the Dynamic Servlet cache service has not been started.
+DYNA1059W.explanation=The named Dynamic Servlet cache service has not be started. Servlet cache instances cannot be used.
+DYNA1059W.useraction=Ensure that Dynamic servlet caching is enabled in the administrative console.
+
+# No Comment Provided
+DYNA1060W=DYNA1060W: Dynamic Cache instance named {0} cannot be used because the Dynamic Object cache service has not been started.
+DYNA1060W.explanation=The named Dynamic Object cache service has not be started. Object cache instances cannot be used.
+DYNA1060W.useraction=None.
+
+# No Comment Provided
+DYNA1061E=DYNA1061E: Neither servlet cache nor object caching is enabled.
+DYNA1061E.explanation=Neither servlet cache nor object caching is enabled.
+DYNA1061E.useraction=Ensure that Dynamic servlet caching is enabled in the administrative console.
+
+# No Comment Provided
+DYNA1062E=DYNA1062E: Dynamic Cache (core cache) failed to initialize. Exception: {0}
+DYNA1062E.explanation=The Dynamic Cache (core cache) failed to initialize.
+DYNA1062E.useraction=Debug the problem using the provided error message.
+
+# No Comment Provided
+DYNA1063E=DYNA1063E: The operation {0} for cacheName {1} cannot be performed because cache provider {2} does not support the alias feature.
+DYNA1063E.explanation=This specific operation cannot be performed because cache provider does not support the alias feature.
+DYNA1063E.useraction=None.
+
+# No Comment Provided
+DYNA1064E=DYNA1064E: The operation {0} for cacheName {1} cannot be performed because cache provider {2} does not support the disk cache offload feature.
+DYNA1064E.explanation=This specific operation cannot be performed because cache provider does not support the disk cache offload feature.
+DYNA1064E.useraction=None.
+
+# No Comment Provided
+DYNA1065E=DYNA1065E: The operation {0} for cacheName {1} cannot be performed because cache provider {2} does not support the DRS replication feature.
+DYNA1065E.explanation=This specific operation cannot be performed because cache provider does not support the date replication service (DRS) replication feature.
+DYNA1065E.useraction=None.
+
+# No Comment Provided
+DYNA1066E=DYNA1066E: Unable to initialize the cache provider {0}. The Dynamic cache will be used to create the cache instance {1} instead of the configured cache provider.
+DYNA1066E.explanation=An unanticipated error occurred while initializing the configured cache provider. The Dynamic cache will be used as cache provider to create the cache instance instead of the configured provider. 
+DYNA1066E.useraction=Ensure that the cache provider is provided as an Application Server runtime bundle or as a library in the Application Server lib directory. 
+
+# No Comment Provided
+DYNA1067E=DYNA1067E: The cache size in MB feature is disabled because the cached object is not sizable.  ClassName={0}   Type={1}
+DYNA1067E.explanation=The cache size in MB feature is disabled because the cached object is not implemented to be sizable. 
+DYNA1067E.useraction=Ensure that the cached object class implements com.ibm.websphere.cache.Sizable interface.
+
+# No Comment Provided
+DYNA1068E=DYNA1068E: The cache size in MB feature is disabled because the configured cache provider {0} does not support this feature for the cache instance {1}.
+DYNA1068E.explanation=The cache size in MB feature is disabled because the configured cache provider does not support this feature.
+DYNA1068E.useraction=None
+
+# No Comment Provided
+DYNA1069I=DYNA1069I: The lruToDiskTriggerTime custom property will be set to {0} for getting better performance.
+DYNA1069I.explanation=Since memory cache size in MB or LRU trigger percent feature is enabled, the lruToDiskTriggerTime custom property will be changed to better value in order to get better performance.
+DYNA1069I.useraction=None
+
+DYNA1070I=DYNA1070I: Cache instance {0} is full and has reached the maximum configured size of {1} entries. Space on the JVM heap for new entries will now be made by evicting existing cache entries using the LRU algorithm. Please consider enabling the disk offload feature for the cache instance to prevent the discard of cache entries from memory.
+DYNA1070I.explanation=Since the disk offload feature is disabled and cache instance is full, JVM heap space for new entries will be made available by evicting cache entries using the LRU algorithm.
+DYNA1070I.useraction=Enable the disk offload feature for the cache instance to prevent the discard of cache entries from memory.
+
+# No Comment Provided
+DYNA1071I=DYNA1071I: The cache provider {0} is being used.
+DYNA1071I.explanation=This shows the name of cache provider being used.
+DYNA1071I.useraction=None.
+
+# No Comment Provided
+DYNA1072W=DYNA1072W: The cache id {0} will not be replicated to other servers because skipMemoryWriteToDisk is set to true. The sharing policy will be set to not-shared.
+DYNA1072W.explanation=The specified cache id will not be replicated to other servers because skipMemoryWriteToDisk is set to true. 
+DYNA1072W.useraction=None.
+
+# RemoteJMSInvalidator external cache group is configured incorrectly
+DYNA1073E=DYNA1073E: The RemoteJMSInvalidator external cache group is not configured correctly. The following address was provided for the external cache group member: {0}
+DYNA1073E.explanation=You must resolve the configuration error for the specified external cache group to function correctly.
+DYNA1073E.useraction=None.
+
+# RemoteInvalidator is no longer connected to SIB servers in the remote cell or core group
+DYNA1074W=DYNA1074W: The RemoteJMSInvalidator external cache group is no longer connected. The configured JNDI name of the queue connection factory is {0} and the JNDI name of the targeted destination is {1}.
+DYNA1074W.explanation=The service integration bus servers in the specified queue connection factory are no longer available.
+DYNA1074W.useraction=None.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1075I=DYNA1075I: The RemoteJMSInvalidator external cache group is connected. The configured JNDI name of the queue connection factory is {0} and the JNDI name of the targeted destination is {1}.
+DYNA1075I.explanation=The external cache group is now connected to the service integration bus servers that are defined in the queue connection factory.
+DYNA1075I.useraction=None.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1076W=DYNA1076W: The RemoteJMSInvalidator external cache group is unable to connect. The configured JNDI name of the queue connection factory is {0} and the JNDI name of the targeted destination is {1}.
+DYNA1076W.explanation=The external cache group is unable to connect to the service integration bus servers that are defined in the queue connection factory.
+DYNA1076W.useraction=You may need to restart the targeted service integration bus servers.
+
+# displays defined custom property
+DYNA1077I=DYNA1077I: The custom property with the name, {0}, and the value, {1}, has been detected.
+DYNA1077I.explanation=The name and value of a defined custom property.
+DYNA1077I.useraction=None.
+
+# Dynacache openjpa messages
+
+queryCache-instance-created=DYNA1080I: OpenJPA L2 QueryCache Dynacache instance {0} created or retrieved successfully for persistent unit {1}.
+queryCache-instance-created.explanation=OpenJPA L2 QueryCache Dynacache instance created successfully.
+queryCache-instance-created.useraction=None.
+
+dataCache-instance-created=DYNA1081I: OpenJPA L2 DataCache Dynacache instance {0} created or retrieved successfully for persistent unit {1}.
+dataCache-instance-created.explanation=OpenJPA L2 DataCache Dynacache instance created successfully.
+dataCache-instance-created.useraction=None.
+
+specify-replication-domain=DYNA1082W: Replication Domain has not been specified.
+specify-replication-domain.explanation=Forcing enableCacheReplication to false.
+specify-replication-domain.useraction=Please configure a WebSphere Replication domain to associate with the cache instance.
+
+no-cache-name=DYNA1083W: No named cache is specified for the open-jpa L2 cache  instance. Using the name of the persistent unit {0} as the cache instance name.
+no-cache-name.explanation=None.
+no-cache-name.useraction=Please configure a name for the open-jpa L2 cache instance.
+
+no-cache-size=DYNA1084W: No cache size is specified for the open-jpa L2 cache instance {0}.  Setting the cache size in memory to {1}.
+no-cache-size.explanation=None.
+no-cache-size.useraction=Please configure a size for the open-jpa L2 cache instance.
+
+incompatible-configuration=DYNA1085W: {0} property has been configured to incompatible value {1}. Forcing this value to {2}.
+incompatible-configuration.explanation=None.
+incompatible-configuration.useraction=Please provide a consistent configuration to the open-jpa L2 cache instance.
+incompatible-configuration1=DYNA1086I: Since the openjpa.DataCacheManager property is set to dynacache the Dynacache OpenJPA L2 Cache Provider will FORCE set the openjpa.DataCache property to dynacache.
+incompatible-configuration1.explanation=This message is for informational purposes only.
+incompatible-configuration1.useraction=No action is required.
+incompatible-configuration2=DYNA1087I: Since the openjpa.DataCacheManager property is set to dynacache the Dynacache OpenJPA L2 Cache Provider will FORCE set the openjpa.RemoteCommitProvider property to none.
+incompatible-configuration2.explanation=This message is for informational purposes only.
+incompatible-configuration2.useraction=No action is required.
+incompatible-configuration3=DYNA1088I: Since the openjpa.Datacache property is set to dynacache the Dynacache OpenJPA L2 Cache Provider will FORCE set openjpa.RemoteCommitProvider property to none.
+incompatible-configuration3.explanation=This message is for informational purposes only.
+incompatible-configuration3.useraction=No action is required.
+incompatible-configuration4=DYNA1089I: Since the openjpa.Querycache property is set to dynacache the Dynacache OpenJPA L2 Cache Provider will FORCE set the openjpa.DataCache property to dynacache.
+incompatible-configuration4.explanation=This message is for informational purposes only.
+incompatible-configuration4.useraction=No action is required.
+
+DYNA1090I=DYNA1090I: Dynamic Cache service is disabled.
+DYNA1090I.explanation=The Dynamic Cache, Object cache and Servlet caching services have been disabled through the administrative console or scripting. 
+DYNA1090I.useraction=Enable the Dynamic Cache service by setting the enable attribute of the server scoped DynamicCache AdminConfig object or through the administrative console panel Application servers > <server_name> > Dynamic cache service
+
+DYNA1091E=DYNA1091E: Configuration for cache instance {0}, was not recognized due to exception {0}.
+DYNA1091E.explanation=The Dynamic Cache configuration for cache instance is invalid because of the thrown exception.
+DYNA1091E.useraction=Please correct and address at the cause of the exception so that the cache configuration can be successfully added to the Dynamic Cache runtime.
+                     
+no-jpa-cache-exists-with-this-name=DYNA1092E: No DataCache with name {0} exists.
+no-jpa-cache-exists-with-this-name.explanation=Please confirm that the L2 DataCache was created successfully.
+no-jpa-cache-exists-with-this-name.useraction=Please confirm that the L2 Data Cache is correct.
+
+no-dynacache-manager-configured=DYNA1093E: DataCache {0} not configure with the correct DataCacheManager in persistent unit {1}. 
+no-dynacache-manager-configured.explanation=openjpa.DataCacheManager property should be set to dynacache. 
+no-dynacache-manager-configured.useraction=Please correct this property in the persistence.xml.
+
+incorrect-class-name=DYNA1094E: Entity Class {0} could NOT be loaded by classloader {1}. 
+incorrect-class-name.explanation=Please confirm that Class does exist in the application and is visible to the application server classloader.
+incorrect-class-name.useraction=Please provide the correct Entity Class name and configured a sever scoped shared library containing the classes associated with the server.
+
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance=DYNA1095E: Persistence-unit: {0} not found in application: {1} module: {2}.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.explanation= Persistence unit xml could not located in the specified location.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.useraction= Please confirm that the persistence unit is indeed placed in the location specified by the mbean parameters.
+                   

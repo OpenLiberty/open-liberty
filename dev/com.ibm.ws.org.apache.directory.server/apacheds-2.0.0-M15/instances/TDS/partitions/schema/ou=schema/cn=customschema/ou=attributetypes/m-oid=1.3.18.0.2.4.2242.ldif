@@ -1,0 +1,18 @@
+dn: m-oid=1.3.18.0.2.4.2242, ou=attributetypes, cn=customschema, ou=schema
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-oid: 1.3.18.0.2.4.2242
+m-name: ibm-memberGroup
+m-description: Allowed by auxilliary class ibm-nestedGroup. Identifies sub-group
+ s of a parent group entry. Members of all such sub-groups are considered member
+ s of the parent group when processing ACLs or the ibm-allMembers and ibm-allGro
+ ups operational attributes. The sub-group entries themselves are NOT members. N
+ ested membership is recursive.
+m-equality: distinguishedNameMatch
+entryParentId: 795b16bc-87db-419c-89bc-ceffe7258789
+entryUUID: 224e17a3-b54b-4b7a-ad5b-9424372954e4
+createTimestamp: 20140522071045.160Z
+creatorsName: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+entryCSN: 20140522071045.160000Z#000000#001#000000
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12

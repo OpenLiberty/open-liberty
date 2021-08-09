@@ -1,0 +1,393 @@
+###############################################################################
+# Copyright (c) 2007, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME ws/code/metadata/src/com/ibm/ws/injectionengine/injection.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+#CWNEN0001W=CWNEN0001W:
+#CWNEN0001W.explanation=
+#CWNEN0001W.useraction=
+
+# --------------------------------
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E=CWNEN0001E: Mechanizm wstrzykiwania wychwyci\u0142 wyj\u0105tek {0} i wygenerowa\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {1}.
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.explanation=
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.useraction=
+
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E=CWNEN0005E: Us\u0142uga mechanizmu wstrzykiwania nie jest dost\u0119pna.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.explanation=Us\u0142uga mechanizmu wstrzykiwania dla okre\u015blonego serwera nie jest dost\u0119pna.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.useraction=Mechanizm wstrzykiwania zosta\u0142 uruchomiony jako pojedyncza us\u0142uga w ramach wszystkich proces\u00f3w serwera aplikacji. Sprawd\u017a, czy serwer aplikacji zosta\u0142 uruchomiony bez \u017cadnych b\u0142\u0119d\u00f3w.
+
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E=CWNEN0006E: Mechanizm wstrzykiwania nie b\u0119dzie m\u00f3g\u0142 zarejestrowa\u0107 procesor\u00f3w wstrzykiwania, dop\u00f3ki nie zostanie zainicjowana us\u0142uga mechanizmu wstrzykiwania.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.explanation=W trakcie uruchamiania mechanizm wstrzykiwania inicjuje zestaw domy\u015blnych procesor\u00f3w wstrzykiwania. Aby mo\u017cliwe by\u0142o zarejestrowanie dodatkowych procesor\u00f3w wstrzykiwania za pomoc\u0105 mechanizmu wstrzykiwania, us\u0142uga mechanizmu wstrzykiwania musi by\u0107 uruchomiona i zainicjowana.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.useraction=Sprawd\u017a, czy procesory wstrzykiwania s\u0105 rejestrowane po uruchomieniu serwera aplikacji.
+
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E=CWNEN0008E:  Metoda {0} musi by\u0107 metod\u0105 ustawiaj\u0105c\u0105. Adnotacja jest ignorowana.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.explanation=Metoda dla obiektu docelowego wstrzykiwania musi by\u0107 metod\u0105 ustawiaj\u0105c\u0105 w\u0142a\u015bciwo\u015bci.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.useraction=Sprawd\u017a, czy w adnotacji lub w kodzie XML obiektu docelowego wstrzykiwania okre\u015blono po\u017c\u0105dan\u0105 metod\u0119.
+
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E=CWNEN0009E: Przetworzenie kodu XML z deskryptora wdra\u017cania przez mechanizm wstrzykiwania nie powiod\u0142o si\u0119 z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {0}
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w trakcie przetwarzania metadanych w deskryptorze wdra\u017cania.
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.useraction=Sprawd\u017a, czy kod XML zawarty w deskryptorze wdra\u017cania jest poprawny.
+
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E=CWNEN0010E:  Przetworzenie adnotacji {0} lub {1} w klasie {2} przez mechanizm wstrzykiwania nie powiod\u0142o si\u0119.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.explanation=Mechanizm wstrzykiwania nie m\u00f3g\u0142 poprawnie skonfigurowa\u0107 obiekt\u00f3w docelowych wstrzykiwania dla okre\u015blonej klasy.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.useraction=Sprawd\u017a, czy klasa oraz kod XML deskryptora wdra\u017cania zawieraj\u0105 poprawne adnotacje.
+
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E=CWNEN0011E: Przetworzenie powi\u0105za\u0144 metadanych przez mechanizm wstrzykiwania nie powiod\u0142o si\u0119 z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {0}
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.explanation=Powi\u0105zania oraz informacje o wstrzykiwaniu zawieraj\u0105 b\u0142\u0119dy.
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.useraction=Sprawd\u017a, czy adnotacje zawarte w klasie oraz kod XML zawarty w deskryptorze wdra\u017cania s\u0105 poprawne.
+
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E=CWNEN0012E: Zainicjowanie procesora {0} przez mechanizm wstrzykiwania nie powiod\u0142o si\u0119.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zainicjowania procesora.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.useraction=Sprawd\u017a, czy procesor jest dost\u0119pny oraz czy zosta\u0142 poprawnie zarejestrowany za pomoc\u0105 mechanizmu wstrzykiwania.
+
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W=CWNEN0013W: W trakcie pr\u00f3by przekszta\u0142cenia wpisu &lt;env-entry-name&gt; {0} &lt;env-entry-value&gt; {1} przez mechanizm wstrzykiwania wyst\u0105pi\u0142 nast\u0119puj\u0105cy wyj\u0105tek NumberFormatException: {2}.
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.explanation=Kontener nie mo\u017ce przetworzy\u0107 wpisu \u015brodowiskowego ze wzgl\u0119du na wyj\u0105tek NumberFormatException.
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.useraction=Sprawd\u017a, czy warto\u015b\u0107 wpisu \u015brodowiska jest poprawnym \u0142a\u0144cuchem w przypadku okre\u015blonego typu.
+
+INVALID_BOOLEAN_FORMAT_CWNEN0014W=CWNEN0014W: Wpis \u015brodowiskowy kontekstu java:comp/env dla komponentu EJB {0} o typie boolowskim nie zosta\u0142 ustawiony na poprawn\u0105 warto\u015b\u0107 boolowsk\u0105: {1}. Z tego powodu wpis ma przypisan\u0105 warto\u015b\u0107 false.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.explanation=Wpis \u015brodowiskowy kontekstu java:comp/env dla komponentu EJB o typie boolowskim powinien mie\u0107 przypisan\u0105 warto\u015b\u0107 true lub false. W przypadku okre\u015blenia innej warto\u015bci przypisywana jest warto\u015b\u0107 false, ale mo\u017ce to wskazywa\u0107 na problem zwi\u0105zany z konfiguracj\u0105. Aplikacja mo\u017ce nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.useraction=Zmie\u0144 warto\u015b\u0107 wpisu \u015brodowiskowego kontekstu java:comp/env o typie boolowskim na warto\u015b\u0107 true lub false.
+
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W=CWNEN0015W: Podczas pr\u00f3by utworzenia wpisu &lt;env-entry-name&gt; {0} &lt;env-entry-value&gt; {1} wychwycono nast\u0119puj\u0105cy wyj\u0105tek: \n \ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.explanation=Podczas pr\u00f3by utworzenia wpisu kontekstu java:comp/env mechanizm wstrzykiwania napotka\u0142 wyj\u0105tek.
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.useraction=Wykonaj czynno\u015b\u0107 w oparciu o informacje uzyskane z komunikatu powi\u0105zanego z wyj\u0105tkiem.
+
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W=CWNEN0016W: Niepoprawny typ {0} zosta\u0142 okre\u015blony dla prostego wpisu \u015brodowiskowego {1} w komponencie {2} modu\u0142u {3}.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.explanation=Mechanizm wstrzykiwania napotka\u0142 typ, kt\u00f3ry nie jest poprawny w przypadku wpisu \u015brodowiskowego.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.useraction=Sprawd\u017a, czy u\u017cywany jest jeden z nast\u0119puj\u0105cych typ\u00f3w wpis\u00f3w \u015brodowiskowych: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class i wszystkie podklasy typu Enum.
+
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E=CWNEN0017E: Mechanizm wstrzykiwania nie mo\u017ce rozpozna\u0107 obiektu docelowego deklaracji odwo\u0142ania do zasobu {0} wzgl\u0119dem po\u0142o\u017cenia skojarzonego powi\u0105zania w globalnej przestrzeni nazw.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.explanation=Mechanizm wstrzykiwania nie mo\u017ce powi\u0105za\u0107 nazwy zadeklarowanej w przestrzeni nazw java:comp/env z nazw\u0105 docelowego zasobu w globalnej przestrzeni nazw JNDI (Java Naming and Directory Interface).
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.useraction=Sprawd\u017a, czy nazwa zadeklarowana dla wstrzykiwania (za pomoc\u0105 adnotacji @Resource lub deklaracji odwo\u0142ania do zasobu) jest zgodna z t\u0105 sam\u0105 nazw\u0105 w pliku XML z powi\u0105zaniem.
+
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E=CWNEN0018E: Obiekt docelowy wstrzykiwania {0} zosta\u0142 okre\u015blony w adnotacji, kt\u00f3ra nie istnieje w deskryptorze wdra\u017cania XML.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.explanation=W ramach regu\u0142 przes\u0142aniania specyfikacji EJB okre\u015blono nast\u0119puj\u0105ce informacje: \n Je\u015bli obiekt docelowy wstrzykiwania ju\u017c istnieje i zosta\u0142 okre\u015blony za pomoc\u0105 kodu XML, to obiekt docelowy wstrzykiwania w adnotacji musi okre\u015bla\u0107 t\u0119 sam\u0105 metod\u0119 pola lub w\u0142a\u015bciwo\u015bci.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.useraction=Zmie\u0144 obiekt docelowy wstrzykiwania w adnotacji w taki spos\u00f3b, aby by\u0142 on zgodny z wcze\u015bniej zdefiniowanym obiektem docelowym wstrzykiwania w kodzie XML i okre\u015bla\u0142 t\u0119 sam\u0105 metod\u0119 pola lub w\u0142a\u015bciwo\u015bci.
+
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E=CWNEN0019E: Pole obiektu docelowego wstrzykiwania {0} nie mo\u017ce by\u0107 zadeklarowane jako final.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.explanation=Zgodnie ze specyfikacj\u0105 EJB pole obiektu docelowego operacji wstrzykiwania nie mo\u017ce by\u0107 zadeklarowane jako final.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.useraction=Popraw nazw\u0119 lub sygnatur\u0119 pola, aby okre\u015bli\u0107 jedno z nieprywatnych p\u00f3l klasy.
+
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E=CWNEN0020E: Przy pr\u00f3bie uzyskania dost\u0119pu do elementu {1} mechanizm wstrzykiwania wychwyci\u0142 nast\u0119puj\u0105cy wyj\u0105tek zabezpiecze\u0144: {0}.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.explanation=Mechanizm wstrzykiwania nie mia\u0142 referencji zabezpiecze\u0144, kt\u00f3re s\u0105 odpowiednie w kontek\u015bcie uzyskiwania dost\u0119pu do elementu.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.useraction=Wykonaj odpowiedni\u0105 czynno\u015b\u0107 w oparciu o informacje zawarte w komunikacie powi\u0105zanym z wyj\u0105tkiem.
+
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W=CWNEN0021W: Pole {0} jest zadeklarowane jako pole typu {1}, ale \u017c\u0105dany dla tego pola typ wstrzykiwania to {2}.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.explanation=Typ pola wskazywany w przypadku obiektu docelowego wstrzykiwania jest niepoprawny.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.useraction=Sprawd\u017a, czy w adnotacji lub w kodzie XML obiektu docelowego wstrzykiwania okre\u015blono po\u017c\u0105dane pole.
+
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E=CWNEN0022E: Nie mo\u017cna przetworzy\u0107 obiektu docelowego wstrzykiwania dla odwo\u0142ania {0}, poniewa\u017c ani metoda {1}, ani pole {2} nie istniej\u0105 w klasie {3}.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.explanation=Klasa nie ma metody lub pola ze skonfigurowan\u0105 nazw\u0105 w\u0142a\u015bciwo\u015bci obiektu docelowego wstrzykiwania.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.useraction=Sprawd\u017a, czy pisownia skonfigurowanej nazwy w\u0142a\u015bciwo\u015bci obiektu docelowego wstrzykiwania jest poprawna oraz czy klasa zawiera odpowiednie pole lub metod\u0119 w\u0142a\u015bciwo\u015bci.
+
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E=CWNEN0023E: Przynajmniej jeden z nast\u0119puj\u0105cych argument\u00f3w ma warto\u015b\u0107 NULL: targetClass {0}, targetName {1}, injectionClass {2}.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.explanation=Podczas pr\u00f3by u\u017cycia informacji o obiekcie docelowym wstrzykiwania, kt\u00f3re zosta\u0142y okre\u015blone w kodzie XML, mechanizm wstrzykiwania napotka\u0142 b\u0142\u0105d.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.useraction=Sprawd\u017a, czy kod XML znajduj\u0105cy si\u0119 w deskryptorze wdra\u017cania jest poprawny.
+
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E=CWNEN0024E: Pr\u00f3ba za\u0142adowania klasy ObjectFactory {0} przez mechanizm wstrzykiwania nie powiod\u0142a si\u0119.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.explanation=Pr\u00f3ba za\u0142adowania i utworzenia instancji okre\u015blonej klasy obiektu przez mechanizm wstrzykiwania nie powiod\u0142a si\u0119.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.useraction=Sprawd\u017a, czy klasa jest dost\u0119pna oraz czy konstruktor jest widoczny i udost\u0119pniony.
+
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W=CWNEN0025W: Komponent EJB jest wi\u0105zany z pustym \u0142a\u0144cuchem w globalnej przestrzeni nazw JNDI (Java Naming and Directory Interface).
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.explanation=Informacje zawarte w adnotacji lub kodzie obiektu docelowego wstrzykiwania s\u0105 niepoprawne lub niekompletne.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.useraction=Sprawd\u017a poprawno\u015b\u0107 adnotacji lub kodu XML obiektu docelowego wstrzykiwania dla komponentu EJB.
+
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E=CWNEN0026E: Brak element\u00f3w home i remote lub local-home i local komponentu EJB {0} albo nie mo\u017cna ich rozpozna\u0107.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.explanation=Brak element\u00f3w home i remote lub local-home i local albo nie mo\u017cna ich rozpozna\u0107.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.useraction=Sprawd\u017a, czy znaczniki &lt;ejb-ref&gt; lub &lt;ejb-local-ref&gt; zosta\u0142y poprawnie okre\u015blone w deskryptorze wdra\u017cania XML.
+
+
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E=CWNEN0027E: Przy pr\u00f3bie powi\u0105zania nazwy {1} z globaln\u0105 przestrzeni\u0105 nazw JNDI (Java Naming and Directory Interface) mechanizm wstrzykiwania wychwyci\u0142 nast\u0119puj\u0105cy wyj\u0105tek dotycz\u0105cy nazewnictwa: {0}.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.explanation=Mechanizm wstrzykiwania napotka\u0142 wyj\u0105tek w trakcie pr\u00f3by utworzenia powi\u0105zania.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.useraction=Wykonaj czynno\u015b\u0107 w oparciu o informacje uzyskane z komunikatu powi\u0105zanego z wyj\u0105tkiem.
+
+INJECTION_FAILED_CWNEN0028E=CWNEN0028E: Mechanizm wstrzykiwania napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas wstrzykiwania typu {0} do klasy {1}: {2}
+INJECTION_FAILED_CWNEN0028E.explanation=Nie mo\u017cna wstrzykn\u0105\u0107 okre\u015blonego typu do podanej klasy.
+INJECTION_FAILED_CWNEN0028E.useraction=Sprawd\u017a poprawno\u015b\u0107 adnotacji lub kodu XML obiektu docelowego wstrzykiwania dla komponentu EJB.
+
+INJECTION_FAILED_CWNEN0029E=CWNEN0029E: Wyst\u0105pi\u0142 b\u0142\u0105d w trakcie wstrzykiwania typu {0} do {1} przez mechanizm wstrzykiwania. Typ {0} mo\u017ce zosta\u0107 wstrzykni\u0119ty wy\u0142\u0105cznie do komponentu EJB {1}.
+INJECTION_FAILED_CWNEN0029E.explanation=Bezpo\u015brednio do komponentu EJB mo\u017cna wstrzykn\u0105\u0107 wy\u0142\u0105cznie obiekty EJBContext lub TimerService.
+INJECTION_FAILED_CWNEN0029E.useraction=Sprawd\u017a, czy okre\u015blonym typem jest obiekt EJBContext lub TimerService.
+
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E=CWNEN0030E: Fabryka {0} napotka\u0142a problem podczas pobierania obiektu powi\u0105zania {1} instancji obiektu.  Komunikat o wyj\u0105tku to: {2}
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.explanation=Okre\u015blona fabryka obiekt\u00f3w jest niepoprawna dla obiektu powi\u0105zania.
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.useraction=Sprawd\u017a, czy obiekt jest poprawnie powi\u0105zany z fabryk\u0105.
+
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E=CWNEN0031E: Tworzenie odwo\u0142ania {0} typu {1} nie powiod\u0142o si\u0119.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.explanation=Wyst\u0105pi\u0142 problem w trakcie tworzenia odwo\u0142ania, kt\u00f3re ma znajdowa\u0107 si\u0119 w globalnej przestrzeni nazw JNDI (Java Naming and Directory Interface).
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.useraction=Sprawd\u017a, czy okre\u015blone odwo\u0142anie jest poprawne.
+
+FAILED_TO_PROCESS_XML_CWNEN0032E=CWNEN0032E: Nie powiod\u0142o si\u0119 przetworzenie kodu XML dla {0} {1}
+FAILED_TO_PROCESS_XML_CWNEN0032E.explanation=Kod XML dla okre\u015blonego odwo\u0142ania jest niepoprawny lub niekompletny.
+FAILED_TO_PROCESS_XML_CWNEN0032E.useraction=Sprawd\u017a, czy kod XML znajduj\u0105cy si\u0119 w deskryptorze wdra\u017cania jest poprawny.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W=CWNEN0033W: Nie mo\u017cna znale\u017a\u0107 interfejsu {0} okre\u015blonego dla znacznik\u00f3w &lt;ejb-ref&gt; lub &lt;ejb-local-ref&gt;.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.explanation=Brak klasy interfejsu lub nie mo\u017cna jej znale\u017a\u0107.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.useraction=Sprawd\u017a, czy znaczniki &lt;ejb-ref&gt; lub &lt;ejb-local-ref&gt; zosta\u0142y poprawnie okre\u015blone w deskryptorze wdra\u017cania XML oraz czy ta klasa jest dost\u0119pna.
+
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E=CWNEN0034E: Element ejb-link/beanName zosta\u0142 okre\u015blony niepoprawnie. Nazwa modu\u0142u {1} komponentu bean {0} musi ko\u0144czy\u0107 si\u0119 rozszerzeniem .jar lub .war.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.explanation=Informacje zawarte w adnotacji lub kodzie obiektu docelowego wstrzykiwania s\u0105 niepoprawne lub niekompletne.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.useraction=Sprawd\u017a poprawno\u015b\u0107 adnotacji lub kodu XML obiektu docelowego wstrzykiwania dla komponentu EJB.
+
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E=CWNEN0035E: Nie mo\u017cna rozstrzygn\u0105\u0107 odwo\u0142ania {0} typu {1} dla komponentu {2} w module {3} aplikacji {4}.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.explanation=Aplikacja zadeklarowa\u0142a odwo\u0142anie do obiektu, kt\u00f3rego nie mo\u017cna znale\u017a\u0107.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.useraction=Znajd\u017a poprzedni komunikat wskazuj\u0105cy przyczyn\u0119, dla kt\u00f3rej nie mo\u017cna znale\u017a\u0107 przywo\u0142ywanego obiektu, a nast\u0119pnie sprawd\u017a poprawno\u015b\u0107 konfiguracji odwo\u0142ania.
+
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E=CWNEN0036E: Obiekt powi\u0105zania {0} nie jest obiektem typu Reference.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.explanation=Okre\u015blony obiekt jest niepoprawny.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.useraction=Sprawd\u017a, czy obiekt ma ustawiony typ Reference.
+
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E=CWNEN0037E: Fabryka {0} nie s\u0142u\u017cy do tworzenia odwo\u0142a\u0144 dla obiektu powi\u0105zania {1}.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.explanation=Fabryka zosta\u0142a okre\u015blona niepoprawnie.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.useraction=Okre\u015bl fabryk\u0119 dla u\u017cywanego obiektu powi\u0105zania.
+
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E=CWNEN0038E: Adres dla obiektu {0} typu Reference jest pusty (ma warto\u015b\u0107 NULL).
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.explanation=Nie okre\u015blono nazwy parametru RefAddr dla obiektu Reference.
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.useraction=Okre\u015bl parametr RefAddr dla obiektu Reference.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E=CWNEN0039E: Nie mo\u017cna znale\u017a\u0107 interfejsu {0} okre\u015blonego dla znacznik\u00f3w &lt;ejb-ref&gt; lub &lt;ejb-local-ref&gt;.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.explanation=Brak klasy interfejsu lub nie mo\u017cna jej znale\u017a\u0107.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.useraction=Sprawd\u017a, czy znaczniki &lt;ejb-ref&gt; lub &lt;ejb-local-ref&gt; zosta\u0142y poprawnie okre\u015blone w deskryptorze wdra\u017cania XML oraz czy ta klasa jest dost\u0119pna.
+
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W=CWNEN0040W: Metoda lub pole {0} zosta\u0142y skonfigurowane do wielokrotnego wstrzykiwania.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.explanation=Je\u015bli dla tego samego pola lub metody skonfigurowano wiele element\u00f3w docelowych wstrzykiwania, mechanizm wstrzykiwania nie mo\u017ce okre\u015bli\u0107 elementu docelowego wstrzykiwania.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.useraction=Nie konfiguruj wielu element\u00f3w docelowych wstrzykiwania dla jednego pola lub metody.
+
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E=CWNEN0041E: Odwo\u0142ania EJB {0} w module {1} do interfejsu {2} komponentu EJB {3} nie mo\u017cna rozstrzygn\u0105\u0107 w tym w\u0119\u017ale.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.explanation=Zasi\u0119g \u0142\u0105cza automatycznego jest ograniczony do aplikacji, w kt\u00f3rej wyst\u0119puje odwo\u0142anie do komponentu EJB, i serwer\u00f3w, kt\u00f3re nie s\u0105 elementami klastra serwera aplikacji.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.useraction=Upewnij si\u0119, \u017ce przywo\u0142ywane komponenty EJB istniej\u0105 w tej samej aplikacji.
+
+#Do no translate env-entry
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W=CWNEN0042W: Instrukcja env-entry {0} jest ju\u017c okre\u015blona w typie {1}.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.explanation=Duplikaty instrukcji env-entry o tej samej nazwie nie s\u0105 dozwolone.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.useraction=Nie konfiguruj instrukcji env-entry o tej samej nazwie.
+
+#Do no translate UserTransaction
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E=CWNEN0043E: Wstrzykni\u0119cie interfejsu UserTransaction do komponentu bean transakcji zarz\u0105dzanej przez kontener nie jest dozwolone.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.explanation=Specyfikacja komponentu EJB wymaga, aby interfejs UserTransaction by\u0142 niedost\u0119pny dla komponent\u00f3w EJB, w kt\u00f3rych rozgraniczenie transakcji jest zarz\u0105dzane przez kontener.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.useraction=Nie wstrzykuj interfejsu UserTransaction do komponentu bean transakcji zarz\u0105dzanej przez kontener.
+
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E=CWNEN0044E: Nie znaleziono powi\u0105zania odwo\u0142ania do zasobu dla odwo\u0142ania do zasobu {0} zdefiniowanego dla komponentu {1}.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.explanation=Powi\u0105zanie odwo\u0142ania do zasobu mog\u0142o zosta\u0107 pomini\u0119te lub niepoprawnie okre\u015blone.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.useraction=Odwo\u0142anie do zasobu jest definiowane dla komponentu z adnotacj\u0105 @Resource w pliku klasy komponentu lub z jedn\u0105 z nast\u0119puj\u0105cych sekcji XML w deskryptorze wdra\u017cania: resource-env-ref, resource-ref lub message-destination-ref. Sprawd\u017a, czy to powi\u0105zanie zosta\u0142o zdefiniowane dla odwo\u0142ania do zasobu w pliku ibm-ejb-jar-bnd (je\u015bli komponent jest modu\u0142em EJB), w pliku ibm-web-bnd (je\u015bli komponent jest modu\u0142em aplikacji WWW) lub w pliku ibm-application-client-bnd (je\u015bli komponent jest modu\u0142em klienta).
+
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W=CWNEN0045W: Nie okre\u015blono obiektu docelowego wstrzykiwania lub warto\u015bci dla elementu env-entry {0} zdefiniowanego dla komponentu {1}.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.explanation=Warto\u015b\u0107 elementu env-entry musi zosta\u0107 okre\u015blona, je\u015bli warto\u015b\u0107 obiektu docelowego wstrzykiwania nie zosta\u0142a ustawiona.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.useraction=Okre\u015bl warto\u015b\u0107 i/lub obiekt docelowy wstrzykiwania dla elementu env-entry.
+
+#-------------------------------------------------------------------------------
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W=CWNEN0046W: Nie mo\u017cna za\u0142adowa\u0107 typu {0} okre\u015blonego dla elementu resource-ref, resource-env-ref lub message-destination-ref o nazwie {1} w module {2}. Sprawdzanie kompatybilno\u015bci typu nie zostanie wykonane dla tego odwo\u0142ania do zasobu.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.explanation=Nie mo\u017cna sprawdzi\u0107 typu zasobu identyfikowanego przez powi\u0105zanie odwo\u0142ania do zasobu pod wzgl\u0119dem kompatybilno\u015bci z typem zdefiniowanym w jednej z nast\u0119puj\u0105cej sekcji kodu XML w deskryptorze wdra\u017cania: resource-env-ref, resource-ref, message-destination-ref.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.useraction=Zmie\u0144 typ zadeklarowany dla odwo\u0142ania do zasobu w deskryptorze wdra\u017cania na typ, kt\u00f3ry mo\u017ce zosta\u0107 za\u0142adowany.
+
+#-------------------------------------------------------------------------------
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W=CWNEN0047W: Adnotacje zasob\u00f3w dla p\u00f3l klasy {0} zostan\u0105 zignorowane. Nie mo\u017cna uzyska\u0107 adnotacji ze wzgl\u0119du na wyj\u0105tek: {1}
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.explanation=Aplikacja nie b\u0119dzie dzia\u0142a\u0107 poprawnie, je\u015bli zostanie u\u017cyta okre\u015blona klasa.
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.useraction=Nale\u017cy usun\u0105\u0107 klas\u0119 z aplikacji lub wyeliminowa\u0107 przyczyn\u0119 wyj\u0105tku.
+
+#-------------------------------------------------------------------------------
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W=CWNEN0048W: Adnotacje zasob\u00f3w dla p\u00f3l klasy {0} zostan\u0105 zignorowane. Klasa {0} jest przetwarzana pod k\u0105tem adnotacji, poniewa\u017c jest przywo\u0142ywana przez klas\u0119 aplikacji {1}. Nie mo\u017cna uzyska\u0107 adnotacji ze wzgl\u0119du na wyj\u0105tek: {2}
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.explanation=Aplikacja nie b\u0119dzie dzia\u0142a\u0107 poprawnie, je\u015bli zostanie u\u017cyta okre\u015blona klasa.
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.useraction=Nale\u017cy usun\u0105\u0107 klas\u0119 z aplikacji lub wyeliminowa\u0107 przyczyn\u0119 wyj\u0105tku.
+
+#-------------------------------------------------------------------------------
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W=CWNEN0049W: Adnotacje zasob\u00f3w dla metod klasy {0} zostan\u0105 zignorowane. Nie mo\u017cna uzyska\u0107 adnotacji ze wzgl\u0119du na wyj\u0105tek: {1}
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.explanation=Aplikacja nie b\u0119dzie dzia\u0142a\u0107 poprawnie, je\u015bli zostanie u\u017cyta okre\u015blona klasa.
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.useraction=Nale\u017cy usun\u0105\u0107 klas\u0119 z aplikacji lub wyeliminowa\u0107 przyczyn\u0119 wyj\u0105tku.
+
+#-------------------------------------------------------------------------------
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W=CWNEN0050W: Adnotacje zasob\u00f3w dla metod klasy {0} zostan\u0105 zignorowane. Klasa {0} jest przetwarzana pod k\u0105tem adnotacji, poniewa\u017c jest przywo\u0142ywana przez klas\u0119 aplikacji {1}. Nie mo\u017cna uzyska\u0107 adnotacji ze wzgl\u0119du na wyj\u0105tek: {2}
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.explanation=Aplikacja nie b\u0119dzie dzia\u0142a\u0107 poprawnie, je\u015bli zostanie u\u017cyta okre\u015blona klasa.
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.useraction=Nale\u017cy usun\u0105\u0107 klas\u0119 z aplikacji lub wyeliminowa\u0107 przyczyn\u0119 wyj\u0105tku.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_TYPES_CWNEN0051E=CWNEN0051E: Komponent bean {0} w module {1} aplikacji {2} ma w deskryptorze wdra\u017cania XML dane konfiguracyjne, kt\u00f3re powoduj\u0105 konflikt. Istniej\u0105 powoduj\u0105ce konflikt typy element\u00f3w o tej samej warto\u015bci elementu {3}: {4}. Typy element\u00f3w powoduj\u0105ce konflikt to {5} i {6}.
+CONFLICTING_XML_TYPES_CWNEN0051E.explanation=Je\u015bli w deskryptorze wdra\u017cania zdefiniowanych jest wiele odwo\u0142a\u0144 do zasob\u00f3w dla tej samej przestrzeni nazw komponentu o identycznej nazwie, typ zasob\u00f3w musi by\u0107 identyczny. Przyk\u0142adem typowego scenariusza, w kt\u00f3rej mo\u017ce to wyst\u0105pi\u0107, jest definiowanie odwo\u0142a\u0144 do zasob\u00f3w dla komponentu EJB i powi\u0105zanej klasy przechwytywacza. Zar\u00f3wno komponent EJB, jak i przechwytywacz wsp\u00f3\u0142u\u017cytkuj\u0105 t\u0119 sam\u0105 przestrze\u0144 nazw, przez co wsp\u00f3lne odwo\u0142ania do zasob\u00f3w musz\u0105 by\u0107 tego samego typu.
+CONFLICTING_XML_TYPES_CWNEN0051E.useraction=W deskryptorze wdra\u017cania XML zmie\u0144 nazw\u0119 jednego z odwo\u0142a\u0144 do zasob\u00f3w lub zmie\u0144 typ jednego z odwo\u0142a\u0144 na zgodny z typem drugiego odwo\u0142ania.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWNEN0052E=CWNEN0052E: Komponent bean {0} w module {1} aplikacji {2} ma w deskryptorze wdra\u017cania XML dane konfiguracyjne, kt\u00f3re powoduj\u0105 konflikt. Istniej\u0105 powoduj\u0105ce konflikt warto\u015bci element\u00f3w {3} dla wielu element\u00f3w {4} o tej samej warto\u015bci elementu {5}: {6}. Warto\u015bci element\u00f3w {3} powoduj\u0105ce konflikt to {7} i {8}.
+CONFLICTING_XML_VALUES_CWNEN0052E.explanation=Je\u015bli w deskryptorze wdra\u017cania zdefiniowanych jest wiele odwo\u0142a\u0144 do zasob\u00f3w dla tej samej przestrzeni nazw komponentu o identycznej nazwie, wszystkie atrybuty zasobu musz\u0105 by\u0107 identyczne lub jeden z atrybut\u00f3w musi umo\u017cliwia\u0107 przypisanie do innego atrybutu. Przyk\u0142adem typowego scenariusza, w kt\u00f3rej mo\u017ce to wyst\u0105pi\u0107, jest definiowanie odwo\u0142a\u0144 do zasob\u00f3w dla komponentu EJB i powi\u0105zanej klasy przechwytywacza. Zar\u00f3wno komponent EJB, jak i przechwytywacz wsp\u00f3\u0142u\u017cytkuj\u0105 t\u0119 sam\u0105 przestrze\u0144 nazw, przez co wsp\u00f3lne odwo\u0142ania do zasob\u00f3w musz\u0105 by\u0107 kompatybilne.
+CONFLICTING_XML_VALUES_CWNEN0052E.useraction=W deskryptorze wdra\u017cania XML zmie\u0144 nazw\u0119 jednego z odwo\u0142a\u0144 do zasob\u00f3w lub zmie\u0144 jedn\u0105 z warto\u015bci powoduj\u0105cych konflikt, tak aby obie warto\u015bci by\u0142y identyczne lub jedna z nich mog\u0142a by\u0107 przypisana do innej.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E=CWNEN0053E: Komponent bean {0} w module {1} aplikacji {2} ma dane konfiguracyjne powoduj\u0105ce konflikt mi\u0119dzy deskryptorem wdra\u017cania XML i adnotacjami kodu \u017ar\u00f3d\u0142owego. Istniej\u0105 powoduj\u0105ce konflikt warto\u015bci element\u00f3w {3} lub warto\u015bci atrybut\u00f3w {4} dla wielu element\u00f3w {5} lub adnotacji {6} o tej samej warto\u015bci elementu {7} lub warto\u015bci atrybutu {8}: {9}. Warto\u015bci element\u00f3w {3} lub warto\u015bci atrybut\u00f3w {4} powoduj\u0105ce konflikt to {10} i {11}.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.explanation=Je\u015bli w deskryptorze wdra\u017cania i adnotacjach kodu \u017ar\u00f3d\u0142owego zdefiniowanych jest wiele odwo\u0142a\u0144 do zasob\u00f3w dla tej samej przestrzeni nazw komponentu o identycznej nazwie, niekt\u00f3re atrybuty zasobu musz\u0105 by\u0107 identyczne lub jeden z atrybut\u00f3w musi umo\u017cliwia\u0107 przypisanie do innego atrybutu.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.useraction=W deskryptorze wdra\u017cania XML lub adnotacjach kodu \u017ar\u00f3d\u0142owego zmie\u0144 nazw\u0119 jednego z odwo\u0142a\u0144 do zasob\u00f3w lub zmie\u0144 jedn\u0105 z warto\u015bci powoduj\u0105cych konflikt, tak aby obie warto\u015bci by\u0142y identyczne lub jedna z nich mog\u0142a by\u0107 przypisana do innej.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E=CWNEN0054E: Komponent bean {0} w module {1} aplikacji {2} ma w adnotacjach kodu \u017ar\u00f3d\u0142owego dane konfiguracyjne, kt\u00f3re powoduj\u0105 konflikt. Istniej\u0105 powoduj\u0105ce konflikt warto\u015bci atrybut\u00f3w {3} dla wielu adnotacji {4} o tej samej warto\u015bci atrybutu {5}: {6}. Warto\u015bci atrybut\u00f3w {3} powoduj\u0105ce konflikt to {7} i {8}.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.explanation=Je\u015bli w adnotacjach kodu \u017ar\u00f3d\u0142owego zdefiniowanych jest wiele odwo\u0142a\u0144 do zasob\u00f3w dla tej samej przestrzeni nazw komponentu o identycznej nazwie, wszystkie atrybuty zasobu musz\u0105 by\u0107 identyczne lub jeden z atrybut\u00f3w musi umo\u017cliwia\u0107 przypisanie do innego atrybutu.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.useraction=W adnotacjach kodu \u017ar\u00f3d\u0142owego zmie\u0144 nazw\u0119 jednego z odwo\u0142a\u0144 do zasob\u00f3w lub zmie\u0144 jedn\u0105 z warto\u015bci powoduj\u0105cych konflikt, tak aby obie warto\u015bci by\u0142y identyczne lub jedna z nich mog\u0142a by\u0107 przypisana do innej.
+
+#-------------------------------------------------------------------------------
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E=CWNEN0055E: W tym w\u0119\u017ale nie mo\u017cna znale\u017a\u0107 miejsca docelowego komunikat\u00f3w {0} w module {1} aplikacji {2}.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.explanation=Zasi\u0119g \u0142\u0105cza automatycznego jest ograniczony do aplikacji, w kt\u00f3rej wyst\u0119puje odwo\u0142anie do miejsca docelowego komunikat\u00f3w, i serwer\u00f3w, kt\u00f3re nie s\u0105 elementami klastra serwera aplikacji.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.useraction=Upewnij si\u0119, \u017ce przywo\u0142ywane miejsce docelowe komunikat\u00f3w istnieje w tej samej aplikacji. Mo\u017cna tak\u017ce zdefiniowa\u0107 powi\u0105zanie dla miejsca docelowego komunikat\u00f3w.
+
+#-------------------------------------------------------------------------------
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E=CWNEN0056E: Okre\u015blono wstrzykni\u0119cie zasobu {0} dla zmiennej instancji w\u0142a\u015bciwo\u015bci i odpowiadaj\u0105cej jej metody ustawiania w klasie {1} modu\u0142u {2} aplikacji {3}.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.explanation=\u017b\u0105danie wstrzykni\u0119cia zasobu zar\u00f3wno w zmiennej instancji w\u0142a\u015bciwo\u015bci, jak i odpowiedniej metodzie ustawiania stanowi b\u0142\u0105d.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.useraction=Usu\u0144 jedn\u0105 z adnotacji z pola lub metody. Pole lub metoda mo\u017ce \u017c\u0105da\u0107 wstrzykni\u0119cia zasobu o innej (innej ni\u017c domy\u015blna) nazwie. Jawne okre\u015blenie nazwy JNDI zasobu umo\u017cliwia wstrzykni\u0119cie pojedynczego zasobu do wielu p\u00f3l lub metod wielu klas.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W=CWNEN0057W: Obiekt docelowy operacji wstrzykiwania {0}.{1} nie mo\u017ce by\u0107 zadeklarowany jako static.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.explanation=Zgodnie ze specyfikacj\u0105 EJB obiekt docelowy operacji wstrzykiwania mo\u017ce by\u0107 zadeklarowany jako static, tylko je\u015bli istnieje w kontenerze klienta.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.useraction=Zmie\u0144 kod dla obiektu docelowego operacji wstrzykiwania na inny ni\u017c static, wybierz inny obiekt docelowy operacji wstrzykiwania lub usu\u0144 obiekt docelowy operacji wstrzykiwania i zape\u0142nij go r\u0119cznie.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E=CWNEN0058E: Obiekt docelowy operacji wstrzykiwania {0}.{1} musi by\u0107 zadeklarowany jako static w kontenerze klienta.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.explanation=Zgodnie ze specyfikacj\u0105 EJB obiekt docelowy operacji wstrzykiwania w kontenerze klienta musi by\u0107 zadeklarowany jako static.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.useraction=Zmie\u0144 kod dla obiektu docelowego operacji wstrzykiwania na static, wybierz inny obiekt docelowy operacji wstrzykiwania lub usu\u0144 obiekt docelowy operacji wstrzykiwania i zape\u0142nij go r\u0119cznie.
+
+#-------------------------------------------------------------------------------
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E=CWNEN0059E: Mechanizm wstrzykiwania nie wykona\u0142 pomy\u015blnie wstrzykni\u0119cia obiektu powi\u0105zania {0} do pliku EJB {1}:{2}, poniewa\u017c pr\u00f3ba wstrzykni\u0119cia jest rekurencyjna lub cykliczna.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.explanation=Cykliczne lub rekurencyjne wstrzykni\u0119cie wyst\u0119puje wtedy, gdy w wyniku wstrzykni\u0119cia jednego obiektu wymagane jest kolejne wstrzykni\u0119cie tego samego obiektu. Taki scenariusz mo\u017ce na przyk\u0142ad wyst\u0105pi\u0107, gdy komponent bean sesji stanowej podejmie pr\u00f3b\u0119 wstrzykni\u0119cia instancji tego samego typu do siebie samego.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.useraction=Zmodyfikuj kod aplikacji lub konfiguracj\u0119, tak aby obiekty docelowe operacji wstrzykiwania nie zale\u017ca\u0142y od siebie bezpo\u015brednio ani po\u015brednio.
+
+#--------------------------------------------------------------------------------
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E=CWNEN0060E: Nie mo\u017cna wstrzykn\u0105\u0107 instancji UserTransaction do klasy {0} powi\u0105zanej z komponentem {1} w module {2} w aplikacji {3}. Nie mo\u017cna wstrzykn\u0105\u0107 instancji UserTransaction do tej klasy, poniewa\u017c jest ona powi\u0105zana z komponentem bean, kt\u00f3rego konfiguracja nie zezwala na transakcje zarz\u0105dzane przez komponent bean.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.explanation=Klasa zosta\u0142a skonfigurowana pod k\u0105tem wstrzykiwania do niej instancji UserTransaction, co nie jest dozwolone. Je\u015bli klasa jest komponentem bean, komponent bean nie zosta\u0142 skonfigurowany do obs\u0142ugi transakcji zarz\u0105dzanych przez komponent bean. Je\u015bli klasa jest klas\u0105 przechwytywacza lub procedury obs\u0142ugi us\u0142ugi Web Service, jest ona u\u017cywana przez co najmniej jeden komponent bean, kt\u00f3ry nie zosta\u0142 skonfigurowany pod k\u0105tem obs\u0142ugi transakcji zarz\u0105dzanych przez komponent bean.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.useraction=Zmie\u0144 klas\u0119, aby zatrzyma\u0107 wstrzykiwanie instancji UserTransaction, lub zmie\u0144 konfiguracj\u0119 komponentu bean, aby zezwoli\u0107 na transakcje zarz\u0105dzane przez komponent bean. Je\u015bli ta klasa jest klas\u0105 przechwytywacza lub procedury obs\u0142ugi us\u0142ug Web Service u\u017cywan\u0105 przez wiele komponent\u00f3w bean, z kt\u00f3rych cz\u0119\u015b\u0107 zosta\u0142a skonfigurowana do obs\u0142ugi transakcji zarz\u0105dzanych przez komponenty bean, a pozosta\u0142a cz\u0119\u015b\u0107 nie, utw\u00f3rz now\u0105 klas\u0119 przechwytywacza lub procedury obs\u0142ugi us\u0142ug Web Service, kt\u00f3ra nie wstrzykuje instancji UserTransaction, i u\u017cyj jej z komponentami bean, kt\u00f3re zosta\u0142y skonfigurowane do obs\u0142ugi transakcji zarz\u0105dzanych przez komponent bean.
+
+#--------------------------------------------------------------------------------
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E=CWNEN0061E: Nazwa w\u0142a\u015bciwo\u015bci obiektu docelowego wstrzykiwania {0} dla odwo\u0142ania {1} jest niejednoznaczna w klasie {2}. Metody {3} i {4} maj\u0105 typy zgodne z typem {5}.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.explanation=Klasa zosta\u0142a skonfigurowana pod k\u0105tem wstrzykiwania metod, ale z typem wstrzykiwanego obiektu zgodnych jest wiele metod.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.useraction=Zmie\u0144 konfiguracj\u0119 komponentu bean, aby okre\u015bla\u0142a dok\u0142adny typ jednej z metod, zmie\u0144 klas\u0119, aby zawiera\u0142a metod\u0119 z dok\u0142adnie takim typem parametru jak typ w konfiguracji wstrzykiwania, lub zmie\u0144 klas\u0119, usuwaj\u0105c jedn\u0105 z niejednoznacznych metod lub zmieniaj\u0105c jej nazw\u0119.
+
+#--------------------------------------------------------------------------------
+CONFLICTING_REFERENCES_CWNEN0062E=CWNEN0062E: Komponent {0} i komponent {1} w module {2} aplikacji {3} zawieraj\u0105 warto\u015bci w\u0142a\u015bciwo\u015bci {4} odwo\u0142ania {5}, kt\u00f3re powoduj\u0105 konflikt. Warto\u015bci powoduj\u0105ce konflikt to {6} i {7}.
+CONFLICTING_REFERENCES_CWNEN0062E.explanation=Je\u015bli wiele komponent\u00f3w wsp\u00f3\u0142u\u017cytkuj\u0105cych przestrze\u0144 nazw komponentu definiuje odwo\u0142anie o tej samej nazwie, wszystkie w\u0142a\u015bciwo\u015bci powi\u0105za\u0144 i rozszerze\u0144 odwo\u0142ania musz\u0105 by\u0107 takie same.
+CONFLICTING_REFERENCES_CWNEN0062E.useraction=W pliku powi\u0105zania lub rozszerzenia modu\u0142u zmie\u0144 jedn\u0105 z warto\u015bci powoduj\u0105cych konflikt tak, aby by\u0142y takie same.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Enum
+INVALID_ENUM_IDENTIFIER_CWNEN0063E=CWNEN0063E: Prosty wpis \u015brodowiskowy {0} w module {1} aplikacji {2} o typie Enum {3} nie zosta\u0142 ustawiony na poprawny identyfikator Enum: {4}.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.explanation=Prostemu wpisowi \u015brodowiskowemu modu\u0142u korporacyjnego typu Enum nale\u017cy przypisa\u0107 poprawn\u0105 warto\u015b\u0107 identyfikatora Enum.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.useraction=Zmie\u0144 prosty wpis \u015brodowiskowy typu Enum na poprawn\u0105 warto\u015b\u0107 identyfikatora Enum.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class, and  Enum
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E=CWNEN0064E: Niepoprawny typ zosta\u0142 okre\u015blony dla prostego wpisu \u015brodowiskowego {0} w module {1} aplikacji {2}: {3}.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.explanation=Prosty wpis \u015brodowiskowy modu\u0142u korporacyjnego mo\u017ce mie\u0107 jeden z nast\u0119puj\u0105cych typ\u00f3w Java: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class i dowolna podklasa typu Enum.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.useraction=Zmie\u0144 prosty wpis \u015brodowiskowy na jeden z obs\u0142ugiwanych typ\u00f3w.
+
+#--------------------------------------------------------------------------------
+INVALID_REFERENCE_NAME_CWNEN0065E=CWNEN0065E: Nazwa odwo\u0142ania {0} komponentu {1} w module {2} aplikacji {3} jest niepoprawna.
+INVALID_REFERENCE_NAME_CWNEN0065E.explanation=Nazwy odwo\u0142a\u0144 musz\u0105 by\u0107 okre\u015blone wzgl\u0119dem kontekstu java:comp/env lub rozpoczyna\u0107 si\u0119 przedrostkiem java:global, java:app, java:module lub java:comp.
+INVALID_REFERENCE_NAME_CWNEN0065E.useraction=Zmie\u0144 nazw\u0119 odwo\u0142ania w deskryptorze wdra\u017cania i adnotacjach kodu \u017ar\u00f3d\u0142owego.
+
+#--------------------------------------------------------------------------------
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E=CWNEN0066E: Nast\u0119puj\u0105ce dane konfiguracyjne atrybutu w\u0142a\u015bciwo\u015bci adnotacji kodu \u017ar\u00f3d\u0142owego {0} z atrybutem {1} {2} dla komponentu {3} w module {4} aplikacji {5} s\u0105 niepoprawne: {6}
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.explanation=Format w\u0142a\u015bciwo\u015bci okre\u015blanych w adnotacji to nazwa=warto\u015b\u0107.
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.useraction=Zmie\u0144 atrybut w\u0142a\u015bciwo\u015bci w adnotacji kodu \u017ar\u00f3d\u0142owego, tak aby mia\u0142 format nazwa=warto\u015b\u0107.
+
+#--------------------------------------------------------------------------------
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E=CWNEN0067E: Nast\u0119puj\u0105ce dane konfiguracyjne atrybutu isolationLevel adnotacji kodu \u017ar\u00f3d\u0142owego @DataSourceDefinition z atrybutem nazwy {0} dla komponentu {1} w module {2} aplikacji {3} s\u0105 niepoprawne: {4}.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.explanation=Atrybut isolationLevel musi by\u0107 jedn\u0105 z nast\u0119puj\u0105cych sta\u0142ych zdefiniowanych w klasie java.sql.Connection: TRANSACTION_NONE, TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ lub TRANSACTION_SERIALIZABLE.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.useraction=Zmie\u0144 atrybut isolationLevel w adnotacji kodu \u017ar\u00f3d\u0142owego na jedn\u0105 z poprawnych warto\u015bci.
+
+#--------------------------------------------------------------------------------
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E=CWNEN0068E: Odwo\u0142ania EJB {0} w module {1} do interfejsu {2} komponentu EJB nie mo\u017cna rozstrzygn\u0105\u0107 w tym w\u0119\u017ale.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.explanation=Zasi\u0119g \u0142\u0105cza automatycznego jest ograniczony do aplikacji, w kt\u00f3rej wyst\u0119puje odwo\u0142anie do komponentu EJB, i serwer\u00f3w, kt\u00f3re nie s\u0105 elementami klastra serwera aplikacji.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.useraction=Upewnij si\u0119, \u017ce przywo\u0142ywane komponenty EJB istniej\u0105 w tej samej aplikacji.
+
+#--------------------------------------------------------------------------------
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E=CWNEN0069E: Metoda wstrzykiwania {0}.{1} musi zosta\u0107 zadeklarowana przy u\u017cyciu dok\u0142adnie jednego parametru, a u\u017cyto {2} parametr\u00f3w.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.explanation=Metody wstrzykiwania musz\u0105 by\u0107 zgodne z konwencjami metod ustawiania w\u0142a\u015bciwo\u015bci komponentu JavaBeans.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.useraction=Zmie\u0144 kod metody wstrzykiwania, tak aby mia\u0142a dok\u0142adnie jeden parametr, wybierz inny obiekt docelowy wstrzykiwania lub usu\u0144 obiekt docelowy wstrzykiwania i wprowad\u017a warto\u015b\u0107 r\u0119cznie.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W=CWNEN0070W: Klasa adnotacji {0} nie zostanie rozpoznana, poniewa\u017c zosta\u0142a za\u0142adowana z po\u0142o\u017cenia {1}, a nie z programu \u0142aduj\u0105cego klasy produktu.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.explanation=Program \u0142aduj\u0105cy klasy aplikacji lub serwera aplikacji za\u0142adowa\u0142 klas\u0119 adnotacji, kt\u00f3ra powinna zosta\u0107 za\u0142adowana przez program \u0142aduj\u0105cy klasy produktu. Taka sytuacja ma miejsce, gdy program \u0142aduj\u0105cy klasy skonfigurowano do \u0142adowania klas najpierw lokalnym programem \u0142aduj\u0105cym klasy (programem klasy macierzystej na ko\u0144cu). Adnotacja zostanie rozpoznana tylko wtedy, gdy zostanie za\u0142adowana przy u\u017cyciu programu \u0142aduj\u0105cego klasy produktu.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.useraction=Usu\u0144 klas\u0119 adnotacji ze \u015bcie\u017cki klas aplikacji lub serwera aplikacji.
+
+#--------------------------------------------------------------------------------
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E=CWNEN0071E: Odwo\u0142anie {0} do komponentu {1} w module {2} aplikacji {3} ma typ {4} i niepoprawn\u0105 warto\u015b\u0107 atrybutu {5}: {6}
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.explanation=Okre\u015blony atrybut nie zosta\u0142 podany lub ma warto\u015b\u0107 domy\u015bln\u0105.
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.useraction=Usu\u0144 atrybut z adnotacji kodu \u017ar\u00f3d\u0142owego lub deskryptora wdra\u017cania.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E=CWNEN0072E: Odwo\u0142anie {0} zawiera warto\u015bci powoduj\u0105ce konflikt dla atrybutu {1}: {2} i {3}
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.explanation=W specyfikacji Java Enterprise Edition zawarto stwierdzenie, \u017ce je\u015bli wiele komponent\u00f3w deklaruje odwo\u0142anie we wsp\u00f3\u0142u\u017cytkowanej przestrzeni nazw, to atrybut wszystkich tych deklaracji musi by\u0107 sp\u00f3jny.
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.useraction=Zmodyfikuj atrybuty deklaracji, tak aby by\u0142y sp\u00f3jne.
+
+#--------------------------------------------------------------------------------
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E=CWNEN0073E: Adnotacja na poziomie klasy {0} dla klasy {1} w module {2} aplikacji {3} nie okre\u015bla nazwy JNDI.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.explanation=Nazwa JNDI musi by\u0107 okre\u015blona dla adnotacji na poziomie klasy.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.useraction=Okre\u015bl nazw\u0119 JNDI dla adnotacji na poziomie klasy w kodzie \u017ar\u00f3d\u0142owym.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E=CWNEN0074E: Typ {0} instancji obiektu uzyskany dla odwo\u0142ania {1} jest niezgodny z typem elementu {2}.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.explanation=Instancja obiektu u\u017cywana do wstrzykiwania musi by\u0107 zgodna z typem pola lub parametrem metody.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.useraction=Sprawd\u017a, czy powi\u0105zanie dla odwo\u0142ania jest poprawne.
+
+#--------------------------------------------------------------------------------
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E=CWNEN0075E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wyszukiwania w klasie {0} elementu docelowego wstrzykiwania {1} odwo\u0142ania {2} komponentu {3} w module {4} aplikacji {5}: {6}
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.explanation=Nie mo\u017cna znale\u017a\u0107 elementu docelowego wstrzykiwania, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d \u0142adowania klasy podczas pobierania listy p\u00f3l lub metod dla klasy.
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.useraction=Upewnij si\u0119, \u017ce poprawne s\u0105 ustawienia pakowania aplikacji i programu \u0142aduj\u0105cego klasy.
+
+#-------------------------------------------------------------------------------
+#
+# CWNEN1000 - CWNEN1999 are reserved for liberty...
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# For emergency use only....
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I=CWNEN8990I: To jest komunikat informacyjny tylko w j\u0119zyku angielskim: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.explanation=Ten komunikat informacyjny nie jest przet\u0142umaczony.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.useraction=Szczeg\u00f3\u0142owe informacje na ten temat zawiera komunikat.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W=CWNEN8991W: To jest komunikat ostrzegawczy tylko w j\u0119zyku angielskim: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.explanation=Ten komunikat ostrzegawczy nie jest przet\u0142umaczony.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.useraction=Szczeg\u00f3\u0142owe informacje na ten temat zawiera komunikat.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E=CWNEN8992E: To jest komunikat o b\u0142\u0119dzie tylko w j\u0119zyku angielskim: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.explanation=Ten komunikat o b\u0142\u0119dzie nie jest przet\u0142umaczony.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.useraction=Szczeg\u00f3\u0142owe informacje na ten temat zawiera komunikat.
+
+#-------------------------------------------------------------------------------
+# CWNEN9000 and up are reserved for command line / gui messages...
+# Place all other messages above this point.
+#-------------------------------------------------------------------------------

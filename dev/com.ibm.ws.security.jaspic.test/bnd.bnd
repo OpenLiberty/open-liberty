@@ -1,0 +1,51 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JASPI Provider User Defined Feature
+Bundle-SymbolicName: com.ibm.ws.security.jaspic.test
+Bundle-Description: JASPI Provider User Defined Feature, version ${bVersion}.
+
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=com.ibm.ws.security.jaspic.test.jar
+#JakartaEE-Bundle-Name: JASPI Provider User Defined Feature 
+#JakartaEE-Bundle-Symbolic-Name: com.ibm.ws.security.jaspic.test
+#JakartaEE-Bundle-Description: JASPI Provider User Defined Feature, version ${bVersion}. 
+#JakartaEE-Bundle-Version: 2.0
+
+test.project: true
+
+Export-Package: \
+  com.ibm.ws.security.jaspi.test;thread-context=true, \
+  user.feature
+
+Private-Package: com.ibm.ws.common.internal.encoder
+
+Service-Component: \
+    com.ibm.ws.security.jaspic.user.feature.test; \
+    implementation:=user.feature.JaspiProviderService; \
+    provide:=com.ibm.wsspi.security.jaspi.ProviderService; \
+    configuration-policy:=ignore; \
+	immediate:=true; \
+    properties:="prop1=value1, prop2=value2, prop3=value3, provider.name=bob, group.name=JASPIGroup"
+
+-buildpath: \
+	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.jaspic.1.1;version=latest,\
+	com.ibm.ws.security.token;version=latest

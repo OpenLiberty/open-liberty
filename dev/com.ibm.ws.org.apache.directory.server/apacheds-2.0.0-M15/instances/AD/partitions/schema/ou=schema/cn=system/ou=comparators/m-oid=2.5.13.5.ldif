@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=2.5.13.5,ou=comparators,cn=system,ou=schema
+m-oid: 2.5.13.5
+m-fqcn: org.apache.directory.api.ldap.model.schema.comparators.DeepTrimCachingNo
+ rmalizingComparator
+objectclass: metaComparator
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: af82d52f-dd68-4b21-ad6b-c6bc235d4c9d
+entryCSN: 20130919081859.276000Z#000000#000#000000
+entryParentId: a0a3f4fe-ac72-4cc1-84ee-d824a7166915
+createTimestamp: 20130919081909.433Z

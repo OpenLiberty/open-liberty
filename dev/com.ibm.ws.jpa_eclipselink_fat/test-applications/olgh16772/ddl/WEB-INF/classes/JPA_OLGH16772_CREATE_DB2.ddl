@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.TrimEntityOLGH16772 (id BIGINT NOT NULL, strVal1 VARCHAR(254), PRIMARY KEY (id));

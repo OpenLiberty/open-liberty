@@ -1,0 +1,477 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=B\u0142\u0105d: {0}
+error.inputConsoleNotAvailable=Konsola wej\u015bciowa jest niedost\u0119pna.
+error.missingIO=B\u0142\u0105d. Brak urz\u0105dzenia we/wy: {0}.
+name=nazwa
+days=dni
+serverNotFound=Okre\u015blony serwer {0} nie zosta\u0142 znaleziony w po\u0142o\u017ceniu {1}
+userDirNotFound=Okre\u015blono katalog u\u017cytkownika {0} nie zosta\u0142 znaleziony
+installDirNotFound=Katalog instalacyjny {0} nie zosta\u0142 znaleziony
+
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Zbyt wiele argument\u00f3w.
+insufficientArgs=Za ma\u0142o argument\u00f3w.
+missingServerName=Nie okre\u015blono celu zadania.
+invalidArg=Niepoprawny argument {0}.
+missingArg=Brak argumentu {0}.
+missingValue=Brak warto\u015bci argumentu {0}.
+missingPasswordArg=Konieczne jest podanie \
+argumentu {0} lub podanie pozosta\u0142ych argument\u00f3w has\u0142a {1}
+
+
+# Messages for FileUtility
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+fileUtility.failedDirCreate=Utworzenie katalogu {0} nie powiod\u0142o si\u0119
+fileUtility.deleteSuccess=Pomy\u015blnie usuni\u0119to {0}
+fileUtility.deleteFailure=Usuwanie {0} nie powiod\u0142o si\u0119
+
+
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Sk\u0142adnia: {0} dzia\u0142anie cel [opcje]
+task.unknown=Nieznane zadanie: {0}
+
+
+# Messages for reading in a password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+password.enterText=Wprowad\u017a has\u0142o {0}:
+password.reenterText=Wprowad\u017a ponownie has\u0142o {0}:
+password.readError=B\u0142\u0105d odczytu has\u0142a.
+password.entriesDidNotMatch=Has\u0142a nie s\u0105 zgodne.
+
+
+# Messages common to collective utility tasks
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+common.encodeError=\n\
+Nie mo\u017cna zakodowa\u0107 has\u0142a dla argumentu: {0}
+
+common.hostError=\n Podana nazwa hosta prawdopodobnie \
+nie jest poprawna: {0}\n Upewnij si\u0119, \u017ce nazwa hosta jest poprawna oraz \u017ce \
+system ma po\u0142\u0105czenie sieciowe.
+
+common.portError=\n\
+Nie mo\u017cna uzyska\u0107 dost\u0119pu do podanego portu {0}. Upewnij si\u0119, \u017ce port jest poprawny.
+
+common.connectionError=\n\
+Nie mo\u017cna zako\u0144czy\u0107 operacji komponentu MBean.\n\
+B\u0142\u0105d: {0}
+
+common.compatibilityError=\n Nie mo\u017cna uzyska\u0107 dost\u0119pu \
+do operacji komponentu MBean, poniewa\u017c nie jest zdefiniowana na kontrolerze. Kontroler ma prawdopodobnie starsz\u0105 wersj\u0119 ni\u017c element.\n\
+B\u0142\u0105d: {0}
+
+common.renameFailed=\n\
+Nie mo\u017cna zmieni\u0107 nazwy {0} na {1}
+
+common.regenerateKey=Domy\u015blny plik kluczy HTTPS istnieje w {0}.\n\
+Ten certyfikat zostanie wygenerowany ponownie, a oryginalny zachowany.\n
+
+common.regenerateTrust=Domy\u015blny plik zaufanych certyfikat\u00f3w HTTPS istnieje w {0}.\n\
+Ten certyfikat zostanie wygenerowany ponownie, a oryginalny zachowany.\n
+
+common.validityTooShort=\n\
+Okre\u015blona wa\u017cno\u015b\u0107 {0} jest zbyt kr\u00f3tka. Minimalna wa\u017cno\u015b\u0107 to 365\n\
+dni.
+
+common.invalidDN=\n\
+Okre\u015blona nazwa wyr\u00f3\u017cniaj\u0105ca dla {0} jest niepoprawna: {1}
+
+common.invalidEndpoint=Docelowy punkt ko\u0144cowy dla \
+repliki {0} nie ma wymaganego formatu.\n\
+Celem jest port replikacji repliki i musi on by\u0107 w\n formacie host:port.
+
+common.updateServerXML=Dodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107:\n
+
+
+# Messages for establishing SSL trust
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslTrust.autoAccept=Automatyczna akceptacja \u0142a\u0144cucha certyfikat\u00f3w dla serwera docelowego.\n\
+Nazwa wyr\u00f3\u017cniaj\u0105ca podmiotu certyfikatu: {0}
+
+sslTrust.genDigestError=Nie mo\u017cna wygenerowa\u0107 skr\u00f3tu {0}. \
+B\u0142\u0105d: {1}
+
+sslTrust.noDefaultTrust=Nie ustanowiono relacji zaufania SSL z serwerem docelowym.
+
+sslTrust.certInfo=Informacje o \u0142a\u0144cuchu certyfikat\u00f3w:
+
+sslTrust.cert=Certyfikat {0}
+
+sslTrust.certSubjectDN=Nazwa wyr\u00f3\u017cniaj\u0105ca podmiotu: {0}
+
+sslTrust.certIssueDN=Nazwa wyr\u00f3\u017cniaj\u0105ca wystawcy: {0}
+
+sslTrust.certSerial=Numer seryjny: {0}
+
+sslTrust.certExpires=Utrata wa\u017cno\u015bci: {0}
+
+sslTrust.certSHADigest=Skr\u00f3t SHA-1: {0}
+
+sslTrust.certMD5Digest=Skr\u00f3t MD5: {0}
+
+sslTrust.promptToAcceptTrust=Czy chcesz zaakceptowa\u0107 powy\u017cszy \u0142a\u0144cuch certyfikat\u00f3w? \
+(t/n) 
+# Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
+yes.response.short=t
+yes.response.full=tak
+
+
+
+sslTrust.rejectTrust=U\u017cytkownik odrzuci\u0142 \u017c\u0105danie zaufania \u0142a\u0144cuchowi certyfikat\u00f3w.
+
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+hostAuthInfo.bothCredentialsSet=Obie referencje {0} i {1} s\u0105 ustawione. Wybierz jedn\u0105.\n\
+Nale\u017cy okre\u015bli\u0107 tylko jeden spos\u00f3b uwierzytelniania.
+
+hostAuthInfo.sshKeyPasswordWithoutKey=Has\u0142o klucza prywatnego SSH zosta\u0142o podane bez odpowiadaj\u0105cego mu\n\
+klucza prywatnego.
+
+hostAuthInfo.useSudoFalseWithSudoOptions=Atrybut useSudo zosta\u0142 ustawiony na warto\u015b\u0107 false, ale inne opcje\n\
+komendy sudo zosta\u0142y ustawione.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+encoding.aesRequiresKey=Kodowanie AES wymaga klucza. \
+Podaj klucz, korzystaj\u0105c z opcji --key.
+
+encoding.xorDoesNotSupportKey=Kodowanie XOR nie obs\u0142uguje klucza. \
+Nie nale\u017cy okre\u015bla\u0107 opcji --key.
+
+encoding.unsupportedEncoding=Nieobs\u0142ugiwana warto\u015b\u0107 kodowania {0}.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+ssh.invalidSSHKeyPair=\n\
+Podana para kluczy SSH nie jest poprawna.\n\
+B\u0142\u0105d: {0}
+
+ssh.couldNotCreateSSHKeys=\n\
+Nie mo\u017cna utworzy\u0107 domy\u015blnych kluczy SSH do uwierzytelnienia hosta.\n\
+B\u0142\u0105d: {0}
+
+ssh.couldNotReadSSHKeys=\n Nie mo\u017cna odczyta\u0107 (ani zapisa\u0107) kluczy SSH.\n\
+B\u0142\u0105d: {0}
+
+ssh.updateAuthorizedKeys=Aktualizowanie autoryzowanych kluczy przy u\u017cyciu nowego klucza\n\
+publicznego...
+
+ssh.cannotUpdateAuthorizedKeys=\n\
+Nie mo\u017cna zaktualizowa\u0107 pliku autoryzowanych kluczy dla u\u017cytkownika: {0}\n\
+Sprawdzono pod k\u0105tem pliku autoryzowanych kluczy w katalogu osobistym\n\
+u\u017cytkownika: {1} \
+Zaktualizuj plik autoryzowanych kluczy przy u\u017cyciu nast\u0119puj\u0105cego klucza\n\
+publicznego:\n\
+{2}\n\
+B\u0142\u0105d: {3}
+
+
+# Messages for creation of a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+create.start=Tworzenie wymaganych certyfikat\u00f3w w celu ustanowienia kolektywu...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+create.abort=\n\
+Przerywanie konfigurowania serwera kontrolera kolektywu.
+
+create.errGetHostName=\n Nie mo\u017cna okre\u015bli\u0107 nazwy \
+hosta. Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna: {0}.\n\
+Przyczyna: {1}\n Aby jawnie ustawi\u0107 nazw\u0119 hosta, u\u017cyj opcji --hostName.
+
+create.errorAlreadyHasResources=\n\
+Katalog zasob\u00f3w/kolektywu serwera ju\u017c istnieje.\n\
+Aby ponownie utworzy\u0107 kolektyw, usu\u0144 ca\u0142y katalog.\n\
+Aby rozszerzy\u0107 istniej\u0105cy kolektyw, u\u017cyj zadania replikowania\n\
+(replicate).
+
+create.configLocationInDefaults=\n\
+Po\u0142o\u017cenie okre\u015blone za pomoc\u0105 opcji --createConfigFile znajduje si\u0119\n\
+w katalogu configDropins/defaults serwera. Nie jest to poprawne\n\
+po\u0142o\u017cenie dla wygenerowanej konfiguracji kolektywu, poniewa\u017c\n\
+wszystkie kontrolery wsp\u00f3\u0142u\u017cytkuj\u0105 to po\u0142o\u017cenie. Podaj inne po\u0142o\u017cenie.
+
+create.genCertControllerRoot=Pomy\u015blnie wygenerowano certyfikat g\u0142\u00f3wny kontrolera.
+
+create.genCertMemberRoot=Pomy\u015blnie wygenerowano certyfikat g\u0142\u00f3wny elementu.
+
+create.genCertServerIdentity=Pomy\u015blnie wygenerowano certyfikat to\u017csamo\u015bci serwera.
+
+create.genCertHTTPS=Pomy\u015blnie wygenerowano certyfikat HTTPS.
+
+create.failedKSSave=\n\
+Nie mo\u017cna zapisa\u0107 magazynu kluczy {0}
+
+create.cleanupFail=\n\
+B\u0142\u0105d podczas czyszczenia wygenerowanych plik\u00f3w. Nie mo\u017cna usun\u0105\u0107 {0}\n\
+Usu\u0144 katalog r\u0119cznie, sprawd\u017a uprawnienia do plik\u00f3w i spr\u00f3buj ponownie.
+
+create.successful=Pomy\u015blnie skonfigurowano konfiguracj\u0119 kontrolera kolektywu dla {0}.\n
+
+create.configureSecurity=Upewnij si\u0119, \u017ce dla serwera skonfigurowano zabezpieczenia\n\
+administracyjne. \
+Do do\u0142\u0105czania element\u00f3w do kolektywu wymagany jest\n\
+u\u017cytkownik administracyjny.
+
+create.certUtil.NotAvailable=\u017b\u0105dana operacja nie jest dost\u0119pna \
+w tej edycji produktu WebSphere.
+
+# Messages for joining a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+join.start=Do\u0142\u0105czanie do kolektywu z kontrolerem docelowym {0}:{1}...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+join.abort=\n\
+Przerwano do\u0142\u0105czanie do kolektywu.
+
+join.errorAlreadyHasResources=Katalog zasob\u00f3w/kolektywu ju\u017c istnieje dla tego serwera.\n\
+Serwer mo\u017ce by\u0107 ju\u017c elementem.\n\
+Aby ponownie do\u0142\u0105czy\u0107 do kolektywu, uruchom zadanie usuwania (remove)\n\
+lub r\u0119cznie usu\u0144 katalog zasob\u00f3w/kolektywu i spr\u00f3buj ponownie.
+
+join.writeKeystoreFail=\n\
+B\u0142\u0105d podczas zapisywania wymaganego magazynu kluczy na dysku {0}
+
+join.cleanupFail=\n\
+B\u0142\u0105d podczas czyszczenia wygenerowanych plik\u00f3w. Nie mo\u017cna usun\u0105\u0107 {0}\n\
+Usu\u0144 katalog r\u0119cznie, sprawd\u017a uprawnienia do plik\u00f3w i spr\u00f3buj ponownie.
+
+join.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu MBean dla kontrolera.
+
+join.registeredAlready=Okre\u015blony serwer {0} prawdopodobnie jest ju\u017c elementem.\n\
+Aby ponownie do\u0142\u0105czy\u0107 do kolektywu, uruchom zadanie usuwania (remove) i spr\u00f3buj ponownie.
+
+join.successful=Pomy\u015blnie po\u0142\u0105czono si\u0119 z kolektywem serwera {0}.\n
+
+join.useHostCredentialsButOtherCtedentialsAreSet=Je\u015bli ustawiono w\u0142a\u015bciwo\u015b\u0107 useHostCredentials, nie nale\u017cy podawa\u0107 innych referencji hosta.
+
+deployAdminMetadata.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu AdminMetadataManagerMBean dla kontrolera.
+
+deployAdminMetadata.start=Wdra\u017canie metadanych administracyjnych do repozytorium zbiorczego...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+allocateDeployVariables.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu CollectiveRepositoryMBean dla kontrolera.
+
+allocateDeployVariables.start=Przydzielanie zmiennych wdra\u017cania w repozytorium kolektywu...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+AllocatedDeployVars=Przydzielona zmienna wdra\u017cania:
+deployVarsNotFound=Niezdefiniowana zmienna wdra\u017cania: {0}
+deployVarsAreAllocated=Przydzielono zmienne wdra\u017cania i utworzono plik deployVariables.xml w katalogu /configDropins/overrides na serwerze.
+
+# Messages for generating a collective key
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+genKey.start=Generowanie magazynu kluczy z kontrolerem docelowym {0}:{1}...\n
+genKey.abort=\n\
+Przerywanie generowania klucza.
+
+genKey.writeKeystoreFail=\n\
+B\u0142\u0105d podczas zapisywania wymaganego magazynu kluczy na dysku {0}
+
+genKey.cleanupFail=\n\
+B\u0142\u0105d podczas czyszczenia wygenerowanych plik\u00f3w. Nie mo\u017cna usun\u0105\u0107 {0}\n\
+Usu\u0144 plik r\u0119cznie, sprawd\u017a uprawnienia do plik\u00f3w\ni spr\u00f3buj ponownie.
+
+genKey.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu MBean dla kontrolera.
+
+genKey.generatedKeystore=Pomy\u015blnie wygenerowano magazyn kluczy {0}.
+
+
+# Messages for replicating a controller 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+replicate.start=Replikowanie docelowego kontrolera kolektywu {0}:{1}...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+replicate.abort=\n\
+Przerwanie replikowania kontrolera.
+
+replicate.errorAlreadyHasResources=Katalog zasob\u00f3w/kolektywu ju\u017c istnieje dla tego serwera.\n\
+Serwer mo\u017ce by\u0107 ju\u017c kontrolerem.\n\
+Aby zreplikowa\u0107 kontroler, uruchom zadanie usuwania (remove)\n\
+lub r\u0119cznie usu\u0144 katalog zasob\u00f3w/kolektywu i spr\u00f3buj ponownie.
+
+replicate.writeKeystoreFail=\n\
+B\u0142\u0105d podczas zapisywania wymaganego magazynu kluczy na dysku {0}
+
+replicate.writeFileFail=\n\
+B\u0142\u0105d podczas zapisywania wymaganego pliku na dysku {0}
+
+replicate.cleanupFail=\n\
+B\u0142\u0105d podczas czyszczenia wygenerowanych plik\u00f3w. Nie mo\u017cna usun\u0105\u0107 {0}\n\
+Usu\u0144 katalog r\u0119cznie, sprawd\u017a uprawnienia do plik\u00f3w i spr\u00f3buj ponownie.
+
+replicate.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu MBean dla kontrolera.
+
+replicate.registeredAlready=Okre\u015blony serwer {0} prawdopodobnie jest ju\u017c elementem.\n\
+Aby zreplikowa\u0107 kontroler, uruchom zadanie usuwania (remove) i spr\u00f3buj ponownie.
+
+replicate.success=Pomy\u015blnie zreplikowano kontroler jako serwer {0}.\n
+
+
+replicate.configureSecurity=Sprawd\u017a, czy dla nowego serwera skonfigurowano zabezpieczenia\n\
+administracyjne dok\u0142adnie w ten sam spos\u00f3b jak dla bie\u017c\u0105cego kontrolera\n\
+kolektywu. Ustaw r\u00f3wnie\u017c poprawne has\u0142o dla kluczy collectiveRootKeys.\n
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+remove.attemptUnregister=Pr\u00f3ba wyrejestrowania serwera z kolektywu...
+
+remove.unregisteredAlready=Serwer {0} nie jest \
+zarejestrowany.\n\
+Mo\u017ce on by\u0107 zarejestrowany pod inn\u0105 nazw\u0105 hosta.
+
+remove.unregisterFailed=Nie mo\u017cna wyrejestrowa\u0107 serwera {0} ze wzgl\u0119du na b\u0142\u0105d.
+
+remove.unregisterSuccess=Serwer {0} zosta\u0142 pomy\u015blnie wyrejestrowany.
+
+remove.attemptResourceDelete=Pr\u00f3ba usuni\u0119cia zasob\u00f3w dla kolektywu z serwera...
+
+remove.noFilesRemoved=Nie usuni\u0119to \u017cadnych zasob\u00f3w kolektywu.
+remove.noResources=Nie znaleziono \u017cadnych zasob\u00f3w kolektywu.
+
+remove.manuallyRemove=Nie mo\u017cna usun\u0105\u0107 niekt\u00f3rych plik\u00f3w w {0}.\n\
+Nale\u017cy usun\u0105\u0107 je r\u0119cznie.
+
+remove.filesSuccess=Zasoby do przypisania do kolektywu zosta\u0142y pomy\u015blnie usuni\u0119te.
+
+remove.updateXML=\n\
+Zaktualizuj plik server.xml i usu\u0144 wszystkie nast\u0119puj\u0105ce elementy:
+
+removeAllAdminMetadata.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu AdminMetadataManagerMBean dla kontrolera.
+
+removeAllAdminMetadata.start=Usuwanie wszystkich metadanych administracyjnych z repozytorium zbiorczego...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+remove.removeAllAdminMetadataFailed=Metadane administracyjne z typem zasobu {0} i to\u017csamo\u015bci\u0105 {1} nie mog\u0105 zosta\u0107 usuni\u0119te z repozytorium zbiorczego z powodu b\u0142\u0119du.
+
+getAdminMetadata.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu AdminMetadataManagerMBean dla kontrolera.
+
+releaseDeployVariables.start=Zwalnianie wszystkich zmiennych wdra\u017cania z repozytorium kolektywu...\n\
+Mo\u017ce to potrwa\u0107 chwil\u0119.
+
+releaseDeployVariables.mbeanComplete=Pomy\u015blnie zako\u0144czono \u017c\u0105danie komponentu CollectiveRepositoryMBean dla kontrolera.
+
+remove.releaseDeployVariablesFailed=Zmienne wdra\u017cania {0} na ho\u015bcie o nazwie {1} nie mog\u0105 zosta\u0107 usuni\u0119te z repozytorium kolektywu z powodu wyst\u0105pienia b\u0142\u0119du.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+registerHost.abort=\n\
+Przerywanie rejestrowania hosta.
+
+registerHost.attemptRegister=Rejestrowanie hosta w kolektywie...
+
+registerHost.registeredAlready=Host {0} jest ju\u017c zarejestrowany.
+
+registerHost.registerFailed=Nie mo\u017cna zarejestrowa\u0107 hosta {0} z powodu b\u0142\u0119du.
+
+registerHost.registerSuccess=Pomy\u015blnie zarejestrowano host {0}.
+
+
+# Messages for updating a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+updateHost.abort=\n\
+Przerywanie aktualizacji hosta.
+
+updateHost.attemptRegister=Aktualizowanie informacji \
+uwierzytelniaj\u0105cej dla hosta...
+
+updateHost.notRegistered=Host {0} nie jest zarejestrowany.
+updateHost.updateFailed=Nie mo\u017cna zaktualizowa\u0107 hosta {0} z powodu b\u0142\u0119du.
+updateHost.updateSuccess=Pomy\u015blnie zaktualizowano informacje uwierzytelniaj\u0105ce hosta {0}.
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unregisterHost.attemptUnregister=Wyrejestrowywanie hosta z kolektywu...
+
+unregisterHost.unregisteredAlready=Host {0} nie jest zarejestrowany.
+
+unregisterHost.unregisterFailed=Nie mo\u017cna wyrejestrowa\u0107 hosta {0} ze wzgl\u0119du na b\u0142\u0105d.
+
+unregisterHost.unregisterSuccess=Pomy\u015blnie wyrejestrowano host {0}.
+
+
+# Messages for adding a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+addReplica.attempt=Dodawanie punktu ko\u0144cowego do zestawu \
+replik...
+
+addReplica.alreadyAdded=Punkt ko\u0144cowy repliki {0} jest \
+ju\u017c cz\u0119\u015bci\u0105 zestawu replik.
+
+addReplica.invalidEndpoint=Nie mo\u017cna doda\u0107 punktu \
+ko\u0144cowego repliki {0} do zestawu replik.\n\
+Upewnij si\u0119, \u017ce punkt ko\u0144cowy repliki jest poprawny i \u017ce replika dzia\u0142a.
+
+addReplica.error=Nie mo\u017cna doda\u0107 punktu ko\u0144cowego \
+repliki {0} z powodu b\u0142\u0119du.
+
+addReplica.success=Pomy\u015blnie dodano punkt ko\u0144cowy \
+repliki {0} do zestawu replik.
+
+
+# Messages for removing a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+removeReplica.attemptUnregister=Pr\u00f3ba usuni\u0119cia punktu \
+ko\u0144cowego z zestawu replik...
+
+removeReplica.alreadyRemoved=Punkt ko\u0144cowy repliki {0} nie jest cz\u0119\u015bci\u0105 zestawu replik \
+lub zestaw wynikowy operacji jest niepoprawny.
+
+removeReplica.error=Nie mo\u017cna usun\u0105\u0107 punktu ko\u0144cowego \
+repliki {0} z powodu b\u0142\u0119du.
+
+removeReplica.success=Pomy\u015blnie usuni\u0119to punkt ko\u0144cowy \
+repliki {0} z zestawu replik.
+
+# Message for setting a host/server into maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+setMaintenanceMode.connectionError=Nie mo\u017cna ustawi\u0107 trybu konserwacji, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas nawi\u0105zywania po\u0142\u0105czenia z komputerem docelowym {0}.
+
+setMaintenanceMode.error=Nie mo\u017cna ustawi\u0107 trybu konserwacji dla serwera {0} z powodu wyst\u0105pienia b\u0142\u0119du.
+
+setMaintenanceMode.success=Pomy\u015blnie ustawiono tryb konserwacji dla serwera {0}.
+
+setMaintenanceMode.alt=Nale\u017cy uruchomi\u0107 serwer alternatywny. \
+Tryb konserwacji zostanie ustawiony dla serwera {0}, gdy uruchomiony zostanie serwer alternatywny.
+
+setMaintenanceMode.noAltServer=Nie mo\u017cna ustawi\u0107 trybu konserwacji dla serwera {0}, poniewa\u017c serwer alternatywny nie jest dost\u0119pny.
+
+# Message for taking a host/server out of maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unsetMaintenanceMode.error=Nie mo\u017cna anulowa\u0107 ustawienia trybu konserwacji dla serwera {0} ze wzgl\u0119du na b\u0142\u0105d.
+
+unsetMaintenanceMode.success=Pomy\u015blnie anulowano ustawienie trybu konserwacji dla serwera {0}.
+
+unsetMaintenanceMode.connectionError=Nie mo\u017cna anulowa\u0107 ustawienia trybu konserwacji, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas nawi\u0105zywania po\u0142\u0105czenia z komputerem docelowym {0}.
+
+# Message for displaying if a host/server is in maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+getMaintenanceMode.connectionError=Nie mo\u017cna uzyska\u0107 trybu konserwacji, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas nawi\u0105zywania po\u0142\u0105czenia z komputerem docelowym {0}.
+
+getMaintenanceMode.inMM=Host/serwer {0} jest w trybie konserwacji.
+
+getMaintenanceMode.notInMM=Host/serwer {0} nie jest w trybie konserwacji.
+
+getMaintenanceMode.alt=Nale\u017cy uruchomi\u0107 serwer alternatywny. \
+Tryb konserwacji zostanie ustawiony dla serwera {0}, gdy uruchomiony zostanie serwer alternatywny.
+
+getMaintenanceMode.error=Nie mo\u017cna uzyska\u0107 trybu konserwacji dla hosta/serwera {0} z powodu wyst\u0105pienia b\u0142\u0119du.

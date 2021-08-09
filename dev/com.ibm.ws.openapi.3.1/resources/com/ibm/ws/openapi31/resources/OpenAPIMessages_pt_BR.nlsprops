@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: O {0} servi\u00e7o OSGi n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.explanation=O servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel. Esse \u00e9 um erro interno do servidor.   
+OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o [--clean].
+
+OPENAPI_IS_NULL=CWWKO1701W: O provedor {0} n\u00e3o retornou nenhum documento Open API.
+OPENAPI_IS_NULL.explanation=Um objeto OpenAPI criado para o OASProvider era nulo, provavelmente devido a um erro v\u00e1lido.
+OPENAPI_IS_NULL.useraction=Fornecer um documento v\u00e1lido. Inspecione os logs para descobrir o erro.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: O objeto OpenAPI que o servidor criado usando o valor de customiza\u00e7\u00e3o {0} \u00e9 nulo.
+CUSTOMIZATION_IS_NULL.explanation=Um objeto OpenAPI que foi criado usando o valor de customiza\u00e7\u00e3o \u00e9 nulo.
+CUSTOMIZATION_IS_NULL.useraction=Inspecione os logs para localizar o erro. Forne\u00e7a um documento OpenAPI v\u00e1lido para o atributo de customiza\u00e7\u00e3o.
+
+PUBLIC_URL_INVALID=CWWKO1703W: A URL p\u00fablica n\u00e3o pode ser configurada como {0}. Essa URL \u00e9 reservada para uso pelo servidor de aplicativos.
+PUBLIC_URL_INVALID.explanation=A URL p\u00fablica n\u00e3o pode ser configurada para um valor que foi reservado para uso pelo servidor de aplicativos.
+PUBLIC_URL_INVALID.useraction=Especifique um valor v\u00e1lido para o atributo publicURL na configura\u00e7\u00e3o do servidor.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: V\u00e1rios arquivos de customiza\u00e7\u00e3o Open API foram localizados: {0}. {1} est\u00e1 sendo monitorado para mudan\u00e7as.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=M\u00faltiplos arquivos de configura\u00e7\u00e3o do Open API est\u00e3o no diret\u00f3rio ${server.config.dir}/openapi-3.1.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Assegure somente um arquivo de customiza\u00e7\u00e3o padr\u00e3o do Open API no diret\u00f3rio ${server.config.dir}/openapi-3.1.
+
+CSS_NOT_PROCESSED=CWWKO1705W: O servidor n\u00e3o pode ler o documento CSS especificado {0} devido a {1}: {2}.
+CSS_NOT_PROCESSED.explanation=N\u00e3o \u00e9 poss\u00edvel processar o documento CSS devido a um erro v\u00e1lido.
+CSS_NOT_PROCESSED.useraction=Forne\u00e7a um documento CSS v\u00e1lido.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: A valida\u00e7\u00e3o do documento OpenAPI produziu o erro a seguir:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=O documento OpenAPI \u00e9 inv\u00e1lido.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Forne\u00e7a um documento OpenAPI v\u00e1lido que resolva o erro relatado.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: A valida\u00e7\u00e3o do documento OpenAPI produziu o aviso a seguir:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=O documento OpenAPI cont\u00e9m dados que n\u00e3o est\u00e3o no formato recomendado.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Forne\u00e7a um documento OpenAPI v\u00e1lido que resolva o aviso relatado.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: O arquivo CSS customizado {0} que foi especificado para a UI OpenAPI n\u00e3o foi processado. O servidor restaurar\u00e1 os valores padr\u00e3o para a UI OpenAPI. Motivo = {1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=O servidor n\u00e3o pode processar o arquivo CSS customizado. O servidor restaurar\u00e1 os valores padr\u00e3o para a UI OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Forne\u00e7a um arquivo CSS customizado v\u00e1lido para a UI OpenAPI juntamente com todas as depend\u00eancias.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: O servidor leu o documento CSS especificado {0}, mas n\u00e3o conseguiu localizar <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=O documento CSS especificado n\u00e3o cont\u00e9m <.swagger-ui .headerbar > ou n\u00e3o est\u00e1 formatado para atender \u00e0s restri\u00e7\u00f5es requeridas pelo servidor.
+CSS_SECTION_NOT_FOUND.useraction=Forne\u00e7a um arquivo CSS v\u00e1lido que contenha <.swagger-ui .headerbar > no formato necess\u00e1rio.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: O valor que foi especificado para a propriedade {0} n\u00e3o \u00e9 suportado. O valor deve ser {1}.
+UNSUPPORTED_CSS_VALUE.explanation=O valor da propriedade especificada \u00e9 inv\u00e1lido ou n\u00e3o \u00e9 suportado pela estrutura OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=Forne\u00e7a um valor v\u00e1lido para a propriedade dentro do arquivo CSS customizado para a UI OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: A imagem de plano de fundo que foi especificada em {0} n\u00e3o existe ou \u00e9 inv\u00e1lida.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=A imagem de plano de fundo n\u00e3o existe ou \u00e9 inv\u00e1lida.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Forne\u00e7a uma imagem v\u00e1lida.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: Falha ao analisar o documento OpenAPI para o aplicativo: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Falha ao analisar o documento OpenAPI da pasta META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Certifique-se de que o arquivo esteja no formato YAML ou JSON correto.

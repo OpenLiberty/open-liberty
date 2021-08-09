@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Liberty Netty Transport Implementation
+Bundle-SymbolicName: io.openliberty.netty.internal
+Bundle-Description: Liberty Netty Transport Implementation ${bVersion}
+WS-TraceGroup: ChannelFramework
+
+-dsannotations: io.openliberty.netty.internal.NettyFramework,\
+
+-buildpath: \
+    com.ibm.ws.channelfw;version=latest,\
+    com.ibm.ws.logging,\
+    com.ibm.ws.event,\
+    com.ibm.ws.transport.http,\
+    com.ibm.websphere.org.osgi.core,\
+    com.ibm.websphere.org.osgi.service.component,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    com.ibm.ws.kernel.feature,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.timer;version=latest,\
+    com.ibm.ws.kernel.security.thread,\
+    com.ibm.ws.kernel.boot.core;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    io.openliberty.io.netty;version=latest,\
+    io.openliberty.io.netty.ssl;version=latest,\
+    io.netty.transport

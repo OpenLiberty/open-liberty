@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd" metadata-complete="false" version="3.2">
+  <display-name>RepeatableDSDMixEJB</display-name>
+  <enterprise-beans>
+    <session>
+      <ejb-name>RepeatableDSDMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.injection.repeatable.dsdmix.ejb.RepeatableDSDMixedBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <data-source>
+        <description>Test that annotation and xml get merged</description>
+        <name>java:module/mix_MergeSLSBModLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <isolation-level>TRANSACTION_READ_UNCOMMITTED</isolation-level>
+      </data-source>
+      <data-source>
+        <description>Test that the attributes defined both via annotation and xml get overridden, and other attributes get merged</description>
+        <name>java:module/mix_XMLOverrideSLSBModLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <user>dsdTesterXMLKing</user>
+        <login-timeout>1828</login-timeout>
+        <isolation-level>TRANSACTION_REPEATABLE_READ</isolation-level>
+      </data-source>
+      <data-source>
+        <description>Test that a ds defined only in xml is created even if there are other ds's created via annotation or a combination of annotations and xml.</description>
+        <name>java:module/mix_XMLOnlySLSBModLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <database-name>memory:repeatableDsdMixTestXML</database-name>
+        <user>dsdTesterXML</user>
+        <password>dsdPassword</password>
+        <property>
+          <name>createDatabase</name>
+          <value>create</value>
+        </property>
+        <login-timeout>1830</login-timeout>
+        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+      </data-source>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

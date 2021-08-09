@@ -1,0 +1,18 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: artifactinternals-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content:
+ artifactinternals; version="[1.0,2)",
+ com.ibm.websphere.appserver.artifact-1.0; type="osgi.subsystem.feature"
+IBM-API-Package: com.ibm.wsspi.artifact; type="spec",
+ com.ibm.ws.artifact.zip.cache.internal; type="spec",
+ com.ibm.ws.artifact.zip.cache; type="spec",
+ com.ibm.wsspi.artifact.factory; type="spec",
+ com.ibm.wsspi.artifact.overlay; type="spec",
+ com.ibm.wsspi.adaptable.module; type="spec",
+ com.ibm.ws.adaptable.module.structure; type="spec",
+ com.ibm.wsspi.adaptable.module.adapters; type="spec",
+ com.ibm.wsspi.kernel.service.location; type="spec",
+ org.osgi.framework; type="spec"
+IBM-Feature-Version: 2

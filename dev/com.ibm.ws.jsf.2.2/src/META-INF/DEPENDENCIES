@@ -1,0 +1,69 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Apache MyFaces JSF-2.2 Core Impl
+
+
+From: 'an unknown organization'
+  - annotations-api  org.apache.tomcat:annotations-api:jar:6.0.29
+
+  - catalina  org.apache.tomcat:catalina:jar:6.0.29
+
+  - juli  org.apache.tomcat:juli:jar:6.0.29
+
+  - servlet-api  org.apache.tomcat:servlet-api:jar:6.0.29
+
+  - tomcat-annotations-api  org.apache.tomcat:tomcat-annotations-api:jar:7.0.0
+
+  - tomcat-api  org.apache.tomcat:tomcat-api:jar:7.0.0
+
+  - tomcat-catalina  org.apache.tomcat:tomcat-catalina:jar:7.0.0
+
+  - tomcat-juli  org.apache.tomcat:tomcat-juli:jar:7.0.0
+
+  - tomcat-servlet-api  org.apache.tomcat:tomcat-servlet-api:jar:7.0.0
+
+  - tomcat-util  org.apache.tomcat:tomcat-util:jar:7.0.0
+
+
+From: 'Apache Software Foundation' (http://www.apache.org)
+  - EJB 3.0 (http://geronimo.apache.org/specs/geronimo-ejb_3.0_spec) org.apache.geronimo.specs:geronimo-ejb_3.0_spec:jar:1.0.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - JPA 1.0 (http://geronimo.apache.org/specs/geronimo-jpa_3.0_spec) org.apache.geronimo.specs:geronimo-jpa_3.0_spec:jar:1.1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Google' (http://www.google.com/)
+  - Guice (http://code.google.com/p/google-guice/) com.google.code.guice:guice:pom:1.0
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'The Apache Software Foundation' (http://jakarta.apache.org)
+  - Codec (http://jakarta.apache.org/commons/codec/) commons-codec:commons-codec:jar:1.3
+    License: The Apache Software License, Version 2.0  (/LICENSE.txt)
+  - Collections (http://jakarta.apache.org/commons/collections/) commons-collections:commons-collections:jar:3.2
+    License: The Apache Software License, Version 2.0  (/LICENSE.txt)
+  - Digester (http://jakarta.apache.org/commons/digester/) commons-digester:commons-digester:jar:1.8
+    License: The Apache Software License, Version 2.0  (/LICENSE.txt)
+
+From: 'The Apache Software Foundation' (http://www.apache.org)
+  - Apache Geronimo JSR-330 Spec API (http://geronimo.apache.org/maven/genesis/1.0) org.apache.geronimo.specs:geronimo-atinject_1.0_spec:bundle:1.0
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Geronimo JSR-303 Bean Validation Spec API (http://geronimo.apache.org/maven/specs/geronimo-validation_1.0_spec/1.1) org.apache.geronimo.specs:geronimo-validation_1.0_spec:bundle:1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons BeanUtils (http://commons.apache.org/beanutils/) commons-beanutils:commons-beanutils:jar:1.8.3
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons Logging (http://commons.apache.org/logging) commons-logging:commons-logging:jar:1.1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache MyFaces JSF-2.2 Core API (http://myfaces.apache.org/core21/myfaces-api) org.apache.myfaces.core:myfaces-api:jar:2.2.8
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache MyFaces Core For JSF 2.2 - Shared (http://myfaces.apache.org/core22/myfaces-impl-shared) org.apache.myfaces.core.internal:myfaces-impl-shared:jar:2.2.8
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache MyFaces Shared Public API For JSF 2.2 - Core (http://myfaces.apache.org/core22/myfaces-impl-shared-public) org.apache.myfaces.core.internal:myfaces-impl-shared-public:jar:2.2.8
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+
+

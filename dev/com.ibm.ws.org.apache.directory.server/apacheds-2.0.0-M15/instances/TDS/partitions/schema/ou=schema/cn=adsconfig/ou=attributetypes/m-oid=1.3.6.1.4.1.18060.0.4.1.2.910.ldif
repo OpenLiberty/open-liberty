@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.910,ou=attributeTypes,cn=adsconfig,ou=schema
+m-equality: booleanMatch
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.910
+m-name: ads-pwdLockout
+entryUUID: a4c4176c-0c51-40ff-84ed-fcf315f4ac8e
+entryCSN: 20130919065344.704000Z#000001#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065354.048Z

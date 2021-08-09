@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: \u6c92\u6709\u5df2\u767b\u9304\u7684\u8655\u7406\u7a0b\u5f0f\u7b26\u5408\u6240\u8981\u6c42\u7684 URL {0}\u3002
+HANDLER_NOT_FOUND_ERROR.explanation=\u5617\u8a66\u5b58\u53d6\u7684 URL \u4e0d\u7b26\u5408\u4efb\u4f55\u5df2\u767b\u9304\u7684\u8655\u7406\u7a0b\u5f0f\u3002
+HANDLER_NOT_FOUND_ERROR.useraction=\u8acb\u66f4\u6b63 URL\uff0c\u4ee5\u7b26\u5408\u5df2\u767b\u9304\u7684\u8655\u7406\u7a0b\u5f0f\u3002
+
+OSGI_SERVICE_ERROR=CWWKO1001E: OSGi \u670d\u52d9 {0} \u7121\u6cd5\u4f7f\u7528\u3002
+OSGI_SERVICE_ERROR.explanation=\u56e0\u70ba\u6307\u5b9a\u7684\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\uff0c\u64f2\u51fa\u4e86\u9019\u500b\u5167\u90e8\u4f3a\u670d\u5668\u932f\u8aa4\u3002
+OSGI_SERVICE_ERROR.useraction=\u8acb\u4ee5 clean \u9078\u9805\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: \u89e3\u6790\u7fa4\u9ad4\u6210\u54e1\u7684 SSL \u74b0\u5883\u5b9a\u7fa9\u6642\uff0c\u9047\u5230\u4e0b\u5217\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=\u7121\u6cd5\u4ee5\u6210\u54e1\u7684 SSL \u6191\u8b49\u4f86\u5efa\u7acb SSL \u74b0\u5883\u5b9a\u7fa9\u3002
+SSL_CONTEXT_NOT_AVAILABLE.useraction=\u8acb\u6aa2\u67e5\u7fa4\u9ad4\u7684 SSL \u914d\u7f6e\uff0c\u5305\u62ec\u63a7\u5236\u5668\u548c\u76ee\u6a19\u6210\u54e1\u3002
+
+MISSING_PARAMETER=CWWKO1003E: https \u8981\u6c42\u4e2d\u907a\u6f0f\u5fc5\u8981\u7684\u53c3\u6578 {0}\u3002
+MISSING_PARAMETER.explanation=\u8981\u6c42\u4e2d\u907a\u6f0f\u6307\u5b9a\u7684\u5fc5\u8981\u53c3\u6578\u3002
+MISSING_PARAMETER.useraction=\u8acb\u5728\u8981\u6c42\u4e2d\u5305\u542b\u6307\u5b9a\u7684\u53c3\u6578\uff0c\u7136\u5f8c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+MISSING_HEADER=CWWKO1004E: https \u8981\u6c42\u4e2d\u907a\u6f0f\u5fc5\u8981\u7684\u6a19\u982d {0}\u3002
+MISSING_HEADER.explanation=\u8981\u6c42\u4e2d\u907a\u6f0f\u6307\u5b9a\u7684\u5fc5\u8981\u6a19\u982d\u3002
+MISSING_HEADER.useraction=\u8acb\u5728\u8981\u6c42\u4e2d\u5305\u542b\u6307\u5b9a\u7684\u6a19\u982d\uff0c\u7136\u5f8c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+INVALID_INPUT_VALUE=CWWKO1005E: \u540d\u7a31\u70ba {0} \u7684\u8f38\u5165\u6b04\u4f4d\u5305\u542b\u4e0d\u6b63\u78ba\u7684\u503c\u3002
+INVALID_INPUT_VALUE.explanation=\u8981\u6c42\u5305\u542b\u7684\u8f38\u5165\u6b04\u4f4d\u503c\u4e0d\u6b63\u78ba\u3002\u8f38\u5165\u6b04\u4f4d\u4e0d\u7b26\u5408\u7cfb\u7d71\u4e2d\u7684\u4efb\u4f55\u8a18\u9304\u3002
+INVALID_INPUT_VALUE.useraction=\u8acb\u66f4\u6b63\u8f38\u5165\u6b04\u4f4d\u7684\u503c\uff0c\u7136\u5f8c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: \u4e0d\u652f\u63f4\u8981\u6c42\u7684 MIME \u985e\u578b {0}\u3002
+UNSUPPORTED_MEDIA_TYPE.explanation=\u4f3a\u670d\u5668\u7121\u6cd5\u8017\u7528\u8981\u6c42\u7684 MIME \u985e\u578b\u3002\u8a72 MIME \u985e\u578b\u4e0d\u7b26\u5408\u9810\u671f\u7684\u4efb\u4f55 MIME \u985e\u578b\u3002
+UNSUPPORTED_MEDIA_TYPE.useraction=\u8acb\u66f4\u6b63\u5167\u5bb9\u985e\u578b\u7684\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u50b3\u9001\u8a72\u8981\u6c42\u3002
+

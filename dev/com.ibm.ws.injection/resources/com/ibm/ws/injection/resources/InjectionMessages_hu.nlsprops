@@ -1,0 +1,104 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: Egy java:comp/env n\u00e9ven nem hajthat\u00f3 v\u00e9gre a JNDI m\u0171velet, mert a jelenlegi sz\u00e1l nincs t\u00e1rs\u00edtva egy Java Enterprise Edition alkalmaz\u00e1s \u00f6sszetev\u0151vel. Ez a helyzet akkor fordul el\u0151, amikor a java:comp/env nevet haszn\u00e1l\u00f3 JNDI \u00fcgyf\u00e9l nem a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s sz\u00e1l\u00e1n zajlik. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Java EE alkalmaz\u00e1s nem futtat JNDI m\u0171veleteket a java:comp/env neveken statikus k\u00f3dblokkokon bel\u00fcl, vagy az adott alkalmaz\u00e1s \u00e1ltal l\u00e9trehozott sz\u00e1lakban. Az ilyen k\u00f3d nem sz\u00fcks\u00e9gk\u00e9ppen a kiszolg\u00e1l\u00f3 alkalmaz\u00e1s k\u00e9r\u00e9s sz\u00e1l\u00e1n fut, \u00e9s ez\u00e9rt a nem t\u00e1mogatott a java:comp/env neveken v\u00e9gzett JNDI m\u0171veletekhez.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=A java:comp/env n\u00e9ven v\u00e9gzett JNDI m\u0171veletek csak Java EE alkalmaz\u00e1s \u00f6sszetev\u0151vel t\u00e1rs\u00edtott sz\u00e1lakon t\u00e1mogatottak.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy a JNDI m\u0171velet egy Java EE alkalmaz\u00e1s \u00f6sszetev\u0151vel t\u00e1rs\u00edtott sz\u00e1lon t\u00f6rt\u00e9njen.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: A(z) {0} JNDI n\u00e9v \u00e1ltal hivatkozott objektum nem p\u00e9ld\u00e1nyos\u00edthat\u00f3. Ha a hivatkoz\u00e1sn\u00e9v a JNDI kikeres\u00e9st v\u00e9grehajt\u00f3 alkalmaz\u00e1shoz tartoz\u00f3 telep\u00edt\u00e9si le\u00edr\u00f3 k\u00f6t\u00e9sekben tal\u00e1lhat\u00f3 JNDI n\u00e9vre van lek\u00e9pezve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a telep\u00edt\u00e9si le\u00edr\u00f3 k\u00f6t\u00e9sekben l\u00e9v\u0151 JNDI n\u00e9v lek\u00e9pez\u00e9s helyes. Ha a JNDI n\u00e9v lek\u00e9pez\u00e9s helyes, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a c\u00e9l er\u0151forr\u00e1s feloldhat\u00f3 a megadott, az alap\u00e9rtelmezett kezdeti kontextushoz k\u00e9pest relat\u00edv n\u00e9vvel.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=Hiba t\u00f6rt\u00e9nt az objektumhivatkoz\u00e1s p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sakor a megadott JNDI n\u00e9v alapj\u00e1n.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=A hib\u00e1val kapcsolatos inform\u00e1ci\u00f3k\u00e9rt tekintse meg a be\u00e1gyazott kiv\u00e9telt, vagy egy kor\u00e1bbi hiba\u00fczenetet.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: A(z) {1} alkalmaz\u00e1sban a META-INF/application.xml f\u00e1jl \u00e1ltal deklar\u00e1lt {0} referencia nem szerepel a java:global vagy java:app kontextusban.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=A META-INF/application.xml f\u00e1jlban deklar\u00e1lt referencia csak java:global vagy java:app kontextusokban tartalmazhat neveket.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=T\u00e1vol\u00edtsa el a hivatkoz\u00e1st, vagy friss\u00edtse a referencia neveket, hogy java:global/ vagy java:app/ el\u0151taggal rendelkezzenek.
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: A kiszolg\u00e1l\u00f3 nem tal\u00e1lja a(z) {0} \u00f6sszerendel\u00e9st {1} t\u00edpussal a(z) {2} hivatkoz\u00e1s eset\u00e9ben.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=A kiszolg\u00e1l\u00f3 nem tal\u00e1lta a megadott nev\u0171 \u00e9s t\u00edpus\u00fa \u00f6sszerendel\u00e9st.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=Hat\u00e1rozzon meg egy er\u0151forr\u00e1st a megadott n\u00e9vvel, vagy \u00e1ll\u00edtsa be az alkalmaz\u00e1s \u00f6sszerendel\u00e9seket \u00fagy, hogy m\u00e1r meghat\u00e1rozott er\u0151forr\u00e1st haszn\u00e1ljanak.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: A kiszolg\u00e1l\u00f3 nem tal\u00e1lja az alap\u00e9rtelmezett {0} \u00f6sszerendel\u00e9st {1} t\u00edpussal a(z) {2} hivatkoz\u00e1s eset\u00e9ben.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=A kiszolg\u00e1l\u00f3 nem tal\u00e1lta a megadott nev\u0171 \u00e9s t\u00edpus\u00fa \u00f6sszerendel\u00e9st. Az alkalmaz\u00e1s nem adta meg az \u00f6sszerendel\u00e9s nev\u00e9t, ez\u00e9rt az alap\u00e9rtelmezett \u00f6sszerendel\u00e9sn\u00e9v ker\u00fclt felhaszn\u00e1l\u00e1sra.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=Hat\u00e1rozzon meg egy er\u0151forr\u00e1st a megadott n\u00e9vvel, vagy \u00e1ll\u00edtsa be az alkalmaz\u00e1s \u00f6sszerendel\u00e9seket \u00fagy, hogy m\u00e1r meghat\u00e1rozott er\u0151forr\u00e1st haszn\u00e1ljanak.
+
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: A kiszolg\u00e1l\u00f3 nem tal\u00e1lja a(z) {0} \u00f6sszerendel\u00e9st {1} t\u00edpussal a(z) {2} hivatkoz\u00e1s eset\u00e9ben. Az \u00f6sszerendel\u00e9st a(z) {3} szolg\u00e1ltat\u00e1s adta meg.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=A kiszolg\u00e1l\u00f3 nem tal\u00e1lta a megadott nev\u0171 \u00e9s t\u00edpus\u00fa \u00f6sszerendel\u00e9st.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=Keresse meg a szolg\u00e1ltat\u00f3t.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: A kiszolg\u00e1l\u00f3 nem tudta lek\u00e9rdezni a(z) {0} \u00f6sszerendel\u00e9s {1} t\u00edpus\u00fa objektum\u00e1t. A kiv\u00e9tel\u00fczenet: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=A kiszolg\u00e1l\u00f3 tal\u00e1lt \u00f6sszerendel\u00e9st a megadott n\u00e9vvel \u00e9s t\u00edpussal, de annak el\u00e9r\u00e9sekor hiba t\u00f6rt\u00e9nt. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=Tov\u00e1bbi magyar\u00e1zatot a kiv\u00e9tel\u00fczenet sz\u00f6veg\u00e9ben tal\u00e1l.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l hi\u00e1nyzik egy szolg\u00e1ltat\u00e1s a(z) {0} EJB hivatkoz\u00e1s t\u00e1mogat\u00e1s\u00e1hoz a(z) {1} \u00f6sszetev\u0151ben a(z) {2} modulban a(z) {3} alkalmaz\u00e1sban.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=Az alkalmaz\u00e1s deklar\u00e1l egy hivatkoz\u00e1st egy munkamenet EJB komponensre, de a kiszolg\u00e1l\u00f3n nincs konfigur\u00e1lva olyan szolg\u00e1ltat\u00e1s, amely t\u00e1mogatja a munkamenet EJB komponenseket.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t, hogy enged\u00e9lyezzen egy munkamenet EJB komponenseket t\u00e1mogat\u00f3 szolg\u00e1ltat\u00e1st.  Enged\u00e9lyezze p\u00e9ld\u00e1ul az ejbLite-3.1 szolg\u00e1ltat\u00e1st.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: A k\u00f6t\u00e9s olyan k\u00f6zvetett kikeres\u00e9st tartalmaz, amely \u00f6nmag\u00e1ra hivatkozik.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=A k\u00f6t\u00e9s olyan k\u00f6zvetett kikeres\u00e9st tartalmaz, amely \u00f6nmag\u00e1ra hivatkozik. Ha p\u00e9ld\u00e1ul a helytelen @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") feljegyz\u00e9s ker\u00fcl felhaszn\u00e1l\u00e1sra, akkor a n\u00e9vnek van egy implicit java:comp/env/ el\u0151tagja, \u00edgy a keres\u00e9si karaktersorozat az er\u0151forr\u00e1s hivatkoz\u00e1s\u00e1ra hivatkozik, ami v\u00e9gtelen ciklust hoz l\u00e9tre.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=M\u00f3dos\u00edtsa a kikeres\u00e9st vagy a k\u00f6t\u00e9snevet a c\u00e9l er\u0151forr\u00e1shoz. Ha p\u00e9ld\u00e1ul a helytelen @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds") feljegyz\u00e9s ker\u00fcl felhaszn\u00e1l\u00e1sra, akkor a kikeres\u00e9s megv\u00e1ltoztathat\u00f3 jdbc/ds \u00e9rt\u00e9kre, amely az er\u0151forr\u00e1st az alap\u00e9rtelmezett n\u00e9vt\u00e9ren keresi.

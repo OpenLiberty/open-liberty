@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="1.0">
+
+	<!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+			Copyright (c) 2010 IBM Corporation and others.
+			All rights reserved. This program and the accompanying materials
+			are made available under the terms of the Eclipse Public License v1.0
+			which accompanies this distribution, and is available at
+			http://www.eclipse.org/legal/epl-v10.html
+
+			Contributors:
+				IBM Corporation - initial API and implementation
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="ejb-refType">
+		<xsd:annotation>
+			<xsd:documentation>
+	Specifies the binding for an ejb-ref or ejb-local-ref.
+	
+	The name attribute specfies the name of the ejb-ref or the ejb-local-ref,
+	while the binding name specifies the binding (jndi) name for the target
+	of the reference.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="binding-name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="resource-refType">
+		<xsd:annotation>
+			<xsd:documentation>
+	Specifies the binding for a resource-ref.
+	
+	The name attribute specfies the name of the resource-ref, while the binding
+	name specifies the binding (jndi) name for the target of the reference.
+		
+	If the resource reference is for a connection factory, then an optional
+	JAAS login configuration may be specified.  The authentication element
+	allows the specification of a simple authentication alias as the JAAS
+	login configuration, while custom-login-configuration allows a more complex
+	JAAS login configuration to be specified.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+
+			<xsd:choice minOccurs="0" maxOccurs="1">
+				<xsd:element name="authentication-alias" type="authentication-aliasType" />
+				<xsd:element name="custom-login-configuration" type="custom-login-configurationType" />
+			</xsd:choice>
+			
+			<!-- Default-auth is for backward compatibility and should not be used. -->
+			<xsd:element name="default-auth" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:attribute name="userid" type="xsd:string"/>
+					<xsd:attribute name="password" type="xsd:string" />
+				</xsd:complexType>
+			</xsd:element>
+
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="binding-name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="resource-env-refType">
+		<xsd:annotation>
+			<xsd:documentation>
+	Specifies the binding for a resource-env-ref.
+	
+	The name attribute specfies the name of the resource-env-ref,
+	while the binding name specifies the binding (jndi) name for the target
+	of the reference.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="binding-name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="message-destination-refType">
+		<xsd:annotation>
+			<xsd:documentation>
+	Specifies the binding for a message-destination-ref.
+	
+	The name attribute specfies the name of the message-destination-ref,
+	while the binding name specifies the binding (jndi) name for the target
+	of the reference.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="binding-name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="custom-login-configurationType">
+		<xsd:annotation>
+			<xsd:documentation>
+	Specifies a custom login configuration.
+	
+	The name attribute specifies the name of the custom login configuration,
+	The login configuration is defined by a set of properties (name/value pairs).
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="property" type= "propertyType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="authentication-aliasType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="propertyType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="required" />
+		<xsd:attribute name="description" type="xsd:string" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:group name="ref-bindingsGroup">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="ejb-ref" type="ejb-refType" />
+				<xsd:element name="resource-ref" type="resource-refType" />
+				<xsd:element name="resource-env-ref" type="resource-env-refType" />
+				<xsd:element name="message-destination-ref" type="message-destination-refType" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:group>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="message-destinationType">
+		<xsd:annotation>
+			<xsd:documentation>
+	Specifies the binding for an message-destination.  The name attribute
+	identifies the message destination to which the binding applies.  The
+	binding-name attribute specifies the jndi name to be associated with
+	the message destination.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="id" type="xsd:ID"/>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="binding-name" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+</xsd:schema>

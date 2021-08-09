@@ -1,0 +1,85 @@
+<server>
+
+  <featureManager>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>jmsMdb-3.2</feature>
+    <feature>jsp-2.3</feature>   
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+  
+  <include optional="true" location="../fatTestPorts.xml"/>
+  
+  <variable name="onError" value="FAIL"/>
+  
+  <messagingEngine id="defaultME">
+    <queue id="QUEUE1" maxRedeliveryCount="2"/>
+    <topicSpace id="NewTopic1"/>
+    <topicSpace id="NewTopic2"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+  </messagingEngine>
+  
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr3">
+    <properties.wasJms/> 
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr3" maxPoolSize="2"/>
+  
+  <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr2">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr2" maxPoolSize="2"/>
+  
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicSpace="NewTopic1"/>
+  </jmsTopic>
+  
+  <jmsTopic jndiName="eis/topic">
+    <properties.wasJms topicSpace="NewTopic1" timeToLive="100"/>
+  </jmsTopic>
+
+  <jmsTopic jndiName="eis/topic2">
+    <properties.wasJms topicSpace="NewTopic2"/>
+  </jmsTopic>
+  
+  <jmsTopicConnectionFactory jndiName="jms/FAT_TCF" connectionManagerRef="ConMgr8">
+    <properties.wasJms/>
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr8"/>
+  
+  <jmsTopicConnectionFactory jndiName="jms/FAT_COMMS_TCF" connectionManagerRef="ConMgr7">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr7"/>
+  
+  <jmsTopic id="jms/FAT_TOPIC" jndiName="jms/FAT_TOPIC">
+    <properties.wasJms/>
+  </jmsTopic>
+  
+  <jmsActivationSpec id="jmsapp/jmsmdb/FATTopic1MessageDrivenBean">
+    <properties.wasJms
+      destinationRef="jms/FAT_TOPIC"
+      destinationType="javax.jms.Topic"
+      subscriptionDurability="DurableShared"
+      clientId="cid1"
+      subscriptionName="DURSUB"/>
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="jmsapp/jmsmdb/FATTopic2MessageDrivenBean">
+    <properties.wasJms
+      destinationRef="jms/FAT_TOPIC"
+      destinationType="javax.jms.Topic"
+      subscriptionDurability="DurableShared"
+      clientId="cid1"
+      subscriptionName="DURSUB"/>
+  </jmsActivationSpec>
+
+  <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/>
+  
+</server>

@@ -1,0 +1,74 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: FAT infrastructure
+Bundle-SymbolicName: com.ibm.ws.componenttest.2.0
+Bundle-Description: FAT infrastructure; version=${bVersion}
+
+-dsannotations: \
+  componenttest.serverinfo.impl.FATServerInfoMBeanImpl
+  
+Export-Package: \
+  componenttest.app;version=1.0.16, \
+  componenttest.matchers;version=1.0.16, \
+  componenttest.serverinfo;version=1.0.16, \
+  junit.*;version=1.0.16, \
+  org.jmock.*;version=1.0.16, \
+  org.junit.*;version=1.0.16, \
+  org.hamcrest.*;version=1.0.16
+  
+Private-Package: \
+  componenttest.serverinfo.impl
+
+# componenttest.app depends on jakarta.servlet, but we don't want to include it in
+# the componenttest-2.0 feature since we want tests to fail if a product feature
+# is actually missing jakarta.servlet, so we use a dynamic import instead.
+Import-Package: \
+  !jakarta.servlet.*, \
+  !org.apache.tools.ant.*, \
+  !org.easymock, \
+  !org.jmock.core, \
+  *
+
+DynamicImport-Package: \
+  jakarta.servlet, \
+  jakarta.servlet.http
+
+publish.wlp.jar.disabled: false
+
+test.project: true
+
+#This really really needs org.hamcrest since otherwise an older version of Matcher
+#gets put on the classpath and causes unfortunate issues.
+-buildpath: \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+    commons-httpclient:commons-httpclient;version=3.1,\
+    com.ibm.ws.componenttest:com.ibm.componenttest.common;version=1.0.0,\
+    com.ibm.ws.componenttest:com.ibm.ws.topology.helper;version=1.0.0,\
+    httpunit:httpunit;version=1.5.4,\
+    net.sf.jtidy:jtidy;version=9.3.8,\
+    com.ibm.ws.componenttest:provider.api;version=1.0.0,\
+    com.ibm.ws.componenttest:public.api;version=1.0.0,\
+    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
+    com.ibm.ws.componenttest:fat.util;version=1.0.0,\
+    org.jmock:jmock;strategy=exact;version=2.5.1,\
+    io.openliberty.jakarta.servlet.5.0;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.kernel.feature.core;version=latest,\
+    com.ibm.ws.kernel.service;version=latest
+    

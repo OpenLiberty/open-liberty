@@ -1,0 +1,9 @@
+version: 1
+dn: cn=adsconfig,ou=schema
+cn: adsconfig
+objectclass: metaSchema
+objectclass: top
+m-dependencies: apache
+m-dependencies: system
+m-dependencies: core
+creatorsname: uid=admin,ou=system

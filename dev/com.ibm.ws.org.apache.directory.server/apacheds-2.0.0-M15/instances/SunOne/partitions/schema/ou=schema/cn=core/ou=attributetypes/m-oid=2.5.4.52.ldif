@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=2.5.4.52,ou=attributeTypes,cn=core,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 2.5.4.52
+m-obsolete: FALSE
+m-description: RFC2256: supported algorithms
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.49
+m-usage: USER_APPLICATIONS
+m-name: supportedAlgorithms
+creatorsname: uid=admin,ou=system

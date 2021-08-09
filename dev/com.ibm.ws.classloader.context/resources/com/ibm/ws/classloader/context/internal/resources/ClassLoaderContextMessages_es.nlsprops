@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloader.context/resources/com/ibm/ws/classloader/context/internal/resources/ClassLoaderContextMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loader Context
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+
+####################################################################################
+# NOTE: This message bundle has only reserved CWWKL0090-CWWKL0099 if more messages #
+#       are needed, reserve a new block of messages in the classloading bundle     #
+####################################################################################
+cannot.apply.classloader.context=CWWKL0090E: No se puede aplicar el contexto de cargador de clases a la hebra no gestionada {0}. Aseg\u00farese de que el trabajo se ejecuta en una hebra que est\u00e1 gestionada por el servidor o que permite la operaci\u00f3n setContextClassLoader.
+cannot.apply.classloader.context.explanation=El trabajo se ha enviado a una hebra no gestionada que no da soporte al establecimiento de ClassLoader.
+cannot.apply.classloader.context.useraction=Aseg\u00farese de que el trabajo se ejecuta en una hebra que est\u00e1 gestionada por el servidor o que permite la operaci\u00f3n setContextClassLoader.

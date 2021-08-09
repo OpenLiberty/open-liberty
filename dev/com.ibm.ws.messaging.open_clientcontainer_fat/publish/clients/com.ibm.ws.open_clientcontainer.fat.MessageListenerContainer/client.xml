@@ -1,0 +1,31 @@
+<client description="message listener">
+  <include location="../fatTestPorts.xml"/>
+  <featureManager>
+    <feature>javaeeClient-7.0</feature>
+  </featureManager>
+
+  <application id="MessageListenerClient" name="MessageListener" type="ear" location="MessageListener.ear"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr6" maxPoolSize="10"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr7">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr7" maxPoolSize="10"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF2" connectionManagerRef="ConMgr8">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr8" maxPoolSize="10"/>
+
+  <jmsQueue jndiName="jndi_QUEUE_ONE">
+    <properties.wasJms queueName="QUEUE_ONE"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_QUEUE_TWO">
+    <properties.wasJms queueName="QUEUE_TWO"/>
+  </jmsQueue>
+</client>

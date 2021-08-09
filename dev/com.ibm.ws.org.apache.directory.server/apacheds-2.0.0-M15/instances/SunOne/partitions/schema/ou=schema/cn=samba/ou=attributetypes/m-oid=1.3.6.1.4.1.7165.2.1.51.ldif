@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.51,ou=attributeTypes,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.1.51
+m-name: sambaSIDList
+m-description: Security ID List
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-equality: caseIgnoreIA5Match
+m-singlevalue: FALSE
+m-usage: USER_APPLICATIONS
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.1.4,ou=attributeTypes,cn=nis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseExactIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.1.1.1.4
+m-name: loginShell
+m-description: The path to the login shell
+m-obsolete: FALSE
+entryUUID: 105e9163-209b-4833-a436-9615321980af
+entryCSN: 20130919065345.451000Z#000001#000#000000
+entryParentId: 53bdbb21-628b-4323-b5d5-fb0c371707a6
+createTimestamp: 20130919065353.485Z

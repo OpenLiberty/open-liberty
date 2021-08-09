@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Un nuevo cliente de transferencia de archivos se ha conectado con el ID de conexi\u00f3n {0}.
+filetransfer.client.init.explanation=Un nuevo cliente de transferencia de archivos se ha conectado con el ID de conexi\u00f3n especificado.
+filetransfer.client.init.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+filetransfer.client.error=CWWKX7952E: Se ha generado un mensaje de error del lado de cliente "{0}" para la conexi\u00f3n {1}.
+filetransfer.client.error.explanation=El lado del cliente del conector JMX REST ha encontrado un error y se ha generado el mensaje especificado.
+filetransfer.client.error.useraction=Utilice el mensaje de error generado para identificar y corregir el problema que ha provocado este error, y vuelva a ejecutar la operaci\u00f3n.
+
+filetransfer.server.error=CWWKX7953E: Se ha generado un mensaje de error del lado de servidor "{0}" para la conexi\u00f3n {1}.
+filetransfer.server.error.explanation=El lado del servidor del conector JMX REST ha encontrado un error y se ha generado el mensaje especificado.
+filetransfer.server.error.useraction=Utilice el mensaje de error generado para identificar y corregir el problema que ha provocado este error, y vuelva a ejecutar la operaci\u00f3n.
+
+filetransfer.client.bad.credentials=CWWKX7954E: El nombre de usuario o la contrase\u00f1a especificados no est\u00e1n autorizados. El servidor ha respondido con el c\u00f3digo {0} y el mensaje "{1}" para la conexi\u00f3n {2}.
+filetransfer.client.bad.credentials.explanation=Las credenciales proporcionadas al obtener la conexi\u00f3n son incorrectas. El usuario puede que no exista, puede que no tenga autoridad para acceder al servidor o que la contrase\u00f1a sea incorrecta.
+filetransfer.client.bad.credentials.useraction=Corrija el nombre de usuario o la contrase\u00f1a y despu\u00e9s obtenga una nueva conexi\u00f3n.
+
+filetransfer.response.code.error=CWWKX7955E: El cliente de transferencia de archivos ha recibido un c\u00f3digo de respuesta {0} con el mensaje "{1}" para la conexi\u00f3n {2}.
+filetransfer.response.code.error.explanation=El cliente de transferencia de archivos ha recibido un c\u00f3digo de respuesta inesperado del servidor.
+filetransfer.response.code.error.useraction=Utilice el c\u00f3digo de respuesta del cliente para identificar y resolver la causa del problema, y vuelva a ejecutar la operaci\u00f3n.
+
+filetransfer.download.file=CWWKX7956I: La solicitud de descarga del archivo {0} ha sido satisfactoria y su contenido se ha escrito en el archivo {1} utilizando la conexi\u00f3n {2}.
+filetransfer.download.file.explanation=La solicitud de descarga del archivo especificado ha sido satisfactoria.
+filetransfer.download.file.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+filetransfer.unsupported.operation=CWWKX7957E: La operaci\u00f3n {0} no est\u00e1 soportada por el cliente de transferencia de archivos para la conexi\u00f3n {1}.
+filetransfer.unsupported.operation.explanation=La operaci\u00f3n especificada no est\u00e1 soportada por el cliente de transferencia de archivos.
+filetransfer.unsupported.operation.useraction=Solicite una operaci\u00f3n que est\u00e9 soportada por el cliente de transferencia de archivos.
+
+filetransfer.upload.file=CWWKX7958I: La solicitud de carga del archivo {0} ha sido satisfactoria y su contenido se ha escrito en el archivo {1} utilizando la conexi\u00f3n {2}.
+filetransfer.upload.file.explanation=La solicitud de carga del archivo especificado ha sido satisfactoria.
+filetransfer.upload.file.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+filetransfer.delete.file=CWWKX7959I: La solicitud de supresi\u00f3n del archivo {0} ha sido satisfactoria utilizando conexi\u00f3n {1}.
+filetransfer.delete.file.explanation=La solicitud de supresi\u00f3n del archivo especificado ha sido satisfactoria.
+filetransfer.delete.file.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.
+
+filetransfer.delete.all=CWWKX7960I: La solicitud de supresi\u00f3n de todos los archivos y carpetas de la colecci\u00f3n {0} ha sido satisfactoria utilizando la conexi\u00f3n {1}.
+filetransfer.delete.all.explanation=La solicitud de supresi\u00f3n de la colecci\u00f3n especificada ha sido satisfactoria.
+filetransfer.delete.all.useraction=Este es un mensaje informativo y no es necesaria ninguna acci\u00f3n.

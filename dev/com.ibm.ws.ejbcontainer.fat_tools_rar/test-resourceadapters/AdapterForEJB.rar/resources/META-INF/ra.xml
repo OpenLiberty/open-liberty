@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector version="1.6" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/connector_1_6.xsd">
+	<description>EJB 1.6 Resource Adapter</description>
+	<display-name>EJB 1.6 Resource Adapter</display-name> 
+	<vendor-name>IBM</vendor-name> 
+	<eis-type>FVTSimulatedEIS</eis-type>
+	<resourceadapter-version>6.0.0</resourceadapter-version>
+	<license>
+		<description></description>
+		<license-required>true</license-required>
+	</license>
+	<resourceadapter>
+		<resourceadapter-class>com.ibm.ws.ejbcontainer.fat.rar.core.FVTAdapterImpl</resourceadapter-class>
+
+		<!--Resource Adapter default configuration properties-->
+		<config-property>
+			<config-property-name>adapterName</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+			<config-property-value>FVT Resource Adapter</config-property-value>
+		</config-property>
+
+		<!-- Config-Properties for testing LI2110-86 -->
+		<config-property>
+			<config-property-name>propertyD</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+			<config-property-value>7</config-property-value>
+		</config-property>
+
+		<config-property>
+			<config-property-name>propertyI</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+			<config-property-value>7</config-property-value>
+		</config-property>
+
+		<config-property>
+			<config-property-name>propertyX</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+			<config-property-value>7</config-property-value>
+		</config-property>
+
+		<config-property>
+			<config-property-name>propertyJ</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+			<config-property-value>7</config-property-value>
+		</config-property>
+								
+		<!--Outbound resource adapter-->
+		<outbound-resourceadapter>
+			<connection-definition>
+				<managedconnectionfactory-class>com.ibm.ws.ejbcontainer.fat.rar.spi.ManagedConnectionFactoryImpl</managedconnectionfactory-class>
+				
+				<!-- Config-Properties for testing LI2110-86 -->
+				<config-property>
+				    <description>config property for testing LI2110-86</description>
+				    <config-property-name>propertyW</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+					<config-property-value>2</config-property-value>
+				</config-property>
+
+				<config-property>
+				    <description>config property for testing LI2110-86</description>
+				    <config-property-name>propertyY</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+				</config-property>
+
+				<config-property>
+				    <description>config property for testing LI2110-86</description>
+				    <config-property-name>propertyZ</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+				</config-property>
+																
+				<config-property>
+				    <description>the name of the database</description>
+					<config-property-name>databaseName</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+					<config-property-value>memory:jtest1;create=true</config-property-value>
+				</config-property>
+				
+				<config-property>
+				    <description>the datasource implementation class</description>
+				    <config-property-name>dataSourceClass</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+					<config-property-value>org.apache.derby.jdbc.EmbeddedXADataSource40</config-property-value>
+				</config-property>
+
+                <config-property>
+                    <description>Specify whether connection handles support implicit reactivation. (Smart Handle support). Value may be "true" or "false".</description>
+                    <config-property-name>InactiveConnectionSupport</config-property-name>
+                    <config-property-type>java.lang.Boolean</config-property-type>
+                    <config-property-value>true</config-property-value>
+                </config-property>
+                <config-property>
+                    <description>Type of transaction resource registration (enlistment).  Valid values are either "static" (immediate) or "dynamic" (deferred).</description>
+                    <config-property-name>TransactionResourceRegistration</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                    <config-property-value>dynamic</config-property-value>
+                </config-property>
+				
+				<connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface>
+				<connectionfactory-impl-class>fvt.adapter.jdbc.JdbcDataSource</connectionfactory-impl-class>
+				<connection-interface>java.sql.Connection</connection-interface>
+				<connection-impl-class>fvt.adapter.jdbc.JdbcConnection</connection-impl-class>
+			</connection-definition>
+			<transaction-support>XATransaction</transaction-support>
+
+			<authentication-mechanism>
+				<authentication-mechanism-type>BasicPassword</authentication-mechanism-type>
+				<credential-interface>javax.resource.spi.security.PasswordCredential</credential-interface>
+			</authentication-mechanism>
+
+			<reauthentication-support>false</reauthentication-support>
+		</outbound-resourceadapter>
+
+		<inbound-resourceadapter>
+			<messageadapter>
+				<messagelistener>
+					<messagelistener-type>javax.jms.MessageListener</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+				<messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+				<messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListenerAuth</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecAuthImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+			
+				<!-- Config-Properties for testing LI2110-86 -->
+				<messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListenerConfigProperty</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecConfigPropertyImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>propertyC</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>propertyD</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>propertyE</config-property-name>
+						</required-config-property>																		
+					</activationspec>
+				</messagelistener>
+
+                <!-- MessageListener for testing LI2110-67, Complex Msg Destination -->			
+                <messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListenerCMDValid</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecCompMsgDestValidImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+				<messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListenerCMDObject</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecCompMsgDestObjectImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+				<messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListenerCMDString</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecCompMsgDestStringImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+				<messagelistener>
+					<messagelistener-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListenerCMDRequired</messagelistener-type>
+					<activationspec>
+						<activationspec-class>com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecCompMsgDestRequiredImpl</activationspec-class>
+						<!--Required Property-->
+						<required-config-property>
+							<config-property-name>name</config-property-name>
+						</required-config-property>
+						<required-config-property>
+							<config-property-name>destination</config-property-name>
+						</required-config-property>
+					</activationspec>
+				</messagelistener>
+			</messageadapter>
+		</inbound-resourceadapter>
+
+		<adminobject>
+			<adminobject-interface>com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessageProvider</adminobject-interface>
+			<adminobject-class>com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessageProviderImpl</adminobject-class>
+			<!-- Added propery_a and property_n to test LI2110-86 -->
+			<config-property>
+				<config-property-name>property_a</config-property-name>
+				<config-property-type>java.lang.String</config-property-type>
+				<config-property-value>2</config-property-value>
+			</config-property>
+			<config-property>
+				<config-property-name>property_n</config-property-name>
+				<config-property-type>java.lang.String</config-property-type>
+				<config-property-value>2</config-property-value>
+			</config-property>				
+		</adminobject>
+		<adminobject>
+			<adminobject-interface>com.ibm.ws.ejbcontainer.fat.rar.message.FVTBaseMessageProvider</adminobject-interface>
+			<adminobject-class>com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessageProviderImpl</adminobject-class>
+		</adminobject>
+						
+		<security-permission>
+	        <description>Allows the resource adapter to read the system properties in WAS. 
+	               MessageProviderImpl needs to read the transaction log file path name.
+	               Need to add this security-permission because when Java 2 security is on
+	               MessageProviderImpl cannot read the system properties and throws exceptions.
+	        </description>
+            <security-permission-spec>
+      		    grant {
+      		        permission java.lang.RuntimePermission "*", "modifyThreadGroup";
+      		        permission com.ibm.websphere.security.WebSphereRuntimePermission "accessRuntimeClasses";
+		        permission com.ibm.websphere.security.WebSphereRuntimePermission "AdminPermission";
+			permission java.lang.RuntimePermission "createClassLoader";
+			permission java.lang.RuntimePermission "getClassLoader";
+			permission java.io.FilePermission "${was.install.root}${/}etc${/}tmx4jTransform.jar", "read";
+                        permission java.lang.RuntimePermission "setContextClassLoader";
+                        permission java.io.FilePermission "${was.install.root}${/}lib${/}rsadapter.rar", "read";
+                        permission java.io.FilePermission "${user.install.root}${/}-", "read,write,delete";
+                        permission java.lang.RuntimePermission "exitVM";
+			permission java.lang.RuntimePermission "exitVM.1";
+         		permission java.lang.RuntimePermission "*";
+         		permission org.osgi.framework.ServicePermission "com.ibm.ws.asynchbeans.AsynchBeansService", "get";
+         		permission java.util.PropertyPermission "*", "read";
+         		permission java.util.PropertyPermission "*", "write";
+         		permission javax.security.auth.PrivateCredentialPermission "javax.resource.spi.security.PasswordCredential * "*"", "read";
+         		permission java.security.AllPermission;
+      	        };
+            </security-permission-spec>
+        </security-permission>
+
+	</resourceadapter>
+</connector>

@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 114580          06-11-13   balgirid Fixing username not displayed in FFDC for unsuccessful login
+#
+#
+# File com.ibm.ws.messaging.security.CWWKMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKM0000=CWWKM0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range CWWKM3001-CWWKM3101 belong to class com.ibm.ws.messaging.security
+# -------------------------------------------------------------------------------------------------
+#
+#CMVCPATHNAME New_File_For_Liberty
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Liberty Messaging Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+# -------------------------------------------------------------------------------------------------
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001=CWWKM3001E: A felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.explanation=A megadott felhaszn\u00e1l\u00f3n\u00e9v vagy jelsz\u00f3 helytelen.
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.useraction=Adjon meg \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Token Type
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002=CWWKM3002E: A megadott {0} tokent\u00edpus nem t\u00e1mogatott.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.explanation=Az \u00fcgyf\u00e9lalkalmaz\u00e1s \u00e1ltal megadott token t\u00edpus nem t\u00e1mogatott. Csak az LTPA tokenek t\u00e1mogatottak.
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.useraction=Adjon meg LTPA tokent, mert csak LTPA tokenek t\u00e1mogatottak.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003=CWWKM3003E: A konfigur\u00e1ci\u00f3 adminisztr\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.explanation=A konfigur\u00e1ci\u00f3 adminisztr\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.useraction=Ellen\u0151rizze, hogy a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s fut-e.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_SECURITY_SERVICE_MSE1004=CWWKM3004E: A biztons\u00e1gi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.explanation=A biztons\u00e1gi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. 
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.useraction=Ellen\u0151rizze, hogy a biztons\u00e1gi szolg\u00e1ltat\u00e1s fut-e.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_NOT_CONFIGURED_MSE1005=CWWKM3005E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s nincs be\u00e1ll\u00edtva.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.explanation=A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1snak be\u00e1ll\u00edtva kell lennie erre a kiszolg\u00e1l\u00f3ra.
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.useraction=\u00c1ll\u00edtson be legal\u00e1bb egy felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st (pl. LDAP, BasicUserRegistry vagy QuickStartSecurity) a kiszolg\u00e1l\u00f3ra.
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_EXCEPTION_MSE1006=CWWKM3006E: Kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s el\u00e9r\u00e9se sor\u00e1n.
+USER_REGISTRY_EXCEPTION_MSE1006.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s el\u00e9r\u00e9se sor\u00e1n.
+USER_REGISTRY_EXCEPTION_MSE1006.useraction=Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s helyesen van-e be\u00e1ll\u00edtva.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007=CWWKM3007E: A meghat\u00e1rozott konfigur\u00e1ci\u00f3 adminisztr\u00e1ci\u00f3s objektum nem tal\u00e1lhat\u00f3.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.explanation=A meghat\u00e1rozott konfigur\u00e1ci\u00f3 adminisztr\u00e1ci\u00f3s objektum nem tal\u00e1lhat\u00f3.
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.useraction=Hiba lehet a tulajdons\u00e1gmeghat\u00e1roz\u00e1sban. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban a tulajdons\u00e1gmeghat\u00e1roz\u00e1s helyes.
+
+# -------------------------------------------------------------------------------------------------
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008=CWWKM3008E: IOException t\u00f6rt\u00e9nt az adatok konfigur\u00e1ci\u00f3s f\u00e1jlb\u00f3l t\u00f6rt\u00e9n\u0151 olvas\u00e1sa sor\u00e1n.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.explanation=IOException kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a rendszer adatokat olvasott a server.xml f\u00e1jlb\u00f3l.
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.useraction=\u00c9rv\u00e9nyes\u00edtse a server.xml f\u00e1jlban megadott be\u00e1ll\u00edt\u00e1sokat.
+
+# -------------------------------------------------------------------------------------------------
+USER_NOT_AUTHENTICATED_MSE1009=CWWKM3009E: A(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a Liberty \u00fczenetkezel\u00e9si szolg\u00e1ltat\u00e1s el\u00e9r\u00e9s\u00e9re.
+USER_NOT_AUTHENTICATED_MSE1009.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik a Liberty \u00fczenetkezel\u00e9si szolg\u00e1ltat\u00e1s el\u00e9r\u00e9s\u00e9hez sz\u00fcks\u00e9ges enged\u00e9llyel.
+USER_NOT_AUTHENTICATED_MSE1009.useraction=Adjon meg olyan \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3nevet, amely hiteles\u00edtett a Liberty \u00fczenetkezel\u00e9si szolg\u00e1ltat\u00e1s el\u00e9r\u00e9s\u00e9re.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+# {1} - Action Name
+# {2} - Destination
+USER_NOT_AUTHORIZED_MSE1010=CWWKM3010W: A(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a(z) {1} m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a(z) {2} c\u00e9lon.
+USER_NOT_AUTHORIZED_MSE1010.explanation=A megadott felhaszn\u00e1l\u00f3 nem jogosult a megjel\u00f6lt m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a jelzett c\u00e9lon.
+USER_NOT_AUTHORIZED_MSE1010.useraction=Adjon meg olyan felhaszn\u00e1l\u00f3t, amely jogosult a megadott m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a jelzett c\u00e9lon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011=CWWKM3011E: A felhaszn\u00e1l\u00f3 nem rendelkezik jogosults\u00e1ggal a Liberty \u00fczenetkezel\u00e9si szolg\u00e1ltat\u00e1shoz t\u00f6rt\u00e9n\u0151 csatlakoz\u00e1shoz.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.explanation=A felhaszn\u00e1l\u00f3 nem jogosult a Liberty \u00fczenetkezel\u00e9si szolg\u00e1ltat\u00e1sokhoz csatlakozni.
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.useraction=Adjon meg olyan felhaszn\u00e1l\u00f3t, amely jogosult a Liberty \u00fczenetkezel\u00e9si szolg\u00e1ltat\u00e1s el\u00e9r\u00e9s\u00e9re.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Role name which has duplicate entry
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012=CWWKM3012W: A(z) {0} n\u00e9v m\u00e1r m\u00e1sik szerephez van felhaszn\u00e1lva.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.explanation=Egy nevet nem lehet t\u00f6bb szerephez felhaszn\u00e1lni.
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.useraction=Adjon meg m\u00e1sik nevet, hogy elker\u00fclje egy szerep eset\u00e9ben a t\u00f6bbsz\u00f6r szerepl\u0151 bejegyz\u00e9seket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Action Name
+# {1} - Destination
+USER_NOT_AUTHORIZED_MSE1013=CWWKM3013W: A felhaszn\u00e1l\u00f3 nem jogosult a(z) {0} m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a(z) {1} c\u00e9lon.
+USER_NOT_AUTHORIZED_MSE1013.explanation=A felhaszn\u00e1l\u00f3 nem jogosult a megadott m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a jelzett c\u00e9lon.
+USER_NOT_AUTHORIZED_MSE1013.useraction=Adjon meg olyan felhaszn\u00e1l\u00f3t, amely jogosult a megadott m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a jelzett c\u00e9lon.

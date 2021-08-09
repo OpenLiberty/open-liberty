@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.webservices.javaee.common/resources/com/ibm/ws/webservices/javaee/common/resources/WsEECommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere WebServices EE Common Code
+#RANGE 0300-0399
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#{0}=service impl bean link
+warn.dd.invalid.portcomponentname=CWWKW0300W: Prvek <port-component-name> pro {0} v souboru webservices.xml m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00fd.
+warn.dd.invalid.portcomponentname.explanation=Prvek <port-component-name> nesm\u00ed m\u00edt hodnotu null ani b\u00fdt pr\u00e1zdn\u00fd.
+warn.dd.invalid.portcomponentname.useraction=Ujist\u011bte se, \u017ee prvek <port-component-name> nem\u00e1 hodnotu null a nen\u00ed pr\u00e1zdn\u00fd.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.protocolbinding=CWWKW0301W: Hodnota {0} prvku <protocol-binding> nen\u00ed platnou hodnotou komponenty portu {1} v souboru webservices.xml.
+warn.dd.invalid.protocolbinding.explanation=Hodnota prvku <protocol-binding> v souboru webservices.xml mus\u00ed b\u00fdt jedna z t\u011bchto adres URL: ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") nebo jejich alias ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP.
+warn.dd.invalid.protocolbinding.useraction=Pou\u017eijte pro vazbu protokolu n\u011bkterou z n\u00e1sleduj\u00edc\u00edch adres URL ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") nebo jejich alias ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlservice=CWWKW0302W: Hodnota {0} prvku <wsdl-service> nen\u00ed hodnota \u00fapln\u00e9ho n\u00e1zvu komponenty portu {1} v souboru webservices.xml.
+warn.dd.invalid.wsdlservice.explanation=Hodnota prvku <wsdl-service> v souboru webservices.xml mus\u00ed b\u00fdt \u00fapln\u00fd n\u00e1zev.
+warn.dd.invalid.wsdlservice.useraction=Pou\u017eijte pro prvek <wsdl-service> v souboru webservices.xml \u00fapln\u00fd n\u00e1zev. \u00dapln\u00fd n\u00e1zev by m\u011bl obsahovat obor n\u00e1zv\u016f XML a lok\u00e1ln\u00ed n\u00e1zev. Prvek <wsdl-service> by m\u011bl b\u00fdt v souboru webservices.xml definov\u00e1n nap\u0159\u00edklad jako <wsdl-service xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLService</wsdl-service>.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlport=CWWKW0303W: Hodnota {0} prvku <wsdl-port> nen\u00ed hodnota \u00fapln\u00e9ho n\u00e1zvu komponenty portu {1} v souboru webservices.xml.
+warn.dd.invalid.wsdlport.explanation=Hodnota prvku <wsdl-port> v souboru webservices.xml mus\u00ed b\u00fdt \u00fapln\u00fd n\u00e1zev. 
+warn.dd.invalid.wsdlport.useraction=Pou\u017eijte pro prvek <wsdl-port> v souboru webservices.xml \u00fapln\u00fd n\u00e1zev. \u00dapln\u00fd n\u00e1zev by m\u011bl obsahovat obor n\u00e1zv\u016f XML a lok\u00e1ln\u00ed n\u00e1zev. Prvek <wsdl-port> by m\u011bl b\u00fdt v souboru webservices.xml definov\u00e1n nap\u0159\u00edklad jako <wsdl-port xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLPort</wsdl-port>.
+
+#{0}=namespace of the port qname
+#{1}=value
+#{2}=port component name
+warn.dd.invalid.namespace.of.wsdlport=CWWKW0304W: Obor n\u00e1zv\u016f {0} s hodnotou {1} v prvku <wsdl-port> je pro komponentu portu {2} v souboru webservices.xml neplatn\u00fd.
+warn.dd.invalid.namespace.of.wsdlport.explanation=Pokud je zad\u00e1n obor n\u00e1zv\u016f prvku <wsdl-port>, mus\u00ed se shodovat s oborem n\u00e1zv\u016f zadan\u00fdm v prvku <wsdl-service>. 
+warn.dd.invalid.namespace.of.wsdlport.useraction=Zadejte obor n\u00e1zv\u016f, kter\u00fd se bude shodovat s oborem n\u00e1zv\u016f zadan\u00fdm v prvku <wsdl-service>. 
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.serviceendpointinterface=CWWKW0305W: Hodnota {0} prvku <service-endpoint-interface> nen\u00ed \u00fapln\u00fd n\u00e1zev t\u0159\u00eddy komponenty portu {1} v souboru webservices.xml.
+warn.dd.invalid.serviceendpointinterface.explanation=Hodnota prvku <service-endpoint-interface> v souboru webservices.xml mus\u00ed b\u00fdt \u00fapln\u00fd n\u00e1zev t\u0159\u00eddy.
+warn.dd.invalid.serviceendpointinterface.useraction=Pou\u017eijte pro prvek <service-endpoint-interface> v souboru webservices.xml \u00fapln\u00fd n\u00e1zev t\u0159\u00eddy. \u00dapln\u00fd n\u00e1zev t\u0159\u00eddy by m\u011bl vypadat p\u0159ibli\u017en\u011b takto: <n\u00e1zev_bal\u00edku>.<n\u00e1zev_t\u0159\u00eddy>, nap\u0159\u00edklad com.ibm.ws.example.MyService.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.mtomthreshold=CWWKW0306W: Hodnota {0} prvku <mtom-threshold> pro komponentu portu {1} v souboru webservices.xml je z\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo.
+warn.dd.invalid.mtomthreshold.explanation=Hodnota prvku <mtom-threshold> v souboru webservices.xml mus\u00ed b\u00fdt nez\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo.
+warn.dd.invalid.mtomthreshold.useraction=Pou\u017eijte pro prvek <mtom-threshold> v souboru webservices.xml nez\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.enablemtom=CWWKW0307W: Hodnota {0} prvku <enable-mtom> nen\u00ed logick\u00e1 hodnota komponenty portu {1} v souboru webservices.xml.
+warn.dd.invalid.enablemtom.explanation=Hodnota prvku <enable-mtom> v souboru webservices.xml mus\u00ed b\u00fdt logick\u00e1 hodnota.
+warn.dd.invalid.enablemtom.useraction=Nastavte hodnotu prvku <enable-mtom> na true nebo false.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.respectbinding=CWWKW0308W: Hodnota {0} prvku <enabled> v prvku <respect-binding> nen\u00ed logick\u00e1 hodnota komponenty portu {1} v souboru webservices.xml.
+warn.dd.invalid.respectbinding.explanation=Hodnota prvku <enabled> definovan\u00e9ho v prvku <respect-binding> mus\u00ed b\u00fdt logick\u00e1 hodnota.
+warn.dd.invalid.respectbinding.useraction=Nastavte hodnotu prvku <enabled> na true nebo false.
+
+#{0}=value
+#{1}=element tag
+#{2}=port component name
+warn.dd.invalid.addressing=CWWKW0309W: Hodnota {0} prvku {1} v prvku <addressing> nen\u00ed logick\u00e1 hodnota komponenty portu {2} v souboru webservices.xml.
+warn.dd.invalid.addressing.explanation=Hodnota prvku <enabled> nebo <required> definovan\u00e1 v prvku <addressing> mus\u00ed b\u00fdt logick\u00e1 hodnota.
+warn.dd.invalid.addressing.useraction=Nastavte hodnotu prvku <enabled> nebo <required> na true nebo false.
+
+#{0}=element tag
+#{1}=port component name
+warn.dd.invalid.handler=CWWKW0310W: V prvku <handler> komponenty portu {1} v souboru webservices.xml chyb\u00ed prvek {0}.
+warn.dd.invalid.handler.explanation=Kdy\u017e je nastavena obslu\u017en\u00e1 rutina, je prvek <handler-class> a prvek <handler-name> povinn\u00fd.
+warn.dd.invalid.handler.useraction=Nastavte prvek <handler-class> a prvek <handler-name> na platnou obslu\u017enou rutinu. Hodnota prvku <handler-name> mus\u00ed b\u00fdt v tomt\u00e9\u017e souboru webservices.xml jedine\u010dn\u00fd n\u00e1zev. Hodnotou prvku <handler-class> mus\u00ed b\u00fdt \u00fapln\u00fd n\u00e1zev t\u0159\u00eddy. \u00dapln\u00fd n\u00e1zev t\u0159\u00eddy by m\u011bl vypadat p\u0159ibli\u017en\u011b takto: <n\u00e1zev_bal\u00edku>.<n\u00e1zev_t\u0159\u00eddy>, nap\u0159\u00edklad com.ibm.ws.example.MyHandler.

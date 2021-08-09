@@ -1,0 +1,519 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Message component file for Exception messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SIRC0001=CWSIK0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - All msgs are for use by the Exception Destination mechanism. These messages
+#       - will be exposed to the user when a message cannot be delivered.
+#
+#   - Developers: Please ensure that every message in this message file is
+#       - only used once. Servicability requirements mean we need to be able
+#       - determine exactly who decided to reroute a message to the exception
+#       - destination. In addition, please ensure that you add as much useful
+#       - information as possible. Remember that the exception destination
+#       - may be on a different server.
+#
+#		**** IMPORTANT ***
+#       Please ensure EVERY message added has a corresponding reason code
+#		in com/ibm/websphere/sib/SIRCConstants.java
+#       ******************
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4
+#
+#CMVCPATHNAME ws/code/sib.mfp.api/com/ibm/websphere/sib/CWSIKMessages.nlsprops
+#COMPONENTPREFIX CWSIK
+#COMPONENTNAMEFOR CWSIK SIBus Return Codes
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# SIRC (Service Integration Return Code) messages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# Note to developers: Notice that this message has NO useful inserts. It is the default used by
+# by SICoreException if no exception reason is provided to the SICoreException. NO CODE MAY
+# CONSTRUCT AN SICOREEXCEPTION WITHOUT PROVIDING AN EXCEPTION REASON. ANY CODE THAT DOES WILL
+# BE CAUSING A SERVICABILITY PROBLEM AND (IF DISCOVERED) WILL RESULT IN A DEFECT
+DELIVERY_ERROR_SIRC_1=CWSIK0001E: Do\u0161lo k intern\u00ed chyb\u011b.
+DELIVERY_ERROR_SIRC_1.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_1.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_2=CWSIK0002E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je fronta, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala prostor t\u00e9matu.
+DELIVERY_ERROR_SIRC_2.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_2.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_3=CWSIK0003E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je fronta, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala slu\u017ebu.
+DELIVERY_ERROR_SIRC_3.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_3.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_4=CWSIK0004E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je fronta, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala port.
+DELIVERY_ERROR_SIRC_4.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_4.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_5=CWSIK0005E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je slu\u017eba, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala frontu.
+DELIVERY_ERROR_SIRC_5.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_5.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_6=CWSIK0006E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je slu\u017eba, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala prostor t\u00e9matu.
+DELIVERY_ERROR_SIRC_6.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_6.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_7=CWSIK0007E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je slu\u017eba, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala port.
+DELIVERY_ERROR_SIRC_7.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_7.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_8=CWSIK0008E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je port, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala frontu.
+DELIVERY_ERROR_SIRC_8.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_8.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_9=CWSIK0009E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je port, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala prostor t\u00e9matu.
+DELIVERY_ERROR_SIRC_9.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_9.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_10=CWSIK0010E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je port, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala slu\u017ebu.
+DELIVERY_ERROR_SIRC_10.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_10.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_11=CWSIK0011E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je prostor t\u00e9matu, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala frontu.
+DELIVERY_ERROR_SIRC_11.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_11.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_12=CWSIK0012E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je prostor t\u00e9matu, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala slu\u017ebu.
+DELIVERY_ERROR_SIRC_12.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_12.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_13=CWSIK0013E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je prostor t\u00e9matu, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala port.
+DELIVERY_ERROR_SIRC_13.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_13.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# {0} The destination name
+# {1} The messaging engine name.
+# {2} The destination Type
+# {3} The expected destination type
+DELIVERY_ERROR_SIRC_14=CWSIK0014E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} je typu {2}, ale p\u0159ipojuj\u00edc\u00ed se aplikace po\u017eadovala nezn\u00e1m\u00fd typ {3}.
+DELIVERY_ERROR_SIRC_14.explanation=Aplikace se p\u0159ipojila k stroji syst\u00e9mu zpr\u00e1v a vy\u017e\u00e1dala si typ c\u00edle, kter\u00fd neodpov\u00edd\u00e1 z\u00e1kladn\u00edmu typu c\u00edle.
+DELIVERY_ERROR_SIRC_14.useraction=Opravte p\u0159ipojuj\u00edc\u00ed se aplikaci nebo pomoc\u00ed administrativn\u00ed konzoly zm\u011b\u0148te m\u00edsto ur\u010den\u00ed na po\u017eadovan\u00fd typ.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# {0} is the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_15=CWSIK0015E: M\u00edsto ur\u010den\u00ed {0} nebylo ve stroji syst\u00e9mu zpr\u00e1v {1} nalezeno.
+DELIVERY_ERROR_SIRC_15.explanation=Pojmenovan\u00e9 m\u00edsto ur\u010den\u00ed je nezn\u00e1m\u00e9 v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v.
+DELIVERY_ERROR_SIRC_15.useraction=Ov\u011b\u0159te, zda je n\u00e1zev m\u00edsta ur\u010den\u00ed spr\u00e1vn\u00fd a zda jste m\u00edsto ur\u010den\u00ed na sb\u011brnici vytvo\u0159ili. Pokud m\u00edsto ur\u010den\u00ed existuje v jin\u00e9m stroji syst\u00e9mu zpr\u00e1v, ov\u011b\u0159te, zda funguje komunikace s t\u00edmto jin\u00fdm strojem syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# {0} The destination address
+DELIVERY_ERROR_SIRC_16=CWSIK0016E: Transakce pou\u017eit\u00e1 pro odesl\u00e1n\u00ed v m\u00edst\u011b ur\u010den\u00ed: {0} ji\u017e byla dokon\u010dena.
+DELIVERY_ERROR_SIRC_16.explanation=Do\u0161lo k pokusu o proveden\u00ed transakce, kter\u00e1 ji\u017e byla dokon\u010dena.
+DELIVERY_ERROR_SIRC_16.useraction=P\u0159esv\u011bd\u010dte se, zda je pou\u017eitou transakc\u00ed nov\u00e1 transakce.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_17=CWSIK0017E: Nen\u00ed povoleno odes\u00edl\u00e1n\u00ed do m\u00edsta ur\u010den\u00ed s n\u00e1zvem {0} ve stroji syst\u00e9mu zpr\u00e1v {1}.
+DELIVERY_ERROR_SIRC_17.explanation=Do\u0161lo k pokusu o odesl\u00e1n\u00ed zpr\u00e1vy do m\u00edsta ur\u010den\u00ed a byla provedena kontrola k zaji\u0161t\u011bn\u00ed, \u017ee je odesl\u00e1n\u00ed do tohoto m\u00edsta ur\u010den\u00ed povoleno. Tato kontrola selhala, proto\u017ee odes\u00edl\u00e1n\u00ed do tohoto m\u00edsta ur\u010den\u00ed nen\u00ed povoleno.
+DELIVERY_ERROR_SIRC_17.useraction=Aktualizujte m\u00edsto ur\u010den\u00ed tak, aby bylo odes\u00edl\u00e1n\u00ed povoleno, a zpr\u00e1vu znovu ode\u0161lete.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# {0} The destination name
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_18=CWSIK0018E: P\u0159\u00edstup pro odes\u00edl\u00e1n\u00ed do m\u00edsta ur\u010den\u00ed {0} byl pro u\u017eivatele s p\u0159edm\u011btem {1} odep\u0159en.
+DELIVERY_ERROR_SIRC_18.explanation=U\u017eivatel nem\u00e1 p\u0159\u00edslu\u0161nou autorizaci pro odes\u00edl\u00e1n\u00ed do m\u00edsta ur\u010den\u00ed.
+DELIVERY_ERROR_SIRC_18.useraction=M\u00e1-li m\u00edt u\u017eivatel autorizaci odes\u00edlat zpr\u00e1vy v dan\u00e9m m\u00edst\u011b ur\u010den\u00ed, aktualizujte opr\u00e1vn\u011bn\u00ed autorizace u\u017eivatele pro dan\u00e9 m\u00edsto ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# {0} The destination prefix
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_19=CWSIK0019E: U\u017eivatel {1} nem\u00e1 p\u0159\u00edslu\u0161nou autorizaci pro odes\u00edl\u00e1n\u00ed do do\u010dasn\u00fdch m\u00edst ur\u010den\u00ed s p\u0159edponou {0}.
+DELIVERY_ERROR_SIRC_19.explanation=U\u017eivatel nem\u00e1 p\u0159\u00edslu\u0161nou autorizaci pro odes\u00edl\u00e1n\u00ed do do\u010dasn\u00fdch m\u00edst ur\u010den\u00ed s uvedenou p\u0159edponou.
+DELIVERY_ERROR_SIRC_19.useraction=M\u00e1-li m\u00edt u\u017eivatel autorizaci odes\u00edlat zpr\u00e1vy do dan\u00e9ho do\u010dasn\u00e9ho c\u00edle, aktualizujte opr\u00e1vn\u011bn\u00ed autorizace u\u017eivatele pro dan\u00e9 do\u010dasn\u00e9 m\u00edsto ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# {0} The destination name
+# {1} The discriminator name
+# {2} The user attempting the operation
+DELIVERY_ERROR_SIRC_20=CWSIK0020E: P\u0159\u00edstup pro odes\u00edl\u00e1n\u00ed do diskrimin\u00e1toru {1} v m\u00edst\u011b ur\u010den\u00ed {0} byl pro u\u017eivatele s p\u0159edm\u011btem {2} odep\u0159en.
+DELIVERY_ERROR_SIRC_20.explanation=U\u017eivatel nem\u00e1 p\u0159\u00edslu\u0161nou autorizaci pro odes\u00edl\u00e1n\u00ed do m\u00edsta ur\u010den\u00ed pomoc\u00ed zadan\u00e9ho t\u00e9matu.
+DELIVERY_ERROR_SIRC_20.useraction=M\u00e1-li m\u00edt u\u017eivatel autorizaci odes\u00edlat zpr\u00e1vy s dan\u00fdm t\u00e9matem, aktualizujte opr\u00e1vn\u011bn\u00ed autorizace u\u017eivatele pro dan\u00e9 t\u00e9ma v dan\u00e9m m\u00edst\u011b ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_21=CWSIK0021E: Relace producenta je zav\u0159en\u00e1 v m\u00edst\u011b ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} a nelze ji pou\u017e\u00edvat.
+DELIVERY_ERROR_SIRC_21.explanation=Producent byl zav\u0159en a nelze jej pou\u017e\u00edvat v zadan\u00e9m m\u00edst\u011b ur\u010den\u00ed.
+DELIVERY_ERROR_SIRC_21.useraction=Vytvo\u0159te novou relaci producenta pro dan\u00e9 m\u00edsto ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# {0} The messaging engine name
+DELIVERY_ERROR_SIRC_22=CWSIK0022E: P\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v {0} je zav\u0159en\u00e9 a nelze je pou\u017e\u00edvat.
+DELIVERY_ERROR_SIRC_22.explanation=P\u0159ipojen\u00ed je zav\u0159en\u00e9 a nelze je pou\u017e\u00edvat pro \u017e\u00e1dnou operaci.
+DELIVERY_ERROR_SIRC_22.useraction=Vytvo\u0159te nov\u00e9 p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# {0}  The destination name that could not be found
+# {1} The reason for failing to put the message to the exception destination
+# {2} The related error
+# {3} The current destination
+DELIVERY_ERROR_SIRC_23=CWSIK0023E: Pokus o sm\u011brov\u00e1n\u00ed zpr\u00e1vy do c\u00edle v\u00fdjimek v m\u00edst\u011b ur\u010den\u00ed {3} zp\u016fsoben\u00fd  m\u00edstem ur\u010den\u00ed cesty dop\u0159edn\u00e9ho sm\u011brov\u00e1n\u00ed {0} selhal z p\u0159\u00ed\u010diny {1} se souvisej\u00edc\u00ed chybou {2}.
+DELIVERY_ERROR_SIRC_23.explanation=Dal\u0161\u00ed m\u00edsto ur\u010den\u00ed v cest\u011b sm\u011brov\u00e1n\u00ed p\u0159ed\u00e1n\u00ed nebylo mo\u017en\u00e9 naj\u00edt. Zpr\u00e1va byla sm\u011brov\u00e1na do c\u00edle v\u00fdjimek, ale do\u0161lo k chyb\u011b p\u0159i sm\u011brov\u00e1n\u00ed zpr\u00e1vy do c\u00edle v\u00fdjimek.
+DELIVERY_ERROR_SIRC_23.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# {0} the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_24=CWSIK0024E: V m\u00edst\u011b ur\u010den\u00ed {0} je zak\u00e1z\u00e1no odes\u00edl\u00e1n\u00ed pro stroj syst\u00e9mu zpr\u00e1v {1}.
+DELIVERY_ERROR_SIRC_24.explanation=Do\u0161lo k pokusu o odesl\u00e1n\u00ed zpr\u00e1vy do m\u00edsta ur\u010den\u00ed a byla provedena kontrola k zaji\u0161t\u011bn\u00ed, \u017ee je pro toto m\u00edsto ur\u010den\u00ed k dispozici bod fronty. Tato kontrola selhala, proto\u017ee jedin\u00fd bod fronty pro toto m\u00edsto ur\u010den\u00ed nem\u00e1 povoleno odes\u00edl\u00e1n\u00ed.
+DELIVERY_ERROR_SIRC_24.useraction=Aktualizujte bod fronty pro m\u00edsto ur\u010den\u00ed tak, aby bylo odes\u00edl\u00e1n\u00ed povoleno, a zopakujte operaci odesl\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# {0} is the name of the Destination
+# {1} The name of the messaging engine.
+DELIVERY_ERROR_SIRC_25=CWSIK0025E: M\u00edsto ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1} nen\u00ed dostupn\u00e9, proto\u017ee ji\u017e bylo dosa\u017eeno horn\u00edho limitu po\u010dtu zpr\u00e1v pro toto m\u00edsto ur\u010den\u00ed.
+DELIVERY_ERROR_SIRC_25.explanation=V\u0161echny body front pro pojmenovan\u00e9 m\u00edsto ur\u010den\u00ed nebo p\u0159enosov\u00e9 fronty na tomto stroji syst\u00e9mu zpr\u00e1v vedouc\u00ed do m\u00edsta ur\u010den\u00ed ji\u017e dos\u00e1hly konfigurovan\u00e9ho nejvy\u0161\u0161\u00edho limitu, tak\u017ee zpr\u00e1vu nelze p\u0159ijmout.
+DELIVERY_ERROR_SIRC_25.useraction=Ov\u011b\u0159te, zda je konfigurovan\u00fd horn\u00ed limit po\u010dtu zpr\u00e1v u m\u00edsta ur\u010den\u00ed spr\u00e1vn\u00fd. Pokud m\u00edsto ur\u010den\u00ed existuje v jin\u00e9m stroji syst\u00e9mu zpr\u00e1v, ov\u011b\u0159te, zda funguje komunikace s t\u00edmto jin\u00fdm strojem syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_26=CWSIK0026E: Pro m\u00edsto ur\u010den\u00ed {0} nebyly nalezeny \u017e\u00e1dn\u00e9 povolen\u00e9 adresovateln\u00e9 body zpr\u00e1v.
+DELIVERY_ERROR_SIRC_26.explanation=Byl u\u010din\u011bn pokus pou\u017e\u00edt m\u00edsto ur\u010den\u00ed, ale \u017e\u00e1dn\u00e9 body zpr\u00e1v pro dan\u00e9 m\u00edsto ur\u010den\u00ed nejsou adresovateln\u00e9 z p\u0159\u00ed\u010diny omezen\u00ed, mo\u017en\u00e1 pou\u017eit\u00edm aliasu nebo vazeb k bodu zpr\u00e1v, kter\u00fd je nyn\u00ed odstran\u011bn.
+DELIVERY_ERROR_SIRC_26.useraction=Pokud se jedn\u00e1 o zpr\u00e1vu odpov\u011bdi, stroj syst\u00e9mu zpr\u00e1v mohl b\u00fdt specifikov\u00e1n v p\u016fvodn\u00ed zpr\u00e1v\u011b po\u017eadavku a bod zpr\u00e1v pro toto m\u00edsto ur\u010den\u00ed mohl b\u00fdt ji\u017e odstran\u011bn. Pokud bylo pou\u017eito m\u00edsto ur\u010den\u00ed s aliasem, kter\u00fd omezuje adresovateln\u00e9 body zpr\u00e1v c\u00edlov\u00e9ho m\u00edsta ur\u010den\u00ed, opravte alias tak, aby identifikoval spr\u00e1vnou sadu bod\u016f zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# {0} is the destination name
+DELIVERY_ERROR_SIRC_27=CWSIK0027E: M\u00edsto ur\u010den\u00ed s n\u00e1zvem {0} je po\u0161kozen\u00e9.
+DELIVERY_ERROR_SIRC_27.explanation=M\u00edsto ur\u010den\u00ed s dan\u00fdm n\u00e1zvem je po\u0161kozen\u00e9 a nelze je pou\u017e\u00edvat.
+DELIVERY_ERROR_SIRC_27.useraction=Obnovte m\u00edsto ur\u010den\u00ed z administrativn\u00ed konzoly.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+# {2} is the alias resolution path
+DELIVERY_ERROR_SIRC_28=CWSIK0028E: M\u00edsto ur\u010den\u00ed s aliasem {0} nelze vy\u0159e\u0161it, proto\u017ee c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed {1} neexistuje v cest\u011b aliasu {2}.
+DELIVERY_ERROR_SIRC_28.explanation=C\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed v cest\u011b aliasu je nezn\u00e1m\u00e9 v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v.
+DELIVERY_ERROR_SIRC_28.useraction=Definujte c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed nebo opravte nespr\u00e1vn\u00fd alias v administrativn\u00ed konzole.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# {0} is the name of the alias destination
+# {1} is the name of the service destination
+# {2} is the alias resolution path
+# {3} The name of the messaging engine bus
+DELIVERY_ERROR_SIRC_29=CWSIK0029E: Do\u0161lo k chyb\u011b, proto\u017ee m\u00edsto ur\u010den\u00ed s aliasem {0} m\u00e1 za c\u00edl m\u00edsto ur\u010den\u00ed slu\u017eby {1} s cestou {2} ve sb\u011brnici stroje syst\u00e9mu zpr\u00e1v {3}.
+DELIVERY_ERROR_SIRC_29.explanation=M\u00edsto ur\u010den\u00ed s aliasem nen\u00ed platn\u00e9, proto\u017ee m\u00e1 za c\u00edl m\u00edsto ur\u010den\u00ed slu\u017eby.
+DELIVERY_ERROR_SIRC_29.useraction=Odeberte c\u00edl m\u00edsta ur\u010den\u00ed slu\u017eby zm\u011bnou alias\u016f v cest\u011b v administrativn\u00ed konzole.
+
+# -------------------------------------------------------------------------------------------------
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# {0} is the name of the link
+# {1} is the link UUID
+# {2} is the Bus Name
+DELIVERY_ERROR_SIRC_30=CWSIK0030E: Propojen\u00ed s n\u00e1zvem {0} a identifik\u00e1torem UUID {1} nebylo p\u0159i vytv\u00e1\u0159en\u00ed sb\u011brnice {2} nalezeno.
+DELIVERY_ERROR_SIRC_30.explanation=Pojmenovan\u00e9 propojen\u00ed je nezn\u00e1m\u00e9 v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v, tak\u017ee pokus o vytvo\u0159en\u00ed pojmenovan\u00e9 sb\u011brnice selhal.
+DELIVERY_ERROR_SIRC_30.useraction=Ov\u011b\u0159te, zda je n\u00e1zev propojen\u00ed spr\u00e1vn\u00fd a definovan\u00fd v administrativn\u00ed konzole dan\u00e9 sb\u011brnice. Ov\u011b\u0159te, zda je u stroje syst\u00e9mu zpr\u00e1v pou\u017eita nejnov\u011bj\u0161\u00ed konfigurace.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_31=CWSIK0031E: M\u00edsto ur\u010den\u00ed {0} ji\u017e existuje.
+DELIVERY_ERROR_SIRC_31.explanation=Pojmenovan\u00e9 m\u00edsto ur\u010den\u00ed je ji\u017e zn\u00e1m\u00e9 v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v, tak\u017ee pokus o jeho vytvo\u0159en\u00ed selhal.
+DELIVERY_ERROR_SIRC_31.useraction=Ujist\u011bte se, \u017ee je konfigurace m\u00edsta ur\u010den\u00ed v administrativn\u00ed konzole spr\u00e1vn\u00e1, a restartujte server.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# {0} is the name of the destination
+# {1} The messaging engine name
+DELIVERY_ERROR_SIRC_32=CWSIK0032E: M\u00edsto ur\u010den\u00ed nebo ciz\u00ed sb\u011brnice {0} byly odstran\u011bny ve stroji syst\u00e9mu zpr\u00e1v {1}.
+DELIVERY_ERROR_SIRC_32.explanation=M\u00edsto ur\u010den\u00ed nebo ciz\u00ed sb\u011brnice nejsou nad\u00e1le pou\u017eiteln\u00e9, proto\u017ee byly odstran\u011bny.
+DELIVERY_ERROR_SIRC_32.useraction=P\u0159i odes\u00edl\u00e1n\u00ed zpr\u00e1v ur\u010dete platn\u00e9 m\u00edsto ur\u010den\u00ed nebo ciz\u00ed sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# {0}  The messages reliability
+# {1}  The destinations reliability
+# {2}  The destinations name.
+# {3}  The messaging engine name.
+DELIVERY_ERROR_SIRC_33=CWSIK0033E: Hodnota spolehlivosti zpr\u00e1vy {0} je vy\u0161\u0161\u00ed ne\u017e hodnota spolehlivosti m\u00edsta ur\u010den\u00ed {1} pro m\u00edsto ur\u010den\u00ed {2} ve stroji syst\u00e9mu zpr\u00e1v {3}.
+DELIVERY_ERROR_SIRC_33.explanation=Do\u0161lo k pokusu sm\u011brovat zpr\u00e1vu do m\u00edsta ur\u010den\u00ed, ale zpr\u00e1va m\u00e1 vy\u0161\u0161\u00ed spolehlivost ne\u017e m\u016f\u017ee m\u00edsto ur\u010den\u00ed podporovat.
+DELIVERY_ERROR_SIRC_33.useraction=Aktualizujte m\u00edsto ur\u010den\u00ed tak, aby podporovalo zpr\u00e1vy s vy\u0161\u0161\u00ed spolehlivost\u00ed, nebo redukujte spolehlivost odes\u00edlan\u00e9 zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+# {0} the name of the service destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_34=CWSIK0034E: Cesta dop\u0159edn\u00e9ho sm\u011brov\u00e1n\u00ed neobsahuje \u017e\u00e1dn\u00e9 z\u00e1znamy pro tento c\u00edl slu\u017eby: {0} v tomto stroji syst\u00e9mu zpr\u00e1v: {1}.
+DELIVERY_ERROR_SIRC_34.explanation=Do\u0161lo k pokusu pou\u017e\u00edt c\u00edl slu\u017eby, p\u0159i\u010dem\u017e cesta pro sm\u011brov\u00e1n\u00ed p\u0159ed\u00e1v\u00e1n\u00ed byla pr\u00e1zdn\u00e1.
+DELIVERY_ERROR_SIRC_34.useraction=C\u00edl slu\u017eby mus\u00ed m\u00edt ve sv\u00e9 cest\u011b sm\u011brov\u00e1n\u00ed p\u0159ed\u00e1v\u00e1n\u00ed zprost\u0159edkovan\u00e1 m\u00edsta ur\u010den\u00ed. Opravte cestu a zopakujte akci.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination to which we were delivering
+# {1} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_35=CWSIK0035E: Zpr\u00e1vu nelze doru\u010dit do m\u00edsta ur\u010den\u00ed {0} ve stroji syst\u00e9mu zpr\u00e1v {1}, proto\u017ee byla odvol\u00e1na v\u00edcekr\u00e1t ne\u017e ur\u010duje jeho prahov\u00e1 hodnota opakovan\u00e9ho doru\u010den\u00ed.
+DELIVERY_ERROR_SIRC_35.explanation=Zpr\u00e1vu nelze doru\u010dit, proto\u017ee ka\u017ed\u00fd pokus o potvrzen\u00ed transakce, kter\u00e1 doru\u010d\u00ed zpr\u00e1vu, skon\u010dil ne\u00fasp\u011b\u0161n\u011b.
+DELIVERY_ERROR_SIRC_35.useraction=Zjist\u011bte p\u0159\u00ed\u010dinu odvol\u00e1n\u00ed transakc\u00ed. Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro server WebSphere Application Server na adrese http://www.ibm.com/software/webserver/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination from which the message was rerouted
+# {2} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_36=CWSIK0036E: Zpr\u00e1va {0} byla administrativn\u011b p\u0159esm\u011brov\u00e1na z {1} ve stroji syst\u00e9mu zpr\u00e1v {2}.
+DELIVERY_ERROR_SIRC_36.explanation=Zpr\u00e1va byla odebr\u00e1na z dan\u00e9ho c\u00edle a p\u0159esunuta do c\u00edle v\u00fdjimek.
+DELIVERY_ERROR_SIRC_36.useraction=Tato zpr\u00e1va je pouze informativn\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the destination that was invalid
+# {1} identifies the messaging engine where the destination is located
+# {2} identifies the last valid destination in the path
+# {3} identified the exception caused by the invalid destination
+DELIVERY_ERROR_SIRC_37=CWSIK0037E: Zpr\u00e1vu nebylo mo\u017en\u00e9 doru\u010dit, proto\u017ee jej\u00ed cesta sm\u011brov\u00e1n\u00ed obsahovala nespr\u00e1vn\u00e9 m\u00edsto ur\u010den\u00ed {0}. Posledn\u00ed platn\u00e9 m\u00edsto ur\u010den\u00ed bylo {2} ve stroji syst\u00e9mu zpr\u00e1v {3}. M\u00edsto ur\u010den\u00ed bylo nespr\u00e1vn\u00e9 kv\u016fli v\u00fdjimce {3}.
+DELIVERY_ERROR_SIRC_37.explanation=Zpr\u00e1va nemohla proj\u00edt dodanou cestu sm\u011brov\u00e1n\u00ed, proto\u017ee cesta obsahovala nespr\u00e1vn\u00e9 m\u00edsto ur\u010den\u00ed.
+DELIVERY_ERROR_SIRC_37.useraction=Ov\u011b\u0159te, zda jsou k dispozici m\u00edsta ur\u010den\u00ed v cest\u011b sm\u011brov\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_38=CWSIK0038E: Ciz\u00ed sb\u011brnice s n\u00e1zvem {0} nebyla ve stroji syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} nalezena.
+DELIVERY_ERROR_SIRC_38.explanation=Uveden\u00e1 ciz\u00ed sb\u011brnice je v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v nezn\u00e1m\u00e1.
+DELIVERY_ERROR_SIRC_38.useraction=Ov\u011b\u0159te, zda je n\u00e1zev ciz\u00ed sb\u011brnice spr\u00e1vn\u00fd. Ov\u011b\u0159te, \u017ee byl odkaz na ciz\u00ed sb\u011brnici definov\u00e1n, a zopakujte p\u0159\u00edkaz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_39=CWSIK0039E: Ciz\u00ed sb\u011brnice s n\u00e1zvem {0} nebyla ve stroji syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} v d\u016fsledku v\u00fdskytu chyby {3} nalezena.
+DELIVERY_ERROR_SIRC_39.explanation=Uveden\u00e1 ciz\u00ed sb\u011brnice je v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v nezn\u00e1m\u00e1.
+DELIVERY_ERROR_SIRC_39.useraction=Ov\u011b\u0159te, zda je n\u00e1zev ciz\u00ed sb\u011brnice spr\u00e1vn\u00fd. Ov\u011b\u0159te, \u017ee byl odkaz na ciz\u00ed sb\u011brnici definov\u00e1n, a zopakujte p\u0159\u00edkaz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus link
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_40=CWSIK0040E: Odkaz na ciz\u00ed sb\u011brnici s n\u00e1zvem {0} nebyl ve stroji syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} nalezen.
+DELIVERY_ERROR_SIRC_40.explanation=Uveden\u00fd odkaz na ciz\u00ed sb\u011brnici je v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v nezn\u00e1m\u00fd.
+DELIVERY_ERROR_SIRC_40.useraction=Ov\u011b\u0159te, zda je n\u00e1zev ciz\u00ed sb\u011brnice spr\u00e1vn\u00fd a zda jsou pro n\u011bj definov\u00e1ny odkazy. Nejsou-li definov\u00e1ny \u017e\u00e1dn\u00e9 odkazy, definujte nov\u00fd odkaz na ciz\u00ed sb\u011brnici mezi dv\u011bma sb\u011brnicemi.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_41=CWSIK0041E: Neexistuj\u00ed \u017e\u00e1dn\u00e9 odkazy definovan\u00e9 pro p\u0159ipojen\u00ed k ciz\u00ed sb\u011brnici s n\u00e1zvem {0} ve stroji syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} v d\u016fsledku v\u00fdskytu chyby {3}.
+DELIVERY_ERROR_SIRC_41.explanation=V aplikaci do\u0161lo k pokusu o odesl\u00e1n\u00ed zpr\u00e1vy do m\u00edsta ur\u010den\u00ed v ciz\u00ed sb\u011brnici, ale nejsou definov\u00e1ny \u017e\u00e1dn\u00e9 odkazy mezi lok\u00e1ln\u00ed sb\u011brnic\u00ed a ciz\u00ed sb\u011brnic\u00ed.
+DELIVERY_ERROR_SIRC_41.useraction=V administrativn\u00ed konzole definujte odkaz mezi lok\u00e1ln\u00ed sb\u011brnic\u00ed a ciz\u00ed sb\u011brnic\u00ed a znovu ode\u0161lete zpr\u00e1vu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the uuid of the mqlink
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_42=CWSIK0042E: Odkaz na MQ s identifik\u00e1torem UUID {0} nebyl ve stroji syst\u00e9mu zpr\u00e1v {1} ve sb\u011brnici {2} nalezen.
+DELIVERY_ERROR_SIRC_42.explanation=Uveden\u00fd odkaz MQ je v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v nezn\u00e1m\u00fd.
+DELIVERY_ERROR_SIRC_42.useraction=Ov\u011b\u0159te, \u017ee je n\u00e1zev odkazu MQ definov\u00e1n a je spr\u00e1vn\u011b zad\u00e1n s rozli\u0161en\u00edm velikosti p\u00edsmen. Pokud nen\u00ed odkaz MQ definov\u00e1n, pou\u017eijte neexistuj\u00edc\u00ed odkaz MQ nebo definujte nov\u00fd.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the current maximum forward routing path depth
+DELIVERY_ERROR_SIRC_43=CWSIK0043E: Zpr\u00e1vu nebylo mo\u017en\u00e9 dodat do m\u00edsta ur\u010den\u00ed v cest\u011b dop\u0159edn\u00e9ho sm\u011brov\u00e1n\u00ed, proto\u017ee byla p\u0159ekro\u010dena maxim\u00e1ln\u00ed hloubka cesty dop\u0159edn\u00e9ho sm\u011brov\u00e1n\u00ed ({0}).
+DELIVERY_ERROR_SIRC_43.explanation=Zpr\u00e1va byla p\u0159esm\u011brov\u00e1na cestou dop\u0159edn\u00e9ho sm\u011brov\u00e1n\u00ed. Po\u010det p\u0159esm\u011brov\u00e1n\u00ed p\u0159ekro\u010dil povolen\u00e9 maximum. Zpr\u00e1va byla proto odesl\u00e1na do c\u00edle v\u00fdjimek.
+DELIVERY_ERROR_SIRC_43.useraction=Zkontrolujte cykly v cest\u011b dop\u0159edn\u00e9ho sm\u011brov\u00e1n\u00ed. P\u0159\u00edpadn\u011b zvy\u0161te maxim\u00e1ln\u00ed hodnotu pomoc\u00ed p\u0159izp\u016fsoben\u00e9 vlastnosti sib.processor.maxForwardRoutingPath.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination to which we were delivering
+# {1} is the bus from the message originated
+DELIVERY_ERROR_SIRC_44=CWSIK0044E: Zpr\u00e1vu se nepoda\u0159ilo doru\u010dit do m\u00edsta ur\u010den\u00ed {0}, proto\u017ee bod front pro dan\u00e9 m\u00edsto ur\u010den\u00ed je v dr\u017een\u00ed \u010dlena sb\u011brnice serveru WebSphere MQ a zpr\u00e1va byla odesl\u00e1na z ciz\u00ed sb\u011brnice {1}.
+DELIVERY_ERROR_SIRC_44.explanation=Zpr\u00e1vy nelze odes\u00edlat p\u0159\u00edmo z ciz\u00ed sb\u011brnice na m\u00edsto ur\u010den\u00ed, jeho\u017e bod front je v dr\u017een\u00ed produktu WebSphere MQ a k n\u011bmu\u017e je p\u0159istupov\u00e1no prost\u0159ednictv\u00edm \u010dlena sb\u011brnice serveru WebSphere MQ. 
+DELIVERY_ERROR_SIRC_44.useraction=Bu\u010f p\u0159ekonfigurujte odes\u00edlaj\u00edc\u00ed aplikaci tak, aby se p\u0159ipojovala k lok\u00e1ln\u00ed sb\u011brnici, nebo povolte p\u0159\u00edstup k m\u00edstu ur\u010den\u00ed produktu WebSphere MQ prost\u0159ednictv\u00edm p\u0159ipojen\u00ed ciz\u00ed sb\u011brnice produktu WebSphere MQ a sm\u011brujte zpr\u00e1vy prost\u0159ednictv\u00edm ciz\u00ed sb\u011brnice, a nikoli \u010dlena sb\u011brnice serveru WebSphere MQ.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+DELIVERY_ERROR_SIRC_45=CWSIK0045E: M\u00edsto ur\u010den\u00ed s aliasem {0} nelze vy\u0159e\u0161it, proto\u017ee c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed {1} neexistuje.
+DELIVERY_ERROR_SIRC_45.explanation=C\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed nen\u00ed v lok\u00e1ln\u00edm stroji syst\u00e9mu zpr\u00e1v k dispozici.
+DELIVERY_ERROR_SIRC_45.useraction=Ur\u010dete spr\u00e1vn\u00e9 c\u00edlov\u00e9 m\u00edsto ur\u010den\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination to which the message was rerouted
+# {2} identifies the mediation that caused the message to be rerouted
+# {3} identifies the destination at which the message was mediated
+# {4} identifies the exception that mediation generated that caused the message to be rerouted
+DELIVERY_ERROR_SIRC_101=CWSIK0101W: Zpr\u00e1va {0} byla p\u0159esm\u011brov\u00e1na do c\u00edle v\u00fdjimek {1}, proto\u017ee mediace {2} v m\u00edst\u011b ur\u010den\u00ed {3} zp\u016fsobila v\u00fdjimku {4}.
+DELIVERY_ERROR_SIRC_101.explanation=Zpr\u00e1va byla p\u0159ed\u00e1na zadan\u00e9 mediaci: tato mediace generovala v\u00fdjimku a v d\u016fsledku toho byla zpr\u00e1va p\u0159esm\u011brov\u00e1na do c\u00edle v\u00fdjimek.
+DELIVERY_ERROR_SIRC_101.useraction=Pokud mediace zpr\u00e1vu nep\u0159esm\u011brovala, zjist\u011bte d\u016fvod v\u00fdjimky.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+# {3} identifies the message format to which the message does not conform
+DELIVERY_ERROR_SIRC_102=CWSIK0102E: Zpr\u00e1va {0} nem\u016f\u017ee pokra\u010dovat pod\u00e9l sv\u00e9 cesty sm\u011brov\u00e1n\u00ed p\u0159ed\u00e1v\u00e1n\u00ed po mediaci mediac\u00ed {1} v m\u00edst\u011b ur\u010den\u00ed {2}, proto\u017ee zpr\u00e1va neodpov\u00eddala form\u00e1tu zpr\u00e1vy {3}.
+DELIVERY_ERROR_SIRC_102.explanation=Po mediaci zadan\u00e9 mediac\u00ed zpr\u00e1va neodpov\u00edd\u00e1 zadan\u00e9mu form\u00e1tu zpr\u00e1vy. Mediace zm\u011bnila obsah zpr\u00e1vy \u010di form\u00e1t zpr\u00e1vy, p\u0159\u00edpadn\u011b oboj\u00ed. P\u016fvodn\u00ed verze zpr\u00e1vy byla p\u0159esm\u011brov\u00e1na do c\u00edle v\u00fdjimek.
+DELIVERY_ERROR_SIRC_102.useraction=Zjist\u011bte, jak a pro\u010d zadan\u00e1 mediace zm\u011bnila zpr\u00e1vu tak, \u017ee neodpov\u00edd\u00e1 zadan\u00e9mu form\u00e1tu zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+DELIVERY_ERROR_SIRC_103=CWSIK0103E: Zpr\u00e1va {0} nem\u016f\u017ee pokra\u010dovat pod\u00e9l sv\u00e9 cesty sm\u011brov\u00e1n\u00ed p\u0159ed\u00e1v\u00e1n\u00ed po mediaci mediac\u00ed {1} v m\u00edst\u011b ur\u010den\u00ed {2}, proto\u017ee zpr\u00e1va nebyla spr\u00e1vn\u011b form\u00e1tov\u00e1na.
+DELIVERY_ERROR_SIRC_103.explanation=Po mediaci zadan\u00e9 mediac\u00ed obsahovaly vlastnosti zpr\u00e1vy objekty, kter\u00e9 nebylo mo\u017en\u00e9 serializovat, nebo nen\u00ed graf dat platn\u00fd.
+DELIVERY_ERROR_SIRC_103.useraction=Zjist\u011bte, jak a pro\u010d zadan\u00e1 mediace zm\u011bnila zpr\u00e1vu tak, \u017ee ji\u017e nen\u00ed platn\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_104=CWSIK0104E: Zpr\u00e1va je p\u0159\u00edli\u0161 velk\u00e1, ne\u017e aby ji mohl zpracovat vzd\u00e1len\u00fd modul MQ: odes\u00edl\u00e1n\u00ed do c\u00edle v\u00fdjimek: velikost zpr\u00e1vy {0}, maxim\u00e1ln\u00ed velikost zpr\u00e1vy {1}.
+DELIVERY_ERROR_SIRC_104.explanation=Zpr\u00e1va je p\u0159\u00edli\u0161 velk\u00e1.
+DELIVERY_ERROR_SIRC_104.useraction=Zkontrolujte nastaven\u00ed MQ.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_105=CWSIK0105E: Chyba form\u00e1tu zpr\u00e1vy.
+DELIVERY_ERROR_SIRC_105.explanation=Zpr\u00e1vu nelze zpracovat kv\u016fli chyb\u011b form\u00e1tov\u00e1n\u00ed.
+DELIVERY_ERROR_SIRC_105.useraction=Zkontrolujte p\u0159ipojen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the WebSphere MQ return code
+# {1} identifies the WebSphere MQ reason code
+DELIVERY_ERROR_SIRC_106=CWSIK0106E: Produkt WebSphere MQ ohl\u00e1sil chybu. N\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny produktu WebSphere MQ (v tomto po\u0159ad\u00ed): {0} a {1}. 
+DELIVERY_ERROR_SIRC_106.explanation=Zpr\u00e1vu nelze zpracovat vzhledem k chybov\u00e9mu stavu ohl\u00e1\u0161en\u00e9mu produktem WebSphere MQ. 
+DELIVERY_ERROR_SIRC_106.useraction=Prozkoumejte n\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny produktu WebSphere MQ a protokoly chyb produktu WebSphere MQ. Na z\u00e1klad\u011b t\u011bchto informac\u00ed ur\u010dete p\u0159\u00ed\u010dinu chyby. M\u016f\u017ee b\u00fdt pot\u0159ebn\u00e9 obr\u00e1tit se na administr\u00e1tora produktu WebSphere MQ se \u017e\u00e1dost\u00ed o pomoc p\u0159i odstra\u0148ov\u00e1n\u00ed probl\u00e9mu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name of the Object which cannot be serialized.
+DELIVERY_ERROR_SIRC_200=CWSIK0200E: Objekt t\u0159\u00eddy {0} byl vlo\u017een do informa\u010dn\u00edho obsahu zpr\u00e1vy, ale nem\u016f\u017ee b\u00fdt serializov\u00e1n.
+DELIVERY_ERROR_SIRC_200.explanation=Objektov\u00e1 zpr\u00e1va, kter\u00e1 byla odesl\u00e1na s povolen\u00fdm p\u0159\u00edznakem producerDoesNotModifyPayloadAfterSet v r\u00e1mci sv\u00e9 tov\u00e1rny p\u0159ipojen\u00ed, byla odesl\u00e1na se z\u00e1t\u011b\u017e\u00ed, kter\u00e1 nen\u00ed syst\u00e9mem serializovateln\u00e1. Tato data zpr\u00e1vy byla ztracena.
+DELIVERY_ERROR_SIRC_200.useraction=Zaka\u017ete p\u0159\u00edznak producerDoesNotModifyPayloadAfterSet v r\u00e1mci tov\u00e1rny p\u0159ipojen\u00ed. Aplikace JMS, kter\u00e1 vkl\u00e1d\u00e1 objekt do zpr\u00e1vy, obdr\u017e\u00ed bez povolen\u00e9ho p\u0159\u00edznaku okam\u017eit\u011b ve\u0161ker\u00e9 v\u00fdjimky serializace.
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0001
+# {0} The class name
+# {1} The PROBE ID.
+DELIVERY_ERROR_SIRC_900=CWSIK0900E: Do\u0161lo k intern\u00ed chyb\u011b syst\u00e9mu zpr\u00e1v v {0}, {1}.
+DELIVERY_ERROR_SIRC_900.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_900.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0002
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+DELIVERY_ERROR_SIRC_901=CWSIK0901E: Do\u0161lo k intern\u00ed chyb\u011b syst\u00e9mu zpr\u00e1v v {0}, {1}, {2}.
+DELIVERY_ERROR_SIRC_901.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_CONFIGURATION_ERROR_CWSIP0006
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+DELIVERY_ERROR_SIRC_905=CWSIK0905E: Do\u0161lo k intern\u00ed chyb\u011b konfigurace m\u00edsta ur\u010den\u00ed pro m\u00edsto ur\u010den\u00ed {2} v {0}, {1}.
+DELIVERY_ERROR_SIRC_905.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_905.useraction=CMSG0002

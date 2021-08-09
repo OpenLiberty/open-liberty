@@ -1,0 +1,140 @@
+###############################################################################
+# Copyright (c) 1997, 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/HpelMessages.nlsprops
+#COMPONENTPREFIX HPEL
+# Long proper prefix CWLHP
+#COMPONENTNAMEFOR HPEL IBM High Performance Extensible Logging
+#NLS_MESSAGEFORMAT_VAR
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+# AbstractBufferedLogFileWriter messages.
+HPEL_WrongBufferSizeValue=HPEL0101W: Wielko\u015b\u0107 buforu {0} okre\u015blona we w\u0142a\u015bciwo\u015bci systemowej {1} nie jest liczb\u0105. Zamiast niej u\u017cyto wielko\u015bci {2}.
+HPEL_WrongBufferSizeValue.explanation=Okre\u015blona wielko\u015b\u0107 buforu by\u0142a niepoprawna. Zamiast niej u\u017cyto wielko\u015bci domy\u015blnej.
+HPEL_WrongBufferSizeValue.useraction=Je\u015bli wielko\u015b\u0107 domy\u015blna nie jest optymalna, okre\u015bl poprawn\u0105 wielko\u015b\u0107 buforu.
+
+HPEL_WrongFlushPeriodValue=HPEL0102W: Okres opr\u00f3\u017cniania {0} okre\u015blony we w\u0142a\u015bciwo\u015bci systemowej {1} nie jest liczb\u0105. Zamiast niej u\u017cyto wielko\u015bci {2}.
+HPEL_WrongFlushPeriodValue.explanation=Okre\u015blony okres opr\u00f3\u017cniania jest niepoprawny. Zamiast niego u\u017cyto wielko\u015bci domy\u015blnej.
+HPEL_WrongFlushPeriodValue.useraction=Je\u015bli domy\u015blny okres opr\u00f3\u017cniania nie jest optymalny, okre\u015bl poprawny.
+
+HPEL_ExceptionInPeriodicFlush=HPEL0103W: Wyst\u0105pi\u0142 wyj\u0105tek podczas okresowego opr\u00f3\u017cniania strumienia dziennika.
+HPEL_ExceptionInPeriodicFlush.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas opr\u00f3\u017cniania buforowanego strumienia dziennika.  Szczeg\u00f3\u0142y do\u0142\u0105czono do komunikatu.
+HPEL_ExceptionInPeriodicFlush.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# AbstractHPELRepositoryExporter messages.
+HPEL_HeaderWithoutProcessId=HPEL0104E: Nag\u0142\u00f3wek nie zawiera informacji o identyfikatorze procesu. Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 {0} jest ustawiona.
+HPEL_HeaderWithoutProcessId.explanation=Brak informacji w nag\u0142\u00f3wku.
+HPEL_HeaderWithoutProcessId.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingHeader=HPEL0105E: Wyst\u0105pi\u0142 wyj\u0105tek podczas przekszta\u0142cania nag\u0142\u00f3wka dziennika w tablic\u0119 bajt\u00f3w.
+HPEL_ErrorWhileSerializingHeader.explanation=Nag\u0142\u00f3wek dziennika jest niepoprawny, poniewa\u017c przetwarzaj\u0105cy go kod nie m\u00f3g\u0142 przeanalizowa\u0107 nag\u0142\u00f3wka i przekszta\u0142ci\u0107 go.
+HPEL_ErrorWhileSerializingHeader.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_LogHeaderWasNotSet=HPEL0106E: B\u0142\u0105d wywo\u0142ania: niedozwolona pr\u00f3ba wyeksportowania rekordu dziennika przed ustawieniem informacji dotycz\u0105cych ca\u0142ego procesu.
+HPEL_LogHeaderWasNotSet.explanation=Wyst\u0105pi\u0142 problem z kolejno\u015bci\u0105 procesu; rekordy s\u0105 zapisywane przed przygotowaniem systemu rejestrowania.
+HPEL_LogHeaderWasNotSet.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingRecord=HPEL0107E: Wyst\u0105pi\u0142 wyj\u0105tek podczas przekszta\u0142cania rekordu dziennika w tablic\u0119 bajt\u00f3w.
+HPEL_ErrorWhileSerializingRecord.explanation=Informacje o dzienniku nie zosta\u0142y poprawnie przekszta\u0142cone do postaci szeregowej. Informacje o wyj\u0105tku do\u0142\u0105czono do b\u0142\u0119du.
+HPEL_ErrorWhileSerializingRecord.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRecordBrowser messages.
+HPEL_NoRecordAtLocation=HPEL0108W: W okre\u015blonym po\u0142o\u017ceniu nie znaleziono \u017cadnych rekord\u00f3w.
+HPEL_NoRecordAtLocation.explanation=Po\u0142o\u017cenie okre\u015blone dla katalogu dziennika nie zawiera \u017cadnych plik\u00f3w z rekordami.
+HPEL_NoRecordAtLocation.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryBrowserImpl messages.
+HPEL_NotRepositoryLocation=HPEL0109E: Okre\u015blone po\u0142o\u017cenie nie nale\u017cy do tego repozytorium.
+HPEL_NotRepositoryLocation.explanation=Podane informacje o repozytorium s\u0105 niepoprawne.
+HPEL_NotRepositoryLocation.useraction=Ponownie oce\u0144 podane informacje o po\u0142o\u017ceniu i zmodyfikuj wywo\u0142ania.
+
+HPEL_NotRepositoryFileNoTimestamp=HPEL0110E: Plik {0} u\u017cywany w argumencie nie nale\u017cy do tego repozytorium. Nie mo\u017cna pobra\u0107 znacznika czasu.
+HPEL_NotRepositoryFileNoTimestamp.explanation=Plik w repozytorium jest niedozwolony.
+HPEL_NotRepositoryFileNoTimestamp.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_RepositoryFileMissing=HPEL0111W: Brak pliku {0} w repozytorium. Najprawdopodobniej plik zosta\u0142 usuni\u0119ty przez mened\u017cer przechowywania.
+HPEL_RepositoryFileMissing.explanation=Oczekiwany plik zosta\u0142 usuni\u0119ty przez mened\u017cer po\u0142o\u017cenia lub w wyniku r\u0119cznej interwencji.
+HPEL_RepositoryFileMissing.useraction=Je\u015bli informacje zawarte w pliku s\u0105 po\u017c\u0105dane i zosta\u0142y zarchiwizowane, rozwa\u017c ich odtworzenie.
+
+HPEL_NotRepositoryFileNoProcessId=HPEL0112E: Plik {0} u\u017cywany w argumencie nie nale\u017cy do tego repozytorium. Nie mo\u017cna pobra\u0107 identyfikatora procesu.
+HPEL_NotRepositoryFileNoProcessId.explanation=Informacje w nag\u0142\u00f3wku pliku wskazuj\u0105, \u017ce plik w tym repozytorium nie ma poprawnego formatu.
+HPEL_NotRepositoryFileNoProcessId.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryWriterImpl messages.
+HPEL_IncorrectSwitchHour=HPEL0113W: Okre\u015blona warto\u015b\u0107 {0} niepoprawnie identyfikuje godzin\u0119 dnia. Zamiast niej zostanie u\u017cyta warto\u015b\u0107 {1}.
+HPEL_IncorrectSwitchHour.explanation=Okre\u015blona godzina dnia jest niepoprawna. Zamiast niej u\u017cyto wielko\u015bci domy\u015blnej.
+HPEL_IncorrectSwitchHour.useraction=Je\u015bli domy\u015blna godzina nie jest optymalna, podaj poprawn\u0105 godzin\u0119 dnia.
+
+# OneLogFileRecordIterator messages.
+HPEL_NoHeaderRecordInFileHead=HPEL0114E: Nie powiod\u0142o si\u0119 odczytanie rekordu nag\u0142\u00f3wkowego na pocz\u0105tku pliku {0}: {1}.
+HPEL_NoHeaderRecordInFileHead.explanation=Plik nie zawiera poprawnych informacji z nag\u0142\u00f3wka lub przy w\u0142\u0105czonym buforowaniu repozytorium tworzy nowy plik binarny, kt\u00f3ry jest jednocze\u015bnie u\u017cywany. 
+HPEL_NoHeaderRecordInFileHead.useraction=Mo\u017ce to by\u0107 problem zwi\u0105zany z czasem. Rozwa\u017c ponowne uruchomienie zapytania.  Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_NoRecordsInFile=HPEL0115E: Nie znaleziono rekord\u00f3w w pliku {0}.
+HPEL_NoRecordsInFile.explanation=Plik ten jest obecnie pusty.  Zwykle wskazuje to na pewnego rodzaju b\u0142\u0105d podczas tworzenia plik\u00f3w, poniewa\u017c istniej\u0105ce rekordy maj\u0105 by\u0107 przechowywane, lub przy w\u0142\u0105czonym buforowaniu repozytorium tworzy nowy plik binarny, kt\u00f3ry jest jednocze\u015bnie u\u017cywany. 
+HPEL_NoRecordsInFile.useraction=Mo\u017ce to by\u0107 problem zwi\u0105zany z czasem. Rozwa\u017c ponowne uruchomienie zapytania.  Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInHeaderRecordSize=HPEL0116W: Pr\u00f3ba sprawdzenia wielko\u015bci rekordu nag\u0142\u00f3wka dziennika nie powiod\u0142a si\u0119. Wielko\u015b\u0107 kopii ko\u0144ca rekordu nag\u0142\u00f3wka ({0}) z przesuni\u0119ciem ({1}) jest inna ni\u017c wielko\u015b\u0107 kopii pocz\u0105tku ({2}). Mo\u017ce to oznacza\u0107, \u017ce istnieje problem z plikiem dziennika {3}.
+HPEL_InconsistencyInHeaderRecordSize.explanation=Informacje wewn\u0119trzne o pliku dziennika wskazuj\u0105 na mo\u017cliwo\u015b\u0107 wyst\u0105pienia problemu.
+HPEL_InconsistencyInHeaderRecordSize.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInLogRecordSize=HPEL0117W: Wielko\u015b\u0107 kopii ko\u0144ca rekordu komunikatu ({0}) z przesuni\u0119ciem ({1}) jest inna ni\u017c wielko\u015b\u0107 pocz\u0105tku ({2}). Mo\u017ce to oznacza\u0107, \u017ce istnieje problem z plikiem dziennika {3}.
+HPEL_InconsistencyInLogRecordSize.explanation=Informacje wewn\u0119trzne o pliku dziennika wskazuj\u0105 na mo\u017cliwo\u015b\u0107 wyst\u0105pienia problemu.
+HPEL_InconsistencyInLogRecordSize.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_OffsetBeyondFileSize=HPEL0118E: Podj\u0119to niepoprawn\u0105 pr\u00f3b\u0119 okre\u015blenia pozycji strumienia dla pliku {0} na przesuni\u0119cie {1}, kt\u00f3re powoduje przekroczenie wielko\u015bci pliku: {2}.
+HPEL_OffsetBeyondFileSize.explanation=Przesuni\u0119cie w pliku jest niepoprawne (poza ko\u0144cem pliku).
+HPEL_OffsetBeyondFileSize.useraction=Je\u015bli jest to lokalnie utworzony klient, dokonaj przegl\u0105du logiki dotycz\u0105cej obliczania przesuni\u0119cia.  Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSettingFileOffset=HPEL0119E: Nie powiod\u0142o si\u0119 okre\u015blenie pozycji strumienia dla pliku {0} na przesuni\u0119cie {1}, z kt\u00f3rego poprzednio pomy\u015blnie odczytano rekord dziennika: {2}.
+HPEL_ErrorSettingFileOffset.explanation=Prawdopodobnie wyst\u0119puje problem z okre\u015bleniem pozycji w odpowiednim miejscu pliku.
+HPEL_ErrorSettingFileOffset.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingFileOffset=HPEL0120E: Nie powiod\u0142o si\u0119 pobranie bie\u017c\u0105cego przesuni\u0119cia w strumieniu dla pliku {0}: {2}.
+HPEL_ErrorReadingFileOffset.explanation=Prawdopodobnie wyst\u0119puje problem z okre\u015bleniem pozycji w odpowiednim miejscu pliku. 
+HPEL_ErrorReadingFileOffset.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingLogRecord=HPEL0121E: Nie powiod\u0142o si\u0119 odczytanie rekordu dziennika z pliku {0}: {1}.
+HPEL_ErrorReadingLogRecord.explanation=Nie mo\u017cna odczyta\u0107 rekordu z pliku.
+HPEL_ErrorReadingLogRecord.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSkippingFailedLogRecord=HPEL0122E: Nie powiod\u0142o si\u0119 przej\u015bcie do nast\u0119pnego rekordu po wyst\u0105pieniu niepowodzenia w pliku {0}: {1}.
+HPEL_ErrorSkippingFailedLogRecord.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zmiany pozycji w obr\u0119bie pliku.
+HPEL_ErrorSkippingFailedLogRecord.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# CompatZipRepositoryExporter and HPELZipRepositoryExporter message.
+HPEL_ErrorClosingZipStream=HPEL0123W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zamykania strumienia pliku ZIP.
+HPEL_ErrorClosingZipStream.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas zamykania strumienia.  Wyj\u0105tek powinien uwzgl\u0119dnia\u0107 wi\u0119cej informacji.
+HPEL_ErrorClosingZipStream.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# RepositoryReaderImpl message.
+HPEL_RepositoryPointerNotInRepository=HPEL0124W: Okre\u015blony wska\u017anik repozytorium nie nale\u017cy do \u017cadnego repozytorium. Najprawdopodobniej usuni\u0119to ju\u017c plik, na kt\u00f3ry wskazuje wska\u017anik.
+HPEL_RepositoryPointerNotInRepository.explanation=Okre\u015blony wska\u017anik repozytorium nie nale\u017cy do \u017cadnego repozytorium. Najprawdopodobniej usuni\u0119to ju\u017c plik, na kt\u00f3ry wskazuje wska\u017anik.
+HPEL_RepositoryPointerNotInRepository.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Additional messages from OneLogFileRecordIterator
+HPEL_ErrorReadingLogRecordDoSkip=HPEL0125W: Nie mo\u017cna znale\u017a\u0107 poprawnego rekordu w przesuni\u0119ciu {0}. Liczba bajt\u00f3w, o jak\u0105 dokonano przej\u015bcia do nast\u0119pnego rekordu w pliku {2}: {1}.
+HPEL_ErrorReadingLogRecordDoSkip.explanation=Nie mo\u017cna odczyta\u0107 rekordu z pliku, ale plik mo\u017ce zawiera\u0107 inne poprawne rekord\u00f3w.
+HPEL_ErrorReadingLogRecordDoSkip.useraction=Sprawd\u017a wyj\u0105tek, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119. Upewnij si\u0119, \u017ce okre\u015blona nazwa pliku jest poprawn\u0105 nazw\u0105 pliku. Upewnij si\u0119, \u017ce \u015brodowisko wykonawcze serwera aplikacji ma prawo do zapisu w katalogu zawieraj\u0105cym plik dziennika us\u0142ugi. Je\u015bli problem nie zostanie rozwi\u0105zany, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for handling of PCI list
+IllegalArgInConstructingPatternLevel=HPEL0150W: Niedozwolony argument podczas budowania elementu na li\u015bcie zastrze\u017conej {0}.
+IllegalArgInConstructingPatternLevel.explanation=Nowa pozycja na li\u015bcie zastrze\u017conej ma niepoprawny format.
+IllegalArgInConstructingPatternLevel.useraction=Ustal, czy niepoprawna pozycja pochodzi z pliku w\u0142a\u015bciwo\u015bci, czy te\u017c zosta\u0142a dodana z poziomu interfejsu API, a nast\u0119pnie popraw plik lub wywo\u0142anie w interfejsie.
+
+InvalidPatternString=HPEL0151I: Nie mo\u017cna wykona\u0107 poprawnej analizy \u0142a\u0144cucha wzorca/poziomu {0} do wzorca nazwy programu rejestruj\u0105cego i poziomu.
+InvalidPatternString.explanation=Nie mo\u017cna przeanalizowa\u0107 \u0142a\u0144cucha do nazwy nazwy programu rejestruj\u0105cego i poziomu.
+InvalidPatternString.useraction=Ustal, czy niepoprawna pozycja pochodzi z pliku w\u0142a\u015bciwo\u015bci, czy te\u017c zosta\u0142a dodana z poziomu interfejsu API, a nast\u0119pnie popraw plik lub wywo\u0142anie w interfejsie.
+
+# Messages for file system space alarms
+HPEL_FileSystem_Space_Warning=HPEL0161W: System plik\u00f3w w {0} potrzebuje {1} B miejsca na potrzeby rejestrowania, ale pozosta\u0142o tylko {2} B.
+HPEL_FileSystem_Space_Warning.explanation=Ilo\u015b\u0107 miejsca wymagana przez konfiguracje rejestrowania i \u015bledzenia jest wi\u0119ksza ni\u017c ilo\u015b\u0107 miejsca dost\u0119pna aktualnie w systemie plik\u00f3w.
+HPEL_FileSystem_Space_Warning.useraction=Zwolnij odpowiedni\u0105 ilo\u015b\u0107 miejsca w systemie plik\u00f3w lub zmodyfikuj konfiguracje rejestrowania i \u015bledzenia w taki spos\u00f3b, aby wskazywa\u0142y inne po\u0142o\u017cenie lub zajmowa\u0142y mniej miejsca.

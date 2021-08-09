@@ -1,0 +1,2117 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.comms.CWSICMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIC0001=CWSIC0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIC0000-CWSIC9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIC0001-CWSIC0100   com.ibm.ws.sib.comms
+#   CWSIC0101-CWSIC1000   com.ibm.ws.sib.comms.impl (and also com.ibm.ws.sib.comms.common in some cases)
+#   CWSIC1001-CWSIC2000   com.ibm.ws.sib.comms.cat
+#   CWSIC2001-CWSIC3000   com.ibm.ws.sib.comms.server
+#   CWSIC3001-CWSIC4000   com.ibm.ws.sib.comms.mq
+#   CWSIC4001-CWSIC5000   com.ibm.ws.sib.multicast
+#   CWSIC8001-CWSIC9000   generic messages to be used across all packages
+#   CWSIC9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.116,0,12/01/30,03:56:16
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/comms/CWSICMessages.nlsprops
+#COMPONENTPREFIX CWSIC
+#COMPONENTNAMEFOR CWSIC Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+###################################################################################################
+# com.ibm.ws.sib.comms messages
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception    .
+EXCP_DURING_INIT_SICO0001=CWSIC0001E: Se ha producido un error interno. No se puede crear un objeto de clase ServerTransportFactory debido a la excepci\u00f3n: {0}.
+EXCP_DURING_INIT_SICO0001.explanation=CMSG0001
+EXCP_DURING_INIT_SICO0001.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception    .
+EXCP_DURING_INIT_SICO0002=CWSIC0002E: Se ha producido un error interno. No se puede crear un objeto de clase ClientConnectionFactoryImpl debido a la excepci\u00f3n: {0}.
+EXCP_DURING_INIT_SICO0002.explanation=CMSG0001
+EXCP_DURING_INIT_SICO0002.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception    .
+EXCP_DURING_INIT_SICO0003=CWSIC0003E: Se ha producido un error interno. No se puede crear un objeto de clase MEConnectionFactoryImpl debido a la excepci\u00f3n: {0}.
+EXCP_DURING_INIT_SICO0003.explanation=CMSG0001
+EXCP_DURING_INIT_SICO0003.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_EP_SICO0004=CWSIC0004E: Se ha producido un error interno. Se ha pasado un punto final nulo como un argumento.
+NULL_EP_SICO0004.explanation=CMSG0001
+NULL_EP_SICO0004.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_CHAIN_SICO0005=CWSIC0005E: Se ha producido un error interno. Se ha pasado un nombre de cadena nulo como un argumento.
+NULL_CHAIN_SICO0005.explanation=CMSG0001
+NULL_CHAIN_SICO0005.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_FOR_OBJECT_TYPE_SICO0006=CWSIC0006E: Se ha producido un error interno. Se ha llamado al m\u00e9todo err\u00f3neo para este tipo de objeto.
+INVALID_METHOD_FOR_OBJECT_TYPE_SICO0006.explanation=CMSG0001
+INVALID_METHOD_FOR_OBJECT_TYPE_SICO0006.useraction=CMSG0002            
+
+
+
+###################################################################################################
+# com.ibm.ws.sib.comms.impl / com.ibm.ws.sib.comms.common messages
+# -------------------------------------------------------------------------------------------------
+# {0} is the fap level
+CALL_NOT_SUPPORTED_AT_FAP_LEVEL_SICO0101=CWSIC0101E: Se ha producido un error interno. Se ha intentado realizar una llamada pero esto no es v\u00e1lido en el nivel FAP {0}.
+CALL_NOT_SUPPORTED_AT_FAP_LEVEL_SICO0101.explanation=CMSG0001
+CALL_NOT_SUPPORTED_AT_FAP_LEVEL_SICO0101.useraction=CMSG0002            
+
+
+###################################################################################################
+# com.ibm.ws.sib.comms.cat messages
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+CONNECT_FAILED_SICO1001=CWSIC1001E: Un cliente ha intentado conectarse a un motor de mensajer\u00eda remoto, pero la conexi\u00f3n no puede completarse. Aseg\u00farese de que el motor de mensajer\u00eda se ha iniciado: excepci\u00f3n {0}.
+CONNECT_FAILED_SICO1001.explanation=La conexi\u00f3n con el motor de mensajer\u00eda remoto ha fallado. Es posible que se deba a que no se ha iniciado el motor de mensajer\u00eda o a que el puerto o nombre de host especificado no es correcto.
+CONNECT_FAILED_SICO1001.useraction=Aseg\u00farese de que el motor de mensajer\u00eda se est\u00e1 ejecutando y que las propiedades de conexi\u00f3n son correctas y repita la operaci\u00f3n,
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+#UNABLE_TO_CREATE_JSMESSAGE_SICO1002=CWSIC1002E: An internal error occurred. An object of class JsMessage cannot be created because of exception {0}.
+#UNABLE_TO_CREATE_JSMESSAGE_SICO1002.explanation=CMSG0001
+#UNABLE_TO_CREATE_JSMESSAGE_SICO1002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+UNABLE_TO_CREATE_JSMESSAGE_SICO1003=CWSIC1003E: Se ha producido un error interno. No se puede crear un objeto de clase JsMessage debido a la excepci\u00f3n {0}.
+UNABLE_TO_CREATE_JSMESSAGE_SICO1003.explanation=CMSG0001
+UNABLE_TO_CREATE_JSMESSAGE_SICO1003.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+UNABLE_TO_CREATE_DESTINATION_DEF_SICO1004=CWSIC1004E: Se ha producido un error interno. No se puede crear un objeto de clase DestinationConfigurationFactory debido a la excepci\u00f3n {0}.
+UNABLE_TO_CREATE_DESTINATION_DEF_SICO1004.explanation=CMSG0001
+UNABLE_TO_CREATE_DESTINATION_DEF_SICO1004.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+MFP_HANDSHAKE_FAILED_SICO1005=CWSIC1005E: Se ha producido un error interno. No se puede crear un objeto de clase CompHandshake debido a la excepci\u00f3n {0}.
+MFP_HANDSHAKE_FAILED_SICO1005.explanation=CMSG0001
+MFP_HANDSHAKE_FAILED_SICO1005.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the segment that was received {1} is the segment we expected
+JFAP_SEG_MISMATCH_EXCEPTION_SICO1006=CWSIC1006E: Se ha producido un error interno. Se ha recibido una respuesta inesperada {1}, la respuesta esperada era {0}.
+JFAP_SEG_MISMATCH_EXCEPTION_SICO1006.explanation=CMSG0001
+JFAP_SEG_MISMATCH_EXCEPTION_SICO1006.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NO_CONVERSATION_SICO1008=CWSIC1008E: Se ha producido un error interno. No hay ninguna conversaci\u00f3n disponible.
+NO_CONVERSATION_SICO1008.explanation=CMSG0001
+NO_CONVERSATION_SICO1008.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+REG_NULL_CALLBACK_SICO1009=CWSIC1009E: Se ha intentado registrar un retorno de llamada de consumidor as\u00edncrono nulo.
+REG_NULL_CALLBACK_SICO1009.explanation=CMSG0001
+REG_NULL_CALLBACK_SICO1009.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the segment ID of the message received, {1} is the hostname / port information of the server
+UNEXPECTED_MESS_RECVD_SICO1010=CWSIC1010E: Se ha producido un error interno. Se ha producido un error de protocolo. Se han recibido datos inesperados del servidor ({1}). El ID de datos era {0}.
+UNEXPECTED_MESS_RECVD_SICO1010.explanation=CMSG0001
+UNEXPECTED_MESS_RECVD_SICO1010.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NO_PROXY_CONV_GROUP_SICO1011=CWSIC1011E: Se ha producido un error interno. No se puede recuperar el grupo de conversaci\u00f3n del proxy.
+NO_PROXY_CONV_GROUP_SICO1011.explanation=CMSG0001
+NO_PROXY_CONV_GROUP_SICO1011.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_FIND_PROXY_QUEUE_SICO1012=CWSIC1012E: Se ha producido un error interno. No se puede localizar la cola de proxy en la que se debe colocar un mensaje as\u00edncrono recibido.
+UNABLE_TO_FIND_PROXY_QUEUE_SICO1012.explanation=CMSG0001
+UNABLE_TO_FIND_PROXY_QUEUE_SICO1012.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+SESSION_CLOSED_SICO1013=CWSIC1013E: Se ha intentado utilizar un objeto de una sesi\u00f3n cerrada.
+SESSION_CLOSED_SICO1013.explanation=Se ha invocado un m\u00e9todo en una sesi\u00f3n de consumidor, navegador o productor que ya se ha cerrado.
+SESSION_CLOSED_SICO1013.useraction=Aseg\u00farese de que la llamada al m\u00e9todo se lleva a cabo antes de cerrar la sesi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICO1014=CWSIC1014E: Se ha intentado utilizar un objeto de conexi\u00f3n cerrada.
+CONNECTION_CLOSED_SICO1014.explanation=Se ha invocado un m\u00e9todo en un objeto de conexi\u00f3n que ya se ha cerrado.
+CONNECTION_CLOSED_SICO1014.useraction=Aseg\u00farese de que la llamada al m\u00e9todo se lleva a cabo antes de cerrar la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+CALLBACK_CHANGE_WHILE_STARTED_SICO1015=CWSIC1015E: Se ha intentado registrar o anular el registro de un retorno de llamada de consumidor as\u00edncrono para una sesi\u00f3n de consumidor que se ha iniciado.
+CALLBACK_CHANGE_WHILE_STARTED_SICO1015.explanation=Se ha intentado registrar o eliminar el registro de un retorno de llamada de consumidor as\u00edncrono para una sesi\u00f3n de consumidor que se ha iniciado.
+CALLBACK_CHANGE_WHILE_STARTED_SICO1015.useraction=Aseg\u00farese de que la sesi\u00f3n de consumidor est\u00e1 en estado detenido antes de intentar registrar o eliminar el registro de un retorno de llamada de consumidor as\u00edncrono.
+
+# -------------------------------------------------------------------------------------------------
+REG_NULL_CALLBACK_SICO1016=CWSIC1016E: Se ha intentado registrar un retorno de llamada de consumidor as\u00edncrono nulo.
+REG_NULL_CALLBACK_SICO1016.explanation=CMSG0001
+REG_NULL_CALLBACK_SICO1016.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+LME_UNLOCK_INVALID_MSG_SICO1017=CWSIC1017E: Se ha intentado desbloquear un mensaje incorrecto.
+LME_UNLOCK_INVALID_MSG_SICO1017.explanation=Se ha intentado desbloquear un mensaje incorrecto en una secuencia de mensajes bloqueada.
+LME_UNLOCK_INVALID_MSG_SICO1017.useraction=Antes de invocar el m\u00e9todo de desbloqueo, aseg\u00farese de que el cursor de secuencia de mensajes bloqueados est\u00e1 en un mensaje para el que la operaci\u00f3n de desbloqueo es v\u00e1lida.
+
+# -------------------------------------------------------------------------------------------------
+LME_DELETE_INVALID_MSG_SICO1018=CWSIC1018E: Se ha intentado suprimir un mensaje incorrecto.
+LME_DELETE_INVALID_MSG_SICO1018.explanation=Se ha intentado suprimir un mensaje incorrecto en una secuencia de mensajes bloqueados.
+LME_DELETE_INVALID_MSG_SICO1018.useraction=Antes de invocar el m\u00e9todo de supresi\u00f3n, aseg\u00farese de que el cursor de secuencia de mensajes bloqueados est\u00e1 en un mensaje para el que la operaci\u00f3n de supresi\u00f3n es v\u00e1lida.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the maximum number of sessions
+MAX_SESSIONS_REACHED_SICO1019=CWSIC1019E: Se ha alcanzado el n\u00famero m\u00e1ximo de conexiones abiertas. El n\u00famero m\u00e1ximo permiso de sesiones abiertas es {0}.
+MAX_SESSIONS_REACHED_SICO1019.explanation=Se ha alcanzado el n\u00famero m\u00e1ximo de sesiones abiertas para una conexi\u00f3n y se ha intentado abrir otra sesi\u00f3n.
+MAX_SESSIONS_REACHED_SICO1019.useraction=Cierre todas las sesiones que no sean necesarias y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+NOT_ALLOWED_WHILE_ASYNCH_SICO1020=CWSIC1020E: Se ha intentado invocar un m\u00e9todo s\u00edncrono mientras estaba registrado un consumidor as\u00edncrono.
+NOT_ALLOWED_WHILE_ASYNCH_SICO1020.explanation=Se ha invocado un m\u00e9todo de sesi\u00f3n de consumidor s\u00edncrono mientras estaba registrado un retorno de llamada de consumidor as\u00edncrono para la sesi\u00f3n.
+NOT_ALLOWED_WHILE_ASYNCH_SICO1020.useraction=Anule el registro del retorno de llamada de consumidor as\u00edncrono antes de invocar m\u00e9todos s\u00edncronos en una sesi\u00f3n de consumidor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method
+CLIENT_METHOD_INVALID_SICO1021=CWSIC1021E: Se ha intentado invocar el m\u00e9todo {0}, que no es v\u00e1lido en el cliente.
+CLIENT_METHOD_INVALID_SICO1021.explanation=El m\u00e9todo invocado s\u00f3lo es v\u00e1lido en un cliente que se est\u00e1 procesando y no puede llamarse desde un cliente remoto.
+CLIENT_METHOD_INVALID_SICO1021.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConsumerSessionProxy
+TRANSACTION_COMPLETE_SICO1022=CWSIC1022E: Se ha intentado llamar a un m\u00e9todo en un objeto de transacci\u00f3n cuando la transacci\u00f3n ya se hab\u00eda comprometido o retrotra\u00eddo.
+TRANSACTION_COMPLETE_SICO1022.explanation=Una transacci\u00f3n finaliza una vez que se ha llamado a la operaci\u00f3n de compromiso o retrotracci\u00f3n para la transacci\u00f3n.
+TRANSACTION_COMPLETE_SICO1022.useraction=Aseg\u00farese de que no se llaman a las operaciones de compromiso o retrotracci\u00f3n m\u00e1s de una vez en el mismo objeto de transacci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host / port information of the server
+UNABLE_TO_NEGOTIATE_CONNECTION_SICO1023=CWSIC1023E: La conexi\u00f3n del cliente no ha sido satisfactoria porque el servidor remoto ({0}) no puede admitir este cliente.
+UNABLE_TO_NEGOTIATE_CONNECTION_SICO1023.explanation=La conexi\u00f3n a un motor de mensajer\u00eda remoto ha sido satisfactoria, pero el cliente y el servidor no pueden ponerse de acuerdo en los valores de conexi\u00f3n adecuados.
+UNABLE_TO_NEGOTIATE_CONNECTION_SICO1023.useraction=Aseg\u00farese de que el cliente est\u00e1 utilizando valores de conexi\u00f3n v\u00e1lidos para el servidor al que se est\u00e1 conectando y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+NOT_AUTHORISED_SICO1024=CWSIC1024E: El servidor ha rechazado la informaci\u00f3n de usuario suministrada cuando se intent\u00f3 la autenticaci\u00f3n: excepci\u00f3n {0}.
+NOT_AUTHORISED_SICO1024.explanation=Al intentar iniciar la sesi\u00f3n, el servidor ha rechazado la informaci\u00f3n de usuario suministrada.
+NOT_AUTHORISED_SICO1024.useraction=Aseg\u00farese de que la informaci\u00f3n de usuario es correcta y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the first exception that was caught
+ERROR_CLOSING_PROXYQUEUE_GROUP_SICO1025=CWSIC1025E: Se ha producido un error interno. Se ha producido un error al cerrar un grupo de conversaci\u00f3n de cola de proxy. La primera excepci\u00f3n fue {0}.
+ERROR_CLOSING_PROXYQUEUE_GROUP_SICO1025.explanation=CMSG0001
+ERROR_CLOSING_PROXYQUEUE_GROUP_SICO1025.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+SERVER_REQUESTED_MULTICAST_SICO1026=CWSIC1026E: Se ha producido un error interno. El servidor ha informado al cliente de que utilice multidifusi\u00f3n para la sesi\u00f3n del consumidor, pero esto no se ha solicitado.
+SERVER_REQUESTED_MULTICAST_SICO1026.explanation=CMSG0001
+SERVER_REQUESTED_MULTICAST_SICO1026.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was caught
+#UNABLE_TO_CREATE_JSMESSAGE_SICO1028=CWSIC1028E: An internal error occurred. An object of class JsMessage cannot be created because of exception {0}.
+#UNABLE_TO_CREATE_JSMESSAGE_SICO1028.explanation=CMSG0001
+#UNABLE_TO_CREATE_JSMESSAGE_SICO1028.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESET_OF_CONSUMER_SESSION_SICO1029=CWSIC1029E: Se ha producido un error interno.
+RESET_OF_CONSUMER_SESSION_SICO1029.explanation=CMSG0001
+RESET_OF_CONSUMER_SESSION_SICO1029.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_CONSUMER_SESSION_SICO1030=CWSIC1030E: Se ha producido un error interno.
+NULL_CONSUMER_SESSION_SICO1030.explanation=CMSG0001
+NULL_CONSUMER_SESSION_SICO1030.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ASYNC_BATCH_ALREADY_READY_SICO1031=CWSIC1031E: Se ha producido un error interno.
+ASYNC_BATCH_ALREADY_READY_SICO1031.explanation=CMSG0001
+ASYNC_BATCH_ALREADY_READY_SICO1031.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+GET_METHOD_INVALID_SICO1032=CWSIC1032E: Se ha producido un error interno.
+GET_METHOD_INVALID_SICO1032.explanation=CMSG0001
+GET_METHOD_INVALID_SICO1032.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ASYNC_BATCH_NOT_READY_SICO1033=CWSIC1033E: Se ha producido un error interno.
+ASYNC_BATCH_NOT_READY_SICO1033.explanation=CMSG0001
+ASYNC_BATCH_NOT_READY_SICO1033.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ASYNC_BATCHSIZE_MISMATCH_SICO1034=CWSIC1034E: Se ha producido un error interno.
+ASYNC_BATCHSIZE_MISMATCH_SICO1034.explanation=CMSG0001
+ASYNC_BATCHSIZE_MISMATCH_SICO1034.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+RESET_OF_BROWSER_SESSION_SICO1035=CWSIC1035E: Se ha producido un error interno.
+RESET_OF_BROWSER_SESSION_SICO1035.explanation=CMSG0001
+RESET_OF_BROWSER_SESSION_SICO1035.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_BROWSER_SESSION_SICO1036=CWSIC1036E: Se ha producido un error interno.
+NULL_BROWSER_SESSION_SICO1036.explanation=CMSG0001
+NULL_BROWSER_SESSION_SICO1036.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+TRM_HANDSHAKE_FAILED_SICO1037=CWSIC1037E: Se ha producido un error interno.
+TRM_HANDSHAKE_FAILED_SICO1037.explanation=CMSG0001
+TRM_HANDSHAKE_FAILED_SICO1037.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_CALL_FOR_CP_MODE_WLM_SICO1038=CWSIC1038E: Se ha producido un error interno.
+INCORRECT_CALL_FOR_CP_MODE_WLM_SICO1038.explanation=CMSG0001
+INCORRECT_CALL_FOR_CP_MODE_WLM_SICO1038.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_CONNECTION_PROPERTIES_SICO1039=CWSIC1039E: Se ha producido un error interno.
+NULL_CONNECTION_PROPERTIES_SICO1039.explanation=CMSG0001
+NULL_CONNECTION_PROPERTIES_SICO1039.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_CCH_SICO1040=CWSIC1040E: Se ha producido un error interno.
+NULL_CCH_SICO1040.explanation=CMSG0001
+NULL_CCH_SICO1040.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_CALL_FOR_CP_MODE_HP_SICO1041=CWSIC1041E: Se ha producido un error interno.
+INCORRECT_CALL_FOR_CP_MODE_HP_SICO1041.explanation=CMSG0001
+INCORRECT_CALL_FOR_CP_MODE_HP_SICO1041.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_CALL_FOR_CP_MODE_HP_SICO1042=CWSIC1042E: Se ha producido un error interno.
+INCORRECT_CALL_FOR_CP_MODE_HP_SICO1042.explanation=CMSG0001
+INCORRECT_CALL_FOR_CP_MODE_HP_SICO1042.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+SESSION_ID_HAS_NOT_BEEN_SET_SICO1043=CWSIC1043E: Se ha producido un error interno.
+SESSION_ID_HAS_NOT_BEEN_SET_SICO1043.explanation=CMSG0001
+SESSION_ID_HAS_NOT_BEEN_SET_SICO1043.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_MESSAGE_IDS_PASSED_IN_SICO1044=CWSIC1044E: Se ha producido un error interno.
+NULL_MESSAGE_IDS_PASSED_IN_SICO1044.explanation=CMSG0001
+NULL_MESSAGE_IDS_PASSED_IN_SICO1044.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+SESSION_ID_HAS_ALREADY_BEEN_SET_SICO1045=CWSIC1045E: Se ha producido un error interno.
+SESSION_ID_HAS_ALREADY_BEEN_SET_SICO1045.explanation=CMSG0001
+SESSION_ID_HAS_ALREADY_BEEN_SET_SICO1045.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_DATA_LIST_PASSED_IN_SICO1046=CWSIC1046E: Se ha producido un error interno.
+NULL_DATA_LIST_PASSED_IN_SICO1046.explanation=CMSG0001
+NULL_DATA_LIST_PASSED_IN_SICO1046.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+#NULL_RCVDATA_PASSED_IN_SICO1047=CWSIC1047E: An internal error occurred.
+#NULL_RCVDATA_PASSED_IN_SICO1047.explanation=CMSG0001
+#NULL_RCVDATA_PASSED_IN_SICO1047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+GET_METHOD_INVALID_SICO1048=CWSIC1048E: Se ha producido un error interno.
+GET_METHOD_INVALID_SICO1048.explanation=CMSG0001
+GET_METHOD_INVALID_SICO1048.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ORDERED_BATCH_NOT_READY_SICO1049=CWSIC1049E: Se ha producido un error interno.
+ORDERED_BATCH_NOT_READY_SICO1049.explanation=CMSG0001
+ORDERED_BATCH_NOT_READY_SICO1049.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ORDERED_CONV_HELPER_NOT_FOUND_SICO1050=CWSIC1050E: Se ha producido un error interno.
+ORDERED_CONV_HELPER_NOT_FOUND_SICO1050.explanation=CMSG0001
+ORDERED_CONV_HELPER_NOT_FOUND_SICO1050.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ORDERED_ASYNC_DESCRIPTOR_NOT_FOUND_SICO1051=CWSIC1051E: Se ha producido un error interno.
+ORDERED_ASYNC_DESCRIPTOR_NOT_FOUND_SICO1051.explanation=CMSG0001
+ORDERED_ASYNC_DESCRIPTOR_NOT_FOUND_SICO1051.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+PROXY_ID_NOT_SET_SICO1052=CWSIC1052E: Se ha producido un error interno.
+PROXY_ID_NOT_SET_SICO1052.explanation=CMSG0001
+PROXY_ID_NOT_SET_SICO1052.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_PROXY_NOT_SET_SICO1053=CWSIC1053E: Se ha producido un error interno.
+CONNECTION_PROXY_NOT_SET_SICO1053.explanation=CMSG0001
+CONNECTION_PROXY_NOT_SET_SICO1053.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+PQGROUP_ALREADY_CREATED_SICO1054=CWSIC1054E: Se ha producido un error interno.
+PQGROUP_ALREADY_CREATED_SICO1054.explanation=CMSG0001
+PQGROUP_ALREADY_CREATED_SICO1054.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+RESET_OF_CONSUMER_SESSION_SICO1055=CWSIC1055E: Se ha producido un error interno.
+RESET_OF_CONSUMER_SESSION_SICO1055.explanation=CMSG0001
+RESET_OF_CONSUMER_SESSION_SICO1055.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_CONSUMER_SESSION_SICO1056=CWSIC1056E: Se ha producido un error interno.
+NULL_CONSUMER_SESSION_SICO1056.explanation=CMSG0001
+NULL_CONSUMER_SESSION_SICO1056.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+RH_WAIT_TIME_INVALID_SICO1057=CWSIC1057E: Se ha producido un error interno.
+RH_WAIT_TIME_INVALID_SICO1057.explanation=CMSG0001
+RH_WAIT_TIME_INVALID_SICO1057.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INVALID_MAX_VALUE_SICO1058=CWSIC1058E: Se ha producido un error interno.
+INVALID_MAX_VALUE_SICO1058.explanation=CMSG0001
+INVALID_MAX_VALUE_SICO1058.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+PROXY_QUEUE_CONVERSATION_GROUP_CLOSED_SICO1059=CWSIC1059E: Se ha intentado utilizar un objeto de conexi\u00f3n cerrada.
+PROXY_QUEUE_CONVERSATION_GROUP_CLOSED_SICO1059.explanation=Se ha invocado un m\u00e9todo en una conexi\u00f3n que ya se ha cerrado.
+PROXY_QUEUE_CONVERSATION_GROUP_CLOSED_SICO1059.useraction=Aseg\u00farese de que la llamada al m\u00e9todo se lleva a cabo antes de cerrar la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+ALREADY_IN_RECEIVE_WAIT_SICO1060=CWSIC1060E: Se ha intentado invocar un m\u00e9todo receive() cuando todav\u00eda estaba en proceso otro m\u00e9todo receive().
+ALREADY_IN_RECEIVE_WAIT_SICO1060.explanation=S\u00f3lo puede haber en proceso un m\u00e9todo receive() al mismo tiempo por sesi\u00f3n de consumidor.
+ALREADY_IN_RECEIVE_WAIT_SICO1060.useraction=Aseg\u00farese de que en una sesi\u00f3n de consumidor s\u00f3lo se llame a un m\u00e9todo receive.
+
+# -------------------------------------------------------------------------------------------------
+INCORRECT_RECEIVE_CALL_SICO1061=CWSIC1061E: Se ha producido un error interno.
+INCORRECT_RECEIVE_CALL_SICO1061.explanation=CMSG0001
+INCORRECT_RECEIVE_CALL_SICO1061.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_SERIALIZE_COMMAND_SICO1062=CWSIC1062E: Se ha producido un error interno.
+FAILED_TO_SERIALIZE_COMMAND_SICO1062.explanation=CMSG0001
+FAILED_TO_SERIALIZE_COMMAND_SICO1062.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_DESERIALIZE_COMMAND_SICO1063=CWSIC1063E: Se ha producido un error interno.
+FAILED_TO_DESERIALIZE_COMMAND_SICO1063.explanation=CMSG0001
+FAILED_TO_DESERIALIZE_COMMAND_SICO1063.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ProducerSessionProxy
+#CONVERSATION_CLOSED_SICO0064=CWSIC0064E: An operation was attempted on a connection that is already closed.
+#CONVERSATION_CLOSED_SICO0064.explanation=An operation was attempted on a connection resource that has previously been closed. This problem can result from an application programming error or because the system closed the connection resource in response to detecting an error condition.
+#CONVERSATION_CLOSED_SICO0064.useraction=Examine the log files for your application server to determine why the connection was closed. See the accompanying error messages for further information. Correct the problem if possible.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CommsByteBuffer
+CONVERSATION_CLOSED_SICO0065=CWSIC0065E: Se ha intentado realizar una conexi\u00f3n que ya est\u00e1 cerrada.
+CONVERSATION_CLOSED_SICO0065.explanation=Se ha intentado realizar una operaci\u00f3n en un recurso de conexi\u00f3n que se hab\u00eda cerrado previamente.  Este problema puede deberse a un error de programaci\u00f3n de la aplicaci\u00f3n o a que el sistema ha cerrado el recurso de conexi\u00f3n en respuesta a la detecci\u00f3n de una condici\u00f3n de error.
+CONVERSATION_CLOSED_SICO0065.useraction=Examine los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n. Consulte los mensajes que le acompa\u00f1an para obtener m\u00e1s informaci\u00f3n. Corrija el problema, si es posible.
+
+# -------------------------------------------------------------------------------------------------
+# Used in BifurcatedConsumerSessionProxy
+TRANSACTION_COMPLETE_SICO1066=CWSIC1066E: Se ha intentado llamar a un m\u00e9todo en un objeto de transacci\u00f3n cuando la transacci\u00f3n ya se hab\u00eda comprometido o retrotra\u00eddo.
+TRANSACTION_COMPLETE_SICO1066.explanation=Una transacci\u00f3n finaliza una vez que se ha llamado a la operaci\u00f3n de compromiso o retrotracci\u00f3n para la transacci\u00f3n.
+TRANSACTION_COMPLETE_SICO1066.useraction=Aseg\u00farese de que no se llaman a las operaciones de compromiso o retrotracci\u00f3n m\u00e1s de una vez en el mismo objeto de transacci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionProxy
+TRANSACTION_COMPLETE_SICO1067=CWSIC1067E: Se ha intentado llamar a un m\u00e9todo en un objeto de transacci\u00f3n cuando la transacci\u00f3n ya se hab\u00eda comprometido o retrotra\u00eddo.
+TRANSACTION_COMPLETE_SICO1067.explanation=Una transacci\u00f3n finaliza una vez que se ha llamado a la operaci\u00f3n de compromiso o retrotracci\u00f3n para la transacci\u00f3n.
+TRANSACTION_COMPLETE_SICO1067.useraction=Aseg\u00farese de que no se llaman a las operaciones de compromiso o retrotracci\u00f3n m\u00e1s de una vez en el mismo objeto de transacci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionProxy.java
+NULL_CONSUMERSETCHANGECALLBACK_SICO1069=CWSIC1069E: Se ha producido un error interno. El mandato registerConsumerSetMonitor ha fallado porque el par\u00e1metro ConsumerSetChangeCallback pasado es nulo.
+NULL_CONSUMERSETCHANGECALLBACK_SICO1069.explanation=CMSG0001
+NULL_CONSUMERSETCHANGECALLBACK_SICO1069.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionProxy.java
+NULL_DESTINATIONADDRESS_SICO1070=CWSIC1070E: Se ha producido un error interno. El mandato destinationAddress ha fallado porque el par\u00e1metro ConsumerSetChangeCallback pasado es nulo.
+NULL_DESTINATIONADDRESS_SICO1070.explanation=CMSG0001
+NULL_DESTINATIONADDRESS_SICO1070.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionProxy.java
+NULL_DISCRIMINATOREXPRESSION_SICO1071=CWSIC1071E: Se ha producido un error interno. El mandato discriminatorExpression ha fallado porque el par\u00e1metro ConsumerSetChangeCallback pasado es nulo.
+NULL_DISCRIMINATOREXPRESSION_SICO1071.explanation=CMSG0001
+NULL_DISCRIMINATOREXPRESSION_SICO1071.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConsumerMonitorListenerCache.java
+UNABLE_TO_ADD_CONSUMER_MONITOR_LISTENER_ID_TO_CACHE_SICO1072=CWSIC1072E: Se ha producido un error interno. No se puede a\u00f1adir el retorno de llamada a la memoria cach\u00e9 ya que no hay ning\u00fan ID libre disponible.
+UNABLE_TO_ADD_CONSUMER_MONITOR_LISTENER_ID_TO_CACHE_SICO1072.explanation=CMSG0001
+UNABLE_TO_ADD_CONSUMER_MONITOR_LISTENER_ID_TO_CACHE_SICO1072.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in AsynchConsumerProxyQueueImpl
+CONVERSATION_CLOSED_SICO0068=CWSIC0068E: Se ha intentado realizar una conexi\u00f3n que ya est\u00e1 cerrada.
+CONVERSATION_CLOSED_SICO0068.explanation=Se ha intentado realizar una operaci\u00f3n en un recurso de conexi\u00f3n que se hab\u00eda cerrado previamente.  Este problema puede deberse a un error de programaci\u00f3n de la aplicaci\u00f3n o a que el sistema ha cerrado el recurso de conexi\u00f3n en respuesta a la detecci\u00f3n de una condici\u00f3n de error.
+CONVERSATION_CLOSED_SICO0068.useraction=Examine los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n. Consulte los mensajes que le acompa\u00f1an para obtener m\u00e1s informaci\u00f3n. Corrija el problema, si es posible.
+
+###################################################################################################
+# com.ibm.ws.sib.comms.server messages
+# -------------------------------------------------------------------------------------------------
+SERVER_STARTED_SICO2001=CWSIC2001I: Se est\u00e1n aceptando conexiones de mensajes.
+SERVER_STARTED_SICO2001.explanation=El servidor de aplicaciones est\u00e1 aceptando ahora peticiones de conexi\u00f3n de mensajes de clientes y otros motores de mensajer\u00eda.
+SERVER_STARTED_SICO2001.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATAsynchConsumer
+# {0} is the exception
+UNABLE_TO_UNLOCK_MSGS_SICO2002=CWSIC2002E: El servidor no puede desbloquear mensajes que actualmente est\u00e1n bloqueados en nombre de un cliente remoto: excepci\u00f3n {0}.
+UNABLE_TO_UNLOCK_MSGS_SICO2002.explanation=El servidor no ha podido ejecutar un mandato unlockSet() por cuenta del cliente remoto.
+UNABLE_TO_UNLOCK_MSGS_SICO2002.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+PROTOCOL_ERROR_SICO2003=CWSIC2003E: Se ha producido un error interno. Se ha realizado una llamada incorrecta a la clase principal de consumidor.
+PROTOCOL_ERROR_SICO2003.explanation=CMSG0001
+PROTOCOL_ERROR_SICO2003.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SERVER_FAILED_TO_START_SICO2004=CWSIC2004E: El motor de mensajer\u00eda no puede detectar conexiones remotas: excepci\u00f3n {0}.
+SERVER_FAILED_TO_START_SICO2004.explanation=El transporte de servidor no ha podido inicializarse. Es posible que el motor de mensajer\u00eda no pueda aceptar conexiones remotas.
+SERVER_FAILED_TO_START_SICO2004.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQVerb
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2005=CWSIC2005E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2005.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2005.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATProxyConsumer
+# {0} is the exception
+UNABLE_TO_UNLOCK_MSGS_SICO2006=CWSIC2006E: El servidor no puede desbloquear mensajes que actualmente est\u00e1n bloqueados en nombre de un cliente remoto: excepci\u00f3n {0}.
+UNABLE_TO_UNLOCK_MSGS_SICO2006.explanation=El servidor no ha podido ejecutar un mandato unlockSet() por cuenta del cliente remoto.
+UNABLE_TO_UNLOCK_MSGS_SICO2006.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATProxyConsumer
+# {0} is the exception
+UNABLE_TO_DELETE_MSGS_SICO2007=CWSIC2007E: El servidor no puede suprimir mensajes que actualmente est\u00e1n bloqueados en nombre de un cliente remoto: excepci\u00f3n {0}.
+UNABLE_TO_DELETE_MSGS_SICO2007.explanation=El servidor no ha podido ejecutar un mandato deleteSet() o deleteAll() por cuenta del cliente remoto.
+UNABLE_TO_DELETE_MSGS_SICO2007.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATTransaction
+# {0} is the first exception that caused the failure
+TRANSACTION_MARKED_AS_ERROR_SICO2008=CWSIC2008E: Esta transacci\u00f3n no se puede confirmar porque se ha producido un error en una operaci\u00f3n que se realiz\u00f3 dentro del l\u00edmite de transacciones. La primera operaci\u00f3n an\u00f3mala ha generado la siguiente excepci\u00f3n: {0}.
+TRANSACTION_MARKED_AS_ERROR_SICO2008.explanation=Se ha producido un error en una operaci\u00f3n realizada dentro del l\u00edmite de transacciones. Por ello, esta transacci\u00f3n se ha retrotra\u00eddo para garantizar la integridad de los datos. La anomal\u00eda se ha anotado en los archivos de anotaciones cronol\u00f3gicas del sistema y se ha generado un registro FFDC para ayudarle a diagnosticar la causa de la anomal\u00eda.
+TRANSACTION_MARKED_AS_ERROR_SICO2008.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+UNABLE_TO_SEND_MESSAGE_SICO2009=CWSIC2009E: Se ha producido una anomal\u00eda al enviar un mensaje: excepci\u00f3n {0}.
+UNABLE_TO_SEND_MESSAGE_SICO2009.explanation=No ha sido posible enviar un mensaje con transacciones o no fiable debido a la excepci\u00f3n indicada.
+UNABLE_TO_SEND_MESSAGE_SICO2009.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+INTERNAL_OBJECT_STORE_FULL_SICO2010=CWSIC2010E: Se ha producido un error interno. No es posible almacenar un objeto en el almac\u00e9n de objetos: excepci\u00f3n {0}.
+INTERNAL_OBJECT_STORE_FULL_SICO2010.explanation=CMSG0001
+INTERNAL_OBJECT_STORE_FULL_SICO2010.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_ASSIGN_LISTENER_SICO2011=CWSIC2011E: Se ha producido un error interno; no es posible ceder el control a un escucha de conversaciones subordinado.
+UNABLE_TO_ASSIGN_LISTENER_SICO2011.explanation=CMSG0001
+UNABLE_TO_ASSIGN_LISTENER_SICO2011.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATBrowseConsumer
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2012=CWSIC2012E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2012.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2012.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATConsumer
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2013=CWSIC2013E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2013.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2013.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATProxyConsumer
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2014=CWSIC2014E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2014.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2014.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATSyncAsynchReader
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2015=CWSIC2015E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2015.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2015.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in METransportReceiveListener
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2016=CWSIC2016E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2016.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2016.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATAsynchConsumer
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2017=CWSIC2017E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2017.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2017.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ServerSICoreConnectionListener
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2018=CWSIC2018E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2018.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2018.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ServerTransportReceiveListener
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2019=CWSIC2019E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2019.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2019.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATBrowser
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2020=CWSIC2020E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2020.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2020.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATConnection
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2021=CWSIC2021E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2021.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2021.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATDestination
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2022=CWSIC2022E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2022.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2022.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATHelper
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2023=CWSIC2023E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2023.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2023.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATProducer
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2024=CWSIC2024E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2024.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2024.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATSubscription
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2025=CWSIC2025E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2025.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2025.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATTransaction
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2026=CWSIC2026E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2026.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2026.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATXATransaction
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2027=CWSIC2027E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2027.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2027.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATAsynchConsumer
+# {0} is the exception
+UNABLE_TO_DELETE_MSGS_SICO2028=CWSIC2028E: El servidor no puede suprimir mensajes que actualmente est\u00e1n bloqueados en nombre de un cliente remoto: excepci\u00f3n {0}.
+UNABLE_TO_DELETE_MSGS_SICO2028.explanation=El servidor no ha podido ejecutar un mandato deleteSet() o deleteAll() por cuenta del cliente remoto.
+UNABLE_TO_DELETE_MSGS_SICO2028.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATXATransaction
+# {0} is the first exception that caused the failure
+TRANSACTION_MARKED_AS_ERROR_SICO2029=CWSIC2029E: Esta transacci\u00f3n no se puede confirmar porque se ha producido un error en una operaci\u00f3n que se realiz\u00f3 dentro del l\u00edmite de transacciones. La primera operaci\u00f3n an\u00f3mala ha generado la siguiente excepci\u00f3n: {0}.
+TRANSACTION_MARKED_AS_ERROR_SICO2029.explanation=Se ha producido un error en una operaci\u00f3n realizada dentro del l\u00edmite de transacciones. Por ello, esta transacci\u00f3n se ha retrotra\u00eddo para garantizar la integridad de los datos. La anomal\u00eda se ha anotado en los archivos de anotaciones cronol\u00f3gicas del sistema y se ha generado un registro FFDC para ayudarle a diagnosticar la causa de la anomal\u00eda.
+TRANSACTION_MARKED_AS_ERROR_SICO2029.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name
+# {1} is the port
+# {2} is the chain name
+REMOTE_ME_CLOSED_CONNECTION_SICO2030=CWSIC2030W: Se ha cerrado la conexi\u00f3n del motor de mensajer\u00eda con el host {0} en el puerto {1} utilizando la cadena {2}.
+REMOTE_ME_CLOSED_CONNECTION_SICO2030.explanation=El motor de mensajer\u00eda remoto ha realizado un cierre controlado de la conexi\u00f3n. Puede que est\u00e9 concluyendo o puede haber un problema en la red.
+REMOTE_ME_CLOSED_CONNECTION_SICO2030.useraction=Si el motor de mensajer\u00eda remoto no estaba concluyendo, verifique que la red funciona correctamente. Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+# {0} is the name of the messaging engine
+#MULTICAST_NOT_AVAILABLE_SICO2031=CWSIC2031E: Multicast message consumption is not available for messaging engine {0}.
+#MULTICAST_NOT_AVAILABLE_SICO2031.explanation=Multicast consumption only was requested by a client but this messaging engine does not support it.
+#MULTICAST_NOT_AVAILABLE_SICO2031.useraction=Either enable the server to allow multicast message consumption or allow the client to use unicast message consumption.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATBifurcatedConsumer
+# {0} is the exception
+UNABLE_TO_UNLOCK_MSGS_SICO2032=CWSIC2032E: El servidor no puede desbloquear mensajes que actualmente est\u00e1n bloqueados en nombre de un cliente remoto: excepci\u00f3n {0}.
+UNABLE_TO_UNLOCK_MSGS_SICO2032.explanation=El servidor no ha podido ejecutar un mandato unlockSet() por cuenta del cliente remoto.
+UNABLE_TO_UNLOCK_MSGS_SICO2032.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATBifurcatedConsumer
+# {0} is the exception
+COMMUNICATION_ERROR_SICO2033=CWSIC2033E: Se ha producido un error de comunicaciones al enviar a un cliente remoto o al recibir del mismo: excepci\u00f3n {0}.
+COMMUNICATION_ERROR_SICO2033.explanation=El servidor no ha podido enviar a un cliente remoto o recibir de \u00e9l datos. Puede que el cliente remoto haya terminado o puede haber un problema en la red.
+COMMUNICATION_ERROR_SICO2033.useraction=Si el cliente sigue estando disponible y la red funciona correctamente, examine el error y los archivos de anotaciones FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# Used in CATBifurcatedConsumer
+# {0} is the exception
+UNABLE_TO_DELETE_MSGS_SICO2034=CWSIC2034E: El servidor no puede suprimir mensajes que actualmente est\u00e1n bloqueados en nombre de un cliente remoto: excepci\u00f3n {0}.
+UNABLE_TO_DELETE_MSGS_SICO2034.explanation=El servidor no ha podido ejecutar un mandato deleteSet() o deleteAll() por cuenta del cliente remoto.
+UNABLE_TO_DELETE_MSGS_SICO2034.useraction=Examine los archivos de anotaciones de error y FFDC para ayudar a determinar la causa del problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint, {1} is the chain name and {2} is the User ID
+CLIENT_FAILED_AUTH_SICO2035=CWSIC2035E: No se ha podido autenticar el intento de conexi\u00f3n de cliente desde el host {0} en la cadena de transporte {1} con un identificador de usuario {2}.
+CLIENT_FAILED_AUTH_SICO2035.explanation=La conexi\u00f3n de cliente descrita en el mensaje ha fallado una comprobaci\u00f3n de seguridad.
+CLIENT_FAILED_AUTH_SICO2035.useraction=Examine las anotaciones de error para determinar la causa por la que el proceso de cliente especificado no puede conectarse con el identificador de usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint, {1} is the chain name, {2} is the messaging engine name and {3} is the bus name.
+CLIENT_FAILED_NO_ME_SICO2036=CWSIC2036E: No se ha podido realizar la conexi\u00f3n desde el host {0} en la cadena de transporte {1} debido a que el motor de mensajer\u00eda solicitado, {2} en el bus {3}, no corresponde a un motor de mensajer\u00eda activo que est\u00e1 disponible para este servidor de aplicaciones.
+CLIENT_FAILED_NO_ME_SICO2036.explanation=No se ha podido realizar la conexi\u00f3n descrita por el mensaje porque hac\u00eda referencia a un motor de mensajer\u00eda que no estaba disponible.
+CLIENT_FAILED_NO_ME_SICO2036.useraction=Examine las anotaciones de error para determinar la causa por la que el motor de mensajer\u00eda no estaba disponible.
+
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+# {0} is the host name / endpoint and {1} is the chain name
+#CLIENT_CONNECTED_SICO2037=CWSIC2037I: A client has connected from host {0} on transport chain {1}.
+#CLIENT_CONNECTED_SICO2037.explanation=A client has connected to this application server from the specified host using the specified transport chain.
+#CLIENT_CONNECTED_SICO2037.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+# {0} is the host name / endpoint and {1} is the chain name
+#CLIENT_DISCONNECTED_SICO2038=CWSIC2038I: A client, previously connected from host {0} on transport chain {1}, has disconnected.
+#CLIENT_DISCONNECTED_SICO2038.explanation=A client has disconnected from this application server.
+#CLIENT_DISCONNECTED_SICO2038.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+# {0} is the host name / endpoint and {1} is the chain name
+#ME_CONNECTED_SICO2039=CWSIC2039I: A messaging engine has connected from host {0} on transport chain {1}.
+#ME_CONNECTED_SICO2039.explanation=A messaging engine has connected to this application server from the specified host using the specified transport chain.
+#ME_CONNECTED_SICO2039.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+# {0} is the host name / endpoint and {1} is the chain name
+#ME_DISCONNECTED_SICO2040=CWSIC2040I: A messaging engine, previously connected from host {0} on transport chain {1}, has disconnected.
+#ME_DISCONNECTED_SICO2040.explanation=A messaging engine has disconnected from this application server.
+#ME_DISCONNECTED_SICO2040.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_SESSION_UNEXPECTED_SICO2041=CWSIC2041E: Se ha producido un error interno.
+BROWSER_SESSION_UNEXPECTED_SICO2041.explanation=CMSG0001
+BROWSER_SESSION_UNEXPECTED_SICO2041.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_SESSION_EXPECTED_SICO2042=CWSIC2042E: Se ha producido un error interno.
+BROWSER_SESSION_EXPECTED_SICO2042.explanation=CMSG0001
+BROWSER_SESSION_EXPECTED_SICO2042.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INITIAL_TABLE_SIZE_NEGATIVE_SICO2043=CWSIC2043E: Se ha producido un error interno.
+INITIAL_TABLE_SIZE_NEGATIVE_SICO2043.explanation=CMSG0001
+INITIAL_TABLE_SIZE_NEGATIVE_SICO2043.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INITIAL_TABLE_SIZE_TOO_SMALL_SICO2044=CWSIC2044E: Se ha producido un error interno.
+INITIAL_TABLE_SIZE_TOO_SMALL_SICO2044.explanation=CMSG0001
+INITIAL_TABLE_SIZE_TOO_SMALL_SICO2044.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INITIAL_TABLE_SIZE_SMALLER_THAN_MAX_SICO2045=CWSIC2045E: Se ha producido un error interno.
+INITIAL_TABLE_SIZE_SMALLER_THAN_MAX_SICO2045.explanation=CMSG0001
+INITIAL_TABLE_SIZE_SMALLER_THAN_MAX_SICO2045.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_CONNECTION_PROPERTIES_SICO2046=CWSIC2046E: Se ha producido un error interno.
+NULL_CONNECTION_PROPERTIES_SICO2046.explanation=CMSG0001
+NULL_CONNECTION_PROPERTIES_SICO2046.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NULL_MECH_SICO2047=CWSIC2047E: Se ha producido un error interno.
+NULL_MECH_SICO2047.explanation=CMSG0001
+NULL_MECH_SICO2047.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+HANDSHAKE_NOT_COMPLETE_SICO2048=CWSIC2048E: Se ha producido un error interno.
+HANDSHAKE_NOT_COMPLETE_SICO2048.explanation=CMSG0001
+HANDSHAKE_NOT_COMPLETE_SICO2048.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ALREADY_IN_PARALLEL_CLOSE_SICO2049=CWSIC2049E: Se ha producido un error interno.
+ALREADY_IN_PARALLEL_CLOSE_SICO2049.explanation=CMSG0001
+ALREADY_IN_PARALLEL_CLOSE_SICO2049.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_ON_SERVER_SICO2050=CWSIC2050E: Se ha producido un error interno.
+INVALID_METHOD_ON_SERVER_SICO2050.explanation=CMSG0001
+INVALID_METHOD_ON_SERVER_SICO2050.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+SICONN_ALREADY_SET_SICO2051=CWSIC2051E: Se ha producido un error interno.
+SICONN_ALREADY_SET_SICO2051.explanation=CMSG0001
+SICONN_ALREADY_SET_SICO2051.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_ON_SERVER_SICO2052=CWSIC2052E: Se ha producido un error interno.
+INVALID_METHOD_ON_SERVER_SICO2052.explanation=CMSG0001
+INVALID_METHOD_ON_SERVER_SICO2052.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_ON_SERVER_SICO2053=CWSIC2053E: Se ha producido un error interno.
+INVALID_METHOD_ON_SERVER_SICO2053.explanation=CMSG0001
+INVALID_METHOD_ON_SERVER_SICO2053.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_CREATE_DISPATCH_TO_ALL_SICO2054=CWSIC2054E: Se ha producido un error interno.
+UNABLE_TO_CREATE_DISPATCH_TO_ALL_SICO2054.explanation=CMSG0001
+UNABLE_TO_CREATE_DISPATCH_TO_ALL_SICO2054.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_SESSION_NULL_SICO2055=CWSIC2055E: Se ha producido un error interno.
+BROWSER_SESSION_NULL_SICO2055.explanation=CMSG0001
+BROWSER_SESSION_NULL_SICO2055.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+MFP_SCHEMA_REQUEST_FAILED_SICO2056=CWSIC2056E: Un cliente ha solicitado un esquema de mensaje pero no se ha localizado el esquema.
+MFP_SCHEMA_REQUEST_FAILED_SICO2056.explanation=CMSG0001
+MFP_SCHEMA_REQUEST_FAILED_SICO2056.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in MEConnectionImpl
+INVALID_METHOD_ON_SERVER_SICO2057=CWSIC2057E: Se ha producido un error interno.
+INVALID_METHOD_ON_SERVER_SICO2057.explanation=CMSG0001
+INVALID_METHOD_ON_SERVER_SICO2057.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the key already in use
+KEY_IN_USE_SICO2058=CWSIC2058E: Se ha producido un error interno. Se ha intentado guardar un objeto en la correlaci\u00f3n con el ID {0}, pero ya existe un elemento con esta clave en la correlaci\u00f3n.
+KEY_IN_USE_SICO2058.explanation=CMSG0001
+KEY_IN_USE_SICO2058.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the key that is missing
+NO_SUCH_KEY_SICO2059=CWSIC2059E: Se ha producido un error interno. Se ha intentado obtener un objeto de la correlaci\u00f3n con el ID {0}, pero no hay ning\u00fan elemento con esta clave en la correlaci\u00f3n.
+NO_SUCH_KEY_SICO2059.explanation=CMSG0001
+NO_SUCH_KEY_SICO2059.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+NO_TRAN_ASSOCIATED_SICO2060=CWSIC2060E: Se ha producido un error interno. Se ha prohibido un intento de utilizar una transacci\u00f3n probablemente debido a que no se ha creado correctamente.
+NO_TRAN_ASSOCIATED_SICO2060.explanation=CMSG0001
+NO_TRAN_ASSOCIATED_SICO2060.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_SERIALIZE_COMMAND_SICO2161=CWSIC2161E: Se ha producido un error interno.
+FAILED_TO_SERIALIZE_COMMAND_SICO2161.explanation=CMSG0001
+FAILED_TO_SERIALIZE_COMMAND_SICO2161.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_DESERIALIZE_COMMAND_SICO2162=CWSIC2162E: Se ha producido un error interno.
+FAILED_TO_DESERIALIZE_COMMAND_SICO2162.explanation=CMSG0001
+FAILED_TO_DESERIALIZE_COMMAND_SICO2162.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_NOT_CLOSED_SICO2163=CWSIC2163E: Se ha producido un error interno.
+CONNECTION_NOT_CLOSED_SICO2163.explanation=CMSG0001
+CONNECTION_NOT_CLOSED_SICO2163.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICO2164=CWSIC2164E: Se ha intentado realizar una conexi\u00f3n que ya est\u00e1 cerrada.
+CONNECTION_CLOSED_SICO2164.explanation=Se ha intentado realizar una operaci\u00f3n en un recurso de conexi\u00f3n que se hab\u00eda cerrado previamente.  Este problema puede deberse a un error interno o a que el sistema ha cerrado el recurso de conexi\u00f3n en respuesta a la detecci\u00f3n de una condici\u00f3n de error.
+CONNECTION_CLOSED_SICO2164.useraction=Examine los archivos de anotaciones cronol\u00f3gicas del servidor de aplicaciones para determinar por qu\u00e9 se ha cerrado la conexi\u00f3n. Consulte los mensajes adjuntos para obtener m\u00e1s informaci\u00f3n y si es posible corrija el problema.
+
+# -------------------------------------------------------------------------------------------------
+CHUNK_WRAPPER_NULL_SICO2165=CWSIC2165E: Se ha producido un error interno.
+CHUNK_WRAPPER_NULL_SICO2165.explanation=CMSG0001
+CHUNK_WRAPPER_NULL_SICO2165.useraction=CMSG0002            
+
+
+# MQ messages
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_NORMAL_CHANNEL_END_SICO3001=CWSIC3001I: El enlace de WebSphere MQ {0} ha finalizado normalmente.
+INFO_NORMAL_CHANNEL_END_SICO3001.explanation=Es un mensaje informativo.
+INFO_NORMAL_CHANNEL_END_SICO3001.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_CHANNEL_START_SICO3002=CWSIC3002I: El enlace de WebSphere MQ {0} se ha iniciado.
+INFO_CHANNEL_START_SICO3002.explanation=Es un mensaje informativo.
+INFO_CHANNEL_START_SICO3002.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the remote Queue Manager name
+ERR_TERMINATED_BY_REMOTE_EXIT_SICO3005=CWSIC3005E: El enlace de WebSphere MQ {0} ha finalizado porque la salida de canal del sistema remoto {1} lo ha solicitado.
+ERR_TERMINATED_BY_REMOTE_EXIT_SICO3005.explanation=Una salida de canal que se ejecuta en el gestor de colas de WebSphere MQ remoto ha solicitado la finalizaci\u00f3n de dicho canal.
+ERR_TERMINATED_BY_REMOTE_EXIT_SICO3005.useraction=Examine los archivos de anotaciones de error en el extremo remoto del enlace para determinar la raz\u00f3n por la que la salida remota ha finalizado el enlace.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the channel name
+ERR_REMOTE_CHANNEL_NOT_FOUND_SICO3006=CWSIC3006E: El enlace de WebSphere MQ {0} ha finalizado porque el canal {1} no est\u00e1 disponible actualmente en el sistema remoto.
+ERR_REMOTE_CHANNEL_NOT_FOUND_SICO3006.explanation=El enlace de WebSphere MQ se puede haber definido con un nombre de host o un n\u00famero de puerto incorrecto o falta la definici\u00f3n de canal en el sistema remoto.
+ERR_REMOTE_CHANNEL_NOT_FOUND_SICO3006.useraction=Aseg\u00farese de que el enlace de WebSphere MQ se ha configurado para conectarse con el sistema correcto y que se ha definido una definici\u00f3n de canal adecuada con el nombre correcto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the protocol error type
+# {2} is the associated error data
+ERR_REMOTE_PROTOCOL_ERROR_SICO3007=CWSIC3007E: Se ha producido un error interno. Durante la comunicaci\u00f3n a trav\u00e9s del enlace de WebSphere MQ {0}, el programa del canal del gestor de colas remoto ha detectado un error en el protocolo. El tipo de anomal\u00eda ha sido {1} con los datos asociados {2}.
+ERR_REMOTE_PROTOCOL_ERROR_SICO3007.explanation=CMSG0001
+ERR_REMOTE_PROTOCOL_ERROR_SICO3007.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+ERR_REMOTE_QM_UNAVAILABLE_SICO3008=CWSIC3008E: El enlace de WebSphere MQ {0} no puede iniciarse porque el gestor de colas remoto no est\u00e1 disponible actualmente.
+ERR_REMOTE_QM_UNAVAILABLE_SICO3008.explanation=El gestor de colas remoto no se est\u00e1 ejecutando actualmente.
+ERR_REMOTE_QM_UNAVAILABLE_SICO3008.useraction=Inicie el gestor de colas remoto o repita la operaci\u00f3n m\u00e1s adelante.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_REMOTE_QM_TERMINATING_SICO3009=CWSIC3009I: El enlace de WebSphere MQ {0} se est\u00e1 cerrando porque el gestor de colas remoto est\u00e1 finalizando.
+INFO_REMOTE_QM_TERMINATING_SICO3009.explanation=El gestor de colas remoto est\u00e1 finalizando y, por consiguiente, est\u00e1 finalizando todas sus conexiones.
+INFO_REMOTE_QM_TERMINATING_SICO3009.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} locally defined sequence wrap value
+# {2} remotely defined sequence wrap value
+ERR_MSGWRAP_DIFFERENT_SICO3010=CWSIC3010E: El valor de reinicio del n\u00famero de secuencia para el enlace de WebSphere MQ {0} es {1}, pero el valor especificado en la ubicaci\u00f3n remota es {2}. Para poder iniciar el canal, los dos valores deben ser iguales.
+ERR_MSGWRAP_DIFFERENT_SICO3010.explanation=Los valores de reinicio de secuencia en los dos extremos deben ser iguales para poder iniciar el enlace.
+ERR_MSGWRAP_DIFFERENT_SICO3010.useraction=Cambie uno de los extremos del enlace para asegurarse de que los dos valores de reinicio de secuencia son iguales y vuelva a iniciar el enlace.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} local sequence number
+# {2} remote expected sequence number
+ERR_SND_SEQUENCE_ERROR_SICO3011=CWSIC3011E: El enlace de WebSphere MQ {0} y el gestor de colas remoto no han coincidido en el siguiente n\u00famero de secuencia de mensaje. Se ha enviado un mensaje con el n\u00famero de secuencia {1} cuando se esperaba el n\u00famero de secuencia {2}.
+ERR_SND_SEQUENCE_ERROR_SICO3011.explanation=Es posible que la informaci\u00f3n de sincronizaci\u00f3n est\u00e9 da\u00f1ada o que se haya retrocedido a una versi\u00f3n anterior. Si no se puede resolver la situaci\u00f3n, se puede restablecer manualmente el n\u00famero de secuencia en el extremo emisor del enlace.
+ERR_SND_SEQUENCE_ERROR_SICO3011.useraction=Determine si el extremo del enlace se ha restaurado de una copia de seguridad anterior o se ha suprimido y vuelto a definir. Si es necesario, emita un mandato RESET en el extremo emisor para iniciar la secuencia de mensajes en un punto concreto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_CHANNEL_CLOSED_SICO3012=CWSIC3012I: El enlace de WebSphere MQ {0} se cierra a ra\u00edz de una petici\u00f3n del usuario.
+INFO_CHANNEL_CLOSED_SICO3012.explanation=Es un mensaje informativo.
+INFO_CHANNEL_CLOSED_SICO3012.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name
+INFO_DISCINTERVAL_EXPIRED_SICO3013=CWSIC3013I: El remitente del enlace de WebSphere MQ {0} ha finalizado porque no han llegado mensajes para su transmisi\u00f3n dentro del per\u00edodo de intervalo de desconexi\u00f3n.
+INFO_DISCINTERVAL_EXPIRED_SICO3013.explanation=Es un mensaje informativo.
+INFO_DISCINTERVAL_EXPIRED_SICO3013.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the channel name
+ERR_BAD_REMOTE_CHANNEL_TYPE_SICO3014=CWSIC3014E: El enlace de WebSphere MQ {0} est\u00e1 finalizando porque el canal {1} de una m\u00e1quina remota no es del tipo adecuado.
+ERR_BAD_REMOTE_CHANNEL_TYPE_SICO3014.explanation=Los conexiones de canal deben definirse pares apropiados. Por ejemplo, un emisor debe conectarse a un canal solicitante o receptor.
+ERR_BAD_REMOTE_CHANNEL_TYPE_SICO3014.useraction=Compruebe los valores de puerto y nombre del host del enlace de WebSphere MQ y aseg\u00farese de que el enlace est\u00e1 configurado para conectarse con el gestor de colas remoto correcto. Compruebe que existe una definici\u00f3n de canal apropiada en el sistema remoto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} remote sent sequence number
+# {2} local expected sequence number
+ERR_RCV_SEQUENCE_ERROR_SICO3015=CWSIC3015E: El enlace de WebSphere MQ {0} y el gestor de colas remoto no han coincidido en el siguiente n\u00famero de secuencia de mensaje. Se ha recibido un mensaje con el n\u00famero de secuencia {1} cuando se esperaba el n\u00famero de secuencia {2}.
+ERR_RCV_SEQUENCE_ERROR_SICO3015.explanation=Es posible que la informaci\u00f3n de sincronizaci\u00f3n est\u00e9 da\u00f1ada o que se haya retrocedido a una versi\u00f3n anterior. Si no se puede resolver la situaci\u00f3n, se puede restablecer manualmente el n\u00famero de secuencia en el extremo emisor del enlace.
+ERR_RCV_SEQUENCE_ERROR_SICO3015.useraction=Determine si el extremo del enlace se ha restaurado de una copia de seguridad anterior o se ha suprimido y vuelto a definir. Si es necesario, emita un mandato RESET para iniciar la secuencia de mensajes en un punto concreto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name
+# {1} is the MQ link name
+ERR_BIND_FAILED_SICO3062=CWSIC3062E: Ha fallado la negociaci\u00f3n de canales para el emisor del enlace MQ {0}, definido en el enlace MQ {1}. Se detiene el emisor del enlace MQ.
+ERR_BIND_FAILED_SICO3062.explanation=El canal emisor de enlace MQ especificado, no ha podido negociar ni establecer una sesi\u00f3n con su canal receptor WebSphere MQ asociado. El canal emisor de enlace MQ se detiene.
+ERR_BIND_FAILED_SICO3062.useraction=Examine los mensajes de error para determinar y resolver la causa de la anomal\u00eda. Si no, capture los datos de diagn\u00f3stico adecuados y p\u00f3ngase en contacto con el Centro de soporte de IBM local.
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the channel name
+# {2} is the remote Queue Manager name
+ERR_CHANNEL_INDOUBT_SICO3065=CWSIC3065E: El enlace de WebSphere MQ {0} no puede iniciarse porque actualmente est\u00e1 en duda en el canal {1} con el gestor de colas {2}.
+ERR_CHANNEL_INDOUBT_SICO3065.explanation=Un enlace o un canal no pueden conectarse y transferir mensajes a un sistema remoto si actualmente est\u00e1 en duda con otro sistema.
+ERR_CHANNEL_INDOUBT_SICO3065.useraction=Reinicie el enlace con el sistema original o bien utilice el mandato RESOLVE para resolver el estado en duda.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the remote Queue Manager name
+ERR_MSG_NOT_RECEIVED_SICO3080=CWSIC3080E: El enlace de WebSphere MQ {0} ha finalizado porque el gestor de colas {1} no puede recibir el mensaje.
+ERR_MSG_NOT_RECEIVED_SICO3080.explanation=El sistema remoto ha rechazado uno o m\u00e1s mensajes, por lo que el enlace ha finalizado.
+ERR_MSG_NOT_RECEIVED_SICO3080.useraction=Examine los archivos de anotaciones cronol\u00f3gicas de error del sistema remoto para determinar la raz\u00f3n por la cual no puede recibirse y vuelva a iniciar el enlace.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the remote queue manager name
+INFO_SND_PUT_TO_DLQ_SICO3096=CWSIC3096I: Al enviar el mensaje al gestor de colas {1} por el enlace de WebSphere MQ {0} se enviaron uno m\u00e1s mensajes al destino de excepciones.
+INFO_SND_PUT_TO_DLQ_SICO3096.explanation=Es un mensaje informativo.
+INFO_SND_PUT_TO_DLQ_SICO3096.useraction=Compruebe el contenido de mensaje de los mensajes del destino de excepciones para determinar la causa por la que se colocaron all\u00ed.  Utilice esta informaci\u00f3n para resolver el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the remote queue manager name
+# {1} is the link name
+INFO_SND_SEND_TO_EXCP_DEST_SICO3097=CWSIC3097I: Al enviar los mensajes al gestor de colas {0} por el enlace de WebSphere MQ {1}, se enviaron uno m\u00e1s mensajes a un destino de excepciones.
+INFO_SND_SEND_TO_EXCP_DEST_SICO3097.explanation=Es un mensaje informativo.
+INFO_SND_SEND_TO_EXCP_DEST_SICO3097.useraction=Examine los registros de los mensajes de error asociados que pueden proporcionar detalles del destino de excepciones para el que se han enviado los mensajes no entregados. Compruebe el contenido de estos mensajes para determinar la causa por la que se colocaron all\u00ed. Utilice esta informaci\u00f3n para resolver el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the remote queue manager name
+INFO_RCV_PUT_TO_DLQ_SICO3098=CWSIC3098I: Al recibir mensajes del gestor de colas {1} por el enlace de WebSphere MQ {0} se enviaron uno m\u00e1s mensajes a un destino de excepciones.
+INFO_RCV_PUT_TO_DLQ_SICO3098.explanation=Es un mensaje informativo.
+INFO_RCV_PUT_TO_DLQ_SICO3098.useraction=Compruebe el contenido de mensaje de los mensajes del destino de excepciones para determinar la causa por la que se colocaron all\u00ed.  Utilice esta informaci\u00f3n para resolver el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the remote queue manager name
+# {1} is the link name
+INFO_RCV_SEND_TO_EXCP_DEST_SICO3099=CWSIC3099I: Al recibir mensajes del gestor de colas {0} por el enlace de WebSphere MQ {1} se enviaron uno m\u00e1s mensajes a un destino de excepciones.
+INFO_RCV_SEND_TO_EXCP_DEST_SICO3099.explanation=Es un mensaje informativo.
+INFO_RCV_SEND_TO_EXCP_DEST_SICO3099.useraction=Examine los registros de los mensajes de error asociados que pueden proporcionar detalles del destino de excepciones para el que se han enviado los mensajes no entregados. Compruebe el contenido de estos mensajes para determinar la causa por la que se colocaron all\u00ed. Utilice esta informaci\u00f3n para resolver el problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the channel name
+ERR_REMOTE_CHANNEL_UNAVAILABLE_SICO3108=CWSIC3108E: El enlace de WebSphere MQ {0} ha finalizado porque el canal {1} no est\u00e1 disponible actualmente en el sistema remoto.
+ERR_REMOTE_CHANNEL_UNAVAILABLE_SICO3108.explanation=Es posible que el canal est\u00e9 detenido o que el sistema remoto no tenga recursos suficientes para ejecutar m\u00e1s canales.
+ERR_REMOTE_CHANNEL_UNAVAILABLE_SICO3108.useraction=Compruebe el sistema remoto para asegurarse de que el canal est\u00e1 disponible para su ejecuci\u00f3n y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name
+# {1} is the link name
+SENDER_CHANNEL_STARTED_SICO3109=CWSIC3109I: El canal emisor {0} para el enlace WebSphere MQ {1} se ha iniciado.
+SENDER_CHANNEL_STARTED_SICO3109.explanation=Se ha iniciado el canal emisor del enlace de WebSphere MQ indicado en el mensaje.
+SENDER_CHANNEL_STARTED_SICO3109.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name
+# {1} is the link name
+SENDER_CHANNEL_STOPPED_SICO3110=CWSIC3110I: El canal emisor {0} para el enlace WebSphere MQ {1} se ha detenido.
+SENDER_CHANNEL_STOPPED_SICO3110.explanation=Se ha detenido el canal emisor del enlace de WebSphere MQ indicado en el mensaje.
+SENDER_CHANNEL_STOPPED_SICO3110.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name
+# {1} is the link name
+RECEIVER_CHANNEL_STARTED_SICO3111=CWSIC3111I: El canal receptor {0} para el enlace WebSphere MQ {1} se ha iniciado.
+RECEIVER_CHANNEL_STARTED_SICO3111.explanation=Se ha iniciado el canal receptor del enlace de WebSphere MQ indicado en el mensaje.
+RECEIVER_CHANNEL_STARTED_SICO3111.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name
+# {1} is the link name
+RECEIVER_CHANNEL_STOPPED_SICO3112=CWSIC3112I: El canal receptor {0} para el enlace WebSphere MQ {1} se ha detenido.
+RECEIVER_CHANNEL_STOPPED_SICO3112.explanation=Se ha detenido el canal receptor del enlace de WebSphere MQ indicado en el mensaje.
+RECEIVER_CHANNEL_STOPPED_SICO3112.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# message no longer required
+# {0} is the host name / endpoint and {1} is the chain name, {2} is the queue manager name
+#MQLINK_UNKNOWN_QM_NAME_SICO3113=CWSIC3113E: A WebSphere MQ connection attempt from host {0} on transport chain {1} failed because the queue manager it referenced, {2}, does not correspond to an active WebSphere MQ link defined to this application server.
+#MQLINK_UNKNOWN_QM_NAME_SICO3113.explanation=The WebSphere MQ connection described by the message failed because it referenced a queue manager name which did not correspond to an active WebSphere MQ link.
+#MQLINK_UNKNOWN_QM_NAME_SICO3113.useraction=Examine the error logs to determine why the WebSphere MQ link is not available.
+
+# -------------------------------------------------------------------------------------------------
+# message no longer required
+# {0} is the host name / endpoint and {1} is the chain name, {2} is the channel name
+#MQLINK_UNKNOWN_CHANNEL_NAME_SICO3114=CWSIC3114E: A WebSphere MQ connection attempt from host {0} on transport chain {1} failed because the WebSphere MQ link channel it referenced, {2}, does not correspond to an active WebSphere MQ link channel defined to this application server.
+#MQLINK_UNKNOWN_CHANNEL_NAME_SICO3114.explanation=The WebSphere MQ connection described by the message failed because it referenced a WebSphere MQ link channel name which did not correspond to an active WebSphere MQ link channel defined to this application server.
+#MQLINK_UNKNOWN_CHANNEL_NAME_SICO3114.useraction=Examine the error logs to determine why the WebSphere MQ link channel was not available.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name, {1} is the host name / endpoint and {2} is the chain name
+MQLINK_CONNECTED_SICO3115=CWSIC3115I: Un canal emisor de WebSphere MQ {0} desde el host {1} ha establecido una conexi\u00f3n en la cadena de transporte {2}.
+MQLINK_CONNECTED_SICO3115.explanation=Un canal emisor de WebSphere MQ se ha conectado a este servidor de aplicaciones desde el host especificado mediante el canal y la cadena de transporte que se han especificado.
+MQLINK_CONNECTED_SICO3115.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name, {1} is the host name / endpoint and {2} is the chain name
+MQLINK_DISCONNECTED_SICO3116=CWSIC3116I: Un canal emisor WebSphere MQ {0}, conectado anteriormente desde el host {1} en la cadena de transporte {2}, se ha desconectado.
+MQLINK_DISCONNECTED_SICO3116.explanation=Se ha desconectado un canal emisor de WebSphere MQ para este servidor de aplicaciones.
+MQLINK_DISCONNECTED_SICO3116.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the client link name, {1} is the chain name, {2} is the bus name
+MQCLIENT_CHAIN_NOT_PERMITTED_SICO3117=CWSIC3117E: Se ha intentado realizar una conexi\u00f3n con la mensajer\u00eda de WebSphere utilizando el enlace del cliente MQ {0}, pero no se ha podido completar porque la cadena de transporte {1} no est\u00e1 permitida por la configuraci\u00f3n de seguridad del bus {2}.
+MQCLIENT_CHAIN_NOT_PERMITTED_SICO3117.explanation=El bus se ha configurado s\u00f3lo para permitir conexiones a trav\u00e9s de cadenas de transporte determinadas y esta conexi\u00f3n no se ha podido completar porque la cadena no est\u00e1 permitida.
+MQCLIENT_CHAIN_NOT_PERMITTED_SICO3117.useraction=Con\u00e9ctese a trav\u00e9s de una cadena de transporte diferente o configure el bus para permitir las conexiones a trav\u00e9s de esta cadena.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name, {1} is the chain name, {2} is the bus name
+MQLINK_CHAIN_NOT_PERMITTED_SICO3118=CWSIC3118E: Se ha intentado realizar una conexi\u00f3n con la mensajer\u00eda de WebSphere utilizando el enlace de MQ {0}, pero no se ha podido completar porque la cadena de transporte {1} no est\u00e1 permitida por la configuraci\u00f3n de seguridad del bus {2}.
+MQLINK_CHAIN_NOT_PERMITTED_SICO3118.explanation=El bus se ha configurado s\u00f3lo para permitir conexiones a trav\u00e9s de cadenas de transporte determinadas y esta conexi\u00f3n no se ha podido completar porque la cadena no est\u00e1 permitida.
+MQLINK_CHAIN_NOT_PERMITTED_SICO3118.useraction=Con\u00e9ctese a trav\u00e9s de una cadena de transporte diferente o configure el bus para permitir las conexiones a trav\u00e9s de esta cadena.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name, {1} is the chain name, {2} is the bus name
+MQLINK_OB_CHAIN_NOT_PERMITTED_SICO3119=CWSIC3119E: Se ha intentado realizar una conexi\u00f3n con WebSphere MQ utilizando el enlace de MQ {0}, pero no se ha podido completar porque la cadena de transporte {1} no est\u00e1 permitida por la configuraci\u00f3n de seguridad del bus {2}.
+MQLINK_OB_CHAIN_NOT_PERMITTED_SICO3119.explanation=El bus se ha configurado s\u00f3lo para permitir conexiones a trav\u00e9s de cadenas de transporte determinadas y esta conexi\u00f3n no se ha podido completar porque la cadena no est\u00e1 permitida.
+MQLINK_OB_CHAIN_NOT_PERMITTED_SICO3119.useraction=Con\u00e9ctese a trav\u00e9s de una cadena de transporte diferente o configure el bus para permitir las conexiones a trav\u00e9s de esta cadena.
+
+
+# -------------------------------------------------------------------------------------------------
+
+
+#   New messages added for MQlink
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+ERR_NON_MQ_SEND_SICO3200=CWSIC3200E: El enlace de WebSphere MQ {0} no ha podido transmitir un mensaje porque no estaba en un formato v\u00e1lido para WebSphere MQ.
+ERR_NON_MQ_SEND_SICO3200.explanation=La causa m\u00e1s probable de este error es el que el destino se\u00f1alado del mensaje supera el l\u00edmite de 48 caracteres impuesto por WebSphere MQ.
+ERR_NON_MQ_SEND_SICO3200.useraction=El mensaje se colocar\u00e1 en un destino de excepciones. Compruebe el contenido del mensaje para resolver el problema. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the sender channel name
+# {1} is the link name
+INFO_MQLINKSENDER_START_SICO3201=CWSIC3201I: Se ha solicitado iniciar el canal emisor {0} del enlace WebSphere MQ {1}.
+INFO_MQLINKSENDER_START_SICO3201.explanation=Es un mensaje informativo.
+INFO_MQLINKSENDER_START_SICO3201.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_MQLINKSENDER_STOP_SICO3202=CWSIC3202I: Se ha solicitado detener el extremo emisor del enlace WebSphere MQ {0}.
+INFO_MQLINKSENDER_STOP_SICO3202.explanation=Es un mensaje informativo.
+INFO_MQLINKSENDER_STOP_SICO3202.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the encoded message size
+# {2} is the maximum allowable message size
+ERR_MSG_TOO_BIG_SICO3205=CWSIC3205E: El mensaje codificado es demasiado grande para enviarlo al enlace WebSphere MQ {0}. El tama\u00f1o del mensaje es {1} pero el tama\u00f1o m\u00e1ximo de mensaje es {2}. Se intentar\u00e1 colocar el mensaje en el destino de excepci\u00f3n.
+ERR_MSG_TOO_BIG_SICO3205.explanation=El enlace de WebSphere MQ negocia con el socio remoto un tama\u00f1o m\u00e1ximo permitido para los mensajes que van a transmitirse por el enlace. Si el tama\u00f1o de un mensaje sobrepasa este valor, se intentar\u00e1 colocar el mensaje en el destino de excepci\u00f3n.
+ERR_MSG_TOO_BIG_SICO3205.useraction=Compruebe que los valores de tama\u00f1o m\u00e1ximo de mensajes definidos en cada extremo del enlace son lo bastante grandes para las aplicaciones configuradas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the encoded message size
+# {2} is the maximum allowable message size
+ERR_MSG_TOO_BIG_SICO3206=CWSIC3206E: El mensaje codificado es demasiado grande para enviarlo al enlace WebSphere MQ {0}. El tama\u00f1o del mensaje es {1} pero el tama\u00f1o m\u00e1ximo de mensaje es {2}. Se intentar\u00e1 enviar el mensaje a un destino de excepciones.
+ERR_MSG_TOO_BIG_SICO3206.explanation=El enlace de WebSphere MQ negocia con el socio remoto un tama\u00f1o m\u00e1ximo permitido para los mensajes que van a transmitirse por el enlace. Si el tama\u00f1o de un mensaje que se va a enviar excede este tama\u00f1o m\u00e1ximo, se intentar\u00e1 enviar el mensaje a un destino de excepciones.
+ERR_MSG_TOO_BIG_SICO3206.useraction=Examine los registros de los mensajes de error asociados que pueden proporcionar detalles del destino de excepciones para el que se han enviado los mensajes no entregados. Examine el mensaje no entregado si fuera necesario y aseg\u00farese que los valores de tama\u00f1o m\u00e1ximo de mensajes definidos en cada extremo del enlace son lo bastante grandes para las aplicaciones configuradas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the required link state
+ERR_MQSENDER_STATE_SICO3209=CWSIC3209E: Se ha producido un error interno. Durante el proceso del enlace de WebSphere MQ {0} se ha recibido una petici\u00f3n de pasar al estado no v\u00e1lido {1}.
+ERR_MQSENDER_STATE_SICO3209.explanation=CMSG0001
+ERR_MQSENDER_STATE_SICO3209.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the received data buffer
+ERR_MQLINKSENDER_DATA_SICO3212=CWSIC3212E: El extremo que efect\u00faa en env\u00edo del enlace de WebSphere MQ {0} ha recibido datos no v\u00e1lidos y finalizar\u00e1. El almacenamiento intermedio de datos no v\u00e1lido era {1}.
+ERR_MQLINKSENDER_DATA_SICO3212.explanation=CMSG0001
+ERR_MQLINKSENDER_DATA_SICO3212.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the current link state
+# {2} is the required link state
+ERR_MQLINKSENDER_STATE_SICO3213=CWSIC3213E: Se ha producido un error interno. Durante el proceso del enlace de WebSphere MQ {0} se ha intentado una transici\u00f3n de estado no permitida del estado {1} al estado {2}.
+ERR_MQLINKSENDER_STATE_SICO3213.explanation=CMSG0001
+ERR_MQLINKSENDER_STATE_SICO3213.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the channel name
+# {1} is the link name
+# {2} is the connection name list
+ERR_MQLINKSENDER_INVALID_CONNAMELIST_SICO3214=CWSIC3214E: El canal emisor {0} del enlace de WebSphere MQ {1} tiene una lista de conexiones no v\u00e1lida {2}.
+ERR_MQLINKSENDER_INVALID_CONNAMELIST_SICO3214.explanation=La informaci\u00f3n de conexiones en la lista de nombres de conexiones se utiliza para establecer una conexi\u00f3n con un gestor de colas de WebSphere MQ. La lista de nombres de conexiones no es v\u00e1lida.
+ERR_MQLINKSENDER_INVALID_CONNAMELIST_SICO3214.useraction=Aseg\u00farese de dar una lista de nombres de conexiones v\u00e1lida. Consulte el Centro de informaci\u00f3n de WebSphere Application Server para ver la sintaxis v\u00e1lida de una lista de nombres de conexiones.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the receiver channel name
+# {1} is the link name
+INFO_MQLINKRECV_START_SICO3220=CWSIC3220I: Se ha solicitado iniciar el canal receptor {0} del enlace WebSphere MQ {1}.
+INFO_MQLINKRECV_START_SICO3220.explanation=Es un mensaje informativo.
+INFO_MQLINKRECV_START_SICO3220.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_MQLINKRECV_STOP_SICO3221=CWSIC3221I: Se ha solicitado detener el extremo receptor del enlace WebSphere MQ {0}.
+INFO_MQLINKRECV_STOP_SICO3221.explanation=Es un mensaje informativo.
+INFO_MQLINKRECV_STOP_SICO3221.useraction=No es necesaria ninguna acci\u00f3n. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} partner machine address
+INFO_MQLINKRECV_ADOPT_SICO3222=CWSIC3222I: Se ha adoptado el enlace de WebSphere MQ {0} de la direcci\u00f3n {1}.
+INFO_MQLINKRECV_ADOPT_SICO3222.explanation=Es un mensaje informativo.
+INFO_MQLINKRECV_ADOPT_SICO3222.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the current state
+# {2} is the required state
+ERR_MQLINKRECV_STATE_SICO3223=CWSIC3223E: Se ha producido un error interno. Durante el proceso del extremo receptor del enlace WebSphere MQ {0} se ha intentado una transici\u00f3n de estado no permitida del estado {1} al estado {2}.
+ERR_MQLINKRECV_STATE_SICO3223.explanation=CMSG0001
+ERR_MQLINKRECV_STATE_SICO3223.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the target publish subscribe bridge destination (this is normally a system queue that starts with '_PPSB.')
+ERR_MQLINKRCV_MSGERR_SICO3228=CWSIC3228E: El destino de puente de suscripci\u00f3n de publicaci\u00f3n se\u00f1alado {0} no est\u00e1 definido. Es posible que se haya recibido un mensaje para una solicitud de suscripci\u00f3n antigua y que deba realizarse una limpieza.
+ERR_MQLINKRCV_MSGERR_SICO3228.explanation=El mensaje era probablemente para una solicitud de suscripci\u00f3n que ya ha terminado. Por consiguiente, el destino se\u00f1alado ya no est\u00e1 disponible y no se pueden entregar mensajes recuperables.  
+ERR_MQLINKRCV_MSGERR_SICO3228.useraction=Consulte el Information Center de WebSphere Application Server para obtener informaci\u00f3n detallada sobre c\u00f3mo limpiar las suscripciones antiguas. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the target publish subscribe bridge destination (this is normally a system queue that starts with '_PPSB.')
+INFO_MQLINKRCV_MSGERR_SICO3229=CWSIC3229I: El destino de puente de suscripci\u00f3n de publicaci\u00f3n se\u00f1alado {0} no est\u00e1 definido. Es posible que se haya recibido un mensaje para una solicitud de suscripci\u00f3n antigua y que deba realizarse una limpieza. Los mensajes no recuperables dirigidos a este destino se han descartado. 
+INFO_MQLINKRCV_MSGERR_SICO3229.explanation=El mensaje era probablemente para una solicitud de suscripci\u00f3n que ya ha terminado. Por consiguiente, el destino se\u00f1alado ya no est\u00e1 disponible. Los mensajes no recuperables no pueden entregarse y se han descartado.  
+INFO_MQLINKRCV_MSGERR_SICO3229.useraction=Consulte el Information Center de WebSphere Application Server para obtener informaci\u00f3n detallada sobre c\u00f3mo limpiar las suscripciones antiguas. 
+
+# -------------------------------------------------------------------------------------------------
+ERR_MQLINKRCV_MSGERR_SICO3230=CWSIC3230E: Se ha producido un error al intentar enviar un mensaje a un destino de excepciones.
+ERR_MQLINKRCV_MSGERR_SICO3230.explanation=CMSG0001
+ERR_MQLINKRCV_MSGERR_SICO3230.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+ERR_MQLINKRCV_MSGERR_SICO3231=CWSIC3231E: Se ha producido un error al intentar enviar un mensaje al destino de excepciones.
+ERR_MQLINKRCV_MSGERR_SICO3231.explanation=CMSG0001
+ERR_MQLINKRCV_MSGERR_SICO3231.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_MQLINKRECV_TERMINATED_SICO3232=CWSIC3232I: El enlace de WebSphere MQ {0} ha finalizado normalmente.
+INFO_MQLINKRECV_TERMINATED_SICO3232.explanation=Es un mensaje informativo.
+INFO_MQLINKRECV_TERMINATED_SICO3232.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_MQLINK_RESOLVE_COMMIT_SICO3233=CWSIC3233I: El enlace de WebSphere MQ {0} se ha resuelto manualmente para el compromiso a petici\u00f3n del usuario.
+INFO_MQLINK_RESOLVE_COMMIT_SICO3233.explanation=Es un mensaje informativo.
+INFO_MQLINK_RESOLVE_COMMIT_SICO3233.useraction=No se requiere ninguna acci\u00f3n.
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_MQLINK_RESOLVE_BACKOUT_SICO3234=CWSIC3234I: El enlace de WebSphere MQ {0} se ha resuelto manualmente para la retrotracci\u00f3n a petici\u00f3n del usuario.
+INFO_MQLINK_RESOLVE_BACKOUT_SICO3234.explanation=Es un mensaje informativo.
+INFO_MQLINK_RESOLVE_BACKOUT_SICO3234.useraction=No se requiere ninguna acci\u00f3n.
+# -------------------------------------------------------------------------------------------------
+# {0} channel name
+ERR_MQLINKACCEPT_LINK_SICO3236=CWSIC3236E: El enlace de WebSphere MQ est\u00e1 rechazando una conexi\u00f3n debido a que no existe un definici\u00f3n de enlace para el canal {0}.
+ERR_MQLINKACCEPT_LINK_SICO3236.explanation=La petici\u00f3n de conexi\u00f3n de entrada ha identificado un nombre de canal que no est\u00e1 configurado actualmente.
+ERR_MQLINKACCEPT_LINK_SICO3236.useraction=Aseg\u00farese de que se han utilizado los nombres del canal receptor correctos en las definiciones de enlaces de WebSphere MQ y que el socio remoto se ha configurado con el nombre correcto en su definici\u00f3n de canal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} channel name, or details about the nature of failure
+ERR_MQLINK_FAILURE_SICO3237=CWSIC3237E: Se ha producido una anomal\u00eda en un enlace de WebSphere MQ: {0}.
+ERR_MQLINK_FAILURE_SICO3237.explanation=Este mensaje especifica el nombre del canal remitente del enlace MQ con anomal\u00eda o explica la naturaleza de una anomal\u00eda de un enlace de WebSphere MQ.
+ERR_MQLINK_FAILURE_SICO3237.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+#{0} segment type
+ERR_MQLINK_SEGMENT_SICO3239=CWSIC3239E: Hay un error de tipo de segmento no permitido {0}.
+ERR_MQLINK_SEGMENT_SICO3239.explanation=CMSG0001
+ERR_MQLINK_SEGMENT_SICO3239.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+INFO_MQLINK_RESET_SICO3240=CWSIC3240I: El enlace de WebSphere MQ {0} se ha restablecido a petici\u00f3n del usuario.
+INFO_MQLINK_RESET_SICO3240.explanation=Es un mensaje informativo.
+INFO_MQLINK_RESET_SICO3240.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the attribute name
+# {1} is the attribute value
+INFO_MQLINK_PARM_SICO3242=CWSIC3242I: Se ha producido un error interno. Par\u00e1metro de enlace de WebSphere MQ desconocido {0} con el valor {1}.
+INFO_MQLINK_PARM_SICO3242.explanation=Durante la inicializaci\u00f3n de la definici\u00f3n del enlace de WebSphere MQ se ha encontrado un par\u00e1metro desconocido. Se ignorar\u00e1 el par\u00e1metro desconocido y la inicializaci\u00f3n continuar\u00e1.
+INFO_MQLINK_PARM_SICO3242.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the sender channel name
+# {1} is the MQ link name
+INFO_MQLINK_PARM_SICO3243=CWSIC3243I: El canal emisor {0} ya se est\u00e1 ejecutando en el enlace MQ {1}.
+INFO_MQLINK_PARM_SICO3243.explanation=Se ha intentado iniciar un canal remitente pero el canal emisor especificado ya se est\u00e1 ejecutando en el enlace MQ especificado.
+INFO_MQLINK_PARM_SICO3243.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Messaging Engine.
+MQLINK_CONNECTION_DROPPED_SICO3244=CWSIC3244E: Se ha desactivado una conexi\u00f3n con el motor de mensajer\u00eda {0}.
+MQLINK_CONNECTION_DROPPED_SICO3244.explanation=No se ha podido utilizar una conexi\u00f3n asignada previamente a un motor de mensajer\u00eda porque se ha desactivado la conexi\u00f3n. Es posible que se haya terminado un enlace MQ o el motor de mensajer\u00eda.
+MQLINK_CONNECTION_DROPPED_SICO3244.useraction=Examine las anotaciones de error para determinar la causa por la que puede haber desactivado la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Messaging Engine.
+MQLINK_CONNECTION_LOST_SICO3245=CWSIC3245E: Se ha perdido una conexi\u00f3n con el motor de mensajer\u00eda {0}.
+MQLINK_CONNECTION_LOST_SICO3245.explanation=No se ha podido utilizar una conexi\u00f3n asignada previamente a un motor de mensajer\u00eda porque se ha perdido la conexi\u00f3n. Es posible que se haya terminado un enlace MQ o el motor de mensajer\u00eda.
+MQLINK_CONNECTION_LOST_SICO3245.useraction=Examine las anotaciones de error para determinar la causa por la que puede haber perdido la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the MQ link.
+MQLINK_INTERNAL_ERROR_SICO3246=CWSIC3246E: El enlace MQ {0} ha encontrado un error interno.
+MQLINK_INTERNAL_ERROR_SICO3246.explanation=CMSG0001
+MQLINK_INTERNAL_ERROR_SICO3246.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the target queue name.
+# {1} is the target queue manager name.
+# {2} is the local bus name.
+# {3} is the foreign bus name.
+# {4} is the associated exception.
+MQLINK_FORMAT_ERROR_SICO3247=CWSIC3247E: Un canal emisor de enlace MQ no puede codificar y entregar un mensaje a la cola {0} en el gestor de colas {1}. El bus local es {2} y el bus for\u00e1neo es {3}. La excepci\u00f3n asociada es {4}.
+MQLINK_FORMAT_ERROR_SICO3247.explanation=Un canal emisor de enlace MQ no ha podido codificar un mensaje destinado a los nombres de cola y de gestor de colas especificados por lo que el mensaje no se puede entregar al destino. Se proporcionan tambi\u00e9n los nombres de buses local y for\u00e1neo al igual que la excepci\u00f3n asociada. Es posible que se haya producido alg\u00fan tipo de error interno. Dado que el mensaje no se puede formatear es posible que algunos nombres no est\u00e9n disponibles. En tal caso, aparecer\u00e1 el valor '<unknown>' en el texto del mensaje.
+MQLINK_FORMAT_ERROR_SICO3247.useraction=Consulte cualquier otro mensaje que se env\u00ede adicionalmente para determinar y solucionar la causa del error. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+ERROR_FLOW_FROM_RECEIVER_SICO3248=CWSIC3248I: El canal del emisor del enlace MQ {0}, definido en el enlace MQ {1}, ha recibido un flujo de error del canal receptor de asociado.
+ERROR_FLOW_FROM_RECEIVER_SICO3248.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, ha recibido un flujo de error del canal receptor de asociado. Es posible que se detenga el enlace MQ.
+ERROR_FLOW_FROM_RECEIVER_SICO3248.useraction=Es posible que el canal receptor de asociado se haya detenido, por lo que esto puede ser un comportamiento normal. Examine cualquier otro mensaje de las anotaciones cronol\u00f3gicas del servidor de aplicaciones o los archivos cronol\u00f3gicas de WebSphere MQ AMQERR* para determinar si hay un error y solucionar la causa del mismo. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+# {2} is the error return code received by the MQ link sender.
+ERR_UNEXPECTED_ERROR_DATA_SICO3249=CWSIC3249E: El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, ha recibido un error inesperado. El c\u00f3digo de retorno del error es {2}.
+ERR_UNEXPECTED_ERROR_DATA_SICO3249.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, ha recibido un error imprevisto del canal receptor asociado. Es posible que se detenga el enlace MQ.
+ERR_UNEXPECTED_ERROR_DATA_SICO3249.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+# {2} is the CCSID of the MQ link sender channel.
+# {3} is the CCSID of the partner receiver channel.
+ERR_UNSUPPORTED_CCSID_SICO3250=CWSIC3250E: CCSID no soportado. El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, se est\u00e1 ejecutando con el CCSID {2} mientras el canal receptor de asociado se est\u00e1 ejecutando con CCSID {3}.
+ERR_UNSUPPORTED_CCSID_SICO3250.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, se est\u00e1 ejecutando con el CCSID especificado y no puede realizar la conversi\u00f3n al CCSID del asociado. El canal receptor de asociado se est\u00e1 ejecutando con el CCSID especificado y no puede convertirse al CCSID del emisor del enlace MQ.
+ERR_UNSUPPORTED_CCSID_SICO3250.useraction=Aseg\u00farese de que el emisor y el receptor se est\u00e9n ejecutando con CCSID soportados. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+#Security messages
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+ERR_SECURITY_FAILURE_SICO3251=CWSIC3251E: Error de seguridad. El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, ha recibido un flujo de error de su socio, indicando que se ha producido un error de autorizaci\u00f3n.
+ERR_SECURITY_FAILURE_SICO3251.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, ha recibido un flujo de error indicando que se ha producido un error de autorizaci\u00f3n.
+ERR_SECURITY_FAILURE_SICO3251.useraction=Aseg\u00farese de que el canal emisor de enlace MQ especificado y su canal receptor WebSphere MQ de destino coincidan en sus par\u00e1metros de configuraci\u00f3n de seguridad. Examine tambi\u00e9n las anotaciones cronol\u00f3gicas de ambos extremos del canal para determinar el motivo del error. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+ERR_CIPHER_SPEC_FAILURE_SICO3252=CWSIC3252E: Error de seguridad. El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, ha recibido un flujo de error de su socio, indicando que un se ha producido un error de seguridad porque los valores CipherSpec especificados en los dos extremos del canal no coinciden, o porque se ha especificado un valor de CipherSpec incorrecto.
+ERR_CIPHER_SPEC_FAILURE_SICO3252.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, ha recibido un flujo de error (que indica que se ha producido un error de seguridad) porque los valores de CipherSpec especificados en los dos extremos del canal no coinciden, o porque se ha especificado un valor de CipherSpec incorrecto.
+ERR_CIPHER_SPEC_FAILURE_SICO3252.useraction=Aseg\u00farese de que el canal emisor de enlace MQ especificado y su canal receptor WebSphere MQ de destino coincidan en sus par\u00e1metros de configuraci\u00f3n de seguridad. Examine tambi\u00e9n las anotaciones cronol\u00f3gicas de ambos extremos del canal para determinar el motivo del error. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+ERR_PEER_NAME_FAILURE_SICO3253=CWSIC3253E: Error de seguridad. El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, ha recibido un flujo de error de su socio, indicando que un se ha producido un error de seguridad porque el nombre de igual especificado en la definici\u00f3n del canal no coinciden con el nombre distinguido en el certificado proporcionado, o es incorrecto.
+ERR_PEER_NAME_FAILURE_SICO3253.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, ha recibido un flujo de error indicando que el nombre de igual especificado en la definici\u00f3n del canal no coincide con el nombre distinguido en el certificado proporcionado, o es incorrecto.
+ERR_PEER_NAME_FAILURE_SICO3253.useraction=Aseg\u00farese de que el canal emisor de enlace MQ especificado y su canal receptor WebSphere MQ de destino coincidan en sus par\u00e1metros de configuraci\u00f3n de seguridad. Examine tambi\u00e9n las anotaciones cronol\u00f3gicas de ambos extremos del canal para determinar el motivo del error. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+ERR_SSL_CLI_CERT_FAILURE_SICO3254=CWSIC3254E: Error de seguridad. El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, ha recibido un flujo de error de su socio, indicando que se ha producido un error de seguridad porque no se ha proporcionado un certificado cuando se esperaba que hubiera uno debido a que se ha habilitado la SSL.
+ERR_SSL_CLI_CERT_FAILURE_SICO3254.explanation=El canal emisor de enlace MQ, definido en el enlace MQ especificado, ha recibido un flujo de error indicando que no se ha proporcionado un certificado cuando se esperaba que hubiera uno debido a que se ha habilitado la SSL.
+ERR_SSL_CLI_CERT_FAILURE_SICO3254.useraction=Aseg\u00farese de que el canal emisor de enlace MQ especificado y su canal receptor WebSphere MQ de destino coincidan en sus par\u00e1metros de configuraci\u00f3n de seguridad. Examine tambi\u00e9n las anotaciones cronol\u00f3gicas de ambos extremos del canal para determinar el motivo del error. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+WRN_SNDR_DLQ_FAILED_SICO3260=CWSIC3260W: El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, no ha podido enviar un mensaje al destino de excepciones por omisi\u00f3n.
+WRN_SNDR_DLQ_FAILED_SICO3260.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, no ha podido enviar un mensaje al destino de excepciones por omisi\u00f3n.
+WRN_SNDR_DLQ_FAILED_SICO3260.useraction=Compruebe si se ha configurado un destino de excepciones por omisi\u00f3n y si es deseable configure uno. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the MQ link sender channel name.
+# {1} is the MQ link name.
+WRN_SND_SEND_EXCP_DEST_FAILED_SICO3261=CWSIC3261W: El canal emisor de enlace MQ {0}, definido en el enlace MQ {1}, no ha podido enviar un mensaje al destino de excepciones.
+WRN_SND_SEND_EXCP_DEST_FAILED_SICO3261.explanation=El canal emisor de enlace MQ especificado, definido en el enlace MQ especificado, no ha podido enviar un mensaje al destino de excepciones.
+WRN_SND_SEND_EXCP_DEST_FAILED_SICO3261.useraction=Examine los registros de los mensajes de error asociados que pueden proporcionar detalles del destino de excepciones al que no se pudo enviar el mensaje no entregado. Aseg\u00farese de que est\u00e1 configurado un valor por omisi\u00f3n, o un enlace espec\u00edfico o un destino de excepciones. Si ya hay un destino de excepciones configurado, aseg\u00farese de que no est\u00e1 lleno o inhabilitado para env\u00edos. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# New messages for MQ link to be issued with notification events
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link.
+# {1} is the name of the local Bus.
+MQLINK_STARTED_SICO3300=CWSIC3300I: Se ha iniciado el enlace MQ {0} en el bus {1}.
+MQLINK_STARTED_SICO3300.explanation=Se ha iniciado el enlace MQ especificado en el bus especificado.
+MQLINK_STARTED_SICO3300.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link.
+# {1} is the name of the local Bus.
+MQLINK_STOPPED_SICO3301=CWSIC3301I: Se ha detenido el enlace MQ {0} en el bus {1}.
+MQLINK_STOPPED_SICO3301.explanation=Se ha detenido el enlace MQ especificado en el bus especificado.
+MQLINK_STOPPED_SICO3301.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link sender channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+MQLINK_SENDER_STARTED_SICO3302=CWSIC3302I: Se ha iniciado el canal emisor de enlace MQ {0} del enlace MQ {1} en el bus {2}.
+MQLINK_SENDER_STARTED_SICO3302.explanation=Se ha iniciado el canal emisor de enlace MQ especificado del enlace MQ especificado en el bus especificado.
+MQLINK_SENDER_STARTED_SICO3302.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link sender channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+MQLINK_SENDER_STOPPED_SICO3303=CWSIC3303I: Se ha detenido el canal emisor de enlace MQ {0} del enlace MQ {1} en el bus {2}.
+MQLINK_SENDER_STOPPED_SICO3303.explanation=Se ha detenido el canal emisor de enlace MQ especificado del enlace MQ especificado en el bus especificado.
+MQLINK_SENDER_STOPPED_SICO3303.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link sender channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+# {3} is the name of the remote Queue Manager.
+MQLINK_SENDER_SESSION_STARTED_SICO3304=CWSIC3304I: Se ha iniciado el canal emisor de enlace MQ {0} del enlace MQ {1} en el bus {2} en el gestor de colas {3}.
+MQLINK_SENDER_SESSION_STARTED_SICO3304.explanation=Se ha iniciado el canal emisor de enlace MQ especificado del enlace MQ especificado en el bus especificado. Se ha establecido una sesi\u00f3n con un canal receptor asociado en el gestor de colas remoto especificado.
+MQLINK_SENDER_SESSION_STARTED_SICO3304.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link sender channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+# {3} is the name of the remote Queue Manager.
+MQLINK_SENDER_SESSION_STOPPED_SICO3305=CWSIC3305I: Se ha detenido el emisor de enlace MQ {0} del enlace MQ {1} en el bus {2} en el gestor de colas {3}.
+MQLINK_SENDER_SESSION_STOPPED_SICO3305.explanation=Se ha detenido el canal emisor de enlace MQ especificado del enlace MQ especificado en el bus especificado. Ha finalizado la sesi\u00f3n con el canal receptor asociado en el gestor de colas remoto especificado.
+MQLINK_SENDER_SESSION_STOPPED_SICO3305.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link receiver channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+MQLINK_RECEIVER_STARTED_SICO3306=CWSIC3306I: Se ha iniciado el canal receptor de enlace MQ {0} del enlace MQ {1} en el bus {2}.
+MQLINK_RECEIVER_STARTED_SICO3306.explanation=Se ha iniciado el canal receptor de enlace MQ especificado del enlace MQ especificado en el bus especificado.
+MQLINK_RECEIVER_STARTED_SICO3306.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link receiver channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+MQLINK_RECEIVER_STOPPED_SICO3307=CWSIC3307I: Se ha detenido el canal receptor de enlace MQ {0} del enlace MQ {1} en el bus {2}.
+MQLINK_RECEIVER_STOPPED_SICO3307.explanation=Se ha detenido el canal receptor de enlace MQ especificado del enlace MQ especificado en el bus especificado.
+MQLINK_RECEIVER_STOPPED_SICO3307.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link receiver channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+# {3} is the name of the remote Queue Manager.
+MQLINK_RECEIVER_SESSION_STARTED_SICO3308=CWSIC3308I: Se ha iniciado el canal receptor de enlace MQ {0} del enlace MQ {1} en el bus {2} en el gestor de colas {3}.
+MQLINK_RECEIVER_SESSION_STARTED_SICO3308.explanation=Se ha iniciado el canal receptor de enlace MQ especificado del enlace MQ especificado en el bus especificado. Se ha establecido una sesi\u00f3n con el canal emisor asociado en el gestor de colas remoto especificado.
+MQLINK_RECEIVER_SESSION_STARTED_SICO3308.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link receiver channel.
+# {1} is the name of the MQ link.
+# {2} is the name of the local Bus.
+# {3} is the name of the remote Queue Manager.
+MQLINK_RECEIVER_SESSION_STOPPED_SICO3309=CWSIC3309I: Se ha detenido el canal receptor de enlace MQ {0} del enlace MQ {1} en el bus {2} en el gestor de colas {3}.
+MQLINK_RECEIVER_SESSION_STOPPED_SICO3309.explanation=Se ha detenido el canal receptor de enlace MQ especificado del enlace MQ especificado en el bus especificado. Ha finalizado la sesi\u00f3n con el canal emisor asociado en el gestor de colas remoto especificado.
+MQLINK_RECEIVER_SESSION_STOPPED_SICO3309.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQClientLink
+# {0} is a user ID
+# {1} is a network address
+MQCLIENT_CONNECTED_SICO3310=CWSIC3310I: Se ha iniciado la conexi\u00f3n cliente {0} desde {1}.
+MQCLIENT_CONNECTED_SICO3310.explanation=Se ha establecido una conexi\u00f3n cliente con el identificador de usuario especificado desde la direcci\u00f3n de red especificada.
+MQCLIENT_CONNECTED_SICO3310.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQClientLink
+# {0} is a user ID
+MQCLIENT_DISCONNECTED_SICO3311=CWSIC3311I: Cliente {0} desconectado.
+MQCLIENT_DISCONNECTED_SICO3311.explanation=Ha finalizado una conexi\u00f3n cliente con el identificador de usuario especificado.
+MQCLIENT_DISCONNECTED_SICO3311.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link receiver
+# {1} is the name of the target queue that the message was destined to
+# {2} is the name of the messaging engine
+# {3} is the reason for the failure
+INFO_RCV_FAILED_TO_PUT_TO_TARGET_SICO3312=CWSIC3312I: El receptor de enlace MQ {0} no ha podido enviar un mensaje a la cola de destino {1}, en el motor de mensajer\u00eda {2}. Consulte el mensaje asociado {3}.
+INFO_RCV_FAILED_TO_PUT_TO_TARGET_SICO3312.explanation=El receptor del enlace MQ especificado no ha podido enviar un mensaje en la cola de destino especificada. La cola de destino puede estar llena, inhabilitada para env\u00edos, no definida o el intento de crear una sesi\u00f3n de productor en ella ha fallado por alguna raz\u00f3n.
+INFO_RCV_FAILED_TO_PUT_TO_TARGET_SICO3312.useraction=Procesar mensajes en la cola si est\u00e1 llena. Si la cola no est\u00e1 configurada para permitir a los mensajes que se env\u00eden en ella, o no est\u00e1 definida, vuelva a configurarla o definirla, respectivamente. Consulte tambi\u00e9n la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} is the name of the MQ link sender
+# {1} is the name of the foreign bus
+# {2} is the UUID of the expected foreign bus
+FOREIGN_BUS_NOT_FOUND_SICO3313=CWSIC3313I: El emisor del enlace MQ {0} no ha podido iniciarse debido a que no se ha podido localizar el bus for\u00e1neo {1} asociado con el UUID {2}.
+FOREIGN_BUS_NOT_FOUND_SICO3313.explanation=El emisor del enlace MQ especificado no ha podido iniciarse debido a que no se ha podido localizar el bus for\u00e1neo asociado. El enlace MQ no se iniciar\u00e1.
+FOREIGN_BUS_NOT_FOUND_SICO3313.useraction=Consulte la configuraci\u00f3n del emisor del enlace MQ y aseg\u00farese de que est\u00e9 asociado a un bus for\u00e1neo v\u00e1lido.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQAcceptListener
+# {0} is the unsupported CCSID (codepage)
+UNSUPPORTED_CCSID_SICO3314=CWSIC3314E: Se ha encontrado un CCSID {0} no soportado durante una petici\u00f3n de conexi\u00f3n de entrada de un canal emisor WebSphere MQ o un cliente.
+UNSUPPORTED_CCSID_SICO3314.explanation=El CCSID especificado, proporcionado en una petici\u00f3n de conexi\u00f3n de entrada de un canal emisor WebSphere MQ o de un cliente, no est\u00e1 soportado.
+UNSUPPORTED_CCSID_SICO3314.useraction=Ejecutar con un CCSID no soportado. Es posible que la JVM que est\u00e1 ejecutando no d\u00e9 soporte al CCSID proporcionado.
+
+# Messages used for dynamic config
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the MQ link name
+MQLINK_DC_CHANGE_SICO3350=CWSIC3350I: El administrador del sistema ha cambiado la configuraci\u00f3n del enlace WebSphere MQ {0}.
+MQLINK_DC_CHANGE_SICO3350.explanation=Es un mensaje informativo.
+MQLINK_DC_CHANGE_SICO3350.useraction=No es necesaria ninguna acci\u00f3n. 
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the MQ link name
+MQLINK_DC_DELETE_SICO3351=CWSIC3351I: El administrador del sistema ha iniciado la supresi\u00f3n del enlace WebSphere MQ {0}.
+MQLINK_DC_DELETE_SICO3351.explanation=Es un mensaje informativo.
+MQLINK_DC_DELETE_SICO3351.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the MQ link name
+MQLINK_DC_DELETE_SICO3352=CWSIC3352I: La supresi\u00f3n del enlace WebSphere MQ {0} se ha realizado correctamente.
+MQLINK_DC_DELETE_SICO3352.explanation=Es un mensaje informativo.
+MQLINK_DC_DELETE_SICO3352.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the number of running receivers
+# {1} Is the old receiver name
+# {2} Is the MQLink name
+MQLINK_DC_CHANGE_RCVR_SICO3353=CWSIC3353I: Las instancias en ejecuci\u00f3n {0} del canal receptor de enlace WebSphere MQ {1} se han detenido porque el administrador del sistema ha modificado la configuraci\u00f3n del enlace WebSphere MQ {2}.
+MQLINK_DC_CHANGE_RCVR_SICO3353.explanation=El administrador del sistema ha cambiado el nombre del canal receptor de enlace WebSphere MQ, o ha suprimido el canal receptor de enlace WebSphere MQ, por esto, las instancias en ejecuci\u00f3n del canal receptor de enlace WebSphere MQ se han detenido.
+MQLINK_DC_CHANGE_RCVR_SICO3353.useraction=Es posible que no se precise ninguna acci\u00f3n. No obstante, es posible que se haya/n dejado el/los canal/es emisor/es de WebSphere MQ del socio asociado en estado pendiente, en cuyo caso, solucione los canales pendientes de forma apropiada.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the number of running receivers
+# {1} Is the old receiver name
+# {2} Is the MQLink name
+MQLINK_DC_CHANGE_RCVR_SICO3354=CWSIC3354I: Las instancias en ejecuci\u00f3n {0} del canal receptor de enlace WebSphere MQ {1} se han detenido porque el administrador del sistema ha modificado la configuraci\u00f3n del enlace WebSphere MQ {2}.
+MQLINK_DC_CHANGE_RCVR_SICO3354.explanation=El administrador del sistema ha cambiado el nombre del canal receptor de enlace WebSphere MQ, o ha suprimido el canal receptor de enlace WebSphere MQ, por esto, las instancias en ejecuci\u00f3n del canal receptor de enlace WebSphere MQ se han detenido.
+MQLINK_DC_CHANGE_RCVR_SICO3354.useraction=Es posible que no se precise ninguna acci\u00f3n. No obstante, es posible que se haya/n dejado el/los canal/es emisor/es de WebSphere MQ del socio asociado en estado pendiente, en cuyo caso, solucione los canales pendientes de forma apropiada.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the MQLink name
+# {1} Is the number of running receivers
+MQLINK_DC_CHANGE_RCVR_SICO3355=CWSIC3355I: El administrador del sistema ha cambiado la configuraci\u00f3n del enlace WebSphere MQ {0} pero las instancias del receptor de enlace WebSphere MQ en ejecuci\u00f3n {1} para este enlace no se ver\u00e1n afectadas por este cambio.
+MQLINK_DC_CHANGE_RCVR_SICO3355.explanation=Las instancias del receptor de enlace WebSphere MQ s\u00f3lo recogen los valores de configuraci\u00f3n cuando se arrancan. Por lo tanto, ning\u00fan cambio realizado en la configuraci\u00f3n en un enlace WebSphere MQ en ejecuci\u00f3n, tendr\u00e1 efecto en instancias del receptor de enlace WebSphere MQ.
+MQLINK_DC_CHANGE_RCVR_SICO3355.useraction=Si quiere que las instancias del receptor de enlace WebSphere MQ en ejecuci\u00f3n utilice los \u00faltimos cambios en la configuraci\u00f3n, es necesario que se detengan todas antes de que se realicen los cambios o es necesario detenerlas y reiniciarlas para que recojan la configuraci\u00f3n cambiada.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the MQLink name
+# {1} Is the old sender channel name
+MQLINK_DC_CHANGE_SNDR_SICO3356=CWSIC3356I: El administrador del sistema ha cambiado la configuraci\u00f3n de enlace WebSphere MQ {0} que afecta al emisor de enlace WebSphere MQ en ejecuci\u00f3n {1}. Los cambios s\u00f3lo se recoger\u00e1n cuando el emisor de enlace WebSphere MQ vaya a trav\u00e9s del estado de inicio o se haya detenido y reiniciado expl\u00edcitamente.
+MQLINK_DC_CHANGE_SNDR_SICO3356.explanation=Los emisores de enlace WebSphere MQ adoptan la mayor\u00eda de los valores de configuraci\u00f3n al pasar por el estado de inicio. Por lo tanto, si se produce un cambio en la configuraci\u00f3n, los cambios se aplican la pr\u00f3xima vez que el emisor del enlace WebSphere MQ entre en estado de inicio. Esto se puede conseguir cuando el administrador del sistema detiene e inicia el emisor de enlace WebSphere MQ, o los cambios se recoger\u00e1n cuando el siguiente emisor de enlace WebSphere MQ introduce el estado de inicio, quiz\u00e1s debido a que se producen reintentos o a que se ha alcanzado el intervalo de desconexi\u00f3n.
+MQLINK_DC_CHANGE_SNDR_SICO3356.useraction=Si quiere que el emisor de enlace WebSphere MQ utilice los \u00faltimos cambios de configuraci\u00f3n, detenga el emisor de enlace MQ antes de realizar los cambios, o detenga y reinicie el emisor de enlace MQ para recoger la nueva configuraci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the old sender channel name
+# {1} Is the MQLink name
+MQLINK_DC_CHANGE_SNDR_STOP_SICO3357=CWSIC3357I: El emisor de enlace WebSphere MQ en ejecuci\u00f3n {0} se ha detenido porque el administrador del sistema ha modificado la configuraci\u00f3n de enlace de WebSphere MQ {1}.
+MQLINK_DC_CHANGE_SNDR_STOP_SICO3357.explanation=El administrador del sistema ha cambiado el nombre del emisor de enlace WebSphere MQ o lo ha suprimido. Por esto, se ha detenido el emisor de enlace WebSphere MQ en ejecuci\u00f3n.
+MQLINK_DC_CHANGE_SNDR_STOP_SICO3357.useraction=Es posible que no se precise ninguna acci\u00f3n. No obstante, el emisor de enlace WebSphere MQ suprimido puede estar ahora en estado pendiente por lo que precise ser solucionado.
+
+# -------------------------------------------------------------------------------------------------
+# Used in MQLink
+# {0} Is the MQLink name
+# {1} Is the old sender channel name
+MQLINK_DC_DELETE_FAIL_SICO3358=CWSIC3358W: La supresi\u00f3n del enlace WebSphere MQ {0} no se ha completado correctamente ya que el emisor de enlace WebSphere MQ {1} est\u00e1 en estado pendiente.
+MQLINK_DC_DELETE_FAIL_SICO3358.explanation=La configuraci\u00f3n para el enlace WebSphere MQ nombrado se ha suprimido, pero el emisor de enlace WebSphere MQ nombrado sigue en estado pendiente. No se puede completar totalmente la supresi\u00f3n hasta que se haya solucionado el estado pendiente.
+MQLINK_DC_DELETE_FAIL_SICO3358.useraction=Utilice las herramientas administrativas para solucionar el estado pendiente que le permitir\u00e1n la supresi\u00f3n del enlace WebSphere MQ nombrado completarse.
+
+# New Messages common to MQLink and MQClientLink
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the initial size of the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3500=CWSIC3500E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el tama\u00f1o inicial del almac\u00e9n de objetos. El tama\u00f1o inicial era {0}.
+CONVERSATIONSTATE_INTERNAL_SICO3500.explanation=Se ha intentado crear un almac\u00e9n de objetos con un tama\u00f1o inicial negativo.
+CONVERSATIONSTATE_INTERNAL_SICO3500.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the maximum size of the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3501=CWSIC3501E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el tama\u00f1o m\u00e1ximo del almac\u00e9n de objetos. El tama\u00f1o m\u00e1ximo era {0}.
+CONVERSATIONSTATE_INTERNAL_SICO3501.explanation=Se ha intentado crear un almac\u00e9n de objetos con un tama\u00f1o m\u00e1ximo negativo.
+CONVERSATIONSTATE_INTERNAL_SICO3501.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the initial size of the Object Store.
+# {1} is the origin of the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3502=CWSIC3502E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el tama\u00f1o inicial del almac\u00e9n de objetos. El tama\u00f1o inicial era {0}. El origen del almac\u00e9n de objetos era {1}.
+CONVERSATIONSTATE_INTERNAL_SICO3502.explanation=Se ha intentado crear un almac\u00e9n de objetos con un tama\u00f1o inicial m\u00e1s peque\u00f1o que el origen del almac\u00e9n de objetos.
+CONVERSATIONSTATE_INTERNAL_SICO3502.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the initial size of the Object Store.
+# {1} is the maximum size of the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3503=CWSIC3503E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el tama\u00f1o inicial del almac\u00e9n de objetos. El tama\u00f1o inicial era {0}. El tama\u00f1o m\u00e1ximo era {1}.
+CONVERSATIONSTATE_INTERNAL_SICO3503.explanation=Se ha intentado crear un almac\u00e9n de objetos con un tama\u00f1o inicial m\u00e1s grande que el origen del almac\u00e9n de objetos.
+CONVERSATIONSTATE_INTERNAL_SICO3503.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the supplied object version.
+# {1} is the object version in the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3504=CWSIC3504E: Se ha producido un error interno. La versi\u00f3n del objeto proporcionada es distinta de la del objeto almacenado en el almac\u00e9n de objetos. La versi\u00f3n de objeto proporcionada era {0}. El versi\u00f3n del objeto en el almac\u00e9n de objetos era {1}.
+CONVERSATIONSTATE_INTERNAL_SICO3504.explanation=Se ha intentado recuperar un objeto del almac\u00e9n de objetos, pero se ha encontrado una discrepancia en la versi\u00f3n del objeto.
+CONVERSATIONSTATE_INTERNAL_SICO3504.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the supplied object version.
+# {1} is the object version in the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3505=CWSIC3505E: Se ha producido un error interno. La versi\u00f3n del objeto proporcionada es distinta de la del objeto almacenado en el almac\u00e9n de objetos. La versi\u00f3n proporcionada era {0}.  La versi\u00f3n del almac\u00e9n de objetos era {1}.
+CONVERSATIONSTATE_INTERNAL_SICO3505.explanation=Se ha intentado eliminar un objeto del almac\u00e9n de objetos, pero se ha encontrado una discrepancia en la versi\u00f3n del objeto.
+CONVERSATIONSTATE_INTERNAL_SICO3505.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the supplied index of an object in the Object Store.
+# {1} is the origin of the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3506=CWSIC3506E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el \u00edndice de un objeto en el almac\u00e9n de objetos. El \u00edndice proporcionado era {0}. El origen del almac\u00e9n de objetos era {1}.
+CONVERSATIONSTATE_INTERNAL_SICO3506.explanation=Se ha intentado localizar un objeto en el almac\u00e9n de objetos, pero el \u00edndice del objeto proporcionado era menor que el del origen del almac\u00e9n de objetos.
+CONVERSATIONSTATE_INTERNAL_SICO3506.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the supplied index of an object in the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3507=CWSIC3507E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el \u00edndice de un objeto en el almac\u00e9n de objetos. El \u00edndice proporcionado era {0}.
+CONVERSATIONSTATE_INTERNAL_SICO3507.explanation=Se ha intentado localizar un objeto en el almac\u00e9n de objetos, pero no se ha encontrado ning\u00fan objeto adecuado para el \u00edndice de objeto proporcionado.
+CONVERSATIONSTATE_INTERNAL_SICO3507.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the supplied index of an object in the Object Store.
+# {1} is the origin of the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3508=CWSIC3508E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el \u00edndice de un objeto en el almac\u00e9n de objetos. El \u00edndice proporcionado era {0}. El origen del almac\u00e9n de objetos era {1}.
+CONVERSATIONSTATE_INTERNAL_SICO3508.explanation=Se ha intentado eliminar un objeto del almac\u00e9n de objetos, pero el \u00edndice del objeto proporcionado era menor que el del origen del almac\u00e9n de objetos.
+CONVERSATIONSTATE_INTERNAL_SICO3508.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the supplied index of an object in the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3509=CWSIC3509E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el \u00edndice de un objeto en el almac\u00e9n de objetos. El \u00edndice proporcionado era {0}.
+CONVERSATIONSTATE_INTERNAL_SICO3509.explanation=Se ha intentado eliminar un objeto del almac\u00e9n de objetos, pero no se ha encontrado ning\u00fan objeto adecuado para el \u00edndice de objeto proporcionado.
+CONVERSATIONSTATE_INTERNAL_SICO3509.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConversationState
+# {0} is the number of entries to be dumped from the in the Object Store.
+CONVERSATIONSTATE_INTERNAL_SICO3510=CWSIC3510E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para la cantidad de entradas volcadas del almac\u00e9n de objetos. El n\u00famero de entradas especificado ha sido {0}.
+CONVERSATIONSTATE_INTERNAL_SICO3510.explanation=Se han intentado volcar entradas en el almac\u00e9n de objetos, pero el n\u00famero de entradas proporcionado para volcar es negativo.
+CONVERSATIONSTATE_INTERNAL_SICO3510.useraction=CMSG0002            
+
+# Messages added for use in SIBMQLinkSenderChannelTransmitterControllableImpl
+# Note that some of these messages are to be displayed on the admin console and so don't have explanation or useraction sections
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# HealthState messages
+MQLINK_HS_GREEN_SICO3600=EN EJECUCI\u00d3N: Ning\u00fan problema del que informar.
+MQLINK_HS_AMBER_SICO3601=DUDOSO: Hay mensajes dudosos. Esto se puede resolver manualmente o los resolver\u00e1 el emisor de enlace WebSphere MQ apropiado cuando sincronice con el canal receptor socio en su siguiente reinicio.
+MQLINK_HS_RED_SICO3602=DUDOSO: Hay mensajes dudosos. Esto precisa de resoluci\u00f3n manual ya que su emisor de enlace WebSphere MQ se ha suprimido.
+
+MQLINK_NO_SNDR=NO_SENDER: No hay emisor de enlace WebSphere MQ asociado a este transmisor de canal de emisor.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQ link
+# {0} is the MQ link name
+# {1} is the MQ link sender name
+MQLINK_SNDR_RUNNING_RB_SICO3620=CWSIC3620I: El lote pendiente de mensajes para el enlace WebSphere MQ {0} no se ha podido retrotraer ya que el emisor de enlace WebSphere MQ con nombre de canal {1} no est\u00e1 detenido.
+MQLINK_SNDR_RUNNING_RB_SICO3620.explanation=Se ha realizado un intento para retrotraer un lote pendiente de mensajes mientras que el emisor de enlace WebSphere MQ indicado segu\u00eda en ejecuci\u00f3n.
+MQLINK_SNDR_RUNNING_RB_SICO3620.useraction=Detenga el emisor de enlace WebSphere MQ indicado y repita la acci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQ link
+# {0} is the MQ link name
+# {1} is the MQ link sender name
+MQLINK_SNDR_RUNNING_COM_SICO3621=CWSIC3621I: El lote pendiente de mensajes para el enlace WebSphere MQ {0} no se ha podido confirmar ya que el emisor de enlace WebSphere MQ con nombre de canal {1} no est\u00e1 detenido.
+MQLINK_SNDR_RUNNING_COM_SICO3621.explanation=Se ha realizado un intento para confirmar un lote pendiente de mensajes mientras que el emisor de enlace WebSphere MQ indicado segu\u00eda en ejecuci\u00f3n.
+MQLINK_SNDR_RUNNING_COM_SICO3621.useraction=Detenga el emisor de enlace WebSphere MQ indicado y repita la acci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQ link
+# {0} is the MQ link name
+# {1} is the MQ link sender name
+MQLINK_NO_INDOUBT_COM_SICO3622=CWSIC3622I: No hay ning\u00fan lote pendiente a confirmar para el emisor de enlace WebSphere MQ con nombre de canal {1} definido en el enlace WebSphere MQ {0}.
+MQLINK_NO_INDOUBT_COM_SICO3622.explanation=Se ha realizado un intento para confirmar un lote pendiente de mensajes cuando no hab\u00eda ning\u00fan lote pendiente de mensajes.
+MQLINK_NO_INDOUBT_COM_SICO3622.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQ link
+# {0} is the MQ link name
+# {1} is the MQ link sender name
+MQLINK_NO_INDOUBT_RB_SICO3623=CWSIC3623I: No hay ning\u00fan lote pendiente a retrotraer para el emisor de enlace WebSphere MQ con nombre de canal {1} definido en el enlace WebSphere MQ {0}.
+MQLINK_NO_INDOUBT_RB_SICO3623.explanation=Se ha realizado un intento para retrotraer un lote pendiente de mensajes cuando no hab\u00eda ning\u00fan lote pendiente de mensajes.
+MQLINK_NO_INDOUBT_RB_SICO3623.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in the SIBMQLinkSenderChannelTransmitterControllableImpl
+# {0} is the message id
+MQLINK_SNDR_TMTR_MSGID_SICO3630=CWSIC3630I: El mensaje con ID {0} no se ha podido mover o suprimir ya que actualmente forma parte de un lote pendiente.
+MQLINK_SNDR_TMTR_MSGID_SICO3630.explanation=Se ha realizado un intento para mover o suprimir un mensaje con el ID indicado, pero no se ha podido completar ya que era parte de un lote pendiente.
+MQLINK_SNDR_TMTR_MSGID_SICO3630.useraction=Puede retrotraer el lote si el mensaje precisa ser movido o suprimido. De lo contrario, no es necesaria ninguna acci\u00f3n, a menos que el lote se mantenga en el estado pendiente por un largo per\u00edodo de tiempo.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the SIBMQLinkSenderChannelTransmitterControllableImpl
+# {0} is the message id
+# {1} is the MQ link name
+# {2} is the MQ link sender name
+MQLINK_SNDR_TMTR_RNG_SICO3631=CWSIC3631I: El mensaje con ID {0} no se ha podido mover o suprimir ya que el enlace WebSphere MQ {1} tiene un emisor de enlace WebSphere MQ {2} que no est\u00e1 en estado detenido.
+MQLINK_SNDR_TMTR_RNG_SICO3631.explanation=Se ha realizado un intento para mover o suprimir un mensaje con el ID indicado, pero no se ha podido completar ya que el emisor de enlace WebSphere MQ indicado no est\u00e1 en estado detenido.
+MQLINK_SNDR_TMTR_RNG_SICO3631.useraction=Puede detener el emisor de enlace WebSphere MQ si el mensaje precisa ser movido o suprimido. De lo contrario, no se requiere ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the SIBMQLinkSenderChannelTransmitterControllableImpl
+# {0} are the message ids
+MQLINK_SNDR_TMTR_MSGSID_SICO3632=CWSIC3632I: Los mensajes con los siguientes ID {0} no se han podido mover o suprimir ya que actualmente forman parte de un lote pendiente.
+MQLINK_SNDR_TMTR_MSGSID_SICO3632.explanation=Se ha realizado un intento para mover o suprimir mensajes pero los mensajes indicados no se han podido mover o suprimir ya que eran parte de un lote pendiente.
+MQLINK_SNDR_TMTR_MSGSID_SICO3632.useraction=Puede retrotraer el lote si los mensajes precisan ser movidos o suprimidos. De lo contrario, no es necesaria ninguna acci\u00f3n, a menos que el lote se mantenga en el estado pendiente por un largo per\u00edodo de tiempo.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the SIBMQLinkSenderChannelTransmitterControllableImpl
+# {0} is the MQ link name
+# {1} is the MQ link sender name
+MQLINK_SNDR_TMTR_RNG_SICO3633=CWSIC3633I: No se han podido mover o suprimir los mensajes ya que el enlace WebSphere MQ {0} tiene un emisor de enlace WebSphere MQ {1} que no est\u00e1 en estado detenido.
+MQLINK_SNDR_TMTR_RNG_SICO3633.explanation=Se ha realizado un intento para mover o suprimir mensajes pero no se ha podido completar ya que el emisor de enlace WebSphere MQ indicado no est\u00e1 en estado detenido.
+MQLINK_SNDR_TMTR_RNG_SICO3633.useraction=Puede detener el emisor de enlace WebSphere MQ si los mensajes precisan ser movidos o suprimidos. De lo contrario, no se requiere ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQ link
+# {0} is the MQ link sender channel name
+# {1} is the MQ link name
+MQLINK_SNDR_RUNNING_SICO3640=CWSIC3640E: El canal emisor de enlace WebSphere MQ {0}, definido en el enlace WebSphere MQ {1}, no est\u00e1 detenido.
+MQLINK_SNDR_RUNNING_SICO3640.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo cuando el canal del emisor de enlace WebSphere MQ estaba en ejecuci\u00f3n.
+MQLINK_SNDR_RUNNING_SICO3640.useraction=Detenga el canal del emisor de enlace WebSphere MQ indicado en estado DETENIDO y repita la solicitud de conexi\u00f3n de prueba.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQ link
+# {0} is the MQ link name
+MQLINK_SNDR_NOT_CONFIGURED_SICO3641=CWSIC3641E: No se ha configurado un canal emisor de enlace WebSphere MQ en el enlace de WebSphere MQ {0}.
+MQLINK_SNDR_NOT_CONFIGURED_SICO3641.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo pero un canal del emisor de enlace WebSphere MQ no ha sido configurado para el enlace WebSphere MQ indicado.
+MQLINK_SNDR_NOT_CONFIGURED_SICO3641.useraction=Configure un canal del emisor de enlace WebSphere MQ en el enlace MQ indicado y repita la solicitud de conexi\u00f3n de prueba.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# (0) is the MQ link sender channel name
+# {1} is the MQ link name
+# {2} is the remote host name as defined in the MQ link sender channel.
+MQLINK_SNDR_CANNOT_CREATE_DATA_SICO3642=CWSIC3642E: El canal emisor de enlace WebSphere MQ {0}, definido en el enlace WebSphere MQ {1}, no ha podido crear y enviar un flujo de datos al host remoto {2}.
+MQLINK_SNDR_CANNOT_CREATE_DATA_SICO3642.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo, pero el canal del emisor de enlace WebSphere MQ no ha podido crear un flujo de datos para posteriores transferencias al canal receptor del socio en el host remoto indicado.
+MQLINK_SNDR_CANNOT_CREATE_DATA_SICO3642.useraction=Se ha producido un error interno.  Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} is the remote host name as defined in the MQ link sender channel
+# {1} is the port number that a listener at the remote host is listening on
+MQLINK_CANNOT_CONNECT_SICO3643=CWSIC3643E: No se puede establecer una conexi\u00f3n al host remoto {0}, del n\u00famero de puerto {1}.
+MQLINK_CANNOT_CONNECT_SICO3643.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo pero no se ha podido establecer actualmente una conexi\u00f3n en el host remoto indicado en el puerto indicado. Es posible que haya alguna clase de restricci\u00f3n de recurso transitorio.
+MQLINK_CANNOT_CONNECT_SICO3643.useraction=Repita la acci\u00f3n m\u00e1s adelante. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} is the data received from the partner receiver channel
+# {1} is the original data sent to the partner receiver channel
+# {2} is the MQ link sender channel name
+# {3} is the MQ link name
+MQLINK_BAD_DATA_RECEIVED_SICO3644=CWSIC3644E: Los datos del canal ping {0} recibidos del canal receptor del socio no son los mismos que los datos originales {1} que el canal emisor de enlace WebSphere MQ {2} envi\u00f3, definido en el enlace WebSphere MQ {3}.
+MQLINK_BAD_DATA_RECEIVED_SICO3644.explanation=La funci\u00f3n de canal ping se utiliza cuando se prueba una conexi\u00f3n de bus for\u00e1neo. Esta funci\u00f3n implica el env\u00edo de datos al canal receptor del socio. Se espera que el canal receptor del socio devuelva los datos que recibe pero no lo ha hecho todav\u00eda.
+MQLINK_BAD_DATA_RECEIVED_SICO3644.useraction=Intente repetir la solicitud de conexi\u00f3n de prueba. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} is the remote host name as defined in the MQ link sender channel
+# {1} is the port number that a listener at the remote host is listening on
+MQLINK_WAIT_TIME_EXPIRED_SICO3645=CWSIC3645E: No se ha recibido ninguna respuesta del host remoto {0} que escucha en el puerto {1}.
+MQLINK_WAIT_TIME_EXPIRED_SICO3645.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo pero el canal receptor del socio no respondi\u00f3 en el per\u00edodo de tiempo de espera integrado. Es posible que el host remoto no est\u00e9 disponible o que no se puede alcanzar debido a retrasos de red.
+MQLINK_WAIT_TIME_EXPIRED_SICO3645.useraction=Determine la causa por la que el host remoto no est\u00e1 disponible. Repita la acci\u00f3n cuando el host remoto est\u00e9 disponible y escuchando al puerto indicado.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} is the MQ link sender channel name
+# {1} is the MQ link name
+MQLINK_CLOSE_REQUESTED_SICO3646=CWSIC3646E: El canal receptor del socio ha solicitado cerrar el canal emisor de enlace WebSphere MQ {0}, definido en el enlace WebSphere MQ {1}.
+MQLINK_CLOSE_REQUESTED_SICO3646.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo pero el canal receptor del socio ha solicitado el cierre del canal.
+MQLINK_CLOSE_REQUESTED_SICO3646.useraction=Determine por qu\u00e9 el canal receptor del socio ha solicitado el cierre, solucione el problema y repita la solicitud de conexi\u00f3n de prueba.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} is the MQ link sender name
+# {1} is the MQ link name
+MQLINK_ERROR_OCCURRED_SICO3647=CWSIC3647E: El canal emisor de enlace WebSphere MQ {0}, definido en el enlace WebSphere MQ {1}, ha encontrado errores de comunicaci\u00f3n.
+MQLINK_ERROR_OCCURRED_SICO3647.explanation=Se ha realizado un intento para probar una conexi\u00f3n de bus for\u00e1neo pero el canal del emisor de enlace WebSphere MQ ha encontrado errores de comunicaci\u00f3n irrecuperables.
+MQLINK_ERROR_OCCURRED_SICO3647.useraction=Es posible que sea un error transitorio. Intente repetir la solicitud de conexi\u00f3n de prueba. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} is the MQ link sender channel name
+# {1} is the MQ link name
+MQLINK_NO_DATA_RECEIVED_SICO3648=CWSIC3648E: El canal receptor del socio no ha podido devolver los datos del canal de ping originales que el canal emisor de enlace WebSphere MQ {0} envi\u00f3, definido en el enlace WebSphere MQ {1}.
+MQLINK_NO_DATA_RECEIVED_SICO3648.explanation=La funci\u00f3n de canal ping se utiliza cuando se prueba una conexi\u00f3n de bus for\u00e1neo. Esta funci\u00f3n implica el env\u00edo de datos al socio. Se espera que el socio devuelva los datos que recibe pero no ha devuelto ning\u00fan dato.
+MQLINK_NO_DATA_RECEIVED_SICO3648.useraction=Intente repetir la solicitud de conexi\u00f3n de prueba. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQReceiverChannelPinger
+# {0} the encoding value
+MQLINK_DATA_CONV_ERROR_SICO3649=CWSIC3649E: Se ha encontrado un problema al intentar convertir los datos del canal ping al cifrado {0}.
+MQLINK_DATA_CONV_ERROR_SICO3649.explanation=La funci\u00f3n de canal ping se utiliza cuando se prueba una conexi\u00f3n de bus for\u00e1neo. Esta funci\u00f3n implica el env\u00edo de datos de canal ping al socio que a su vez, devuelve los datos. Se ha encontrado un problema al convertir los datos de canal ping al cifrado indicado.
+MQLINK_DATA_CONV_ERROR_SICO3649.useraction=Aseg\u00farese de que la m\u00e1quina virtual Java (JVM) que est\u00e1 ejecutando tiene soporte para el cifrado especificado. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# Used in the MQLinkManagerImpl
+# {0} the MQ link name
+MQLINK_MQ_DISABLED_SICO3650=CWSIC3650I: El enlace WebSphere MQ {0} se ha inhabilitado porque toda la funcionalidad de WebSphere MQ en este servidor se ha inhabilitado.
+MQLINK_MQ_DISABLED_SICO3650.explanation=Toda la funcionalidad de WebSphere MQ ha sido inhabilitada en este servidor como resultado de seleccionar la casilla de verificaci\u00f3n 'inhabilitar funcionalidad de WebSphere MQ' en un panel de proveedor de mensajer\u00eda de WebSphere MQ en un \u00e1mbito adecuado. Tambi\u00e9n puede haberse utilizado el mandato administrativo manageWMQ para inhabilitar la funcionalidad de WebSphere MQ. Como resultado de esto se ha inhabilitado toda la funcionalidad de enlaces de WebSphere MQ.
+MQLINK_MQ_DISABLED_SICO3650.useraction=Ninguna a menos que se necesite la funcionalidad de enlaces de WebSphere MQ, en cuyo caso debe deseleccionar la casilla de confirmaci\u00f3n 'inhabilitar funcionalidad de WebSphere MQ' en el panel del proveedor de mensajer\u00eda de WebSphere MQ relevante o utilizar el mandato administrativo manageWMQ.
+
+# -------------------------------------------------------------------------------------------------
+# Used in DummySIBMQLinkSenderChannelRuntimeImpl
+# {0} the MQ link name
+MQLINK_MQ_DISABLED_SICO3651=CWSIC3651I: No es posible probar la conexi\u00f3n entre el enlace WebSphere MQ {0} y su gestor de colas asociado porque toda la funcionalidad de WebSphere MQ se ha inhabilitado en el servidor en el que se est\u00e1 ejecutando actualmente este enlace WebSphere MQ.
+MQLINK_MQ_DISABLED_SICO3651.explanation=Toda la funcionalidad de WebSphere MQ ha sido inhabilitada en el servidor que ejecuta el enlace de WebSphere MQ como resultado de seleccionar la casilla de verificaci\u00f3n 'inhabilitar funcionalidad de WebSphere MQ' en un panel de proveedor de mensajer\u00eda de WebSphere MQ en un \u00e1mbito adecuado. Tambi\u00e9n puede haberse utilizado el mandato administrativo manageWMQ para inhabilitar la funcionalidad de WebSphere MQ. Como resultado de esto se ha inhabilitado toda la funcionalidad de enlaces de WebSphere MQ.
+MQLINK_MQ_DISABLED_SICO3651.useraction=Ninguna a menos que se necesite la funcionalidad de enlaces de WebSphere MQ, en cuyo caso debe deseleccionar la casilla de confirmaci\u00f3n 'inhabilitar funcionalidad de WebSphere MQ' en el panel del proveedor de mensajer\u00eda de WebSphere MQ relevante o utilizar el mandato administrativo manageWMQ.
+
+# Messages for MQClientLink
+# -------------------------------------------------------------------------------------------------
+# {0} is the attribute name
+# {1} is the attribute value
+INFO_MQCLIENTLINK_PARM_SICO3700=CWSIC3700I: Se ha producido un error interno. Par\u00e1metro MQClientLink desconocido {0} con el valor {1}.
+INFO_MQCLIENTLINK_PARM_SICO3700.explanation=Durante la inicializaci\u00f3n de un objeto MQClientLink se ha encontrado un par\u00e1metro desconocido. Se ignorar\u00e1 el par\u00e1metro desconocido y la inicializaci\u00f3n continuar\u00e1.
+INFO_MQCLIENTLINK_PARM_SICO3700.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+MQCLIENT_FAILED_AUTH_SICO3701=CWSIC3701E: No se ha podido autenticar el intento de conexi\u00f3n de WebSphere MQ desde el host {0} en la cadena de transporte {1} con un identificador de usuario {2}.
+MQCLIENT_FAILED_AUTH_SICO3701.explanation=La conexi\u00f3n de WebSphere MQ descrita en el mensaje ha fallado una comprobaci\u00f3n de seguridad.
+MQCLIENT_FAILED_AUTH_SICO3701.useraction=Examine las anotaciones de error para determinar la causa por la que el proceso de WebSphere MQ especificado no puede conectarse con el identificador de usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name, {2} is the queue manager name
+MQCLIENT_UNKNOWN_QM_NAME_SICO3702=CWSIC3702E: No se ha podido realizar la conexi\u00f3n con WebSphere MQ desde el host {0} en la cadena de transporte {1} debido a que el gestor de colas referenciado, {2}, no corresponde a un MQClientLink activo definido para este servidor de aplicaciones.
+MQCLIENT_UNKNOWN_QM_NAME_SICO3702.explanation=No se ha podido realizar la conexi\u00f3n de WebSphere MQ descrita por el mensaje porque hac\u00eda referencia a un nombre de gestor de colas que no correspond\u00eda a un MQClientLink activo.
+MQCLIENT_UNKNOWN_QM_NAME_SICO3702.useraction=Examine las anotaciones de error para determinar la causa por la que MQClientLink no est\u00e1 disponible.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name, {2} is the channel name, {3} is the MQClientLink name
+MQCLIENT_UNKNOWN_CHANNEL_NAME_SICO3703=CWSIC3703E: No se ha podido realizar la conexi\u00f3n con WebSphere MQ desde el host {0} en la cadena de transporte {1} porque el canal al que hac\u00eda referencia, {2}, no corresponde al nombre de canal de MQClientLink denominado {3}.
+MQCLIENT_UNKNOWN_CHANNEL_NAME_SICO3703.explanation=No se ha podido realizar la conexi\u00f3n de WebSphere MQ descrita por el mensaje porque hace referencia a un nombre de canal que no correspond\u00eda al par\u00e1metro de canal en MQClientLink indicado.
+MQCLIENT_UNKNOWN_CHANNEL_NAME_SICO3703.useraction=Examine las anotaciones de error para determinar cu\u00e1l debe ser el nombre de canal correcto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+MQCLIENT_CONNECTED_SICO3704=CWSIC3704I: Una aplicaci\u00f3n cliente de WebSphere MQ se ha conectado desde el host {0} en la cadena de transporte {1}.
+MQCLIENT_CONNECTED_SICO3704.explanation=Un cliente de WebSphere MQ se ha conectado a este servidor de aplicaciones desde el host especificado utilizando la cadena de transporte especificada.
+MQCLIENT_CONNECTED_SICO3704.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+MQCLIENT_DISCONNECTED_SICO3705=CWSIC3705I: Se ha desconectado un cliente de WebSphere MQ, previamente conectado desde el host {0} en la cadena de transporte {1}.
+MQCLIENT_DISCONNECTED_SICO3705.explanation=Se ha desconectado un cliente de WebSphere MQ de este servidor de aplicaciones.
+MQCLIENT_DISCONNECTED_SICO3705.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Messaging Engine being located.
+MQCLIENTSERVERSTATEMACHINE_ME_NOT_FOUND_SICO3706=CWSIC3706E: No se ha podido localizar el motor de mensajer\u00eda para una conexi\u00f3n dada. El motor de mensajer\u00eda que se localizaba era {0}.
+MQCLIENTSERVERSTATEMACHINE_ME_NOT_FOUND_SICO3706.explanation=Al procesar una petici\u00f3n de conexi\u00f3n desde un cliente, no se ha podido encontrar el motor de mensajer\u00eda asociado con un objeto SICoreConnection. Es posible que el motor de mensajer\u00eda se haya terminado o que ya no sea miembro del bus, y por consiguiente se ha perdido la conexi\u00f3n.
+MQCLIENTSERVERSTATEMACHINE_ME_NOT_FOUND_SICO3706.useraction=Examine las anotaciones de error para determinar la causa por la que el motor de mensajer\u00eda ya no est\u00e1 disponible.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Messaging Engine.
+MQCLIENTLINK_CONNECTION_DROPPED_SICO3707=CWSIC3707E: Se ha desactivado una conexi\u00f3n con el motor de mensajer\u00eda {0}.
+MQCLIENTLINK_CONNECTION_DROPPED_SICO3707.explanation=No se ha podido utilizar una conexi\u00f3n asignada previamente a un motor de mensajer\u00eda porque se ha desactivado la conexi\u00f3n. Es posible que ese cliente o motor de mensajes se haya terminado.
+MQCLIENTLINK_CONNECTION_DROPPED_SICO3707.useraction=Reinicie el cliente o el motor de mensajer\u00eda si fuera necesario, de forma alternativa, examine las anotaciones de error para determinar por qu\u00e9 se puede haber desactivado la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Messaging Engine.
+MQCLIENTLINK_CONNECTION_LOST_SICO3708=CWSIC3708E: Se ha perdido una conexi\u00f3n con el motor de mensajer\u00eda {0}.
+MQCLIENTLINK_CONNECTION_LOST_SICO3708.explanation=No se ha podido utilizar una conexi\u00f3n asignada previamente a un motor de mensajer\u00eda porque se ha perdido la conexi\u00f3n. Es posible que ese cliente o motor de mensajes se haya terminado.
+MQCLIENTLINK_CONNECTION_LOST_SICO3708.useraction=Reinicie el cliente o el motor de mensajer\u00eda si fuera necesario, de forma alternativa, examine las anotaciones de error para determinar por qu\u00e9 se puede haber perdido la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the MQClientLink.
+MQCLIENTLINK_INTERNAL_ERROR_SICO3709=CWSIC3709E: MQClientLink {0} ha encontrado un error interno.
+MQCLIENTLINK_INTERNAL_ERROR_SICO3709.explanation=CMSG0001
+MQCLIENTLINK_INTERNAL_ERROR_SICO3709.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the client's host name.
+# {1} is the transport chain.
+MQCLIENTLINK_UNKNOWN_QM_NAME_SICO3710=CWSIC3710E: No se ha podido realizar la conexi\u00f3n con WebSphere MQ desde el host {0} en la cadena de transporte {1} debido a que no hay ning\u00fan objeto adecuado MQClientLink definido al que conectar el gestor de colas.
+MQCLIENTLINK_UNKNOWN_QM_NAME_SICO3710.explanation=No se ha podido realizar la conexi\u00f3n de WebSphere MQ descrita por el mensaje porque hac\u00eda referencia a un nombre de gestor de colas que no correspond\u00eda a un MQClientLink activo.
+MQCLIENTLINK_UNKNOWN_QM_NAME_SICO3710.useraction=Determine por qu\u00e9 no existe ning\u00fan objeto MQClientLink para el gestor de colas especificado. Defina uno si fuera necesario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the client's host name.
+# {1} is the transport chain.
+# {2} is the channel name.
+MQCLIENTLINK_UNKNOWN_CHANNEL_NAME_SICO3711=CWSIC3711E: No se ha podido realizar la conexi\u00f3n con WebSphere MQ desde el host {0} en la cadena de transporte {1} debido a que el canal referenciado, {2}, no corresponde a un MQClienLink activo definido para este servidor de aplicaciones.
+MQCLIENTLINK_UNKNOWN_CHANNEL_NAME_SICO3711.explanation=No se ha podido realizar la conexi\u00f3n de WebSphere MQ descrita por el mensaje porque hac\u00eda referencia a un nombre de canal que no correspond\u00eda a un MQClientLink activo.
+MQCLIENTLINK_UNKNOWN_CHANNEL_NAME_SICO3711.useraction=Determine por qu\u00e9 no existe ning\u00fan objeto MQClientLink para el canal especificado. Defina uno si fuera necesario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint {1} is the chain name and {2} is the exception
+MQCLIENT_CONNECTION_ERROR_SICO3712=CWSIC3712E: Un cliente de WebSphere MQ, conectado anteriormente desde el host {0}, en la cadena de transporte {1}, se ha desconectado debido a la excepci\u00f3n {2}.
+MQCLIENT_CONNECTION_ERROR_SICO3712.explanation=Se ha perdido una conexi\u00f3n desde un cliente de WebSphere MQ. Probablemente sea consecuencia de una anomal\u00eda en las comunicaciones. Es posible que la aplicaci\u00f3n cliente de WebSphere MQ haya finalizado.
+MQCLIENT_CONNECTION_ERROR_SICO3712.useraction=Reinicie el cliente de WebSphere MQ si es necesario, si no solicite al administrador del sistema que determine la causa por la que se puede haber desactivado la conexi\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in DummyMQClientLink
+# {0} the MQ client link name
+MQCLIENTLINK_MQ_DISABLED_SICO3713=CWSIC3713I: El enlace de cliente de WebSphere MQ {0} se ha inhabilitado porque toda la funcionalidad de WebSphere MQ en este servidor se ha inhabilitado.
+MQCLIENTLINK_MQ_DISABLED_SICO3713.explanation=Toda la funcionalidad de WebSphere MQ ha sido inhabilitada en este servidor como resultado de seleccionar la casilla de verificaci\u00f3n 'inhabilitar funcionalidad de WebSphere MQ' en un panel de proveedor de mensajer\u00eda de WebSphere MQ en un \u00e1mbito adecuado. Tambi\u00e9n puede haberse utilizado el mandato administrativo manageWMQ para inhabilitar la funcionalidad de WebSphere MQ. Como resultado de esto se ha inhabilitado toda la funcionalidad de enlaces de cliente de WebSphere MQ.
+MQCLIENTLINK_MQ_DISABLED_SICO3713.useraction=Ninguna a menos que se necesite la funcionalidad de enlaces de cliente de WebSphere MQ, en cuyo caso debe deseleccionar la casilla de confirmaci\u00f3n 'inhabilitar funcionalidad de WebSphere MQ' en el panel del proveedor de mensajer\u00eda de WebSphere MQ relevante o utilizar el mandato administrativo manageWMQ.
+
+###################################################################################################
+# Messages for the multicast package
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+#BAD_MULTICAST_DATA_RECEIVED_SICO4001=CWSIC4001E: Multicast data was received but it was not formatted correctly
+#BAD_MULTICAST_DATA_RECEIVED_SICO4001.explanation=The client received some data over multicast, but the data appears to be corrupt and cannot be parsed.
+#BAD_MULTICAST_DATA_RECEIVED_SICO4001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# *** message no longer required ***
+# {0} is the event name, {1} is the event description
+#MULTICAST_CONNECTION_CLOSED_SICO4002=CWSIC4002E: The client received notification that multicast data can no longer be received and the connection has been closed. The notification received was {0} which is described as {1}.
+#MULTICAST_CONNECTION_CLOSED_SICO4002.explanation=Examine the cause of the connection failure to see if it helps to diagnose the problem and retry the operation.
+#MULTICAST_CONNECTION_CLOSED_SICO4002.useraction=CMSG0002
+
+
+###################################################################################################
+# Generic messages to be used across all packages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was created
+UNKNOWN_CORE_EXCP_SICO8002=CWSIC8002E: Se ha producido un error interno. La API principal ha generado una excepci\u00f3n desconocida o inesperada: excepci\u00f3n {0}.
+UNKNOWN_CORE_EXCP_SICO8002.explanation=Se ha realizado una llamada remota a la API principal que ha generado una excepci\u00f3n. Sin embargo, la excepci\u00f3n no se ha reconocido ni se esperaba en este momento.
+UNKNOWN_CORE_EXCP_SICO8002.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the method that was called
+METHOD_CALL_NOT_ALLOWED_SICO8003=CWSIC8003E: Se ha producido un error interno. No est\u00e1 permitido llamar al m\u00e9todo {0} en el cliente.
+METHOD_CALL_NOT_ALLOWED_SICO8003.explanation=La llamada efectuada al m\u00e9todo en el cliente s\u00f3lo pod\u00eda realizarse en el servidor.
+METHOD_CALL_NOT_ALLOWED_SICO8003.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConsumerSessionProxy
+# {0} is the value that was not valid
+INVALID_PROP_SICO8004=CWSIC8004E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para la propiedad de tiempo de espera. El valor suministrado ha sido {0}.
+INVALID_PROP_SICO8004.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8004.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding being used, {1} is the exception
+UNSUPPORTED_STRING_ENCODING_SICO8005=CWSIC8005E: No es posible codificar una serie mediante la codificaci\u00f3n {0} debido a la excepci\u00f3n: {1}.
+UNSUPPORTED_STRING_ENCODING_SICO8005.explanation=Se ha intentado codificar una serie con una codificaci\u00f3n espec\u00edfica, pero no se ha realizado porque no se da soporte a la codificaci\u00f3n.
+UNSUPPORTED_STRING_ENCODING_SICO8005.useraction=Corrija el valor de codificaci\u00f3n y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the String length, {1} is the max length
+STRING_TOO_LONG_SICO8006=CWSIC8006E: Se ha intentado transmitir una serie, pero la serie suministrada era demasiado larga (longitud = {0}, longitud m\u00e1xima = {1}).
+STRING_TOO_LONG_SICO8006.explanation=La serie no se puede enviar por la red ya que excede la longitud de series que se pueden enviar mediante los protocolos de mensajer\u00eda.
+STRING_TOO_LONG_SICO8006.useraction=Corrija la serie para reducir su longitud y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message text, {1} is the Probe Id
+CORE_EXCEPTION_SICO8007=CWSIC8007E: Se ha detectado una excepci\u00f3n procedente del servidor remoto con el ID de prueba {1}. Excepci\u00f3n: {0}.
+CORE_EXCEPTION_SICO8007.explanation=El servidor remoto ha generado una excepci\u00f3n que ha causado un FFDC.
+CORE_EXCEPTION_SICO8007.useraction=Examine la excepci\u00f3n y el correspondiente archivo FFDC en el servidor para determinar el problema y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in GenericTransportReceiveListener
+# {0} is the value that was not valid
+INVALID_PROP_SICO8008=CWSIC8008E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para la propiedad de tipo de conexi\u00f3n. El valor suministrado ha sido {0}.
+INVALID_PROP_SICO8008.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8008.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in JFAPCommunicator
+# {0} is the value that was not valid
+INVALID_PROP_SICO8009=CWSIC8009E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el par\u00e1metro de establecimiento de comunicaci\u00f3n. El valor suministrado ha sido {0}.
+INVALID_PROP_SICO8009.explanation=Se ha recibido la informaci\u00f3n de establecimiento de comunicaci\u00f3n, pero no se ha entendido.
+INVALID_PROP_SICO8009.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in METransportReceiveListener
+INVALID_PROP_SICO8010=CWSIC8010E: Se ha producido un error interno. Los motores de mensajer\u00eda no pudieron ponerse de acuerdo en los par\u00e1metros de comunicaci\u00f3n iniciales.
+INVALID_PROP_SICO8010.explanation=El establecimiento de comunicaci\u00f3n del motor de mensajer\u00eda no ha podido realizarse debido a una propiedad incorrecta.
+INVALID_PROP_SICO8010.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ServerTransportReceiveListener
+# {0} is the value that was not valid
+INVALID_PROP_SICO8011=CWSIC8011E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto al motor de mensajer\u00eda en el campo de segmento. El valor ha sido {0}.
+INVALID_PROP_SICO8011.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8011.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ServerTransportReceiveListener
+INVALID_PROP_SICO8012=CWSIC8012E: Se ha producido un error interno. El cliente y el motor de mensajer\u00eda no pudieron ponerse de acuerdo en los par\u00e1metros de comunicaci\u00f3n iniciales.
+INVALID_PROP_SICO8012.explanation=El establecimiento de comunicaci\u00f3n del cliente no ha podido realizarse debido a una propiedad incorrecta.
+INVALID_PROP_SICO8012.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATConsumer
+# {0} is the value that was not valid
+INVALID_PROP_SICO8013=CWSIC8013E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el distintivo de consumidor. El valor ha sido {0}.
+INVALID_PROP_SICO8013.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8013.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATSubscription
+# {0} is the value that was not valid
+INVALID_PROP_SICO8014=CWSIC8014E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el distintivo de consumidor. El valor ha sido {0}.
+INVALID_PROP_SICO8014.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8014.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ServerConnection
+# {0} is a user ID
+# {1} is a network address
+CLIENT_CONNECTED_SICO8015=CWSIC8015I: Se ha iniciado la conexi\u00f3n cliente {0} desde {1}.
+CLIENT_CONNECTED_SICO8015.explanation=Se ha establecido una conexi\u00f3n cliente con el identificador de usuario especificado desde la direcci\u00f3n de red especificada.
+CLIENT_CONNECTED_SICO8015.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in ServerConnection
+# {0} is a user ID
+CLIENT_DISCONNECTED_SICO8016=CWSIC8016I: Cliente {0} desconectado.
+CLIENT_DISCONNECTED_SICO8016.explanation=Ha finalizado una conexi\u00f3n cliente con el identificador de usuario especificado.
+CLIENT_DISCONNECTED_SICO8016.useraction=No se requiere ninguna acci\u00f3n.  
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATBrowser
+# {0} is the value that was not valid
+INVALID_PROP_SICO8017=CWSIC8017E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el distintivo de examinador. El valor ha sido {0}.
+INVALID_PROP_SICO8017.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8017.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in StaticCATProducer
+# {0} is the value that was not valid
+INVALID_PROP_SICO8018=CWSIC8018E: Se ha producido un error interno. Se ha proporcionado un valor incorrecto para el distintivo de productor. El valor ha sido {0}.
+INVALID_PROP_SICO8018.explanation=Se ha intentado establecer una propiedad pero el valor proporcionado era incorrecto para la propiedad.
+INVALID_PROP_SICO8018.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ProxyReceiveListener
+# {0} is the destination listener Id value
+UNABLE_TO_FIND_DESTINATION_LISTENER_SICO8019=CWSIC8019E: Se ha producido un error interno. El ID de escucha de destino {0} que el cliente ha recibido no se puede encontrar.
+UNABLE_TO_FIND_DESTINATION_LISTENER_SICO8019.explanation=CMSG0001
+UNABLE_TO_FIND_DESTINATION_LISTENER_SICO8019.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ProxyReceiveListener
+NULL_PROXY_QUEUE_CONV_GROUP_CWSICO8020=CWSIC8020E: Se ha producido un error interno. El valor de ProxyQueueConversationGroup es nulo.
+NULL_PROXY_QUEUE_CONV_GROUP_CWSICO8020.explanation=CMSG0001
+NULL_PROXY_QUEUE_CONV_GROUP_CWSICO8020.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ProxyReceiveListener
+# {0} is the actual class name
+WRONG_CLASS_CWSICO8021=CWSIC8021E: Se ha producido un error interno. La proxyQueue no es una instancia de AsynchConsumerProxyQueue pero es una instancia de {0}.
+WRONG_CLASS_CWSICO8021.explanation=CMSG0001
+WRONG_CLASS_CWSICO8021.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConsumerSessionProxy
+# {0} is the actual class name
+WRONG_CLASS_CWSICO8022=CWSIC8022E: Se ha producido un error interno. La asynchConsumerCallback no es una instancia de StoppableAsynchConsumerCallback pero es una instancia de {0}.
+WRONG_CLASS_CWSICO8022.explanation=CMSG0001
+WRONG_CLASS_CWSICO8022.useraction=CMSG0002            
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding being used, {1} is the exception
+UNSUPPORTED_STRING_ENCODING_SICO8023=CWSIC8023E: No es posible codificar una serie mediante la codificaci\u00f3n {0} debido a la excepci\u00f3n: {1}.
+UNSUPPORTED_STRING_ENCODING_SICO8023.explanation=Se ha intentado codificar una serie con una codificaci\u00f3n espec\u00edfica, pero no se ha realizado porque no se da soporte a la codificaci\u00f3n.
+UNSUPPORTED_STRING_ENCODING_SICO8023.useraction=Corrija el valor de codificaci\u00f3n y repita la operaci\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# Used in ProxyReceiveListener.java
+# {0} is the destination listener Id value
+UNABLE_TO_FIND_CONSUMER_MONITOR_LISTENER_SICO8024=CWSIC8024E: Se ha producido un error interno. El consumerMonitorListenerid {0} recibido por el cliente no se puede localizar.
+UNABLE_TO_FIND_CONSUMER_MONITOR_LISTENER_SICO8024.explanation=CMSG0001
+UNABLE_TO_FIND_CONSUMER_MONITOR_LISTENER_SICO8024.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+
+###################################################################################################
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIC9999=CWSIC9999E: {0}
+TEMPORARY_CWSIC9999.explanation=Si el mensaje no proporciona suficiente informaci\u00f3n, consulte los mensajes anteriores para obtener m\u00e1s ayuda.
+TEMPORARY_CWSIC9999.useraction=Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo resolver este error, consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina Web de soporte del servidor de aplicaciones: http://www.ibm.com/software/webservers/appserv/was/support.

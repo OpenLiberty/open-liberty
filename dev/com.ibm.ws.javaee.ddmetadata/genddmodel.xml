@@ -1,0 +1,52 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="genddmodel">
+  <macrodef name="genddmodel">
+    <attribute name="packages"/>
+    <attribute name="srcdestdir" default="src.gen"/>
+  	<attribute name="resourcedestdir" default="resources.gen"/>
+    <element name="src"/>
+
+    <sequential>
+      <mkdir dir="@{srcdestdir}"/>
+      <delete dir="@{srcdestdir}/com"/>
+      <mkdir dir="@{resourcedestdir}"/>
+      <delete dir="@{resourcedestdir}/OSGI-INF"/>
+    	
+
+      <path id="genddmodel.class.path">
+        <path path="../com.ibm.ws.javaee.ddmetadata.annotation/build/classes"/>
+        <path refid="project.class.path"/>
+      </path>
+
+      <local name="genddmodel.processor.class.path"/>
+      <pathconvert property="genddmodel.processor.class.path">
+        <path path="../com.ibm.ws.javaee.ddmetadata/build/classes"/>
+        <path path="../com.ibm.ws.javaee.ddmetadata.annotation/build/classes"/>
+        <path refid="project.class.path"/>
+        <path path="${classes.dir}"/>
+      </pathconvert>
+
+      <echo>Running compiler to parse source-only annotations to generate model code</echo>
+      <javac classpathref="genddmodel.class.path" includeantruntime="false" createmissingpackageinfoclass="false">
+        <src/>
+        <compilerarg value="-proc:only"/>
+        <compilerarg value="-processor"/>
+        <compilerarg value="com.ibm.ws.javaee.ddmetadata.processor.ModelGeneratorProcessor"/>
+        <compilerarg value="-processorpath"/>
+        <compilerarg value="${genddmodel.processor.class.path}"/>
+        <compilerarg value="-Asrcdestdir=@{srcdestdir}"/>
+        <compilerarg value="-Apackages=@{packages}"/>
+      	<compilerarg value="-Aresourcedir=@{resourcedestdir}"/>
+      </javac>
+    </sequential>
+  </macrodef>
+</project>

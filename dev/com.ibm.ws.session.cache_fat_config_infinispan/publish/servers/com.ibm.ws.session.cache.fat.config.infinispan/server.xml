@@ -1,0 +1,46 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jcacheContainer-1.1</feature>
+    <feature>jndi-1.0</feature>
+    <feature>mpMetrics-2.0</feature> <!-- Infinispan JARs have a hard dependency on MicroProfile Metrics API -->
+    <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
+    <feature>servlet-4.0</feature>
+    <feature>sessionCache-1.0</feature>
+  </featureManager>
+  
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="sessionCacheConfigApp.war">
+    <!-- <classloader commonLibraryRef="InfinispanLib"/> causes Weld to process CDI annotations within Infinispan JARs, which causes failures -->
+  </application>
+
+  <httpSessionCache libraryRef="InfinispanLib" uri="file:///${shared.resource.dir}/infinispan10/infinispan.xml"/>
+
+  <httpSession hideSessionValues="false"/>
+
+  <library id="InfinispanLib">
+    <fileset dir="${shared.resource.dir}/infinispan10" includes="*.jar"/>
+  </library>
+
+  <!-- Needed because the application uses OSGi reflectively to access the same caches as HTTP Session persistence. -->
+  <!-- Applications should never do this. We are only granting it to the test app for purposes of verifying cached values. -->
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
+
+  <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+  <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+
+  <javaPermission codebase="${shared.resource.dir}/infinispan10/*" className="java.security.AllPermission"/>
+
+  <!-- Allow the application to access OSGi service registry in order to obtain the CacheManager instance that is used by sessionCache feature -->
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+
+  <!--  Permissions for application to access mbeans -->
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="javax.management.MBeanPermission" actions="queryNames,registerMBean" name="*"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+
+</server>

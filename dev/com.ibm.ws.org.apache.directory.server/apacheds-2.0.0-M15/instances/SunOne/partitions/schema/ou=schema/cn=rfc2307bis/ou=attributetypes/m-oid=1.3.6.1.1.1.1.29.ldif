@@ -1,0 +1,11 @@
+dn: m-oid=1.3.6.1.1.1.1.29, ou=attributeTypes, cn=rfc2307bis, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.1.29
+m-name: nisSecretKey
+m-description: NIS secret key
+m-equality: octetStringMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.40
+m-length: 0
+m-singleValue: TRUE

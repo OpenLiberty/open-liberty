@@ -1,0 +1,3 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: test
+Import-Packages: java.io, javax.servlet, javax.servlet.http, java.net, javax.management, com.ibm.websphere.config.mbeans, com.ibm.ws.jmx.connector.client.rest

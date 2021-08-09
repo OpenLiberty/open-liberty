@@ -1,0 +1,16 @@
+
+<server>
+
+	<include location="${shared.config.dir}/oidcClientFeatures_transportSecurity.xml" />
+
+	<include location="${shared.config.dir}/oidcRSClientBasicConfig.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings3.xml" />
+
+	<include location="${shared.config.dir}/helloworldApplication.xml" />
+
+	<include location="../../fatTestPorts.xml" />
+
+</server>

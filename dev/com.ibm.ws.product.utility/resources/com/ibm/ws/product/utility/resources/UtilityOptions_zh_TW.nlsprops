@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+#
+
+global.description=\u8aaa\u660e\uff1a
+global.options=\u9078\u9805\uff1a
+global.usage=\u7528\u6cd5\uff1a
+global.options.statement=\t\u8acb\u4f7f\u7528 help [actionName] \u4ee5\u53d6\u5f97\u6bcf\u4e00\u500b\u52d5\u4f5c\u7684\u8a73\u7d30\u9078\u9805\u8cc7\u8a0a\u3002
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+help.desc=\t\u5217\u5370\u6307\u5b9a\u52d5\u4f5c\u7684\u8aaa\u660e\u8cc7\u8a0a\u3002
+help.usage.options=\t{0} \u8aaa\u660e [actionName]
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+version.desc=\t\u5217\u5370\u7522\u54c1\u540d\u7a31\u548c\u7248\u672c\u4e4b\u985e\u7684\u7522\u54c1\u8cc7\u8a0a\u3002
+version.usage.options=\t{0} \u7248\u672c [\u9078\u9805]
+version.option-key.output=\ \ \ \ --output="\u8f38\u51fa\u6a94\u7684\u8def\u5f91"
+version.option-desc.output=\t\u5305\u542b\u6b64\u6307\u4ee4\u8f38\u51fa\u4e4b\u6a94\u6848\u7684\u8def\u5f91\u3002\u6b64\n\
+\t\u9078\u9805\u662f\u975e\u5fc5\u8981\u7684\u3002\u9810\u8a2d\u503c\u662f STDOUT\u3002
+version.option-key.verbose=\ \ \ \ --verbose
+version.option-desc.verbose=\t\u986f\u793a\u6bcf\u4e00\u500b\u5167\u5bb9\u6a94\u7684\u6574\u500b\u5167\u5bb9\u3002
+version.option-key.ifixes=\ \ \ \ --i\u4fee\u6b63
+version.option-desc.ifixes=\t\u63d0\u4f9b\u9019\u500b\u9805\u76ee\u6642\uff0c\u6307\u51fa\u5df2\u5b89\u88dd\u7684 iFixes \u6e05\u55ae\u4e5f\u662f\u8f38\u51fa\u3002
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseAgreement.desc=\t\u986f\u793a\u6240\u5b89\u88dd Liberty \u8a2d\u5b9a\u6a94\u7248\u672c\u7684\u6388\u6b0a\u5408\u7d04\u3002
+viewLicenseAgreement.usage.options=\t{0} viewLicenseAgreement
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseInfo.desc=\t\u986f\u793a\u6240\u5b89\u88dd Liberty \u8a2d\u5b9a\u6a94\u7248\u672c\u7684\u6388\u6b0a\u8cc7\u8a0a\u3002
+viewLicenseInfo.usage.options=\t{0} viewLicenseInfo
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+featureInfo.desc=\t\u5217\u51fa\u6240\u6709\u5df2\u5b89\u88dd\u7684\u7279\u6027\u3002
+featureInfo.usage.options=\t{0} featureInfo [\u9078\u9805]
+featureInfo.option-key.output=\ \ \ \ --output="\u8f38\u51fa\u6a94\u7684\u8def\u5f91"
+featureInfo.option-desc.output=\t\u5305\u542b\u6b64\u6307\u4ee4\u8f38\u51fa\u4e4b\u6a94\u6848\u7684\u8def\u5f91\u3002\u6b64\n\
+\t\u9078\u9805\u662f\u975e\u5fc5\u8981\u7684\u3002\u9810\u8a2d\u503c\u662f STDOUT\u3002
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+validate.desc=\t\u6bd4\u5c0d\u7522\u54c1\u7e3d\u548c\u6aa2\u67e5\u6a94\u6848\u4f86\u9a57\u8b49\u6b63\u5f0f\u4f5c\u696d\u5b89\u88dd\u3002
+validate.usage.options=\t{0} validate [\u9078\u9805]
+validate.option-key.checksumfile=\ \ \ \ --checksumfile="\u7e3d\u548c\u6aa2\u67e5\u6a94\u6848\u7684\u8def\u5f91"
+validate.option-desc.checksumfile=\t\u6307\u5b9a\u6a94\u6848\uff0c\u5305\u542b\u8981\u5b89\u88dd\u4e4b *.mf \u548c *.blst \u6a94\u6848\n\
+\t\u7684\u7e3d\u548c\u6aa2\u67e5\u3002\u6b64\u9078\u9805\u662f\u975e\u5fc5\u8981\u7684\u3002\u9810\u8a2d\u503c\u662f\n\
+\tlib/version/productChecksums.cs
+validate.option-key.output=\ \ \ \ --output="\u8f38\u51fa\u6a94\u7684\u8def\u5f91"
+validate.option-desc.output=\t\u5305\u542b\u6b64\u6307\u4ee4\u8f38\u51fa\u4e4b\u6a94\u6848\u7684\u8def\u5f91\u3002\u6b64\n\
+\t\u9078\u9805\u662f\u975e\u5fc5\u8981\u7684\u3002\u9810\u8a2d\u503c\u662f STDOUT\u3002
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+compare.desc=\t\u8acb\u5c07\u5957\u7528\u5230\u73fe\u884c\u5b89\u88dd\u7684 iFix \u8207\u65b0\u7684\u4fee\u6b63\u5957\u4ef6\n\
+\t\u5c64\u6b21\u6bd4\u8f03\uff0c\u4e26\u5217\u51fa\u4e0d\u5728\u8a72\u4fee\u6b63\u5957\u4ef6\u4e2d\u7684\u4efb\u4f55 iFix\uff0c\n\
+\t\u6216\u662f\u8207\u6240\u63d0\u4f9b\u7684 iFix \u6e05\u55ae\u6bd4\u8f03\uff0c\n\
+\t\u4e26\u5217\u51fa\u5b83\u5011\u662f\u5426\u542b\u62ec\u5728\u73fe\u884c\u7248\u672c\u4e2d\u3002
+compare.usage.options=\t{0} compare [\u9078\u9805]
+compare.option-key.target=\ \ \ \ --target="\u76ee\u9304\u6216\u4fdd\u5b58\u6a94\u7684\u8def\u5f91"
+compare.option-desc.target=\t\u6307\u5b9a\u8981\u8207\u73fe\u884c\u5b89\u88dd\u6bd4\u8f03\u7684\u76ee\u6a19\u6a94\u3002\u6b64\u76ee\u6a19\u53ef\u70ba\n\
+\t\u76ee\u9304\u6216\u4fdd\u5b58\u6a94\uff0c\u4f46\u5fc5\u9808\u662f\u6709\u6548\u7684\n\
+\tWebSphere Application Server Liberty \u8a2d\u5b9a\u6a94\u5b89\u88dd\u4f4d\u7f6e\u3002
+compare.option-key.apars=\ \ \ \ --apars="\u4ee5\u9017\u9ede\u5340\u9694\u7684 APAR ID \u6e05\u55ae"
+compare.option-desc.apars=\t\u6bd4\u8f03\u5de5\u5177\u6703\u6bd4\u5c0d\u9019\u4efd\u4ee5\u9017\u9ede\u5340\u9694\n\
+\t\u7684 APAR ID \u6e05\u55ae\u4f86\u6aa2\u67e5\u73fe\u884c\u5b89\u88dd\uff0c\u4ee5\u67e5\u660e\u5b83\u662f\u5426\u5305\u542b\u5b83\u5011\uff0c\n\
+\t\u7136\u5f8c\u5217\u51fa\u6240\u6709\u672a\u542b\u62ec\u5728\u5167\u7684 APAR\u3002
+compare.option-key.output=\ \ \ \ --output="\u8f38\u51fa\u6a94\u7684\u8def\u5f91"
+compare.option-desc.output=\t\u8981\u5305\u542b\u6b64\u6307\u4ee4\u8f38\u51fa\u4e4b\u6a94\u6848\u7684\u8def\u5f91\u3002\u6b64\n\
+\t\u9078\u9805\u662f\u975e\u5fc5\u8981\u7684\u3002\u9810\u8a2d\u503c\u662f STDOUT\u3002
+compare.option-key.verbose=\ \ \ \ --verbose
+compare.option-desc.verbose=\t\u7576\u932f\u8aa4\u767c\u751f\u6642\uff0c\u986f\u793a\u8a73\u7d30\u7684\u932f\u8aa4\u8a0a\u606f\u3002
+compare.option.addon=\u5fc5\u9808\u63d0\u4f9b --target \u6216 --apars \u4e4b\u4e00\u3002

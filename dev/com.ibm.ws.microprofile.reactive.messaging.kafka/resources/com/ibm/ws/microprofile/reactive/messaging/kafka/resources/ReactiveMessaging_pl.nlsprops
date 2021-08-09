@@ -1,0 +1,91 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w konektorze Reactive Messaging Kafka Connector. B\u0142\u0105d: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d rozszerzenia Reactive Messaging, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+internal.kafka.connector.error.CWMRX1000E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zatwierdzania przesuni\u0119\u0107 odczytu w brokerze Kafka. B\u0142\u0105d: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Incoming Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas odpytywania brokera Kafka. B\u0142\u0105d: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Incoming Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wysy\u0142ania komunikatu do brokera Kafka. B\u0142\u0105d: {0}.
+kafka.send.error.CWMRX1003E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Outgoing Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.send.error.CWMRX1003E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Konektor Reactive Messaging Kafka Outgoing Connector odebra\u0142 b\u0142\u0105d. B\u0142\u0105d: {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=Konektor Kafka Outgoing Connector odebra\u0142 sygna\u0142 b\u0142\u0119du, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: W\u0142a\u015bciwo\u015b\u0107 group.id nie zosta\u0142a ustawiona w konfiguracji dla tego kana\u0142u. Ustaw w\u0142a\u015bciwo\u015b\u0107 {0} w jednym ze \u017ar\u00f3de\u0142 konfiguracji MicroProfile dla tej aplikacji.
+kafka.groupid.not.set.CWMRX1005E.explanation=Nale\u017cy ustawi\u0107 identyfikator grupy konsument\u00f3w Kafka, aby zapewni\u0107 poprawne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Ustaw t\u0119 w\u0142a\u015bciwo\u015b\u0107 w jednej z lokalizacji MicroProfile ConfigSource dla tej aplikacji, na przyk\u0142ad w pliku microprofile-config.properties.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Nie mo\u017cna za\u0142adowa\u0107 klas z pliku JAR kafka-clients. Upewnij si\u0119, \u017ce plik JAR kafka-clients i jego zale\u017cno\u015bci s\u0105 dost\u0119pne jako biblioteki w u\u017cywanej aplikacji.
+kafka.library.not.present.CWMRX1006E.explanation=Aplikacje, kt\u00f3re korzystaj\u0105 z klienta Reactive Messaging Kafka Client musz\u0105 udost\u0119pnia\u0107 plik JAR kafka-clients z zale\u017cno\u015bciami. Plik i jego zale\u017cno\u015bci mog\u0105 zosta\u0107 udost\u0119pnione przez umieszczenie ich w pakiecie jako biblioteki albo przez udost\u0119pnienie ich jako wsp\u00f3\u0142u\u017cytkowanej biblioteki.
+kafka.library.not.present.CWMRX1006E.useraction=Umie\u015b\u0107 w pakiecie plik JAR kafka-clients i jego zale\u017cno\u015bci jako biblioteki w u\u017cywanej aplikacji lub jako wsp\u00f3\u0142u\u017cytkowan\u0105 bibliotek\u0119. Plik JAR kafka-clients mo\u017cna pobra\u0107 z serwisu WWW Apache Kafka lub z serwisu Maven Central.
+
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Nie mo\u017cna utworzy\u0107 konektora przychodz\u0105cego Kafka dla kana\u0142u {0}. B\u0142\u0105d: {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=B\u0142\u0105d, kt\u00f3ry wyst\u0105pi\u0142, gdy konektor Kafka by\u0142 konfigurowany dla przychodz\u0105cego kana\u0142u Reactive Messaging, uniemo\u017cliwia normalne dzia\u0142anie funkcji MicroProfile Reactive Messaging. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107 problem.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Nie mo\u017cna utworzy\u0107 konektora wychodz\u0105cego Kafka dla kana\u0142u {0}. B\u0142\u0105d: {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=B\u0142\u0105d, kt\u00f3ry wyst\u0105pi\u0142, gdy konektor Kafka by\u0142 konfigurowany dla wychodz\u0105cego kana\u0142u Reactive Messaging, uniemo\u017cliwia normalne dzia\u0142anie funkcji MicroProfile Reactive Messaging. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107 problem.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Nie mo\u017cna utworzy\u0107 konektora przychodz\u0105cego Kafka dla kana\u0142u {0}, ale ta operacja jest ponawiana. B\u0142\u0105d: {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, gdy konektor Kafka by\u0142 konfigurowany dla przychodz\u0105cego reaktywnego kana\u0142u przesy\u0142ania komunikat\u00f3w. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107, czy problem by\u0142 przej\u015bciowy, i zosta\u0142 rozwi\u0105zany w wyniku ponowienia pr\u00f3by skonfigurowania konektora.
+
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Nie mo\u017cna utworzy\u0107 konektora wyj\u015bciowego Kafka dla kana\u0142u {0}, ale ta operacja jest ponawiana. B\u0142\u0105d: {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, gdy konektor Kafka by\u0142 konfigurowany dla wyj\u015bciowego reaktywnego kana\u0142u przesy\u0142ania komunikat\u00f3w. Przyczyn\u0105 mo\u017ce by\u0107 problem z konfiguracj\u0105 konektora lub problem z t\u0142umaczeniem nazwy hosta brokera Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107, czy problem by\u0142 przej\u015bciowy, i zosta\u0142 rozwi\u0105zany w wyniku ponowienia pr\u00f3by skonfigurowania konektora.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d rozszerzenia Reactive Messaging: {0}.
+temporary.CWMRX1999E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d rozszerzenia Reactive Messaging, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMRX1999E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.

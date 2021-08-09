@@ -1,0 +1,12 @@
+
+.swagger-ui .headerbar .headerbar-wrapper {
+  background-image: invalidurl(../myserver/invalid/images/custom-logo.png);
+  background-repeat: no-repeat;
+  background-color: lightslategray;
+  background-position-x: 28px;
+  padding-top: 20px;
+  padding-right: 0px;
+  padding-bottom: 20px;
+  padding-left: 5px;
+  height: 75px;
+}

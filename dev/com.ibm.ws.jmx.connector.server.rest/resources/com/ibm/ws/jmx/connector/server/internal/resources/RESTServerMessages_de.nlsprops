@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RESTServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0100 - CWWKX0120
+
+jmx.connector.server.rest.notification.timeout.warning=CWWKX0101W: Der Benachrichtigungsclient mit der ID {0} hat innerhalb der zul\u00e4ssigen Zeit keine Anforderungen gesendet und wurde deshalb inaktiviert.
+jmx.connector.server.rest.notification.timeout.warning.explanation= Benachrichtigungsclients m\u00fcssen innerhalb der zul\u00e4ssigen Zeit Anforderungen senden, um Zeitlimit\u00fcberschreitungen zu verhindern.
+jmx.connector.server.rest.notification.timeout.warning.useraction= Stellen Sie sicher, dass der Server weiterhin HTTP-Anforderungen akzeptiert.
+
+jmx.connector.server.rest.notification.limit.warning=CWWKX0102W: Der Server hat seinen Grenzwert f\u00fcr gleichzeitig aktive Benachrichtigungsclients erreicht.
+jmx.connector.server.rest.notification.limit.warning.explanation= Die Anzahl gleichzeitig aktiver Clients, die sich f\u00fcr Benachrichtigungen registrieren k\u00f6nnen, ist begrenzt.
+jmx.connector.server.rest.notification.limit.warning.useraction= Stellen Sie sicher, dass Benachrichtigungsclients authentisch und erforderlich sind. Wenn Sie den Server erneut starten, werden alle Benachrichtigungsclients zur\u00fcckgesetzt.
+
+JMX_REST_ADDRESS=CWWKX0103I: Der JMX-REST-Connector ist aktiv und unter der folgenden Service-URL verf\u00fcgbar: {0}
+JMX_REST_ADDRESS.explanation=Der JMX-REST-Connector ist jetzt unter der angegebenen Service-URL zug\u00e4nglich.
+JMX_REST_ADDRESS.useraction=Es ist keine Aktion erforderlich.
+
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR=CWWKX0104W: Der Benachrichtigungsclient mit der ID {0} hat den Grenzwert f\u00fcr gleichzeitige MBean-Listener-Registrierungen erreicht.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.explanation= Der Benachrichtigungsclient hat die maximal zul\u00e4ssige Anzahl gleichzeitiger MBean-Listener-Registrierungen erreicht.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.useraction= Stellen Sie sicher, dass die aktuellen MBean-Listener-Registrierungen eindeutig und erforderlich sind. Entfernen Sie die nicht erforderlichen MBean-Listener-Registrierungen oder erstellen Sie einen neuen Benachrichtigungsclient.

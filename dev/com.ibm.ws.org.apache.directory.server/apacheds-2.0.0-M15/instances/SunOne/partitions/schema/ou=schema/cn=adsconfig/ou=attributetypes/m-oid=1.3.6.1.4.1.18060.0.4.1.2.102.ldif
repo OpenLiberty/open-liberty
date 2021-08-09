@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.102,ou=attributeTypes,cn=adsconfig,ou=schema
+m-name: ads-dsAllowAnonymousAccess
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.102
+m-description: Tells if anonymous access are allowed or not
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-equality: booleanMatch
+m-singlevalue: TRUE
+m-length: 0
+creatorsname: uid=admin,ou=system

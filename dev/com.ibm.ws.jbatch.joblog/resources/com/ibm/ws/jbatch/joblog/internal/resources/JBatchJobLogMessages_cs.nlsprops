@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy se kv\u016fli v\u00fdjimce nespustilo pro \u00falohu {0}, instance \u00falohy {1}, proveden\u00ed \u00falohy {2}.\n{3}
+job.logging.create.new.explanation=Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy nevytvo\u0159ilo soubor protokolu. Protokolov\u00e1n\u00ed d\u00e1vky se nezda\u0159ilo kv\u016fli v\u00fdjimce.
+job.logging.create.new.useraction=Zrevidujte v\u00fdjimku, zkontrolujte stav syst\u00e9mu soubor\u016f a prove\u010fte n\u00e1pravnou akci. Proveden\u00ed d\u00e1vky pokra\u010duje bez protokolov\u00e1n\u00ed \u00falohy.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy nevytvo\u0159ilo kv\u016fli v\u00fdjimce dal\u0161\u00ed soubory \u010d\u00e1sti protokolu.\n{0}\nProtokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy se pokus\u00ed pokra\u010dovat aktu\u00e1ln\u00edm souborem. 
+job.logging.create.next.explanation=Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy nevytvo\u0159ilo dal\u0161\u00ed soubory \u010d\u00e1sti protokolu. Vytvo\u0159en\u00ed nov\u00e9ho souboru protokolov\u00e1n\u00ed d\u00e1vky se nezda\u0159ilo kv\u016fli v\u00fdjimce.\n Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy se pokus\u00ed pokra\u010dovat aktu\u00e1ln\u00edm souborem.
+job.logging.create.next.useraction=Zrevidujte v\u00fdjimku, zkontrolujte stav syst\u00e9mu soubor\u016f a prove\u010fte n\u00e1pravnou akci. Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy se pokus\u00ed pokra\u010dovat aktu\u00e1ln\u00edm souborem.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy kv\u016fli v\u00fdjimce nena\u010detlo soubor \u010d\u00e1sti protokolu.\n{0}
+job.logging.read.log.explanation=Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy nena\u010detlo soubor \u010d\u00e1sti protokolu. \u010cten\u00ed \u010d\u00e1sti souboru v r\u00e1mci protokolov\u00e1n\u00ed d\u00e1vky se nezda\u0159ilo kv\u016fli v\u00fdjimce.\nProtokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy bude pokra\u010dovat bez publikov\u00e1n\u00ed ud\u00e1losti protokolov\u00e1n\u00ed \u00falohy.
+job.logging.read.log.useraction=Zkontrolujte v\u00fdjimku, zkontrolujte stav syst\u00e9mu soubor\u016f a prove\u010fte n\u00e1pravnou akci.\nProtokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy bude pokra\u010dovat bez publikov\u00e1n\u00ed ud\u00e1losti protokolov\u00e1n\u00ed \u00falohy.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy neodstranilo n\u00e1sleduj\u00edc\u00ed soubor nebo adres\u00e1\u0159 \u010d\u00e1sti protokolu: {0}. 
+job.logging.delete.log.explanation=Protokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy neodstranilo soubor nebo adres\u00e1\u0159 \u010d\u00e1sti protokolu.\nProtokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy bude pokra\u010dovat bez odstran\u011bn\u00ed dan\u00e9ho souboru nebo adres\u00e1\u0159e.
+job.logging.delete.log.useraction=Zkontrolujte v\u00fdjimku, zkontrolujte stav syst\u00e9mu soubor\u016f a prove\u010fte n\u00e1pravnou akci.\nProtokolov\u00e1n\u00ed d\u00e1vkov\u00e9 \u00falohy bude pokra\u010dovat bez odstran\u011bn\u00ed dan\u00e9ho souboru nebo adres\u00e1\u0159e.

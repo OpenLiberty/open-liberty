@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- contextService -->
+
+ <Designate factoryPid="com.ibm.ws.context.service">
+  <Object ocdref="com.ibm.ws.context.service" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.context.service" ibm:alias="contextService" ibm:supportExtensions="true" ibmui:localization="OSGI-INF/l10n/metatype" name="%contextService" description="%contextService.desc">
+  <AD id="baseContextRef"                    type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" ibmui:group="Advanced" cardinality="-1" required="false" name="%baseContextRef" description="%baseContextRef.desc"/>
+  <AD id="baseInstance.target"               type="String"  default="(service.pid=${baseContextRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="threadContextConfigRef"            type="String"  ibm:type="pid" ibm:reference="com.ibm.wsspi.threadcontext.config" ibm:flat="true" cardinality="1000" required="false" name="internal" description="internal use only"/>
+  <AD id="jndiName"                          type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+  <AD id="onError"                           type="String"  ibm:type="onError" ibm:variable="onError" default="WARN" name="%onError" description="%onError.desc">
+   <Option value="FAIL"   label="%onError.FAIL"/>
+   <Option value="IGNORE" label="%onError.IGNORE"/>
+   <Option value="WARN"   label="%onError.WARN"/>
+  </AD>
+  <AD id="service.ranking"                   type="Integer" default="0" name="internal" description="internal use only"/>
+  <AD id="javaCompDefaultName"               type="String"  required="false" name="internal" description="internal use only" /> 
+ </OCD>
+
+ <!-- managedExecutorService -->
+
+ <Designate factoryPid="com.ibm.ws.concurrent.managedExecutorService">
+  <Object ocdref="com.ibm.ws.concurrent.managedExecutorService"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.concurrent.managedExecutorService" ibm:alias="managedExecutorService" ibm:supportExtensions="true" ibmui:localization="OSGI-INF/l10n/metatype" name="%managedExecutorService" description="%managedExecutorService.desc">
+  <AD id="concurrencyPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" default="defaultConcurrencyPolicy" cardinality="1" name="%concurrencyPolicy" description="%concurrencyPolicy.desc"/>
+  <AD id="ConcurrencyPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
+  <AD id="contextServiceRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
+  <AD id="ContextService.target"                 type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
+  <AD id="creates.objectClass"                   type="String"  ibm:final="true" ibm:variable="io.openliberty.concurrency.mes.objectClasses" default="java.util.concurrent.ExecutorService, javax.enterprise.concurrent.ManagedExecutorService, org.eclipse.microprofile.context.ManagedExecutor" cardinality="10" name="internal" description="internal use only"/>
+  <AD id="javaCompDefaultName"                   type="String"  required="false" name="internal" description="internal use only" />
+  <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+  <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
+  <AD id="LongRunningPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${longRunningPolicyRef})" name="internal" description="internal use only"/>
+  <AD id="LongRunningPolicy.cardinality.minimum" type="String"  ibm:final="true" default="${count(longRunningPolicyRef)}" name="internal" description="internal use only"/>
+  <AD id="service.ranking"                       type="Integer" default="-1000" name="internal" description="internal use only"/>
+ </OCD>
+  
+ <!-- managedScheduledExecutorService -->
+
+ <Designate factoryPid="com.ibm.ws.concurrent.managedScheduledExecutorService">
+  <Object ocdref="com.ibm.ws.concurrent.managedScheduledExecutorService"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.concurrent.managedScheduledExecutorService" ibm:alias="managedScheduledExecutorService" ibm:supportExtensions="true" ibmui:localization="OSGI-INF/l10n/metatype" name="%managedScheduledExecutorService" description="%managedScheduledExecutorService.desc">
+  <AD id="concurrencyPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" default="defaultConcurrencyPolicy" cardinality="1" name="%concurrencyPolicy" description="%concurrencyPolicy.desc"/>
+  <AD id="ConcurrencyPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
+  <AD id="contextServiceRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
+  <AD id="ContextService.target"                 type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
+  <AD id="creates.objectClass"                   type="String"  ibm:final="true" ibm:variable="io.openliberty.concurrency.mses.objectClasses" default="java.util.concurrent.ExecutorService, java.util.concurrent.ScheduledExecutorService, javax.enterprise.concurrent.ManagedExecutorService, javax.enterprise.concurrent.ManagedScheduledExecutorService" cardinality="10" name="internal" description="internal use only"/>
+  <AD id="javaCompDefaultName"                   type="String"  required="false" name="internal" description="internal use only" />
+  <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+  <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
+  <AD id="LongRunningPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${longRunningPolicyRef})" name="internal" description="internal use only"/>
+  <AD id="LongRunningPolicy.cardinality.minimum" type="String"  ibm:final="true" default="${count(longRunningPolicyRef)}" name="internal" description="internal use only"/>
+  <AD id="service.ranking"                       type="Integer" default="-1000" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- managedThreadFactory -->
+
+ <Designate factoryPid="com.ibm.ws.concurrent.managedThreadFactory">
+  <Object ocdref="com.ibm.ws.concurrent.managedThreadFactory"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.concurrent.managedThreadFactory" ibm:alias="managedThreadFactory" name="%managedThreadFactory" description="%managedThreadFactory.desc">
+  <AD id="contextServiceRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
+  <AD id="contextService.target"              type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
+  <AD id="createDaemonThreads"                type="Boolean" default="false"  name="%createDaemonThreads" description="%createDaemonThreads.desc"/>
+  <AD id="defaultPriority"                    type="Integer" required="false" max="10" min="1" name="%defaultPriority" description="%defaultPriority.desc"/>
+  <AD id="jndiName"                           type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+  <AD id="maxPriority"                        type="Integer" required="false" max="10" min="1" name="%maxPriority" description="%maxPriority.desc"/>
+  <AD id="service.ranking"                    type="Integer" default="-1000" name="internal" description="internal use only"/>
+  <AD id="javaCompDefaultName"                type="String"  required="false" name="internal" description="internal use only" />  
+ </OCD>
+
+ <!-- Concurrency Service (internal) -->
+
+ <Designate pid="com.ibm.ws.concurrent.internal.ConcurrencyService">
+  <Object ocdref="com.ibm.ws.concurrent.service"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.concurrent.service" ibm:alias="concurrencyService" name="internal" description="internal use only">
+  <AD id="extensionProvider.cardinality.minimum" type="String"  ibm:final="true" default="${count(extensionProvider.component.name)}" name="internal" description="internal use only"/>
+  <AD id="extensionProvider.component.name"      type="String"  required="false" name="internal" description="internal use only"/>
+  <AD id="extensionProvider.target"              type="String"  ibm:final="true" default="(component.name=${extensionProvider.component.name})" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

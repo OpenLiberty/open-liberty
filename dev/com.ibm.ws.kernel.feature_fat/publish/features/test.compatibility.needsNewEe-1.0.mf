@@ -1,0 +1,19 @@
+Created-By: 1.8.0_211 (Oracle Corporation)
+IBM-App-ForceRestart: install,
+ uninstall
+IBM-AppliesTo: io.openliberty;productVersion="20.0.0.2"
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: io.openliberty
+IBM-ShortName: needsNewEe-1.0
+Subsystem-Content: com.ibm.websphere.appserver.newEe-1.0; type="osgi.subsystem.feature"
+Subsystem-Description: %description
+Subsystem-License: https://www.eclipse.org/legal/epl-v10.html
+Subsystem-ManifestVersion: 1
+Subsystem-Name:
+Subsystem-SymbolicName: com.ibm.websphere.appserver.needsNewEe-1.0; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+WLP-Activation-Type: parallel

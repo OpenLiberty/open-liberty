@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: \u00c9rv\u00e9nytelen hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus(ok) vannak megadva a(z) {0} \u00fcgyf\u00e9lbiztons\u00e1gban. \u00c9rv\u00e9nyes \u00e9rt\u00e9k: GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa(i) nem t\u00e1mogatott(ak).
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa GSSUP \u00e9rt\u00e9k\u0171 legyen.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: Az \u00fcgyf\u00e9lbiztons\u00e1gban megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus(ok) \u00e9rt\u00e9ke null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa(i) null\u00e9rt\u00e9k\u0171(ek).
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9lbiztons\u00e1g megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmusa GSSUP \u00e9rt\u00e9k\u0171 legyen.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: A k\u00f6vetkez\u0151 (legal\u00e1bb egy) attrib\u00fatum hi\u00e1nyzik az IIOP \u00fcgyf\u00e9lir\u00e1nyelvb\u0151l. A hi\u00e1nyz\u00f3 attrib\u00fatum(ok): [{0}]. Hacsak az alkalmaz\u00e1s programozott bejelentkez\u00e9st nem val\u00f3s\u00edt meg, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az attrib\u00fatum(ok) szerepel(nek) a client.xml f\u00e1jlban.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=Az IIOP \u00fcgyf\u00e9lir\u00e1nyelv megadott hiteles\u00edt\u00e9sir\u00e9teg-mechanizmus\u00e1b\u00f3l hi\u00e1nyzik egy attrib\u00fatum.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a sz\u00fcks\u00e9ges attrib\u00fatumok be\u00e1ll\u00edt\u00e1sra ker\u00fcljenek, vagy programozott bejelentkez\u00e9ssel t\u00f6rt\u00e9njen meg az \u00e9rt\u00e9kek megad\u00e1sa.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: A CSIv2 hiteles\u00edt\u00e9si r\u00e9tege tiltott, mert az establishTrustInClient param\u00e9ter \u00e9rt\u00e9ke {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Ha az establishTrustInClient param\u00e9ter a Never (soha) \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, akkor a CSIv2 hiteles\u00edt\u00e9si r\u00e9tege tiltott.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=A CSIv2 hiteles\u00edt\u00e9si r\u00e9teg\u00e9nek enged\u00e9lyez\u00e9s\u00e9hez \u00e1ll\u00edtsa be az establishTrustInClient param\u00e9tert a Supported (t\u00e1mogatott) vagy a Required (k\u00f6telez\u0151) \u00e9rt\u00e9kre.
+
+

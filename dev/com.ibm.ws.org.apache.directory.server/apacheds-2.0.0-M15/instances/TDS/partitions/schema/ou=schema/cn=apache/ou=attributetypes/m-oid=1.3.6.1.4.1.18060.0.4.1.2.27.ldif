@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.27,ou=attributeTypes,cn=apache,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DIRECTORY_OPERATION
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.27
+m-name: triggerExecutionSubentries
+m-description: Used to track subentries associated with a trigger area which an 
+ entry falls under
+m-obsolete: FALSE
+entryUUID: ac7b0ca4-91ae-4dc7-9f73-6d760270f85e
+entryCSN: 20130919065344.775000Z#000001#000#000000
+entryParentId: 82e8e6b4-db49-43a8-bdcd-8eaf3e877f30
+createTimestamp: 20130919065353.841Z

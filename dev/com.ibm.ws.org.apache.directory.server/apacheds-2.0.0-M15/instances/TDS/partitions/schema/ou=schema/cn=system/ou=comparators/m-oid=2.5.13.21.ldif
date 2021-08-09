@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=2.5.13.21,ou=comparators,cn=system,ou=schema
+m-oid: 2.5.13.21
+m-fqcn: org.apache.directory.api.ldap.model.schema.comparators.TelephoneNumberCo
+ mparator
+objectclass: metaComparator
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 975eccea-bb4e-448a-b73b-ae136fae386d
+entryCSN: 20130919065345.695000Z#000001#000#000000
+entryParentId: 57053d72-db5e-4da9-8dd7-3c18f10296df
+createTimestamp: 20130919065352.078Z

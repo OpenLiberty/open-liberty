@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2012, 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!--
+  Notes on resource properties:
+
+  ConsumerDoesNotModifyPayloadAfterGet - does not provide any benefit for remotely connected clients so is not offered here
+  ProducerDoesNotModifyPayloadAfterSet - offers performance benefits for bytes msgs (not object msgs) for remotely connected clients
+-->
+
+<connector xmlns="http://java.sun.com/xml/ns/j2ee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+  http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd"
+version="1.5">
+
+ <description>WebSphere Application Server service integration bus JMS resource adapter</description>
+ <display-name>WebSphere Application Server JMS Resource Adapter</display-name>
+ <vendor-name>IBM</vendor-name>
+ <eis-type>JMS</eis-type>
+ <resourceadapter-version>7.0.0</resourceadapter-version>
+
+ <license>
+   <description>
+For licence information, see the WebSphere Application Server Licence Information ("LI") available at http://www.ibm.com/software/sla/. The
+LI may also be found in a file in the WebSphere Application Server or Application Client for WebSphere Application Server installation directory.
+   </description>
+   <license-required>true</license-required>
+ </license>
+
+ <resourceadapter>
+
+  <!-- ResourceAdapter -->
+
+  <resourceadapter-class>
+  com.ibm.ws.sib.ra.inbound.impl.SibRaResourceAdapterImpl
+  </resourceadapter-class>
+
+  <!-- Outbound -->
+
+  <outbound-resourceadapter>
+
+   <!-- QueueConnectionFactory -->
+
+   <connection-definition>
+    <managedconnectionfactory-class>
+     com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl
+    </managedconnectionfactory-class>
+    <config-property>
+     <description>The name of a bus when connecting to the service integration bus in a full profile server</description>
+     <config-property-name>busName</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>It is recommended to use a container managed authentication alias instead of configuring this property</description>
+     <config-property-name>userName</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>It is recommended to use a container managed authentication alias instead of configuring this property</description>
+     <config-property-name>password</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The reliability applied to Non-persistent JMS messages sent using this connection factory</description>
+     <config-property-name>nonPersistentMapping</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>ExpressNonPersistent</config-property-value>
+    </config-property>
+    <config-property>
+     <description>The reliability applied to persistent JMS messages sent using this connection factory</description>
+     <config-property-name>persistentMapping</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>ReliablePersistent</config-property-value>
+    </config-property>
+    <config-property>
+     <description>Read ahead is an optimization that preemptively assigns messages to consumers. This processes the consumer requests faster</description>
+     <config-property-name>readAhead</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>Default</config-property-value>
+    </config-property>
+    <config-property>
+     <description>Transport chains specify the communication protocols that can be used to communicate with the service integration bus in a full profiles server.</description>
+     <config-property-name>targetTransportChain</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The remote server address that has triplets separated by a comma, with the syntax hostName:portNumber:chainName, used to connect to a bootstrap server. For example, Merlin:7276:BootstrapBasicMessaging. If hostName is not specified, the default is localhost. If portNumber is not specified, the default is 7276. If chainName is not specified, the default is BootstrapBasicMessaging. Refer to the information center for more information</description>
+    <config-property-name>remoteServerAddress</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The prefix of up to twelve characters used for the temporary queues created by applications that use this queue connection factory</description>
+     <config-property-name>temporaryQueueNamePrefix</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <connectionfactory-interface>
+     javax.jms.QueueConnectionFactory
+    </connectionfactory-interface>
+    <connectionfactory-impl-class>
+     com.ibm.ws.sib.api.jms.impl.JmsQueueConnectionFactoryImpl
+    </connectionfactory-impl-class>
+    <connection-interface>javax.jms.QueueConnection</connection-interface>
+    <connection-impl-class>
+     com.ibm.ws.sib.api.jms.impl.JmsQueueConnectionImpl
+    </connection-impl-class>
+   </connection-definition>
+
+   <!-- TopicConnectionFactory -->
+
+   <connection-definition>
+    <managedconnectionfactory-class>
+     com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedTopicConnectionFactoryImpl
+    </managedconnectionfactory-class>
+    <config-property>
+     <description>The name of a bus when connecting to the service integration bus in a full profile server</description>
+     <config-property-name>busName</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The JMS client identifier needed for durable topic subscriptions on all connections. This identifier is required if the application is doing durable publish/subscribe messaging</description>
+     <config-property-name>clientID</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>It is recommended to use a container managed authentication alias instead of configuring this property</description>
+     <config-property-name>userName</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>It is recommended to use a container managed authentication alias instead of configuring this property</description>
+     <config-property-name>password</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>Durable subscription home defines ME name to which connection needs to be established.</description>
+     <config-property-name>durableSubscriptionHome</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+  	<config-property>
+     <description>The reliability applied to Non-persistent JMS messages sent using this connection factory</description>
+     <config-property-name>nonPersistentMapping</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>ExpressNonPersistent</config-property-value>
+    </config-property>
+    <config-property>
+     <description>The reliability applied to persistent JMS messages sent using this connection factory</description>
+     <config-property-name>persistentMapping</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>ReliablePersistent</config-property-value>
+    </config-property>
+    <config-property>
+     <description>Read ahead is an optimization that preemptively assigns messages to consumers. This processes the consumer requests faster</description>
+     <config-property-name>readAhead</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>Default</config-property-value>
+    </config-property>
+     <config-property>
+     <description>Transport chains specify the communication protocols that can be used to communicate with the service integration bus in a full profiles server.</description>
+     <config-property-name>targetTransportChain</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+	<description>The remote server address that has triplets separated by a comma, with the syntax hostName:portNumber:chainName, used to connect to a bootstrap server. For example, Merlin:7276:BootstrapBasicMessaging. If hostName is not specified, the default is localhost. If portNumber is not specified, the default is 7276. If chainName is not specified, the default is BootstrapBasicMessaging. Refer to the information center for more information</description>
+     <config-property-name>remoteServerAddress</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The prefix of up to twelve characters used for the temporary topics created by applications that use this topic connection factory</description>
+     <config-property-name>temporaryTopicNamePrefix</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>Controls whether or not durable subscription can be shared across connections.</description>
+     <config-property-name>shareDurableSubscription</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <connectionfactory-interface>
+     javax.jms.TopicConnectionFactory
+    </connectionfactory-interface>
+    <connectionfactory-impl-class>
+     com.ibm.ws.sib.api.jms.impl.JmsTopicConnectionFactoryImpl
+    </connectionfactory-impl-class>
+    <connection-interface>javax.jms.TopicConnection</connection-interface>
+    <connection-impl-class>
+     com.ibm.ws.sib.api.jms.impl.JmsTopicConnectionImpl
+    </connection-impl-class>
+   </connection-definition>
+
+   <!-- ConnectionFactory -->
+
+   <connection-definition>
+     <managedconnectionfactory-class>
+     com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl
+    </managedconnectionfactory-class>
+    <config-property>
+     <description>The name of a bus when connecting to the service integration bus in a full profile server</description>
+     <config-property-name>busName</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The JMS client identifier needed for durable topic subscriptions on all connections. This identifier is required if the application is doing durable publish/subscribe messaging</description>
+     <config-property-name>clientID</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>It is recommended to use a container managed authentication alias instead of configuring this property</description>
+     <config-property-name>userName</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>It is recommended to use a container managed authentication alias instead of configuring this property</description>
+     <config-property-name>password</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>Durable subscription home defines ME name to which connection needs to be established.</description>
+     <config-property-name>durableSubscriptionHome</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The reliability applied to Non-persistent JMS messages sent using this connection factory</description>
+     <config-property-name>nonPersistentMapping</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>ExpressNonPersistent</config-property-value>
+    </config-property>
+    <config-property>
+     <description>The reliability applied to persistent JMS messages sent using this connection factory</description>
+     <config-property-name>persistentMapping</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>ReliablePersistent</config-property-value>
+    </config-property>
+    <config-property>
+     <description>Read ahead is an optimization that preemptively assigns messages to consumers. This processes the consumer requests faster</description>
+     <config-property-name>readAhead</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>Default</config-property-value>
+    </config-property>
+    <config-property>
+     <description>The remote server address that has triplets separated by a comma, with the syntax hostName:portNumber:chainName, used to connect to a bootstrap server. For example, Merlin:7276:BootstrapBasicMessaging. If hostName is not specified, the default is localhost. If portNumber is not specified, the default is 7276. If chainName is not specified, the default is BootstrapBasicMessaging. Refer to the information center for more information</description>
+     <config-property-name>remoteServerAddress</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>Transport chains specify the communication protocols that can be used to communicate with the service integration bus in a full profiles server.</description>
+     <config-property-name>targetTransportChain</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The prefix of up to twelve characters used for the temporary queues created by applications that use this queue connection factory</description>
+     <config-property-name>temporaryQueueNamePrefix</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>The prefix of up to twelve characters used for the temporary topics created by applications that use this topic connection factory</description>
+     <config-property-name>temporaryTopicNamePrefix</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <config-property>
+     <description>Controls whether or not durable subscription can be shared across connections.</description>
+     <config-property-name>shareDurableSubscription</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+    </config-property>
+    <connectionfactory-interface>
+     javax.jms.ConnectionFactory
+    </connectionfactory-interface>
+    <connectionfactory-impl-class>
+     com.ibm.ws.sib.api.jms.impl.JmsConnectionFactoryImpl
+    </connectionfactory-impl-class>
+    <connection-interface>javax.jms.Connection</connection-interface>
+    <connection-impl-class>
+     com.ibm.ws.sib.api.jms.impl.JmsConnectionImpl
+    </connection-impl-class>
+   </connection-definition>
+   <transaction-support>XATransaction</transaction-support>
+   <authentication-mechanism>
+    <authentication-mechanism-type>BasicPassword</authentication-mechanism-type>
+    <credential-interface>javax.resource.spi.security.PasswordCredential</credential-interface>
+   </authentication-mechanism>
+   <reauthentication-support>false</reauthentication-support>
+ </outbound-resourceadapter>
+
+  <!-- Inbound -->
+
+  <inbound-resourceadapter>
+   <messageadapter>
+    <messagelistener>
+     <messagelistener-type>javax.jms.MessageListener</messagelistener-type>
+     <activationspec>
+
+      <!-- This set of properties represents the minimun required to allow  -->
+      <!-- connection to a destination                                      -->
+
+      <activationspec-class>com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl</activationspec-class>
+  
+      <required-config-property>
+       <description>JMS destination</description>
+       <config-property-name>destination</config-property-name>
+      </required-config-property>
+       <required-config-property>
+       <description>The type of the destination, which is javax.jms.Queue or javax.jms.Topic.</description>
+       <config-property-name>destinationType</config-property-name>
+      </required-config-property>
+            </activationspec>
+    </messagelistener>
+   </messageadapter>
+  </inbound-resourceadapter>
+
+  <!-- Queue -->
+
+  <adminobject>
+   <adminobject-interface>javax.jms.Queue</adminobject-interface>
+   <adminobject-class>com.ibm.ws.sib.api.jms.impl.JmsQueueImpl</adminobject-class>
+   <config-property>
+    <description>The name of the associated Queue</description>
+    <config-property-name>queueName</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+   </config-property>
+   <config-property>
+    <description>The delivery mode for messages sent to this destination. This controls the persistence of messages on this destination</description>
+    <config-property-name>deliveryMode</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+    <config-property-value>Application</config-property-value>
+   </config-property>
+   <config-property>
+    <description>The default time in milliseconds from its dispatch time that the system must keep the messages live in the destination</description>
+    <config-property-name>timeToLive</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+   </config-property>
+   <config-property>
+    <description>The relative priority for messages sent to this destination, in the range 0 to 9, with 0 as the lowest priority and 9 as the highest priority</description>
+    <config-property-name>priority</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+   </config-property>
+    <config-property>
+     <description>Read ahead is an optimization that preemptively assigns messages to consumers. This processes the consumer requests faster</description>
+     <config-property-name>readAhead</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>AsConnection</config-property-value>
+    </config-property>
+  </adminobject>
+
+  <!-- Topic -->
+
+  <adminobject>
+   <adminobject-interface>javax.jms.Topic</adminobject-interface>
+   <adminobject-class>com.ibm.ws.sib.api.jms.impl.JmsTopicImpl</adminobject-class>
+   <config-property>
+    <description>The name of the topic space that contains the topic, on the service integration bus defined by the Bus name property</description>
+    <config-property-name>topicSpace</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>Default.Topic.Space</config-property-value>
+   </config-property>
+   <config-property>
+    <description>The name of the topic that this JMS topic is assigned to, in the topic space defined by the Topic space property</description>
+    <config-property-name>topicName</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+   </config-property>
+   <config-property>
+    <description>The delivery mode for messages sent to this destination. This controls the persistence of messages on this destination</description>
+    <config-property-name>deliveryMode</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+    <config-property-value>Application</config-property-value>
+   </config-property>
+   <config-property>
+    <description>The default length of time in milliseconds from its dispatch time that a message sent to this destination should be kept by the system</description>
+    <config-property-name>timeToLive</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+   </config-property>
+   <config-property>
+    <description>The relative priority for messages sent to this destination, in the range 0 to 9, with 0 as the lowest priority and 9 as the highest priority</description>
+    <config-property-name>priority</config-property-name>
+    <config-property-type>java.lang.String</config-property-type>
+   </config-property>
+   <config-property>
+     <description>Read ahead is an optimization that preemptively assigns messages to consumers. This improves the time taken to satisfy consumer requests</description>
+     <config-property-name>readAhead</config-property-name>
+     <config-property-type>java.lang.String</config-property-type>
+     <config-property-value>AsConnection</config-property-value>
+   </config-property>
+  </adminobject>
+
+  <security-permission>
+
+    <!-- Security permissions in addition to those expected by section 18.2 of the JCA v1.5 Spec -->
+
+    <description>Permission (1) Required for access to trace and FFDC files
+                 Permission (2) Preferred access to enable tracing of all System Properties
+                 Permission (3) Required minimum access to IBM System Properties</description>
+
+    <security-permission-spec>
+grant {
+    permission java.io.FilePermission &quot;&lt;&lt;ALL FILES&gt;&gt;&quot;, &quot;read,write,delete&quot;;
+    permission java.util.PropertyPermission &quot;*&quot;, &quot;read,write&quot;;
+    permission java.util.PropertyPermission &quot;com.ibm*&quot;, &quot;read&quot;;
+};
+    </security-permission-spec>
+
+  </security-permission>
+
+ </resourceadapter>
+
+</connector>

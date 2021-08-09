@@ -1,0 +1,28 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+    parent="security-policy.abstract">
+
+    <!-- Default inbound security processing for IDWSF SSOS SAML 2 delegation profile. -->
+
+    <action-state id="IDWSFSSOSSecurityPolicy">
+        <!-- First do everything related to client TLS, the SOAP binding and WS-Security processing. -->
+        <evaluate expression="SAMLMDClientCertAuthSecurityHandlerForPresenter" />
+        <evaluate expression="CheckMandatoryAuthenticationForPresenter" />
+        
+        <evaluate expression="WSSecuritySAML20AssertionTokenSecurityHandler" />
+        
+        <!-- Now continue with standard SAML protocol message processing. -->
+        <evaluate expression="ReceivedEndpointSecurityHandler" />
+        <evaluate expression="MessageReplaySecurityHandler" />
+        <evaluate expression="MessageLifetimeSecurityHandler" />
+        <evaluate expression="SAMLProtocolMessageXMLSignatureSecurityHandler" />
+        <evaluate expression="CheckMandatoryIssuer" />
+        <evaluate expression="'proceed'" />
+        
+        <transition on="proceed" to="proceed" />
+    </action-state>
+    
+    <bean-import resource="idwsf-ssos-security-beans.xml" />
+
+</flow>

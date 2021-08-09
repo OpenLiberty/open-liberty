@@ -1,0 +1,146 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/RESTClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Client
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0200-CWWKX0259
+	
+jmx.rest.client.request.error=CWWKX0201E: Clientul WebSphere Java Management Extensions REST a \u00eent\u00e2lnit o eroare \u00een timpul preg\u0103tirii cererii la serverul pentru URL-ul {0} pe conexiunea {1}
+jmx.rest.client.request.error.explanation=Clientul WebSphere Java Management Extensions REST a \u00eent\u00e2lnit o eroare \u00een timpul preg\u0103tirii cererii la serverul
+jmx.rest.client.request.error.useraction=Pentru informa\u0163ii suplimentare examina\u0163i istoricele de server.
+
+jmx.rest.client.response.error=CWWKX0202E: Clientul WebSphere Java Management Extensions REST nu a putut procesa r\u0103spunsul de la serverul pentru URL-ul {0} pe conexiunea {1}
+jmx.rest.client.response.error.explanation=Clientul WebSphere Java Management Extensions REST nu a putut procesa un r\u0103spuns de la server
+jmx.rest.client.response.error.useraction=Pentru informa\u0163ii suplimentare examina\u0163i istoricele de server.
+
+jmx.rest.client.response.code.error=CWWKX0203E: Clientul WebSphere Java Management Extensions REST a primit un cod r\u0103spuns nea\u015fteptat {0} cu mesajul ''{1}'' de la server pentru URL-ul {2} pe conexiunea {3}
+jmx.rest.client.response.code.error.explanation=Clientul WebSphere Java Management Extensions REST a primit un cod r\u0103spuns nea\u015fteptat de la server
+jmx.rest.client.response.code.error.useraction=Pentru informa\u0163ii suplimentare examina\u0163i istoricele de server.
+
+jmx.rest.client.server.throwable.exception=CWWKX0204E: Nu se poate analiza Throwable din fluxul de erori de server.
+jmx.rest.client.server.throwable.exception.explanation=Serverul a ridicat o excep\u0163ie la instrumentarea cererii de client, dar clientul nu a putut analiza un obiect Throwable din fluxul de erori de server. Clasa obiectului Throwable poate s\u0103 nu fie disponibil\u0103 pentru client.
+jmx.rest.client.server.throwable.exception.useraction=Pentru informa\u0163ii suplimentare examina\u0163i istoricele de server.
+
+jmx.rest.client.not.connected=CWWKX0206E: Clientul nu este conectat la server.
+jmx.rest.client.not.connected.explanation=Conexiunea la server fie a fost \u00eenchis\u0103, fie a e\u015fuat.
+jmx.rest.client.not.connected.useraction=Verifica\u0163i c\u0103 este activat\u0103 caracteristica de conector REST pe server \u015fi ob\u0163ine\u0163i o nou\u0103 conexiune la server.
+
+jmx.rest.client.url.not.found=CWWKX0207E: Serverul a raportat c\u0103 URL-ul cerut de client nu a fost g\u0103sit.
+jmx.rest.client.url.not.found.explanation=Clientul poate avea informa\u0163ii dep\u0103\u015fite sau caracteristica REST de conector pe server poate fi dezactivat\u0103.
+jmx.rest.client.url.not.found.useraction=Verifica\u0163i c\u0103 este activat\u0103 caracerostica de conector REST pe server \u015fi ob\u0163ine\u0163i o nou\u0103 conexiune la server.
+
+jmx.rest.client.class.name.null=CWWKX0208E: Argumentul de nume de clas\u0103 a fost nul.
+jmx.rest.client.class.name.null.explanation=Argumentul de nume de clas\u0103 nu trebuie s\u0103 fie nul.
+jmx.rest.client.class.name.null.useraction=Furniza\u0163i un nume de clas\u0103 nenul c\u00e2nd apela\u0163i metoda.
+
+jmx.rest.client.attribute.name.null=CWWKX0209E: Argumentul de nume de atribut a fost nul.
+jmx.rest.client.attribute.name.null.explanation=Argumentul de nume de atribut nu trebuie s\u0103 fie nul.
+jmx.rest.client.attribute.name.null.useraction=Furniza\u0163i un nume de atribut nenul c\u00e2nd apela\u0163i metoda.
+
+jmx.rest.client.attribute.names.null=CWWKX0210E: Argumentul care con\u0163ine o matrice de nume de atribute a fost nul.
+jmx.rest.client.attribute.names.null.explanation=Argumentul care con\u0163ine o matrice de nume de atribute nu trebuie s\u0103 fie nul.
+jmx.rest.client.attribute.names.null.useraction=Furniza\u0163i o matrice nenul\u0103 de nume de atribute c\u00e2nd apela\u0163i metoda.
+
+jmx.rest.client.attribute.null=CWWKX0211E: Argumentul Atribut a fost nul.
+jmx.rest.client.attribute.null.explanation=Argumentul Atribut nu trebuie s\u0103 fie nul.
+jmx.rest.client.attribute.null.useraction=Furniza\u0163i un Atribut nenul c\u00e2nd apela\u0163i metoda.
+
+jmx.rest.client.attribute.list.null=CWWKX0212E: Argumentul AttributeList a fost nul.
+jmx.rest.client.attribute.list.null.explanation=Argumentul AttributeList nu trebuie s\u0103 fie nul.
+jmx.rest.client.attribute.list.null.useraction=Furniza\u0163i un AttributeList nenul c\u00e2nd apela\u0163i metoda.
+
+jmx.rest.client.object.name.null=CWWKX0213E: Argumentul ObjectName a fost nul.
+jmx.rest.client.object.name.null.explanation=Argumentul ObjectName nu trebuie s\u0103 fie nul.
+jmx.rest.client.object.name.null.useraction=Furniza\u0163i un ObjectName nenul c\u00e2nd apela\u0163i metoda.
+
+jmx.rest.client.unexpected.server.throwable=CWWKX0214E: A fost returnat un obiect Throwable nea\u015fteptat de la server.
+jmx.rest.client.unexpected.server.throwable.explanation=Excep\u0163ia \u00eenf\u0103\u015foar\u0103 un obiect Throwable returnat de la server care nu este \u00een mod normal a\u015fteptat\u0103 pentru aceast\u0103 opera\u0163ie.
+jmx.rest.client.unexpected.server.throwable.useraction=Pentru informa\u0163ii suplimentare examina\u0163i istoricele de server.
+
+jmx.rest.client.bad.credentials=CWWKX0215E: A existat o problem\u0103 cu numele utilizator sau parola furnizate. Serverul a r\u0103spuns cu cod {0} \u015fi mesaj ''{1}''
+jmx.rest.client.bad.credentials.explanation=Acredit\u0103rile furnizate la ob\u0163inerea conexiunii au fost incorecte. Utilizatorul poate s\u0103 nu existe sau s\u0103 nu aib\u0103 autoritatea de a accesa serverul, sau parola poate fi incorect\u0103.
+jmx.rest.client.bad.credentials.useraction=Corecta\u0163i numele utilizator sau parola, apoi ob\u0163ine\u0163i o nou\u0103 conexiune.
+
+jmx.rest.client.object.name.pattern=CWWKX0216E: Argumentul ObjectName ''{0}'' este un model."
+jmx.rest.client.object.name.pattern.explanation=Argumentul ObjectName este un model dar metoda cere un ObjectName care s\u0103 se potriveasc\u0103 exact cu un MBean.
+jmx.rest.client.object.name.pattern.useraction=Furniza\u0163i un argument ObjectName f\u0103r\u0103 metacaractere care se va potrivi exact cu un MBean.
+
+jmx.rest.client.instance.not.found=CWWKX0217E: Nu este \u00eenregistrat niciun MBean cu ObjectName ''{0}'' dat.
+jmx.rest.client.instance.not.found.explanation=Opera\u0163ia cere un MBean \u00eenregistrat, dar nu a fost \u00eenregistrat niciun MBean cu ObjectName dat.
+jmx.rest.client.instance.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 MBean-ul este \u00eenregistrat \u00eenainte de a \u00eencerca s\u0103 face\u0163i opera\u0163ii de gestiune pa el.
+
+jmx.rest.client.attribute.not.found=CWWKX0218E: MBean-ul ''{0}'' nu are un atribut cu numele ''{1}''
+jmx.rest.client.attribute.not.found.explanation=MBean-ul nu furnizeaz\u0103 un atribut cu numele dat.
+jmx.rest.client.attribute.not.found.useraction=Ob\u0163ine\u0163i informa\u0163ii de MBean pentru a confirma ce atribute furnizeaz\u0103 MBean-ul.
+
+jmx.rest.client.operation.not.found=CWWKX0219E: MBean-ul ''{0}'' nu are o opera\u0163ie cu numele ''{1}''
+jmx.rest.client.operation.not.found.explanation=MBean-ul nu furnizeaz\u0103 o opera\u0163ie cu numele dat.
+jmx.rest.client.operation.not.found.useraction=Ob\u0163ine\u0163i informa\u0163ii de MBean pentru a confirma ce opera\u0163ii furnizeaz\u0103 MBean-ul.
+
+jmx.rest.client.listener.not.found=CWWKX0220E: NotificationListener-ul dat nu este \u00eenregistrat curent pentru a primi notific\u0103ri de la MBean-ul ''{0}''
+jmx.rest.client.listener.not.found.explanation=NotificationListener-ul nu a fost ad\u0103ugat sau a fost deja \u00eenl\u0103turat \u015fi nu este \u00eenregistrat curent pentru a primi notific\u0103ri de la MBean-ul dat.
+jmx.rest.client.listener.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 codul de apelare urm\u0103re\u015fte ce NotificationListener-e au fost ad\u0103ugate \u015fi \u00eenl\u0103turate sau capta\u0163i \u015fi instrumenta\u0163i excep\u0163ia.
+
+jmx.rest.client.notification.lost=CWWKX0221I: Notificarea nu a putut fi livrat\u0103.
+jmx.rest.client.notification.lost.explanation=O notificare nu a putut fi livrat\u0103 unuia sau mai multor ascult\u0103toare de notific\u0103ri, deoarece NotificationListener \u00eenregistrat nu a fost g\u0103sit sau exista o excep\u0163ie \u00een timpul livr\u0103rii notific\u0103rii.
+jmx.rest.client.notification.lost.useraction=Dac\u0103 notificarea trebuia livrat\u0103 la un NotificationListener (ascult\u0103tor de notific\u0103ri) existent, verifica\u0163i istoricele pentru excep\u0163ii.
+
+jmx.rest.client.connection.failed=CWWKX0222I: A e\u015fuat conexiunea la server.
+jmx.rest.client.connection.failed.explanation=Serverul a devenit indisponibil \u015fi nu a devenit disponibil din nou \u00een intervalul maxim permisibil configurat.
+jmx.rest.client.connection.failed.useraction=Verifica\u0163i conexiunea de re\u0163ea \u015fi asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica de conector REST activat\u0103. 
+
+jmx.rest.client.connection.temporarily.lost=CWWKX0223I: S-a pierdut temporar conexiunea la server.
+jmx.rest.client.connection.temporarily.lost.explanation=Serverul a devenit indisponibil, dar clientul va \u00eencerca s\u0103 restaureze conexiunea pe durata intervalului de timp maxim permisibil configurat.
+jmx.rest.client.connection.temporarily.lost.useraction=Dac\u0103 serverul este repornit inten\u0163ionat, nu este necesar\u0103 nici o ac\u0163iune. Altfel, verifica\u0163i conexiunea de re\u0163ea \u015fi asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica de conector REST activat\u0103.
+
+jmx.rest.client.connection.restored.with.exceptions=CWWKX0224I: Conexiunea a fost restaurat\u0103 dar excep\u0163iile au ap\u0103rut la ad\u0103ugarea NotificationListener-ilor.
+jmx.rest.client.connection.restored.with.exceptions.explanation=Conexiunea la server s-a pierdut temporar dar a fost restaurat\u0103 cu succes. Excep\u0163iile au ap\u0103rut la ad\u0103ugarea NotificationListener-ilor, deci unele notific\u0103ri pot lipsi.
+jmx.rest.client.connection.restored.with.exceptions.useraction=Verifica\u0163i c\u0103 excep\u0163iile au inclus notificarea \u015fi re-\u00eenregistra\u0163i NotificationListener-ii dup\u0103 corectarea problemelor.
+
+jmx.rest.client.connection.restored=CWWKX0225I: Conexiunea a fost restaurat\u0103 cu succes.
+jmx.rest.client.connection.restored.explanation=Conexiunea la server s-a pierdut temporar dar a fost restaurat\u0103 cu succes. To\u0163i NotificationListener-ii \u00eenregistra\u0163i vor continua s\u0103 primeasc\u0103 notific\u0103ri.
+jmx.rest.client.connection.restored.useraction=F\u0103r\u0103
+
+jmx.rest.client.connection.illegal.argument=CWWKX0226E: Parametrul de tipul JMXServiceURL nu poate fi null.
+jmx.rest.client.connection.illegal.argument.explanation=Valoarea parametrului 'serviceURL' nu poate fi null.
+jmx.rest.client.connection.illegal.argument.useraction=Reconecta\u0163i-v\u0103 la JMX REST Connector folosind o valoare JMXServiceURL non-null.
+
+jmx.rest.client.connection.invalid.endpoint=CWWKX0227E: Urm\u0103toarea nu este o valoare de punct final valid\u0103: {0}
+jmx.rest.client.connection.invalid.endpoint.explanation=Valoarea de punct final specificat\u0103 nu este valid\u0103.
+jmx.rest.client.connection.invalid.endpoint.useraction=Reconecta\u0163i-v\u0103 la JMX REST Connector folosind o valoare de punct final valid\u0103 care este de tipul String \u015fi are formatul "host:port".
+
+jmx.rest.client.connection.no.endpoints=CWWKX0228E: Nu s-au g\u0103sit puncte finale disponibile pentru ini\u0163ializarea conectorului.
+jmx.rest.client.connection.no.endpoints.explanation=Niciunul din punctele finale specificate nu este disponibil \u00een timpul ini\u0163ializ\u0103rii pentru JMX REST Connector.
+jmx.rest.client.connection.no.endpoints.useraction=Reconecta\u0163i-v\u0103 la JMX REST Connector folosind cel pu\u0163in un punct final disponibil.
+
+jmx.rest.client.bad.user.credentials=CWWKX0229E: A existat o problem\u0103 cu acredit\u0103rile de utilizator furnizate. Serverul a r\u0103spuns cu codul {0} \u015fi mesajul ''{1}''
+jmx.rest.client.bad.user.credentials.explanation=Acredit\u0103rile furnizate sunt incorecte, expirate, incomplete sau cu autorizare refuzat\u0103.
+jmx.rest.client.bad.user.credentials.useraction=Verifica\u0163i c\u0103 acredit\u0103rile de utilizator au autentificare \u015fi autoriza\u0163ie corecte, apoi ob\u0163ine\u0163i o nou\u0103 conexiune.
+
+jmx.rest.client.connection.connect=CWWKX0230I: Membrul colectiv a deschis clientul JMX pentru controlerul colectiv: {0}
+jmx.rest.client.connection.connect.explanation=Membrul conectat la controler.
+jmx.rest.client.connection.connect.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+ 
+jmx.rest.client.connection.disconnect=CWWKX0231I: Membrul colectiv a \u00eenchis clientul JMX pentru controlerul colectiv: {0}
+jmx.rest.client.connection.disconnect.explanation=Membrul s-a deconectat de la controler.
+jmx.rest.client.connection.disconnect.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+

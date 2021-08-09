@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.917,ou=attributeTypes,cn=adsconfig,ou=schema
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.917
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-name: ads-pwdMinDelay
+creatorsname: uid=admin,ou=system
+m-equality: integerMatch
+m-length: 0

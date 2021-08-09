@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="false" version="3.1">
+  <display-name>AutoCreatedTimerBean</display-name>
+  <enterprise-beans>
+    <session id="AutoCreatedTimerXBean_ID">
+      <ejb-name>AutoCreatedTimerXBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb.AutoCreatedTimerX</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb.AutoCreatedTimerXBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <timer id="seconds_range_timer_ID">
+        <schedule>
+          <second>30-36</second>
+          <minute>*</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>second_range</info>
+        <timeout-method id="seconds_range_method_ID">
+          <method-name>seconds_range</method-name>
+          <method-params id="seconds_range_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="seconds_list_timer_ID">
+        <schedule>
+          <second>35, 45, 55</second>
+          <minute>*</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>second_list</info>
+        <timeout-method id="seconds_list_method_ID">
+          <method-name>seconds_list</method-name>
+          <method-params id="seconds_list_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="minute_range_timer_ID">
+        <schedule>
+          <minute>1-59</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>minute_range</info>
+        <timeout-method id="minutes_range_method_ID">
+          <method-name>minutes_range</method-name>
+          <method-params id="minutes_range_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="minute_list_timer_ID">
+        <schedule>
+          <minute>4, 37</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>minutes_list</info>
+        <timeout-method id="minutes_list_method_ID">
+          <method-name>minutes_list</method-name>
+          <method-params id="minutes_list_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="hours_interval_timer_ID">
+        <schedule>
+          <hour>*/2</hour>
+        </schedule>
+        <info>hours_interval</info>
+        <timeout-method id="hours_interval_method_ID">
+          <method-name>hours_interval</method-name>
+          <method-params id="hours_interval_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="hours_list_timer_ID">
+        <schedule>
+          <hour>3, 17, 23</hour>
+        </schedule>
+        <info>hours_list</info>
+        <timeout-method id="hours_list_method_ID">
+          <method-name>hours_list</method-name>
+          <method-params id="hours_list_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="dayOfWeek_exact_timer_ID">
+        <schedule>
+          <day-of-week>Sat</day-of-week>
+        </schedule>
+        <info>dayOfWeek_exact</info>
+        <timeout-method id="dayOfWeek_exact_method_ID">
+          <method-name>dayOfWeek_exact</method-name>
+          <method-params id="dayOfWeek_exact_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="dayOfMonth_range_timer_ID">
+        <schedule>
+          <day-of-month>12-14</day-of-month>
+        </schedule>
+        <info>dayOfMonth_range</info>
+        <timeout-method id="dayOfMonth_range_method_ID">
+          <method-name>dayOfMonth_range</method-name>
+          <method-params id="dayOfMonth_range_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="month_list_timer_ID">
+        <schedule>
+          <month>1,4,9</month>
+        </schedule>
+        <info>month_list</info>
+        <timeout-method id="month_list_method_ID">
+          <method-name>month_list</method-name>
+          <method-params id="month_list_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="dayOfMonth_last_timer_ID">
+        <schedule>
+          <day-of-month>Last</day-of-month>
+        </schedule>
+        <info>dayOfMonth_last</info>
+        <timeout-method id="dayOfMonth_last_method_ID">
+          <method-name>dayOfMonth_last</method-name>
+          <method-params id="dayOfMonth_last_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="multipleSettingsDontConflict_timer_ID">
+        <schedule>
+          <minute>*</minute>
+          <hour>*</hour>
+          <day-of-week>Mon-Sun</day-of-week>
+          <day-of-month>17</day-of-month>
+        </schedule>
+        <info>multipleSettingsDontConflict</info>
+        <timeout-method id="multipleSettingsDontConflict_method_ID">
+          <method-name>multipleSettingsDontConflict</method-name>
+          <method-params id="multipleSettingsDontConflict_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="startGate_timer_ID">
+        <schedule>
+          <second>20</second>
+          <minute>*</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>startGate</info>
+        <start>2050</start>
+        <timeout-method id="startGate_method_ID">
+          <method-name>startGate</method-name>
+          <method-params id="startGate_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="stopGate_timer_ID">
+        <schedule>
+          <second>20</second>
+          <minute>*</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>stopGate</info>
+        <end>2050</end>
+        <timeout-method id="stopGate_method_ID">
+          <method-name>stopGate</method-name>
+          <method-params id="stopGate_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="timezone_eastern_timer_ID">
+        <schedule>
+          <second>20</second>
+          <minute>*</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>timeZoneEastern</info>
+        <end>2050</end>
+        <timeout-method id="timezone_eastern_method_ID">
+          <method-name>timeZoneEastern</method-name>
+          <method-params id="timeZoneEastern_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+        <timezone>America/Iqaluit</timezone>
+      </timer>
+    </session>
+    <session id="AutoCreatedTimerMBean_ID">
+      <ejb-name>AutoCreatedTimerMBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb.AutoCreatedTimerM</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb.AutoCreatedTimerMBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <timer id="schedule_override_timer_ID">
+        <schedule>
+          <hour>10</hour>
+        </schedule>
+        <info>firstOverrideXML</info>
+        <timeout-method id="scheduleOverride_method_ID">
+          <method-name>firstOverridenMethod</method-name>
+          <method-params id="firstOverrideMethod_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+      <timer id="schedules_override_timer_ID">
+        <schedule>
+          <hour>11</hour>
+        </schedule>
+        <info>secondOverrideXML</info>
+        <timeout-method id="schedulesOverride_method_ID">
+          <method-name>secondOverridenMethod</method-name>
+          <method-params id="secondOverrideMethod_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+    </session>
+    <session id="GrandchildBean_ID">
+      <ejb-name>GrandchildBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb.GrandchildBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <timer id="schedules_override_timer_ID">
+        <schedule>
+          <second>13</second>
+          <minute>*</minute>
+          <hour>*</hour>
+        </schedule>
+        <info>GrandchildBean.method_three</info>
+        <timeout-method id="methodThree_method_ID">
+          <method-name>method_three</method-name>
+          <method-params id="methodThree_param1_ID">
+            <method-param>javax.ejb.Timer</method-param>
+          </method-params>
+        </timeout-method>
+        <persistent>false</persistent>
+      </timer>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

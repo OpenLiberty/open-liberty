@@ -1,0 +1,17 @@
+<server description="new server">
+
+	<include location="../fatTestPorts.xml" />
+	<!-- Enable features -->
+<featureManager>
+	<feature>appSecurity-2.0</feature>
+	<feature>usr:customRepositorySample-1.0</feature>
+</featureManager>
+
+	<federatedRepository>
+		<primaryRealm name="FederatedRealm">
+			<participatingBaseEntry name="o=ibm,c=us" />
+		</primaryRealm>
+	</federatedRepository>
+
+
+</server>

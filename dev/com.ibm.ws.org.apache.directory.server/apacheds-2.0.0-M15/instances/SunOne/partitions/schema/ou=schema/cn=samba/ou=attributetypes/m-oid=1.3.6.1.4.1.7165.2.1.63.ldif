@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.63,ou=attributeTypes,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.1.63
+m-name: sambaLockoutDuration
+m-description: Lockout duration in minutes (default: 30, -1 => forever)
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: integerMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singleValue: TRUE
+m-usage: USER_APPLICATIONS
+m-collective: FALSE
+m-obsolete: FALSE
+m-noUserModification: FALSE
+creatorsname: uid=admin,ou=system

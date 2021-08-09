@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openid20/internal/resources/OpenIDMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1500 - CWWKS1519
+OPENID_RP_SERVICE_ACTIVATE=CWWKS1500I: Slu\u017eba OpenID Relying Party je aktivov\u00e1na. 
+OPENID_RP_SERVICE_ACTIVATE.explanation=Slu\u017eba OpenID Relying Party Service je aktivov\u00e1na.
+OPENID_RP_SERVICE_ACTIVATE.useraction=Nen\u00ed.
+
+OPENID_RP_SERVICE_DEACTIVATE=CWWKS1501I: Slu\u017eba OpenID Relying Party je deaktivov\u00e1na. 
+OPENID_RP_SERVICE_DEACTIVATE.explanation=Slu\u017eba OpenID Relying Party Service je deaktivov\u00e1na.
+OPENID_RP_SERVICE_DEACTIVATE.useraction=Nen\u00ed.
+
+OPENID_RP_CONFIG_PROCESSED=CWWKS1502I: Konfigurace protistrany OpenID byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OPENID_RP_CONFIG_PROCESSED.explanation=Konfigurace protistrany OpenID byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OPENID_RP_CONFIG_PROCESSED.useraction=Nen\u00ed.
+
+OPENID_RP_CONFIG_MODIFIED=CWWKS1503I: Konfigurace protistrany OpenID \u00fasp\u011b\u0161n\u011b upravena.
+OPENID_RP_CONFIG_MODIFIED.explanation=Konfigurace protistrany OpenID byla \u00fasp\u011b\u0161n\u011b upravena.
+OPENID_RP_CONFIG_MODIFIED.useraction=Nen\u00ed.
+
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID=CWWKS1504W: Kdy\u017e je hodnota maxAssociationAttempts nastavena na nulu a hodnota allowStateless na false, je konfigurace protistrany OpenID neplan\u00e1. Obnovte p\u016fvodn\u00ed hodnotu atributu maxAssociationAttempts.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.explanation=Nen\u00ed mo\u017en\u00e9 nastavit atribut maxAssociationAttempts na nulu a atribut allowStateless na hodnotu false.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.useraction=Zadejte platnou konfiguraci protistrany OpenID pro atributy maxAssociationAttempts a allowStateless.
+
+OPENID_VERSION_NOT_TEST=CWWKS1505W: Verze poskytovatele OpenID {0} nebyla otestov\u00e1na, tak\u017ee nemus\u00ed spr\u00e1vn\u011b fungovat.
+OPENID_VERSION_NOT_TEST.explanation=Tato verze poskytovatele OpenID nebyla otestov\u00e1na. Jej\u00ed funkce nemus\u00ed pracovat spr\u00e1vn\u011b. Spou\u0161t\u00edte ji na vlastn\u00ed riziko. 
+OPENID_VERSION_NOT_TEST.useraction=Nen\u00ed. Spou\u0161t\u011bjte na vlastn\u00ed riziko.
+
+OPENID_RP_NO_RESULT_ERR=CWWKS1506E: OpenID nem\u016f\u017ee z\u00edskat platn\u00fd v\u00fdsledek pro identifik\u00e1tor n\u00e1roku {0}. 
+OPENID_RP_NO_RESULT_ERR.explanation=Poskytovatel OpenID nevrac\u00ed platn\u00fd v\u00fdsledek. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee se u\u017eivatele nezda\u0159ilo ov\u011b\u0159it nebo \u017ee odm\u00edtl autorizaci.
+OPENID_RP_NO_RESULT_ERR.useraction=Nen\u00ed.
+
+OPENID_RP_CONFIG_INVALID_SSLREF=CWWKS1507E: Konfigurace OpenID vy\u017eaduje SSL, ale odkaz sslRef {0} neexistuje nebo je pr\u00e1zdn\u00fd.
+OPENID_RP_CONFIG_INVALID_SSLREF.explanation=Atribut enforceHttps konfigurace OpenID je nastaven na hodnotu true, ale odkaz sslRef neexistuje.
+OPENID_RP_CONFIG_INVALID_SSLREF.useraction=Zajist\u011bte, aby sslRef odkazoval na platnou konfiguraci SSL.
+
+OPENID_HTTPS_WITHOUT_SSL_SERVICE=CWWKS1508E: Konfigurace OpenID vy\u017eaduje SSL, ale slu\u017eba SSL nen\u00ed dostupn\u00e1. 
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.explanation=Atribut enforceHttps konfigurace OpenID je nastaven na hodnotu true. Slu\u017eba SSL v\u0161ak nen\u00ed dostupn\u00e1.
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.useraction=Zkontrolujte, zda jsou v souboru server.xml spr\u00e1vn\u00e9 informace o SSL.
+
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1509E: Konfigurace OpenID vy\u017eaduje SSL, ale ov\u011b\u0159en\u00ed SSL nen\u00ed spr\u00e1vn\u011b nakonfigurov\u00e1no. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Atribut enforceHttps konfigurace OpenID je nastaven na hodnotu true. Je mo\u017en\u00e9, \u017ee chyb\u00ed prvek keyStore nebo \u017ee je tento prvek nespr\u00e1vn\u011b zad\u00e1n. Je mo\u017en\u00e9, \u017ee nen\u00ed povolena funkce SSL. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Zkontrolujte, zda jsou v souboru server.xml spr\u00e1vn\u00e9 informace o SSL.
+
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS=CWWKS1510E: Protistrana vy\u017eaduje SSL, ale poskytovatel openID pou\u017e\u00edv\u00e1 protokol URL {0}.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.explanation=Protistrana vy\u017eaduje SSL, ale poskytovatel openID nepou\u017e\u00edv\u00e1 jako protokol URL HTTPs.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.useraction=Zajist\u011bte, aby poskytovatel openID podporoval SSL. Pokud poskytovatel openID HTTPs nepodporuje, nastavte atribut enforceHttps na hodnotu false.
+
+OPENID_RP_CAN_NOT_ACCESS_OP=CWWKS1511E: Nelze p\u0159istupovat k poskytovateli OpenID {0}.
+OPENID_RP_CAN_NOT_ACCESS_OP.explanation=K poskytovateli OpenID nelze p\u0159istupovat.
+OPENID_RP_CAN_NOT_ACCESS_OP.useraction=Zadejte platn\u00e9ho poskytovatele OpenID.
+
+OPENID_RP_REQUEST_IDENTIFIER_NULL=CWWKS1512E: Identifik\u00e1tor po\u017eadavku odpov\u00eddaj\u00edc\u00ed strany OpenID m\u00e1 hodnotu null.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.explanation=Identifik\u00e1tor po\u017eadavku odpov\u00eddaj\u00edc\u00ed strany OpenID m\u00e1 hodnotu null.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.useraction=Nen\u00ed.
+
+OPENID_AUTHENTICATE_FAILED=CWWKS1513E: Ov\u011b\u0159en\u00ed OpenID pro identifik\u00e1tor {0} se nezda\u0159ilo.
+OPENID_AUTHENTICATE_FAILED.explanation=Ov\u011b\u0159en\u00ed OpenID pro dan\u00fd identifik\u00e1tor se nezda\u0159ilo.
+OPENID_AUTHENTICATE_FAILED.useraction=Zkontrolujte, zda je tento identifik\u00e1tor platn\u00fd.
+
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY=CWWKS1514E: Nebyla nalezena \u017e\u00e1dn\u00e1 polo\u017eka mezipam\u011bti pro jedine\u010dn\u00fd kl\u00ed\u010d {0}.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.explanation= Pro jedine\u010dn\u00fd kl\u00ed\u010d nebyla nalezena \u017e\u00e1dn\u00e1 polo\u017eka mezipam\u011bti.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.useraction=Zajist\u011bte, aby byl parametr maxSize pro mezipam\u011b\u0165 informac\u00ed automatick\u00e9ho zji\u0161\u0165ov\u00e1n\u00ed dostate\u010dn\u011b vysok\u00fd, aby se do mezipam\u011bti v\u017edy ve\u0161ly v\u0161echny po\u017eadavky.
+
+OPENID_VERIFY_RESPONSE_FAILED=CWWKS1515E: OpenID nem\u016f\u017ee ov\u011b\u0159it odpov\u011b\u010f OP pro po\u017eadovan\u00fd identifik\u00e1tor {0}.
+OPENID_VERIFY_RESPONSE_FAILED.explanation=  OpenID nem\u016f\u017ee ov\u011b\u0159it odpov\u011b\u010f OP pro po\u017eadovan\u00fd identifik\u00e1tor.
+OPENID_VERIFY_RESPONSE_FAILED.useraction=Zkontrolujte, zda m\u016f\u017ee protistrana openID komunikovat s poskytovatelem openID.

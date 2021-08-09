@@ -1,0 +1,62 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>appSecurity-2.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>restConnector-2.0</feature>
+    <feature>jms-2.0</feature>
+    <feature>mpOpenApi-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <messagingEngine id="defaultME">
+  <!--
+    <queue id="Q1"/>
+    <queue id="Q2"/>
+    <topicSpace id="TOPIC1">
+    <topicSpace id="TOPIC2">
+  -->
+  </messagingEngine>
+
+  <jmsConnectionFactory id="jmscf1" jndiName="jms/cf1">
+    <properties.wasJms clientID="TestClient1" userName="USER1" password="PWD1"/>
+  </jmsConnectionFactory>
+
+  <jmsConnectionFactory id="jmscf2" jndiName="jms/cf2">
+    <properties.wasJms clientID="TestClient2" remoteServerAddress="host2.rchland.ibm.com:2121:DoesNotExist"/>
+  </jmsConnectionFactory>
+
+  <jmsQueueConnectionFactory id="qcf1" jndiName="jms/qcf1">
+    <containerAuthData user="QCFUSER1" password="QCFPWD1"/>
+    <properties.wasJms temporaryQueueNamePrefix="TEMPQ"/>
+  </jmsQueueConnectionFactory>
+
+  <jmsTopicConnectionFactory jndiName="jms/tcf1">
+    <properties.wasJms temporaryTopicNamePrefix="TMP1"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopicConnectionFactory id="tcf2" jndiName="jms/tcf2">
+    <properties.wasJms clientID="tcf2id"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopicConnectionFactory id="tcf3">
+    <properties.wasJms clientID="tcf3id"/>
+  </jmsTopicConnectionFactory>
+</server>

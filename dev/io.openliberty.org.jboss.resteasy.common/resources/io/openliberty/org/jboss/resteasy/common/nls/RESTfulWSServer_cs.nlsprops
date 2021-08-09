@@ -1,0 +1,83 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Pro webov\u00fd modul {0} je definov\u00e1no v\u00edce servlet\u016f REST. Pro ka\u017ed\u00fd webov\u00fd modul je povolena pouze nula nebo jeden servlet REST.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Pro ka\u017ed\u00fd webov\u00fd modul je povoleno definovat pouze jeden servlet REST. Servlet REST je jak\u00fdkoli server, kter\u00fd pou\u017e\u00edv\u00e1 jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f t\u0159\u00edd: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher nebo org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Tato zpr\u00e1va ozna\u010duje, \u017ee v souboru web.xml je ur\u010deno v\u00edce servlet\u016f nebo \u017ee je konfigurov\u00e1n dynamicky. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Zkontrolujte soubor web.xml pro tyto servlety a odeberte v\u0161echny nebo v\u0161echny krom\u011b jednoho.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Pro webov\u00fd modul {0} je definov\u00e1no v\u00edce servlet\u016f REST. Servlet REST m\u016f\u017ee b\u00fdt p\u0159idru\u017een pouze k jednomu mapov\u00e1n\u00ed cesty.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=Servlet REST je povolen pouze pro konfiguraci se \u017e\u00e1dn\u00fdm nebo jedn\u00edm mapov\u00e1n\u00edm cesty. Servlet REST je jak\u00fdkoli server, kter\u00fd pou\u017e\u00edv\u00e1 jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f t\u0159\u00edd: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher nebo org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Tato zpr\u00e1va ozna\u010duje, \u017ee je v souboru web.xml p\u0159idru\u017eeno k servletu REST v\u00edce mapov\u00e1n\u00ed. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Zkontrolujte soubor web.xml pro mapov\u00e1n\u00ed servlet-mappings, kter\u00e1 jsou p\u0159idru\u017eena k servletu REST, a odeberte je v\u0161echny nebo v\u0161echny krom\u011b jednoho.
+
+INVALID_LONG_PROPERTY_CWWKW1302W=CWWKW1302W: Vlastnost klienta {0} mus\u00ed b\u00fdt typu long integer, ale byla nespr\u00e1vn\u011b nakonfigurov\u00e1na s {1}. Toto nastaven\u00ed bude ignorov\u00e1no.
+INVALID_LONG_PROPERTY_CWWKW1302W.explanation=Vlastnosti klienta, jako nap\u0159\u00edklad nastaven\u00ed \u010dasov\u00e9ho limitu, mus\u00ed b\u00fdt nakonfigurov\u00e1ny jako hodnota typu long integer nebo string, kter\u00e9 lze p\u0159ev\u00e9st na long integer. Tato zpr\u00e1va ozna\u010duje, \u017ee vlastnost klienta byla nakonfigurov\u00e1na s neplatnou hodnotou. Tato vlastnost bude ignorov\u00e1na.
+INVALID_LONG_PROPERTY_CWWKW1302W.useraction=Zkontrolujte k\u00f3d aplikace a konfiguraci serveru, abyste ur\u010dili, kde byla tato vlastnost nastavena nespr\u00e1vn\u011b, a bu\u010f ji odeberte, nebo ji zm\u011b\u0148te na platnou hodnotu typu long integer.
+
+INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: Vlastnost klienta {0} mus\u00ed b\u00fdt typu integer, ale byla nespr\u00e1vn\u011b nakonfigurov\u00e1na s {1}. Toto nastaven\u00ed bude ignorov\u00e1no.
+INVALID_INT_PROPERTY_CWWKW1303W.explanation=Vlastnosti klienta, jako nap\u0159\u00edklad nastaven\u00ed portu proxy, mus\u00ed b\u00fdt nakonfigurov\u00e1ny jako kladn\u00e1 hodnota typu integer nebo string, kter\u00e9 lze p\u0159ev\u00e9st na integer. Tato zpr\u00e1va ozna\u010duje, \u017ee vlastnost klienta byla nakonfigurov\u00e1na s neplatnou hodnotou. Tato vlastnost bude ignorov\u00e1na.
+INVALID_INT_PROPERTY_CWWKW1303W.useraction=Zkontrolujte k\u00f3d aplikace a konfiguraci serveru, abyste ur\u010dili, kde byla tato vlastnost nastavena nespr\u00e1vn\u011b, a bu\u010f ji odeberte, nebo ji zm\u011b\u0148te na platnou hodnotu typu integer.
+
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: Vlastnost klienta {0} mus\u00ed b\u00fdt typu boolean, ale byla nespr\u00e1vn\u011b nakonfigurov\u00e1na s {1}. Toto nastaven\u00ed bude ignorov\u00e1no.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Vlastnosti klienta, jako nap\u0159. zda se maj\u00ed automaticky respektovat p\u0159esm\u011brov\u00e1n\u00ed, mus\u00ed b\u00fdt nakonfigurov\u00e1ny jako hodnota typu boolean nebo string, kter\u00e9 lze p\u0159ev\u00e9st na hodnotu typu boolean. Tato zpr\u00e1va ozna\u010duje, \u017ee vlastnost klienta byla nastavena na neplatnou hodnotu. Tato vlastnost bude ignorov\u00e1na.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Zkontrolujte k\u00f3d aplikace a konfiguraci serveru, abyste ur\u010dili, kde byla tato vlastnost nastavena nespr\u00e1vn\u011b, a bu\u010f ji odeberte, nebo ji zm\u011b\u0148te na platnou hodnotu typu boolean.
+
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Server ignoruje poskytovatele {0}, proto\u017ee je neplatn\u00fd.
+INVALID_PROVIDER_CWWKW1305W.explanation=Zadan\u00e1 t\u0159\u00edda poskytovatele pravd\u011bpodobn\u011b neobsahuje platn\u00fd ve\u0159ejn\u00fd konstruktor nebo neimplementuje rozhran\u00ed poskytovatele Jakarta REST. Po\u017eadavky na implementaci platn\u00e9ho poskytovatele jsou pops\u00e1ny v sekci 4 specifikace webov\u00fdch slu\u017eeb Jakarta RESTful Web Services.
+INVALID_PROVIDER_CWWKW1305W.useraction=Zkontrolujte k\u00f3d aplikace a ujist\u011bte se, \u017ee zadan\u00fd poskytovatel spr\u00e1vn\u011b implementuje rozhran\u00ed poskytovatele a obsahuje platn\u00fd ve\u0159ejn\u00fd konstruktor podle po\u017eadavk\u016f specifikace.
+
+
+# Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+warn_missing_mpjwt_token=CWWKW0707W: Atribut [{0}] v konfiguraci [{1}] je nastaven na [{2}], ale token MicroProfile JSON Web Token (JWT) nen\u00ed dostupn\u00fd. Po\u017eadavek neobsahuje z\u00e1hlav\u00ed autorizace s tokenem.
+warn_missing_mpjwt_token.explanation=B\u011bhov\u00e9mu prost\u0159ed\u00ed se nezda\u0159ilo naj\u00edt MicroProfile JWT v p\u0159edm\u011btu runAs. Tato chyba obvykle ozna\u010duje probl\u00e9m s ov\u011b\u0159en\u00edm. Ujist\u011bte se, \u017ee nedo\u0161lo k \u017e\u00e1dn\u00fdm chyb\u00e1m p\u0159i ov\u011b\u0159ov\u00e1n\u00ed u\u017eivatele funkc\u00ed MicroProfile JWT.
+warn_missing_mpjwt_token.useraction=Zkontrolujte akci u\u017eivatele pro jak\u00e9koli p\u0159edchoz\u00ed chyby, kter\u00e9 server protokoluje.

@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: A CORBA n\u00e9vkiszolg\u00e1l\u00f3 most el\u00e9rhet\u0151 a k\u00f6vetkez\u0151 helyen: {0}.
+NAME_SERVER_AVAILABLE.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+NAME_SERVER_AVAILABLE.useraction=Nincs teend\u0151.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: A CORBA n\u00e9vkiszolg\u00e1l\u00f3 m\u00e1r nem \u00e9rhet\u0151 el a k\u00f6vetkez\u0151 helyen: {0}.
+NAME_SERVER_UNAVAILABLE.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+NAME_SERVER_UNAVAILABLE.useraction=Nincs teend\u0151.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: A(z) {0} hoszton tal\u00e1lhat\u00f3 biztons\u00e1gos kiszolg\u00e1l\u00f3nak k\u00fcld\u00f6tt k\u00e9r\u00e9s meghi\u00fasult, mert a jelenlegi konfigur\u00e1ci\u00f3ban nincs enged\u00e9lyezve a biztons\u00e1g. Konfigur\u00e1lja az \u00fcgyf\u00e9loldali (kimen\u0151) CSIv2 biztons\u00e1got egy keyStore elem tartalmaz\u00e1s\u00e1val, \u00e9s adja hozz\u00e1 az appSecurity szolg\u00e1ltat\u00e1s megfelel\u0151 verzi\u00f3j\u00e1t egy kiszolg\u00e1l\u00f3n vagy az appSecurityClient szolg\u00e1ltat\u00e1s megfelel\u0151 verzi\u00f3j\u00e1t egy alkalmaz\u00e1s\u00fcgyf\u00e9l t\u00e1rol\u00f3ban. 
+PORT_ZERO.explanation= A jelzett hoszton fut\u00f3 kiszolg\u00e1l\u00f3nak k\u00fcld\u00f6tt k\u00e9r\u00e9s meghi\u00fasult. A kiszolg\u00e1l\u00f3n, amelynek a k\u00e9r\u00e9st k\u00fcldt\u00e9k enged\u00e9lyezve van a CSIv2 biztons\u00e1g, de a jelenlegi konfigur\u00e1ci\u00f3ban nincs. A kiszolg\u00e1l\u00f3hoz csatlakoz\u00f3 \u00fcgyf\u00e9lnek is CSIv2 \u00e9s V\u00e9dett socket r\u00e9teg (SSL) biztons\u00e1ggal kell rendelkeznie.
+PORT_ZERO.useraction= Konfigur\u00e1lja az \u00fcgyf\u00e9loldali (kimen\u0151) CSIv2 biztons\u00e1got egy keyStore elem tartalmaz\u00e1s\u00e1val, \u00e9s adja hozz\u00e1 az appSecurity szolg\u00e1ltat\u00e1s megfelel\u0151 verzi\u00f3j\u00e1t egy kiszolg\u00e1l\u00f3n vagy az appSecurityClient szolg\u00e1ltat\u00e1s megfelel\u0151 verzi\u00f3j\u00e1t egy alkalmaz\u00e1s\u00fcgyf\u00e9l t\u00e1rol\u00f3ban. N\u00e9zze meg a dokument\u00e1ci\u00f3ban, hogy az appSecurity vagy az appSecurityClient szolg\u00e1ltat\u00e1s melyik verzi\u00f3j\u00e1t kell hozz\u00e1adni a konfigur\u00e1ci\u00f3j\u00e1hoz. 

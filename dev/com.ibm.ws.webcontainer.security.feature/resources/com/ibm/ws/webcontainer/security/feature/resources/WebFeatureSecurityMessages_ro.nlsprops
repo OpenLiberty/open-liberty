@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security.feature/resources/com/ibm/ws/webcontainer/security/feature/resources/WebFeatureSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Feature Web Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9200 - CWWKS9249
+
+FEATURE_ROLE_CONFIG_PROCESSED=CWWKS9120I: S-a proecsat cu succes harta de roluri de caracteristici cu id="{0}".
+FEATURE_ROLE_CONFIG_PROCESSED.explanation=Maparea rolurilor de autorizare a fost procesat\u0103 cu succes.
+FEATURE_ROLE_CONFIG_PROCESSED.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+AUTHZ_ROLE_ID_IS_NULL=CWWKS9121E: Atributul ID lipse\u015fte din elementul <roluri-de-autorizare>.
+AUTHZ_ROLE_ID_IS_NULL.explanation=Atributul ID este necesar pentru a procesa elementul <roluri-de-autorizare>.
+AUTHZ_ROLE_ID_IS_NULL.useraction=Defini\u0163i valoarea corespunz\u0103toare pentru atributul ID al elementului <roluri-de-autorizare>.
+
+

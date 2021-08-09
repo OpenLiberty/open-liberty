@@ -1,0 +1,120 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 {1} m\u00e1sodperc alatt telep\u00edt\u00e9sre ker\u00fclt.
+J2CA7001.adapter.install.successful.explanation=A kiszolg\u00e1l\u00f3 sikeresen telep\u00edtette az er\u0151forr\u00e1s-illeszt\u0151t.
+J2CA7001.adapter.install.successful.useraction=Semmit sem kell tennie.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9se k\u00f6zben. A kiv\u00e9tel\u00fczenet: {1}
+J2CA7002.adapter.install.failed.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni az er\u0151forr\u00e1s-illeszt\u0151t.
+J2CA7002.adapter.install.failed.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel \u00fczenetet.
+
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=J2CA7006E: A kiszolg\u00e1l\u00f3 nem tudta l\u00e9trehozni a(z) {1} er\u0151forr\u00e1s-illeszt\u0151 let\u00f6lt\u00e9s hely\u00e9t a k\u00f6vetkez\u0151n: {0}.
+J2CA7006.cannot.create.directory.explanation=A telep\u00edtend\u0151 er\u0151forr\u00e1s-illeszt\u0151 let\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n a kiszolg\u00e1l\u00f3 nem tutda l\u00e9trehozni a let\u00f6lt\u00e9si k\u00f6nyvt\u00e1rat.
+J2CA7006.cannot.create.directory.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van elegend\u0151 szabad lemezter\u00fclet a let\u00f6lt\u00e9shez.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 sikeresen elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
+J2CA7009.adapter.uninstalled.explanation=A kiszolg\u00e1l\u00f3 sikeresen elt\u00e1vol\u00edtotta az er\u0151forr\u00e1s-illeszt\u0151t.
+J2CA7009.adapter.uninstalled.useraction=Semmit sem kell tennie.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} er\u0151forr\u00e1s-illeszt\u0151 elt\u00e1vol\u00edt\u00e1sa k\u00f6zben. A kiv\u00e9tel\u00fczenet: {1}
+J2CA7010.adapter.uninstall.failed.explanation=A kiszolg\u00e1l\u00f3 nem tudta elt\u00e1vol\u00edtani az er\u0151forr\u00e1s-illeszt\u0151t.
+J2CA7010.adapter.uninstall.failed.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-illeszt\u0151 olyan \u00e1llapotban van, amelyben elt\u00e1vol\u00edthat\u00f3.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 nem lett telep\u00edtve.
+J2CA7012.adapter.not.installed.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 kor\u00e1bbi hib\u00e1k miatt nem telep\u00edthet\u0151. 
+J2CA7012.adapter.not.installed.useraction=Ellen\u0151rizze az er\u0151forr\u00e1s-illeszt\u0151  be\u00e1ll\u00edt\u00e1sait, valamint az er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9se sor\u00e1n a napl\u00f3kba \u00edrt hib\u00e1kat.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: Nem lehet t\u00f6bb {0} nev\u0171 er\u0151forr\u00e1s-illeszt\u0151t vagy egy\u00e9b m\u0171term\u00e9keket elt\u00e1vol\u00edtani.
+J2CA7013.duplicate.adapter.name.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 nev\u00e9nek egyedinek kell lennie.  Ennek az lehet az oka, hogy t\u00f6bb er\u0151forr\u00e1s-illeszt\u0151 vagy m\u00e1s m\u0171term\u00e9k lett azonos n\u00e9vvel be\u00e1ll\u00edtva, vagy egy er\u0151forr\u00e1s-illeszt\u0151 a server.xml f\u00e1jlban megadott be\u00e1ll\u00edt\u00e1sok alapj\u00e1n \u00e9s az er\u0151forr\u00e1s-illeszt\u0151 dropins k\u00f6nyvt\u00e1rba helyez\u00e9s\u00e9vel egyar\u00e1nt telep\u00edt\u00e9sre ker\u00fclt.
+J2CA7013.duplicate.adapter.name.useraction=Ha t\u00f6bb er\u0151forr\u00e1s-illeszt\u0151 vagy m\u00e1s m\u0171term\u00e9k rendelkezik ugyanazzal a n\u00e9vvel, akkor t\u00e1vol\u00edtsa el vagy nevezze \u00e1t az egyiket. Ha egyetlen er\u0151forr\u00e1s-illeszt\u0151 lett k\u00e9tf\u00e9lek\u00e9ppen telep\u00edtve, akkor m\u00f3dos\u00edtsa a be\u00e1ll\u00edt\u00e1sokat \u00fagy, hogy csak az egyik telep\u00edt\u00e9si m\u00f3dszer ker\u00fclj\u00f6n felhaszn\u00e1l\u00e1sra.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 nem telep\u00edthet\u0151, mert nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}.
+J2CA7014.adapter.not.found.explanation=A kiszolg\u00e1l\u00f3 nem tal\u00e1lta az er\u0151forr\u00e1s-illeszt\u0151t a megadott helyen (vagy relat\u00edv helyeken, ha relat\u00edv el\u00e9r\u00e9si \u00fatr\u00f3l van sz\u00f3).
+J2CA7014.adapter.not.found.useraction=Ellen\u0151rizze, hogy a megadott hely helyes-e az er\u0151forr\u00e1s-illeszt\u0151 eset\u00e9ben.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: {0} er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9se.
+J2CA7018.installing.adapter.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9se folyamatban van.
+J2CA7018.installing.adapter.useraction=Semmit sem kell tennie.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 nem lett friss\u00edtve.
+J2CA7020.adapter.not.updated.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 kor\u00e1bbi hib\u00e1k miatt nem telep\u00edthet\u0151. 
+J2CA7020.adapter.not.updated.useraction=Ellen\u0151rizze az er\u0151forr\u00e1s-illeszt\u0151  be\u00e1ll\u00edt\u00e1sait, valamint az er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9se sor\u00e1n a napl\u00f3kba \u00edrt hib\u00e1kat.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 a(z) {0} helyen \u00e9rv\u00e9nytelen.
+J2CA7021.adapter.at.location.not.valid.explanation=A megadott helyen az arch\u00edvum vagy k\u00f6nyvt\u00e1r nem \u00e9rv\u00e9nyes, ez\u00e9rt az er\u0151forr\u00e1s-illeszt\u0151 nem telep\u00edthet\u0151.
+J2CA7021.adapter.at.location.not.valid.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az azonos\u00edtott arch\u00edvum vagy k\u00f6nyvt\u00e1r \u00e9rv\u00e9nyes.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151t {1} m\u00e1sodperc alatt nem siker\u00fclt telep\u00edteni.
+J2CA7022.adapter.slow.install.explanation=Az er\u0151forr\u00e1s-illeszt\u0151t nem lehetett az elv\u00e1rt id\u0151 alatt telep\u00edteni. Ennek oka az lehet, hogy a kiszolg\u00e1l\u00f3 t\u00falterhelt vagy az er\u0151forr\u00e1s-illeszt\u0151 nagy m\u00e9ret\u0171. Ha az er\u0151forr\u00e1s-illeszt\u0151 a kiszolg\u00e1l\u00f3ind\u00edt\u00e1s r\u00e9szek\u00e9nt ker\u00fcl telep\u00edt\u00e9sre, akkor a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa befejez\u0151dik an\u00e9lk\u00fcl, hogy megv\u00e1rn\u00e1 az er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9s\u00e9t.
+J2CA7022.adapter.slow.install.useraction=Ha az er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9se sok id\u0151t vesz ig\u00e9nybe, akkor nincs teend\u0151. Egy\u00e9b esetben ellen\u0151rizze a kiszolg\u00e1l\u00f3 napl\u00f3iban, hogy egy\u00e9b \u00fczenetek jelzik-e az okot.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} er\u0151forr\u00e1s-illeszt\u0151 automatikus elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=A telep\u00edtett er\u0151forr\u00e1s-illeszt\u0151 nem tal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3n.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=Semmit sem kell tennie.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} er\u0151forr\u00e1s-illeszt\u0151 automatikus telep\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+J2CA7056.monitor.adapter.install.fail.explanation=A kiszolg\u00e1l\u00f3 nem tudta telep\u00edteni az er\u0151forr\u00e1s-illeszt\u0151t.
+J2CA7056.monitor.adapter.install.fail.useraction=Semmit sem kell tennie.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: A(z) {1} helyr\u0151l telep\u00edtett er\u0151forr\u00e1s-illeszt\u0151 ({0}) t\u00f6rl\u00e9sre ker\u00fclt, mik\u00f6zben konfigur\u00e1l\u00e1sa folyamatban van.
+J2CA7059.invalid.delete.of.adapter.explanation=A server.xml f\u00e1jlban pillanatnyilag konfigur\u00e1l\u00e1s alatt \u00e1ll\u00f3 er\u0151forr\u00e1s-illeszt\u0151 t\u00f6rl\u00e9sre ker\u00fclt.
+J2CA7059.invalid.delete.of.adapter.useraction=Ha a t\u00f6rl\u00e9s sz\u00e1nd\u00e9kos volt, akkor t\u00e1vol\u00edtsa el az er\u0151forr\u00e1s-illeszt\u0151 be\u00e1ll\u00edt\u00e1sait a server.xml f\u00e1jlb\u00f3l.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tudja megfigyelni a(z) {0} er\u0151forr\u00e1s-illeszt\u0151t.
+J2CA7060.adapter.monitoring.fail.explanation=Er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9s\u00e9re ker\u00fclt sor, de megfigyel\u00e9se nem ker\u00fclt elind\u00edt\u00e1sra. Ha az er\u0151forr\u00e1s-illeszt\u0151n bel\u00fcl friss\u00edtenek egy f\u00e1jlt, akkor azt a kiszolg\u00e1l\u00f3 nem fogja \u00e9szlelni. 
+J2CA7060.adapter.monitoring.fail.useraction=Ha friss\u00edti az er\u0151forr\u00e1s-illeszt\u0151ben l\u00e9v\u0151 f\u00e1jlokat, akkor saj\u00e1t kez\u0171leg t\u00e1vol\u00edtsa el \u00e9s telep\u00edtse \u00fajra az er\u0151forr\u00e1s-illeszt\u0151t a kiszolg\u00e1l\u00f3ra.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tudta telep\u00edteni a(z) {0} er\u0151forr\u00e1s-illeszt\u0151t.
+error.not.installed.explanation=Egy kor\u00e1bbi hiba megakad\u00e1lyozta az er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9s\u00e9t.
+error.not.installed.useraction=Ellen\u0151rizze az er\u0151forr\u00e1s-illeszt\u0151 konfigur\u00e1ci\u00f3s elemben megadott helyet.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=J2CA7702E: A(z) {0} alkalmaz\u00e1s \u00e9rtelmez\u00e9si hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {1} alkalmaz\u00e1sle\u00edr\u00f3 feldolgoz\u00e1sakor: {2}
+error.application.parse.descriptor.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n.  Nem lesznek el\u00e9rhet\u0151k a modulok az alkalmaz\u00e1shoz.
+error.application.parse.descriptor.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.  Tekintse \u00e1t az alkalmaz\u00e1sle\u00edr\u00f3 tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML adatokat tartalmaz.

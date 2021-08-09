@@ -1,0 +1,29 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.json.simple
+Bundle-Description: org.json.simple; version=1.1.1
+Bundle-SymbolicName: com.ibm.ws.org.json.simple.1.1.1
+
+WS-TraceGroup: \
+  OPENIDCONNECT
+
+Export-Package: org.json.simple.*
+
+Import-Package: \
+  org.json.simple,\
+  org.json.simple.parser
+
+Build-Jdk:
+Built-By:
+Bundle-License:

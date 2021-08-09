@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Acesso negado ao caminho {0}.
+ACCESS_DENIED_ERROR.explanation=Foi feita uma tentativa de acessar um caminho que est\u00e1 fora da regi\u00e3o de leitura/grava\u00e7\u00e3o configurada.
+ACCESS_DENIED_ERROR.useraction=Assegure-se de que o caminho solicitado esteja dentro da regi\u00e3o de leitura/grava\u00e7\u00e3o configurada.
+
+PATH_ERROR=CWWKX7901E: O caminho do sistema de arquivos {0} n\u00e3o \u00e9 v\u00e1lido.
+PATH_ERROR.explanation=O caminho do sistema de arquivos especificado n\u00e3o pode ser resolvido.
+PATH_ERROR.useraction=Forne\u00e7a um caminho de sistema de arquivos v\u00e1lido.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: A cria\u00e7\u00e3o do archive por meio do MBean de Transfer\u00eancia de Arquivos foi negada para o caminho de origem {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=Foi feita uma tentativa de ler informa\u00e7\u00f5es de um caminho que est\u00e1 fora da regi\u00e3o de leitura configurada.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: A cria\u00e7\u00e3o do archive por meio do MBean de Transfer\u00eancia de Arquivos foi negada para o caminho de destino {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=Foi feita uma tentativa de gravar informa\u00e7\u00f5es em um caminho que est\u00e1 fora da regi\u00e3o de grava\u00e7\u00e3o configurada.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: O archive {1} foi criado com sucesso a partir do {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=O archive foi criado com sucesso.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: O archive {1} n\u00e3o p\u00f4de ser criado a partir do {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=A solicita\u00e7\u00e3o da cria\u00e7\u00e3o do archive falhou.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: A expans\u00e3o do archive foi negada para o caminho de origem {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=Foi feita uma tentativa de ler informa\u00e7\u00f5es de um caminho que est\u00e1 fora da regi\u00e3o de leitura configurada.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: A expans\u00e3o do archive foi negada para o caminho de destino {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=Foi feita uma tentativa de gravar informa\u00e7\u00f5es em um caminho que est\u00e1 fora da regi\u00e3o de grava\u00e7\u00e3o configurada.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: O archive {0} foi expandido com sucesso para {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=O archive foi expandido com sucesso.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: O archive {0} n\u00e3o p\u00f4de ser expandido para {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=A solicita\u00e7\u00e3o da expans\u00e3o do archive falhou.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Esta mensagem tem prop\u00f3sitos apenas informativos. Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: A opera\u00e7\u00e3o ''{0}'' est\u00e1 dispon\u00edvel somente quando este MBean \u00e9 acessado por meio do Conector JMX REST da IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=O acesso \u00e0 opera\u00e7\u00e3o do MBean especificada s\u00f3 est\u00e1 dispon\u00edvel quando acessado por meio do Conector JMX REST da IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Acesse este MBean por meio do Conector JMX REST da IBM.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: O servi\u00e7o OSGi {0} n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.explanation=Voc\u00ea recebeu esse erro interno do servidor porque o servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel.
+OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o "clean".
+
+ATTRIBUTE_UPDATED=CWWKX7912I: O atributo FileServiceMXBean {0} foi atualizado com \u00eaxito.
+ATTRIBUTE_UPDATED.explanation=O atributo especificado de FileServiceMXBean foi atualizado com \u00eaxito.
+ATTRIBUTE_UPDATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

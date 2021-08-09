@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar-bnd
+xmlns="http://websphere.ibm.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+version="1.0">
+    <session name="AppLevelJTADPUJNDIInjectionSLEJB">
+    </session>
+    <session name="AppLevelJTADPUJNDIInjectionSFEJB">
+    </session>
+    <session name="AppLevelJTADPUJNDIInjectionSFEXEJB">
+    </session>
+
+    <session name="AppLevelJTADPUFieldInjectionSLEJB">
+    </session>
+    <session name="AppLevelJTADPUMethodInjectionSLEJB">
+    </session>
+
+    <session name="AppLevelJTADPUFieldInjectionSFEJB">
+    </session>
+    <session name="AppLevelJTADPUMethodInjectionSFEJB">
+    </session>
+
+   <session name="AppLevelJTADPUFieldInjectionSFEXEJB">
+    </session>
+    <session name="AppLevelJTADPUMethodInjectionSFEXEJB">
+    </session>    
+    
+</ejb-jar-bnd>

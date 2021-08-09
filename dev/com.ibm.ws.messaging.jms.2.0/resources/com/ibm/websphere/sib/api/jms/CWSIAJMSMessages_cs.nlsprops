@@ -1,0 +1,1012 @@
+###############################################################################
+# Copyright (c) 2012, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d341984         2006-01-27 holdeni  Remove unused messages
+# d353701         2006-08-15 matrober Warn application writers they may be leaking JMS resources
+# SIB0121.jms.3   2007-01-29 jamessid Adding exception text for producer-guarantee violations
+# SIB0121.jms.4   2007-02-26 jamessid Remove 'guarantee' prop value, add forwarder flag to ActSpec
+# 431745          2007-04-13 jamessid Information development updates
+# 490428          2008-01-15 susana   Fail more helpfully at an unknown property on decode
+# 499445          2008-02-21 susana   Fix up any 'non-IBM-approved' terms
+# 99986           2013-05-23 Chetan   Proper error message on authentication exception
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.websphere.sib.api.jms.CWSIAJMSMessages.props
+#
+# SIB.api.jms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIA0001=CWSIA0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSIA0000-CWSIA0500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSIA0001-CWSIA0020   com.ibm.ws.sib.api.jms.impl.JmsFactoryFactoryImpl
+#   CWSIA0021-CWSIA0040   com.ibm.ws.sib.api.jms.impl.JmsConnectionImpl
+#   CWSIA0041-CWSIA0060   com.ibm.ws.sib.api.jms.impl.JmsSessionImpl
+#   CWSIA0061-CWSIA0080   com.ibm.ws.sib.api.jms.impl.JmsMsgProducerImpl
+#   CWSIA0081-CWSIA0100   com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl
+#   CWSIA0101-CWSIA0120   com.ibm.ws.sib.api.jms.impl.JmsMessageImpl
+#   CWSIA0121-CWSIA0140   com.ibm.ws.sib.api.jms.impl.JmsObjectMessageImpl
+#   CWSIA0141-CWSIA0160   com.ibm.ws.sib.api.jms.impl.JmsQueueBrowserImpl
+#   CWSIA0161-CWSIA0180   com.ibm.ws.sib.api.jms.impl.JmsStreamMessageImpl
+#   CWSIA0181-CWSIA0200   com.ibm.ws.sib.api.jms.impl.JmsBytesMessageImpl
+#   CWSIA0201-CWSIA0220   com.ibm.ws.sib.api.jms.impl.JmsInternalsFactory
+#   CWSIA0221-CWSIA0240   com.ibm.ws.sib.api.jms.impl.JmsDurableSubscriberImpl
+#   CWSIA0241-CWSIA0260   com.ibm.ws.sib.api.jms.impl.JmsManagedConnectionFactoryImpl
+#   CWSIA0261-CWSIA0280   com.ibm.ws.sib.api.jms.impl.JmsConnectionFactoryImpl
+#   CWSIA0281-CWSIA0300   com.ibm.ws.sib.api.jms.impl.JmsDestinationImpl
+#   CWSIA0301-CWSIA0320   com.ibm.ws.sib.api.jms.impl.ProducerProperties
+#   CWSIA0321-CWSIA0340   com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+#   CWSIA0341-CWSIA0359   com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+#   CWSIA0360-CWSIA0380   com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+#   CWSIA0381-CWSIA0390   com.ibm.ws.sib.api.jms.impl.URIDestinationCreator
+#   CWSIA0391-CWSIA0400   com.ibm.ws.sib.api.jms.impl.MQRequestReplyUtilsImpl & factory
+#   CWSIA0481-CWSIA0500   common messages
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jms/CWSIAJMSMessages.nlsprops
+#COMPONENTPREFIX CWSIA
+#COMPONENTNAMEFOR CWSIA SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# JmsFactoryFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0201 for JmsInternalsFactory
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0008 for JmsFactoryFactoryImpl
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0391 for MQRequestReplyUtils
+UNABLE_TO_CREATE_FACTORY_CWSIA0001=CWSIA0001E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it, proto\u017ee soubor JAR {1} nebyl nalezen.
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception.
+INITIALIZATION_ERROR_CWSIA0002=CWSIA0002E: Do\u0161lo k intern\u00ed chyb\u011b. Nebylo mo\u017en\u00e9 vytvo\u0159it instanci po\u017eadovan\u00e9 t\u0159\u00eddy: {0}
+INITIALIZATION_ERROR_CWSIA0002.explanation=CMSG0001
+INITIALIZATION_ERROR_CWSIA0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0003=CWSIA0003E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0003.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0003.useraction=Zadejte hodnotu podporovanou pro tuto vlastnost.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the supplied user name
+AUTHENTICATION_FAILED_CWSIA0004=CWSIA0004E: Ov\u011b\u0159ov\u00e1n\u00ed pro zadan\u00e9 jm\u00e9no u\u017eivatele {0} a p\u0159idru\u017een\u00e9 heslo nebylo \u00fasp\u011b\u0161n\u00e9.
+AUTHENTICATION_FAILED_CWSIA0004.explanation=Ov\u011b\u0159ov\u00e1n\u00ed pro zadan\u00e9 podrobnosti se nezda\u0159ilo, proto\u017ee jm\u00e9no u\u017eivatele nebo heslo jsou chybn\u00e9.
+AUTHENTICATION_FAILED_CWSIA0004.useraction=V p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b si p\u0159e\u010dt\u011bte dal\u0161\u00ed informace. Ov\u011b\u0159te, zda jsou jm\u00e9no u\u017eivatele a heslo spr\u00e1vn\u00e9 a zda byly v syst\u00e9mu definov\u00e1ny.
+
+# -------------------------------------------------------------------------------------------------
+JCA_RESOURCE_EXC_CWSIA0005=CWSIA0005E: B\u011bhov\u00e9mu prost\u0159ed\u00ed JCA se nezda\u0159ilo p\u0159id\u011blit p\u0159ipojen\u00ed.
+JCA_RESOURCE_EXC_CWSIA0005.explanation=Pokus o vytvo\u0159en\u00ed p\u0159ipojen\u00ed JMS se nezda\u0159il v d\u016fsledku v\u00fdjimky prost\u0159ed\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed JCA.
+JCA_RESOURCE_EXC_CWSIA0005.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+
+# -------------------------------------------------------------------------------------------------
+AUTHORIZATION_FAILED_CWSIA0006=CWSIA0006E: Autorizace pro dan\u00e9 jm\u00e9no u\u017eivatele nebyla \u00fasp\u011b\u0161n\u00e1.
+AUTHORIZATION_FAILED_CWSIA0006.explanation=Toto jm\u00e9no u\u017eivatele nem\u00e1 autorizaci pro p\u0159\u00edstup k tomuto prost\u0159edku.
+AUTHORIZATION_FAILED_CWSIA0006.useraction=Jm\u00e9no u\u017eivatele naleznete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b. Ov\u011b\u0159te, zda je spr\u00e1vn\u011b autorizov\u00e1no pro po\u017eadovan\u00fd prost\u0159edek v syst\u00e9mu.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0007=CWSIA0007E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0007.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0007.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008=CWSIA0008E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it, proto\u017ee soubor JAR {1} nebyl nalezen.
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+AUTHENTICATION_FAILED_CWSIA0009=CWSIA0009E: Ov\u011b\u0159en\u00ed zadan\u00e9ho jm\u00e9na u\u017eivatele neprob\u011bhlo \u00fasp\u011b\u0161n\u011b.
+AUTHENTICATION_FAILED_CWSIA0009.explanation=Ov\u011b\u0159ov\u00e1n\u00ed pro zadan\u00e9 podrobnosti se nezda\u0159ilo, proto\u017ee jm\u00e9no u\u017eivatele nebo heslo jsou chybn\u00e9.
+AUTHENTICATION_FAILED_CWSIA0009.useraction=V p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b si p\u0159e\u010dt\u011bte dal\u0161\u00ed informace. Ov\u011b\u0159te, zda jsou jm\u00e9no u\u017eivatele a heslo spr\u00e1vn\u00e9 a zda byly v syst\u00e9mu definov\u00e1ny.
+ 
+# -------------------------------------------------------------------------------------------------
+
+# JmsConnectionImpl
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0021=CWSIA0021E: Toto p\u0159ipojen\u00ed je uzav\u0159en\u00e9.
+CONNECTION_CLOSED_CWSIA0021.explanation=Aplikace volala metodu, kter\u00e1 se nesm\u00ed pou\u017e\u00edt po ukon\u010den\u00ed p\u0159ipojen\u00ed.
+CONNECTION_CLOSED_CWSIA0021.useraction=P\u0159ed vol\u00e1n\u00edm metody ov\u011b\u0159te, zda nen\u00ed p\u0159ipojen\u00ed ukon\u010den\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+# {1} is the name of the method which received it, and is effectively a unique probe ID for this message.
+# This message is cloned widely within this file.
+EXCEPTION_RECEIVED_CWSIA0022=CWSIA0022E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0022.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0022.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_FIXED_CWSIA0023=CWSIA0023E: ID klienta v r\u00e1mci tohoto p\u0159ipojen\u00ed je ur\u010deno jen pro \u010dten\u00ed.
+CLIENT_ID_FIXED_CWSIA0023.explanation=Aplikace se pokusila nastavit ID klienta, kter\u00e9 bylo ji\u017e nastaveno nebo administrativn\u011b konfigurov\u00e1no.
+CLIENT_ID_FIXED_CWSIA0023.useraction=Ov\u011b\u0159te, zda ID klienta nen\u00ed nastaveno pot\u00e9, co bylo p\u0159edt\u00edm nastaveno nebo konfigurov\u00e1no.
+
+# -------------------------------------------------------------------------------------------------
+JCA_CREATE_SESS_CWSIA0024=CWSIA0024E: B\u011bhov\u00e9mu prost\u0159ed\u00ed JCA se nezda\u0159ilo vytvo\u0159it relaci.
+JCA_CREATE_SESS_CWSIA0024.explanation=Vol\u00e1n\u00ed do b\u011bhov\u00e9ho prost\u0159ed\u00ed JCA s c\u00edlem vytvo\u0159en\u00ed relace generovalo chybu.
+JCA_CREATE_SESS_CWSIA0024.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that is not permitted to call in this container.
+# This message is cloned as MGD_ENV_CWSIA0052 and MGD_ENV_CWSIA0084.
+MGD_ENV_CWSIA0025=CWSIA0025E: Metoda {0} nen\u00ed v tomto kontejneru povolena.
+MGD_ENV_CWSIA0025.explanation=Byla vol\u00e1na metoda, kter\u00e1 nen\u00ed povolena v aktu\u00e1ln\u00edm kontejneru.
+MGD_ENV_CWSIA0025.useraction=Odeberte vol\u00e1n\u00ed metody.
+
+# -------------------------------------------------------------------------------------------------
+# clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0026=CWSIA0026E: Prvek {0} nen\u00ed v t\u00e9to verzi podporov\u00e1n.
+UNSUPPORTED_FUNC_CWSIA0026.explanation=Aplikace se pokusila pou\u017e\u00edt funkci, kter\u00e1 nen\u00ed podporov\u00e1na aktu\u00e1ln\u00ed verz\u00ed softwaru.
+UNSUPPORTED_FUNC_CWSIA0026.useraction=Odeberte k\u00f3d, kter\u00fd se pokou\u0161\u00ed pou\u017e\u00edt tuto funkci nebo prove\u010fte aktualizaci na vy\u0161\u0161\u00ed verzi softwaru, pokud je k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Sessions that are currently open on the connection.
+# {1} is the line of application code that created the latest session
+MANY_SESSIONS_WARNING_CWSIA0027=CWSIA0027W: V sou\u010dasn\u00e9 dob\u011b existuj\u00ed {0} otev\u0159en\u00e9 relace JMS pro p\u0159ipojen\u00ed. M\u016f\u017ee to indikovat, \u017ee relace nejsou uzav\u0159eny, kdy\u017e je aplikace p\u0159estane pou\u017e\u00edvat. Byla vytvo\u0159ena relace v {1}
+MANY_SESSIONS_WARNING_CWSIA0027.explanation=Velk\u00fd po\u010det otev\u0159en\u00fdch relac\u00ed pro p\u0159ipojen\u00ed m\u016f\u017ee negativn\u011b ovlivnit v\u00fdkon.
+MANY_SESSIONS_WARNING_CWSIA0027.useraction=Ov\u011b\u0159te, zda aplikace uzav\u00edr\u00e1 relace, kter\u00e9 ji\u017e nejsou vy\u017eadov\u00e1ny.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028=CWSIA0028E: ID \
+klienta {0} je neplatn\u00e9, proto\u017ee je ji\u017e spu\u0161t\u011bn\u00e9 p\u0159ipojen\u00ed se stejn\u00fdm ID \
+klienta.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.explanation=ID \
+klienta nastaven\u00e9 aplikac\u00ed je stejn\u00e9 jako ID klienta aktivn\u00edho \
+p\u0159ipojen\u00ed.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.useraction=Dbejte, \
+aby zadan\u00e9 ID klienta bylo jedine\u010dn\u00e9.
+
+# JmsSessionImpl
+
+# clone of 222
+CONN_CLOSED_CWSIA0041=CWSIA0041E: P\u0159ipojen\u00ed je zav\u0159en\u00e9
+CONN_CLOSED_CWSIA0041.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed t\u00e9to metody bylo p\u0159ipojen\u00ed zav\u0159eno.
+CONN_CLOSED_CWSIA0041.useraction=Opakujte vol\u00e1n\u00ed pomoc\u00ed nov\u00e9ho p\u0159ipojen\u00ed.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a nontransacted session.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042=CWSIA0042E: Je neplatn\u00e9 volat metodu {0} relace, kter\u00e1 neobsahuje transakci.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.explanation=Aplikace volala metodu, kter\u00e1 nesm\u00ed b\u00fdt vol\u00e1na u relace, je\u017e neobsahuje transakci.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu.
+
+DSUB_LOCKED_CWSIA0043=CWSIA0043E: Odb\u011br je uzam\u010den
+DSUB_LOCKED_CWSIA0043.explanation=Nelze zru\u0161it odb\u011br trval\u00e9ho odb\u011bru, kter\u00fd m\u00e1 aktivn\u00edho spot\u0159ebitele nebo obsahuje zpr\u00e1vy, kter\u00e9 jsou uzam\u010den\u00e9 v r\u00e1mci aktivn\u00ed transakce.
+DSUB_LOCKED_CWSIA0043.useraction=Ov\u011b\u0159te, zda neexistuje \u017e\u00e1dn\u00fd aktivn\u00ed spot\u0159ebitel a pot\u00e9 zopakujte metodu zru\u0161en\u00ed odb\u011bru.
+
+NOT_AUTH_CWSIA0044=CWSIA0044E: Po\u017eadavek na zru\u0161en\u00ed trval\u00e9ho odb\u011bru nelze prov\u00e9st, proto\u017ee nen\u00ed autorizovan\u00fd.
+NOT_AUTH_CWSIA0044.explanation=Aktu\u00e1ln\u00ed u\u017eivatel nem\u00e1 autorizaci ke zru\u0161en\u00ed trval\u00e9ho odb\u011bru.
+NOT_AUTH_CWSIA0044.useraction=Ov\u011b\u0159te, \u017ee m\u00e1 aktu\u00e1ln\u00ed u\u017eivatel po\u017eadovan\u00fd p\u0159\u00edstup k pot\u0159ebn\u00fdm prost\u0159edk\u016fm. Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation which is not supported
+UNSUPPORTED_OPERATION_CWSIA0045=CWSIA0045E: Voliteln\u00e1 operace rozhran\u00ed JMS {0} nen\u00ed touto implementac\u00ed podporov\u00e1na.
+UNSUPPORTED_OPERATION_CWSIA0045.explanation=Aplikace volala metodu, kter\u00e1 je voliteln\u00e1 ve specifikaci rozhran\u00ed JMS a kter\u00e1 nen\u00ed podporov\u00e1na touto implementac\u00ed.
+UNSUPPORTED_OPERATION_CWSIA0045.useraction=Odeberte z aplikace vol\u00e1n\u00ed uveden\u00fdch metod.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object instance which is not supported.
+FOREIGN_IMPLEMENTATION_CWSIA0046=CWSIA0046E: Parametr {0} poch\u00e1z\u00ed z ciz\u00ed implementace, kter\u00e1 nen\u00ed podporov\u00e1na.
+FOREIGN_IMPLEMENTATION_CWSIA0046.explanation=U\u017eivatelsk\u00e1 aplikace p\u0159edala implementa\u010dn\u00ed t\u0159\u00eddu od nepodporovan\u00e9ho poskytovatele rozhran\u00ed JMS.
+FOREIGN_IMPLEMENTATION_CWSIA0046.useraction=Nahra\u010fte nepodporovan\u00fd objekt podporovan\u00fdm.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object type which was being created.
+MALFORMED_DESCRIPTOR_CWSIA0047=CWSIA0047E: N\u00e1zev {1} nepopisuje objekt typu {0}.
+MALFORMED_DESCRIPTOR_CWSIA0047.explanation=Do vol\u00e1n\u00ed createTopic byl p\u0159id\u00e1n n\u00e1zev fronty nebo do vol\u00e1n\u00ed createQueue byl p\u0159id\u00e1n n\u00e1zev t\u00e9matu.
+MALFORMED_DESCRIPTOR_CWSIA0047.useraction=Zm\u011b\u0148te n\u00e1zev na spr\u00e1vn\u00fd typ objektu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0048=CWSIA0048E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0048.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0048.useraction=Zadejte hodnotu podporovanou pro tuto vlastnost.
+
+# -------------------------------------------------------------------------------------------------
+SESSION_CLOSED_CWSIA0049=CWSIA0049E: Tato relace je zav\u0159en\u00e1.
+SESSION_CLOSED_CWSIA0049.explanation=Aplikace volala metodu, kter\u00e1 se nesm\u00ed pou\u017e\u00edt po uzav\u0159en\u00ed relace.
+SESSION_CLOSED_CWSIA0049.useraction=Ov\u011b\u0159te, zda p\u0159ed vol\u00e1n\u00edm metody nen\u00ed relace zav\u0159en\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a transacted session
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050=CWSIA0050E: Je neplatn\u00e9 volat metodu {0} relace, kter\u00e1 obsahuje transakci.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.explanation=Aplikace volala metodu, kter\u00e1 nesm\u00ed b\u00fdt vol\u00e1na u relace, je\u017e obsahuje transakci.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0051=CWSIA0051E: Toto p\u0159ipojen\u00ed p\u0159idru\u017een\u00e9 k t\u00e9to relaci je zav\u0159en\u00e9.
+CONNECTION_CLOSED_CWSIA0051.explanation=Aplikace volala metodu v objektu relace, pro kter\u00fd bylo zav\u0159eno p\u0159idru\u017een\u00e9 p\u0159ipojen\u00ed.
+CONNECTION_CLOSED_CWSIA0051.useraction=P\u0159ed vol\u00e1n\u00edm metody ov\u011b\u0159te, zda nen\u00ed p\u0159ipojen\u00ed ukon\u010den\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 64
+# {0} is the destination which does not exist
+DESTINATION_DOES_NOT_EXIST_CWSIA0052=CWSIA0052E: M\u00edsto ur\u010den\u00ed {0} neexistuje.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.explanation=Aplikace se pokusila p\u0159ipojit k m\u00edstu ur\u010den\u00ed, kter\u00e9 nen\u00ed definov\u00e1no.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.useraction=Definujte po\u017eadovan\u00e9 m\u00edsto ur\u010den\u00ed a zopakujte operaci.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0053=CWSIA0053E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0053.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0053.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription in question.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054=CWSIA0054E: Trval\u00fd odb\u011br s n\u00e1zvem {0} neexistuje.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.explanation=Aplikace se pokusila zru\u0161it trval\u00fd odb\u011br, kter\u00fd neexistuje.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce, pokud aplikace neo\u010dek\u00e1vala, \u017ee existuje odb\u011br. V takov\u00e9m p\u0159\u00edpad\u011b by jej p\u0159edt\u00edm vytvo\u0159ila.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Producers that are currently open on the session.
+# {1} is the line of application code that created the latest producer
+MANY_PRODUCERS_WARNING_CWSIA0055=CWSIA0055W: V sou\u010dasn\u00e9 dob\u011b existuj\u00ed {0} otev\u0159en\u00ed producenti rozhran\u00ed JMS pro relaci. M\u016f\u017ee to indikovat, \u017ee producenti nejsou uzav\u0159eni, kdy\u017e je aplikace p\u0159estane pou\u017e\u00edvat. Byl vytvo\u0159en producent v {1}
+MANY_PRODUCERS_WARNING_CWSIA0055.explanation=Velk\u00fd po\u010det otev\u0159en\u00fdch producent\u016f m\u016f\u017ee negativn\u011b ovlivnit v\u00fdkon.
+MANY_PRODUCERS_WARNING_CWSIA0055.useraction=Ov\u011b\u0159te, zda aplikace uzav\u00edr\u00e1 producenty, kte\u0159\u00ed ji\u017e nejsou vy\u017eadov\u00e1ni.
+
+# -------------------------------------------------------------------------------------------------
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056=CWSIA0056E: Pro vlastnost durableSubscriptionHome tov\u00e1rny p\u0159ipojen\u00ed byla zad\u00e1na hodnota null nebo nebyla zad\u00e1na \u017e\u00e1dn\u00e1 hodnota.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.explanation=Vlastnost durableSubscriptionHome mus\u00ed b\u00fdt zad\u00e1na p\u0159edt\u00edm, ne\u017e je vytvo\u0159eno p\u0159ipojen\u00ed, kter\u00e9 bude pou\u017e\u00edvat trval\u00e9 odb\u011bry.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.useraction=Nastavte vlastnost tov\u00e1rny p\u0159ipojen\u00ed durableSubscriptionHome na n\u00e1zev stroje syst\u00e9mu zpr\u00e1v, ve kter\u00e9m by m\u011bl b\u00fdt odb\u011br um\u00edst\u011bn.
+
+# -------------------------------------------------------------------------------------------------
+# Clone of CWSIA0006, with userID inserted
+# {0} UserID that failed to be autherised
+AUTHORIZATION_FAILED_CWSIA0057=CWSIA0057E: Autorizace prvku {0} nebyla \u00fasp\u011b\u0161n\u00e1.
+AUTHORIZATION_FAILED_CWSIA0057.explanation=Toto jm\u00e9no u\u017eivatele nem\u00e1 autorizaci pro p\u0159\u00edstup k tomuto prost\u0159edku.
+AUTHORIZATION_FAILED_CWSIA0057.useraction=Pod\u00edvejte se v propojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b na jm\u00e9no u\u017eivatele a ujist\u011bte se, \u017ee je spr\u00e1vn\u011b autorizovan\u00e9 pro po\u017eadovan\u00fd prost\u0159edek v syst\u00e9mu.
+
+
+DEST_LOCKED_CWSIA0058=CWSIA0058E: Do\u010dasn\u00e9 t\u00e9ma je uzam\u010deno.
+DEST_LOCKED_CWSIA0058.explanation=Do\u010dasn\u00e9 t\u00e9ma nelze odstranit. M\u016f\u017ee m\u00edt aktivn\u00ed odb\u011bratele.
+DEST_LOCKED_CWSIA0058.useraction=Zav\u0159ete v\u0161echny odb\u011bratele tohoto t\u00e9matu a vol\u00e1n\u00ed zopakujte.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Consumers that are currently open on the session.
+# {1} is the line of application code that created the latest consumer
+MANY_CONSUMERS_WARNING_CWSIA0059=CWSIA0059W: V sou\u010dasn\u00e9 dob\u011b existuj\u00ed {0} otev\u0159en\u00ed spot\u0159ebitel\u00e9 rozhran\u00ed JMS pro relaci. M\u016f\u017ee to indikovat, \u017ee spot\u0159ebitel\u00e9 nejsou uzav\u0159eni, kdy\u017e je aplikace p\u0159estane pou\u017e\u00edvat. Byl vytvo\u0159en spot\u0159ebitel v {1}
+MANY_CONSUMERS_WARNING_CWSIA0059.explanation=Velk\u00fd po\u010det otev\u0159en\u00fdch spot\u0159ebitel\u016f pro relaci m\u016f\u017ee negativn\u011b ovlivnit v\u00fdkon.
+MANY_CONSUMERS_WARNING_CWSIA0059.useraction=Ov\u011b\u0159te, zda aplikace uzav\u00edr\u00e1 spot\u0159ebitele, kte\u0159\u00ed ji\u017e nejsou vy\u017eadov\u00e1ni.
+
+
+# JmsMsgProducerImpl
+# -------------------------------------------------------------------------------------------------
+PRODUCER_CLOSED_CWSIA0061=CWSIA0061E: Tento producent zpr\u00e1v je uzav\u0159en.
+PRODUCER_CLOSED_CWSIA0061.explanation=Aplikace volala metodu, kter\u00e1 se nesm\u00ed pou\u017e\u00edt po uzav\u0159en\u00ed producenta zpr\u00e1vy.
+PRODUCER_CLOSED_CWSIA0061.useraction=P\u0159ed vol\u00e1n\u00edm metody ov\u011b\u0159te, zda nen\u00ed producent zpr\u00e1v uzav\u0159en\u00fd.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MP_CREATE_FAILED_CWSIA0062=CWSIA0062E: Nezda\u0159ilo se vytvo\u0159en\u00ed producenta MessageProducer pro {0}
+MP_CREATE_FAILED_CWSIA0062.explanation=P\u0159i vytv\u00e1\u0159en\u00ed producenta MessageProducer do\u0161lo k probl\u00e9mu.
+MP_CREATE_FAILED_CWSIA0062.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+SEND_FAILED_CWSIA0063=CWSIA0063E: Nezda\u0159ilo se odesl\u00e1n\u00ed do {0}
+SEND_FAILED_CWSIA0063.explanation=P\u0159i odes\u00edl\u00e1n\u00ed zpr\u00e1vy do\u0161lo k probl\u00e9mu.
+SEND_FAILED_CWSIA0063.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# 64 deleted
+
+# -------------------------------------------------------------------------------------------------
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065=CWSIA0065E: P\u0159i odes\u00edl\u00e1n\u00ed od tohoto producenta mus\u00ed b\u00fdt zad\u00e1no m\u00edsto ur\u010den\u00ed.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.explanation=Producent byl vytvo\u0159en bez zad\u00e1n\u00ed m\u00edsta ur\u010den\u00ed a v metod\u011b odes\u00edl\u00e1n\u00ed nebylo zad\u00e1no m\u00edsto ur\u010den\u00ed.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.useraction=Zm\u011b\u0148te aplikaci tak, aby byla pou\u017eita metoda odes\u00edl\u00e1n\u00ed ur\u010duj\u00edc\u00ed m\u00edsto ur\u010den\u00ed, nebo zadejte m\u00edsto ur\u010den\u00ed p\u0159i vytv\u00e1\u0159en\u00ed producenta.
+
+# -------------------------------------------------------------------------------------------------
+DEST_SPECIFIED_ON_SEND_CWSIA0066=CWSIA0066E: P\u0159i odes\u00edl\u00e1n\u00ed od tohoto producenta nen\u00ed platn\u00e9 zad\u00e1n\u00ed m\u00edsta ur\u010den\u00ed.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.explanation=Byl vytvo\u0159en producent se zadan\u00fdm m\u00edstem ur\u010den\u00ed; p\u0159i odes\u00edl\u00e1n\u00ed zpr\u00e1vy nen\u00ed platn\u00e9 zad\u00e1vat znovu m\u00edsto ur\u010den\u00ed.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.useraction=Zm\u011b\u0148te aplikaci tak, aby byla pou\u017eita metoda odes\u00edl\u00e1n\u00ed, kter\u00e1 neur\u010duje m\u00edsto ur\u010den\u00ed, nebo p\u0159i vytv\u00e1\u0159en\u00ed producenta zadejte m\u00edsto ur\u010den\u00ed s hodnotou null.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0067=CWSIA0067E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0067.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0067.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0068=CWSIA0068E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0068.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0068.useraction=Zadejte hodnotu podporovanou pro tuto vlastnost.
+
+# -------------------------------------------------------------------------------------------------
+PRODUCER_AUTH_ERROR_CWSIA0069=CWSIA0069E: U\u017eivatel nem\u00e1 autorizaci pro prov\u00e1d\u011bn\u00ed t\u00e9to operace. Dal\u0161\u00ed podrobnosti najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+PRODUCER_AUTH_ERROR_CWSIA0069.explanation=Propojen\u00e1 chybov\u00e1 zpr\u00e1va obsahuje podrobnosti t\u00fdkaj\u00edc\u00ed se opr\u00e1vn\u011bn\u00ed vy\u017eadovan\u00e9ho k prov\u00e1d\u011bn\u00ed t\u00e9to operace.
+PRODUCER_AUTH_ERROR_CWSIA0069.useraction=Administr\u00e1tor mus\u00ed ud\u011blit po\u017eadovan\u00e9 opr\u00e1vn\u011bn\u00ed p\u0159\u00edslu\u0161n\u00e9mu u\u017eivateli.
+
+
+# -------------------------------------------------------------------------------------------------
+#{0} Delivery delay time
+#{1} Expiry time or time to live
+INVALID_VALUE_CWSIA0070=CWSIA0070E: Hodnota deliverDelay {0} nesm\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e hodnota timeToLive {1}.
+INVALID_VALUE_CWSIA0070.explanation=Pokud je hodnota timeToLive (doby \u017eivotnosti) ni\u017e\u0161\u00ed ne\u017e hodnota deliveryDelay (prodlevy doru\u010den\u00ed), vypr\u0161\u00ed platnost zpr\u00e1vy d\u0159\u00edve. P\u0159i vypr\u0161en\u00ed platnosti bude zpr\u00e1va odstran\u011bna.
+INVALID_VALUE_CWSIA0070.useraction=Nastavte hodnotu prom\u011bnn\u00e9 deliverDelay ni\u017e\u0161\u00ed ne\u017e hodnotu prom\u011bnn\u00e9 timeToLive.
+
+
+# JmsMsgConsumerImpl
+# -------------------------------------------------------------------------------------------------
+CONSUMER_CLOSED_CWSIA0081=CWSIA0081E: Spot\u0159ebitel t\u00e9to zpr\u00e1vy je uzav\u0159en.
+CONSUMER_CLOSED_CWSIA0081.explanation=Aplikace volala metodu, kter\u00e1 se nesm\u00ed pou\u017e\u00edt po uzav\u0159en\u00ed spot\u0159ebitele zpr\u00e1vy.
+CONSUMER_CLOSED_CWSIA0081.useraction=P\u0159ed vol\u00e1n\u00edm metody ov\u011b\u0159te, zda nen\u00ed spot\u0159ebitel uzav\u0159en\u00fd.
+
+# -------------------------------------------------------------------------------------------------
+# conflict between asynchronous message delivery and a synchronous call
+# {0} the call which triggered the exception
+ASYNC_IN_PROGRESS_CWSIA0082=CWSIA0082E: Synchronn\u00ed vol\u00e1n\u00ed metody nen\u00ed povoleno p\u0159i asynchronn\u00edm pou\u017eit\u00ed relace: {0}
+ASYNC_IN_PROGRESS_CWSIA0082.explanation=Specifikace rozhran\u00ed JMS nepovoluje pou\u017eit\u00ed relace pro synchronn\u00ed metody, pokud je spu\u0161t\u011bno asynchronn\u00ed doru\u010dov\u00e1n\u00ed zpr\u00e1v.
+ASYNC_IN_PROGRESS_CWSIA0082.useraction=Chcete-li sou\u010dasn\u011b pou\u017e\u00edvat synchronn\u00ed metody a asynchronn\u00ed doru\u010dov\u00e1n\u00ed, vytvo\u0159te samostatnou relaci.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SELECTOR_CWSIA0083=CWSIA0083E: Selektor je neplatn\u00fd.
+INVALID_SELECTOR_CWSIA0083.explanation=Byl p\u0159ed\u00e1n nespr\u00e1vn\u00fd selektor zpr\u00e1v.
+INVALID_SELECTOR_CWSIA0083.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of MGD_ENV_CWSIA0025.
+MGD_ENV_CWSIA0084=CWSIA0084E: Metoda {0} nen\u00ed v tomto kontejneru povolena.
+MGD_ENV_CWSIA0084.explanation=Byla vol\u00e1na metoda, kter\u00e1 nen\u00ed povolena v aktu\u00e1ln\u00edm kontejneru.
+MGD_ENV_CWSIA0084.useraction=Odeberte vol\u00e1n\u00ed metody.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0085=CWSIA0085E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0085.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0085.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MC_CREATE_FAILED_CWSIA0086=CWSIA0086E: Nezda\u0159ilo se vytvo\u0159en\u00ed spot\u0159ebitele MessageConsumer pro {0}
+MC_CREATE_FAILED_CWSIA0086.explanation=P\u0159i vytv\u00e1\u0159en\u00ed spot\u0159ebitele MessageConsumer do\u0161lo k probl\u00e9mu.
+MC_CREATE_FAILED_CWSIA0086.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# 87 deleted, replaced
+
+# This is used as a WARNING message if a receive times out whilst the connection is stopped.
+# {0} is the class/line number of method which called the message consumer (finger of blame).
+MC_CONN_STOPPED_CWSIA0087=CWSIA0087W: Do\u0161lo k pokusu o p\u0159\u00edjem zpr\u00e1vy v dob\u011b, kdy bylo zastaveno p\u0159ipojen\u00ed. Spot\u0159ebitele zpr\u00e1v volala n\u00e1sleduj\u00edc\u00ed metoda:  {0}.
+MC_CONN_STOPPED_CWSIA0087.explanation=Zastaven\u00e9 p\u0159ipojen\u00ed nem\u016f\u017ee doru\u010dovat zpr\u00e1vy p\u0159\u00edjemc\u016fm zpr\u00e1v. Pokus o p\u0159\u00edjem zpr\u00e1v ze zastaven\u00e9ho p\u0159ipojen\u00ed m\u016f\u017ee indikovat chybu v logice aplikace.
+MC_CONN_STOPPED_CWSIA0087.useraction=Zkontrolujte, zda p\u0159\u00edjem ze zastaven\u00e9ho p\u0159ipojen\u00ed p\u0159edstavuje o\u010dek\u00e1van\u00e9 chov\u00e1n\u00ed aplikace. Nen\u00ed-li tomu tak, opravte n\u00e1vrh aplikace.
+
+# -------------------------------------------------------------------------------------------------
+# 88 deleted
+
+# -------------------------------------------------------------------------------------------------
+# RuntimeException thrown by onMessage
+ML_THREW_EXCPTN_CWSIA0089=CWSIA0089E: Do\u0161lo k vyvol\u00e1n\u00ed b\u011bhov\u00e9 v\u00fdjimky RuntimeException modulem listener pro zpr\u00e1vy MessageListener.onMessage
+ML_THREW_EXCPTN_CWSIA0089.explanation=P\u0159\u00edjemce zpr\u00e1vy s registrovan\u00fdm modulem listener pro zpr\u00e1vy MessageListener obdr\u017eel chybovou zpr\u00e1vu z metody onMessage.
+ML_THREW_EXCPTN_CWSIA0089.useraction=Zm\u011b\u0148te metodu onMessage tak, aby nedoch\u00e1zelo k vyvol\u00e1n\u00ed v\u00fdjimek.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+CONSUMER_AUTH_ERROR_CWSIA0090=CWSIA0090E: U\u017eivatel nem\u00e1 autorizaci pro prov\u00e1d\u011bn\u00ed t\u00e9to operace. Dal\u0161\u00ed podrobnosti najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+CONSUMER_AUTH_ERROR_CWSIA0090.explanation=Propojen\u00e1 chybov\u00e1 zpr\u00e1va popisuje opr\u00e1vn\u011bn\u00ed vy\u017eadovan\u00e9 k prov\u00e1d\u011bn\u00ed t\u00e9to operace.
+CONSUMER_AUTH_ERROR_CWSIA0090.useraction=Administr\u00e1tor mus\u00ed ud\u011blit po\u017eadovan\u00e9 opr\u00e1vn\u011bn\u00ed p\u0159\u00edslu\u0161n\u00e9mu u\u017eivateli.
+
+
+# JmsMessageImpl
+
+# 101 deleted
+
+# -------------------------------------------------------------------------------------------------
+# Used when an inappropriate type of object is given to setObjectProperty
+# {0} is the class of object.
+# {1} is the name of the property
+INVALID_OBJECT_TYPE_CWSIA0102=CWSIA0102E: Typ {0} nen\u00ed platn\u00fd pro pou\u017eit\u00ed jako vlastnost objektu {1}.
+INVALID_OBJECT_TYPE_CWSIA0102.explanation=Aplikace se pokusila nastavit vlastnost objektu pomoc\u00ed typu objektu, kter\u00fd nen\u00ed povolen specifikac\u00ed rozhran\u00ed JMS.
+INVALID_OBJECT_TYPE_CWSIA0102.useraction=Pou\u017eijte povolen\u00fd typ objektu, co\u017e je jedna z primitivn\u00edch spole\u010dn\u00fdch t\u0159\u00edd (wrapper) nebo objekt\u016f typu String.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0103=CWSIA0103E: P\u0159i p\u0159\u00edjmu zpr\u00e1vy do\u0161lo k v\u00fdjimce: {0}.
+INBOUND_MSG_ERROR_CWSIA0103.explanation=P\u0159i p\u0159\u00edjmu zpr\u00e1vy do\u0161lo k vygenerov\u00e1n\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e1 zp\u016fsobila selh\u00e1n\u00ed operace.
+INBOUND_MSG_ERROR_CWSIA0103.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the item which is being converted
+# {1} is the actual type of the item
+# {2} is the type that the user has requested it be converted to.
+INVALID_TYPE_CONVERSION_CWSIA0104=CWSIA0104E: P\u0159evod polo\u017eky {0} z typu {1} na typ {2} nen\u00ed povolen.
+INVALID_TYPE_CONVERSION_CWSIA0104.explanation=Specifikace rozhran\u00ed JMS nepovoluje p\u0159evod mezi dv\u011bma zadan\u00fdmi datov\u00fdmi typy.
+INVALID_TYPE_CONVERSION_CWSIA0104.useraction=Na\u010dt\u011bte pojmenovanou polo\u017eku pomoc\u00ed n\u011bkter\u00e9ho z povolen\u00fdch p\u0159evod\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+FIELD_NOT_SET_CWSIA0105=CWSIA0105E: Pole zpr\u00e1vy {0} nebylo nastaveno.
+FIELD_NOT_SET_CWSIA0105.explanation=Aplikace se pokusila na\u010d\u00edst hodnotu pole, kter\u00e9 nebylo nastaveno.
+FIELD_NOT_SET_CWSIA0105.useraction=P\u0159ed na\u010dten\u00edm pole nastavte jeho hodnotu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+INVALID_FIELD_NAME_CWSIA0106=CWSIA0106E: Pro n\u00e1zev pole nen\u00ed povolena hodnota null ani pr\u00e1zdn\u00fd \u0159et\u011bzec.
+INVALID_FIELD_NAME_CWSIA0106.explanation=U\u017eivatelsk\u00e1 aplikace se pokusila nastavit pole pomoc\u00ed neplatn\u00e9ho n\u00e1zvu, nap\u0159\u00edklad pomoc\u00ed hodnoty null nebo pr\u00e1zdn\u00e9ho \u0159et\u011bzce.
+INVALID_FIELD_NAME_CWSIA0106.useraction=Pou\u017eijte platn\u00fd n\u00e1zev pole.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_BODY_CWSIA0107=CWSIA0107E: Syst\u00e9m nem\u016f\u017ee volat metodu {0} ve zpr\u00e1v\u011b, proto\u017ee t\u011blo zpr\u00e1vy je jen pro \u010dten\u00ed.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.explanation=U\u017eivatelsk\u00e1 aplikace se pokusila zm\u011bnit t\u011blo zpr\u00e1vy ur\u010den\u00e9 v sou\u010dasn\u00e9 dob\u011b jen pro \u010dten\u00ed.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu, p\u0159\u00edpadn\u011b m\u016f\u017eete nejprve zm\u011bnit vol\u00e1n\u00edm metody clearBody t\u011blo zpr\u00e1vy tak, aby bylo zapisovateln\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108=CWSIA0108E: Syst\u00e9m nem\u016f\u017ee volat metodu {0} ve zpr\u00e1v\u011b, proto\u017ee vlastnosti zpr\u00e1vy jsou jen pro \u010dten\u00ed.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.explanation=U\u017eivatelsk\u00e1 aplikace se pokusila zm\u011bnit vlastnost zpr\u00e1vy ur\u010denou v sou\u010dasn\u00e9 dob\u011b jen pro \u010dten\u00ed.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu, p\u0159\u00edpadn\u011b m\u016f\u017eete nejprve zm\u011bnit vol\u00e1n\u00edm metody clearProperties vlastnost zpr\u00e1vy tak, aby byla zapisovateln\u00e1.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109=CWSIA0109E: Nen\u00ed povoleno volat metodu {0} ve zpr\u00e1v\u011b, proto\u017ee t\u011blo zpr\u00e1vy je pouze pro z\u00e1pis.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.explanation=U\u017eivatelsk\u00e1 aplikace se pokusila \u010d\u00edst t\u011blo zpr\u00e1vy, kter\u00e9 je pouze pro z\u00e1pis.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu, p\u0159\u00edpadn\u011b m\u016f\u017eete nejprve volat metodu obnoven\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the action which was invalid
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110=CWSIA0110E: Operaci {0} je povoleno volat pouze u zpr\u00e1vy, kter\u00e1 byla z\u00edsk\u00e1na pomoc\u00ed p\u0159\u00edjmu vol\u00e1n\u00ed, nebo u zpr\u00e1vy p\u0159\u00edtomn\u00e9 v modulu listener pro zpr\u00e1vy.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.explanation=Zpr\u00e1va byla vytvo\u0159ena aplikac\u00ed nebo p\u0159ijata z prohl\u00ed\u017ee\u010de fronty, a proto nepodporuje uvedenou operaci.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.useraction=Ov\u011b\u0159te, zda aplikace vyvol\u00e1vaj\u00ed tuto operaci pouze u zpr\u00e1v p\u0159ijat\u00fdch prost\u0159ednictv\u00edm hovoru nebo u zpr\u00e1v p\u0159\u00edtomn\u00fdch v modulu listener pro zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+MSG_CREATE_FAILED_CWSIA0111=CWSIA0111E: P\u0159i pokusu o vytvo\u0159en\u00ed zpr\u00e1vy do\u0161lo k chyb\u011b. Dal\u0161\u00ed podrobnosti najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+MSG_CREATE_FAILED_CWSIA0111.explanation=Nebylo mo\u017en\u00e9 vytvo\u0159it instanci v rozhran\u00ed JMS, proto\u017ee do\u0161lo k chyb\u011b v jin\u00e9 \u010d\u00e1sti syst\u00e9mu.
+MSG_CREATE_FAILED_CWSIA0111.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+INVALID_PROPNAME_CWSIA0112=CWSIA0112E: N\u00e1zev vlastnosti {0} nen\u00ed platn\u00fd identifik\u00e1tor prost\u0159ed\u00ed Java.
+INVALID_PROPNAME_CWSIA0112.explanation=Zadan\u00fd n\u00e1zev vlastnosti neodpov\u00edd\u00e1 form\u00e1tu popsan\u00e9mu ve specifikaci JMS.
+INVALID_PROPNAME_CWSIA0112.useraction=Upravte n\u00e1zev vlastnosti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+RESERVED_PROPNAME_CWSIA0113=CWSIA0113E: N\u00e1zev vlastnosti {0} je vyhrazen\u00fd a nelze jej nastavit.
+RESERVED_PROPNAME_CWSIA0113.explanation=Zadan\u00fd n\u00e1zev vlastnosti za\u010d\u00edn\u00e1 p\u0159edponou JMS, ale nen\u00ed \u017e\u00e1dnou z podporovan\u00fdch nastaviteln\u00fdch vlastnost\u00ed.
+RESERVED_PROPNAME_CWSIA0113.useraction=Upravte n\u00e1zev vlastnosti.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+# {1} is the type of the variable eg. Integer.class
+JMS_IBM_INVALID_TYPE_CWSIA0114=CWSIA0114E: Vlastnost {0} by se m\u011bla nastavit pomoc\u00ed typu {1}, nikoli {2}.
+JMS_IBM_INVALID_TYPE_CWSIA0114.explanation=Vlastnosti JMS_IBM mus\u00ed b\u00fdt nastaveny pomoc\u00ed specifick\u00fdch typ\u016f prom\u011bnn\u00fdch.
+JMS_IBM_INVALID_TYPE_CWSIA0114.useraction=Opravte k\u00f3d aplikace, kter\u00fd m\u00e1 pou\u017e\u00edvat po\u017eadovan\u00fd typ prom\u011bnn\u00e9 pro nastaven\u00ed t\u00e9to vlastnosti JMS_IBM.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0115=CWSIA0115E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0115.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0115.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0116=CWSIA0116E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0116.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0116.useraction=Zadejte hodnotu podporovanou pro tuto vlastnost.
+# -------------------------------------------------------------------------------------------------
+STREAM_MESSAGE_CWSIA0117=CWSIA0117E: Zpr\u00e1va je zpr\u00e1va s proudem hodnot 
+STREAM_MESSAGE_CWSIA0117.explanation=P\u0159ijat\u00e1 zpr\u00e1va je typu StreamMessage.
+STREAM_MESSAGE_CWSIA0117.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+# -------------------------------------------------------------------------------------------------
+# {0} The type to which the message body will be assigned
+INVALID_CLASS_TYPE_CWSIA0118=CWSIA0118E: T\u011blo zpr\u00e1vy nelze p\u0159i\u0159adit k uveden\u00e9mu typu  {0} 
+INVALID_CLASS_TYPE_CWSIA0118.explanation= T\u011blo zpr\u00e1vy nen\u00ed kompatibiln\u00ed s uveden\u00fdm typem zpr\u00e1vy.
+INVALID_CLASS_TYPE_CWSIA0118.useraction=Zadejte platn\u00fd typ zpr\u00e1vy.
+# -------------------------------------------------------------------------------------------------
+NO_MSG_BODY_CWSIA0119=CWSIA0119E: Zpr\u00e1va je bez t\u011bla.
+NO_MSG_BODY_CWSIA0119.explanation= P\u0159ijat\u00e1 zpr\u00e1va neobsahuje \u017e\u00e1dn\u00e9 t\u011blo.
+NO_MSG_BODY_CWSIA0119.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+# -------------------------------------------------------------------------------------------------
+GET_MSG_BODY_FAILED_CWSIA0120=CWSIA0120E: Nezda\u0159ilo se na\u010d\u00edst t\u011blo zpr\u00e1vy.
+GET_MSG_BODY_FAILED_CWSIA0120.explanation= Kv\u016fli intern\u00ed chyb\u011b se nezda\u0159ilo na\u010d\u00edst t\u011blo zpr\u00e1vy.
+GET_MSG_BODY_FAILED_CWSIA0120.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+# -------------------------------------------------------------------------------------------------
+
+# JmsObjectMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+SERIALIZATION_EXCEPTION_CWSIA0121=CWSIA0121E: P\u0159i serializaci objektu do\u0161lo k v\u00fdjimce: {0}.
+SERIALIZATION_EXCEPTION_CWSIA0121.explanation=Objekt nelze kv\u016fli chyb\u011b serializovat.
+SERIALIZATION_EXCEPTION_CWSIA0121.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+DESERIALIZATION_EXCEPTION_CWSIA0122=CWSIA0122E: P\u0159i deserializaci zpr\u00e1vy do\u0161lo k v\u00fdjimce, v\u00fdjimka: {0}.
+DESERIALIZATION_EXCEPTION_CWSIA0122.explanation=Zpr\u00e1vu nelze deserializovat z p\u0159\u00ed\u010diny zobrazen\u00e9 v\u00fdjimky.
+DESERIALIZATION_EXCEPTION_CWSIA0122.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# JmsQueueBrowserImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+NO_MESSAGE_AVAILABLE_CWSIA0141=CWSIA0141E: V prohl\u00ed\u017ee\u010di fronty nejsou k dispozici \u017e\u00e1dn\u00e9 zpr\u00e1vy.
+NO_MESSAGE_AVAILABLE_CWSIA0141.explanation=Aplikace po\u017eadovala zpr\u00e1vu z prohl\u00ed\u017ee\u010de fronty, ale nebyly k dispozici \u017e\u00e1dn\u00e9 zpr\u00e1vy.
+NO_MESSAGE_AVAILABLE_CWSIA0141.useraction=Upravte aplikaci tak, aby tuto chybu zpracovala nebo pomoc\u00ed metody hasMoreElements ov\u011b\u0159te, zda jsou k dispozici dal\u0161\u00ed zpr\u00e1vy.
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_CLOSED_CWSIA0142=CWSIA0142E: Tento prohl\u00ed\u017ee\u010d fronty je zav\u0159en\u00fd.
+BROWSER_CLOSED_CWSIA0142.explanation=Aplikace volala metodu, kter\u00e1 se nesm\u00ed pou\u017e\u00edt po zav\u0159en\u00ed prohl\u00ed\u017ee\u010de fronty.
+BROWSER_CLOSED_CWSIA0142.useraction=P\u0159ed vol\u00e1n\u00edm metody ov\u011b\u0159te, zda nen\u00ed prohl\u00ed\u017ee\u010d fronty zav\u0159en\u00fd.
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_CREATE_BSESSION_CWSIA0143=CWSIA0143E: Do\u0161lo k intern\u00ed chyb\u011b.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.explanation=Vol\u00e1n\u00ed createBrowserSession vr\u00e1tilo hodnotu null m\u00edsto platn\u00e9ho objektu BrowserSession.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.useraction=CMSG0001
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0144=CWSIA0144E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0144.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0144.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+BROWSE_FAILED_CWSIA0145=CWSIA0145E: Nelze naj\u00edt m\u00edsto ur\u010den\u00ed {0}.
+BROWSE_FAILED_CWSIA0145.explanation=P\u0159i vyhled\u00e1v\u00e1n\u00ed m\u00edsta ur\u010den\u00ed proch\u00e1zen\u00edm do\u0161lo k probl\u00e9mu.
+BROWSE_FAILED_CWSIA0145.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# 146 deleted
+
+# -------------------------------------------------------------------------------------------------
+# clone of 83
+INVALID_SELECTOR_CWSIA0147=CWSIA0147E: Selektor je neplatn\u00fd.
+INVALID_SELECTOR_CWSIA0147.explanation=Byl p\u0159ed\u00e1n nespr\u00e1vn\u00fd selektor zpr\u00e1v.
+INVALID_SELECTOR_CWSIA0147.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 103
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0148=CWSIA0148E: P\u0159i p\u0159\u00edjmu zpr\u00e1vy do\u0161lo k v\u00fdjimce: {0}.
+INBOUND_MSG_ERROR_CWSIA0148.explanation=P\u0159i p\u0159\u00edjmu zpr\u00e1vy do\u0161lo k vygenerov\u00e1n\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e1 zp\u016fsobila selh\u00e1n\u00ed operace.
+INBOUND_MSG_ERROR_CWSIA0148.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+BROWSER_AUTH_ERROR_CWSIA0149=CWSIA0149E: U\u017eivatel nem\u00e1 autorizaci pro prov\u00e1d\u011bn\u00ed t\u00e9to operace. Dal\u0161\u00ed podrobnosti najdete v p\u0159ipojen\u00e9 v\u00fdjimce.
+BROWSER_AUTH_ERROR_CWSIA0149.explanation=Propojen\u00e1 chybov\u00e1 zpr\u00e1va obsahuje podrobnosti t\u00fdkaj\u00edc\u00ed se opr\u00e1vn\u011bn\u00ed vy\u017eadovan\u00e9ho k prov\u00e1d\u011bn\u00ed t\u00e9to operace.
+BROWSER_AUTH_ERROR_CWSIA0149.useraction=Administr\u00e1tor mus\u00ed ud\u011blit po\u017eadovan\u00e9 opr\u00e1vn\u011bn\u00ed p\u0159\u00edslu\u0161n\u00e9mu u\u017eivateli.
+
+
+
+# JmsStreamMessageImpl
+# -------------------------------------------------------------------------------------------------
+NULL_BUFFER_CWSIA0161=CWSIA0161E: Vyrovn\u00e1vac\u00ed pam\u011b\u0165 pro \u010dten\u00ed m\u00e1 hodnotu null.
+NULL_BUFFER_CWSIA0161.explanation=Metod\u011b StreamMessage.readBytes byl p\u0159ed\u00e1n nulov\u00fd odkaz, tak\u017ee nelze vr\u00e1tit \u017e\u00e1dn\u00e1 data.
+NULL_BUFFER_CWSIA0161.useraction=P\u0159edejte metod\u011b readBytes vyrovn\u00e1vac\u00ed pam\u011b\u0165 vhodn\u00e9 velikosti.
+
+# -------------------------------------------------------------------------------------------------
+END_STREAM_CWSIA0162=CWSIA0162I: Bylo dosa\u017eeno konce datov\u00e9ho proudu.
+END_STREAM_CWSIA0162.explanation=Bylo dosa\u017eeno konce obsahu zpr\u00e1vy. To je norm\u00e1ln\u00ed, pokud aplikace prov\u00e1d\u011bj\u00edc\u00ed \u010dten\u00ed nev\u00ed, kolik dat m\u016f\u017ee o\u010dek\u00e1vat.
+END_STREAM_CWSIA0162.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+INCOMPLETE_BYTE_ARRAY_CWSIA0163=CWSIA0163E: Bajtov\u00e9 pole StreamMessage bylo ne\u00fapln\u011b p\u0159e\u010dteno.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.explanation=Byl u\u010din\u011bn pokus o p\u0159e\u010dten\u00ed dal\u0161\u00edho pole StreamMessage, zat\u00edmco aktu\u00e1ln\u00ed bajtov\u00e9 pole nebylo \u00fapln\u011b p\u0159e\u010dteno.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.useraction=Ov\u011b\u0159te, zda k\u00f3d u\u017eivatele \u00fapln\u011b p\u0159e\u010detl dan\u00e9 bajtov\u00e9 pole p\u0159ed pokusem o \u010dten\u00ed dal\u0161\u00edho pole.
+
+# -------------------------------------------------------------------------------------------------
+NULL_CHAR_CWSIA0164=CWSIA0164E: Nen\u00ed mo\u017en\u00e9 vr\u00e1tit hodnotu null jako znak.
+NULL_CHAR_CWSIA0164.explanation=Do\u0161lo k pokusu \u010d\u00edst pole StramMessage obsahuj\u00edc\u00ed hodnotu null pomoc\u00ed metody readChar.
+NULL_CHAR_CWSIA0164.useraction=Vyh\u00fdbejte se \u010dten\u00ed hodnot null pomoc\u00ed metody readChar.
+
+# JmsBytesMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding string
+BAD_ENCODING_CWSIA0181=CWSIA0181E: K\u00f3dov\u00e1n\u00ed pro znak {0} nen\u00ed platn\u00e9.
+BAD_ENCODING_CWSIA0181.explanation=Zadan\u00e1 hodnota neobsahuje zn\u00e1m\u00e9 k\u00f3dov\u00e1n\u00ed.
+BAD_ENCODING_CWSIA0181.useraction=Ov\u011b\u0159te, zda aplikace dod\u00e1v\u00e1 hodnotu z definovan\u00e9ho seznamu k\u00f3dov\u00e1n\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+DATA_STREAM_PROBLEM_CWSIA0182=CWSIA0182E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i z\u00e1pisu do datov\u00e9ho proudu.
+DATA_STREAM_PROBLEM_CWSIA0182.explanation=Do\u0161lo k probl\u00e9mu s datov\u00fdmi proudy pou\u017e\u00edvan\u00fdmi pro p\u0159evod form\u00e1tu plovouc\u00edch a dvojit\u00fdch hodnot.
+DATA_STREAM_PROBLEM_CWSIA0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+END_BYTESMESSAGE_CWSIA0183=CWSIA0183I: Do\u0161lo k pokusu o \u010dten\u00ed za koncem zpr\u00e1vy.
+END_BYTESMESSAGE_CWSIA0183.explanation=Do\u0161lo k pokusu o \u010dten\u00ed za koncem zpr\u00e1vy. To m\u016f\u017ee b\u00fdt norm\u00e1ln\u00ed podm\u00ednka v p\u0159\u00edpad\u011b, \u017ee aplikace byla k\u00f3dov\u00e1na tak, aby \u010detla data s prom\u011bnlivou d\u00e9lkou pomoc\u00ed specifikace JMS 1.0.2.
+END_BYTESMESSAGE_CWSIA0183.useraction=Pokud je to nutn\u00e9, zm\u011b\u0148te k\u00f3d tak, aby aplikace pou\u017e\u00edvala metodu getBodyLength.
+
+# -------------------------------------------------------------------------------------------------
+UTF8_CONV_CWSIA0184=CWSIA0184E: P\u0159evod UTF-8 se nezda\u0159il.
+UTF8_CONV_CWSIA0184.explanation=Do\u0161lo k probl\u00e9mu p\u0159i \u010dten\u00ed nebo z\u00e1pisu \u0159et\u011bzce UTF-8. Nejb\u011b\u017en\u011bj\u0161\u00edm probl\u00e9mem je pokus o z\u00e1pis \u0159et\u011bzce del\u0161\u00edho ne\u017e 65535 znak\u016f.
+UTF8_CONV_CWSIA0184.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsBytesMessageImpl - clones CWSIA0188 and CWSIA0189 created
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0185=CWSIA0185E: Byl poskytnut nespr\u00e1vn\u00fd objekt typu {0}.
+BAD_OBJECT_CWSIA0185.explanation=Metod\u011b writeObject byl p\u0159ed\u00e1n parametr objektu, kter\u00fd nebyl typu primitivn\u00edho modulu wrapper.
+BAD_OBJECT_CWSIA0185.useraction=Opravou aplikace zajist\u011bte, aby byly metod\u011b writeObject p\u0159ed\u00e1v\u00e1ny jako parametry pouze objekty povolen\u00e9ho typu.
+
+# -------------------------------------------------------------------------------------------------
+WRITE_PROBLEM_CWSIA0186=CWSIA0186E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k probl\u00e9mu p\u0159i z\u00e1pisu do zpr\u00e1vy.
+WRITE_PROBLEM_CWSIA0186.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o z\u00e1pis polo\u017eky do zpr\u00e1vy.
+WRITE_PROBLEM_CWSIA0186.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#ENCS_TOSTR_CWSIA0187=Integer encoding: {0}, floating point encoding {1}
+#ENCS_TOSTR_CWSIA0187.explanation=This message is for informational purposes only.
+#ENCS_TOSTR_CWSIA0187.useraction=No action required.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsMapMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0188=CWSIA0188E: Byl poskytnut nespr\u00e1vn\u00fd objekt typu {0}.
+BAD_OBJECT_CWSIA0188.explanation=Metod\u011b writeObject byl p\u0159ed\u00e1n parametr objektu, kter\u00fd nebyl typu primitivn\u00edho modulu wrapper.
+BAD_OBJECT_CWSIA0188.useraction=Opravou aplikace zajist\u011bte, aby byly metod\u011b writeObject p\u0159ed\u00e1v\u00e1ny jako parametry pouze objekty povolen\u00e9ho typu.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsStreamMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0189=CWSIA0189E: Byl poskytnut nespr\u00e1vn\u00fd objekt typu {0}.
+BAD_OBJECT_CWSIA0189.explanation=Metod\u011b writeObject byl p\u0159ed\u00e1n parametr objektu, kter\u00fd nebyl typu primitivn\u00edho modulu wrapper.
+BAD_OBJECT_CWSIA0189.useraction=Opravou aplikace zajist\u011bte, aby byly metod\u011b writeObject p\u0159ed\u00e1v\u00e1ny jako parametry pouze objekty povolen\u00e9ho typu.
+
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0190=CWSIA0190E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0190.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0190.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+
+# com.ibm.ws.sib.api.jms.JmsInternalsFactory
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201=CWSIA0201E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it, proto\u017ee soubor JAR {1} nebyl nalezen.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.useraction=CMSG0002
+
+
+# com.ibm.websphere.sib.api.jms.JmsDurableSubscriberImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0221=CWSIA0221E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0221.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0221.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+
+CONN_CLOSED_CWSIA0222=CWSIA0222E: P\u0159ipojen\u00ed je zav\u0159en\u00e9
+CONN_CLOSED_CWSIA0222.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed t\u00e9to metody bylo p\u0159ipojen\u00ed zav\u0159eno.
+CONN_CLOSED_CWSIA0222.useraction=Opakujte vol\u00e1n\u00ed pomoc\u00ed nov\u00e9ho p\u0159ipojen\u00ed.
+
+DEST_LOCKED_CWSIA0223=CWSIA0223E: Odb\u011br je uzam\u010den
+DEST_LOCKED_CWSIA0223.explanation=Trval\u00fd odb\u011br nep\u0159ij\u00edm\u00e1 spot\u0159ebitele. M\u016f\u017ee ji\u017e m\u00edt aktivn\u00edho p\u0159edplatitele nebo mohl b\u00fdt zak\u00e1z\u00e1n administr\u00e1torem. Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+DEST_LOCKED_CWSIA0223.useraction=Zkontrolujte aplikaci a zjist\u011bte, zda bylo provedeno v\u00edce pokus\u016f o p\u0159\u00edstup k jednor\u00e1zov\u00e9mu trval\u00e9mu odb\u011bru. Specifikace rozhran\u00ed JMS to zakazuje, pokud je v\u0161ak tento postup skute\u010dn\u011b nutn\u00fd, pod\u00edvejte se na mo\u017enost Sd\u00edlet trval\u00e9 odb\u011bry tov\u00e1rny p\u0159ipojen\u00ed.
+
+NOT_AUTH_CWSIA0224=CWSIA0224E: Nem\u00e1te p\u0159\u00edstupov\u00e9 opr\u00e1vn\u011bn\u00ed k trval\u00e9mu odb\u011bru
+NOT_AUTH_CWSIA0224.explanation=Aktu\u00e1ln\u00ed u\u017eivatel nem\u00e1 autorizaci pro p\u0159\u00edstup k trval\u00e9mu odb\u011bru.
+NOT_AUTH_CWSIA0224.useraction=Ov\u011b\u0159te, zda dan\u00e9 jm\u00e9no u\u017eivatele m\u00e1 po\u017eadovan\u00fd p\u0159\u00edstup k pot\u0159ebn\u00fdm prost\u0159edk\u016fm. Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+BAD_SELECT_CWSIA0225=CWSIA0225E: Zadan\u00fd selektor zpr\u00e1v je neplatn\u00fd.
+BAD_SELECT_CWSIA0225.explanation=Byl zji\u0161t\u011bn probl\u00e9m s interpretac\u00ed zadan\u00e9ho \u0159et\u011bzce selektoru.
+BAD_SELECT_CWSIA0225.useraction=Zkontrolujte \u0159et\u011bzec selektoru a opravte p\u0159\u00edpadn\u00e9 chyby.
+
+BAD_TOPICSPACE_CWSIA0226=CWSIA0226E: Nelze vytvo\u0159it trval\u00e9ho odb\u011bratele dan\u00e9ho t\u00e9matu.
+BAD_TOPICSPACE_CWSIA0226.explanation=Trval\u00e9ho odb\u011bratele nelze vytvo\u0159it z p\u0159\u00ed\u010diny probl\u00e9mu s prostorem t\u00e9matu.
+BAD_TOPICSPACE_CWSIA0226.useraction=Podrobnosti najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b. Pokud prostor t\u00e9matu neexistoval, vytvo\u0159te jej nebo pou\u017eijte takov\u00fd, kter\u00fd existuje. Pokud se jednalo o do\u010dasn\u00e9 t\u00e9ma, pou\u017eijte p\u0159echodn\u00e9ho odb\u011bratele nebo p\u0159ejd\u011bte na trval\u00e9 t\u00e9ma.
+
+# com.ibm.websphere.sib.api.jms.JmsManagedConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0241=CWSIA0241E: B\u011bhem vol\u00e1n\u00ed metody {1} byla p\u0159ijata v\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSIA0241.explanation=B\u011bhem prov\u00e1d\u011bn\u00ed zadan\u00e9 metody zjistila jin\u00e1 komponenta chybu.
+EXCEPTION_RECEIVED_CWSIA0241.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+
+# com.ibm.websphere.sib.api.jms.JmsConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0261=CWSIA0261E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0261.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0261.useraction=Zm\u011b\u0148te hodnotu na jednu z podporovan\u00fdch hodnot pro tuto vlastnost.
+
+# com.ibm.websphere.sib.api.jms.JmsDestinationImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0281=CWSIA0281E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0281.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0281.useraction=Zm\u011b\u0148te hodnotu na jednu z podporovan\u00fdch hodnot pro tuto vlastnost.
+
+# -------------------------------------------------------------------------------------------------
+# Generic error message for a blocked destination
+# {0} is the reason code for the blocking of the destination
+DESTINATION_BLOCKED_CWSIA0283=CWSIA0283E: M\u00edsto ur\u010den\u00ed, na kter\u00e9 je zad\u00e1n dotaz, je blokov\u00e1no pro vytvo\u0159en\u00ed/p\u0159\u00edjem zpr\u00e1v s k\u00f3dem p\u0159\u00ed\u010diny {0}
+DESTINATION_BLOCKED_CWSIA0283.explanation=C\u00edlov\u00fd objekt nem\u00e1 dostatek informac\u00ed pro vytv\u00e1\u0159en\u00ed a \u010dten\u00ed zpr\u00e1v.
+DESTINATION_BLOCKED_CWSIA0283.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Specific message for destination blockage due to missing PSB reply data (no broker input stream)
+# {0} is the string form of the JMS Destination
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284=CWSIA0284E: Nen\u00ed k dispozici dostatek informac\u00ed pro sm\u011brov\u00e1n\u00ed zpr\u00e1vy do tohoto m\u00edsta ur\u010den\u00ed: {0}
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.explanation=Mapov\u00e1n\u00ed t\u00e9matu Profily zprost\u0159edkovatele publikov\u00e1n\u00ed a odb\u011bru pou\u017e\u00edvan\u00e9 k p\u0159enosu p\u016fvodn\u00ed p\u0159\u00edru\u010dky z modulu MQ neobsahuje frontu vstupu zprost\u0159edkovatele.
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.useraction=P\u0159idejte n\u00e1zev vstupn\u00ed fronty k p\u0159\u00edslu\u0161n\u00e9mu mapov\u00e1n\u00ed t\u00e9matu profilu zprost\u0159edkovatele.
+
+
+# com.ibm.ws.sib.api.jms.impl.ProducerProperties
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0301=CWSIA0301E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0301.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0301.useraction=Zadejte hodnotu podporovanou pro tuto vlastnost.
+
+# com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0321=CWSIA0321E: Zadan\u00e1 hodnota {1} nen\u00ed pro vlastnost {0} povolena.
+INVALID_VALUE_CWSIA0321.explanation=Zadan\u00e1 hodnota nen\u00ed pro ur\u010denou vlastnost povolena.
+INVALID_VALUE_CWSIA0321.useraction=Zadejte hodnotu podporovanou pro tuto vlastnost.
+
+
+# com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+# -------------------------------------------------------------------------------------------------
+# Generic message for when an exception occurs during core processing for async delivery
+ASYNC_EXCEPTION_CWSIA0341=CWSIA0341E: P\u0159i asynchronn\u00edm zpracov\u00e1n\u00ed byla p\u0159ijata v\u00fdjimka: {0}
+ASYNC_EXCEPTION_CWSIA0341.explanation=V\u00fdjimka byla zp\u016fsobena mimo u\u017eivatelsk\u00fd k\u00f3d, zat\u00edmco bylo spu\u0161t\u011bno asynchronn\u00ed doru\u010den\u00ed.
+ASYNC_EXCEPTION_CWSIA0341.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# The messaging engine is shutting down
+ME_QUIESCE_CWSIA0342=CWSIA0342E: Stroj syst\u00e9mu zpr\u00e1v se vyp\u00edn\u00e1.
+ME_QUIESCE_CWSIA0342.explanation=Prob\u00edh\u00e1 vypnut\u00ed stroje syst\u00e9mu zpr\u00e1v, k n\u011bmu\u017e je aplikace p\u0159ipojen\u00e1.
+ME_QUIESCE_CWSIA0342.useraction=Jedn\u00e1 se o sign\u00e1l pro aplikaci k odpojen\u00ed od stroje syst\u00e9mu zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# The connection is closed due to a communications failure.
+# {0} is the exception passed to the commsFailure notification method.
+COMMS_FAILURE_CWSIA0343=CWSIA0343E: P\u0159ipojen\u00ed bylo uzav\u0159eno kv\u016fli n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {0}
+COMMS_FAILURE_CWSIA0343.explanation=Selh\u00e1n\u00ed komunikace m\u011blo za n\u00e1sledek ztr\u00e1tu p\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v.
+COMMS_FAILURE_CWSIA0343.useraction=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b.
+
+# -------------------------------------------------------------------------------------------------
+# This method is called when a connection is closed because the messaging engine has terminated.
+ME_TERMINATED_CWSIA0344=CWSIA0344E: P\u0159ipojen\u00ed bylo uzav\u0159eno z p\u0159\u00ed\u010diny ukon\u010den\u00ed stroje syst\u00e9mu zpr\u00e1v.
+ME_TERMINATED_CWSIA0344.explanation=Stroj syst\u00e9mu zpr\u00e1v byl ukon\u010den, a p\u0159ipojen\u00ed je t\u00edm p\u00e1dem nepou\u017eiteln\u00e9.
+ME_TERMINATED_CWSIA0344.useraction=Restartujte stroj syst\u00e9mu zpr\u00e1v a znovu se p\u0159ipojte.
+
+
+# com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+# -------------------------------------------------------------------------------------------------
+# Could not find the required character set for this utility class (UTF-8)
+UNSUPPORTED_ENCODING_CWSIA0360=CWSIA0360E: K\u00f3dov\u00e1n\u00ed znakov\u00e9 sady {0} nen\u00ed podporov\u00e1no.
+UNSUPPORTED_ENCODING_CWSIA0360.explanation=Zadan\u00e1 znakov\u00e1 sada je po\u017eadov\u00e1na pro operaci u t\u00e9to funkce, ale nelze ji nal\u00e9zt.
+UNSUPPORTED_ENCODING_CWSIA0360.useraction=Zp\u0159\u00edstupn\u011bte zadanou znakovou sadu pro pou\u017eit\u00ed t\u00edmto JVM.
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is the invalid value that was supplied
+# {1} is the property/method parameter for which it was supplied.
+INTERNAL_INVALID_VALUE_CWSIA0361=CWSIA0361E: Do\u0161lo k intern\u00ed chyb\u011b, proto\u017ee {0} byla zad\u00e1na pro {1}
+INTERNAL_INVALID_VALUE_CWSIA0361.explanation=CMSG0001
+INTERNAL_INVALID_VALUE_CWSIA0361.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is a probeID to enable service to identify the problem location.
+# {1} and {2} are additional information to enable problem diagnosis.
+INTERNAL_ERROR_CWSIA0362=CWSIA0362E: Do\u0161lo k intern\u00ed chyb\u011b. ProbeID: {0}. Dal\u0161\u00ed informace: {1}: {2}
+INTERNAL_ERROR_CWSIA0362.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0362.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An unknown property name has been found in the encoded JMS destination or replyTo field
+# {0} is the unknown name found
+UNKNOWN_PROPERTY_CWSIA0363=CWSIA0363E: Z\u00e1hlav\u00ed JMSDestination nebo JMSReplyTo obsahuje nezn\u00e1m\u00fd n\u00e1zev vlastnosti: {0}.
+UNKNOWN_PROPERTY_CWSIA0363.explanation=Zpr\u00e1va JMS byla obdr\u017eena z pozd\u011bj\u0161\u00ed verze aplika\u010dn\u00edho serveru a byla p\u0159ed\u00e1na aplikaci. \
+Aplikace se pot\u00e9 pokusila na\u010d\u00edst ze zpr\u00e1vy z\u00e1hlav\u00ed JMSDestination nebo JMSReplyTo. \
+Pole z\u00e1hlav\u00ed zpr\u00e1vy nelze na\u010d\u00edst, proto\u017ee jedna z jeho vlastnost\u00ed nen\u00ed v t\u00e9to verzi podporov\u00e1na.
+UNKNOWN_PROPERTY_CWSIA0363.useraction=Odeberte nepodporovanou vlastnost ze z\u00e1hlav\u00ed JMSDestination nebo JMSReplyTo pou\u017e\u00edvan\u00e9ho odes\u00edlaj\u00edc\u00ed aplikac\u00ed. \
+Je mo\u017en\u00e9, \u017ee nepodporovan\u00e1 vlastnost byla ur\u010dena p\u0159\u00edmo odes\u00edlaj\u00edc\u00ed aplikac\u00ed nebo \u017ee byla ur\u010dena v konfiguraci fronty JMS.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the malformed URI element
+# {1} is the full URI from which {0} has been identified
+MALFORMED_URI_ELEMENT_CWSIA0382=CWSIA0382E: Prvek URI {0} je chybn\u011b form\u00e1tov\u00e1n v identifik\u00e1toru URI {1}
+MALFORMED_URI_ELEMENT_CWSIA0382.explanation=Ozna\u010den\u00fd prvek dvojice n\u00e1zev-hodnota je chybn\u00fd. Mo\u017enou p\u0159\u00ed\u010dinou je skute\u010dnost, \u017ee neobsahuje n\u00e1zev i hodnotu.
+MALFORMED_URI_ELEMENT_CWSIA0382.useraction=Ov\u011b\u0159te, zda je prvek dvojice n\u00e1zev-hodnota spr\u00e1vn\u011b utvo\u0159en.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the reserved destination prefix
+# {1} is the full URI from which {0} has been identified
+RESERVED_DEST_PREFIX_CWSIA0383=CWSIA0383E: Vyhrazen\u00e1 p\u0159edpona m\u00edsta ur\u010den\u00ed {0} byla zji\u0161t\u011bna v identifik\u00e1toru URI {1}
+RESERVED_DEST_PREFIX_CWSIA0383.explanation=Ozna\u010den\u00e1 p\u0159edpona m\u00edsta ur\u010den\u00ed je vyhrazen\u00e1.
+RESERVED_DEST_PREFIX_CWSIA0383.useraction=Vezm\u011bte v \u00favahu pou\u017eit\u00ed p\u0159edpony 'queue://' pro c\u00edl fronty a 'topic://' pro m\u00edsto ur\u010den\u00ed t\u00e9matu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name in the URI element
+# {1} is the property value in the URI element
+# {2} is the full URI from which {0} and {1} have been identified
+INVALID_URI_ELEMENT_CWSIA0384=CWSIA0384E: Prvek URI {0}={1} nebylo mo\u017en\u00e9 nastavit jako vlastnost v c\u00edlov\u00e9m objektu z identifik\u00e1toru URI {2}
+INVALID_URI_ELEMENT_CWSIA0384.explanation=Vlastnost n\u00e1zvu ozna\u010den\u00e9ho prvku URI nebylo mo\u017en\u00e9 dek\u00f3dovat do platn\u00e9 vlastnosti m\u00edsta ur\u010den\u00ed.
+INVALID_URI_ELEMENT_CWSIA0384.useraction=Ov\u011b\u0159te, zda ozna\u010den\u00e1 vlastnost n\u00e1zvu byla platnou vlastnost\u00ed c\u00edlov\u00fdch objekt\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI with the illegal MA88 queue manager specified
+INVALID_URI_ELEMENT_CWSIA0385=CWSIA0385E: Prvek URI m\u00edsta ur\u010den\u00ed nem\u00e1 povoleno zadat spr\u00e1vce fronty, jak je uveden v prvku URI: {0}
+INVALID_URI_ELEMENT_CWSIA0385.explanation=Pou\u017eit\u00ed spr\u00e1vc\u016f fronty podle specifikace v m\u00edst\u011b ur\u010den\u00ed URI nen\u00ed podporov\u00e1no.
+INVALID_URI_ELEMENT_CWSIA0385.useraction=Ur\u010dete identifik\u00e1tor URI, kter\u00fd nepou\u017e\u00edv\u00e1 spr\u00e1vce front.
+
+# -------------------------------------------------------------------------------------------------
+# The code has entered an inconsistent state
+INTERNAL_ERROR_CWSIA0386=CWSIA0386E: Do\u0161lo k intern\u00ed chyb\u011b.
+INTERNAL_ERROR_CWSIA0386.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0386.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Found an escaped character which shouldn't have been escaped
+# {0} is the string containing the problem
+BAD_ESCAPE_CHAR_CWSIA0387=CWSIA0387E: \u0158et\u011bzec obsahoval nespr\u00e1vnou \u0159\u00eddic\u00ed posloupnost: {0}
+BAD_ESCAPE_CHAR_CWSIA0387.explanation=CMSG0001
+BAD_ESCAPE_CHAR_CWSIA0387.useraction=CMSG0002
+
+# MQRequestReplyUtils
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391=CWSIA0391E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it, proto\u017ee soubor JAR {1} nebyl nalezen.
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.useraction=CMSG0002
+
+# Common
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueSessionImpl - clone 0483 created for JmsTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0481=CWSIA0481E: Nen\u00ed povoleno volat metodu {0} ve t\u0159\u00edd\u011b {1}.
+INVALID_OP_FOR_CLASS_CWSIA0481.explanation=Aplikace volala metodu, kter\u00e1 nen\u00ed podporov\u00e1na ve specifikaci rozhran\u00ed JMS.
+INVALID_OP_FOR_CLASS_CWSIA0481.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueConnectionImpl - clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0482=CWSIA0482E: Prvek {0} nen\u00ed v t\u00e9to verzi podporov\u00e1n.
+UNSUPPORTED_FUNC_CWSIA0482.explanation=Aplikace se pokusila pou\u017e\u00edt funkci, kter\u00e1 nen\u00ed podporov\u00e1na aktu\u00e1ln\u00ed verz\u00ed softwaru.
+UNSUPPORTED_FUNC_CWSIA0482.useraction=Odeberte k\u00f3d, kter\u00fd se pokou\u0161\u00ed pou\u017e\u00edt tuto funkci nebo prove\u010fte aktualizaci na vy\u0161\u0161\u00ed verzi softwaru, pokud je k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0481 created for use in JmsQueueTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0483=CWSIA0483E: Nen\u00ed povoleno volat metodu {0} ve t\u0159\u00edd\u011b {1}.
+INVALID_OP_FOR_CLASS_CWSIA0483.explanation=Aplikace volala metodu, kter\u00e1 nen\u00ed podporov\u00e1na ve specifikaci rozhran\u00ed JMS.
+INVALID_OP_FOR_CLASS_CWSIA0483.useraction=Toto chov\u00e1n\u00ed odeberete zm\u011bnou aplika\u010dn\u00edho programu.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0482 created for use in JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0484=CWSIA0484E: Prvek {0} nen\u00ed v t\u00e9to verzi podporov\u00e1n.
+UNSUPPORTED_FUNC_CWSIA0484.explanation=Aplikace se pokusila pou\u017e\u00edt funkci, kter\u00e1 nen\u00ed podporov\u00e1na aktu\u00e1ln\u00ed verz\u00ed softwaru.
+UNSUPPORTED_FUNC_CWSIA0484.useraction=Odeberte k\u00f3d, kter\u00fd se pokou\u0161\u00ed pou\u017e\u00edt tuto funkci nebo prove\u010fte aktualizaci na vy\u0161\u0161\u00ed verzi softwaru, pokud je k dispozici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property or variable
+# {1} is the value of the property or variable
+INTERNAL_ERROR_CWSIA0499=CWSIA0499E: Do\u0161lo k intern\u00ed chyb\u011b. Hodnota {1} nen\u00ed platn\u00e1 pro parametr nebo prom\u011bnnou {0}.
+INTERNAL_ERROR_CWSIA0499.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0499.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIA0500=CWSIA0500E: {0}
+TEMPORARY_CWSIA0500.explanation=Dal\u0161\u00ed informace najdete v p\u0159ipojen\u00fdch chybov\u00fdch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIA0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the BytesMessage method that was called
+PROMISE_BROKEN_EXCEPTION_CWSIA0510=CWSIA0510E: Vol\u00e1n\u00ed metody BytesMessage {0} nejsou povolena, proto\u017ee byla povolena vlastnost tov\u00e1rny p\u0159ipojen\u00ed nebo specifikace aktivace ''producerDoesNotModifyPayloadAfterSet''.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.explanation=Producent zpr\u00e1v se zav\u00e1zal neupravovat informa\u010dn\u00ed obsahy zpr\u00e1vy po jejich nastaven\u00ed. Vol\u00e1n\u00ed ur\u010dit\u00fdch metod pro objekty zpr\u00e1v jsou pova\u017eov\u00e1ny za poru\u0161en\u00ed tohoto z\u00e1vazku.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.useraction=Upravte k\u00f3d aplikace odebr\u00e1n\u00edm vol\u00e1n\u00ed, kter\u00e9 z\u00e1vazek poru\u0161uje, nebo zm\u011b\u0148te volbu administrace, kter\u00e1 ur\u010duje dodr\u017eov\u00e1n\u00ed z\u00e1vazku. Nezapome\u0148te, \u017ee zak\u00e1z\u00e1n\u00ed volby administrace m\u016f\u017ee m\u00edt za n\u00e1sledek sn\u00ed\u017een\u00ed v\u00fdkonu.
+
+# -------------------------------------------------------------------------------------------------
+PROMISE_BROKEN_EXCEPTION_CWSIA0511=CWSIA0511E: Vol\u00e1n\u00ed metody BytesMessage.writeBytes(byte[]) v\u00edce ne\u017e jednou nen\u00ed povoleno, proto\u017ee byla povolena vlastnost tov\u00e1rny p\u0159ipojen\u00ed nebo specifikace aktivace 'producerDoesNotModifyPayloadAfterSet'.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.explanation=Producent zpr\u00e1v se zav\u00e1zal neupravovat informa\u010dn\u00ed obsahy zpr\u00e1vy po jejich nastaven\u00ed. V t\u00e9to situaci je povoleno pouze jedno vol\u00e1n\u00ed metody BytesMessage.writeBytes(byte[] hodnota).
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.useraction=Existuj\u00ed t\u0159i akce pro n\u00e1pravu probl\u00e9mu: 1) Upravte k\u00f3d aplikace odebr\u00e1n\u00edm vol\u00e1n\u00ed, kter\u00e9 z\u00e1vazek poru\u0161uje, 2) po prvn\u00edm vol\u00e1n\u00ed zavolejte metodu BytesMessage.clearBody(), nebo 3) zm\u011b\u0148te volbu administrace, kter\u00e1 ur\u010duje dodr\u017eov\u00e1n\u00ed z\u00e1vazku. Nezapome\u0148te, \u017ee zak\u00e1z\u00e1n\u00ed volby administrace m\u016f\u017ee m\u00edt za n\u00e1sledek sn\u00ed\u017een\u00ed v\u00fdkonu.
+# -------------------------------------------------------------------------------------------------
+# The error message CWSIA0512E is not required in JMS 2 feature,  it is moved to com.ibm.ws.cdi-1.2.jms project and some modifcation in wordings had done
+# {0} method name
+#JMSCONTEXT_INJECTED_CWSIA0512=CWSIA0512E: The method {0} is not permitted if the JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.explanation= A method was called that is not permitted if JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.useraction= Remove the call to the method.
+# -------------------------------------------------------------------------------------------------
+CREATECONTEXT_IN_CONTAINER_CWSIA0513=CWSIA0513E: Metodu createContext nesm\u00ed pou\u017e\u00edvat aplikace spu\u0161t\u011bn\u00e9 v kontejnerech Java EE web nebo EJB.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.explanation= Aplikaci by nem\u011blo b\u00fdt dovoleno vytv\u00e1\u0159et v\u00edce ne\u017e jeden aktivn\u00ed objekt relace pro ka\u017ed\u00e9 p\u0159ipojen\u00ed.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.useraction=Metodu createContext nelze pou\u017e\u00edt, je-li aplikace spu\u0161t\u011bna v kontejnerech Java EE web nebo EJB.
+# -------------------------------------------------------------------------------------------------
+# {0} the acknowledgement mode
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514=CWSIA0514E: Neplatn\u00fd re\u017eim potvrzen\u00ed {0}.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.explanation= Re\u017eim potvrzen\u00ed je neplatn\u00fd.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.useraction=Pou\u017eijte platn\u00fd re\u017eim potvrzen\u00ed.
+# -------------------------------------------------------------------------------------------------
+# {0} method name
+INVALID_METHOD_CWSIA0515=CWSIA0515E: Metody CompletionListener nesm\u00ed volat {0} na sv\u00fdch vlastn\u00edch objektech JMSContext, Session nebo Connection.
+INVALID_METHOD_CWSIA0515.explanation= Metody CompletionListener (onComplete/OnException) nesm\u00ed volat operace close, rollback nebo commit na sv\u00fdch vlastn\u00edch objektech JMSContext, Session nebo Connection. Pokud se pokus\u00edte volat tyto operace z vlastn\u00edch objekt\u016f JMSContext, Session nebo Connection, dojde k v\u00fdjimce, proto\u017ee poskytovatel JMS nepovol\u00ed tyto operace, dokud nebudou dokon\u010deny nekompletn\u00ed odes\u00edl\u00e1n\u00ed zpr\u00e1v.
+INVALID_METHOD_CWSIA0515.useraction= Nevolejte metodu {0} z vlastn\u00edch objekt\u016f JMSContext, Session nebo Connection.
+# -------------------------------------------------------------------------------------------------
+INVALID_MESSAGE_ACCESS_CWSIA0516=CWSIA0516E: K objekt\u016fm zpr\u00e1v nelze p\u0159istoupit v pr\u016fb\u011bhu asynchronn\u00edho odes\u00edl\u00e1n\u00ed.
+INVALID_MESSAGE_ACCESS_CWSIA0516.explanation= Podle specifikace JMS 2.0 nem\u016f\u017eete p\u0159istupovat k objekt\u016fm zpr\u00e1v, kdy\u017e je\u0161t\u011b prob\u00edh\u00e1 asynchronn\u00ed odes\u00edl\u00e1n\u00ed.
+INVALID_MESSAGE_ACCESS_CWSIA0516.useraction= Ujist\u011bte se, \u017ee jsou objekty zpr\u00e1v p\u0159\u00edstupn\u00e9 po vy\u0159e\u0161en\u00e9m asynchronn\u00edm odes\u00edl\u00e1n\u00ed, tj. po zavol\u00e1n\u00ed onCompletion nebo OnException.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0517=CWSIA0517E: MessageListener se nesm\u00ed pokusit volat metodu stop nad sv\u00fdm p\u0159ipojen\u00edm nebo kontextem JMSContext.
+INVALID_METHOD_CWSIA0517.explanation=Pokud se listener zpr\u00e1v pokus\u00ed zastavit sv\u00e9 vlastn\u00ed p\u0159ipojen\u00ed nebo kontext JMSContext, dojde k v\u00fdjimce.
+INVALID_METHOD_CWSIA0517.useraction= MessageListener nesm\u00ed volat metodu zastaven\u00ed pro sv\u00e9 vlastn\u00ed p\u0159ipojen\u00ed nebo JMSContext.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0518=CWSIA0518E: MessageListener se nesm\u00ed pokusit volat metodu close nad sv\u00fdm kontextem JMSContext, p\u0159ipojen\u00edm nebo relac\u00ed.
+INVALID_METHOD_CWSIA0518.explanation=Pokud se listener zpr\u00e1v pokus\u00ed zav\u0159\u00edt sv\u00e9 vlastn\u00ed p\u0159ipojen\u00ed, kontext JMSContext nebo relaci, dojde k v\u00fdjimce.
+INVALID_METHOD_CWSIA0518.useraction= MessageListener nesm\u00ed volat metodu close nad sv\u00fdm kontextem JMSContext, p\u0159ipojen\u00edm nebo relac\u00ed.
+# -------------------------------------------------------------------------------------------------

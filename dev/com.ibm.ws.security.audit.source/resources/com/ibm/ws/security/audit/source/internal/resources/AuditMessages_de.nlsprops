@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: Der Pr\u00fcfservice wird gerade gestartet.
+AUDIT_SERVICE_STARTING.explanation=Der Pr\u00fcfservice wird gerade gestartet. Dieser Vorgang kann mehrere Minuten dauern, falls eine einmalige Initialisierung durchgef\u00fchrt werden muss.
+AUDIT_SERVICE_STARTING.useraction=Es ist keine Aktion erforderlich.
+
+AUDIT_SERVICE_READY=CWWKS5851I: Der Pr\u00fcfservice ist bereit.
+AUDIT_SERVICE_READY.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+AUDIT_SERVICE_READY.useraction=Es ist keine Aktion erforderlich.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: Der Pr\u00fcfservice wurde gestoppt.
+AUDIT_SERVICE_STOPPED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+AUDIT_SERVICE_STOPPED.useraction=Es ist keine Aktion erforderlich.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: Der in der Ereigniskonfiguration des Pr\u00fcfhandlers angegebene Pr\u00fcfereignisname {0} wird nicht unterst\u00fctzt. Deshalb wurde der Pr\u00fcfservice gestoppt. \u00c4ndern Sie den Ereignisnamen in der Konfiguration des Pr\u00fcfhandlers {2} in einen der folgenden Ereignisnamen: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=Der in der Ereigniskonfiguration angegebene Pr\u00fcfereignisname ist falsch und der Pr\u00fcfservice wird gestoppt. Analysieren Sie die in der Nachricht enthaltene Ausnahme und geben Sie einen g\u00fcltigen Pr\u00fcfereignisnamen an.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Stellen Sie sicher, dass der in der Ereigniskonfiguration angegebene Pr\u00fcfereignisname g\u00fcltig ist.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: Der in der Ereigniskonfiguration des Pr\u00fcfhandlers angegebene Pr\u00fcferergebnisname {0} wird nicht unterst\u00fctzt. Deshalb wurde der Pr\u00fcfservice gestoppt. \u00c4ndern Sie den Ergebnisnamen in der Konfiguration des Pr\u00fcfhandlers {2} in einen der folgenden Ergebnisnamen: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=Der in der Ereigniskonfiguration angegebene Pr\u00fcfergebnisname ist falsch und der Pr\u00fcfservice wird gestoppt. Analysieren Sie die in der Nachricht enthaltene Ausnahme und geben Sie einen g\u00fcltigen Pr\u00fcfergebnisnamen an.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Stellen Sie sicher, dass der in der Ereigniskonfiguration angegebene Pr\u00fcfergebnisname g\u00fcltig ist.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: Die Ereigniskonfiguration des Pr\u00fcfhandlers ist nicht vollst\u00e4ndig. Deshalb wurde der Pr\u00fcfservice gestoppt. In der Konfiguration muss ein Ereignisname f\u00fcr das Ergebnis {0} angegeben werden. Geben Sie in der Konfiguration des Pr\u00fcfhandlers {1} einen der folgenden Ereignisnamen an: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=Der in der Ereigniskonfiguration angegebene Pr\u00fcfereignisname ist falsch oder er fehlt. Deshalb wird der Pr\u00fcfservice gestoppt. Analysieren Sie die in der Nachricht enthaltene Ausnahme und geben Sie einen g\u00fcltigen Pr\u00fcfereignisnamen an.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Ereignisname zusammen mit dem g\u00fcltigen Ergebnistyp angegeben wurde.

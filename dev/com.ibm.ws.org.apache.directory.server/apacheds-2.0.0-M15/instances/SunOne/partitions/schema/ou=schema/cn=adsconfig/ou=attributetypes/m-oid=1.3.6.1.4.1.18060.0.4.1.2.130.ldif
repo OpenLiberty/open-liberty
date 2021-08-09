@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.130,ou=attributeTypes,cn=adsconfig,ou=schema
+m-name: ads-interceptorId
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.130
+m-description: The Interceptor identifier
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-equality: caseExactMatch
+m-ordering: caseExactOrderingMatch
+m-substr: caseExactSubstringsMatch
+m-singlevalue: TRUE
+m-length: 0
+creatorsname: uid=admin,ou=system

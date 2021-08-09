@@ -1,0 +1,12 @@
+
+// Methods
+$_color-post: #208050;
+$_color-get: #1F6FF0;
+$_color-put: #B16303;
+$_color-delete: #E00707;
+$_color-head: #9012fe;
+$_color-patch: #166686;
+$_color-disabled: #ebebeb;
+$_color-options: #0d5aa7;
+
+$methods: (post: $_color-post),(get: $_color-get), (put: $_color-put),(delete: $_color-delete),(head: $_color-head),(patch: $_color-patch),(deprecated: $_color-disabled),(options: $_color-options)

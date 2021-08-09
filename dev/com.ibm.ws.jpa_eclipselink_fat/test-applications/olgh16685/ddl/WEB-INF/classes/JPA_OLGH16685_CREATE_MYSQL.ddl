@@ -1,0 +1,3 @@
+CREATE TABLE ${schemaname}.CriteriaCarOLGH16685 (CAR_ID VARCHAR(255) NOT NULL, CAR_VER INTEGER NOT NULL, PRIMARY KEY (CAR_ID, CAR_VER)) ENGINE = innodb;
+CREATE TABLE ${schemaname}.criteria_car_origin (CAR_ID VARCHAR(255), CAR_VER INTEGER, component VARCHAR(255) NOT NULL, origin VARCHAR(255)) ENGINE = innodb;
+CREATE INDEX ${schemaname}.I_CRTRRGN_CAR_ID ON ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER);

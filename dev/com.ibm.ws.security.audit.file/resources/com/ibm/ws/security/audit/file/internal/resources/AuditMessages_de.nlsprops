@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: Das System konnte die neue Datei {0} nicht erstellen.
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Die Anwendungsserverkomponente konnte eine Operation f\u00fcr eine erforderliche Ressource nicht ausf\u00fchren.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat und dass die Platte nicht voll ist. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: Das System konnte wegen der folgenden Ausnahme die Datei {0} nicht erstellen: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Das \u00d6ffnen der angegebenen Ressource ist fehlgeschlagen. In der Ausnahme ist die Fehlerursache angegeben.
+UNABLE_TO_CREATE_RESOURCE.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat und dass die Platte nicht voll ist. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: Das System konnte die Datei {0} nicht l\u00f6schen.
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Die Anwendungsserverkomponente konnte eine Operation f\u00fcr eine erforderliche Ressource nicht ausf\u00fchren.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat und dass die Platte nicht voll ist. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: Das System konnte wegen der folgenden Ausnahme die Datei {0} nicht l\u00f6schen: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Der Versuch, die angegebene Ressource zu l\u00f6schen, ist fehlgeschlagen. In der Ausnahme ist die Fehlerursache angegeben.
+UNABLE_TO_DELETE_RESOURCE.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Der Service f\u00fcr den Pr\u00fcfdateihandler wird gerade gestartet.
+AUDIT_FILEHANDLER_STARTING.explanation=Der Service f\u00fcr den Pr\u00fcfdateihandler wird gerade gestartet. Dieser Vorgang kann mehrere Minuten dauern, falls eine einmalige Initialisierung durchgef\u00fchrt werden muss.
+AUDIT_FILEHANDLER_STARTING.useraction=Es ist keine Aktion erforderlich.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: Der Service f\u00fcr den Pr\u00fcfdateihandler ist bereit.
+AUDIT_FILEHANDLER_READY.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+AUDIT_FILEHANDLER_READY.useraction=Es ist keine Aktion erforderlich.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: Der Service f\u00fcr den Pr\u00fcfdateihandler wurde gestoppt.
+AUDIT_FILEHANDLER_STOPPED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+AUDIT_FILEHANDLER_STOPPED.useraction=Es ist keine Aktion erforderlich.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: Der Pr\u00fcfservice kann nicht gestartet werden, weil die Pr\u00fcfungshandlerkonfiguration f\u00fcr die Verschl\u00fcsselung von Pr\u00fcfs\u00e4tzen nicht korrekt ist. Konfigurieren Sie die richtige Keystore-Referenz und einen Zertifikatsalias. Stellen Sie sicher, dass der von {1} referenzierte Keystore vorhanden ist und dass der Aliasname {0} des Zertifikats, das Sie zum Verschl\u00fcsseln der Pr\u00fcfs\u00e4tze verwenden, im Schl\u00fcsselspeicher vorhanden ist. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=Der Pr\u00fcfservice kann nicht gestartet werden, weil die Pr\u00fcfungshandlerkonfiguration f\u00fcr die Verschl\u00fcsselung von Pr\u00fcfs\u00e4tzen einen Fehler enth\u00e4lt. Weitere Informationen finden Sie in der Ausnahme in der vorherigen Fehlernachricht zur Serviceaktivierung. Geben Sie eine g\u00fcltige Keystore-Referenz an und stellen Sie sicher, dass der Zertifikatsalias auf ein Zertifikat verweist, das im Keystore vorhanden ist.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Stellen Sie sicher, dass in der Pr\u00fcfhandlerkonfiguration sowohl eine Keystore-Referenz als auch ein Zertifikatsalias f\u00fcr die Verschl\u00fcsselung von Pr\u00fcfs\u00e4tzen angegeben ist. Stellen Sie sicher, dass der Keystore vorhanden ist, dass das Kennwort korrekt angegeben ist und dass der Keystore das Zertifikat enth\u00e4lt, auf das der Zertifikatsalias f\u00fcr die Verschl\u00fcsselung verweist.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: Der Pr\u00fcfservice kann nicht gestartet werden, weil die Pr\u00fcfungshandlerkonfiguration f\u00fcr die Signatur von Pr\u00fcfs\u00e4tzen nicht korrekt ist. Konfigurieren Sie die richtige Keystore-Referenz und einen pers\u00f6nlichen Zertifikatsalias. Stellen Sie sicher, dass der von {1} referenzierte Keystore vorhanden ist und dass der Aliasname {0} des pers\u00f6nlichen Zertifikats, das Sie zum Signieren der Pr\u00fcfs\u00e4tze verwenden, im Schl\u00fcsselspeicher vorhanden ist. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=Der Pr\u00fcfservice kann nicht gestartet werden, weil die Pr\u00fcfungshandlerkonfiguration f\u00fcr die Signatur von Pr\u00fcfs\u00e4tzen einen Fehler enth\u00e4lt. Weitere Informationen finden Sie in der Ausnahme in der vorherigen Fehlernachricht zur Serviceaktivierung. Geben Sie eine g\u00fcltige Keystore-Referenz an und stellen Sie sicher, dass der pers\u00f6nliche Zertifikatsalias auf ein pers\u00f6nliches Zertifikat verweist, das im Keystore vorhanden ist.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Stellen Sie sicher, dass in der Pr\u00fcfhandlerkonfiguration sowohl eine Keystore-Referenz als auch ein pers\u00f6nliches Zertifikatsalias f\u00fcr die Signatur von Pr\u00fcfs\u00e4tzen angegeben ist. Stellen Sie sicher, dass der Keystore vorhanden ist, dass das Kennwort korrekt angegeben ist und dass der Keystore das pers\u00f6nliche Zertifikat enth\u00e4lt, auf das der Zertifikatsalias f\u00fcr die Signatur verweist.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: Der Pr\u00fcfservice kann nicht gestartet werden, weil ein Fehler aufgetreten ist, als der Service den Pr\u00fcfhandler initialisiert hat, um Pr\u00fcfs\u00e4tze zu verschl\u00fcsseln. Ausnahme: {0}
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=Der Pr\u00fcfservice kann nicht gestartet werden, da w\u00e4hrend der Initialisierung der Pr\u00fcfhandlerkonfiguration zum Verschl\u00fcsseln von Pr\u00fcfs\u00e4tzen ein Fehler aufgetreten ist. Weitere Informationen finden Sie in der Ausnahme in der Nachricht.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Sehen Sie sich die Ausnahme an, um die Fehlerursache zu bestimmen.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: Der Pr\u00fcfservice kann nicht gestartet werden, da ein Fehler aufgetreten ist, als der Service den Pr\u00fcfhandler initialisiert hat, um Pr\u00fcfs\u00e4tze zu signieren. Ausnahme: {0}
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=Der Pr\u00fcfservice kann nicht gestartet werden, da w\u00e4hrend der Initialisierung der Pr\u00fcfhandlerkonfiguration zum Signieren von Pr\u00fcfs\u00e4tzen ein Fehler aufgetreten ist. Weitere Informationen finden Sie in der Ausnahme in der Nachricht.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Sehen Sie sich die Ausnahme an, um die Fehlerursache zu bestimmen.

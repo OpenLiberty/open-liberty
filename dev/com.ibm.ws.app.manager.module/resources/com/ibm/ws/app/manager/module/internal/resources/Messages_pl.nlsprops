@@ -1,0 +1,52 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.module/resources/com/ibm/ws/app/manager/module/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.
+
+#{0} is the web module name
+error.cache.adapt=CWWKZ0107E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna adaptowa\u0107 pami\u0119ci podr\u0119cznej dla modu\u0142u WWW {0}.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+#{0} is the connector module name
+error.cache.adapt.connector=CWWKZ0108E: Mened\u017cer aplikacji nie mo\u017ce dostosowa\u0107 pami\u0119ci podr\u0119cznej dla modu\u0142u konektora {0}
+error.cache.adapt.connector.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas instalowania modu\u0142u konektora. Informacje o module nie zosta\u0142y dodane do pami\u0119ci podr\u0119cznej.
+error.cache.adapt.connector.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: Aplikacja {0} napotka\u0142a b\u0142\u0105d analizowania podczas przetwarzania deskryptora aplikacji {1}: {2}
+error.application.parse.descriptor.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora aplikacji.  Dla aplikacji nie b\u0119d\u0105 dost\u0119pne \u017cadne modu\u0142y.
+error.application.parse.descriptor.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y.  Przejrzyj tre\u015b\u0107 deskryptora aplikacji, aby upewni\u0107 si\u0119, \u017ce s\u0105 to poprawne dane XML.
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.

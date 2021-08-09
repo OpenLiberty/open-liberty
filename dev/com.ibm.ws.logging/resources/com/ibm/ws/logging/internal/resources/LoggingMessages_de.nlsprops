@@ -1,0 +1,165 @@
+###############################################################################
+# Copyright (c) 2011, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=FATAL
+ERROR=FEHLER
+AUDIT=AUDIT
+EVENT=EVENT
+DETAIL=DETAIL
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: Der Tracestatus wurde ge\u00e4ndert. Der neue Tracestatus ist {0}.
+MSG_TRACE_STATE_CHANGED.explanation=Es wurde eine Anforderung zum \u00c4ndern des aktuellen Tracestatus empfangen und verarbeitet.
+MSG_TRACE_STATE_CHANGED.useraction=Wenn der neue Tracestatus nicht der gew\u00fcnscht Tracestatus ist, \u00e4ndern Sie diesen wie gew\u00fcnscht.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: Die Datei {0} konnte w\u00e4hrend des Rollovers der Protokolldatei nicht in {1} umbenannt werden. Es wird versucht, den Dateiinhalt zu kopieren.
+MSG_ROLLOVER_RENAME_FAILED.explanation=Das Umbenennen der angegebenen Datei ist fehlgeschlagen. Wahrscheinlich greift ein anderer Prozess oder Thread auf die Protokolldatei zu. WebSphere versucht, die Rolloveroperation durch Kopieren des Inhalts der Protokolldatei durchzuf\u00fchren. Dieser Prozess ist langsamer, und alle Threads, die versuchen, auf das Protokoll zuzugreifen, werden w\u00e4hrend dieses Prozesses angehalten.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Stellen Sie fest, warum die Datei nicht umbenannt werden konnte, und beheben Sie den Fehler. Dazu m\u00fcssen Sie m\u00f6glicherweise andere Prozesse beenden, die auf dieselbe Protokolldatei zugreifen.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: Es ist keine Laufzeitinjektion eines detaillierten Methodentrace verf\u00fcgbar.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=Der Klassendateitransformer, der f\u00fcr das Hinzuf\u00fcgen des Methodentrace zust\u00e4ndig ist, konnte nicht installiert werden, weil keine passende java.lang.instrument.Instrumentation-Referenz abgerufen werden konnte.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Starten Sie den Server mit dem entsprechenden Befehlszeilenargument -javaagent.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: Die Laufzeitinjektion eines detaillierten Methodentrace f\u00fcr die Klasse {0} ist mit der Ausnahme {1} fehlgeschlagen.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=Bei der Injektion des detaillierten Methodentrace in die angegebene Klasse ist ein Fehler aufgetreten.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002                                                   
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: Die Tracestufe {0} f\u00fcr die Spezifikation {1} ist nicht g\u00fcltig. Die Tracespezifikation wird ignoriert.
+TRACE_STRING_BAD_LEVEL.explanation=Die f\u00fcr den angegebenen Gruppen-, Klassen- oder Paketnamen konfigurierte Tracestufe wurde nicht erkannt. Deshalb wird die Traceeinstellung f\u00fcr diesen Namen \u00fcbersprungen.
+TRACE_STRING_BAD_LEVEL.useraction=\u00dcberpr\u00fcfen Sie die Tracekonfiguration, und korrigieren Sie die Stufe in einen erkannten Wert. Die g\u00fcltigen Tracestufen sind in der Dokumentation aufgelistet. Zu den g\u00fcltigen Werten geh\u00f6ren 'all', 'info' und 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: Der Traceeinstellungswert {0} f\u00fcr die Spezifikation {1} wurde nicht erkannt. Die Tracespezifikation wird ignoriert.
+TRACE_STRING_BAD_ACTION.explanation=Der konfigurierte Traceeinstellungswert f\u00fcr den angegebenen Gruppen-, Klassen- oder Paketnamen konfigurierte Tracestufe wurde nicht erkannt. Deshalb wird die Traceeinstellung f\u00fcr diesen Namen \u00fcbersprungen.
+TRACE_STRING_BAD_ACTION.useraction=Es ist keine Aktion erforderlich, sofern der geplante Traceeinstellungswert nicht 'disabled' ist. In diesem Fall \u00fcberpr\u00fcfen Sie die Tracekonfiguration und korrigieren die Einstellung in 'disabled'.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: Das System konnte wegen der folgenden Ausnahme die Datei {0} nicht erstellen: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Das \u00d6ffnen der angegebenen Ressource ist fehlgeschlagen. In der Ausnahme ist die Fehlerursache angegeben.
+UNABLE_TO_CREATE_RESOURCE.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat und dass die Platte nicht voll ist. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: Das System konnte die neue Datei {0} nicht erstellen.
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Die Anwendungsserverkomponente konnte eine Operation f\u00fcr eine erforderliche Ressource nicht ausf\u00fchren.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat und dass die Platte nicht voll ist. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: Das System konnte die Datei {0} nicht l\u00f6schen.
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Die Anwendungsserverkomponente konnte eine Operation f\u00fcr eine erforderliche Ressource nicht ausf\u00fchren.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Stellen Sie sicher, dass der angegebene Dateiname ein g\u00fcltiger Dateiname ist. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat und dass die Platte nicht voll ist. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: Das System konnte wegen der folgenden Ausnahme die Datei {0} nicht l\u00f6schen: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Der Versuch, die angegebene Ressource zu l\u00f6schen, ist fehlgeschlagen. In der Ausnahme ist die Fehlerursache angegeben.
+UNABLE_TO_DELETE_RESOURCE.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme. Stellen Sie sicher, dass die Laufzeitumgebung des Anwendungsservers Schreibzugriff auf das Verzeichnis f\u00fcr die Ressource hat. Wenn Sie das Problem mithilfe dieser Schritte nicht beheben k\u00f6nnen, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: Der konfigurierte Tracestatus enth\u00e4lt die folgenden Spezifikationen, die mit keiner der Protokollfunktionen \u00fcbereinstimmen, die momentan im Server {0} registriert sind. Ignorieren Sie diese Nachricht, wenn die Tracespezifikationen {0} g\u00fcltig sind.
+UNKNOWN_TRACE_SPEC.explanation=Protokollfunktionen werden im Server registriert, wenn der Code, der sie erstellt, zum ersten Mal verwendet wird. Das System hat erkannt, dass bestimmte Tracespezifikationen auf Protokollfunktionen verweisen, die nicht im Server registriert sind. Die konfigurierten Tracespezifikationen gelten m\u00f6glicherweise f\u00fcr Protokollfunktionen, die noch nicht registriert wurden. Es ist aber auch m\u00f6glich, dass die Tracespezifikationen falsch eingegeben wurden. Diese Pr\u00fcfung wird jedes Mal durchgef\u00fchrt, wenn die Tracespezifikation in einem aktiven Server aktualisiert wird.
+UNKNOWN_TRACE_SPEC.useraction=Stellen Sie sicher, dass die Tracespezifikation ordnungsgem\u00e4\u00df konfiguriert wurde. Wenn die Tracespezifikationszeichenfolge keine Fehler enth\u00e4lt, ist keine Aktion erforderlich. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: Die folgenden Nachrichten werden aus den Dateien console.log und messages.log ausgeblendet: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Als auszublendend konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden jedoch in die Datei trace.log geschrieben. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Es ist keine Aktion erforderlich.
+
+MSG_ROUTER_UPDATED=TRAS0042I: Die Nachrichtenrouting-Gruppe {0} enth\u00e4lt die folgenden Nachrichten: {1}
+MSG_ROUTER_UPDATED.explanation=Der f\u00fcr die angegebene Nachrichtenrouting-Gruppe konfigurierte Satz von Nachrichten-IDs wurde ge\u00e4ndert. Der dieser Nachrichtenrouting-Gruppe momentan zugeordnete Satz von Nachrichten-IDs ist aufgelistet.
+MSG_ROUTER_UPDATED.useraction=Es ist keine Aktion erforderlich.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: Die Laufzeitinjektion eines detaillierten Methodentrace f\u00fcr die Klasse {0} ist mit der Ausnahme {1} fehlgeschlagen.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=Bei der Injektion des detaillierten Methodentrace in die angegebene Klasse ist ein Fehler aufgetreten.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Produktunterst\u00fctzungswebsite (http://www.ibm.com/software/webservers/appserv/was/support). 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Die folgenden Nachrichten werden aus den Dateien console.log und messages.log ausgeblendet: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Als auszublendend konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden in die Datei trace.log geschrieben. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Es ist keine Aktion erforderlich.
+
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt in ''{0}'' aktualisiert.
+MESSAGE_FORMAT_UPDATED.explanation=Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt aktualisiert.
+MESSAGE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in ''{0}'' aktualisiert.
+CONSOLE_FORMAT_UPDATED.explanation=Das Konsolenausgabeformat wurde jetzt aktualisiert.
+CONSOLE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Die folgenden Nachrichten werden nicht in die Datei console.log geschrieben: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Als verdeckte Nachrichten konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden in der Bin\u00e4rprotokollierung in die Protokoll- und Tracedatenrepositorys geschrieben. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Es ist keine Aktion erforderlich.
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Die Nachricht konnten kann nicht in die Datei {0} geschrieben werden.
+FAILED_TO_WRITE_LOG.explanation=Beim Schreiben einer Nachricht in die Datei ist ein Fehler aufgetreten. 
+FAILED_TO_WRITE_LOG.useraction=Stellen Sie sicher, dass das Verzeichnis vorhanden und modifizierbar ist und \u00fcber ausreichenden Plattenspeicherplatz verf\u00fcgt.
+
+LOG_FILE_RESUMED=TRAS3006I: Die Protokollierung von Nachrichten in der Datei {0} wurde wieder aufgenommen.
+LOG_FILE_RESUMED.explanation=Es k\u00f6nnen Nachrichten in die Datei geschrieben werden.
+LOG_FILE_RESUMED.useraction=Es ist keine Aktion erforderlich.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen ist nicht korrekt formatiert.
+JSON_FIELDS_FORMAT_WARNING.explanation=Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen ist nicht korrekt formatiert.
+JSON_FIELDS_FORMAT_WARNING.useraction=Stellen Sie sicher, dass das Format der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen korrekt ist. Die Zuordnung von JSON-Feldnamen kann auf verschiedene Arten angegeben werden. Hinweise hierzu finden Sie in der Dokumentation zur Protokollierungskonfiguration.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen enth\u00e4lt zu viele oder zu wenige Token in einem Eintrag.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen muss das folgende Format haben: defaultFieldName:newFieldName oder source:defaultFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=Die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen muss das folgende Format haben: defaultFieldName:newFieldName oder source:defaultFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Der angegebene Name f\u00fcr das JSON-Protokollierungsfeld entspricht nicht den bekannten Feldnamen f\u00fcr die angegebenen Quellen.
+JSON_FIELDS_NO_MATCH.explanation=Der angegebene Name f\u00fcr das JSON-Protokollierungsfeld entspricht nicht den bekannten Feldnamen.
+JSON_FIELDS_NO_MATCH.useraction=Geben Sie einen JSON-Protokollierungsfeldnamen an, der einem der bekannten Felder (z. B. message, ibm_datetime, ibm_sequence) entspricht.
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Die Quellenkennung f\u00fcr die Zuordnung des angegebenen JSON-Protokollierungsfelds stimmt nicht mit einer der bekannten Quellen \u00fcberein.
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Zu den akzeptierten Quellen geh\u00f6ren message, trace, accessLog, ffdc, audit
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Zu den akzeptierten Quellen geh\u00f6ren message, trace, accessLog, ffdc, audit
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Es wurde ein ung\u00fcltiges Zeichen in der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen angegeben.
+JSON_FIELDS_INVALID_CHARACHTER.explanation= In der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen k\u00f6nnen Sie nur Buchstaben, Zahlen und : (Doppelpunkt) angeben.
+JSON_FIELDS_INVALID_CHARACHTER.useraction= \u00c4ndern Sie den Wert f\u00fcr die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen und entfernen Sie die ung\u00fcltigen Zeichen.
+
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Der Headername fehlt f\u00fcr eines oder mehrere accessLogging logFormat-Felder: {0}.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Die JSON-Protokollierung verwendet das Attribut logFormat aus accessLogging, um auszuw\u00e4hlen, welche http_access.log-Nachrichtenfelder einbezogen werden sollen. Ein Headername muss angegeben werden, wenn die Felder %i oder %o im accessLogging logFormat-Attribut verwendet werden.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Geben Sie einen Headernamen f\u00fcr das Feld im Attribut accessLogging logFormat an.
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

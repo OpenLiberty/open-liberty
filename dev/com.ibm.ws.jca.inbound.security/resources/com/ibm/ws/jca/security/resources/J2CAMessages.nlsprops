@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: The WorkManager was unable to populate the execution subject with the caller principal or credentials necessary to establish the security context for this work instance.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=The JASPIC callback handler of the WorkManager failed to populate the principal or custom credentials of the execution subject because an exception occurred while processing the JASPIC callbacks supplied by the resource adapter.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=Check the FFDC and server logs that were emitted immediately prior to message J2CA0672E to determine the cause. If the cause cannot be determined from the prior error messages, collect diagnostic data and visit the IBM support web site for more information.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: The execution subject provided by the WorkManager does not match the subject supplied by the {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=The instance of the execution subject provided by the WorkManager to establish the security context of the Work instance is not the same instance obtained from the respective callback. The WorkManager ignored the subject obtained from the callback and continued to establish the security context using the instance it provided.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Contact the resource adapter vendor to modify the JASPIC callback's getSubject() method to return the execution subject provided to the SecurityContext instance through the call to method setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: The JASPIC callback handler of the WorkManager failed with exception {0} while handling the callbacks provided by the security context. The exception message is {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=The WorkManager encountered an exception while handling the JASPIC callbacks provided by the resource adapter within the transferred security context. The exception can be of the following cases: 1) A CallerPrincipalCallback provided a principal with a user name that does not exist in the user registry. 2) A PasswordValidationCallback provided a invalid user name or password. 3) A CallerPrincipalCallback and a PasswordValidationCallback provided different user names. 4) The resource adapter provided a callback that the application server does not currently support. 5) The resource adapter provided more than one CallerPrincipalCallback.  6) The WorkManager encountered an unexpected error.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=If the exception message has an error code then check the user action for that error code. If the exception is an UnsupportedCallbackException then contact the resource adapter vendor because the JASPIC callback handler of the WorkManager does not currently support the provided callback. If the exception is not any of the problems mentioned, collect diagnostic data and refer to the IBM support site for additional information.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: Group {0} does not belong to the domain associated to the application.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=The security context transferred with the work instance provided a group name that does not exist in the realm (user registry) of the security domain associated to the application.  The WorkManager obtained the invalid group name from an instance of a JASPIC GroupPrincipalCallback, whenever an instance is supplied by the resource adapter.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Check if the group is from the same realm by confirming the group existence in the user registry for that realm.If the group is from a different realm, contact the resource adapter vendor because the WorkManager does not support groups from different realms.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: No groups were found for the user with the uniqueId {0}
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=The security context transferred with the work instance provided a user that does not belong to any of the groups defined in the user registry.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=There is no user action required.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: The user name {0} or password provided by the PasswordValidationCallback is invalid.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=The user name and password do not exist in the user registry of the realm that is configured for the security domain associated with the application.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Configure the resource adapter and enterprise information system to use a valid user name and password. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Unable to validate the user name {0} and password that is provided by the PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=The WorkManager was not able to validate the user name and password that is provided by the PasswordValidationCallback because of a CustomRegistryException. This exception is caused by an invalid password or a problem with the user registry for that application realm.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=If the cause of the CustomRegistryException is an invalid password, configure the resource adapter or enterprise information system to use a valid user name and password combination. Otherwise resolve the problem with the user registry.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: The user name {0}, provided by the PasswordValidationCallback, and the user name {1}, provided by the CallerPrincipalCallback, do not match.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=User names provided by the PasswordValidationCallback and the CallerPrincipalCallback must match. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Contact the resource adapter vendor and the system administrator to ensure that the resource adapter is designed and configured to return the same user name from the two callbacks.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: The WorkManager was unable to associate the provided SecurityContext to the Work instance.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=The WorkManager encountered a problem while establishing and setting up the security context for the inbound Work request. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=Check the FFDC and server logs for messages J2CA0668E and J2CA0669E to determine the cause.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: Method {0} caught exception {1}.
+METHOD_FAILED_J2CA0132.explanation=The method caught an exception that is most likely an internal error.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

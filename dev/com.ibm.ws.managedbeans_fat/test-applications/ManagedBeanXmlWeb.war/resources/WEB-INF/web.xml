@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0"
+         metadata-complete="true">
+
+  <display-name>ManagedBeanXmlServlet Metadata-Complete</display-name>
+
+  <servlet>
+    <servlet-name>ManagedBeanXmlServlet</servlet-name>
+    <servlet-class>com.ibm.ws.managedbeans.fat.xml.ejb.web.ManagedBeanXmlServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ManagedBeanXmlServlet</servlet-name>
+    <url-pattern>/ManagedBeanXmlServlet</url-pattern>
+  </servlet-mapping>
+
+  <resource-env-ref>
+    <resource-env-ref-name>ivNMB</resource-env-ref-name>
+    <resource-env-ref-type>com.ibm.ws.managedbeans.fat.xml.ejb.web.NamedManagedBean</resource-env-ref-type>
+    <injection-target>
+      <injection-target-class>com.ibm.ws.managedbeans.fat.xml.ejb.web.ManagedBeanXmlServlet</injection-target-class>
+      <injection-target-name>ivNMB</injection-target-name>
+    </injection-target>
+    <lookup-name>java:module/NamedManagedBean</lookup-name>
+  </resource-env-ref>
+  <resource-env-ref>
+    <resource-env-ref-name>ivSMB</resource-env-ref-name>
+    <resource-env-ref-type>com.ibm.ws.managedbeans.fat.xml.ejb.web.SimpleManagedBean</resource-env-ref-type>
+    <injection-target>
+      <injection-target-class>com.ibm.ws.managedbeans.fat.xml.ejb.web.ManagedBeanXmlServlet</injection-target-class>
+      <injection-target-name>ivSMB</injection-target-name>
+    </injection-target>
+  </resource-env-ref>
+</web-app>

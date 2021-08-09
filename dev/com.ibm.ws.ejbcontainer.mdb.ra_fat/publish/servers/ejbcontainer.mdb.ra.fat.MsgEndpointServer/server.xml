@@ -1,0 +1,159 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>mdb-3.2</feature>
+        <feature>jms-2.0</feature>
+        <feature>jca-1.7</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <transaction totalTranLifetimeTimeout="30m"/>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <application id="MsgEndpointApp" name="MsgEndpointApp" type="ear" location="MsgEndpointApp.ear">
+        <classloader commonLibraryRef="AdapterLib,global"/>
+    </application>
+	
+    <library id="AdapterLib">
+        <fileset dir="${server.config.dir}/ralib" includes="AdapterForEJB.jar"/>
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+    
+    <resourceAdapter id="AdapterForEJB" location="${server.config.dir}/connectors/AdapterForEJB.rar">
+        <classloader commonLibraryRef="AdapterLib"/>
+        <customize suffix="MessageProvider" interface="com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessageProvider"/>
+        <customize suffix="BaseMessageProvider" interface="com.ibm.ws.ejbcontainer.fat.rar.message.FVTBaseMessageProvider"/>
+    </resourceAdapter>
+
+    <connectionFactory jndiName="jdbc/FAT_TRA_DS">
+        <properties.AdapterForEJB/>
+    </connectionFactory>
+
+    <adminObject jndiName="tra/MessageProvider">
+        <properties.AdapterForEJB.MessageProvider/>
+    </adminObject>
+
+    <adminObject jndiName="tra/BaseMessageProvider">
+        <properties.AdapterForEJB.BaseMessageProvider/>
+    </adminObject>
+
+    <activationSpec id="ejb/ConcurBMTNonJMS">
+        <properties.AdapterForEJB.MessageListener name="ConcurBMTNonJMS"/>
+    </activationSpec>
+
+    <activationSpec id="ejb/ConcurCMTNonJMSRequired">
+        <properties.AdapterForEJB.MessageListener name="ConcurCMTNonJMSRequired"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/ConcurCMTNonJMSNotSupported">
+        <properties.AdapterForEJB.MessageListener name="ConcurCMTNonJMSNotSupported"/>
+    </activationSpec>
+    
+    <jmsActivationSpec id="ejb/EndpointBMTJMS">
+        <properties.AdapterForEJB name="BMTJMS"/>
+    </jmsActivationSpec>
+
+    <jmsActivationSpec id="ejb/EndpointBMTJMSAutoStartFalse" autoStart="false">
+        <properties.AdapterForEJB name="BMTJMSAutoStartFalse"/>
+    </jmsActivationSpec>
+
+    <jmsActivationSpec id="ejb/EndpointCMTJMSRequired">
+        <properties.AdapterForEJB name="CMTJMSRequired"/>
+    </jmsActivationSpec>
+
+    <jmsActivationSpec id="ejb/EndpointCMTJMSNotSupported">
+        <properties.AdapterForEJB name="CMTJMSNotSupported"/>
+    </jmsActivationSpec>
+    
+    <activationSpec id="ejb/EndpointBMTNonJMS" autoStart="true">
+        <properties.AdapterForEJB.MessageListener name="BMTNonJMS"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointBMTNonJMSNeverStarted" autoStart="false">
+        <properties.AdapterForEJB.MessageListener name="BMTNonJMSNeverStarted"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointBMTNonJMSFalseResume" autoStart="false">
+        <properties.AdapterForEJB.MessageListener name="BMTNonJMSFalseResume"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointBMTNonJMSAutoStartFalse" autoStart="false">
+        <properties.AdapterForEJB.MessageListener name="BMTNonJMSAutoStartFalse"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointCMTNonJMSRequired">
+        <properties.AdapterForEJB.MessageListener name="CMTNonJMSRequired"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointCMTNonJMSNotSupported">
+        <properties.AdapterForEJB.MessageListener name="CMTNonJMSNotSupported"/>
+    </activationSpec>
+    
+    <jmsActivationSpec id="ejb/MDBBean">
+        <properties.AdapterForEJB name="MDBBean"/>
+    </jmsActivationSpec>
+    
+    <jmsActivationSpec id="ejb/MDBTimedCMTBean">
+        <properties.AdapterForEJB name="MDBTimedCMTBean"/>
+    </jmsActivationSpec>
+    
+    <jmsActivationSpec id="ejb/MDBTimedBMTBean">
+        <properties.AdapterForEJB name="MDBTimedBMTBean"/>
+    </jmsActivationSpec>
+    
+    <jmsActivationSpec id="ejb/MDBTimedCMTFailBean">
+        <properties.AdapterForEJB name="MDBTimedCMTFailBean"/>
+    </jmsActivationSpec>
+    
+    <jmsActivationSpec id="ejb/MDBTimedBMTFailBean">
+        <properties.AdapterForEJB name="MDBTimedBMTFailBean"/>
+    </jmsActivationSpec>
+    
+    <activationSpec id="ejb/ConcurBMTException">
+        <properties.AdapterForEJB.MessageListener name="ConcurBMTException"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/ConcurCMTExceptionRequired">
+        <properties.AdapterForEJB.MessageListener name="ConcurCMTExceptionRequired"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/ConcurCMTExceptionNotSupported">
+        <properties.AdapterForEJB.MessageListener name="ConcurCMTExceptionNotSupported"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointBMTException">
+        <properties.AdapterForEJB.MessageListener name="EndpointBMTException"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointCMTExceptionRequired">
+        <properties.AdapterForEJB.MessageListener name="EndpointCMTExceptionRequired"/>
+    </activationSpec>
+    
+    <activationSpec id="ejb/EndpointCMTExceptionNotSupported">
+        <properties.AdapterForEJB.MessageListener name="EndpointCMTExceptionNotSupported"/>
+    </activationSpec>
+
+    <activationSpec id="ejb/EndpointCMTRollbackRequired">
+        <properties.AdapterForEJB.MessageListener name="EndpointCMTRollbackRequired"/>
+    </activationSpec>
+
+    <!-- Permissions required by AdapterForEJB -->
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+
+    <!-- Permissions required by Derby -->
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+
+</server>

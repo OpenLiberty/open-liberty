@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:bnd="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	attributeFormDefault="unqualified" version="1.0">
+
+	<!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+			Copyright (c) 2010 IBM Corporation and others.
+			All rights reserved. This program and the accompanying materials
+			are made available under the terms of the Eclipse Public License v1.0
+			which accompanies this distribution, and is available at
+			http://www.eclipse.org/legal/epl-v10.html
+
+			Contributors:
+				IBM Corporation - initial API and implementation
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+	<xsd:include schemaLocation="ibm-common-bnd_1_1.xsd" />
+
+	<!-- ******************************************************* -->
+
+	<xsd:element name="managed-bean-bnd" type="managed-bean-bndType">
+		<xsd:annotation>
+			<xsd:documentation>
+
+				The root of the managed-bean-web-bnd deployment
+				descriptor.
+
+			</xsd:documentation>
+
+		</xsd:annotation>
+
+		<xsd:unique name="unique-managed-bean-class">
+			<xsd:selector xpath="bnd:managed-bean" />
+			<xsd:field xpath="@class" />
+		</xsd:unique>
+
+		<xsd:unique name="unique-interceptor-class">
+			<xsd:selector xpath="bnd:interceptor" />
+			<xsd:field xpath="@class" />
+		</xsd:unique>
+
+	</xsd:element>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="managed-bean-bndType">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="managed-bean" type="managed-beanType">
+					<xsd:unique name="unique-managed-bean-ref-name">
+						<xsd:selector xpath="bnd:ejb-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+					<xsd:unique name="unique-managed-bean-resource-ref-name">
+						<xsd:selector xpath="bnd:resource-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+					<xsd:unique name="unique-managed-bean-resource-env-ref-name">
+						<xsd:selector xpath="bnd:resource-env-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+					<xsd:unique name="unique-managed-bean-message-destination-ref-name">
+						<xsd:selector xpath="bnd:message-destination-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+				</xsd:element>
+
+				<xsd:element name="interceptor" type="interceptorType">
+					<xsd:unique name="unique-interceptor-ejb-ref-name">
+						<xsd:selector xpath="bnd:ejb-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+					<xsd:unique name="unique-interceptor-resource-ref-name">
+						<xsd:selector xpath="bnd:resource-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+					<xsd:unique name="unique-interceptor-resource-env-ref-name">
+						<xsd:selector xpath="bnd:resource-env-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+					<xsd:unique name="unique-interceptor-message-destination-ref-name">
+						<xsd:selector xpath="bnd:message-destination-ref" />
+						<xsd:field xpath="@name" />
+					</xsd:unique>
+				</xsd:element>
+
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:string" fixed="1.0"
+			use="required" />
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="managed-beanType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Specifies the binding for a managed bean. The class
+				attribute specifies the fully qualified name of the managed bean.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="ref-bindingsGroup" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+		<xsd:attribute name="class" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+</xsd:schema>

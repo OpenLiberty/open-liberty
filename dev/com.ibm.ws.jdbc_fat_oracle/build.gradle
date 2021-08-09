@@ -1,0 +1,67 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: "../wlp-gradle/subprojects/maven-central-mirror.gradle"
+
+ext.oracleVersion = '21.1.0.0'
+
+configurations {
+  oracle	{transitive = false}
+  oraclessl	{transitive = false}
+  ucp     	{transitive = false}
+}
+
+dependencies {
+  oracle        "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}"
+  oraclessl     "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}",
+               	"com.oracle.database.security:oraclepki:${oracleVersion}",
+               	"com.oracle.database.security:osdt_core:${oracleVersion}",
+               	"com.oracle.database.security:osdt_cert:${oracleVersion}"				
+  ucp           "com.oracle.database.jdbc:ucp:${oracleVersion}"
+}
+
+task copyAnonymousOracle(type: Copy) {
+  shouldRunAfter jar
+  from configurations.oracle
+  into new File(autoFvtDir, "publish/shared/resources/oracle/")
+  rename "ojdbc8_g-.*.", "oracleunknown.jar"
+}
+
+task copySharedOracle(type: Copy) {
+  shouldRunAfter jar
+  from configurations.oracle
+  into new File(autoFvtDir, "publish/shared/resources/ucp/")
+  rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
+}
+
+task copySharedUCP(type: Copy) {
+  shouldRunAfter jar
+  from configurations.ucp
+  into new File(autoFvtDir, "publish/shared/resources/ucp/")
+  rename "ucp-.*.", "ucp.jar"
+}
+
+task copySharedOracleSSL(type: Copy) {
+  shouldRunAfter jar
+  from configurations.oraclessl
+  into new File(autoFvtDir, "publish/shared/resources/ssl/")
+  rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
+  rename "oraclepki.*.", "oraclepki.jar"
+  rename "osdt_core.*.", "osdt_core.jar"
+  rename "osdt_cert.*.", "osdt_cert.jar"
+}
+
+addRequiredLibraries {
+  dependsOn copySharedOracle
+  dependsOn copySharedUCP
+  dependsOn copyAnonymousOracle
+  dependsOn copySharedOracleSSL
+  dependsOn copyTestContainers
+}

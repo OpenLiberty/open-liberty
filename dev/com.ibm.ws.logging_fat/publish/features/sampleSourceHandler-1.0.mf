@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Subsystem-ManifestVersion: 1
+IBM-ShortName: sampleSourceHandler-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.sampleSourceHandler-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content:  sample.source.handler;  version="[1,1.0.100)" ,  ffdc.source.handler;  version="[1,1.0.100)",  message.source.handler;  version="[1,1.0.100)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Localization: OSGI-INF/l10n/subsystem 

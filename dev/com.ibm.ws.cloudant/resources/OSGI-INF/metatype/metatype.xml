@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2016 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="com.ibm.ws.cloudant.cloudant">
+  <Object ocdref="com.ibm.ws.cloudant.cloudant"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.cloudant.cloudant" ibm:alias="cloudant" name="%cloudant" description="%cloudant.desc" ibmui:localization="OSGI-INF/l10n/metatype">
+   <!-- Standard properties -->
+   <AD id="jndiName"                    type="String"  required="false"  name="%jndiName"           description="%jndiName.desc" ibm:unique="jndiName" />
+   <AD id="url"                         type="String"  required="false"  name="%url"                description="%url.desc" />
+   <AD id="account"                     type="String"  required="false"  name="%account"            description="%account.desc" />
+   <AD id="containerAuthDataRef"        type="String"  required="false"  name="%cntrAuth"           description="%cntrAuth.desc"     cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config"/>
+   <AD id="containerAuthData.target"    type="String"                    name="internal"            description="internal use only" ibm:final="true" default="(service.pid=${containerAuthDataRef})"/>
+   <AD id="containerAuthData.cardinality.minimum"      type="String"  default="${count(containerAuthDataRef)}" ibm:final="true" name="internal" description="internal use only"/>
+   <AD id="libraryRef"                  type="String"  required="true"   name="%libraryRef"         description="%libraryRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" />
+   <AD id="library.target"              type="String"  required="true"   name="internal"            description="internal use only" default="(service.pid=${libraryRef})" ibm:final="true" />
+   <AD id="username"                    type="String"  required="false"  name="%username"           description="%username.desc" />
+   <AD id="password"                    type="String"  required="false"  name="%password"           description="%password.desc"          ibm:type="password" />
+   <!-- Advanced -->
+   <AD id="connectTimeout"              type="String"  required="false"  name="%connectionTimeout"  ibmui:group="Advanced"  description="%connectionTimeout.desc" default="5m" ibm:type="duration" />
+   <AD id="disableSSLAuthentication"    type="Boolean" default="false"   name="%disableSSLAuth"     ibmui:group="Advanced"  description="%disableSSLAuth.desc"/>
+   <AD id="maxConnections"              type="Integer" required="false"  name="%maxConnections"     ibmui:group="Advanced"  description="%maxConnections.desc"    default="6" min="0" />
+   <AD id="proxyUrl"                    type="String"  required="false"  name="%proxyURL"           ibmui:group="Advanced"  description="%proxyURL.desc" />
+   <AD id="proxyUser"                   type="String"  required="false"  name="%proxyUser"          ibmui:group="Advanced"  description="%proxyUser.desc" />
+   <AD id="proxyPassword"               type="String"  required="false"  name="%proxyPass"          ibmui:group="Advanced"  description="%proxyPass.desc" ibm:type="password" />
+   <AD id="readTimeout"                 type="String"  required="false"  name="%readTimeout"        ibmui:group="Advanced"  description="%readTimeout.desc" default="5m" ibm:type="duration" />
+   <AD id="sslRef"                      type="String"  required="false"  name="%sslRef"             ibmui:group="Advanced"  description="%sslRef.desc" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire" ibmui:requiresFalse="disableSSLAuthentication"/>
+   <AD id="ssl.target"                  type="String"  required="false"  name="internal"            description="internal use only" ibm:final="true" default="(service.pid=${sslRef})"/>
+   <AD id="ssl.cardinality.minimum"     type="String"  required="false"  name="internal"            description="internal use only" ibm:final="true" default="${count(sslRef)}" />
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.cloudant.cloudantDatabase">
+  <Object ocdref="com.ibm.ws.cloudant.cloudantDatabase"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.cloudant.cloudantDatabase" ibm:alias="cloudantDatabase" name="%cloudantdb" description="%cloudantdb.desc" ibmui:localization="OSGI-INF/l10n/metatype">
+   <AD id="jndiName"                    type="String"  required="false"  name="%jndiName"     description="%jndiName.desc" ibm:unique="jndiName" />
+   <AD id="cloudantRef"                 type="String"  required="true"   name="%cloudantRef"  description="%cloudantRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.cloudant.cloudant" cardinality="1" />
+   <AD id="CloudantService.target"      type="String"  default="(service.pid=${cloudantRef})" ibm:final="true" name="internal" description="internal use only"/>
+   <AD id="create"                      type="Boolean" default="true"    name="%create"       description="%create.desc" />
+   <AD id="databaseName"                type="String"  required="true"   name="%databaseName" description="%databaseName.desc" />
+ </OCD>
+
+</metatype:MetaData>

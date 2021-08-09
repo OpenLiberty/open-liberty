@@ -1,0 +1,59 @@
+<server>
+	<application
+		type="war"
+		id="microProfileLoginConfig_MpJwtInWebXml_MpJwtInApp"
+		name="microProfileLoginConfig_MpJwtInWebXml_MpJwtInApp"
+		location="${server.config.dir}/apps/microProfileLoginConfig_MpJwtInWebXml_MpJwtInApp.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileLoginConfig_MpJwtInWebXml_BasicInApp"
+		name="microProfileLoginConfig_MpJwtInWebXml_BasicInApp"
+		location="${server.config.dir}/apps/microProfileLoginConfig_MpJwtInWebXml_BasicInApp.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileLoginConfig_MpJwtInWebXml_NotInApp"
+		name="microProfileLoginConfig_MpJwtInWebXml_NotInApp"
+		location="${server.config.dir}/apps/microProfileLoginConfig_MpJwtInWebXml_NotInApp.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+</server>    

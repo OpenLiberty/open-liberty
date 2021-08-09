@@ -1,0 +1,2 @@
+bootstrap.include=../testports.properties
+PRODUCT_EXTENSIONS_ADDED_BY_EMBEDDER=prodA\ncom.ibm.producta\nproducts3/productA

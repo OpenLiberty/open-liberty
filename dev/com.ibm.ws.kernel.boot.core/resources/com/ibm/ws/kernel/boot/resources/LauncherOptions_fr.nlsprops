@@ -1,0 +1,142 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=Syntaxe : java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName [actions] [options]  
+scriptUsage=Syntaxe : {0} action nomServeur [options]
+
+use.actions=Actions :
+use.options=Options :
+use.jvmarg=Options JVM :
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# ServerName
+processName.key=\ \ \ \ serverName
+processName.desc=\tNom localement unique d\u00e9signant le serveur ; il peut contenir     \n\
+\tdes caract\u00e8res alphanum\u00e9riques Unicode (A-Za-z0-9), le trait de   \n\
+\tsoulignement (_), le tiret (-), le signe plus (+) et le point (.). Un nom de serveur \
+\n \tne peut jamais commencer par un tiret (-) ou un point (.).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# JavaAgent 
+javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
+javaAgent.desc=\tOption de JVM d\u00e9signant un agent pour l'instrumentation.   \n\
+\tL'ex\u00e9cution (runtime) utilise l'instrumentation pour recueillir des  \n\
+\tdonn\u00e9es de trace et d'autres informations de d\u00e9bogage. L'archive     \n\
+\tbootstrap-agent.jar doit se trouver dans le m\u00eame r\u00e9pertoire que le   \n\
+\tfichier jar utilis\u00e9 pour lancer le runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Actions: create, stop, version, package, dump
+action-key.create=\ \ \ \ --create
+action-desc.create=\tCr\u00e9e un nouveau serveur si le serveur sp\u00e9cifi\u00e9 n'existe pas. \n\
+\tL'option --template permet de sp\u00e9cifier un mod\u00e8le \u00e0 utiliser      \n\
+\tlors de la cr\u00e9ation d'un nouveau serveur.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.list=\ \ \ \ --list
+action-desc.list=\tListe des serveurs d'applications de profil Liberty qui sont d\u00e9finis.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.start=\ \ \ \ --start
+action-desc.start=\tD\u00e9marre le serveur d\u00e9sign\u00e9.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.run=\ \ \ \ --run
+action-desc.run=\tEx\u00e9cute le serveur nomm\u00e9 en avant-plan de la console.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.debug=\ \ \ \ --debug
+action-desc.debug=\tEx\u00e9cute le serveur nomm\u00e9 en avant-plan de la console apr\u00e8s qu'un d\u00e9bogueur\n\
+\tse connecte au port de d\u00e9bogage (par d\u00e9faut : 7777).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.status=\ \ \ \ --status
+action-desc.status=\tV\u00e9rifie l'\u00e9tat du serveur d\u00e9sign\u00e9.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.stop=\ \ \ \ --stop
+action-desc.stop=\tArr\u00eate l'instance active du serveur d\u00e9sign\u00e9.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.version=\ \ \ \ --version
+action-desc.version=\tAffiche les informations de version du serveur et quitte.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.package=\ \ \ \ --package
+action-desc.package=\tPermet d'empaqueter un serveur dans une archive. L'option \
+--archive peut \u00eatre utilis\u00e9e.    \n\
+\tL'option --include peut \u00eatre utilis\u00e9e avec les valeurs "all", "usr", "minify", \n\
+\t"wlp", "runnable", "all,runnable" et "minify,runnable". Les valeurs \n\
+\t"runnable" et "all,runnable" sont \u00e9quivalentes. La valeur "runnable" \n\
+\tfonctionne avec les archives de type "jar" uniquement.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.dump=\ \ \ \ --dump
+action-desc.dump=\tCollecte des donn\u00e9es de diagnostic du serveur et les place dans une archive. L'option \n\
+\t--archive peut \u00eatre utilis\u00e9e.  L'option --include peut \u00eatre utilis\u00e9e avec\n\
+\tles valeurs "heap", "system" "thread".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.javadump=\ \ \ \ --javadump
+action-desc.javadump=\tVide les informations de diagnostic du serveur JVM. L'option --include\n\
+\tpeut \u00eatre utilis\u00e9e avec les valeurs "heap" et "system".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.help=\ \ \ \ --help
+action-desc.help=\tImpression des informations d'aide.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.pause=\ \ \ \ --pause
+action-desc.pause=\tMet en pause tous les composants du serveur dont la mise en pause est possible. \n\
+\tIl est possible de mettre en pause un sous-ensemble des composants en\n\
+\tles sp\u00e9cifiant avec l'option --target.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.resume=\ \ \ \ --resume
+action-desc.resume=\tReprend tous les composants mis en pause dans le serveur. Vous \n\
+\tpouvez utiliser l'option --target pour reprendre des composants \n\
+\tsp\u00e9cifiques, pr\u00e9c\u00e9demment mis en pause.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.clean=\ \ \ \ --clean
+option-desc.clean=\tEfface du cache toutes les donn\u00e9es relatives \u00e0 cette instance de serveur
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.archive=\ \ \ \ --archive="chemin fichier archive cible"
+option-desc.archive=\tIndiquez la cible d'archive \u00e0 g\u00e9n\u00e9rer par le package ou l'action \n\
+\tde vidage. La cible peut \u00eatre sp\u00e9cifi\u00e9e comme chemin absolu ou chemin \n\
+\trelatif. Si cette option est omise, le fichier d'archive sera cr\u00e9\u00e9 \n\
+\tdans le r\u00e9pertoire de sortie du serveur. L'extension du nom de \n\
+\tfichier cible peut avoir des cons\u00e9quences sur le format de l'archive       \n\
+\tLe format d'archive par d\u00e9faut pour l'action de package est "pax" sur\n\
+\tz/OS et "zip" sur toutes les autres plateformes.                                    \n\
+\tLe format d'archive "jar" g\u00e9n\u00e8re un fichier JAR auto-extractible\n\
+\tsemblable \u00e0 l'archive du programme d'installation d'origine.                                      \n\
+\tLe format d'archive "jar" associ\u00e9 \u00e0 "runnable" dans l'option --include\n\
+\tg\u00e9n\u00e8re un fichier JAR ex\u00e9cutable qui peut ex\u00e9cuter le serveur Liberty \n\
+\tdepuis le fichier jar \u00e0 l'aide de java -jar.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.include=\ \ \ \ --include=value,value,...
+option-desc.include=\tListe de valeurs d\u00e9limit\u00e9e par des virgules. Les valeurs valides varient\n\
+\ten fonction de l'action.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.target=\ \ \ \ --target=valeur,valeur
+option-desc.target=\tListe sp\u00e9cifique de composants (s\u00e9par\u00e9s par une virgule) qui peuvent \n\
+\t\u00eatre mis en pause ou repris.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.template=\ \ \ \ --template="templateName"
+option-desc.template=\tIndiquez le nom du mod\u00e8le \u00e0 utiliser lors de la cr\u00e9ation d'un serveur. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.os=\ \ \ \ --os=valeur,valeur,...
+option-desc.os=\tSp\u00e9cifie les syst\u00e8mes d'exploitation \u00e0 prendre en charge par le serveur \n\
+\tint\u00e9gr\u00e9. Fournissez une liste s\u00e9par\u00e9e par des virgules. La valeur par d\u00e9faut est any,    \n\
+\tce qui indique que le serveur doit pouvoir \u00eatre d\u00e9ploy\u00e9 sur tout syst\u00e8me d'exploitation \n\
+\tpris en charge par la source.                                      \n\
+\tPour sp\u00e9cifier qu'un syst\u00e8me d'exploitation ne doit pas \u00eatre pris en charge, pr\u00e9c\u00e9dez-le d'un \n\
+\tsigne moins ("-"). Pour consulter la liste de syst\u00e8mes d'exploitation, reportez-vous au \n\
+\tsite Web OSGi Alliance \u00e0 l'URL suivante :                  \n\
+\thttp://www.osgi.org/Specifications/Reference#os                      \n\
+\tCette option s'applique uniquement \u00e0 l'op\u00e9ration de package et ne peut \u00eatre \n\
+\tutilis\u00e9e qu'avec l'option --include=minify. Si vous excluez un syst\u00e8me \n\
+\td'exploitation, vous ne pouvez pas l'inclure plus tard en r\u00e9p\u00e9tant l'op\u00e9ration \n\
+\tminify sur l'archive. 

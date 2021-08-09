@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwtsso/resources/JWTSSOMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWTSSO
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: The MicroProfile JSON Web Token (JWT) consumer configuration with an ID of [{0}] cannot be found. Verify that the mpJwt configuration  with the specified ID is in the server.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=An MPJWT consumer configuration with the specified identifier cannot be found in the server configuration.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Make sure that there is a mpJwt element configured with the specified ID and is referenced by the jwtSso element in the server configuration.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Too many MicroProfile JWT services [{0}] are qualified to handle the request.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=The JWTSSO feature cannot select a MicroProfile JWT service to handle the request when more than one service is qualified to handle the request.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Make sure that no more than one MicroProfile JWT service in the server configuration is configured to handle the request.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: The value of the JwtSso cookieName attribute cannot be null or empty. The default cookieName value will be used.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=The cookieName attribute needs to be valid cookie name.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Remove the cookieName attribute, or correct the value.
+
+COOKIE_NAME_INVALID=CWWKS6303E: The value of the jwtSso cookieName attribute  [{0}] contains an invalid character [{1}]. The default cookieName value will be used instead.
+COOKIE_NAME_INVALID.explanation=The cookieName attribute needs to be valid cookie name.
+COOKIE_NAME_INVALID.useraction=Remove the cookieName attribute, or correct the value.
+
+

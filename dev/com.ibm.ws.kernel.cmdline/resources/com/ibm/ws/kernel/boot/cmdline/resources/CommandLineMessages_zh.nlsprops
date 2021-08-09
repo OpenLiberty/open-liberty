@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.cmdline/resources/com/ibm/ws/kernel/boot/cmdline/resources/CommandLineMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# -------------------------------------------------------------------------------------------------
+
+error.sdkRequired=CWWKE0600E: \u6b64\u5de5\u5177\u9700\u8981 Java SDK\uff0c\u4f46\u5b83\u662f\u4f7f\u7528 JRE \u542f\u52a8\u7684\uff1a{0}
+error.sdkRequired.explanation=\u8be5\u5de5\u5177\u9700\u8981 Java SDK\uff0c\u4f46\u5b83\u662f\u4f7f\u7528\u7b80\u5355\u7684 Java \u8fd0\u884c\u65f6\u73af\u5883\u542f\u52a8\u7684\u3002
+error.sdkRequired.useraction=\u8bf7\u5c06 JAVA_HOME \u73af\u5883\u53d8\u91cf\u8bbe\u7f6e\u4e3a Java SDK \u7684\u8def\u5f84\uff0c\u7136\u540e\u91cd\u8bd5\u547d\u4ee4\u3002
+
+error.compilerMissing=CWWKE0601E: \u6b64\u5de5\u5177\u9700\u8981\u5177\u6709 Java \u7f16\u8bd1\u5668\u3002\u8bf7\u786e\u4fdd java.compiler \u6a21\u5757\u53ef\u7528\u3002
+error.compilerMissing.explanation=\u6b64\u5de5\u5177\u9700\u8981 Java \u7f16\u8bd1\u5668\u3002\u4f46\u662f\uff0c\u542f\u52a8\u6b64\u5de5\u5177\u65f6\u6ca1\u6709\u5e26\u6b64\u7f16\u8bd1\u5668\u3002
+error.compilerMissing.useraction=\u9a8c\u8bc1 Java \u6620\u50cf\u4e2d\u662f\u5426\u63d0\u4f9b\u4e86 java.compiler \u6a21\u5757\u3002\u7136\u540e\uff0c\u901a\u8fc7\u6307\u5b9a\u4ee5\u4e0b\u547d\u4ee4\u884c\u9009\u9879\u4f7f\u5176\u5728\u8fd0\u884c\u65f6\u53ef\u7528\uff1a--add-modules java.compiler

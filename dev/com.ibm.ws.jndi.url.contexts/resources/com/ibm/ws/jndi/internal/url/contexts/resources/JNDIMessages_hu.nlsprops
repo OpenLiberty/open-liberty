@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jndi.url.contexts/resources/com/ibm/ws/jndi/internal/url/contexts/resources/JNDIMessages.nlsprops
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Description
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Message numbers CWWKN1nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn:	com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn:	com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages 
+# -------------------------------------------------------------------------------------------------
+#
+JNDI_NON_JEE_THREAD_CWWKN0100E=CWWKN0100E: A(z) {0} JNDI n\u00e9ven nem hajthat\u00f3 v\u00e9gre egy m\u0171velet, mert a jelenlegi sz\u00e1l nincs t\u00e1rs\u00edtva egy Java Enterprise Edition alkalmaz\u00e1s\u00f6sszetev\u0151vel. Gondoskodj\u00e9k r\u00f3la, hogy a JNDI m\u0171velet ne forduljon el\u0151 olyan sz\u00e1lakon, amelyeket nem a kiszolg\u00e1l\u00f3 kezel, vagy pedig statikus k\u00f3dblokkokon bel\u00fcl.
+JNDI_NON_JEE_THREAD_CWWKN0100E.explanation=A java: n\u00e9vt\u00e9rben v\u00e9grehajtott JNDI m\u0171veletek csak Java EE alkalmaz\u00e1s\u00f6sszetev\u0151 kontextusban t\u00e1mogatottak.
+JNDI_NON_JEE_THREAD_CWWKN0100E.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st \u00fagy, hogy a JNDI m\u0171veletre egy Java EE alkalmaz\u00e1s\u00f6sszetev\u0151 kontextus\u00e1ban ker\u00fclj\u00f6n sor.

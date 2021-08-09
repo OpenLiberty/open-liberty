@@ -1,0 +1,14 @@
+<server>
+    <featureManager>
+        <feature>ejbRemote-3.2</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>ejbHome-3.2</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+    
+    <application id="AppExcExtendsThrowableErrBeanApp" name="AppExcExtendsThrowableErrBeanApp" type="ear" location="AppExcExtendsThrowableErrBean.ear"/>
+</server>

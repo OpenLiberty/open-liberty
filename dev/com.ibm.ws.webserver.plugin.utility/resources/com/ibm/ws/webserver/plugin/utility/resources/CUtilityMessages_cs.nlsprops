@@ -1,0 +1,458 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Chyba: {0}
+error.inputConsoleNotAvailable=Vstupn\u00ed konzola nen\u00ed dostupn\u00e1.
+error.missingIO=Chyba, chyb\u00ed za\u0159\u00edzen\u00ed I/O: {0}.
+name=n\u00e1zev
+days=dn\u016f
+serverNotFound=Uveden\u00fd server {0} nebyl v um\u00edst\u011bn\u00ed {1} nalezen.
+userDirNotFound=Uveden\u00fd u\u017eivatelsk\u00fd adres\u00e1\u0159 {0} nebyl nalezen.
+installDirNotFound=Instala\u010dn\u00ed adres\u00e1\u0159 {0} nebyl nalezen.
+
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=P\u0159\u00edli\u0161 mnoho argument\u016f.
+insufficientArgs=Nedostate\u010dn\u00e9 mno\u017estv\u00ed argument\u016f.
+missingServerName=C\u00edl \u00falohy nebyl ur\u010den.
+invalidArg=Neplatn\u00fd argument {0}.
+missingArg=Chyb\u00ed argument {0}.
+missingValue=Chyb\u00ed hodnota pro argument {0}.
+missingPasswordArg=Mus\u00edte ur\u010dit bu\u010f {0}, nebo ur\u010dit zb\u00fdvaj\u00edc\u00ed argumenty hesla {1}
+
+
+# Messages for FileUtility
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+fileUtility.failedDirCreate=Nepoda\u0159ilo se vytvo\u0159it adres\u00e1\u0159 {0}.
+fileUtility.deleteSuccess=\u00dasp\u011b\u0161n\u011b odstran\u011bno {0}
+fileUtility.deleteFailure=Nezda\u0159ilo se odstran\u011bn\u00ed {0}
+
+
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Pou\u017eit\u00ed: {0} akce c\u00edl [volby]
+task.unknown=Nezn\u00e1m\u00e1 \u00faloha: {0}
+
+
+# Messages for reading in a password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+password.enterText=Zadejte heslo {0}:
+password.reenterText=Potvr\u010fte heslo {0}:
+password.readError=Chyba p\u0159i \u010dten\u00ed hesla.
+password.entriesDidNotMatch=Hesla si neodpov\u00eddala.
+
+
+# Messages common to collective utility tasks
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+common.encodeError=\n\
+Nelze prov\u00e9st zak\u00f3dov\u00e1n\u00ed hesla pro argument: {0}
+
+common.hostError=\n\
+Zadan\u00fd n\u00e1zev hostitele je z\u0159ejm\u011b neplatn\u00fd: {0}\n\
+Zkontrolujte, \u017ee je n\u00e1zev hostitele spr\u00e1vn\u00fd, a \u017ee m\u00e1 syst\u00e9m s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed.
+
+common.portError=\n\
+Ur\u010den\u00fd port {0} nen\u00ed dosa\u017eiteln\u00fd. Potvr\u010fte, \u017ee je port spr\u00e1vn\u00fd.
+
+common.connectionError=\n\
+Nelze dokon\u010dit operaci objektu MBean.\n\
+Chyba: {0}
+
+common.compatibilityError=\n\
+Nelze p\u0159istoupit k operaci MBean, proto\u017ee nen\u00ed v \u0159adi\u010di nadefinov\u00e1na. \u0158adi\u010d m\u00e1 pravd\u011bpodobn\u011b ni\u017e\u0161\u00ed verzi ne\u017e \u010dlen.\n\
+Chyba: {0}
+
+common.renameFailed=\n\
+Nele p\u0159ejmenovat {0} na {1}
+
+common.regenerateKey=V\u00fdchoz\u00ed soubor \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f HTTPS existuje v {0}.\n\
+Tento certifik\u00e1t bude znovu vygenerov\u00e1n a origin\u00e1l bude uchov\u00e1n.\n
+
+common.regenerateTrust=V\u00fdchoz\u00ed soubor \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti pro HTTPS existuje v {0}.\n\
+Tento certifik\u00e1t bude znovu vygenerov\u00e1n a origin\u00e1l bude uchov\u00e1n.\n
+
+common.validityTooShort=\n\
+Zadan\u00e1 platnost {0} je p\u0159\u00edli\u0161 kr\u00e1tk\u00e1. Minim\u00e1ln\u00ed d\u00e9lka platnosti je 365 dn\u016f.
+
+common.invalidDN=\n\
+Zadan\u00e9 rozli\u0161uj\u00edc\u00ed jm\u00e9no (DN) pro {0} je neplatn\u00e9: {1}
+
+common.invalidEndpoint=C\u00edlov\u00fd koncov\u00fd bod pro repliku {0} nen\u00ed v po\u017eadovan\u00e9m form\u00e1tu.\n\
+C\u00edl je port replikace repliky a mus\u00ed b\u00fdt ve\n\
+form\u00e1tu host:port.
+
+common.updateServerXML=Chcete-li prov\u00e9st povolen\u00ed, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru server.xml:\n
+
+
+# Messages for establishing SSL trust
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslTrust.autoAccept=Prob\u00edh\u00e1 automatick\u00e9 p\u0159ijet\u00ed \u0159et\u011bzu certifik\u00e1t\u016f pro c\u00edlov\u00fd server.\n\
+Rozli\u0161uj\u00edc\u00ed jm\u00e9no subjektu certifik\u00e1tu: {0}
+
+sslTrust.genDigestError=Nelze vygenerovat k\u00f3d digest {0}. \
+Chyba: {1}
+
+sslTrust.noDefaultTrust=Nebyla z\u0159\u00edzena d\u016fv\u011bryhodnost SSL s c\u00edlov\u00fdm serverem.
+
+sslTrust.certInfo=Informace o \u0159et\u011bzu certifik\u00e1t\u016f:
+
+sslTrust.cert=Certifik\u00e1t {0}
+
+sslTrust.certSubjectDN=Rozli\u0161uj\u00edc\u00ed jm\u00e9no subjektu: {0}
+
+sslTrust.certIssueDN=Rozli\u0161uj\u00edc\u00ed jm\u00e9no vydavatele: {0}
+
+sslTrust.certSerial=S\u00e9riov\u00e9 \u010d\u00edslo: {0}
+
+sslTrust.certExpires=Vypr\u0161en\u00ed platnosti: {0}
+
+sslTrust.certSHADigest=K\u00f3d digest SHA-1: {0}
+
+sslTrust.certMD5Digest=K\u00f3d digest MD5: {0}
+
+sslTrust.promptToAcceptTrust=Chcete p\u0159ijmout v\u00fd\u0161e uveden\u00fd \u0159et\u011bz certifik\u00e1t\u016f? \
+(a/n) 
+# Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
+yes.response.short=a
+yes.response.full=ano
+
+
+
+sslTrust.rejectTrust=U\u017eivatel odm\u00edtl po\u017eadavek za\u0159azen\u00ed \u0159et\u011bzu certifik\u00e1t\u016f do d\u016fv\u011bryhodnosti.
+
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+hostAuthInfo.bothCredentialsSet=Nastaveno je {0} i {1}. Zvolte pouze jednu z mo\u017enost\u00ed.\n\
+Zadat lze pouze jeden prost\u0159edek ov\u011b\u0159en\u00ed.
+
+hostAuthInfo.sshKeyPasswordWithoutKey=Heslo soukrom\u00e9ho kl\u00ed\u010de SSH zad\u00e1no bez p\u0159\u00edslu\u0161n\u00e9ho soukrom\u00e9ho kl\u00ed\u010de.
+
+hostAuthInfo.useSudoFalseWithSudoOptions=Atribut useSudo je nastaven na hodnotu false, jsou v\u0161ak zad\u00e1ny dal\u0161\u00ed volby p\u0159\u00edkazu sudo.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+encoding.aesRequiresKey=K\u00f3dov\u00e1n\u00ed aes vy\u017eaduje kl\u00ed\u010d. \
+Zadejte hodnotu vyu\u017e\u00edvaj\u00edc\u00ed --key.
+
+encoding.xorDoesNotSupportKey=K\u00f3dov\u00e1n\u00ed xor nepodporuje kl\u00ed\u010d. \
+Nezad\u00e1vejte --key.
+
+encoding.unsupportedEncoding=Nepodporovan\u00e1 hodnota k\u00f3dov\u00e1n\u00ed {0}.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+ssh.invalidSSHKeyPair=\n\
+Zadan\u00e1 dvojice kl\u00ed\u010d\u016f SSH nebyla platn\u00e1.\n\
+Chyba: {0}
+
+ssh.couldNotCreateSSHKeys=\n\
+Nelze vytvo\u0159it v\u00fdchoz\u00ed kl\u00ed\u010de SSH pro ov\u011b\u0159en\u00ed hostitele.\n\
+Chyba: {0}
+
+ssh.couldNotReadSSHKeys=\n\
+Nelze \u010d\u00edst kl\u00ed\u010de SSJ (nebo do nich zapisovat).\n\
+Chyba: {0}
+
+ssh.updateAuthorizedKeys=Aktualizace autorizovan\u00fdch kl\u00ed\u010d\u016f o nov\u00fd ve\u0159ejn\u00fd kl\u00ed\u010d...
+
+ssh.cannotUpdateAuthorizedKeys=\n\
+Nelze aktualizovat soubor autorizovan\u00fdch kl\u00ed\u010d\u016f pro u\u017eivatele: {0}\n\
+Kontrola souboru autorizovan\u00fdch kl\u00ed\u010d\u016f na domovsk\u00e9 str\u00e1nce u\u017eivatele: {1}\n\
+Aktualizujte soubor autorizovan\u00fdch kl\u00ed\u010d\u016f o tento ve\u0159ejn\u00fd kl\u00ed\u010d:\n\
+{2}\n\
+Chyba: {3}
+
+
+# Messages for creation of a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+create.start=Vytv\u00e1\u0159ej\u00ed se certifik\u00e1ty nezbytn\u00e9 k vytvo\u0159en\u00ed kolektivu...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+create.abort=\n\
+P\u0159eru\u0161uje se z\u0159\u00edzen\u00ed serveru kolektivn\u00edho \u0159adi\u010de.
+
+create.errGetHostName=\n\
+Nelze ur\u010dit n\u00e1zev hostitele. V\u00fdchoz\u00ed hodnota {0}.\n\
+P\u0159\u00ed\u010dina: {1}\n\
+Chcete-li v\u00fdslovn\u011b nastavit n\u00e1zev hostitele, pou\u017eijte volbu --hostName.
+
+create.errorAlreadyHasResources=\n\
+Prost\u0159edky serveru/adres\u00e1\u0159 kolektivu ji\u017e existuj\u00ed (existuje).\n\
+Chcete-li kolektiv znovu vytvo\u0159it, odeberte cel\u00fd adres\u00e1\u0159.\n\
+Chcete-li roz\u0161\u00ed\u0159it st\u00e1vaj\u00edc\u00ed kolektiv, p\u0159idejte \u00falohu replicate.
+
+create.configLocationInDefaults=\n\
+Um\u00edst\u011bn\u00ed ur\u010den\u00e9 volbou --createConfigFile je v\n\
+adres\u00e1\u0159i configDropins/defaults serveru. Toto nen\u00ed platn\u00e9\n\
+um\u00edst\u011bn\u00ed pro vygenerovanou konfiguraci kolektivu, proto\u017ee v\u0161echny\n\
+\u0159adi\u010de sd\u00edlej\u00ed um\u00edst\u011bn\u00ed. Ur\u010dete jin\u00e9 um\u00edst\u011bn\u00ed.
+
+create.genCertControllerRoot=Ko\u0159enov\u00fd certifik\u00e1t \u0159adi\u010de byl \u00fasp\u011b\u0161n\u011b vygenerov\u00e1n.
+
+create.genCertMemberRoot=Ko\u0159enov\u00fd certifik\u00e1t \u010dlena byl \u00fasp\u011b\u0161n\u011b vygenerov\u00e1n.
+
+create.genCertServerIdentity=Certifik\u00e1t identity serveru byl \u00fasp\u011b\u0161n\u011b vygenerov\u00e1n.
+
+create.genCertHTTPS=Certifik\u00e1t HTTPS byl \u00fasp\u011b\u0161n\u011b vygenerov\u00e1n.
+
+create.failedKSSave=\n\
+Nelze ulo\u017eit \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}
+
+create.cleanupFail=\n\
+Chyba p\u0159i maz\u00e1n\u00ed vygenerovan\u00fdch soubor\u016f. Nelze odstranit {0}\n\
+Odeberte adres\u00e1\u0159 ru\u010dn\u011b. Zkontrolujte opr\u00e1vn\u011bn\u00ed\n\
+\ a zopakujte operaci.
+
+create.successful=Byla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena konfigurace kolektivn\u00edho \u0159adi\u010de pro {0}.\n
+
+create.configureSecurity=Zajist\u011bte nakonfigurov\u00e1n\u00ed zabezpe\u010den\u00ed pro administraci pro tento server.\n\
+Administrativn\u00ed u\u017eivatel p\u0159id\u00e1v\u00e1 \u010dleny do kolektivu.
+
+create.certUtil.NotAvailable=Po\u017eadovan\u00e1 operace nen\u00ed dostupn\u00e1 s t\u00edmto vyd\u00e1n\u00edm WebSphere.
+
+# Messages for joining a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+join.start=Prob\u00edh\u00e1 zapojen\u00ed do kolektivu s c\u00edlov\u00fdm \u0159adi\u010dem {0}:{1}...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+join.abort=\n\
+Ru\u0161\u00ed se zapojen\u00ed do kolektivu.
+
+join.errorAlreadyHasResources=Prost\u0159edky/adres\u00e1\u0159 kolektivu ji\u017e existuj\u00ed (existuje) pro tento server.\n\
+Je mo\u017en\u00e9, \u017ee server ji\u017e je \u010dlenem.\n\
+Chcete-li zopakovat zapojen\u00ed do kolektivu, spus\u0165te \u00falohu odebr\u00e1n\u00ed nebo ru\u010dn\u011b odeberte\n\
+prost\u0159edky/adres\u00e1\u0159 kolektivu a zopakujte operaci.
+
+join.writeKeystoreFail=\n\
+Chyba p\u0159i z\u00e1pisu po\u017eadovan\u00e9ho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f na disk {0}
+
+join.cleanupFail=\n\
+Chyba p\u0159i maz\u00e1n\u00ed vygenerovan\u00fdch soubor\u016f. Nelze odstranit {0}\n\
+Odeberte adres\u00e1\u0159 ru\u010dn\u011b. Zkontrolujte opr\u00e1vn\u011bn\u00ed\na zopakujte operaci.
+
+join.mbeanComplete=Po\u017eadavek objektu MBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+join.registeredAlready=Zadan\u00fd \u010dlen {0} ji\u017e je patrn\u011b \u010dlenem.\n\
+Chcete-li zopakovat zapojen\u00ed do kolektivu, spus\u0165te \u00falohu odebr\u00e1n\u00ed a operaci opakujte.
+
+join.successful=Do\u0161lo k \u00fasp\u011b\u0161n\u00e9mu zapojen\u00ed do kolektivu pro server {0}.\n
+
+join.useHostCredentialsButOtherCtedentialsAreSet=Pokud je nastavena volba useHostCredentials, jin\u00e1 pov\u011b\u0159en\u00ed hostitele nezad\u00e1vejte.
+
+deployAdminMetadata.mbeanComplete=Po\u017eadavek objektu AdminMetadataManagerMBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+deployAdminMetadata.start=Implementace administrativn\u00edch metadat do \u00falo\u017ei\u0161t\u011b kolektivu...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+allocateDeployVariables.mbeanComplete=Po\u017eadavek objektu CollectiveRepositoryMBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+allocateDeployVariables.start=P\u0159id\u011blen\u00ed prom\u011bnn\u00fdch implementace v \u00falo\u017ei\u0161ti kolektivu...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+AllocatedDeployVars=P\u0159id\u011blen\u00e1 prom\u011bnn\u00e1 implementace:
+deployVarsNotFound=Nedefinovan\u00e1 prom\u011bnn\u00e1 implementace: {0}
+deployVarsAreAllocated=Prom\u011bnn\u00e9 implementace byly p\u0159id\u011bleny a soubor deployVariables.xml byl vytvo\u0159en v adres\u00e1\u0159i /configDropins/overrides serveru.
+
+# Messages for generating a collective key
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+genKey.start=Generov\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f s c\u00edlov\u00fdm \u0159adi\u010dem {0}:{1}...\n
+genKey.abort=\n\
+P\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed genKey.
+
+genKey.writeKeystoreFail=\n\
+Chyba p\u0159i z\u00e1pisu po\u017eadovan\u00e9ho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f na disk {0}
+
+genKey.cleanupFail=\n\
+Chyba p\u0159i maz\u00e1n\u00ed vygenerovan\u00fdch soubor\u016f. Nelze odstranit {0}\n\
+Odeberte soubor ru\u010dn\u011b. Zkontrolujte opr\u00e1vn\u011bn\u00ed\na zopakujte operaci.
+
+genKey.mbeanComplete=Po\u017eadavek objektu MBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+genKey.generatedKeystore=\u00dasp\u011b\u0161n\u011b generovan\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}.
+
+
+# Messages for replicating a controller 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+replicate.start=Prob\u00edh\u00e1 replikace c\u00edlov\u00e9ho kolektivn\u00edho \u0159adi\u010de {0}:{1}...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+replicate.abort=\n\
+P\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed \u0159adi\u010de repliky.
+
+replicate.errorAlreadyHasResources=Prost\u0159edky/adres\u00e1\u0159 kolektivu ji\u017e existuj\u00ed (existuje) pro tento server.\n\
+Server ji\u017e m\u016f\u017ee v \u0159adi\u010di b\u00fdt.\n\
+Chcete-li replikovat \u0159adi\u010d, spus\u0165te \u00falohu odebr\u00e1n\u00ed nebo ru\u010dn\u011b odeberte\n\
+prost\u0159edky/adres\u00e1\u0159 kolektivu a zopakujte operaci.
+
+replicate.writeKeystoreFail=\n\
+Chyba p\u0159i z\u00e1pisu po\u017eadovan\u00e9ho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f na disk {0}
+
+replicate.writeFileFail=\n\
+P\u0159i z\u00e1pisu po\u017eadovan\u00e9ho souboru na disk do\u0161lo k chyb\u011b {0}
+
+replicate.cleanupFail=\n\
+Chyba p\u0159i maz\u00e1n\u00ed vygenerovan\u00fdch soubor\u016f. Nelze odstranit {0}\n\
+Odeberte adres\u00e1\u0159 ru\u010dn\u011b. Zkontrolujte opr\u00e1vn\u011bn\u00ed\na zopakujte operaci.
+
+replicate.mbeanComplete=Po\u017eadavek objektu MBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+replicate.registeredAlready=Zadan\u00fd \u010dlen {0} ji\u017e je patrn\u011b \u010dlenem.\n\
+Chcete-li replikovat \u0159adi\u010d, spus\u0165te \u00falohu odebr\u00e1n\u00ed a operaci opakujte.
+
+replicate.success=Do\u0161lo k \u00fasp\u011b\u0161n\u00e9 replikaci \u0159adi\u010de jako serveru {0}.\n
+
+
+replicate.configureSecurity=Zajist\u011bte, aby bylo pro tento server nakonfigurov\u00e1no zabezpe\u010den\u00ed pro administraci\n\
+stejn\u011b jako aktu\u00e1ln\u00ed kolektivn\u00ed \u0159adi\u010d. Rovn\u011b\u017e nastavte heslo pro\n\
+parametr collectiveRootKeys na spr\u00e1vn\u00e9 heslo.\n
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+remove.attemptUnregister=Prob\u00edh\u00e1 pokus o zru\u0161en\u00ed registrace serveru v kolektivu...
+
+remove.unregisteredAlready=Server {0} nen\u00ed registrov\u00e1n.\n\
+M\u016f\u017ee b\u00fdt zaregistrov\u00e1n pod jin\u00fdm n\u00e1zvem hostitele.
+
+remove.unregisterFailed=Pro server {0} nelze zru\u0161it registraci kv\u016fli chyb\u011b.
+
+remove.unregisterSuccess=Serveru {0} byla \u00fasp\u011b\u0161n\u011b zru\u0161ena registrace.
+
+remove.attemptResourceDelete=Prob\u00edh\u00e1 pokus o odebr\u00e1n\u00ed prost\u0159edk\u016f pro kolektiv ze serveru...
+
+remove.noFilesRemoved=Nebyly odebr\u00e1ny \u017e\u00e1dn\u00e9 prost\u0159edky kolektivu.
+remove.noResources=Nebyly nalezeny \u017e\u00e1dn\u00e9 prost\u0159edky kolektivu.
+
+remove.manuallyRemove=N\u011bkter\u00e9 ze soubor\u016f v {0} nelze odebrat.\n\
+Mus\u00edte je odebrat ru\u010dn\u011b.
+
+remove.filesSuccess=Prost\u0159edky pro \u010dlenstv\u00ed v kolektivu byly \u00fasp\u011b\u0161n\u011b odebr\u00e1ny.
+
+remove.updateXML=\n\
+Aktualizujte soubor server.xml odebr\u00e1n\u00edm ve\u0161ker\u00fdch n\u00ed\u017ee uveden\u00fdch prvk\u016f:
+
+removeAllAdminMetadata.mbeanComplete=Po\u017eadavek objektu AdminMetadataManagerMBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+removeAllAdminMetadata.start=Odebr\u00e1n\u00ed administrativn\u00edch metadat z \u00falo\u017ei\u0161t\u011b kolektivu...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+remove.removeAllAdminMetadataFailed=Administrativn\u00ed metadata z typem prost\u0159edku {0} a identitou {1} nelze odebrat z \u00falo\u017ei\u0161t\u011b kolektivu, nebo\u0165 do\u0161lo k chyb\u011b.
+
+getAdminMetadata.mbeanComplete=Po\u017eadavek objektu AdminMetadataManagerMBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+releaseDeployVariables.start=Uvoln\u011bn\u00ed prom\u011bnn\u00fdch implementace z \u00falo\u017ei\u0161t\u011b kolektivu...\n\
+To m\u016f\u017ee chv\u00edli trvat.
+
+releaseDeployVariables.mbeanComplete=Po\u017eadavek objektu CollectiveRepositoryMBean na \u0159adi\u010d byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
+
+remove.releaseDeployVariablesFailed=Prom\u011bnn\u00e9 implementace {0} na n\u00e1zvu hostitele {1} nelze odebrat z \u00falo\u017ei\u0161t\u011b kolektivu kv\u016fli chyb\u011b.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+registerHost.abort=\n\
+Prob\u00edh\u00e1 p\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed registerHost.
+
+registerHost.attemptRegister=Prob\u00edh\u00e1 registrace hostitele do kolektivu...
+
+registerHost.registeredAlready=Hostitel {0} je ji\u017e registrov\u00e1n.
+
+registerHost.registerFailed=Hostitel {0} nemohl b\u00fdt zaregistrov\u00e1n z d\u016fvodu chyby.
+
+registerHost.registerSuccess=Hostitel {0} byl \u00fasp\u011b\u0161n\u011b zaregistrov\u00e1n.
+
+
+# Messages for updating a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+updateHost.abort=\n\
+Prob\u00edh\u00e1 p\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed updateHost.
+
+updateHost.attemptRegister=Prob\u00edh\u00e1 aktualizace ov\u011b\u0159ovac\u00edch informac\u00ed pro hostitele...
+
+updateHost.notRegistered=Hostitel {0} nen\u00ed zaregistrov\u00e1n.
+updateHost.updateFailed=Hostitel {0} nemohl b\u00fdt aktualizov\u00e1n z d\u016fvodu chyby.
+updateHost.updateSuccess=Informace o ov\u011b\u0159en\u00ed hostitele {0} \u00fasp\u011b\u0161n\u011b aktualizov\u00e1ny.
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unregisterHost.attemptUnregister=Prob\u00edh\u00e1 ru\u0161en\u00ed registrace hostitele z kolektivu...
+
+unregisterHost.unregisteredAlready=Hostitel {0} nen\u00ed zaregistrov\u00e1n.
+
+unregisterHost.unregisterFailed=Registrace hostitele {0} nemohla b\u00fdt zru\u0161ena z d\u016fvodu chyby.
+
+unregisterHost.unregisterSuccess=Registrace hostitele {0} byla \u00fasp\u011b\u0161n\u011b zru\u0161ena.
+
+
+# Messages for adding a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+addReplica.attempt=P\u0159id\u00e1v\u00e1n\u00ed koncov\u00e9ho bodu do sady replik...
+
+addReplica.alreadyAdded=Koncov\u00fd bod repliky {0} je ji\u017e sou\u010d\u00e1st\u00ed sady replik.
+
+addReplica.invalidEndpoint=Koncov\u00fd bod repliky {0} nelze p\u0159idat do sady replik.\n\
+Potvr\u010fte, \u017ee koncov\u00fd bod repliky je spr\u00e1vn\u00fd a replika je spu\u0161t\u011bna.
+
+addReplica.error=Koncov\u00fd bod repliky {0} nelze p\u0159idat v d\u016fsledku chyby.
+
+addReplica.success=Koncov\u00fd bod repliky {0} byl \u00fasp\u011b\u0161n\u011b p\u0159id\u00e1n do sady replik.
+
+
+# Messages for removing a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+removeReplica.attemptUnregister=Pokus o odebr\u00e1n\u00ed koncov\u00e9ho bodu ze sady replik...
+
+removeReplica.alreadyRemoved=Koncov\u00fd bod repliky {0} nen\u00ed sou\u010d\u00e1st\u00ed sady replik nebo nen\u00ed sada v\u00fdsledk\u016f operace platn\u00e1.
+
+removeReplica.error=Koncov\u00fd bod repliky {0} nem\u016f\u017ee b\u00fdt odebr\u00e1n kv\u016fli chyb\u011b.
+
+removeReplica.success=Koncov\u00fd bod repliky {0} byl \u00fasp\u011b\u0161n\u011b odebr\u00e1n ze sady replik.
+
+# Message for setting a host/server into maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+setMaintenanceMode.connectionError=Nelze nastavit re\u017eim \u00fadr\u017eby kv\u016fli chyb\u011b p\u0159i p\u0159ipojen\u00ed k c\u00edlov\u00e9mu po\u010d\u00edta\u010di {0}.
+
+setMaintenanceMode.error=Nelze nastavit re\u017eim \u00fadr\u017eby pro {0} kv\u016fli chyb\u011b.
+
+setMaintenanceMode.success=\u00dasp\u011b\u0161n\u011b nastaven re\u017eim \u00fadr\u017eby pro {0}.
+
+setMaintenanceMode.alt=Mus\u00ed b\u00fdt spu\u0161t\u011bn alternativn\u00ed server. \
+Re\u017eim \u00fadr\u017eby se nastav\u00ed pro {0}, kdy\u017e je spu\u0161t\u011bn alternativn\u00ed server.
+
+setMaintenanceMode.noAltServer=Nelze nastavit re\u017eim \u00fadr\u017eby pro {0}, proto\u017ee je alternativn\u00ed server nedostupn\u00fd.
+
+# Message for taking a host/server out of maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unsetMaintenanceMode.error=Nelze zru\u0161it nastaven\u00ed re\u017eimu \u00fadr\u017eby pro {0} kv\u016fli chyb\u011b.
+
+unsetMaintenanceMode.success=\u00dasp\u011b\u0161n\u011b zru\u0161en\u00e9 nastaven\u00ed re\u017eimu \u00fadr\u017eby pro {0}.
+
+unsetMaintenanceMode.connectionError=Nelze zru\u0161it nastaven\u00ed re\u017eimu \u00fadr\u017eby kv\u016fli chyb\u011b p\u0159i p\u0159ipojen\u00ed k c\u00edlov\u00e9mu po\u010d\u00edta\u010di {0}.
+
+# Message for displaying if a host/server is in maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+getMaintenanceMode.connectionError=Nelze z\u00edskat re\u017eim \u00fadr\u017eby kv\u016fli chyb\u011b p\u0159i p\u0159ipojen\u00ed k c\u00edlov\u00e9mu po\u010d\u00edta\u010di {0}.
+
+getMaintenanceMode.inMM={0} je v re\u017eimu \u00fadr\u017eby.
+
+getMaintenanceMode.notInMM={0} nen\u00ed v re\u017eimu \u00fadr\u017eby.
+
+getMaintenanceMode.alt=Mus\u00ed b\u00fdt spu\u0161t\u011bn alternativn\u00ed server. \
+Re\u017eim \u00fadr\u017eby se nastav\u00ed pro {0}, kdy\u017e je spu\u0161t\u011bn alternativn\u00ed server.
+
+getMaintenanceMode.error=Nelze z\u00edskat re\u017eim \u00fadr\u017eby pro {0} kv\u016fli chyb\u011b.

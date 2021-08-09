@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openid20/internal/resources/OpenIDMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1500 - CWWKS1519
+OPENID_RP_SERVICE_ACTIVATE=CWWKS1500I: Serviciul OpenID Relying Party este activat. 
+OPENID_RP_SERVICE_ACTIVATE.explanation=Serviciul OpenID Relying Party este activat.
+OPENID_RP_SERVICE_ACTIVATE.useraction=F\u0103r\u0103.
+
+OPENID_RP_SERVICE_DEACTIVATE=CWWKS1501I: Serviciul OpenID Relying Party este dezactivat. 
+OPENID_RP_SERVICE_DEACTIVATE.explanation=Serviciul OpenID Relying Party este dezactivat.
+OPENID_RP_SERVICE_DEACTIVATE.useraction=F\u0103r\u0103.
+
+OPENID_RP_CONFIG_PROCESSED=CWWKS1502I: S-a procesat cu succes configura\u0163ia partidei de baz\u0103 OpenID.
+OPENID_RP_CONFIG_PROCESSED.explanation=S-a procesat cu succes configura\u0163ia partidei de baz\u0103 OpenID.
+OPENID_RP_CONFIG_PROCESSED.useraction=F\u0103r\u0103.
+
+OPENID_RP_CONFIG_MODIFIED=CWWKS1503I: Configura\u0163ia OpenID relying party s-a modificat cu succes.
+OPENID_RP_CONFIG_MODIFIED.explanation=Configura\u0163ia OpenID relying party s-a modificat cu succes.
+OPENID_RP_CONFIG_MODIFIED.useraction=F\u0103r\u0103.
+
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID=CWWKS1504W: Configura\u0163ia OpenID relying party nu este valid\u0103 c\u00e2nd maxAssociationAttempts este setat la zero \u015fi allowStateless este setat la fals. Reseta\u0163i maxAssociationAttempts la valoarea implicit\u0103.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.explanation=Nu se poate seta maxAssociationAttempts la zero \u015fi allowStateless la fals.
+OPENID_RP_CONFIG_DISABLED_ASSOCIATION_AND_NOT_ALLOW_STATELESS_INVALID.useraction=Specifica\u0163i o configura\u0163ie OpenID relying party valid\u0103 pentru atributele maxAssociationAttempts \u015fi allowStateless.
+
+OPENID_VERSION_NOT_TEST=CWWKS1505W: Versiunea furnizorului OpenID {0} nu a fost testat\u0103 a\u015fa c\u0103 s-ar putea s\u0103 nu func\u0163ioneze corespunz\u0103tor.
+OPENID_VERSION_NOT_TEST.explanation=Aceast\u0103 versiune a furnizorului OpenID nu a fost testat\u0103. Func\u0163iile sale s-ar putea s\u0103 nu func\u0163ioneze corespunz\u0103tor. Rula\u0163i pe propria r\u0103spundere. 
+OPENID_VERSION_NOT_TEST.useraction=Niciuna. Rula\u0163i pe propria r\u0103spundere.
+
+OPENID_RP_NO_RESULT_ERR=CWWKS1506E: OpenID nu poate ob\u0163ine un rezultat valid pentru identificatorul de revendicare {0}. 
+OPENID_RP_NO_RESULT_ERR.explanation=Furnizorul OpenID nu returneaz\u0103 un rezultat valid. Cauzele ar putea fi c\u0103 utilizatorul a e\u015fuat s\u0103 se autentifice sau el/ea a respins autorizarea.
+OPENID_RP_NO_RESULT_ERR.useraction=F\u0103r\u0103.
+
+OPENID_RP_CONFIG_INVALID_SSLREF=CWWKS1507E: Configura\u0163ia OpenID necesit\u0103 SSL dar sslRef {0} nu exist\u0103 sau este blanc.
+OPENID_RP_CONFIG_INVALID_SSLREF.explanation=Atributul enforceHttps al configura\u0163iei OpenID este setat la adev\u0103r, dar sslRef nu exist\u0103.
+OPENID_RP_CONFIG_INVALID_SSLREF.useraction=Asigura\u0163i-v\u0103 c\u0103 referin\u0163a sslRef este la o configura\u0163ie SSL valid\u0103.
+
+OPENID_HTTPS_WITHOUT_SSL_SERVICE=CWWKS1508E: Configura\u0163ia OpenID necesit\u0103 SSL dar serviciul SSL nu este disponibil. 
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.explanation=Atributul enforceHttps al configura\u0163iei OpenID este setat la adev\u0103r. Dar serviciul SSL nu este disponibil.
+OPENID_HTTPS_WITHOUT_SSL_SERVICE.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i informa\u0163iile SSL corecte \u00een server.xml.
+
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1509E: Configura\u0163ia OpenID necesit\u0103 SSL, dar SSL nu este configurat corespunz\u0103tor. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Atributul enforceHttps al configura\u0163iei OpenID este setat la adev\u0103r. Elementul keyStore ar putea s\u0103 lipseasc\u0103 sau s\u0103 fie specificat incorect. Caracteristica SSL nu poate fi activat\u0103. 
+OPENID_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i informa\u0163iile SSL corecte \u00een server.xml.
+
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS=CWWKS1510E: Relying party necesit\u0103 SSL dar protocolul URL al furnizorului openID este {0}.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.explanation=Relying party necesit\u0103 SSL dar protocolul URL al furnizorului openID nu este HTTPs.
+OPENID_OP_URL_PROTOCOL_NOT_HTTPS.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul openID suport\u0103 SSL. Dac\u0103 furnizorul openID nu suport\u0103 HTTPs, seta\u0163i enforceHttps la fals.
+
+OPENID_RP_CAN_NOT_ACCESS_OP=CWWKS1511E: Nu se poate accesa furnizorul OpenID {0}.
+OPENID_RP_CAN_NOT_ACCESS_OP.explanation=Nu se poate accesa furnizorul OpenID.
+OPENID_RP_CAN_NOT_ACCESS_OP.useraction=Specifica\u0163i un furnizor OpenID valid.
+
+OPENID_RP_REQUEST_IDENTIFIER_NULL=CWWKS1512E: Identificatorul cererii OpenID replying party este nul.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.explanation=Identificatorul cererii OpenID replying party este nul.
+OPENID_RP_REQUEST_IDENTIFIER_NULL.useraction=F\u0103r\u0103.
+
+OPENID_AUTHENTICATE_FAILED=CWWKS1513E: Autentificarea OpenID a e\u015fuat pentru identificatorul {0}.
+OPENID_AUTHENTICATE_FAILED.explanation=Autentificarea OpenID a e\u015fuat pentru identificator.
+OPENID_AUTHENTICATE_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 identificatorul este valid.
+
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY=CWWKS1514E: Nu s-a g\u0103sit nicio intrare cache pentru cheia unic\u0103 {0}.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.explanation= Nu s-a g\u0103sit nicio intrare cache pentru cheia unic\u0103.
+OPENID_CACHE_MISS_FOR_UNIQUE_KEY.useraction=Asigura\u0163i-v\u0103 c\u0103 maxSize a cache-ului de informa\u0163ii de descoperire e suficient de mare pentru a pune \u00een cache toate cererile \u00een orice moment dat.
+
+OPENID_VERIFY_RESPONSE_FAILED=CWWKS1515E: OpenID nu poate verifica r\u0103spunsul OP pentru identificatorul revendicat {0}.
+OPENID_VERIFY_RESPONSE_FAILED.explanation=  OpenID nu poate verifica r\u0103spunsul OP pentru identificatorul revendicat.
+OPENID_VERIFY_RESPONSE_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 openID relying party poate comunica cu furnizorul openID.

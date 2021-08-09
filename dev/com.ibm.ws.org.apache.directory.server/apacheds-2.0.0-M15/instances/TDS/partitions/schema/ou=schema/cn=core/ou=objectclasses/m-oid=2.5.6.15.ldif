@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=2.5.6.15,ou=objectClasses,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 2.5.6.15
+m-name: strongAuthenticationUser
+m-description: RFC2256: a strong authentication user
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: userCertificate
+entryUUID: 624dfe3c-d7e8-4a52-969d-1e395113ce36
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.066000Z#000000#000#000000
+entryParentId: ac5601d1-10d2-4835-811d-55bb5203ca74
+createTimestamp: 20130919065353.800Z

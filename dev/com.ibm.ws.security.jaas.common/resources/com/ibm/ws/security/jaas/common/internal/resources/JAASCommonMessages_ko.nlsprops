@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2011,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: WSLoginModuleProxy \uc704\uc784 \uc635\uc158\uc774 \uc124\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=WSLoginModuleProxy \uc704\uc784 \uc635\uc158\uc774 \uc124\uc815\ub418\uc9c0 \uc54a\uc544\uc11c \uc778\uc99d\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=WSLoginModuleProxy \uad6c\uc131\uc5d0 \uc704\uc784 \uc635\uc158\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: {0} URL\uc744 \uc5f4 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {1}\uc785\ub2c8\ub2e4.
+security.jaas.open.URL.explanation=\uc9c0\uc815\ub41c URL\uc5d0 \uc5f0\uacb0\ud558\ub294 \uc911\uc5d0 MalformedURLException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+security.jaas.open.URL.useraction=\uc608\uc678\ub97c \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624. \uc9c0\uc815\ub41c URL\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: {0} URL\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {1}\uc785\ub2c8\ub2e4.
+security.jaas.create.URL.explanation=\uc9c0\uc815\ub41c URL\uc5d0 \uc5f0\uacb0\ud558\ub294 \uc911\uc5d0 IOException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+security.jaas.create.URL.useraction=\uc608\uc678\ub97c \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624. \uc9c0\uc815\ub41c URL\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: {0} \ud30c\uc77c\uc5d0\uc11c \ud30c\uc77c \uad6c\ubb38 \ubd84\uc11d\uae30 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {1}\uc785\ub2c8\ub2e4.
+security.jaas.parser.URL.explanation=\uc9c0\uc815\ub41c URL\uc5d0 \uc5f0\uacb0\ud558\ub294 \uc911\uc5d0 IOException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+security.jaas.parser.URL.useraction=\uc608\uc678\ub97c \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624. \uc9c0\uc815\ub41c URL\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: \ub85c\uadf8\uc778 \uad6c\uc131 \uc774\ub984 {0}\uc774(\uac00) \uc911\ubcf5\ub429\ub2c8\ub2e4. \uacb9\uccd0\uc501\ub2c8\ub2e4.
+security.jaas.duplicate.config.explanation=\uad6c\uc131 \ub370\uc774\ud130\uc5d0 \uc911\ubcf5\ub41c \ub85c\uadf8\uc778 \uad6c\uc131 \uc774\ub984\uc774 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+security.jaas.duplicate.config.useraction=\uad6c\uc131 \ub370\uc774\ud130\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: JAAS \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc758 \uad6c\ubb38 \ubd84\uc11d \uc911\uc5d0 IOException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
+security.jaas.app.parseIO.explanation=JAAS \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc758 \uad6c\ubb38 \ubd84\uc11d \uc911\uc5d0 IOException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+security.jaas.app.parseIO.useraction=\uad6c\uc131 \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc608\uc678\ub97c \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: JAAS \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc758 \uad6c\ubb38 \ubd84\uc11d \uc911\uc5d0 ParserException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
+security.jaas.app.parse.explanation=JAAS \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc758 \uad6c\ubb38 \ubd84\uc11d \uc911\uc5d0 ParserException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+security.jaas.app.parse.useraction=\uad6c\uc131 \ud30c\uc77c\uc5d0 \uad6c\ubb38 \uc624\ub958 \uc815\ubcf4\uac00 \ud3ec\ud568\ub41c \uc608\uc678\ub97c \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: JAAS \uad6c\uc131 \ud30c\uc77c {1}\uc5d0 \uae30\ubcf8 jaasLoginContextEntry {0}\uc744(\ub97c) \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uae30\ubcf8 jaasLoginContextEntry\ub294 server.xml \ub610\ub294 client.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=JAAS \uad6c\uc131 \ud30c\uc77c\uc5d0 \uae30\ubcf8 jaasLoginContextEntry\ub97c \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=JAAS \uad6c\uc131 \ud30c\uc77c\uc5d0 \uae30\ubcf8 jaasLoginContextEntry\uac00 \uc5c6\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: OSGi \uc11c\ube44\uc2a4 {0}\uc744(\ub97c) \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OSGI_SERVICE_ERROR.explanation=\uc9c0\uc815\ub41c OSGi \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OSGI_SERVICE_ERROR.useraction="clean" \uc635\uc158\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: {0}\uc758 \uc774\ub984\uc5d0 \ub300\ud55c \ud074\ub798\uc2a4 \uc218\ud589 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uae30\uce58 \uc54a\uc740 {1} \uc608\uc678\uc785\ub2c8\ub2e4.  
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=\uc774\ub984\uc5d0 \ub300\ud55c \ud074\ub798\uc2a4 \uc218\ud589 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=JAAS \uad6c\uc131 \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c \ubaa8\ub4e0 \uc0ac\uc6a9\uc790 \uc815\uc758 JAAS \ub85c\uadf8\uc778 \ubaa8\ub4c8\uc774 \uae30\ubcf8 JAAS \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc11c\ubc84\uc5d0 \ub300\ud55c \uae30\ubcf8 JAAS \ub514\ub809\ud1a0\ub9ac\ub294 ${server.config.dir}/resources/security/jaas\uc774\uace0 \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0 \ub300\ud55c \uae30\ubcf8 JAAS \ub514\ub809\ud1a0\ub9ac\ub294 ${client.config.dir}/resources/security/jaas\uc785\ub2c8\ub2e4.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: JAAS \uad6c\uc131 \ud30c\uc77c \ubc0f server.xml/client.xml \ud30c\uc77c\uc5d0 \uc911\ubcf5\ub41c \ub85c\uadf8\uc778 \uad6c\uc131 \uc774\ub984 {0}\uc774(\uac00) \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. server.xml/client.xml \ud30c\uc77c\uc758 \ub85c\uadf8\uc778 \uad6c\uc131 \uc774\ub984\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=JAAS \uad6c\uc131 \ud30c\uc77c \ubc0f server.xml/client.xml \ud30c\uc77c\uc5d0 \uc911\ubcf5\ub41c \ub85c\uadf8\uc778 \uad6c\uc131 \uc774\ub984\uc774 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+JAAS_DUPLICATE_ENTRY_NAME.useraction=JAAS \uad6c\uc131 \ud30c\uc77c \ubc0f server.xml/client.xml \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR=CWWKS1143E: {0} \ub85c\uadf8\uc778 \ubaa8\ub4c8\uc740 {2} Java \uacf5\uae09\uc5c5\uccb4\uc5d0 \uc758\ud574 {1} \ubc84\uc804\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.explanation=server.xml \ud30c\uc77c, jaas.conf \ud30c\uc77c \ub610\ub294 \ub450 \ud30c\uc77c \ubaa8\ub450\uc5d0\uc11c \uc9c0\uc815\ub41c Krb5LoginModule \ubaa8\ub4c8\uc740 \uc0ac\uc6a9\ub41c Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JAAS_KRB5_LOGIN_MODULE_PACKAGE_ERROR.useraction=Krb5LoginModule \ubaa8\ub4c8\uc5d0 \ub300\ud574 \uc9c0\uc6d0\ub418\ub294 \uc62c\ubc14\ub978 Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc744 \uc0ac\uc6a9\ud558\uac70\ub098 Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc5d0\uc11c \uc9c0\uc6d0\ud558\ub294 Krb5LoginModule \ubaa8\ub4c8\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS=CWWKS1144E: {0} \ub85c\uadf8\uc778 \ubaa8\ub4c8 \uc635\uc158\uc740 {1} Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804 {2}\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.explanation=server.xml \ud30c\uc77c, jaas.conf \ud30c\uc77c \ub610\ub294 \ub450 \ud30c\uc77c \ubaa8\ub450\uc5d0\uc11c \uc9c0\uc815\ub41c Krb5LoginModule \uc635\uc158\uc740 \uc0ac\uc6a9\ub41c Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=server.xml \ud30c\uc77c, jaas.conf \ud30c\uc77c \ub610\ub294 \ub450 \ud30c\uc77c \ubaa8\ub450\uc5d0\uc11c \uc9c0\uc815\ub41c \ubaa8\ub4e0 Krb5LoginModule \uc635\uc158\uc774 Java \uacf5\uae09\uc5c5\uccb4 \ubc0f \ubc84\uc804\uc5d0\uc11c \uc9c0\uc6d0\ub418\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: {0} jaasLoginContext \ud56d\ubaa9\uc744 server.xml \ud30c\uc77c, jaas.conf \ud30c\uc77c \ub610\ub294 \ub450 \ud30c\uc77c \ubaa8\ub450\uc5d0\uc11c JAAS \uad6c\uc131 \ud56d\ubaa9\uc73c\ub85c \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=\ub7f0\ud0c0\uc784\uc740 server.xml \ud30c\uc77c\uc758 \uae30\ubcf8 Krb5LoginModule \uad6c\uc131 \ubc0f SPNEGO \uad6c\uc131\uc744 \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
+JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c jaasLoginContext \ud56d\ubaa9\uc744 \uc81c\uac70\ud558\uac70\ub098 \ub7f0\ud0c0\uc784\uc5d0\uc11c \uae30\ubcf8 \ud56d\ubaa9\uc744 \uc0ac\uc6a9\ud558\uac8c \ud558\uc2ed\uc2dc\uc624.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: {1} \uad6c\uc131 \uc694\uc18c\uac00 libraryRef \ubc0f classProviderRef \uc18d\uc131 \ubaa8\ub450\ub97c \uc9c0\uc815\ud558\ubbc0\ub85c {0} JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8\uc774 \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8\uc744 \ub85c\ub4dc\ud558\ub294 \uc544\ud2f0\ud329\ud2b8\ub97c \ud45c\uc2dc\ud558\ub824\uba74 libraryRef \ub610\ub294 classProviderRef \uc18d\uc131 \uc911 \ud558\ub098\ub9cc\uc744 \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=libraryRef \ub610\ub294 classProviderRef \uc18d\uc131 \uc911 \ud558\ub098\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624. \uc5ec\uae30\uc5d0\ub294 JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4\uac00 \ud3ec\ud568\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: {1} \uad6c\uc131 \uc694\uc18c\uac00 libraryRef \ub610\ub294 classProviderRef \uc18d\uc131\uc744 \uc9c0\uc815\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c {0} JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8\uc744 \ub85c\ub4dc\ud558\ub294 \uc544\ud2f0\ud329\ud2b8\ub97c \ud45c\uc2dc\ud558\ub824\uba74 libraryRef \ub610\ub294 classProviderRef \uc18d\uc131 \uc911 \uc815\ud655\ud788 \ud558\ub098\ub9cc\uc744 \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud558\ub294 \uc704\uce58\ub97c \ud45c\uc2dc\ud558\ub824\uba74 libraryRef \ub610\ub294 classProviderRef \uc18d\uc131 \uc911 \ud558\ub098\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: {0} JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4\uac00 {1} {2} \uc544\ud2f0\ud329\ud2b8 \ub0b4\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=\uc9c0\uc815\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub610\ub294 \uc790\uc6d0 \uc5b4\ub311\ud130\uc5d0 \uc694\uccad\ub41c JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4\uac00 \uc5c6\uac70\ub098 JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4\uac00 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc5d0 \uc788\uc9c0\ub9cc \ub85c\ub4dc\ud560 \uc218 \uc5c6\ub294 \uc704\uce58\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=\uad6c\uc131\ub41c JAAS \uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4 \ubc0f \ud574\ub2f9 \ud328\ud0a4\uc9c0 \uc774\ub984\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc9c0\uc815\ub418\uba74 \ub85c\uadf8\uc778 \ubaa8\ub4c8 \ud074\ub798\uc2a4\uac00 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc5d0, \ucd5c\uc0c1\uc704 \ub808\ubca8 JAR \ub610\ub294 \uc790\uc6d0 \uc5b4\ub311\ud130 \ubaa8\ub4c8 \ub0b4\uc5d0 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.

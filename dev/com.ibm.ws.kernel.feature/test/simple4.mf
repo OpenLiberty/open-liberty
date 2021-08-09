@@ -1,0 +1,5 @@
+Bundle-Description: simple, version 0.4
+Bundle-ManifestVersion: 2
+Bundle-Name: simple bundle
+Bundle-SymbolicName: simple
+Bundle-Version: 0.4

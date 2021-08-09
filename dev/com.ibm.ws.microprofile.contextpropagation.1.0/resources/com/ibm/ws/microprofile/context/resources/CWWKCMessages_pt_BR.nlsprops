@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: O mesmo tipo de contexto de encadeamento, {0}, \u00e9 fornecido por v\u00e1rios provedores de contexto de encadeamento, que est\u00e3o dispon\u00edveis para o aplicativo. Os provedores de contexto de encadeamento s\u00e3o: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=A especifica\u00e7\u00e3o Propaga\u00e7\u00e3o de Contexto MicroProfile permite no m\u00e1ximo um ThreadContextProvider para cada tipo de contexto.
+CWWKC1150.duplicate.context.useraction=Atualize o aplicativo dispon\u00edvel, as bibliotecas, ou ambos, para que exista no m\u00e1ximo um ThreadContextProvider do tipo especificado.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: A configura\u00e7\u00e3o de ManagedExecutor inclui os tipos de contexto de encadeamento a seguir que est\u00e3o configurados para serem limpos e propagados: {0}
+CWWKC1151.context.lists.overlap.explanation=Um tipo de contexto de encadeamento pode ser configurado em n\u00e3o mais de uma categoria ao construir ou injetar um ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Revise e corrija a categoriza\u00e7\u00e3o de tipos de contexto de encadeamento em seu construtor ManagedExecutor ou anota\u00e7\u00e3o ManagedExecutorConfig.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: Os tipos de contexto de encadeamento a seguir est\u00e3o configurados em mais de uma categoria de (limpo, propagado, inalterado): {0}.
+CWWKC1152.context.lists.overlap.explanation=Um tipo de contexto de encadeamento pode ser configurado em no m\u00e1ximo uma categoria ao construir ou injetar uma inst\u00e2ncia ThreadContext.
+CWWKC1152.context.lists.overlap.useraction=Revise e corrija a categoriza\u00e7\u00e3o de tipos de contexto de encadeamento em seu construtor ThreadContext ou anota\u00e7\u00e3o ThreadContextConfig.
+
+CWWKC1155.unknown.context=CWWKC1155E: Os tipos de contexto de encadeamento {0} est\u00e3o configurados para serem limpos ou propagados, mas nenhum provedor de contexto de encadeamento para esses tipos est\u00e1 dispon\u00edvel para o aplicativo. Os tipos de contexto de encadeamento dispon\u00edveis s\u00e3o: {1}.
+CWWKC1155.unknown.context.explanation=Para cada tipo de contexto de encadeamento configurado que n\u00e3o \u00e9 fornecido pelo servidor, um provedor de contexto de encadeamento deve estar dispon\u00edvel no carregador de classes de contexto de encadeamento do aplicativo. Os tipos de contexto de encadeamento fornecidos pelo servidor incluem: Aplicativo, CDI, Seguran\u00e7a, Transa\u00e7\u00e3o.
+CWWKC1155.unknown.context.useraction=Atualize o aplicativo, as bibliotecas ou ambos para incluir um provedor de contexto de encadeamento para cada tipo de contexto de encadeamento configurado que n\u00e3o seja fornecido pelo servidor. Como alternativa, atualize o aplicativo para usar apenas os tipos de contexto que est\u00e3o dispon\u00edveis.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: A propaga\u00e7\u00e3o de transa\u00e7\u00f5es para a\u00e7\u00f5es e tarefas contextuais n\u00e3o \u00e9 suportada.
+CWWKC1157.cannot.propagate.tx.explanation=Um ManagedExecutor ou ThreadContext que est\u00e1 configurado para propagar contextos de transa\u00e7\u00e3o pode propagar apenas contextos de transa\u00e7\u00e3o vazios. Portanto, n\u00e3o \u00e9 poss\u00edvel criar a\u00e7\u00f5es e tarefas contextuais em uma transa\u00e7\u00e3o.
+CWWKC1157.cannot.propagate.tx.useraction=Crie a a\u00e7\u00e3o ou tarefa contextual fora de uma transa\u00e7\u00e3o. Como alternativa, configure o ManagedExecutor ou ThreadContext para n\u00e3o propagar contextos de transa\u00e7\u00e3o.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

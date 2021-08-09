@@ -1,0 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+// This task no longer runs as part of the build, since rmic -iiop was removed in JDK 11 we now check in the generate java stubs
+task rmic(type: Exec, dependsOn: compileJava) {
+    String rmicClasspath = sourceSets.main.runtimeClasspath.asPath
+    inputs.files(sourceSets.main.runtimeClasspath)
+    outputs.dir(new File(compileJava.destinationDir, 'org/omg/stub'))
+    executable 'rmic'
+    args '-iiop', '-keep', '-d', compileJava.destinationDir, '-classpath', rmicClasspath, 'javax.management.j2ee.Management', 'javax.management.j2ee.ManagementHome'
+}
+
+//Unit tests assert the checksum of the bundle jar so ensure jar is done first.
+//Unit testing alone does not require assembling the jar. 
+test.dependsOn 'jar'

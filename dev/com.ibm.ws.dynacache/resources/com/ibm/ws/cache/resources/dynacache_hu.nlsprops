@@ -1,0 +1,831 @@
+###############################################################################
+# Copyright (c) 1997, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.21.6.11
+#CMVCPATHNAME SERV1/ws/code/dynacache/src/com/ibm/ws/cache/resources/dynacache.nlsprops
+#COMPONENTPREFIX DYNA
+#COMPONENTNAMEFOR DYNA WebSphere Dynacache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# No Comment Provided
+dynacache.priority=DYNA0001E: A(z) {0} bejegyz\u00e9s priorit\u00e1s\u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes sz\u00e1m. A(z) {1} helyett haszn\u00e1ljon eg\u00e9sz \u00e9rt\u00e9ket.
+dynacache.priority.explanation=A felhaszn\u00e1l\u00f3 a priorit\u00e1shoz nem eg\u00e9sz sz\u00e1mot vagy nem pozit\u00edv eg\u00e9sz sz\u00e1mot adott meg.
+dynacache.priority.useraction=M\u00f3dos\u00edtsa a priorit\u00e1s\u00e9rt\u00e9ket egy pozit\u00edv eg\u00e9sz sz\u00e1mra.
+
+# No Comment Provided
+dynacache.timeout=DYNA0002E: A(z) {0} bejegyz\u00e9s id\u0151korl\u00e1t\u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes sz\u00e1m. A(z) {1} helyett haszn\u00e1ljon eg\u00e9sz \u00e9rt\u00e9ket.
+dynacache.timeout.explanation=A felhaszn\u00e1l\u00f3 nem eg\u00e9sz sz\u00e1mot adott meg az id\u0151korl\u00e1thoz.
+dynacache.timeout.useraction=M\u00f3dos\u00edtsa az id\u0151korl\u00e1t\u00e9rt\u00e9ket egy eg\u00e9sz sz\u00e1m\u00e9rt\u00e9kre.
+
+# No Comment Provided
+dynacache.badconfig=DYNA0003E: A(z) {0} rossz be\u00e1ll\u00edt\u00e1s miatt nem ker\u00fcl ideiglenes t\u00e1rol\u00e1sra.
+dynacache.badconfig.explanation=A megadott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s be\u00e1ll\u00edt\u00e1sa helytelen.
+dynacache.badconfig.useraction=Ellen\u0151rizze, hogy helyes, nem ellentmond\u00f3 \u00e9rt\u00e9kek ker\u00fcltek megad\u00e1sra, \u00e9s hogy minden k\u00f6telez\u0151 mez\u0151 meg van adva.
+
+# No Comment Provided
+dynacache.questionconfig=DYNA0004E: Egy alap\u00e9rtelmezett gyors\u00edt\u00f3t\u00e1rbejegyz\u00e9s-el\u0151\u00e1ll\u00edt\u00f3 l\u00e9trehoz\u00e1sra ker\u00fclt, de konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3k nincsenek megadva. Ez az el\u0151\u00e1ll\u00edt\u00f3 az URI-t param\u00e9terek n\u00e9lk\u00fcl haszn\u00e1lja a gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3k el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz. Ezeket az inform\u00e1ci\u00f3kat a servletcache.xml f\u00e1jlban kell be\u00e1ll\u00edtani.
+dynacache.questionconfig.explanation=Egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s trivi\u00e1lis konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kkal lett be\u00e1ll\u00edtva. Ez szab\u00e1lyos, de val\u00f3sz\u00edn\u0171leg nem helyes, a legegyszer\u0171bb eseteket kiv\u00e9ve.
+dynacache.questionconfig.useraction=Ellen\u0151rizze, hogy a gyors\u00edt\u00f3t\u00e1rban t\u00e1roland\u00f3 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s az egyedis\u00e9g eld\u00f6nt\u00e9s\u00e9hez csak az URI megh\u00edv\u00e1s\u00e1t ig\u00e9nyli.
+
+# No Comment Provided
+dynacache.externaldup=DYNA0005E: A(z) {0} c\u00edmhez t\u00f6bb ExternalCacheGroup bejegyz\u00e9s l\u00e9tezik.
+dynacache.externaldup.explanation=A konfigur\u00e1ci\u00f3ban t\u00f6bb ExternalCacheGroup ker\u00fclt megad\u00e1sra.
+dynacache.externaldup.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r\u00f6s csoportot.
+
+# No Comment Provided
+dynacache.externalnotfound=DYNA0006E: A(z) {0} ExternalCacheGroup nem tal\u00e1lhat\u00f3.
+dynacache.externalnotfound.explanation=A k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport, amelyhez a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s kimenet\u00e9t tov\u00e1bb\u00edtani kell, a glob\u00e1lis gyors\u00edt\u00f3t\u00e1r-konfigur\u00e1ci\u00f3ban nem lett bejegyezve.
+dynacache.externalnotfound.useraction=Ellen\u0151rizze a k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport helyes\u00edr\u00e1s\u00e1t. Ha hib\u00e1tlan, akkor adja meg a csoportot a glob\u00e1lis gyors\u00edt\u00f3t\u00e1r-tulajdons\u00e1gokban.
+
+# No Comment Provided
+dynacache.externaladaptererror=DYNA0007E: Hiba t\u00f6rt\u00e9nt a k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1r-illeszt\u0151 inicializ\u00e1l\u00e1sa sor\u00e1n: {0}
+dynacache.externaladaptererror.explanation=A megadott hiba a k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1r-illeszt\u0151 inicializ\u00e1l\u00e1sa sor\u00e1n j\u00f6tt l\u00e9tre.
+dynacache.externaladaptererror.useraction=Az \u00fczenetben biztos\u00edtott specifikus inform\u00e1ci\u00f3k seg\u00edts\u00e9g\u00e9vel azonos\u00edtsa a hiba ok\u00e1t
+
+# No Comment Provided
+dynacache.notexist=DYNA0008E: A CacheUnit m\u00e1r nem l\u00e9tezik.
+dynacache.notexist.explanation=Az \u00fczenet egy olyan gyors\u00edt\u00f3t\u00e1r-egys\u00e9gnek lett elk\u00fcldve vagy egy olyant\u00f3l \u00e9rkezett, amely m\u00e1r nincs bejegyezve a gyors\u00edt\u00f3t\u00e1r replik\u00e1ci\u00f3s csoporthoz.
+dynacache.notexist.useraction=Ellen\u0151rizze, hogy a megadott gyors\u00edt\u00f3t\u00e1r-egys\u00e9gnek akt\u00edvnak kell-e lenni; ha igen, akkor ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+dynacache.xmlnodoc=DYNA0009E: A(z) {1} dokumentumban nem tal\u00e1lhat\u00f3 {0} nev\u0171 elem.
+dynacache.xmlnodoc.explanation=A megadott dokumentum elemz\u00e9sekor a rendszer a v\u00e1rt XML elemet nem tal\u00e1lta.
+dynacache.xmlnodoc.useraction=Vesse \u00f6ssze a term\u00e9kdokument\u00e1ci\u00f3t az XML f\u00e1jlform\u00e1tummal, \u00e9s keresse meg benne a konfigur\u00e1ci\u00f3s hib\u00e1kat.
+
+# No Comment Provided
+dynacache.xmlnoelem=DYNA0010E: A(z) {1} f\u00e1jlban nem tal\u00e1lhat\u00f3 {0} nev\u0171 elem.
+dynacache.xmlnoelem.explanation=A megadott konfigur\u00e1ci\u00f3s XML f\u00e1jlok elemz\u00e9se sor\u00e1n a rendszer egy v\u00e1rt XML elemet nem tal\u00e1lt.
+dynacache.xmlnoelem.useraction=Vesse \u00f6ssze a term\u00e9kdokument\u00e1ci\u00f3t az XML f\u00e1jlform\u00e1tummal, \u00e9s keresse meg benne a konfigur\u00e1ci\u00f3s hib\u00e1kat.
+
+# No Comment Provided
+dynacache.fileNotFound=DYNA0011E: A(z) {0} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1rf\u00e1jl nem tal\u00e1lhat\u00f3; a gyors\u00edt\u00f3t\u00e1raz\u00e1s le van tiltva
+dynacache.fileNotFound.explanation=A megadott gyors\u00edt\u00f3t\u00e1r-tulajdons\u00e1gok az alkalmaz\u00e1skiszolg\u00e1l\u00f3hoz nem lettek megadva. A gyors\u00edt\u00f3t\u00e1raz\u00e1s tiltott.
+dynacache.fileNotFound.useraction=A megadott n\u00e9ven \u00e9p\u00edtsen \u00f6ssze egy konfigur\u00e1ci\u00f3s XML f\u00e1jlt. A gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s XML f\u00e1jl \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9nek m\u00f3dj\u00e1t a term\u00e9kdokument\u00e1ci\u00f3 tartalmazza.
+
+# No Comment Provided
+dynacache.cachingEnabled=DYNA0012I: A dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1sa enged\u00e9lyezve van
+dynacache.cachingEnabled.explanation=A dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1sa enged\u00e9lyezve van.
+dynacache.cachingEnabled.useraction=Nincs.
+
+# No Comment Provided
+dynacache.cachingDisabled=DYNA0013I: A dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1sa le van tiltva
+dynacache.cachingDisabled.explanation=A dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1sa le van tiltva.
+dynacache.cachingDisabled.useraction=Nincs.
+
+# No Comment Provided
+dynacache.uriMatched=DYNA0014I: A(z) {0} gyors\u00edt\u00f3t\u00e1razhat\u00f3 URI
+dynacache.uriMatched.explanation=Olyan kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s vagy JSP f\u00e1jl ker\u00fclt inicializ\u00e1l\u00e1sra, amelyhez be van \u00e1ll\u00edtva \u00e9rv\u00e9nyes gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv.
+dynacache.uriMatched.useraction=Nincs.
+
+# No Comment Provided
+dynacache.error=DYNA0015I: A dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1s hib\u00e1t \u00e9szlelt: {0}
+dynacache.error.explanation=\u00c1ltal\u00e1nos hiba\u00fczenet.
+dynacache.error.useraction=A biztos\u00edtott hiba\u00fczenet alapj\u00e1n keresse meg a hib\u00e1t.
+
+# No Comment Provided
+dynacache.stats.dump=DYNA0016I: A dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1si statisztik\u00e1ja az al\u00e1bbi helyre \u00edr\u00f3dott: {0}
+dynacache.stats.dump.explanation=A gyors\u00edt\u00f3t\u00e1r-statisztika a megadott f\u00e1jlba lett \u00edrva.
+dynacache.stats.dump.useraction=Nincs.
+
+# No Comment Provided
+dynacache.joingroup=DYNA0017I: Csatlakozva a(z) {0} csoporthoz.
+dynacache.joingroup.explanation=Ez a gyors\u00edt\u00f3t\u00e1regys\u00e9g sikeresen csatlakozott egy\u00fcttm\u0171k\u00f6d\u0151 gyors\u00edt\u00f3t\u00e1rak egy csoportj\u00e1hoz.
+dynacache.joingroup.useraction=Nincs.
+
+# No Comment Provided
+dynacache.idgeneratorerror=DYNA0018E: Hiba t\u00f6rt\u00e9nt a(z) {0} azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3 bet\u00f6lt\u00e9se sor\u00e1n
+dynacache.idgeneratorerror.explanation=Hiba t\u00f6rt\u00e9nt az azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3 bet\u00f6lt\u00e9se sor\u00e1n.
+dynacache.idgeneratorerror.useraction=A biztos\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.
+
+# No Comment Provided
+dynacache.metadatageneratorerror=DYNA0019E: Hiba t\u00f6rt\u00e9nt a(z) {0} MetaData Generator bet\u00f6lt\u00e9se sor\u00e1n
+dynacache.metadatageneratorerror.explanation=Hiba t\u00f6rt\u00e9nt a MetaData Generator bet\u00f6lt\u00e9se sor\u00e1n.
+dynacache.metadatageneratorerror.useraction=A biztos\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.
+
+# No Comment Provided
+dynacache.notSerializable=DYNA0020E: A(z) {0} nem gyors\u00edt\u00f3t\u00e1razhat\u00f3, a k\u00e9r\u00e9sattrib\u00fatumok nem p\u00e9ld\u00e1nyos\u00edthat\u00f3k.
+dynacache.notSerializable.explanation=A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s ki lett jel\u00f6lve a gyors\u00edt\u00f3t\u00e1rak k\u00f6z\u00f6tti replik\u00e1l\u00e1sra, amelyhez minden k\u00e9r\u00e9sattrib\u00fatumnak p\u00e9ld\u00e1nyos\u00edthat\u00f3nak kell lennie.
+dynacache.notSerializable.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv\u00e9t, hogy a kimenet ne legyen replik\u00e1lva, vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy minden k\u00e9r\u00e9sattrib\u00fatum p\u00e9ld\u00e1nyos\u00edthat\u00f3 legyen.
+
+# No Comment Provided
+dynacache.cacheInitFailed=DYNA0021E: A(z) {0} gyors\u00edt\u00f3t\u00e1regys\u00e9g nem inicializ\u00e1lhat\u00f3: {1}
+dynacache.cacheInitFailed.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r inicializ\u00e1l\u00e1sa sor\u00e1n.
+dynacache.cacheInitFailed.useraction=A biztos\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.
+
+# No Comment Provided
+dynacache.configerror=DYNA0022E: Hiba t\u00f6rt\u00e9nt a dinamikus gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3 feldolgoz\u00e1sa sor\u00e1n: {0}
+dynacache.configerror.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r-konfigur\u00e1ci\u00f3 feldolgoz\u00e1sa sor\u00e1n.
+dynacache.configerror.useraction=A biztos\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.
+
+# No Comment Provided
+dynacache.nullServletMapping=DYNA0023E: Hiba t\u00f6rt\u00e9nt a(z) {0} gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv \u00f6ssze\u00e9p\u00edt\u00e9se sor\u00e1n.  A(z) {1} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1shoz nincsenek megadva kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s-lek\u00e9pez\u00e9sek
+dynacache.nullServletMapping.explanation=Nem tal\u00e1lhat\u00f3 kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s lek\u00e9pez\u00e9s a gyors\u00edt\u00f3t\u00e1r kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1shoz vagy a JSP f\u00e1jlhoz.
+dynacache.nullServletMapping.useraction=Az alkalmaz\u00e1s-\u00f6ssze\u00e1ll\u00edt\u00e1si eszk\u00f6z seg\u00edts\u00e9g\u00e9vel jav\u00edtsa ki a konfigur\u00e1ci\u00f3s hib\u00e1t.
+
+# No Comment Provided
+dynacache.excludeerror=DYNA0024E: Hiba t\u00f6rt\u00e9nt a(z) {0} gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv \u00f6ssze\u00e9p\u00edt\u00e9se sor\u00e1n.  Az exclude v\u00e1ltoz\u00f3k t\u00f6bbsz\u00f6r szerepeltek vagy helytelen\u00fcl voltak meghat\u00e1rozva a(z) {1} gyors\u00edt\u00f3t\u00e1r-v\u00e1ltoz\u00f3hoz.
+dynacache.excludeerror.explanation=T\u00f6bbsz\u00f6r szerepl\u0151 exclude v\u00e1ltoz\u00f3k tal\u00e1lhat\u00f3k.
+dynacache.excludeerror.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 v\u00e1ltoz\u00f3kat vagy a helytelen\u00fcl megadott exclude v\u00e1ltoz\u00f3kat.
+
+# No Comment Provided
+dynacache.badexternalconfig=DYNA0025E: Egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s ideiglenes t\u00e1rol\u00e1sa automatikusan minden k\u00e9r\u00e9sparam\u00e9tert haszn\u00e1l \u00e9s m\u00e1st nem is a gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3k \u00f6ssze\u00e9p\u00edt\u00e9se sor\u00e1n.  A k\u00e9r\u00e9sparam\u00e9terek csak k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1raz\u00e1shoz \u00e1ll\u00edthat\u00f3k be az exclude, invalidate \u00e9s dataid f\u00fcggv\u00e9nyekkel.
+dynacache.badexternalconfig.explanation=A bejegyz\u00e9s k\u00fcls\u0151leg gyors\u00edt\u00f3t\u00e1razhat\u00f3k\u00e9nt van megjel\u00f6lve, \u00e9s tov\u00e1bbi azonos\u00edt\u00f3-ell\u0151\u00e1ll\u00edt\u00e1si szab\u00e1lyokat is tartalmaz.
+dynacache.badexternalconfig.useraction=T\u00e1vol\u00edtsa el a tov\u00e1bbi szab\u00e1lyokat.
+
+# No Comment Provided
+DYNA0026E=DYNA0026E: Hiba t\u00f6rt\u00e9nt a(z) {0} elem olvas\u00e1sa k\u00f6zben.  A(z) {1} \u00e9rt\u00e9k feldolgoz\u00e1sa sor\u00e1n kiv\u00e9tel t\u00f6rt\u00e9nt: {2}.
+DYNA0026E.explanation=A gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl olvas\u00e1sa sor\u00e1n hiba t\u00f6rt\u00e9nt.
+DYNA0026E.useraction=A hiba\u00fczenet inform\u00e1ci\u00f3i seg\u00edts\u00e9g\u00e9vel jav\u00edtsa ki a hib\u00e1t.
+
+# No Comment Provided
+DYNA0027E=DYNA0027E: Ismeretlen replik\u00e1ci\u00f3s ir\u00e1nyelv: {0}.
+DYNA0027E.explanation=Ismeretlen replik\u00e1ci\u00f3s ir\u00e1nyelv lett megadva.
+DYNA0027E.useraction=\u00c9rv\u00e9nyes replik\u00e1ci\u00f3s ir\u00e1nyelvek: not-shared, shared-push, shared-pull \u00e9s shared-push-pull.
+
+# No Comment Provided
+DYNA0028E=DYNA0028E: A(z) {0} \u00f6sszetev\u0151t illeg\u00e1lisan haszn\u00e1lt\u00e1k, amikor a(z) {1} azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3 m\u00e1r meg volt adva.
+DYNA0028E.explanation=A gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv ugyanahhoz a gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 szab\u00e1lyhoz \u00f6sszetev\u0151t \u00e9s azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3t is megadott.
+DYNA0028E.useraction=Vagy \u00f6sszetev\u0151c\u00edmk\u00e9ket, vagy azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3t haszn\u00e1ljon, de egyszerre mindkett\u0151t ne.
+
+# No Comment Provided
+DYNA0029E=DYNA0029E: A(z) {0} azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3t illeg\u00e1lisan haszn\u00e1lt\u00e1k, amikor a(z) {1} \u00f6sszetev\u0151 m\u00e1r meg volt adva.
+DYNA0029E.explanation=A gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv ugyanahhoz a gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 szab\u00e1lyhoz \u00f6sszetev\u0151t \u00e9s azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3t is megadott.
+DYNA0029E.useraction=Vagy \u00f6sszetev\u0151c\u00edmk\u00e9ket, vagy azonos\u00edt\u00f3el\u0151\u00e1ll\u00edt\u00f3t haszn\u00e1ljon, de egyszerre mindkett\u0151t ne.
+
+# No Comment Provided
+DYNA0030E=DYNA0030E: A(z) {0} elemhez a k\u00f6telez\u0151 {1} attrib\u00fatum hi\u00e1nyzik.
+DYNA0030E.explanation=A gyors\u00edt\u00f3t\u00e1r-konfigur\u00e1ci\u00f3ban egy k\u00f6telez\u0151 attrib\u00fatum hi\u00e1nyzott.
+DYNA0030E.useraction=A gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jlhoz adja hozz\u00e1 a k\u00f6telez\u0151 attrib\u00fatumot.
+
+# No Comment Provided
+DYNA0031E=DYNA0031E: {1} azonos\u00edt\u00f3val rendelkez\u0151 {0} elem illeg\u00e1lis haszn\u00e1lata.  Mez\u0151 vagy met\u00f3dus elem m\u00e1r jelen van.
+DYNA0031E.explanation=A konfigur\u00e1ci\u00f3s f\u00e1jl ugyanahhoz az \u00f6sszetev\u0151h\u00f6z t\u00f6bb met\u00f3dus- vagy mez\u0151c\u00edmk\u00e9t adott meg.
+DYNA0031E.useraction=A konfigur\u00e1ci\u00f3s f\u00e1jl \u00f6sszetev\u0151j\u00e9b\u0151l t\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r\u00f6s met\u00f3dus- vagy mez\u0151elemeket.
+
+# No Comment Provided
+DYNA0032E=DYNA0032E: A(z) {0} elemet vagy attrib\u00fatumot true vagy false \u00e9rt\u00e9kre kell \u00e1ll\u00edtani.  A megjelen\u0151 \u00e9rt\u00e9k: {0}.
+DYNA0032E.explanation=A megadott elemnek true vagy false \u00e9rt\u00e9kkel kell rendelkeznie, de m\u00e1s \u00e9rt\u00e9k lett megadva.
+DYNA0032E.useraction=Jav\u00edtsa az elemet, hogy true vagy false legyen az \u00e9rt\u00e9ke.
+
+# No Comment Provided
+DYNA0033E=DYNA0033E: A(z) {1} oszt\u00e1ly {0} met\u00f3dusa nem elemezhet\u0151.  Kiv\u00e9tel: {2}.
+DYNA0033E.explanation=Hiba t\u00f6rt\u00e9nt a konfigur\u00e1ci\u00f3s f\u00e1jlban megadott met\u00f3dus keres\u00e9se sor\u00e1n.
+DYNA0033E.useraction=Ellen\u0151rizze, hogy a konfigur\u00e1ci\u00f3s f\u00e1jlban megadott met\u00f3dus l\u00e9tezik a megh\u00edvand\u00f3 objektumban \u00e9s hogy a met\u00f3dus nyilv\u00e1nos.
+
+# No Comment Provided
+DYNA0034E=DYNA0034E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} met\u00f3dus  megh\u00edv\u00e1sa sor\u00e1n a(z) {1} oszt\u00e1lyon.  Kiv\u00e9tel: {2}.
+DYNA0034E.explanation=Hiba t\u00f6rt\u00e9nt a megadott met\u00f3dus megh\u00edv\u00e1sakor a gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz.
+DYNA0034E.useraction=A hiba\u00fczenet inform\u00e1ci\u00f3i seg\u00edts\u00e9g\u00e9vel jav\u00edtsa ki a probl\u00e9m\u00e1t.
+
+# No Comment Provided
+DYNA0035E=DYNA0035E: A(z) {1} oszt\u00e1ly {0} mez\u0151je nem elemezhet\u0151.  Kiv\u00e9tel: {2}.
+DYNA0035E.explanation=Hiba t\u00f6rt\u00e9nt a ideiglenes gyors\u00edt\u00f3t\u00e1r-konfigur\u00e1ci\u00f3s f\u00e1jlban megadott mez\u0151 keres\u00e9se sor\u00e1n.
+DYNA0035E.useraction=Ellen\u0151rizze, hogy a konfigur\u00e1ci\u00f3s f\u00e1jlban megadott mez\u0151 l\u00e9tezik a megh\u00edvand\u00f3 objektumban \u00e9s a mez\u0151 nyilv\u00e1nos.
+
+# No Comment Provided
+DYNA0036E=DYNA0036E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} mez\u0151 leh\u00edv\u00e1sa sor\u00e1n a(z) {1} oszt\u00e1lyb\u00f3l.  Kiv\u00e9tel: {2}.
+DYNA0036E.explanation=Hiba t\u00f6rt\u00e9nt a megadott mez\u0151 lek\u00e9r\u00e9se sor\u00e1n a gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz.
+DYNA0036E.useraction=A hiba\u00fczenet inform\u00e1ci\u00f3i seg\u00edts\u00e9g\u00e9vel jav\u00edtsa ki a probl\u00e9m\u00e1t.
+
+# No Comment Provided
+DYNA0037E=DYNA0037E: A(z) {1} elem feldolgoz\u00e1sa sor\u00e1n a rendszer {0} ismeretlen elemet tal\u00e1lt.
+DYNA0037E.explanation=A gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl elemz\u00e9se sor\u00e1n a rendszer ismeretlen elemet \u00e9szlelt.
+DYNA0037E.useraction=Jav\u00edtsa ki a dokumentumot, hogy megfeleljen a cachespec.dtd f\u00e1jlnak.
+
+# No Comment Provided
+DYNA0038E=DYNA0038E: Ismeretlen {0} \u00f6sszetev\u0151t\u00edpus a(z) {1} parancshoz.
+DYNA0038E.explanation=A megadott \u00f6sszetev\u0151t\u00edpus nem \u00e9rv\u00e9nyes a parancs gyors\u00edt\u00f3t\u00e1raz\u00e1shoz.
+DYNA0038E.useraction=Az \u00e9rv\u00e9nyes \u00f6sszetev\u0151t\u00edpusok parancsok eset\u00e9n: method \u00e9s field.
+
+# No Comment Provided
+DYNA0039E=DYNA0039E: A parancsok nem t\u00e1mogatj\u00e1k az egy\u00e9ni metaadatokat el\u0151\u00e1ll\u00edt\u00f3 oszt\u00e1lyokat.  A prepareMetaData() met\u00f3dust fel\u00fcl kell \u00edrnia.
+DYNA0039E.explanation=A gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl egy\u00e9ni metaadat-el\u0151\u00e1ll\u00edt\u00f3t adott meg egy parancshoz, de ez nem t\u00e1mogatott.
+DYNA0039E.useraction=Olvassa el a CacheableCommand.prepareMetaData met\u00f3dus megval\u00f3s\u00edt\u00e1s\u00e1val kapcsolatos term\u00e9kdokument\u00e1ci\u00f3t.
+
+# No Comment Provided
+DYNA0040E=DYNA0040E: \u00c9rv\u00e9nytelen \u00f6sszetev\u0151t\u00edpus ({0}) a k\u00f6vetkez\u0151h\u00f6z: {1}.
+DYNA0040E.explanation=A megadott objektum feldolgoz\u00e1sa sor\u00e1n a rendszer nem t\u00e1mogatott \u00f6sszetev\u0151t\u00edpust \u00e9szlelt.
+DYNA0040E.useraction=Jav\u00edtsa ki a gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s ir\u00e1nyelvet, hogy csak \u00e9rv\u00e9nyes tartalomt\u00edpust tartalmazzon a megadott objektumhoz.
+
+# No Comment Provided
+DYNA0041E=DYNA0041E: \u00c9rv\u00e9nytelen {0} \u00f6sszetev\u0151t\u00edpus a hat\u00e1rk\u00e9nt alkalmazhat\u00f3 t\u00f6red\u00e9khez: {1}.
+DYNA0041E.explanation=A JSP hat\u00e1rk\u00e9nt alkalmazhat\u00f3k\u00e9nt volt megjel\u00f6lve, de a gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv olyan \u00f6sszetev\u0151szab\u00e1lyokat tartalmaz, amelyek IBM hat\u00e1rkiszolg\u00e1l\u00f3n \u00e9rv\u00e9nytelenek.
+DYNA0041E.useraction=Jav\u00edtsa ki a gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelvet a nem IBM hat\u00e1rkiszolg\u00e1l\u00f3r\u00f3l ind\u00edtott szab\u00e1lyok kik\u00fcsz\u00f6b\u00f6l\u00e9se \u00e9rdek\u00e9ben, vagy l\u00e1ssa el nem alkalmazhat\u00f3 hat\u00e1rk\u00e9nt jel\u00f6l\u00e9ssel a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1st vagy JSP f\u00e1jlt.
+
+# No Comment Provided
+DYNA0042E=DYNA0042E: {0} \u00e9rv\u00e9nytelen \u00f6sszetev\u0151t\u00edpus a(z) {1} kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s/jsp t\u00f6red\u00e9khez.
+DYNA0042E.explanation=A megadott kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s vagy JSP f\u00e1jl feldolgoz\u00e1sa sor\u00e1n a rendszer nem t\u00e1mogatott \u00f6sszetev\u0151t\u00edpust \u00e9szlelt.
+DYNA0042E.useraction=Jav\u00edtsa ki a gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s ir\u00e1nyelvet, hogy csak \u00e9rv\u00e9nyes tartalomt\u00edpust tartalmazzon a megadott objektumhoz.
+
+# No Comment Provided
+DYNA0043E=DYNA0043E: A(z) {0} konfigur\u00e1ci\u00f3s f\u00e1jl hib\u00e1kat tartalmaz \u00e9s nem ker\u00fclt felhaszn\u00e1l\u00e1sra.
+DYNA0043E.explanation=A megadott konfigur\u00e1ci\u00f3s f\u00e1jl kritikus hib\u00e1kat tartalmaz \u00e9s nem haszn\u00e1lhat\u00f3.
+DYNA0043E.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3s f\u00e1jl megadott hib\u00e1it.
+
+# No Comment Provided
+DYNA0044E=DYNA0044E: XML \u00e9rtelmez\u00e9si figyelmeztet\u00e9s: {0}, a(z) {1} f\u00e1jl {2}. sor\u00e1nak, {3}. oszlop\u00e1nak \u00e9rtelmez\u00e9se sor\u00e1n.
+DYNA0044E.explanation=XML \u00e9rtelmez\u00e9si figyelmeztet\u00e9s t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl feldolgoz\u00e1sa sor\u00e1n.
+DYNA0044E.useraction=Jav\u00edtsa ki az \u00fczenetben megadott hib\u00e1t.
+
+# No Comment Provided
+DYNA0045E=DYNA0045E: XML \u00e9rtelmez\u00e9si hiba: {0} a(z) {1} f\u00e1jl {2}. sor\u00e1nak, {3} oszlop\u00e1nak \u00e9rtelmez\u00e9se sor\u00e1n.
+DYNA0045E.explanation=XML \u00e9rtelmez\u00e9si figyelmeztet\u00e9s t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl feldolgoz\u00e1sa sor\u00e1n.
+DYNA0045E.useraction=Jav\u00edtsa ki az \u00fczenetben megadott hib\u00e1t.
+
+# No Comment Provided
+DYNA0046E=DYNA0046E: {0} I/O kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} konfigur\u00e1ci\u00f3s f\u00e1jl feldolgoz\u00e1sa sor\u00e1n.
+DYNA0046E.explanation=Hiba t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl olvas\u00e1sa sor\u00e1n.
+DYNA0046E.useraction=Jav\u00edtsa ki az \u00fczenetben megadott hib\u00e1t.
+
+# No Comment Provided
+DYNA0047I=DYNA0047I: A gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sek sikeresen bet\u00f6lt\u00e9sre ker\u00fcltek a(z) {0} gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jlb\u00f3l.
+DYNA0047I.explanation=A megadott helyr\u0151l sz\u00e1rmaz\u00f3 gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl sikeresen feldolgoz\u00e1sra ker\u00fclt a gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sekhez.
+DYNA0047I.useraction=Nincs.
+
+# No Comment Provided
+DYNA0048I=DYNA0048I: A WebSphere dinamikus gyors\u00edt\u00f3t\u00e1r sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
+DYNA0048I.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1sok inicializ\u00e1l\u00e1sa sikeres volt.
+DYNA0048I.useraction=Nincs.
+
+# No Comment Provided
+DYNA0049E=DYNA0049E: Ismeretlen \u00f6sszetev\u0151t\u00edpus: {0}.
+DYNA0049E.explanation=A megadott \u00f6sszetev\u0151t\u00edpus a gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s t\u00e1rol\u00f3ban megtal\u00e1lhat\u00f3, de a gyors\u00edt\u00f3t\u00e1r nem ismerte fel.
+DYNA0049E.useraction=T\u00e1vol\u00edtsa el a konfigur\u00e1ci\u00f3s f\u00e1jlb\u00f3l az ismeretlen \u00f6sszetev\u0151t\u00edpust.
+
+# No Comment Provided
+DYNA0050E=DYNA0050E: A(z) {1} elemhez {0} ismeretlen \u00e9rt\u00e9k lett megadva.
+DYNA0050E.explanation=A konfigur\u00e1ci\u00f3s f\u00e1jlban l\u00e9v\u0151 megadott elem ismeretlen \u00e9rt\u00e9ket tartalmazott.
+DYNA0050E.useraction=A megadott elem \u00e9rv\u00e9nyes \u00e9rt\u00e9keivel kapcsolatos inform\u00e1ci\u00f3kat a term\u00e9kdokument\u00e1ci\u00f3 tartalmazza.
+
+# No Comment Provided
+DYNA0051E=DYNA0051E: A CacheableCommand nem gyors\u00edt\u00f3t\u00e1razhat\u00f3, mivel a WebSphere dinamikus gyors\u00edt\u00f3t\u00e1raz\u00e1s le van tiltva.
+DYNA0051E.explanation=Megpr\u00f3b\u00e1lt\u00e1k haszn\u00e1lni a CacheableCommand parancsot, de a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1sa a webt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1sokban le van tiltva.
+DYNA0051E.useraction=Enged\u00e9lyezze a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1raz\u00e1s\u00e1t a webt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1sokban az adminisztr\u00e1ci\u00f3s konzolr\u00f3l.
+
+# No Comment Provided
+DYNA0052E=DYNA0052E: A gyors\u00edt\u00f3t\u00e1razott objektum nem replik\u00e1lhat\u00f3 \u00e9s nem menthet\u0151 lemezre.  Gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3={0}   Oszt\u00e1lyn\u00e9v={1}   T\u00edpus={2}    Kiv\u00e9tel={3}
+DYNA0052E.explanation=Az objektum ki lett jel\u00f6lve gyors\u00edt\u00f3t\u00e1rak k\u00f6z\u00f6tti replik\u00e1l\u00e1sra vagy lemezre m\u00e1sol\u00e1sra, amelyhez az objektumnak \u00e9s az objektumban hivatkozott minden objektumnak sorbafejthet\u0151nek kell lennie.  A Gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 a nem sorbafejthet\u0151 gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9s azonos\u00edt\u00f3ja.  Az Oszt\u00e1lyn\u00e9v a nem sorbafejthet\u0151 ideiglenesen t\u00e1rolt objektum oszt\u00e1lyneve.  A T\u00edpus az adatt\u00edpus, amely azt mutatja, hogy milyen adatok sorbafejt\u00e9se zajlik.  A Kiv\u00e9tel a sorbafejt\u00e9si k\u00eds\u00e9rlet sor\u00e1n kapott kiv\u00e9tel.
+DYNA0052E.useraction=M\u00f3dos\u00edtsa az objektum gyors\u00edt\u00f3t\u00e1r-ir\u00e1nyelv\u00e9t, hogy ne ker\u00fclj\u00f6n replik\u00e1l\u00e1sra vagy lemezre ment\u00e9sre, vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy az objektum \u00e9s minden hivatkozott objektum sorbafejthet\u0151 legyen.
+
+# No Comment Provided
+DYNA0053I=DYNA0053I: A lemezre ki\u00edrat\u00e1s a(z) {0} nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz a(z) {1} k\u00f6nyvt\u00e1rban enged\u00e9lyezve van.
+DYNA0053I.explanation=A lemezre ki\u00edrat\u00e1s szolg\u00e1ltat\u00e1s enged\u00e9lyezett a megadott gyors\u00edt\u00f3t\u00e1rhoz. A lemezgyors\u00edt\u00f3t\u00e1r a megadott k\u00f6nyvt\u00e1rban ker\u00fcl t\u00e1rol\u00e1sra.
+DYNA0053I.useraction=Nincs.
+
+# No Comment Provided
+DYNA0054W=DYNA0054W: A lemezre ki\u00edrat\u00e1s a(z) {0} nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz enged\u00e9lyezve van. A(z) {1} hely nem hozhat\u00f3 l\u00e9tre. Az alap\u00e9rtelmezett alternat\u00edv hely, {2} ker\u00fcl felhaszn\u00e1l\u00e1sra helyette.
+DYNA0054W.explanation=A lemezre ki\u00edrat\u00e1s szolg\u00e1ltat\u00e1s enged\u00e9lyezett a megadott gyors\u00edt\u00f3t\u00e1rhoz. A lemezgyors\u00edt\u00f3t\u00e1r az alternat\u00edv helyen ker\u00fcl t\u00e1rol\u00e1sra, mivel a megadott k\u00f6nyvt\u00e1r nem hozhat\u00f3 l\u00e9tre.
+DYNA0054W.useraction=Nincs.
+
+# No Comment Provided
+DYNA0055E=DYNA0055E: A lemezre ki\u00edrat\u00e1s a(z) {0} nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz le van tiltva, mert a(z) {1} vagy a(z) {2} hely nem hozhat\u00f3 l\u00e9tre. 
+DYNA0055E.explanation=A lemezre ki\u00edrat\u00e1si szolg\u00e1ltat\u00e1s letilt\u00e1sra ker\u00fclt a megadott gyors\u00edt\u00f3t\u00e1rhoz, mert a lemezre ki\u00edrat\u00e1s hely\u00e9t \u00e9s az alap\u00e9rtelmezett alternat\u00edv helyet nem lehet l\u00e9trehozni.
+DYNA0055E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lemezre ki\u00edrat\u00e1s helye elegend\u0151 hozz\u00e1f\u00e9r\u00e9si jogosults\u00e1ggal rendelkezik.
+
+# No Comment Provided
+DYNA0056W=DYNA0056W: A lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlok adats\u00e9r\u00fcl\u00e9s miatt \u00fajra inicializ\u00e1l\u00e1sra ker\u00fcltek. 
+DYNA0056W.explanation=A lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlok adats\u00e9r\u00fcl\u00e9s miatt \u00fajra inicializ\u00e1l\u00e1sra ker\u00fcltek a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1sakor. Ezt okozhatta a JVM v\u00e1ratlan le\u00e1ll\u00e1sa, vagy lemez kiv\u00e9tel t\u00f6rt\u00e9nt. Minden r\u00e9gi lemezgyors\u00edt\u00f3t\u00e1r-tartalom elveszett.
+DYNA0056W.useraction=Nincs.
+
+# No Comment Provided
+DYNA0057I=DYNA0057I: A(z) {0} gyors\u00edt\u00f3t\u00e1r lemezgyors\u00edt\u00f3t\u00e1r\u00e1nak ki\u00fcr\u00edt\u00e9se elindult. A statisztika: {1} 
+DYNA0057I.explanation=Elindult a lemezgyors\u00edt\u00f3t\u00e1r ki\u00fcr\u00edt\u00e9se a lej\u00e1rt gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sek elt\u00e1vol\u00edt\u00e1s\u00e1hoz.
+DYNA0057I.useraction=Semmit sem kell tennie.
+
+# No Comment Provided
+DYNA0058I=DYNA0058I: A(z) {0} gyors\u00edt\u00f3t\u00e1r lemezgyors\u00edt\u00f3t\u00e1r\u00e1nak ki\u00fcr\u00edt\u00e9se befejez\u0151d\u00f6tt. A statisztika: {1}
+DYNA0058I.explanation=A lemezgyors\u00edt\u00f3t\u00e1r ki\u00fcr\u00edt\u00e9se befejez\u0151d\u00f6tt.
+DYNA0058I.useraction=Semmit sem kell tennie.
+
+# No Comment Provided
+DYNA0059I=DYNA0059I: A(z) {0} gyors\u00edt\u00f3t\u00e1r lemezgyors\u00edt\u00f3t\u00e1r\u00e1nak be\u00e1ll\u00edt\u00e1sa. A konfigur\u00e1ci\u00f3: {1}
+DYNA0059I.explanation=A lemezgyors\u00edt\u00f3t\u00e1r-konfigur\u00e1ci\u00f3 megjelen\u00edt\u00e9se.
+DYNA0059I.useraction=Semmit sem kell tennie.
+
+# No Comment Provided
+DYNA0060I=DYNA0060I: A lemezre ki\u00edr\u00e1s le\u00e1ll\u00edt\u00e1skor funkci\u00f3 enged\u00e9lyezett a(z) {0}nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz.
+DYNA0060I.explanation=A lemezre ki\u00edr\u00e1s le\u00e1ll\u00edt\u00e1skor funkci\u00f3 enged\u00e9lyezett a megadott gyors\u00edt\u00f3t\u00e1rhoz.
+DYNA0060I.useraction=Semmit sem kell tennie.
+
+# No Comment Provided
+DYNA0061I=DYNA0061I: A lemezre ki\u00edr\u00e1s le\u00e1ll\u00edt\u00e1skor funkci\u00f3 tiltott a(z) {0}nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz.
+DYNA0061I.explanation=A lemezre ki\u00edr\u00e1s le\u00e1ll\u00edt\u00e1skor funkci\u00f3 tiltott a megadott gyors\u00edt\u00f3t\u00e1rhoz.
+DYNA0061I.useraction=Semmit sem kell tennie.
+
+# No Comment Provided
+DYNA0062I=DYNA0062I: A gyors\u00edt\u00f3t\u00e1r-p\u00e9ld\u00e1nyok sikeresen bet\u00f6lt\u00e9sre ker\u00fcltek a(z) {0} konfigur\u00e1ci\u00f3s f\u00e1jlb\u00f3l.
+DYNA0062I.explanation=A gyors\u00edt\u00f3t\u00e1r-p\u00e9ld\u00e1nyokhoz a megadott helyr\u0151l sz\u00e1rmaz\u00f3 gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jl sikeresen feldolgoz\u00e1sra ker\u00fclt.
+DYNA0062I.useraction=Nincs.
+
+# No Comment Provided
+DYNA0063W=DYNA0063W: A lemezgyors\u00edt\u00f3t\u00e1r m\u00e9rete el\u00e9rte a(z) {0} GB korl\u00e1tot a(z) {1} nev\u0171 gyors\u00edt\u00f3t\u00e1rn\u00e1l.  {2} gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9s kiker\u00fclt a mem\u00f3ri\u00e1b\u00f3l, de nem ker\u00fclt ki\u00edr\u00e1sra lemezre.
+DYNA0063W.explanation=A gyors\u00edt\u00f3t\u00e1rban t\u00e1rolt objektum nem lesz ki\u00edrva lemezre, mert meghaladja a lemezgyors\u00edt\u00f3t\u00e1r m\u00e9ret\u00e9t.
+DYNA0063W.useraction=M\u00f3dos\u00edtsa a diskCacheSizeInGB egy\u00e9ni tulajdons\u00e1got nagyobb \u00e9rt\u00e9kre, hogy t\u00f6bb ideiglenes f\u00e1jlt t\u00e1rolhasson a lemezen.
+
+# No Comment Provided
+DYNA0064W=DYNA0064W: A gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9s m\u00e9rete meghaladja a(z) {1} nev\u0171 gyors\u00edt\u00f3t\u00e1rra vonatkoz\u00f3 {0} MB korl\u00e1tot. {2} gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9s kiker\u00fclt a mem\u00f3ri\u00e1b\u00f3l, de nem ker\u00fclt ki\u00edr\u00e1sra lemezre.
+DYNA0064W.explanation=A gyors\u00edt\u00f3t\u00e1rban t\u00e1rolt objektum nem lesz ki\u00edrva lemezre, mert meghaladja a lemezgyors\u00edt\u00f3t\u00e1r m\u00e9ret\u00e9t.
+DYNA0064W.useraction=M\u00f3dos\u00edtsa a diskCacheEntrySizeInMB egy\u00e9ni tulajdons\u00e1got nagyobb \u00e9rt\u00e9kre, hogy t\u00f6bb ideiglenes f\u00e1jlt t\u00e1rolhasson a lemezen.
+
+# No Comment Provided
+DYNA0065W=DYNA0065W: A lemezgyors\u00edt\u00f3t\u00e1r m\u00e9rete meghaladja a(z) {1} nev\u0171 gyors\u00edt\u00f3t\u00e1rra vonatkoz\u00f3 korl\u00e1tot ({0}).  {2} gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9s kiker\u00fclt a mem\u00f3ri\u00e1b\u00f3l, de nem ker\u00fclt ki\u00edr\u00e1sra lemezre.
+DYNA0065W.explanation=A gyors\u00edt\u00f3t\u00e1rban t\u00e1rolt objektum nem lesz ki\u00edrva lemezre, mert meghaladja a lemezgyors\u00edt\u00f3t\u00e1r m\u00e9ret\u00e9t.
+DYNA0065W.useraction=M\u00f3dos\u00edtsa a diskCacheSize egy\u00e9ni tulajdons\u00e1got nagyobb \u00e9rt\u00e9kre, hogy t\u00f6bb ideiglenes f\u00e1jlt t\u00e1rolhasson a lemezen.
+
+# No Comment Provided
+DYNA0066W=DYNA0066W: A lemezgyors\u00edt\u00f3t\u00e1r GB-ban vett m\u00e9retkorl\u00e1toz\u00e1si szolg\u00e1ltat\u00e1sa le van tiltva a(z) {0} nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz. A diskCacheSizeInGB egy\u00e9ni tulajdons\u00e1g \u00e9rt\u00e9ke 0. A szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9se el\u0151tt t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlt a(z) {1} k\u00f6nyvt\u00e1rb\u00f3l.
+DYNA0066W.explanation=A rendszeren l\u00e9v\u0151 lemezf\u00e1jlok r\u00e9gi form\u00e1tum\u00faak, \u00e9s a lemezgyors\u00edt\u00f3t\u00e1r GB-ban vett m\u00e9retkorl\u00e1toz\u00e1si szolg\u00e1ltat\u00e1sa \u00faj lemezform\u00e1tumot haszn\u00e1l. A szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9se el\u0151tt t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlt a rendszerb\u0151l.
+DYNA0066W.useraction=T\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlt, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+DYNA0067W=DYNA0067W: A lemezgyors\u00edt\u00f3t\u00e1r szem\u00e9tgy\u0171jt\u0151 tiltott, \u00e9s a Ki\u00fcr\u00edt\u00e9si ir\u00e1nyelv \u00e9rt\u00e9ke NONE a(z) {0} gyors\u00edt\u00f3t\u00e1rn\u00e1l. A szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9se el\u0151tt t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlt a(z) {1} k\u00f6nyvt\u00e1rb\u00f3l.
+DYNA0067W.explanation=A rendszeren l\u00e9v\u0151 lemezf\u00e1jlok r\u00e9gi form\u00e1tum\u00faak, \u00e9s a lemezgyors\u00edt\u00f3t\u00e1r szem\u00e9tgy\u0171jt\u0151 szolg\u00e1ltat\u00e1sa \u00faj lemezform\u00e1tumot haszn\u00e1l. A szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9se el\u0151tt t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlt a rendszerb\u0151l.
+DYNA0067W.useraction=T\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r-f\u00e1jlt, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+DYNA0068W=DYNA0068W: \u00c9rv\u00e9nytelen lemez k\u00fcsz\u00f6b\u00e9rt\u00e9k van be\u00e1ll\u00edtva a(z) {0}nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz. A magas \u00e9s alacsony k\u00fcsz\u00f6b\u00e9rt\u00e9k-korl\u00e1thoz a 80%-os \u00e9s 70%-os alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra, \u00e9rtelemszer\u0171en.
+DYNA0068W.explanation=A lemezgyors\u00edt\u00f3t\u00e1r k\u00fcsz\u00f6b\u00e9rt\u00e9k-korl\u00e1tj\u00e1t vagy < 0 \u00e9rt\u00e9kre \u00e1ll\u00edtott\u00e1k, vagy a magas k\u00fcsz\u00f6b\u00e9rt\u00e9k kisebb, mint az alacsony k\u00fcsz\u00f6b\u00e9rt\u00e9k-korl\u00e1t.
+DYNA0068W.useraction=A lemezgyors\u00edt\u00f3t\u00e1r k\u00fcsz\u00f6b\u00e9rt\u00e9k\u00e9nek 0-n\u00e1l nagyobbnak kell lennie, valamint a magas k\u00fcsz\u00f6b\u00e9rt\u00e9knek is nagyobbnak kell lennie az alacsony k\u00fcsz\u00f6b\u00e9rt\u00e9k-korl\u00e1tn\u00e1l.
+
+# No Comment Provided
+DYNA0069W=DYNA0069W: A(z) {0} \u00e9rv\u00e9nytelen \u00e9rt\u00e9k szerepel a(z) {1} tulajdons\u00e1gnak a(z) {2}nev\u0171 gyors\u00edt\u00f3t\u00e1rn\u00e1l. Az \u00e9rv\u00e9nyes tartom\u00e1ny: alacsony: {3} \u00e9s magas: {4}. Az egy\u00e9ni tulajdons\u00e1g be\u00e1ll\u00edt\u00e1sa: {5}.
+DYNA0069W.explanation=Az egyedi tulajdons\u00e1g \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen. Jav\u00edtsa ki az \u00e9rt\u00e9ket a figyelmeztet\u0151 \u00fczenetben az alacsony \u00e9s magas \u00e9rt\u00e9kkel megadott tartom\u00e1ny alkalmaz\u00e1s\u00e1val.
+DYNA0069W.useraction=Jav\u00edtsa ki az \u00e9rt\u00e9ket a figyelmeztet\u0151 \u00fczenetben az alacsony \u00e9s magas \u00e9rt\u00e9kkel megadott tartom\u00e1ny alkalmaz\u00e1s\u00e1val.
+
+# No Comment Provided
+DYNA0070W=DYNA0070W: A lemezgyors\u00edt\u00f3t\u00e1r szem\u00e9tgy\u0171jt\u0151 tiltott, \u00e9s a Ki\u00fcr\u00edt\u00e9si ir\u00e1nyelv \u00e9rt\u00e9ke NONE a(z) {0} gyors\u00edt\u00f3t\u00e1rn\u00e1l. Ezt az okozza, hogy a lemezgyors\u00edt\u00f3t\u00e1r m\u00e9rete vagy a lemezgyors\u00edt\u00f3t\u00e1r m\u00e9rete (GB) korl\u00e1t nincs be\u00e1ll\u00edtva.
+DYNA0070W.explanation=Be kell \u00e1ll\u00edtani a diskCacheSize vagy diskCacheSizeInGB egy\u00e9ni tulajdons\u00e1got a lemezgyors\u00edt\u00f3t\u00e1r szem\u00e9tgy\u0171jt\u0151 szolg\u00e1ltat\u00e1st haszn\u00e1lat\u00e1hoz.
+DYNA0070W.useraction=\u00c1ll\u00edtsa be a diskCacheSize vagy diskCacheSizeInGB egy\u00e9ni tulajdons\u00e1got, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+DYNA0071W=DYNA0071W: A(z) {0} gyors\u00edt\u00f3t\u00e1r diskCacheSizeInGB egy\u00e9ni tulajdons\u00e1ga nagyobb \u00e9rt\u00e9kre ({1}) lett \u00e1ll\u00edtva, mert alemezgyors\u00edt\u00f3t\u00e1r f\u00e1jljainak \u00f6sszm\u00e9rete nagyobb. A diskCacheSizeInGB kisebb \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1hoz t\u00f6r\u00f6lje a(z) {2} k\u00f6nyvt\u00e1rban l\u00e9v\u0151 \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r f\u00e1jlt.
+DYNA0071W.explanation=A lemezgyors\u00edt\u00f3t\u00e1r f\u00e1jlokat nem lehet \u00f6sszeh\u00fazni. 
+DYNA0071W.useraction=A diskCacheSizeInGB egy\u00e9ni tulajdons\u00e1g kisebb \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1hoz t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r f\u00e1jlt, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+DYNA0072E=DYNA0072E: A lemezre ki\u00edrat\u00e1s a(z) {0} nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz le van tiltva, mert lemez kiv\u00e9tel t\u00f6rt\u00e9nt. A lemezre ki\u00edrat\u00e1s helye: {1}. Kiv\u00e9tel: {2}. 
+DYNA0072E.explanation=A lemezre ki\u00edrat\u00e1s a megadott gyors\u00edt\u00f3t\u00e1rhoz le van tiltva, mert lemez kiv\u00e9tel t\u00f6rt\u00e9nt.
+DYNA0072E.useraction=A gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny lemezgyors\u00edt\u00f3t\u00e1r f\u00e1jljai t\u00f6rl\u00e9sre ker\u00fclnek a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1sakor.
+
+# No Comment Provided
+DYNA0073I=DYNA0073I: A(z) {0} nev\u0171 gyors\u00edt\u00f3t\u00e1rhoz a lemezre ki\u00edr\u00e1s enged\u00e9lyezve van. A statisztika: {1}
+DYNA0073I.explanation=A lemez ki\u00fcr\u00edt\u00e9se meg\u00e1ll\u00edt\u00e1skor a megadott statisztikai adatokkal befejez\u0151d\u00f6tt. 
+DYNA0073I.useraction=Semmit sem kell tennie.
+
+# No Comment Provided
+DYNA1001I=DYNA1001I: A(z) nev\u0171 {0} WebSphere dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny sikeresen inicializ\u00e1lva lett.
+DYNA1001I.explanation=A megnevezett dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny sikeresen inicializ\u00e1l\u00f3dott.
+DYNA1001I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1002E=DYNA1002E: A WebSphere dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyok {0} hiba miatt nem inicializ\u00e1lhat\u00f3k.
+DYNA1002E.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyok nem inicializ\u00e1lhat\u00f3k.  Nem \u00e1llnak rendelkez\u00e9sre gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyok.
+DYNA1002E.useraction=A hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.  Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3k tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmaznak.
+
+# No Comment Provided
+DYNA1003E=DYNA1003E: A(z) {0} nev\u0171 WebSphere dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny {1} hiba miatt nem inicializ\u00e1lhat\u00f3.
+DYNA1003E.explanation=A megnevezett dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem inicializ\u00e1lhat\u00f3.  A megnevezett p\u00e9ld\u00e1ny nem \u00e1ll rendelkez\u00e9sre.
+DYNA1003E.useraction=A hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.  Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3k tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmaznak.
+
+# No Comment Provided
+DYNA1004E=DYNA1004E: A(z) {0} nev\u0171 WebSphere dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem inicializ\u00e1lhat\u00f3, mert nincs be\u00e1ll\u00edtva.
+DYNA1004E.explanation=A megnevezett dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem inicializ\u00e1lhat\u00f3.  A dinamikus gyors\u00edt\u00f3t\u00e1raz\u00e1s a megnevezett p\u00e9ld\u00e1nyhoz le van tiltva.
+DYNA1004E.useraction=Az adminisztr\u00e1ci\u00f3s konzol seg\u00edts\u00e9g\u00e9vel \u00e1ll\u00edtsa be a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny er\u0151forr\u00e1st.
+
+# No Comment Provided
+DYNA1005E=DYNA1005E: A(z) {0} nev\u0171 WebSphere dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem \u00e9rhet\u0151 el, mivel nem megfelel\u0151 t\u00edpus\u00fa.
+DYNA1005E.explanation=A megnevezett dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem haszn\u00e1lhat\u00f3.  A dinamikus gyors\u00edt\u00f3t\u00e1raz\u00e1s a megnevezett p\u00e9ld\u00e1nyhoz le van tiltva.
+DYNA1005E.useraction=Az adminisztr\u00e1ci\u00f3s konzol seg\u00edts\u00e9g\u00e9vel \u00e1ll\u00edtsa be a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny er\u0151forr\u00e1st a megfelel\u0151 t\u00edpus haszn\u00e1lat\u00e1val.
+
+# No Comment Provided
+DYNA1006E=DYNA1006E: A(z) {0} met\u00f3dus kiv\u00e9telt \u00e9szlelt: {1}
+DYNA1006E.explanation=A megadott met\u00f3dusban kiv\u00e9tel t\u00f6rt\u00e9nt.
+DYNA1006E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1007I=DYNA1007I:  {0} szolg\u00e1ltat\u00e1s sikeresen inicializ\u00e1lva lett. 
+DYNA1007I.explanation=A z/OS vez\u00e9rl\u0151 szolg\u00e1ltat\u00e1s a dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1shoz sikeresen inicializ\u00e1lva lett.
+DYNA1007I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1008E=DYNA1008E: {0} met\u00f3dus: a proxy null.
+DYNA1008E.explanation=A megadott met\u00f3dus nem tudott al\u00e1rendelt proxyt lek\u00e9rni a DRS-hez.
+DYNA1008E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1009E=DYNA1009E: {0} met\u00f3dus: a token null.
+DYNA1009E.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9k\u0171 al\u00e1rendelt tokent adott \u00e1t. 
+DYNA1009E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1010E=DYNA1010E: {0} met\u00f3dus: Param\u00e9terhiba: az entryKey null.
+DYNA1010E.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9k\u0171 entryKey param\u00e9tert adott \u00e1t. 
+DYNA1010E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1011E=DYNA1011E: {0} met\u00f3dus: a tokenBytes null: token = {1}  tokenBytes = {2}
+DYNA1011E.explanation=A megadott met\u00f3dus nem tudja megh\u00edvni a proxyt, mivel a tokenBytes null. 
+DYNA1011E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1012E=DYNA1012E: {0} met\u00f3dus: az eventBytes null: event = {1}  eventBytes = {2}
+DYNA1012E.explanation=A megadott met\u00f3dus nem tudja megh\u00edvni a proxyt, mivel az eventBytes null.
+DYNA1012E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1013E=DYNA1013E: {0} met\u00f3dus: az entryKeyBytes null: entryKey = {1}  entryKeyBytes = {2}
+DYNA1013E.explanation=A megadott met\u00f3dus nem tudja megh\u00edvni a proxyt, mivel az entryKeyBytes null.
+DYNA1013E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1014E=DYNA1014E: {0} met\u00f3dus: A bejegyz\u00e9snek benne kell lennie a push/pull t\u00e1bl\u00e1ban, de az al\u00e1rendelt token null. entryKey = {1}
+DYNA1014E.explanation=A megadott met\u00f3dus a push/pull t\u00e1bl\u00e1b\u00f3l nem tudta lek\u00e9rni a cacheEntry bejegyz\u00e9st, mivel az al\u00e1rendelt tulajdonos token null.
+DYNA1014E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1015E=DYNA1015E: {0} met\u00f3dus: a propKeyBytes null: propKey = {1}  propKeyBytes = {2}
+DYNA1015E.explanation=A megadott met\u00f3dus nem tudja megh\u00edvni a proxyt, mivel a propKeyBytes null.
+DYNA1015E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1016E=DYNA1016E: {0} met\u00f3dus: a dbmBytes null: dbm = {1}  dbmBytes = {2}
+DYNA1016E.explanation=A megadott met\u00f3dus nem tudja megh\u00edvni a proxyt, mivel a dbmBytes null.
+DYNA1016E.useraction=Nincs.
+                                         
+# No Comment Provided
+DYNA1017E=DYNA1017E: {0} met\u00f3dus: Param\u00e9terhiba: a dbm null.
+DYNA1017E.explanation=A megadott met\u00f3dus null dbm objektumot adott vissza. 
+DYNA1017E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1018E=DYNA1018E: {0} met\u00f3dus: A proxy.handleBootstrapRequest \u00e1ltal visszaadott tmp \u00e9rt\u00e9k null:  tmp = {1}, token = {2} 
+DYNA1018E.explanation=A megadott met\u00f3dushoz a proxy.handleBootstrapRequest \u00e1ltal visszaadott \u00e9rt\u00e9k null.
+DYNA1018E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1019E=DYNA1019E: {0} met\u00f3dus: Param\u00e9terhiba: a propKey null.
+DYNA1019E.explanation=A megadott met\u00f3dus null propKey param\u00e9tert adott vissza. 
+DYNA1019E.useraction=Nincs. 
+
+# No Comment Provided
+DYNA1020E=DYNA1020E: {0} met\u00f3dus: Param\u00e9terhiba: a value null.
+DYNA1020E.explanation=A megadott met\u00f3dus a value param\u00e9terhez null\u00e9rt\u00e9ket adott \u00e1t. 
+DYNA1020E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1021E=DYNA1021E: {0} met\u00f3dus: A value param\u00e9ter nem alak\u00edthat\u00f3 byte-okk\u00e1.
+DYNA1021E.explanation=A megadott met\u00f3dus a value param\u00e9tert nem tudja byte-okk\u00e1 alak\u00edtani. 
+DYNA1021E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1022E=DYNA1022E: {0} met\u00f3dus: Param\u00e9terhiba: A DRSJvmId \u00fatv\u00e1laszt\u00e1si inform\u00e1ci\u00f3 null.
+DYNA1022E.explanation=A megadott met\u00f3dus a DRSJvmId \u00fatv\u00e1laszt\u00e1si param\u00e9terhez null\u00e9rt\u00e9ket adott \u00e1t. 
+DYNA1022E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1023E=DYNA1023E: {0} met\u00f3dus: Param\u00e9terhiba: az entryKeyList null.
+DYNA1023E.explanation=A megadott met\u00f3dus az entryKeyListhez null\u00e9rt\u00e9ket adott \u00e1t. 
+DYNA1023E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1024E=DYNA1024E: {0} met\u00f3dus: Az entryKeyList nem alak\u00edthat\u00f3 byte-okk\u00e1 - entryKeyList = {1}  entryKeyListBytes = {2}
+DYNA1024E.explanation=A megadott met\u00f3dus nem tudja \u00e1talak\u00edtani az entryKeyList param\u00e9tert byte-t\u00f6mbb\u00e9.
+DYNA1024E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1025E=DYNA1025E: {0} met\u00f3dus: A DRSJvmId nem alak\u00edthat\u00f3 byte-okk\u00e1 - jvmId  = {1}  jvmIdBytes = {2}
+DYNA1025E.explanation=A megadott met\u00f3dus a DRSJvmID param\u00e9tert nem tudja byte-t\u00f6mbb\u00e9 alak\u00edtani.
+DYNA1025E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1026I=DYNA1026I: A(z) {0} DynacacheDRSController DRS p\u00e9ld\u00e1ny REPLICATION_UP esem\u00e9nyt kapott.
+DYNA1026I.explanation=A megadott DynacacheDRSController DRS p\u00e9ld\u00e1ny REPLICATION_UP esem\u00e9nyt kapott.
+DYNA1026I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1027I=DYNA1027I: A(z) {0} DynacacheDRSController DRS p\u00e9ld\u00e1ny REPLICATION_DOWN esem\u00e9nyt kapott.
+DYNA1027I.explanation=A megadott DynacacheDRSController DRS p\u00e9ld\u00e1ny REPLICATION_DOWN esem\u00e9nyt kapott.
+DYNA1027I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1028I=DYNA1028I: A(z) {0} DynacacheDRSController DRS p\u00e9ld\u00e1ny IS_CONGESTED esem\u00e9nyt kapott.
+DYNA1028I.explanation=A megadott DynacacheDRSController DRS p\u00e9ld\u00e1ny IS_CONGESTED esem\u00e9nyt kapott.
+DYNA1028I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1029I=DYNA1029I: A(z) {0} DynacacheDRSController DRS NOT_CONGESTED esem\u00e9nyt kapott.
+DYNA1029I.explanation=A megadott DynacacheDRSController DRS p\u00e9ld\u00e1ny NOT_CONGESTED esem\u00e9nyt kapott.
+DYNA1029I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1030E=DYNA1030E: \u00c9rv\u00e9nytelen tartom\u00e1ny\u00e9rt\u00e9kek, az alacsony: {0} \u00e9s a magas: {1} attrib\u00fatumnak eg\u00e9sz sz\u00e1mnak kell lennie
+DYNA1030E.explanation=A gyors\u00edt\u00f3t\u00e1r-konfigur\u00e1ci\u00f3ban egy k\u00f6telez\u0151 attrib\u00fatum hi\u00e1nyzott.
+DYNA1030E.useraction=A gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s f\u00e1jlhoz adja hozz\u00e1 a k\u00f6telez\u0151 attrib\u00fatumot.
+
+# No Comment Provided
+DYNA1031E=DYNA1031E: \u00c9rv\u00e9nytelen tartom\u00e1ny, az alacsony attrib\u00fatum: {0} nagyobb, mint a magas attrib\u00fatum: {1}.
+DYNA1031E.explanation=A tartom\u00e1nyhoz megadott alacsony \u00e9s magas attrib\u00fatum\u00e9rt\u00e9kek nem \u00e9rv\u00e9nyesek.
+DYNA1031E.useraction=Jav\u00edtsa ki \u00fagy az alacsony \u00e9s a magas attrib\u00fatum\u00e9rt\u00e9ket, hogy az alacsony \u00e9rt\u00e9k kisebb legyen, mint a magas \u00e9rt\u00e9k.
+
+# No Comment Provided
+DYNA1032E=DYNA1032E: A primary-storage tulajdons\u00e1got vagy a memory, vagy a disk \u00e9rt\u00e9kre kell be\u00e1ll\u00edtani.  A megl\u00e9v\u0151 \u00e9rt\u00e9k: {0}.
+DYNA1032E.explanation=A megadott elemnek vagy memory, vagy disk \u00e9rt\u00e9kkel kell rendelkeznie, de egy ezekt\u0151l elt\u00e9r\u0151 \u00e9rt\u00e9ket adtak meg.
+DYNA1032E.useraction=Jav\u00edtsa az elemet, hogy memory vagy disk legyen az \u00e9rt\u00e9ke.
+
+
+# No Comment Provided
+DYNA1033W=DYNA1033W: A disableDependencyId egy\u00e9ni tulajdons\u00e1g \u00e9rt\u00e9ke {0}, ami nem egyezik meg a(z) {1} gyors\u00edt\u00f3t\u00e1r lemezf\u00e1jljainak aktu\u00e1lis \u00e1llapot\u00e1val. A disableDependencyId egy\u00e9ni tulajdons\u00e1g \u00e9rt\u00e9ke {2}. 
+DYNA1033W.explanation=A disableDependencyId egy\u00e9ni tulajdons\u00e1g be\u00e1ll\u00edt\u00e1sa nem egyezik meg a lemezf\u00e1jlok aktu\u00e1lis \u00e1llapot\u00e1val.
+DYNA1033W.useraction=A disableDependencyId egy\u00e9ni tulajdons\u00e1g k\u00edv\u00e1nt be\u00e1ll\u00edt\u00e1s\u00e1hoz t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r f\u00e1jlt, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+DYNA1034W=DYNA1034W: A disableTemplatesSupport egy\u00e9ni tulajdons\u00e1g \u00e9rt\u00e9ke {0}, ami nem egyezik meg a(z) {1} gyors\u00edt\u00f3t\u00e1r lemezf\u00e1jljainak aktu\u00e1lis \u00e1llapot\u00e1val. A disableTemplatesSupport egy\u00e9ni tulajdons\u00e1g \u00e9rt\u00e9ke {2}. 
+DYNA1034W.explanation=A disableTemplatesSupport egy\u00e9ni tulajdons\u00e1g be\u00e1ll\u00edt\u00e1sa nem egyezik meg a lemezf\u00e1jlok aktu\u00e1lis \u00e1llapot\u00e1val.
+DYNA1034W.useraction=A disableTemplatesSupport egy\u00e9ni tulajdons\u00e1g k\u00edv\u00e1nt be\u00e1ll\u00edt\u00e1s\u00e1hoz t\u00f6r\u00f6lje az \u00f6sszes lemezgyors\u00edt\u00f3t\u00e1r f\u00e1jlt, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# No Comment Provided
+DYNA1035I=DYNA1035I: A(z) {0} gyors\u00edt\u00f3t\u00e1r kulcsok \u00e9s a hozz\u00e1juk tartoz\u00f3 kivonatk\u00f3dok list\u00e1ja a mem\u00f3ria gyors\u00edt\u00f3t\u00e1rban a(z) {1} gyors\u00edt\u00f3t\u00e1rn\u00e9vhez: {2} 
+DYNA1035I.explanation=Az egyes gyors\u00edt\u00f3t\u00e1r kulcsokat \u00e9s kivonatk\u00f3djukat jelen\u00edti meg a mem\u00f3ria gyors\u00edt\u00f3t\u00e1rban.
+DYNA1035I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1036I=DYNA1036I: A(z) {0} gyors\u00edt\u00f3t\u00e1r kulcsok \u00e9s a hozz\u00e1juk tartoz\u00f3 kivonatk\u00f3dok list\u00e1ja a lemezgyors\u00edt\u00f3t\u00e1rban a(z) {1} gyors\u00edt\u00f3t\u00e1rn\u00e9vhez: {2} 
+DYNA1036I.explanation=Az egyes gyors\u00edt\u00f3t\u00e1r kulcsokat \u00e9s kivonatk\u00f3djukat jelen\u00edti meg a lemezgyors\u00edt\u00f3t\u00e1rban.
+DYNA1036I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1037I=DYNA1037I: A(z) {0} gyors\u00edt\u00f3t\u00e1r kulcsok \u00e9s a hozz\u00e1juk tartoz\u00f3 kivonatk\u00f3dok list\u00e1ja a PushPullTable t\u00e1bl\u00e1ban a(z) {1} gyors\u00edt\u00f3t\u00e1rn\u00e9vhez: {2} 
+DYNA1037I.explanation=Az egyes gyors\u00edt\u00f3t\u00e1r kulcsokat \u00e9s kivonatk\u00f3djukat jelen\u00edti meg a PushPullTable t\u00e1bl\u00e1ban.
+DYNA1037I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1038I=DYNA1038I: A gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sek \u00f6ssz sz\u00e1ma a mem\u00f3ria gyors\u00edt\u00f3t\u00e1rban {0} a(z) {1} gyors\u00edt\u00f3t\u00e1rn\u00e9vhez.
+DYNA1038I.explanation=Megjelen\u00edti a mem\u00f3ria gyors\u00edt\u00f3t\u00e1rban tal\u00e1lhat\u00f3 bejegyz\u00e9sek \u00f6ssz sz\u00e1m\u00e1t.
+DYNA1038I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1039I=DYNA1039I: A gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sek \u00f6ssz sz\u00e1ma a lemezgyors\u00edt\u00f3t\u00e1rban {0} a(z) {1} gyors\u00edt\u00f3t\u00e1rn\u00e9vhez.
+DYNA1039I.explanation=Megjelen\u00edti a lemezgyors\u00edt\u00f3t\u00e1rban tal\u00e1lhat\u00f3 bejegyz\u00e9sek \u00f6ssz sz\u00e1m\u00e1t.
+DYNA1039I.useraction=Nincs.
+
+
+# No Comment Provided
+DYNA1040I=DYNA1040I: A gyors\u00edt\u00f3t\u00e1r azonos\u00edt\u00f3k \u00f6ssz sz\u00e1ma a PushPullTable t\u00e1bl\u00e1ban {0} a(z) {1} gyors\u00edt\u00f3t\u00e1rn\u00e9vhez.
+DYNA1040I.explanation=Megjelen\u00edti a PushPullTable t\u00e1bl\u00e1ban tal\u00e1lhat\u00f3 gyors\u00edt\u00f3t\u00e1r azonos\u00edt\u00f3k \u00f6ssz sz\u00e1m\u00e1t.
+DYNA1040I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1041W=DYNA1041W: A(z) {0} server1 \u00e9s a(z) {1} server2 k\u00f6z\u00f6tti gyors\u00edt\u00f3t\u00e1r-\u00f6sszehasonl\u00edt\u00e1s a(z) {2} nev\u0171 gyors\u00edt\u00f3t\u00e1r eset\u00e9n meghi\u00fasult.
+DYNA1041W.explanation=A gyors\u00edt\u00f3t\u00e1r \u00f6sszehasonl\u00edt\u00e1s meghib\u00e1sod\u00e1s\u00e1t okozhatta, hogy (1) A lemezre t\u00f6lt\u00e9s enged\u00e9lyezett. Ha a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyok bet\u00f6lt\u0151dnek egym\u00e1sba a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sakor, akkor a lemezgyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9seket maguk k\u00f6z\u00f6tt nem t\u00f6bbsz\u00f6r\u00f6zik. (2) Torl\u00f3d\u00e1s a DRS-ben okozhatja n\u00e9h\u00e1ny gyors\u00edt\u00f3t\u00e1r friss\u00edt\u00e9s megsz\u00fcntet\u00e9s\u00e9t. (3) N\u00e9h\u00e1ny gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9s nem megoszthat\u00f3 a replik\u00e1ci\u00f3s tartom\u00e1nnyal. (4) A compareCaches() parancs nem m\u0171k\u00f6dik a Push-Pull megoszt\u00e1si ir\u00e1nyelvvel. Haszn\u00e1lja a compareCacheKeys parancsot.
+DYNA1041W.useraction=Nincs.
+
+# No Comment Provided
+DYNA1042E=DYNA1042E: A(z) {0} bemeneti gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny \u00e9rv\u00e9nytelen vagy nincs be\u00e1ll\u00edtva.
+DYNA1042E.explanation=A bemeneti gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny \u00e9rv\u00e9nytelen. \u00c1ll\u00edtsa be a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyt az adminisztr\u00e1ci\u00f3s konzol vagy a cacheinstances.properties f\u00e1jl haszn\u00e1lat\u00e1val. 
+DYNA1042E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny be\u00e1ll\u00edt\u00e1sa megfelel\u0151, \u00e9s hogy a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny neve helyes.
+
+# No Comment Provided
+DYNA1043E=DYNA1043E: A(z) {0} bemeneti minta nem egy \u00e9rv\u00e9nyes regul\u00e1ris kifejez\u00e9s. Kiv\u00e9tel: {1}
+DYNA1043E.explanation=A bemeneti minta nem egy \u00e9rv\u00e9nyes regul\u00e1ris kifejez\u00e9s.
+DYNA1043E.useraction=Ellen\u0151rizze a java.util.regex.Pattern oszt\u00e1lyt.
+
+# No Comment Provided
+DYNA1044E=DYNA1044E: Bels\u0151 hiba: MessageDigest l\u00e9trehoz\u00e1sa az MD5 algoritmushoz sikertelen. Kiv\u00e9tel: {0}
+DYNA1044E.explanation=Bels\u0151 hiba: MessageDigest l\u00e9trehoz\u00e1sa az MD5 algoritmushoz sikertelen.
+DYNA1044E.useraction=A probl\u00e9ma hibakeres\u00e9s\u00e9hez l\u00e9pjen kapcsolatba az IBM szervizzel.
+
+# No Comment Provided
+DYNA1045E=DYNA1045E: A(z) {0} bemeneti csom\u00f3pont nem egy \u00e9rv\u00e9nyes csom\u00f3pontn\u00e9v.
+DYNA1045E.explanation=A bemeneti csom\u00f3pontn\u00e9v nem \u00e9rv\u00e9nyes.
+DYNA1045E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a csom\u00f3pont l\u00e9tezik, \u00e9s a neve helyes.
+
+# No Comment Provided
+DYNA1046E=DYNA1046E: A(z) {0} bemeneti kiszolg\u00e1l\u00f3 nem egy \u00e9rv\u00e9nyes kiszolg\u00e1l\u00f3n\u00e9v.
+DYNA1046E.explanation=A bemeneti kiszolg\u00e1l\u00f3n\u00e9v \u00e9rv\u00e9nytelen.
+DYNA1046E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 l\u00e9tezik, \u00e9s a neve helyes.
+
+# No Comment Provided
+DYNA1047E=DYNA1047E: Bels\u0151 hiba: Az AdminService objektum l\u00e9trehoz\u00e1sa sikertelen. Kiv\u00e9tel: {0}
+DYNA1047E.explanation=Bels\u0151 hiba: Az AdminService objektum l\u00e9trehoz\u00e1sa sikertelen.
+DYNA1047E.useraction=A probl\u00e9ma hibakeres\u00e9s\u00e9hez l\u00e9pjen kapcsolatba az IBM szervizzel.
+
+# No Comment Provided
+DYNA1048E=DYNA1048E: A(z) {0} MBean parancs csak a Deployment Manager alatt futhat.
+DYNA1048E.explanation=A CompareCaches MBean parancs csak a Deployment Manager alatt futhat.
+DYNA1048E.useraction=Futtassa a CompareCaches parancsot a Deployment Manager Dynacache MBean komponensr\u0151l.
+
+# No Comment Provided
+DYNA1049E=DYNA1049E: A DynaCache MBean nem tal\u00e1lhat\u00f3 a(z) {0} csom\u00f3ponton, amelyen a(z) {1} kiszolg\u00e1l\u00f3 tal\u00e1lhat\u00f3.
+DYNA1049E.explanation=A DynaCache MBean nem tal\u00e1lhat\u00f3 a csom\u00f3ponton, amelyen a kiszolg\u00e1l\u00f3 tal\u00e1lhat\u00f3.
+DYNA1049E.useraction=Keresse meg a lek\u00e9rdez\u00e9s kifejez\u00e9sben az MBean komponenst. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott csom\u00f3pont- \u00e9s kiszolg\u00e1l\u00f3nevek l\u00e9teznek.
+
+# No Comment Provided
+DYNA1050E=DYNA1050E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} MBean parancs megh\u00edv\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a(z) {1} kiszolg\u00e1l\u00f3n. Kiv\u00e9tel: {2}.
+DYNA1050E.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az MBean parancs megh\u00edv\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DYNA1050E.useraction=A kiv\u00e9tel magyar\u00e1zat\u00e1t a kiszolg\u00e1l\u00f3 SystemOut.log f\u00e1jlj\u00e1ban tal\u00e1lja.
+
+# No Comment Provided
+DYNA1051E=DYNA1051E: A(z) {0} MBean parancs nem hajthat\u00f3 v\u00e9gre, mert a lemezre ki\u00edrat\u00e1s szolg\u00e1ltat\u00e1s nem enged\u00e9lyezett a megnevezett {1} gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyon. 
+DYNA1051E.explanation=Az MBean parancsot nem lehet megh\u00edvni, mert a lemezre ki\u00edrat\u00e1sszolg\u00e1ltat\u00e1s nem enged\u00e9lyezett a megnevezett gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyon. 
+DYNA1051E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lemezre ki\u00edrat\u00e1s szolg\u00e1ltat\u00e1s enged\u00e9lyezett a megnevezett gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyon. Olvassa el a Dinamikus gyors\u00edt\u00f3t\u00e1r lemezre ki\u00edrat\u00e1s be\u00e1ll\u00edt\u00e1sa cikket a term\u00e9kdokument\u00e1ci\u00f3ban.
+
+# No Comment Provided
+DYNA1052E=DYNA1052E: A(z) {0} bemeneti n\u00e9v nem egy \u00e9rv\u00e9nyes gyors\u00edt\u00f3t\u00e1r statisztika n\u00e9v.
+DYNA1052E.explanation=A bemeneti gyors\u00edt\u00f3t\u00e1r statisztika n\u00e9v \u00e9rv\u00e9nytelen.
+DYNA1052E.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a gyors\u00edt\u00f3t\u00e1r statisztika n\u00e9v \u00e9rv\u00e9nyes legyen.
+
+# No Comment Provided
+DYNA1053E=DYNA1053E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} MBean parancs megh\u00edv\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Kiv\u00e9tel: {1}
+DYNA1053E.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az MBean parancs megh\u00edv\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DYNA1053E.useraction=A kiv\u00e9tel magyar\u00e1zat\u00e1t a hiba\u00fczenet \u00edrja le.
+
+# No Comment Provided
+DYNA1054I=DYNA1054I: A dinamikus gyors\u00edt\u00f3t\u00e1r (k\u00f6zponti gyors\u00edt\u00f3t\u00e1r) inicializ\u00e1l\u00e1sa sikeres volt.
+DYNA1054I.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1r (k\u00f6zponti gyors\u00edt\u00f3t\u00e1r) sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
+DYNA1054I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1055I=DYNA1055I: A dinamikus gyors\u00edt\u00f3t\u00e1r (kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r) inicializ\u00e1l\u00e1sa sikeres volt.
+DYNA1055I.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1r (kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r) sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
+DYNA1055I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1056I=DYNA1056I: A dinamikus gyors\u00edt\u00f3t\u00e1r (objektum gyors\u00edt\u00f3t\u00e1r) inicializ\u00e1l\u00e1sa sikeres volt.
+DYNA1056I.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1r (objektum gyors\u00edt\u00f3t\u00e1r) sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
+DYNA1056I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1057W=DYNA1057W: A(z) {1} helyen meghat\u00e1rozott {0} gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem ker\u00fcl hozz\u00e1ad\u00e1sra, mert m\u00e1r l\u00e9tezik ilyen nev\u0171 gyors\u00edt\u00f3t\u00e1r. 
+DYNA1057W.explanation=A gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem ker\u00fcl hozz\u00e1ad\u00e1sra, mert m\u00e1r l\u00e9tezik ilyen nev\u0171 gyors\u00edt\u00f3t\u00e1r.
+DYNA1057W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny csak egyszer van meghat\u00e1rozva a tulajdons\u00e1gf\u00e1jlokban.
+
+# No Comment Provided
+DYNA1058W=DYNA1058W: A gyors\u00edt\u00f3t\u00e1r t\u00f6bbsz\u00f6r\u00f6z\u00e9s tiltott a(z) {0}  gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyon, mert a dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s egy \u00f6n\u00e1ll\u00f3 kiszolg\u00e1l\u00f3n fut.
+DYNA1058W.explanation=A gyors\u00edt\u00f3t\u00e1r t\u00f6bbsz\u00f6r\u00f6z\u00e9s tiltott a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyon, mert a dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s egy \u00f6n\u00e1ll\u00f3 kiszolg\u00e1l\u00f3n fut.
+DYNA1058W.useraction=Nincs.
+
+# No Comment Provided
+DYNA1059W=DYNA1059W: A(z) {0} nev\u0171 WebSphere dinamikus gyors\u00edt\u00f3t\u00e1r p\u00e9ld\u00e1ny nem haszn\u00e1lhat\u00f3, mert a dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s nem lett elind\u00edtva.
+DYNA1059W.explanation=A nevezett dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r p\u00e9ld\u00e1ny nem ker\u00fclt ind\u00edt\u00e1sra. A kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyok nem haszn\u00e1lhat\u00f3k.
+DYNA1059W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s enged\u00e9lyezett az adminisztr\u00e1ci\u00f3s konzolon.
+
+# No Comment Provided
+DYNA1060W=DYNA1060W: A(z) {0} nev\u0171 dinamikus gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nem haszn\u00e1lhat\u00f3, mert a dinamikus objektum gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s nem lett elind\u00edtva.
+DYNA1060W.explanation=A megnevezett dinamikus objektum gyors\u00edt\u00f3t\u00e1r p\u00e9ld\u00e1ny nem ker\u00fclt ind\u00edt\u00e1sra. Az objektum gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyok nem haszn\u00e1lhat\u00f3k.
+DYNA1060W.useraction=Nincs.
+
+# No Comment Provided
+DYNA1061E=DYNA1061E: Sem a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s, sem az objektum gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s nem enged\u00e9lyezett.
+DYNA1061E.explanation=Sem a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s, sem az objektum gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s nem enged\u00e9lyezett.
+DYNA1061E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a dinamikus kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s enged\u00e9lyezett az adminisztr\u00e1ci\u00f3s konzolon.
+
+# No Comment Provided
+DYNA1062E=DYNA1062E: Dinamikus gyors\u00edt\u00f3t\u00e1r (k\u00f6zponti gyors\u00edt\u00f3t\u00e1r) inicializ\u00e1l\u00e1sa meghi\u00fasult. Kiv\u00e9tel: {0}
+DYNA1062E.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1r (k\u00f6zponti gyors\u00edt\u00f3t\u00e1r) inicializ\u00e1l\u00e1sa meghi\u00fasult.
+DYNA1062E.useraction=A biztos\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel keresse meg a probl\u00e9ma ok\u00e1t.
+
+# No Comment Provided
+DYNA1063E=DYNA1063E: A(z) {0} m\u0171velet nem hajthat\u00f3 v\u00e9gre a(z) {1} nev\u0171 gyors\u00edt\u00f3t\u00e1r est\u00e9n, mert a(z) {2}  gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja az \u00e1ln\u00e9v szolg\u00e1ltat\u00e1st.
+DYNA1063E.explanation=Az adott m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja az \u00e1ln\u00e9v szolg\u00e1ltat\u00e1st.
+DYNA1063E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1064E=DYNA1064E: A(z) {0} m\u0171velet nem hajthat\u00f3 v\u00e9gre a(z) {1} nev\u0171 gyors\u00edt\u00f3t\u00e1r est\u00e9n, mert a(z) {2}  gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a lemezre ki\u00edrat\u00e1s szolg\u00e1ltat\u00e1st.
+DYNA1064E.explanation=Az adott m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a gyors\u00edt\u00f3t\u00e1r ki\u00edrat\u00e1sa lemezre szolg\u00e1ltat\u00e1st.
+DYNA1064E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1065E=DYNA1065E: A(z) {0} m\u0171velet nem hajthat\u00f3 v\u00e9gre a(z) {1} nev\u0171 gyors\u00edt\u00f3t\u00e1r est\u00e9n, mert a(z) {2}  gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a DRS replik\u00e1ci\u00f3s szolg\u00e1ltat\u00e1st.
+DYNA1065E.explanation=A megadott m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a d\u00e1tumreplik\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s (DRS) funkci\u00f3t.
+DYNA1065E.useraction=Nincs.
+
+# No Comment Provided
+DYNA1066E=DYNA1066E: A(z) {0}gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem inicializ\u00e1lhat\u00f3. A dinamikus gyors\u00edt\u00f3t\u00e1r ker\u00fcl felhaszn\u00e1l\u00e1sra a(z) {1} gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1hoz a be\u00e1ll\u00edtott gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 helyett.
+DYNA1066E.explanation=Nem v\u00e1rt hiba t\u00f6rt\u00e9nt a be\u00e1ll\u00edtott gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 inicializ\u00e1l\u00e1sa sor\u00e1n. A dinamikus gyors\u00edt\u00f3t\u00e1r ker\u00fcl felhaszn\u00e1l\u00e1sra a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1hoz a be\u00e1ll\u00edtott gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 helyett. 
+DYNA1066E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 alkalmaz\u00e1skiszolg\u00e1l\u00f3 fut\u00e1si k\u00f6rnyezet k\u00f6tegk\u00e9nt vagy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 lib k\u00f6nyvt\u00e1r\u00e1ban tal\u00e1lhat\u00f3 k\u00f6nyvt\u00e1rk\u00e9nt van megadva. 
+
+# No Comment Provided
+DYNA1067E=DYNA1067E: A gyors\u00edt\u00f3t\u00e1r m\u00e9rete MB-ban szolg\u00e1ltat\u00e1s tiltott, mert a gyors\u00edt\u00f3t\u00e1r objektuma nem m\u00e9retezhet\u0151.  ClassName={0}   Type={1}
+DYNA1067E.explanation=A gyors\u00edt\u00f3t\u00e1r m\u00e9rete MB-ban szolg\u00e1ltat\u00e1s tiltott, mert a gyors\u00edt\u00f3t\u00e1r objektuma nem m\u00e9retezhet\u0151k\u00e9nt van megval\u00f3s\u00edtva. 
+DYNA1067E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az objektumoszt\u00e1ly a gyors\u00edt\u00f3t\u00e1rban megval\u00f3s\u00edtja a com.ibm.websphere.cache.Sizable fel\u00fcletet.
+
+# No Comment Provided
+DYNA1068E=DYNA1068E: A gyors\u00edt\u00f3t\u00e1r m\u00e9rete MB-ban szolg\u00e1ltat\u00e1s tiltott, mert a be\u00e1ll\u00edtott {0} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja ezt a szolg\u00e1ltat\u00e1s a(z) {1} gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyban.
+DYNA1068E.explanation=A gyors\u00edt\u00f3t\u00e1r m\u00e9rete MB-ban szolg\u00e1ltat\u00e1s tiltott, mert a be\u00e1ll\u00edtott gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nem t\u00e1mogatja ezt a szolg\u00e1ltat\u00e1st.
+DYNA1068E.useraction=Nincs
+
+# No Comment Provided
+DYNA1069I=DYNA1069I: Az lruToDiskTriggerTime egy\u00e9ni tulajdons\u00e1g {0} \u00e9rt\u00e9kre lesz \u00e1ll\u00edtva a jobb teljes\u00edtm\u00e9ny \u00e9rdek\u00e9ben.
+DYNA1069I.explanation=Mivel a mem\u00f3ria gyors\u00edt\u00f3t\u00e1r m\u00e9rete MB-ban vagy LRU aktiv\u00e1l\u00e1s sz\u00e1zal\u00e9k szolg\u00e1ltat\u00e1s enged\u00e9lyezett, a rendszer m\u00f3dos\u00edtja az lruToDiskTriggerTime egy\u00e9ni tulajdons\u00e1got a  jobb teljes\u00edtm\u00e9ny \u00e9rdek\u00e9ben.
+DYNA1069I.useraction=Nincs
+
+DYNA1070I=DYNA1070I: A(z) {0} gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny megtelt \u00e9s el\u00e9rte a bejegyz\u00e9sek maxim\u00e1lis sz\u00e1m\u00e1t, ami {1}. Az LRU algoritmus helyet szabad\u00edt fel a JVM kupacban az \u00faj bejegyz\u00e9sek sz\u00e1m\u00e1ra a megl\u00e9v\u0151 gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sek \u00fcr\u00edt\u00e9s\u00e9vel. Fontolja meg lemez ki\u00edrat\u00e1si szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9s\u00e9t a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyhoz, hogy ne kelljen a mem\u00f3ri\u00e1b\u00f3l eldobni a gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9seket.
+DYNA1070I.explanation=Mivel a lemez ki\u00edrat\u00e1si szolg\u00e1ltat\u00e1s tiltott \u00e9s a gyors\u00edt\u00f3t\u00e1r megtelt, ez\u00e9rt az LRU algoritmus helyet szabad\u00edt fel a JVM kupac \u00faj bejegyz\u00e9seinek a gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9sek \u00fcr\u00edt\u00e9s\u00e9vel.
+DYNA1070I.useraction=Enged\u00e9lyezze a lemez ki\u00edrat\u00e1si szolg\u00e1ltat\u00e1st a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyhoz, hogy ne kelljen a mem\u00f3ri\u00e1b\u00f3l eldobni a gyors\u00edt\u00f3t\u00e1r-bejegyz\u00e9seket.
+
+# No Comment Provided
+DYNA1071I=DYNA1071I: A(z) {0} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3t haszn\u00e1lja.
+DYNA1071I.explanation=A haszn\u00e1lt gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 nev\u00e9t jelen\u00edti meg.
+DYNA1071I.useraction=Nincs.
+
+# No Comment Provided
+DYNA1072W=DYNA1072W: A(z) {0} gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 nem lesz t\u00f6bbsz\u00f6r\u00f6zve m\u00e1s kiszolg\u00e1l\u00f3kra, mert a skipMemoryWriteToDisk \u00e9rt\u00e9ke true. A megoszt\u00e1si ir\u00e1nyelv be\u00e1ll\u00edt\u00e1sa not-shared lesz.
+DYNA1072W.explanation=A megadott gyors\u00edt\u00f3t\u00e1r-azonos\u00edt\u00f3 nem lesz t\u00f6bbsz\u00f6r\u00f6zve m\u00e1s kiszolg\u00e1l\u00f3kra, mert a skipMemoryWriteToDisk be\u00e1ll\u00edt\u00e1s \u00e9rt\u00e9ke true. 
+DYNA1072W.useraction=Nincs.
+
+# RemoteJMSInvalidator external cache group is configured incorrectly
+DYNA1073E=DYNA1073E: A RemoteJMSInvalidator k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport be\u00e1ll\u00edt\u00e1sa helytelen. A k\u00f6vetkez\u0151 c\u00edm lett megadva a k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport tag sz\u00e1m\u00e1ra: {0}
+DYNA1073E.explanation=A k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport helyes m\u0171k\u00f6d\u00e9se \u00e9rdek\u00e9ben a be\u00e1ll\u00edt\u00e1si hib\u00e1t meg kell sz\u00fcntetni.
+DYNA1073E.useraction=Nincs.
+
+# RemoteInvalidator is no longer connected to SIB servers in the remote cell or core group
+DYNA1074W=DYNA1074W: A RemoteJMSInvalidator k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport m\u00e1r nincs csatlakoztatva. A sor kapcsolatgy\u00e1r konfigur\u00e1lt JNDI neve {0}, a c\u00e9l JNDI neve pedig {1}.
+DYNA1074W.explanation=A kijel\u00f6lt sor kapcsolatgy\u00e1r szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s s\u00ednj\u00e9nek kiszolg\u00e1l\u00f3i a tov\u00e1bbiakban m\u00e1r nem \u00e9rhet\u0151k el.
+DYNA1074W.useraction=Nincs.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1075I=DYNA1075I: A RemoteJMSInvalidator k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport csatlakoztatva van. A sor kapcsolatgy\u00e1r konfigur\u00e1lt JNDI neve {0}, a c\u00e9l JNDI neve pedig {1}.
+DYNA1075I.explanation=A k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport jelenleg csatlakoztatva van a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s s\u00ednnek a sor kapcsolatgy\u00e1rban meghat\u00e1rozott kiszolg\u00e1l\u00f3ihoz.
+DYNA1075I.useraction=Nincs.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1076W=DYNA1076W: A RemoteJMSInvalidator k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport nem tud csatlakozni. A sor kapcsolatgy\u00e1r konfigur\u00e1lt JNDI neve {0}, a c\u00e9l JNDI neve pedig {1}.
+DYNA1076W.explanation=A k\u00fcls\u0151 gyors\u00edt\u00f3t\u00e1rcsoport nem tud csatlakozni a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s s\u00ednnek a sor kapcsolatgy\u00e1rban meghat\u00e1rozott kiszolg\u00e1l\u00f3ihoz.
+DYNA1076W.useraction=Lehet, hogy \u00fajra kell ind\u00edtania a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s s\u00edn megc\u00e9lzott kiszolg\u00e1l\u00f3it.
+
+# displays defined custom property
+DYNA1077I=DYNA1077I: A rendszer \u00e9szlelte a(z) {0}nev\u0171 \u00e9s {1}\u00e9rt\u00e9k\u0171 egy\u00e9ni tulajdons\u00e1got.
+DYNA1077I.explanation=A meghat\u00e1rozott egy\u00e9ni tulajdons\u00e1g neve \u00e9s \u00e9rt\u00e9ke.
+DYNA1077I.useraction=Nincs.
+
+# Dynacache openjpa messages
+
+queryCache-instance-created=DYNA1080I: A(z) {0} OpenJPA L2 QueryCache Dynacache-p\u00e9d\u00e1ny l\u00e9trehoz\u00e1sa vagy beolvas\u00e1sa siker\u00fclt a(z) {1} megmarad\u00f3 egys\u00e9ghez.
+queryCache-instance-created.explanation=Az OpenJPA L2 QueryCache Dynacache-p\u00e9d\u00e1ny l\u00e9trehoz\u00e1sa siker\u00fclt.
+queryCache-instance-created.useraction=Nincs.
+
+dataCache-instance-created=DYNA1081I: A(z) {0} OpenJPA L2 DataCache Dynacache-p\u00e9d\u00e1ny l\u00e9trehoz\u00e1sa vagy beolvas\u00e1sa siker\u00fclt a(z) {1} megmarad\u00f3 egys\u00e9ghez.
+dataCache-instance-created.explanation=Az OpenJPA L2 DataCache Dynacache-p\u00e9d\u00e1ny l\u00e9trehoz\u00e1sa siker\u00fclt.
+dataCache-instance-created.useraction=Nincs.
+
+specify-replication-domain=DYNA1082W: Replik\u00e1ci\u00f3s tartom\u00e1ny nem volt megadva.
+specify-replication-domain.explanation=Az enableCacheReplication k\u00e9nyszer\u00edtett be\u00e1ll\u00edt\u00e1sa false \u00e9rt\u00e9kre.
+specify-replication-domain.useraction=\u00c1ll\u00edtson be egy WebSphere replik\u00e1ci\u00f3s tartom\u00e1nyt, \u00e9s t\u00e1rs\u00edtsa a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyhoz.
+
+no-cache-name=DYNA1083W: Az open-jpa L2 gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyhoz nincs megadva n\u00e9vvel ell\u00e1tott gyors\u00edt\u00f3t\u00e1r. A(z) {0} megmarad\u00f3 egys\u00e9g nev\u00e9nek haszn\u00e1lata a gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny nev\u00e9nek.
+no-cache-name.explanation=Nincs.
+no-cache-name.useraction=Adjon nevet az open-jpa L2 gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nynak.
+
+no-cache-size=DYNA1084W: Nincs gyors\u00edt\u00f3t\u00e1rm\u00e9ret megadva a {0} open-jpa L2 gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1nyhoz.  A gyors\u00edt\u00f3t\u00e1r m\u00e9ret\u00e9nek be\u00e1ll\u00edt\u00e1sa a mem\u00f3ri\u00e1ban a k\u00f6vetkez\u0151re: {1}.
+no-cache-size.explanation=Nincs.
+no-cache-size.useraction=\u00c1ll\u00edtsa be az open-jpa L2 gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny m\u00e9ret\u00e9t.
+
+incompatible-configuration=DYNA1085W: A(z) {0} tulajdons\u00e1g a(z) {1} inkompatibilis \u00e9rt\u00e9kre lett \u00e1ll\u00edtva. Az \u00e9rt\u00e9k k\u00e9nyszer\u00edt\u00e9se a k\u00f6vetkez\u0151re: {2}.
+incompatible-configuration.explanation=Nincs.
+incompatible-configuration.useraction=Biztos\u00edtson konzisztens be\u00e1ll\u00edt\u00e1st az open-jpa L2 gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny sz\u00e1m\u00e1ra.
+incompatible-configuration1=DYNA1086I: Mivel az openjpa.DataCacheManager tulajdons\u00e1g dynacache \u00e9rt\u00e9kre van \u00e1ll\u00edtva, a Dynacache OpenJPA L2 gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 K\u00c9NYSZER\u00cdTENI fogja az openjpa.DataCache tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1t a dynacache \u00e9rt\u00e9kre.
+incompatible-configuration1.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+incompatible-configuration1.useraction=Semmit sem kell tennie.
+incompatible-configuration2=DYNA1087I: Mivel az openjpa.DataCacheManager tulajdons\u00e1g dynacache \u00e9rt\u00e9kre van \u00e1ll\u00edtva, a Dynacache OpenJPA L2 gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 K\u00c9NYSZER\u00cdTENI fogja az openjpa.RemoteCommitProvider tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1t a none \u00e9rt\u00e9kre.
+incompatible-configuration2.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+incompatible-configuration2.useraction=Semmit sem kell tennie.
+incompatible-configuration3=DYNA1088I: Mivel az openjpa.Datacache tulajdons\u00e1g dynacache \u00e9rt\u00e9kre van \u00e1ll\u00edtva, a Dynacache OpenJPA L2 gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 K\u00c9NYSZER\u00cdTENI fogja az openjpa.RemoteCommitProvider tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1t a none \u00e9rt\u00e9kre.
+incompatible-configuration3.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+incompatible-configuration3.useraction=Semmit sem kell tennie.
+incompatible-configuration4=DYNA1089I: Mivel az openjpa.Querycache tulajdons\u00e1g dynacache \u00e9rt\u00e9kre van \u00e1ll\u00edtva, a Dynacache OpenJPA L2 gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 K\u00c9NYSZER\u00cdTENI fogja az openjpa.DataCache tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1t a dynacache \u00e9rt\u00e9kre.
+incompatible-configuration4.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+incompatible-configuration4.useraction=Semmit sem kell tennie.
+
+DYNA1090I=DYNA1090I: A dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s le van tiltva.
+DYNA1090I.explanation=A dinamikus gyors\u00edt\u00f3t\u00e1r, az objektum gyors\u00edt\u00f3t\u00e1r \u00e9s a kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1sok le lettek tiltva az adminisztr\u00e1ci\u00f3s konzolon vagy parancsf\u00e1jlokon kereszt\u00fcl. 
+DYNA1090I.useraction=Enged\u00e9lyezze a dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1st a kiszolg\u00e1l\u00f3 hat\u00f3k\u00f6r\u0171 DynamicCache AdminConfig objektum enable attrib\u00fatum be\u00e1ll\u00edt\u00e1s\u00e1val, vagy az adminisztr\u00e1ci\u00f3s konzol panelen: Alkalmaz\u00e1skiszolg\u00e1l\u00f3k > <kiszolg\u00e1l\u00f3_n\u00e9v> > Dinamikus gyors\u00edt\u00f3t\u00e1r szolg\u00e1ltat\u00e1s.
+
+DYNA1091E=DYNA1091E: A(z) {0}gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny konfigur\u00e1ci\u00f3j\u00e1t nem ismerte fel a rendszer az al\u00e1bbi kiv\u00e9tel miatt: {0}.
+DYNA1091E.explanation=A gyors\u00edt\u00f3t\u00e1rp\u00e9ld\u00e1ny dinamikus gyors\u00edt\u00f3t\u00e1r-be\u00e1ll\u00edt\u00e1sai a dobott kiv\u00e9tel miatt \u00e9rv\u00e9nytelenek.
+DYNA1091E.useraction=Jav\u00edtsa ki \u00e9s h\u00e1r\u00edtsa el a kiv\u00e9tel ok\u00e1t, hogy a gyors\u00edt\u00f3t\u00e1r-be\u00e1ll\u00edt\u00e1sokat sikeresen fel lehessen venni a dinamikus gyors\u00edt\u00f3t\u00e1r fut\u00e1si k\u00f6rnyezet\u00e9be.
+                     
+no-jpa-cache-exists-with-this-name=DYNA1092E: Nem l\u00e9tezik {0}nev\u0171 DataCache.
+no-jpa-cache-exists-with-this-name.explanation=Er\u0151s\u00edtse meg, hogy az L2 adatgyors\u00edt\u00f3t\u00e1r sikeresen l\u00e9trej\u00f6tt.
+no-jpa-cache-exists-with-this-name.useraction=Er\u0151s\u00edtse meg, hogy az L2 adatgyors\u00edt\u00f3t\u00e1r helyes.
+
+no-dynacache-manager-configured=DYNA1093E: A(z) {0} DataCache nem a helyes DataCacheManager \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a(z) {1} megmarad\u00f3 egys\u00e9gben. 
+no-dynacache-manager-configured.explanation=Az openjpa.DataCacheManager tulajdons\u00e1got dynacache \u00e9rt\u00e9kre kell be\u00e1ll\u00edtani. 
+no-dynacache-manager-configured.useraction=Jav\u00edtsa ki ezt a tulajdons\u00e1got a persistence.xml nev\u0171 f\u00e1jlban.
+
+incorrect-class-name=DYNA1094E: A(z)  {1} oszt\u00e1lybet\u00f6lt\u0151 NEM tudta bet\u00f6lteni a(z)  {0} entit\u00e1soszt\u00e1lyt. 
+incorrect-class-name.explanation=Ellen\u0151rizze, hogy az oszt\u00e1ly nem l\u00e9tezik az alkalmaz\u00e1sban \u00e9s l\u00e1that\u00f3 az alkalmaz\u00e1skiszolg\u00e1l\u00f3 oszt\u00e1lyt\u00f6lt\u0151 sz\u00e1m\u00e1ra.
+incorrect-class-name.useraction=Adja meg a megfelel\u0151 entit\u00e1soszt\u00e1ly nev\u00e9t \u00e9s egy be\u00e1ll\u00edtott kiszolg\u00e1l\u00f3 hat\u00f3k\u00f6r\u0171 megosztott k\u00f6nyvt\u00e1rat, amely tartalmazza a kiszolg\u00e1l\u00f3hoz t\u00e1rs\u00edtott oszt\u00e1lyokat.
+
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance=DYNA1095E: A(z)  {0} megmarad\u00f3 egys\u00e9g nem tal\u00e1lhat\u00f3 itt: alkalmaz\u00e1s: {1} modul: {2} .
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.explanation= A megmarad\u00f3 egys\u00e9g xml nem tal\u00e1lhat\u00f3 a megadott helyen.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.useraction= Ellen\u0151rizze, hogy a megmarad\u00f3 egys\u00e9g val\u00f3ban a fel\u00fcgyelt komponens param\u00e9terek \u00e1ltal megadott helyen van.
+                   

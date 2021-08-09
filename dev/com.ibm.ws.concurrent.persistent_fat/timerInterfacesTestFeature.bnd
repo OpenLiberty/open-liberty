@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2014, 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+#This file defines the timerInterfaceTestFeature-1.0 user feature bundle
+
+Bundle-Name: TimerInterfacesTestFeatureBundle
+Bundle-SymbolicName: test.feature.sim.ejb.timer; singleton:=true
+Bundle-Description: Bundles that provides a task that simulates being an EJB timer task; version=${bVersion}
+
+Export-Package: test.feature.sim.ejb.timer;version=1.0
+
+Private-Package: test.feature.sim.ejb.timer.internal.*
+
+Service-Component:\
+  test.feature.ejb.singleton.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="packages=test.feature.sim.ejb.timer"

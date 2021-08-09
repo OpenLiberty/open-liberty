@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007={0} property must be set.
+
+17008=Invalid {0} property encountered.
+
+17009={0} or {1} property must be set.
+
+17010=Output record contains an unsupported message type
+
+17011=No connection factory has been specified.
+
+17012=InteractionSspec must be a CciJMSInteractionSpec.
+
+17013=Record must be a CciJMSRecord.
+
+17014=Unknown interaction specification type
+
+17015=Input must contain a single text element.
+
+17016=A timeout occurred - no message was received.
+
+17017=Input record contains an unsupported message type.
+
+17018=Cannot invoke "begin()" on a non-transacted session.
+
+17019=Problem testing for transacted session: 
+
+17020=InteractionSspec must be an AQInteractionSpec.
+
+17021=Record must be an AQRecord.
+
+17022=Input must contain a single raw element.
+
+17023=An exception occurred setting MQQueueConnectionFactory attributes.
+
+17024=Could not delete file: {0}
+
+17025=This mapping requires a foreign key grouping element, as mulitple foreign keys exist.
+

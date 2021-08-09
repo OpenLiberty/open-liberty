@@ -1,0 +1,114 @@
+<web-app metadata-complete="true"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    version="3.0">
+
+  <display-name>Security Test Application</display-name>
+  <description>Server-side application for Security Tests</description>
+  
+    <servlet>
+        <servlet-name>SecurityContextApp</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs.fat.securitycontext.Application</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>requestProcessorAttribute_webcontainer</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication</servlet-name>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication</servlet-name>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SecurityContextApp</servlet-name>
+        <!-- TODO: Simplify the URL needed by the test client -->
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication</servlet-name>
+        <url-pattern>/nomapper/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication</servlet-name>
+        <url-pattern>/ssltest/*</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint id="SecurityConstraint_1">
+        <web-resource-collection id="WebResourceCollection_1">
+            <web-resource-name>com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication
+            </web-resource-name>
+            <description>Protection area for Rest Servlet</description>
+            <url-pattern>/nomapper/ClassRolesAllowed</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint id="UserDataConstraint_1">
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+        <auth-constraint id="AuthConstraint_1">
+            <description>blabla</description>
+            <role-name>Role1</role-name>
+            <role-name>Role1appbnd</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint id="SecurityConstraint_2">
+        <web-resource-collection id="WebResourceCollection_2">
+            <web-resource-name>com.ibm.ws.jaxrs.security.annotations.SecurityAnnotationsApplication
+            </web-resource-name>
+            <description>Protection area for Rest Servlet</description>
+            <url-pattern>/nomapper/MethodRolesAllowed</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint id="UserDataConstraint_2">
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+        <auth-constraint id="AuthConstraint_2">
+            <role-name>Role2</role-name>
+            <role-name>Role2appbnd</role-name>
+        </auth-constraint>
+    </security-constraint>    
+    <security-constraint id="SecurityConstraint_5">
+        <web-resource-collection id="WebResourceCollection_5">
+            <web-resource-name>com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication
+            </web-resource-name>
+            <description>Protection area for Rest Servlet</description>
+            <url-pattern>/ssltest/ssl/get</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+	
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>test</realm-name>
+    </login-config>
+    <security-role id="SecurityRole_1">
+        <description>blabla</description>
+        <role-name>Role1</role-name>
+    </security-role>
+    <security-role id="SecurityRole_2">
+        <role-name>Role2</role-name>
+    </security-role>
+    <security-role id="SecurityRole_3">
+        <role-name>AuthenticationRole</role-name>
+    </security-role>
+    <security-role id="SecurityRole_4">
+        <role-name>Role1appbnd</role-name>
+    </security-role>
+    <security-role id="SecurityRole_5">
+        <role-name>Role2appbnd</role-name>
+    </security-role>
+</web-app>

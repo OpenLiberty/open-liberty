@@ -1,0 +1,442 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+	<samlWebSso20
+		id="rsSaml1"
+		inboundPropagation="required"
+		headerName="saml_token"
+		authFilterRef="defAuthFilter1"
+		signatureMethodAlgorithm="SHA1"
+	>
+		<pkixTrustEngine /> <!--default serverStore -->
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter1">
+		<requestUrl
+			id="defRequestUrla"
+			urlPattern="/helloworld"
+			matchType="contains" />
+		<requestUrl
+			id="defRequestUrlb"
+			urlPattern="/helloworld_"
+			matchType="notContain" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml2"
+		inboundPropagation="required"
+		headerName="saml_token"
+		authFilterRef="defAuthFilter2"
+		signatureMethodAlgorithm="SHA1"
+	>
+		<pkixTrustEngine trustAnchor="serverStore" />
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter2">
+		<requestUrl
+			id="defRequestUrl"
+			urlPattern="/helloworld_serverTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_signed_badTrust"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter3"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML" />
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter3">
+		<requestUrl
+			id="mangleWithTrustRequestUrl"
+			urlPattern="/helloworld_missingServerTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_badTrustJKSFile"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter4"
+	>
+		<pkixTrustEngine trustAnchor="missingJKSFile" />
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter4">
+		<requestUrl
+			id="mangleWithTrustRequestUrl"
+			urlPattern="/helloworld_missingJKSFile"
+			matchType="contains" />
+	</authFilter>
+
+
+	<samlWebSso20
+		id="rsSaml_goodX509Cert"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter5"
+	>
+		<pkixTrustEngine>
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter5">
+		<requestUrl
+			id="goodX509Cert"
+			urlPattern="/helloworld_goodX509Certificate"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_badX509Cert"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter6"
+	>
+		<pkixTrustEngine>
+			<x509Certificate path="${server.config.dir}/otherCert.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter6">
+		<requestUrl
+			id="badX509Cert"
+			urlPattern="/helloworld_badX509Certificate"
+			matchType="contains" />
+	</authFilter>
+
+	<!-- two good certs are not that interesting for testing - we can cover 
+		multiple certs being supported by using a good and bad, plus testing that 
+		we find the good -->
+	<samlWebSso20
+		id="rsSaml_multiX509Cert1"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter7"
+	>
+		<pkixTrustEngine>
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter7">
+		<requestUrl
+			id="multiX509Cert1"
+			urlPattern="/helloworld_multiX509Certificate_goodBad"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiX509Cert2"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter8"
+	>
+		<pkixTrustEngine>
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter8">
+		<requestUrl
+			id="multiX509Cert2"
+			urlPattern="/helloworld_multiX509Certificate_badGood"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiX509Cert3"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter9"
+	>
+		<pkixTrustEngine>
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+			<x509Certificate path="${server.config.dir}/otherCert.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter9">
+		<requestUrl
+			id="multiX509Cert3"
+			urlPattern="/helloworld_multiX509Certificate_badBad"
+			matchType="contains" />
+	</authFilter>
+
+
+
+
+	<samlWebSso20
+		id="rsSaml_goodX509Cert_goodTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter5_goodTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStore">
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter5_goodTA">
+		<requestUrl
+			id="goodX509Cert_goodTA"
+			urlPattern="/helloworld_goodTA_goodX509Certificate"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_badX509Cert_goodTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter6_goodTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStore">
+			<x509Certificate path="${server.config.dir}/otherCert.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter6_goodTA">
+		<requestUrl
+			id="badX509Cert_goodTA"
+			urlPattern="/helloworld_goodTA_badX509Certificate"
+			matchType="contains" />
+	</authFilter>
+
+	<!-- two good certs are not that interesting for testing - we can cover 
+		multiple certs being supported by using a good and bad, plus testing that 
+		we find the good -->
+	<samlWebSso20
+		id="rsSaml_multiX509Cert1_goodTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter7_goodTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStore">
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter7_goodTA">
+		<requestUrl
+			id="multiX509Cert1_goodTA"
+			urlPattern="/helloworld_goodTA_multiX509Certificate_goodBad"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiX509Cert2_goodTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter8_goodTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStore">
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter8_goodTA">
+		<requestUrl
+			id="multiX509Cert2_goodTA"
+			urlPattern="/helloworld_goodTA_multiX509Certificate_badGood"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiX509Cert3_goodTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter9_goodTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStore">
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+			<x509Certificate path="${server.config.dir}/otherCert.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter9_goodTA">
+		<requestUrl
+			id="multiX509Cert3_goodTA"
+			urlPattern="/helloworld_goodTA_multiX509Certificate_badBad"
+			matchType="contains" />
+	</authFilter>
+
+
+
+
+	<samlWebSso20
+		id="rsSaml_goodX509Cert_badTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter5_badTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML">
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter5_badTA">
+		<requestUrl
+			id="goodX509Cert_badTA"
+			urlPattern="/helloworld_badTA_goodX509Certificate"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_badX509Cert_badTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter6_badTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML">
+			<x509Certificate path="${server.config.dir}/otherCert.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter6_badTA">
+		<requestUrl
+			id="badX509Cert_badTA"
+			urlPattern="/helloworld_badTA_badX509Certificate"
+			matchType="contains" />
+	</authFilter>
+
+	<!-- two good certs are not that interesting for testing - we can cover 
+		multiple certs being supported by using a good and bad, plus testing that 
+		we find the good -->
+	<samlWebSso20
+		id="rsSaml_multiX509Cert1_badTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter7_badTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML">
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter7_badTA">
+		<requestUrl
+			id="multiX509Cert1_badTA"
+			urlPattern="/helloworld_badTA_multiX509Certificate_goodBad"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiX509Cert2_badTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter8_badTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML">
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+			<x509Certificate path="${server.config.dir}/shibboleth.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter8_badTA">
+		<requestUrl
+			id="multiX509Cert2_badTA"
+			urlPattern="/helloworld_badTA_multiX509Certificate_badGood"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiX509Cert3_badTA"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="defAuthFilter9_badTA"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML">
+			<x509Certificate path="${server.config.dir}/cert1.arm" />
+			<x509Certificate path="${server.config.dir}/otherCert.arm" />
+		</pkixTrustEngine>
+	</samlWebSso20>
+
+	<authFilter id="defAuthFilter9_badTA">
+		<requestUrl
+			id="multiX509Cert3_badTA"
+			urlPattern="/helloworld_badTA_multiX509Certificate_badBad"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_multiplePkix"
+		inboundPropagation="required"
+		headerName="saml_token"
+		signatureMethodAlgorithm="SHA1"
+		wantAssertionsSigned="true"
+		authFilterRef="multiFilter"
+	>
+		<pkixTrustEngine trustAnchor="serverStoreMissingSAML" />
+		<pkixTrustEngine trustAnchor="serverStore" />
+	</samlWebSso20>
+
+	<authFilter id="multiFilter">
+		<requestUrl
+			id="multiRequestUrl"
+			urlPattern="/helloworld_multiPKIX"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="rsSaml_min"
+		inboundPropagation="required" />
+
+	<keyStore
+		id="missingJKSFile"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/someMissingFile.jks" />
+
+</server>

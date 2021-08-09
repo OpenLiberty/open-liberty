@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	id="Application_ID" version="6"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+    
+  <display-name>DefaultPackage_EchoString</display-name>
+  <module id="WebModule_1">
+    <web>
+      <web-uri>resourceWebServicesProvider.war</web-uri>
+      <context-root>/resourceWebServicesProvider</context-root>
+    </web>
+  </module>
+  
+  <module id="WebModule_2">
+    <web>
+      <web-uri>resourceWebServicesClient.war</web-uri>
+      <context-root>/resourceWebServicesClient</context-root>
+    </web>
+  </module>
+</application>
+

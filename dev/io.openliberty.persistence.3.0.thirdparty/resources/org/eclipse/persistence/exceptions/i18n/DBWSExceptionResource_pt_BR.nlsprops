@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=N\u00e3o \u00e9 poss\u00edvel localizar o arquivo "[{0}]".
+
+47001=N\u00e3o foi poss\u00edvel localizar o descritor [{0}] para a opera\u00e7\u00e3o [{1}] no projeto O-R
+
+47002=N\u00e3o foi poss\u00edvel localizar a consulta [{0}] para o descritor [{1}]
+
+47003=N\u00e3o foi poss\u00edvel localizar a consulta [{0}] para a sess\u00e3o [{1}]
+
+47004=O tipo de par\u00e2metro [{0}] para a opera\u00e7\u00e3o [{1}] n\u00e3o existe no esquema
+
+47005=O tipo de par\u00e2metro [{0}] para a opera\u00e7\u00e3o [{1}] n\u00e3o tem mapeamento O-X
+
+47006=O tipo de resultado [{0}] para a opera\u00e7\u00e3o [{1}] n\u00e3o existe no esquema
+
+47007=O tipo de resultado [{0}] para a opera\u00e7\u00e3o [{1}] n\u00e3o tem mapeamento O-X
+
+47008=Somente consultas em formato XML simples suportam m\u00faltiplos argumentos de sa\u00edda
+
+47009=Par\u00e2metros de cursor INOUT n\u00e3o s\u00e3o suportados
+
+47010=N\u00e3o foi poss\u00edvel localizar sess\u00e3o O-R para o servi\u00e7o [{0}]
+
+47011=N\u00e3o foi poss\u00edvel localizar sess\u00e3o O-X para o servi\u00e7o [{0}]
+
+47012=N\u00e3o foi poss\u00edvel analisar o arquivo DBWS
+

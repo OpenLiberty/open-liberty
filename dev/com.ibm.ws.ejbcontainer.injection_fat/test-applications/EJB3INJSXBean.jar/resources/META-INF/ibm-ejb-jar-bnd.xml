@@ -1,0 +1,81 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+    <session name="BasicSLEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSLEnvInjectObjFld"/>
+    <session name="BasicSLEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSLEnvInjectPrimFld"/>
+    <session name="BasicSLEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSLEnvInjectObjMthd"/>
+    <session name="BasicSLEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSLEnvInjectPrimMthd"/>
+
+    <session name="CompSLEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSLEnvInjectObjFld"/>
+    <session name="CompSLEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSLEnvInjectPrimFld"/>
+    <session name="CompSLEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSLEnvInjectObjMthd"/>
+    <session name="CompSLEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSLEnvInjectPrimMthd"/>
+
+    <session name="BasicSFEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSFEnvInjectObjFld"/>
+    <session name="BasicSFEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSFEnvInjectPrimFld"/>
+    <session name="BasicSFEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSFEnvInjectObjMthd"/>
+    <session name="BasicSFEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/BasicSFEnvInjectPrimMthd"/>
+
+    <session name="CompSFEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSFEnvInjectObjFld"/>
+    <session name="CompSFEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSFEnvInjectPrimFld"/>
+    <session name="CompSFEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSFEnvInjectObjMthd"/>
+    <session name="CompSFEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/CompSFEnvInjectPrimMthd"/>
+
+    <session name="SuperCompSLEnvInject" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/SuperCompSLEnvInject"/>
+    <session name="SuperCompSFEnvInject" simple-binding-name="com/ibm/ws/ejbcontainer/injection/xml/ejb/SuperCompSFEnvInject"/>
+
+    <session name="SLMsgDestinationTestBean">
+        <resource-ref name="jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+        <message-destination-ref name="jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+        <message-destination-ref name="jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+    </session>
+    <session name="SLMsgDestinationMthdInjTestBean">
+        <resource-ref name="jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+        <message-destination-ref name="jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+        <message-destination-ref name="jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+    </session>
+    <session name="SFMsgDestinationTestBean">
+        <resource-ref name="jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+        <message-destination-ref name="jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+        <message-destination-ref name="jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+    </session>
+    <session name="SFMsgDestinationFldInjTestBean">
+        <resource-ref name="jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+        <message-destination-ref name="jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+        <message-destination-ref name="jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+    </session>
+
+    <session name="SLMsgDestinationAnnotInjTestBean">
+        <resource-ref name="jms/WSTestQCF" binding-name="Jetstream/jms/WSTestQCF"/>
+        <message-destination-ref name="jms/RequestQueue" binding-name="Jetstream/jms/RequestQueue"/>
+        <message-destination-ref name="jms/ResponseQueue" binding-name="Jetstream/jms/ResponseQueue"/>
+    </session>
+
+    <session name="FieldTypeCompatibleInjectBean">
+        <interface class="com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible"  binding-name="ejblocal:FieldTypeCompatibleInjectBean"/>
+   </session>
+
+    <session name="MethodSpecificTypeWithCompatibleInjectBean">
+        <interface class="com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible"  binding-name="ejblocal:MethodSpecificTypeWithCompatibleInjectBean"/>
+   </session>
+
+    <session name="MethodTypeCompatibleInjectBean">
+        <interface class="com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible"  binding-name="ejblocal:MethodTypeCompatibleInjectBean"/>
+   </session>
+
+    <session name="MethodTypeAmbiguousInjectBean">
+        <interface class="com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible"  binding-name="ejblocal:MethodTypeAmbiguousInjectBean"/>
+   </session>
+
+    <session name="MethodObjectTypeWithSpecificPrimitiveAndCompatibleInjectBean">
+        <interface class="com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible"  binding-name="ejblocal:MethodObjectTypeWithSpecificPrimitiveAndCompatibleInjectBean"/>
+   </session>
+
+    <session name="MethodObjectTypeWithPrimitiveAndCompatibleInjectBean">
+        <interface class="com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible"  binding-name="ejblocal:MethodObjectTypeWithPrimitiveAndCompatibleInjectBean"/>
+   </session>
+
+</ejb-jar-bnd>

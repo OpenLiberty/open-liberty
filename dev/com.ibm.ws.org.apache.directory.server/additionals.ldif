@@ -1,0 +1,109 @@
+
+dn: cn=openid1.email@acme.com,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid1.email@acme.com
+cn: openid1.email@acme.com
+uid: openid1.email@acme.com
+
+dn: cn=openid2.email@acme.com,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid2.email@acme.com
+cn: openid2.email@acme.com
+uid: openid2.email@acme.com
+
+dn: cn=openid3.email@acme.com,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid3.email@acme.com
+cn: openid3.email@acme.com
+uid: openid3.email@acme.com
+
+dn: cn=openid4.email@acme.com,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid4.email@acme.com
+cn: openid4.email@acme.com
+uid: openid4.email@acme.com
+
+dn: cn=openid1,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid1
+cn: openid1
+uid: openid1
+
+dn: cn=openid2,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid2
+cn: openid2
+uid: openid2
+
+dn: cn=openid3.com,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid3
+cn: openid3
+cn: openid3.com
+uid: openid3
+
+dn: cn=openid4,o=ibm,c=us
+cn: openid4
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: openid4
+uid: openid4
+
+dn: cn=https://nc135020.tivlab.austin.ibm.com:9443/op/openid1,o=ibm,c=us
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+sn: https://nc135020.tivlab.austin.ibm.com:9443/op/openid1
+cn: https://nc135020.tivlab.austin.ibm.com:9443/op/openid1
+uid: https://nc135020.tivlab.austin.ibm.com:9443/op/openid1
+
+
+dn: cn=openidg2,o=ibm,c=us
+cn: openidg2
+objectclass: groupOfNames
+objectclass: top
+member: cn=openid2,o=ibm,c=us
+member: cn=openid2.email@acme.com,o=ibm,c=us
+
+dn: cn=openidg1,o=ibm,c=us
+cn: openidg1
+objectclass: groupOfNames
+objectclass: top
+member: cn=openid1,o=ibm,c=us
+member: cn=openid1.email@acme.com,o=ibm,c=us
+
+
+

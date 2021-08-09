@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords do not need to be translated.
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Definire il mirroring di Maven Central Repository##\n\
+## Per impostazione predefinita featureUtility scarica da Maven Central. Gli utenti\n\
+## possono configurare un mirroring di Maven Central Repository e\n\
+## sovrascrivere la connessione Maven Central predefinita di featureUtility\n\
+## con il repository di mirroring.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
+\n\
+## Specificare le credenziali del mirroring di Maven Central Repository, se necessario.\n\
+## Per maggiore sicurezza, codificare il valore della propriet\u00e0 .password\n\
+## utilizzando l'azione di codifica di securityUtility.\n\
+## Se non si impostano utente e password, viene visualizzata la richiesta\n\
+## di fornirli.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.user=username\n\
+#mavenCentralMirror.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizzo di repository remoti personalizzati ##\n\
+## featureUtility pu\u00f2 installare repository locali Maven in remoto. Fornire\n\
+## un nome repository e aggiungere l'URL per ogni repository locale Maven in remoto\n\
+## che contiene le risorse utente della funzione Liberty.\n\
+## Ai repository si accede nell'ordine in cui sono specificati.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#remoteRepositoryName2.url=http://w3.mycompany.com/secure/repository\n\
+\n\
+## Specificare le credenziali di ogni repository, se necessario.\n\
+## Per maggiore sicurezza, codificare il valore della propriet\u00e0 .password\n\
+## utilizzando l'azione di codifica di securityUtility.\n\
+## Se non si impostano utente e password, viene visualizzata la richiesta\n\
+## di fornirli.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName2.user=username\n\
+#remoteRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizzo di server proxy (facoltativo) ##\n\
+## Se si utilizza un server proxy per accedere a internet,\n\
+## specificare i valori per le propriet\u00e0 delle impostazioni del proxy.\n\
+## Per maggiore sicurezza, codificare il valore della propriet\u00e0 proxyPassword\n\
+## utilizzando l'azione di codifica di securityUtility.\n\
+## Se non si impostano le propriet\u00e0 proxyUser e proxyPassword,\n\
+## viene visualizzata la richiesta di fornirle.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword\n\
+\n\
+######################################################################\n\
+## ## Definire Maven Local Repository ##\n\
+## L'ubicazione del Maven Local Repository predefinito pu\u00f2 essere modificata.\n\
+## L'ubicazione predefinita \u00e8 ${user.home}/.m2/repository/.\n\
+## -------------------------------------------------------------------\n\
+#featureLocalRepo=/home/my_local/repository

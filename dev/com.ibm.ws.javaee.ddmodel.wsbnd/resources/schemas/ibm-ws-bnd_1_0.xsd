@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+    xmlns:ws="http://websphere.ibm.com/xml/ns/javaee"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" attributeFormDefault="unqualified"
+    version="1.0" >
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+    <!-- ******************************************************* -->
+
+    <xsd:annotation>
+        <xsd:documentation>
+                  Copyright (c) 2013 IBM Corporation and others.
+                  All rights reserved. This program and the accompanying materials
+                  are made available under the terms of the Eclipse Public License v1.0
+                  which accompanies this distribution, and is available at
+                  http://www.eclipse.org/legal/epl-v10.html
+ 
+                  Contributors:
+                      IBM Corporation - initial API and implementation
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <!-- ******************************************************* -->
+
+    <xsd:element name="webservices-bnd" type="ws:webservicesBndType" />
+    
+    <xsd:complexType name="webservicesBndType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The root of the ibm-ws-bnd deployment descriptor.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="webservice-endpoint-properties" type="ws:webserviceEndpointPropertiesType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="webservice-endpoint" type="ws:webserviceEndpointType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="http-publishing" type="ws:httpPublishingType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="service-ref" type="ws:serviceRefType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="version" type="xsd:string" use="required" fixed="1.0" />
+        <xsd:attribute name="id" type="xsd:ID" />      	
+    </xsd:complexType>
+    
+    <xsd:complexType name="webserviceEndpointType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines the Web service endpoint configurations. 
+                There may be multiple webservice-endpoint elements defined within a module.
+                
+                The port-component-name attribute specifies a port component's name.
+                The attribute is required.
+                                
+                The address attribute specifies the overridden address of a Web service endpoint.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="properties" minOccurs="0" type="ws:propertiesType" />
+        </xsd:sequence>
+        <xsd:attribute name="port-component-name" type="xsd:string" use="required" />
+        <xsd:attribute name="address" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="httpPublishingType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines the publishing configurations using HTTP protocol for all the Web service endpoints.
+                There are at most one http-publishing element within a module.
+                
+                The context-root attribute specifies the context root for EJB based Web service.
+                The attribute is optional.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="webservice-security" type="ws:webserviceSecurityType" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="context-root" type="xsd:string" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="webserviceSecurityType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines the role-based authorization for the Web services.
+                There are at most one webservice-security element within a module.
+                
+                Note, the ibm-ws-bnd.xml file only supports BASIC and CLIENT_CERT as auth-method type, 
+                and the login-config element is ignored when the binding file is in a web application.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="security-constraint" type="ws:security-constraintType"/>
+            <xsd:element name="login-config" type="ws:login-configType"/>
+            <xsd:element name="security-role" type="ws:security-roleType"/>
+        </xsd:choice>
+    </xsd:complexType>
+       <!-- ******************************************************* -->
+         <xsd:complexType name="string">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:token">
+        <xsd:attribute name="id"
+                       type="xsd:ID"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+    
+      <xsd:complexType name="display-nameType">
+    <xsd:simpleContent>
+      <xsd:extension base="ws:string">
+        <xsd:attribute ref="xml:lang"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="xsdStringType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="id"
+                       type="xsd:ID"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="auth-constraintType">
+    <xsd:sequence>
+      <xsd:element name="description"
+                   type="ws:descriptionType"
+                   minOccurs="0"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="role-name"
+                   type="ws:string"
+                   minOccurs="0"
+                   maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="transport-guaranteeType">
+    <xsd:simpleContent>
+      <xsd:restriction base="ws:string">
+        <xsd:enumeration value="NONE"/>
+        <xsd:enumeration value="INTEGRAL"/>
+        <xsd:enumeration value="CONFIDENTIAL"/>
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="user-data-constraintType">
+    <xsd:sequence>
+      <xsd:element name="description"
+                   type="ws:descriptionType"
+                   minOccurs="0"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="transport-guarantee"
+                   type="ws:transport-guaranteeType"/>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="descriptionType">
+    <xsd:simpleContent>
+      <xsd:extension base="ws:xsdStringType">
+        <xsd:attribute ref="xml:lang"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+     <xsd:complexType name="security-constraintType">
+    <xsd:sequence>
+      <xsd:element name="display-name"
+                   type="ws:display-nameType"
+                   minOccurs="0"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="web-resource-collection"
+                   type="ws:web-resource-collectionType"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="auth-constraint"
+                   type="ws:auth-constraintType"
+                   minOccurs="0"/>
+      <xsd:element name="user-data-constraint"
+                   type="ws:user-data-constraintType"
+                   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+    
+   <xsd:simpleType name="http-methodType">
+    <xsd:restriction base="xsd:token">
+      <xsd:pattern value="[!-~-[\(\)&#60;&#62;@,;:&#34;/\[\]?=\{\}\\\p{Z}]]+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+      <xsd:complexType name="web-resource-collectionType">
+    <xsd:sequence>
+      <xsd:element name="web-resource-name"
+                   type="ws:string">
+      </xsd:element>
+      <xsd:element name="description"
+                   type="ws:descriptionType"
+                   minOccurs="0"
+                   maxOccurs="unbounded"/>
+      <xsd:element name="url-pattern"
+                   type="xsd:string"
+                   maxOccurs="unbounded"/>
+      <xsd:choice minOccurs="0"
+                  maxOccurs="1">
+        <xsd:element name="http-method"
+                     type="ws:http-methodType"
+                     minOccurs="1"
+                     maxOccurs="unbounded">
+        </xsd:element>
+        <xsd:element name="http-method-omission"
+                     type="ws:http-methodType"
+                     minOccurs="1"
+                     maxOccurs="unbounded">
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+    
+    <xsd:complexType name="security-roleType">
+    <xsd:sequence>
+      <xsd:element name="role-name"
+                   type="ws:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="login-configType">
+    <xsd:sequence>
+      <xsd:element name="auth-method"
+                   type="ws:string"
+                   minOccurs="0"/>
+      <xsd:element name="realm-name"
+                   type="ws:string"
+                   minOccurs="0">
+      </xsd:element>
+      <xsd:element name="form-login-config"
+                   type="ws:form-login-configType"
+                   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="form-login-configType">
+    <xsd:sequence>
+      <xsd:element name="form-login-page"
+                   type="ws:war-pathType">
+      </xsd:element>
+      <xsd:element name="form-error-page"
+                   type="ws:war-pathType">
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="id"
+                   type="xsd:ID"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="war-pathType">
+    <xsd:simpleContent>
+      <xsd:restriction base="ws:string">
+        <xsd:pattern value="/.*"/>
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:complexType>
+       <!-- ******************************************************* -->
+    <xsd:complexType name="serviceRefType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines the Web service reference configuration for a Web service client.
+                There may be multiple service-ref elements defined within a module.
+                 
+                The name attribute specifies the name of a Web service reference.
+                The attribute is required.
+                
+                The component-name attribute specifies the the EJB bean name if the service
+                reference is used in an EJB.
+                
+                The port-address attribute specifies the default port address in the web 
+                service reference.
+                
+                The wsdl-location specifies a URI of a WSDL document to override.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="port" type="ws:portType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="properties" minOccurs="0" type="ws:propertiesType" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="component-name" type="xsd:string" />
+        <xsd:attribute name="port-address" type="xsd:string" />
+        <xsd:attribute name="wsdl-location" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="portType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines port configurations associated with the Web service reference.
+                There may be multiple port elements defined within a service-ref element.
+                 
+                The name attribute specifies the name of Web service port.
+                The attribute is required.
+                
+                The namespace attribute specifies the namespace of the Web service port. 
+                The attribute is optional. If the namespace attribute is present, then the 
+                binding will be applied to the port that has the exact name and namespace. 
+                If not, then applied to the ports have the same name no matter what their
+                namespace are.
+                 
+                The address attribute specifies the address for the Web service port. 
+                This attribute is optional. If it is present, then it will override the value 
+                of the port-address attribute defined in the service-ref element.
+                
+                The username attribute specifies the user name for the basic authentication.
+                
+                The password attribute specifies the password for the basic authentication, 
+                the password could be encoded.
+                
+                The ssl-ref attribute references to the ssl element configured in server.xml.
+                This attribute is optional. If the attribute is not specified but the server 
+                enabled the application security feature, the service client will try to use 
+                the server's default ssl configuration.
+               
+                The key-alias attribute specifies the alias of a client certificate in the keystore.
+                This attribute is optional. If the attribute is specified, the attribute will override
+                the clientKeyAlias attribute of the ssl element defined in server.xml. If the attribute 
+                is not specified, and the Web service support the client certificate, then the client 
+                will try to use the first certificate in the client keystore. 
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="properties" minOccurs="0" type="ws:propertiesType" />
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="namespace" type="xsd:string" />
+        <xsd:attribute name="address" type="xsd:string" />
+        <xsd:attribute name="username" type="xsd:string" />
+        <xsd:attribute name="password" type="xsd:string" />
+        <xsd:attribute name="ssl-ref" type="xsd:string" />
+        <xsd:attribute name="key-alias" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="propertiesType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines the properties for Web service endpoint or client.
+                
+                The attributes can be any name and any value. 
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:anyAttribute namespace="##local" processContents="skip"/>
+    </xsd:complexType>
+    
+    <xsd:complexType name="webserviceEndpointPropertiesType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Defines the default properties for all the Web service endpoints in the same module.
+                There are at most one webservice-endpoint-properties element within a module.
+                
+                The attributes can be any name and any value, but only the properties for Web service endpoints.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:anyAttribute namespace="##local" processContents="skip"/>
+    </xsd:complexType>
+</xsd:schema>

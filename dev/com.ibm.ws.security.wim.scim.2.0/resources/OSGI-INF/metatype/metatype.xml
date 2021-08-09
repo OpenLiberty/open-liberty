@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	localization="OSGI-INF/l10n/metatype">
+
+	<OCD name="%scim20" description="%scim20.desc"
+		id="com.ibm.ws.security.wim.scim.2.0.config.metatype" ibm:alias="scim20">
+
+		<AD id="enableEnterpriseUserExtension" name="%enableEnterpriseUserExtension"
+			description="%enableEnterpriseUserExtension.desc" required="false"
+			type="Boolean" default="false" />
+
+		<AD id="enableWimUserExtension" name="%enableWimUserExtension"
+			description="%enableWimUserExtension.desc" required="false" type="Boolean"
+			default="false" />
+
+		<AD id="scimAttribute" name="%scimAttribute" description="%scimAttribute.desc"
+			ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.scim.2.0.config.attribute"
+			required="false" type="String" cardinality="2147483647" />
+
+	</OCD>
+
+	<Designate pid="com.ibm.ws.security.wim.scim.2.0.metatype.config">
+		<Object ocdref="com.ibm.ws.security.wim.scim.2.0.config.metatype" />
+	</Designate>
+
+	<OCD id="com.ibm.ws.security.wim.scim.2.0.config.attribute.metatype"
+		name="%scimAttribute" description="%scimAttribute.desc">
+
+		<!-- Need to decide whether name will contain the URI for the parent schema, 
+			or whether we should just embed that in the name. -->
+		<AD id="name" name="%scimAttribute.name" description="%scimAttribute.name.desc"
+			required="true" type="String" />
+
+		<AD id="enabled" name="%scimAttribute.enabled" description="%scimAttribute.enabled.desc"
+			required="false" type="Boolean" default="true" />
+
+		<AD id="type" name="%scimAttribute.type" description="%scimAttribute.type.desc"
+			required="false" type="String" default="string">
+			<Option label="%scimAttribute.type.string" value="string" />
+			<Option label="%scimAttribute.type.boolean" value="boolean" />
+			<Option label="%scimAttribute.type.decimal" value="decimal" />
+			<Option label="%scimAttribute.type.integer" value="integer" />
+			<Option label="%scimAttribute.type.dateTime" value="dateTime" />
+			<Option label="%scimAttribute.type.binary" value="binary" />
+			<!-- Not sure we will support these: reference, complex -->
+		</AD>
+
+		<AD id="wimProperty" name="%scimAttribute.wimProperty" description="%scimAttribute.wimProperty.desc"
+			required="true" type="String" />
+
+		<AD id="returned" name="%scimAttribute.returned" description="%scimAttribute.returned.desc"
+			required="false" type="String" default="default">
+			<Option label="%scimAttribute.returned.always" value="always" />
+			<Option label="%scimAttribute.returned.never" value="never" />
+			<Option label="%scimAttribute.returned.default" value="default" />
+			<Option label="%scimAttribute.returned.request" value="request" />
+		</AD>
+
+		<AD id="required" name="%scimAttribute.required" description="%scimAttribute.required.desc"
+			required="false" type="Boolean" default="false" />
+
+		<AD id="mutability" name="%scimAttribute.mutability" description="%scimAttribute.mutability.desc"
+			required="false" type="String" default="readWrite">
+			<Option label="%scimAttribute.mutability.readOnly" value="readOnly" />
+			<Option label="%scimAttribute.mutability.readWrite" value="readWrite" />
+			<Option label="%scimAttribute.mutability.immutable" value="immutable" />
+			<Option label="%scimAttribute.mutability.writeOnly" value="writeOnly" />
+		</AD>
+
+		<AD id="multiValued" name="%scimAttribute.multiValued" description="%scimAttribute.multiValued.desc"
+			required="false" type="Boolean" default="false" />
+
+		<AD id="description" name="%scimAttribute.description" description="%scimAttribute.description.desc"
+			required="false" type="String" />
+
+		<AD id="caseExact" name="%scimAttribute.caseExact" description="%scimAttribute.caseExact.desc"
+			required="false" type="Boolean" default="false" />
+
+		<!-- Not sure we will support these: uniqueness, canonicalValues, referenceTypes -->
+
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.security.wim.scim.2.0.config.attribute">
+		<Object ocdref="com.ibm.ws.security.wim.scim.2.0.config.attribute.metatype" />
+	</Designate>
+
+</metatype:MetaData>

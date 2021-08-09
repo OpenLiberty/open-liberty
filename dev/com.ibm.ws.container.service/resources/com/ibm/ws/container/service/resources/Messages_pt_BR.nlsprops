@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Caminho da classe de manifesto inv\u00e1lido {0} localizado no arquivo jar {1}.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=O caminho da classe n\u00e3o est\u00e1 corretamente especificado. Ele deve ser uma sequ\u00eancia URI relativa que aponta para um arquivo JAR ou uma pasta.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Atualize o MANIFEST.MF do arquivo JAR para fornecer a defini\u00e7\u00e3o correta de Caminho de Classe.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: O caminho da classe de manifesto {0} n\u00e3o pode ser localizado no arquivo JAR {1} ou seu pai.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=O caminho da classe de manifesto n\u00e3o pode ser localizado no arquivo JAR ou no archive que engloba o arquivo JAR.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Inclua o destino do caminho da classe no archive.
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: Nomes duplicados {0} s\u00e3o usados nos arquivos web-fragment.xml de {1} e {2} ao usar a ordem relativa.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=O nome exclusivo \u00e9 necess\u00e1rio para o elemento em cada arquivo web-fragment.xml ao usar a ordem de classifica\u00e7\u00e3o relativa.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Designe o nome exclusivo para cada web-fragment.xml ao usar a ordem de classifica\u00e7\u00e3o relativa ou Configure o elemento <absolute-ordering> de classifica\u00e7\u00e3o absoluta de Uso no arquivo web.xml.
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+annotation.service.not.available.CWWKM0451E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0451E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+annotation.service.not.available.CWWKM0452E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0452E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+container.is.not.a.module.CWWKM0453E.explanation=CMSG0001
+container.is.not.a.module.CWWKM0453E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0454E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0455E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=CMSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+annotation.service.not.available.CWWKM0463E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0463E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+container.is.not.a.web.module.CWWKM0464E.explanation=CMSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0465E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2}
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=CMSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2} {3}
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=CMSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2}
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=CMSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=CMSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+two.fragments.have.the.same.name.CWWKM0479E.explanation=CMSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com o suporte do WebSphere Application Server com os dados a seguir: {0} {1} {2}
+conflicting.relative.order.metadata.CWWKM0480E.explanation=CMSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0}
+loop.found.in.list.CWWKM0481E.explanation=CMSG0001
+loop.found.in.list.CWWKM0481E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

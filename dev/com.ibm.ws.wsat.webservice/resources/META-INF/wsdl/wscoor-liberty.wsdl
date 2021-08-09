@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="http://webservice.wsat.ws.ibm.com"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http"
+	xmlns:ns1="http://docs.oasis-open.org/ws-tx/wscoor/2006/06" name="RegistrationService"
+	targetNamespace="http://webservice.wsat.ws.ibm.com">
+	<wsdl:import location="wscoor-port-liberty.wsdl"
+		namespace="http://docs.oasis-open.org/ws-tx/wscoor/2006/06">
+	</wsdl:import>
+	<wsdl:binding name="RegistrationServiceSoapBinding" type="ns1:RegistrationPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsaw:UsingAddressing wsdl:required="true" />
+		<wsdl:operation name="RegisterOperation">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input name="RegisterOperation">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="RegisterOperationResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="RegistrationService">
+		<wsdl:port binding="tns:RegistrationServiceSoapBinding"
+			name="RegistrationPort">
+			<soap:address
+				location="http://localhost:9081/ibm/wsatservice/RegistrationService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

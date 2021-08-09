@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=A(z) [{0}] attrib\u00fatum nem ValueHolderInterface t\u00edpusk\u00e9nt van deklar\u00e1lva, azonban a lek\u00e9pez\u00e9se k\u00f6zvetett.
+
+10=Ehhez a lek\u00e9pez\u00e9shez nincs be\u00e1ll\u00edtva mez\u0151n\u00e9v.
+
+100=Egy met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+101=Az alapul szolg\u00e1l\u00f3 met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+102=A(z) [{0}] met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+103=Probl\u00e9ma t\u00f6rt\u00e9nt az oszt\u00e1ly kinyer\u00e9sekor a(z) [{0}] sorb\u00f3l a(z) [{1}] statikus met\u00f3dus (DatabaseRow) param\u00e9terrel t\u00f6rt\u00e9n\u0151 haszn\u00e1lat\u00e1val.  Aktiv\u00e1l\u00e1sra ker\u00fclt egy kiv\u00e9tel.
+
+104=Probl\u00e9ma t\u00f6rt\u00e9nt az \u00faj p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sakor a(z) [{0}] l\u00e9trehoz\u00e1si met\u00f3dus haszn\u00e1lat\u00e1val.  A l\u00e9trehoz\u00e1si met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+105=Az alapul szolg\u00e1l\u00f3 [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus a (Session) param\u00e9terrel egy kiv\u00e9telt aktiv\u00e1lt.
+
+106=Az objektumhoz megh\u00edvott [{0}] met\u00f3dus kiv\u00e9telt dob. {2}Argumentum: [{1}]
+
+108=Nem tal\u00e1lhat\u00f3 \u00e9rt\u00e9k az oszt\u00e1lyjelz\u0151 lek\u00e9pez\u00e9sben a(z) [{0}] sz\u00fcl\u0151 le\u00edr\u00f3ban.
+
+109=A le\u00edr\u00f3hoz nem lehet meghat\u00e1rozni \u00edr\u00e1si z\u00e1rol\u00e1si mez\u0151t, mivel az egy lesz\u00e1rmazott le\u00edr\u00f3. A sz\u00fcl\u0151 le\u00edr\u00f3j\u00e1nak \u00edr\u00e1si z\u00e1rol\u00e1s mez\u0151j\u00e9t \u00f6r\u00f6kli.
+
+11=A lel\u00e9pez\u00e9s k\u00fcls\u0151 kulcs inform\u00e1ci\u00f3i helytelen\u00fcl vannak meghat\u00e1rozva.
+
+110=A(z) [{0}] oszt\u00e1lyhoz hi\u00e1nyzik a le\u00edr\u00f3.
+
+111=T\u00f6bb t\u00e1bla els\u0151dleges kulcsmez\u0151t teljes k\u00e9pz\u00e9s\u0171k\u00e9nt kell megadni.
+
+112=Csak egy t\u00e1bla adhat\u00f3 hozz\u00e1 a setTableName(String) m\u0171velettel. Ha t\u00f6bb t\u00e1bl\u00e1t szeretne hozz\u00e1adni egy le\u00edr\u00f3hoz, akkor haszn\u00e1lja az addTableName(String) m\u0171veletet.
+
+113=A konstruktor el\u00e9rhetetlen volt.
+
+114=Probl\u00e9ma t\u00f6rt\u00e9nt az \u00faj p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sakor a(z) [{0}] l\u00e9trehoz\u00e1si met\u00f3dus haszn\u00e1lat\u00e1val.  Nem lehet hozz\u00e1f\u00e9rni a l\u00e9trehoz\u00e1si met\u00f3dushoz.
+
+115=Nincs megadva \u00e1talak\u00edt\u00e1si \u00e9rt\u00e9k a(z) [{0}] attrib\u00fatumhoz.
+
+116=Nincs megadva \u00e1talak\u00edt\u00e1si \u00e9rt\u00e9k a(z) [{0}] \u00e9rt\u00e9khez a(z) [{1}] mez\u0151ben.
+
+118=A(z) [{0}] objektumnak nem lehetnek \u00edr\u00e1sv\u00e9dett lek\u00e9pez\u00e9sei az \u00edr\u00e1si z\u00e1rol\u00e1s mez\u0151ihez.
+
+119=Az objektum [{0}] lek\u00e9pez\u00e9seinek az \u00edr\u00e1si z\u00e1rol\u00e1s mez\u0151ire \u00edr\u00e1sv\u00e9dettnek kell lennie.
+
+12=A le\u00edr\u00f3knak egy azonoss\u00e1gt\u00e9rk\u00e9pet kell haszn\u00e1lniuk a "Gyors\u00edt\u00f3t\u00e1r ellen\u0151rz\u00e9se" l\u00e9tez\u00e9sellen\u0151rz\u00e9si be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz.
+
+120=A(z) [{0}] lek\u00e9rdez\u00e9si kulcs meg van hat\u00e1rozva a(z) [{1}] sz\u00fcl\u0151 le\u00edr\u00f3ban, azonban nincs meghat\u00e1rozva a(z) [{2}] lesz\u00e1rmazott le\u00edr\u00f3ban.
+
+122=A setExistenceCheck() a(z) [{0}] argumentummal nem \u00e9rthet\u0151.
+
+125=A(z) [{0}] attrib\u00fatum lek\u00e9pez\u00e9se k\u00f6zvetetts\u00e9get haszn\u00e1l, \u00edgy egy \u00faj inicializ\u00e1lni kell egy ValueHolder objektumhoz.  A jelenlegi \u00e9rt\u00e9k: [{1}].
+
+126=Egyetlen aloszt\u00e1ly sem felel meg ennek a(z) [{0}] oszt\u00e1lynak ehhez az \u00f6r\u00f6kl\u00e9st haszn\u00e1l\u00f3 \u00f6sszes\u00edt\u00e9si lek\u00e9pez\u00e9shez.
+
+127=A(z) [{0}] attrib\u00fatuma lek\u00e9rdez\u0151 met\u00f3dusa nem egy ValueHolderInterface t\u00edpust ad vissza, pedig a lek\u00e9pez\u00e9s k\u00f6zvetetts\u00e9get haszn\u00e1l.
+
+128=A(z) [{0}] attrib\u00fatum lek\u00e9rdez\u0151 met\u00f3dusa egy ValueHolderInterface t\u00edpust ad vissza, azonban a lek\u00e9pez\u00e9s nem haszn\u00e1l k\u00f6zvetetts\u00e9get.
+
+129=A(z) [{0}] attrib\u00fatuma be\u00e1ll\u00edt\u00f3 met\u00f3dusa nem egy ValueHolderInterface t\u00edpust vesz fel param\u00e9terk\u00e9nt, pedig a lek\u00e9pez\u00e9s k\u00f6zvetetts\u00e9get haszn\u00e1l.
+
+13=A(z) [{1}] objektumban l\u00e9v\u0151 [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3 el\u00e9rhetetlen.
+
+130=A(z) [{0}] attrib\u00fatum be\u00e1ll\u00edt\u00f3 met\u00f3dusa egy ValueHolderInterface t\u00edpust vesz fel param\u00e9terek\u00e9nt, azonban a lek\u00e9pez\u00e9s nem haszn\u00e1l k\u00f6zvetetts\u00e9get.
+
+131=A(z) [{0}] attrib\u00fatum lek\u00e9rdez\u0151 met\u00f3dus\u00e1nak egy Vector t\u00edpust (vagy Java 2 haszn\u00e1lata eset\u00e9n egy Map vagy Collection oszt\u00e1lyt megval\u00f3s\u00edt\u00f3 t\u00edpust) kell visszaadnia.
+
+133=A(z) [{0}] attrib\u00fatum be\u00e1ll\u00edt\u00f3 met\u00f3dus\u00e1nak egy Vector t\u00edpust (vagy Java 2 haszn\u00e1lata eset\u00e9n egy Map vagy Collection oszt\u00e1lyt megval\u00f3s\u00edt\u00f3 t\u00edpust) kell felvennie param\u00e9terk\u00e9nt.
+
+135=A t\u00f6bb t\u00e1bla idegen kulcs viszony egy ismeretlen t\u00e1bl\u00e1ra hivatkozik: [{0}].
+
+138=A(z) [{0}] attrib\u00fatum [{1}] t\u00edpus\u00fa, azonban a lek\u00e9pez\u00e9s transzparens k\u00f6zvetetts\u00e9get (k\u00e9sleltetett bet\u00f6lt\u00e9s) haszn\u00e1l, \u00e9s ez megk\u00f6veteli, hogy a(z) [{2}] sz\u00fcl\u0151oszt\u00e1lya legyen.
+
+139=A(z) [{0}] attrib\u00fatum lek\u00e9rdez\u0151 met\u00f3dusa [{1}] t\u00edpust ad vissza, azonban a lek\u00e9pez\u00e9s transzparens k\u00f6zvetetts\u00e9get (k\u00e9sleltetett bet\u00f6lt\u00e9s) haszn\u00e1l, \u00e9s ez megk\u00f6veteli, hogy a(z) [{2}] sz\u00fcl\u0151oszt\u00e1lya legyen.
+
+14=Probl\u00e9ma a(z) [{0}] objektum kl\u00f3noz\u00e1s\u00e1ban.  A(z) [{1}] kl\u00f3noz\u00f3 met\u00f3dus nem el\u00e9rhet\u0151.
+
+140=A(z) [{0}] attrib\u00fatum be\u00e1ll\u00edt\u00f3 met\u00f3dusa [{1}] t\u00edpust vesz fel, azonban a lek\u00e9pez\u00e9s transzparens k\u00f6zvetetts\u00e9get (k\u00e9sleltetett bet\u00f6lt\u00e9s) haszn\u00e1l, \u00e9s ez megk\u00f6veteli, hogy a(z) [{2}] sz\u00fcl\u0151oszt\u00e1lya legyen.
+
+141=A(z) [{0}] mez\u0151 nincs jelen az adatb\u00e1zis [{1}] t\u00e1bl\u00e1j\u00e1ban.
+
+142=A(z) [{0}] t\u00e1bla nincs jelen az adatb\u00e1zisban.
+
+143=A megadott t\u00f6bb t\u00e1bla besz\u00far\u00e1si sorrend [{0}] Vector a le\u00edr\u00f3ban megadottn\u00e1l t\u00f6bb vagy kevesebb t\u00e1bl\u00e1t tartalmaz. {2}Az \u00f6sszes [{1}] t\u00e1bl\u00e1t bele kell foglalni a besz\u00far\u00e1si sorrend Vector objektumba.
+
+144=A transzparens k\u00f6zvetetts\u00e9g csak CollectionMappings t\u00edpusokkal haszn\u00e1lhat\u00f3.
+
+145=A(z) [{0}] k\u00f6zvetett t\u00e1rol\u00f3oszt\u00e1lynak meg kell val\u00f3s\u00edtania a(z) [{1}] konstruktort a (ValueHolderInterface) param\u00e9terrel.
+
+146=A(z) [{0}] k\u00f6zvetett t\u00e1rol\u00f3oszt\u00e1ly nem p\u00e9ld\u00e1nyos\u00edthat\u00f3 a(z) {1}(ValueHolderInterface) konstruktor haszn\u00e1lat\u00e1val.
+
+147=A(z) [{0}] t\u00e1rol\u00f3ir\u00e1nyelv csak a JDK 1.1.x v\u00e1ltozatban haszn\u00e1lhat\u00f3.  A k\u00f6vetkez\u0151h\u00f6z lett p\u00e9ld\u00e1nyos\u00edtva: [{1}].
+
+148=A(z) [{0}] t\u00e1rol\u00f3ir\u00e1nyelv nem kompatibilis a transzparens k\u00f6zvetetts\u00e9ggel.
+
+149=A NoIndirectionPolicy objektumoknak nem szabad ezt az \u00fczenetet fogadniuk.
+
+15=Ez az oszt\u00e1ly nem hat\u00e1roz meg alap\u00e9rtelmezett konstruktort, amit az EclipseLink megk\u00f6vetel.
+
+150=A(z) [{0}] attrib\u00fatum lek\u00e9pez\u00e9se transzparens k\u00f6zvetetts\u00e9get haszn\u00e1l, \u00edgy a(z) [{0}] attrib\u00fatumot egy megfelel\u0151 t\u00e1rol\u00f3hoz kell inicializ\u00e1lni.  Jelenlegi \u00e9rt\u00e9k: [{1}]. {2} -  A Collection vagy Map oszt\u00e1ly megval\u00f3s\u00edt\u00f3j\u00e1nak p\u00e9ld\u00e1ny\u00e1nak kell lennie.
+
+151=A(z) [{0}] m\u0171velet \u00e9rv\u00e9nytelen ehhez a lek\u00e9pez\u00e9shez.
+
+152=A(z) [{1}] m\u0171velet \u00e9rv\u00e9nytelen ehhez a(z) [{0}] k\u00f6zvetetts\u00e9gi ir\u00e1nyelvhez.
+
+153=A(z) [{0}] referencia le\u00edr\u00f3j\u00e1t egy Aggregate Collection le\u00edr\u00f3ra kell be\u00e1ll\u00edtani.
+
+154=A(z) [{0}] k\u00f6zvetetts\u00e9gi t\u00e1rol\u00f3oszt\u00e1ly nem val\u00f3s\u00edtja meg az IndirectContainer fel\u00fcletet.
+
+155=Ez a lek\u00e9pez\u00e9s nem tartalmaz a(z) [{0}] els\u0151dleges kulcsmez\u0151h\u00f6z kapcsolt idegen kulcs mez\u0151t.
+
+156=Ehhez a lek\u00e9pez\u00e9shez nincs be\u00e1ll\u00edtva szerkezetn\u00e9v.
+
+157=A norm\u00e1l le\u00edr\u00f3k nem t\u00e1mogatj\u00e1k a nem-rel\u00e1ci\u00f3s kiterjeszt\u00e9seket.
+
+158=A le\u00edr\u00f3 sz\u00fcl\u0151oszt\u00e1lya \u00f6nmag\u00e1ra van be\u00e1ll\u00edtva.
+
+159=A Proxy k\u00f6zvetetts\u00e9g csak a JDK 1.3 v\u00e1ltozattal kompatibilis vagy enn\u00e9l \u00fajabb virtu\u00e1lis g\u00e9peken \u00e9rhet\u0151 el.
+
+16=A(z) [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus a (DescriptorEvent) param\u00e9terrel el\u00e9rhetetlen.
+
+160=A(z) [{1}] oszt\u00e1ly [{0}] attrib\u00fatum\u00e1nak t\u00edpusa [{2}], ami nincs megadva a useProxyIndirection() met\u00f3dushoz megadott fel\u00fcletek list\u00e1j\u00e1ban. {4}Az \u00e9rv\u00e9nyes fel\u00fcletek: [{3}].
+
+161=A(z) [{1}] oszt\u00e1ly [{0}] met\u00f3dusa [{2}] t\u00edpus\u00fa \u00e9rt\u00e9ket ad vissza, ami nincs megadva a useProxyIndirection() met\u00f3dushoz megadott fel\u00fcletek list\u00e1j\u00e1ban. {4}Az \u00e9rv\u00e9nyes fel\u00fcletek: [{3}].
+
+162=A(z) [{1}] oszt\u00e1ly [{0}] met\u00f3dusa [{2}] t\u00edpus\u00fa param\u00e9tert vesz fel, ami nincs megadva a useProxyIndirection() met\u00f3dushoz megadott fel\u00fcletek list\u00e1j\u00e1ban. {4}Az \u00e9rv\u00e9nyes fel\u00fcletek: [{3}].
+
+163=A lek\u00e9pez\u00e9s attrib\u00fatumoszt\u00e1lya nem felel meg a gy\u0171jtem\u00e9nyoszt\u00e1lynak.  [{1}] nem rendelhet\u0151 hozz\u00e1 a k\u00f6vetkez\u0151h\u00f6z: [{0}].
+
+164=A(z) [{0}] kieg\u00e9sz\u00edt\u0151 oszt\u00e1lyban l\u00e9v\u0151 [{1}] kieg\u00e9sz\u00edt\u0151 met\u00f3dus \u00e9rv\u00e9nytelen, nem nyilv\u00e1nos, vagy nem tal\u00e1lhat\u00f3. {2}A le\u00edr\u00f3 kieg\u00e9sz\u00edt\u0151 met\u00f3dusokat "public static void" min\u0151s\u00edt\u0151kkel \u00e9s egyetlen (ClassDescriptor) param\u00e9terrel kell deklar\u00e1lni.
+
+165=A le\u00edr\u00f3 [{0}] oszt\u00e1lyban l\u00e9v\u0151 [{1}] kieg\u00e9sz\u00edt\u0151 met\u00f3dusa egy kiv\u00e9telt aktiv\u00e1lt.
+
+166=A(z) [{0}] attrib\u00fatumnak nincs lek\u00e9pez\u00e9se.
+
+167=Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes konstruktor a(z) [{0}] k\u00f6zvetetts\u00e9gi t\u00e1rol\u00f3oszt\u00e1lyhoz.
+
+168=Probl\u00e9ma t\u00f6rt\u00e9nt az \u00faj p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sakor az alap\u00e9rtelmezett konstruktor haszn\u00e1lat\u00e1val.  Az alap\u00e9rtelmezett konstruktor egy kiv\u00e9telt aktiv\u00e1lt.
+
+169=Probl\u00e9ma t\u00f6rt\u00e9nt a gy\u00e1rt\u00f3 \u00faj p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sakor az alap\u00e9rtelmezett konstruktor haszn\u00e1lat\u00e1val.  Az alap\u00e9rtelmezett konstruktor egy kiv\u00e9telt aktiv\u00e1lt.
+
+17=A rendszer megpr\u00f3b\u00e1l hozz\u00e1f\u00e9rni a(z) [{0}] met\u00f3dushoz a(z) [{1}] objektum eset\u00e9n.  Az alapul szolg\u00e1l\u00f3 met\u00f3dus el\u00e9rhetetlen.
+
+170=Probl\u00e9ma (illeg\u00e1lis hozz\u00e1f\u00e9r\u00e9s) a gy\u00e1r\u00f3 \u00faj p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sakor az alap\u00e9rtelmezett konstruktor haszn\u00e1lat\u00e1val.
+
+171=A gy\u00e1rt\u00f3oszt\u00e1ly nem hat\u00e1roz meg nyilv\u00e1nos alap\u00e9rtelmezett konstruktort, vagy a konstruktor kiv\u00e9telt okozott.
+
+172=Nem tal\u00e1lhat\u00f3 gy\u00e1rt\u00f3 konstruktor.
+
+173=A gy\u00e1rt\u00f3 konstruktor el\u00e9rhetetlen.
+
+174=Probl\u00e9ma a gy\u00e1rt\u00f3 l\u00e9trehoz\u00e1s\u00e1ban.  A(z) [{0}] l\u00e9trehoz\u00e1si met\u00f3dus nem \u00e9rhet\u0151 el.
+
+175=Probl\u00e9ma a gy\u00e1rt\u00f3 l\u00e9trehoz\u00e1sakor a(z) [{0}] l\u00e9trehoz\u00e1si met\u00f3dus haszn\u00e1lat\u00e1val.  A l\u00e9trehoz\u00e1si met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+176=Probl\u00e9ma a gy\u00e1rt\u00f3 l\u00e9trehoz\u00e1s\u00e1ban a(z) [{0}] l\u00e9trehoz\u00e1si met\u00f3dus haszn\u00e1lat\u00e1val.  Nem lehet hozz\u00e1f\u00e9rni a l\u00e9trehoz\u00e1si met\u00f3dushoz.
+
+177=A k\u00f6vetkez\u0151 attrib\u00fatum lek\u00e9pez\u00e9se hi\u00e1nyzik: [{0}].
+
+178=Nem tal\u00e1lhat\u00f3 lek\u00e9pez\u00e9s a(z) [{1}] entit\u00e1s beanben l\u00e9v\u0151 [{0}] attrib\u00fatumhoz. Az attrib\u00fatumot le kell k\u00e9pezni.
+
+179=A(z) [{0}] attrib\u00fatum K\u00e9tir\u00e1ny\u00fa viszony karbantart\u00e1s haszn\u00e1l, azonban [{1}] ContainerPolicy van hozz\u00e1 megadva, ami ezt nem t\u00e1mogatja.  Az attrib\u00fatumot egy elt\u00e9r\u0151 gy\u0171jtem\u00e9nyt\u00edpussal kell lek\u00e9pezni.
+
+18=Illeg\u00e1lis met\u00f3dus hozz\u00e1f\u00e9r\u00e9s egy \u00e1talak\u00edt\u00e1si lek\u00e9pez\u00e9sben egy ValueHolder t\u00edpus haszn\u00e1lat\u00e1val.
+
+181=A(z) [{0}] AttributeTransformer oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+182=A(z) [{0}] FieldTransformer oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+183=A(z) [{0}] oszt\u00e1ly nem haszn\u00e1lhat\u00f3 AttributeTransformer oszt\u00e1lyk\u00e9nt.
+
+184=A(z) [{0}] oszt\u00e1ly nem haszn\u00e1lhat\u00f3 FieldTransformer oszt\u00e1lyk\u00e9nt.
+
+185=A ReturningPolicy k\u00e9t k\u00fcl\u00f6nb\u00f6z\u0151 t\u00edpussal tartalmazza a(z) [{0}] mez\u0151t: [{1}] \u00e9s [{2}].
+
+186=A ReturningPolicy k\u00e9tszer hozz\u00e1adva tartalmazza a(z) [{0}] mez\u0151t: az addInsertField \u00e9s az addInsertFieldReturnOnly haszn\u00e1lat\u00e1val.
+
+187=A ReturningPolicy a(z) [{1}] t\u00edpussal tartalmazza a(z) [{0}] mez\u0151t, azonban ugyanennek a mez\u0151nek a t\u00edpusa a le\u00edr\u00f3ban [{2}].
+
+188=A ReturningPolicy le nem k\u00e9pezett [{0}] mez\u0151t tartalmaz, amely t\u00edpust ig\u00e9nyel.
+
+189=A ReturningPolicy lek\u00e9pezett [{0}] mez\u0151t tartalmaz, amely t\u00edpust ig\u00e9nyel.
+
+19=Illeg\u00e1lis hozz\u00e1f\u00e9r\u00e9s az attribute met\u00f3dus megh\u00edv\u00e1sakor egy Transformation lek\u00e9pez\u00e9shez.  Az alapul szolg\u00e1l\u00f3 met\u00f3dus el\u00e9rhetetlen.
+
+190=A ReturningPolicy [{1}] lek\u00e9pez\u00e9ssel tartalmazza a(z) [{0}] mez\u0151t, ami nem t\u00e1mogatott.
+
+191=A ReturningPolicy tartalmazza a(z) [{0}] mez\u0151t, ami nem t\u00e1mogatott: a mez\u0151 vagy egy sorrendi mez\u0151, vagy oszt\u00e1lyt\u00edpus jelz\u0151, vagy kikeres\u00e9sre szolg\u00e1l.
+
+192=A ReturningPolicy tartalmazza a(z) [{0}] mez\u0151t, azonban az egy\u00e9ni [{1}] nem adja vissza kimenetk\u00e9nt.
+
+193=Nincs be\u00e1ll\u00edtva egy\u00e9ni [{0}], azonban a ReturningPolicy tartalmaz visszaadand\u00f3 mez\u0151ket, \u00e9s a(z) [{1}] nem t\u00e1mogatja a h\u00edv\u00e1sok el\u0151\u00e1ll\u00edt\u00e1s\u00e1t visszaad\u00e1ssal.
+
+194=Az oszt\u00e1lyt kinyer\u0151 [{0}] met\u00f3dusnak a le\u00edr\u00f3 oszt\u00e1ly\u00e1n dolgoz\u00f3 statikus met\u00f3dusnak kell lennie.
+
+195=A(z) {1} megosztott oszt\u00e1ly nem hivatkozhat a(z) {0} elk\u00fcl\u00f6n\u00edtett oszt\u00e1lyra.
+
+196=Az UpdateAllFields nincs be\u00e1ll\u00edtva vagy false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.  A CMPPolicy.setForceUpdate(true) m\u0171velet haszn\u00e1latakor meg kell h\u00edvnia a CMPPolicy.setUpdateAllFields(true) m\u0171veletet is.
+
+197=A(z) [{0}] lek\u00e9pez\u00e9s nem a megfelel\u0151 t\u00edpus ehhez a le\u00edr\u00f3hoz
+
+198=Az ObjectChangeTrackingPolicy vagy az AttributeChangeTrackingPolicy haszn\u00e1lat\u00e1hoz a(z) {0} oszt\u00e1lynak meg kell val\u00f3s\u00edtania a ChangeTracker fel\u00fcletet.
+
+199=A FetchGroup haszn\u00e1lat\u00e1hoz a tartom\u00e1nyoszt\u00e1lynak ({0}) meg kell val\u00f3s\u00edtania a FetchGroupTracker fel\u00fcletet.
+
+2=A(z) [{0}] attrib\u00fatum ValueHolderInterface t\u00edpusk\u00e9nt van deklar\u00e1lva, azonban a lek\u00e9pez\u00e9se nem haszn\u00e1l k\u00f6zvetetts\u00e9get.
+
+20=A(z) [{0}] met\u00f3dus el\u00e9rhetetlen.
+
+200=K\u00eds\u00e9rlet egy halott k\u00f6zvetetts\u00e9get tartalmaz\u00f3 objektum regisztr\u00e1l\u00e1s\u00e1ra \u00faj objektumk\u00e9nt.  Lehets\u00e9ges, hogy az objektum t\u00f6r\u00f6lve lett vagy elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a gyors\u00edt\u00f3t\u00e1rb\u00f3l egy soros\u00edtott kl\u00f3n \u00f6sszef\u00e9s\u00fcl\u00e9se sor\u00e1n.  Ez egy p\u00e1rhuzamoss\u00e1g megs\u00e9rt\u00e9s, fontolja meg egy z\u00e1rol\u00e1si strat\u00e9gia haszn\u00e1lat\u00e1t.
+
+201=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy objektum \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9re a munkamenet gyors\u00edt\u00f3t\u00e1rban, azonban a le\u00edr\u00f3 elk\u00fcl\u00f6n\u00edtettk\u00e9nt van megjel\u00f6lve a munkaegys\u00e9gben, \u00edgy soha nem lenne szabad hozz\u00e1f\u00e9rni egy munkaegys\u00e9gen k\u00edv\u00fcl.
+
+202=Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) [{0}] els\u0151dleges kulcs objektum el\u00e9r\u00e9sekor.
+
+203=Bels\u0151 hiba t\u00f6rt\u00e9nt a(z) [{1}] met\u00f3dus el\u00e9r\u00e9sekor a(z) [{0}] oszt\u00e1lyhoz.
+
+204=A t\u00e1bla besz\u00far\u00e1s sorrend ellentmond t\u00f6bb t\u00e1bla k\u00fcls\u0151 kulcsnak - az ut\u00f3bbi [{0}] t\u00e1bl\u00e1t a(z) [{1}] t\u00e1bla el\u0151tt kellene besz\u00farni.
+
+205=A t\u00e1bla besz\u00far\u00e1si sorrend ciklikus f\u00fcgg\u0151s\u00e9get tartalmaz a(z) [{0}] \u00e9s a(z) [{1}] t\u00e1bla k\u00f6z\u00f6tt.
+
+206=A t\u00e1bla besz\u00far\u00e1si sorrend ciklikus f\u00fcgg\u0151s\u00e9get tartalmaz k\u00e9t vagy t\u00f6bb t\u00e1bla k\u00f6z\u00f6tt.
+
+207=A t\u00e1bla besz\u00far\u00e1si sorrend helytelen: a sz\u00fcl\u0151re lek\u00e9pezett [{0}] t\u00e1bla a lesz\u00e1rmazottra lek\u00e9pezett [{1}] t\u00e1bla ut\u00e1ni besz\u00far\u00e1sa van megadva.
+
+208=Egy [{1}] oszt\u00e1lynev\u0171 Converter objektumot pr\u00f3b\u00e1l be\u00e1ll\u00edtani egy nem-k\u00f6zvetlen-lek\u00e9pez\u00e9shez: [{0}].  Csak a k\u00f6zvetlen lek\u00e9pez\u00e9sekhez enged\u00e9lyezett \u00e1talak\u00edt\u00f3k be\u00e1ll\u00edt\u00e1sa.  Ez \u00e1ltal\u00e1ban akkor t\u00f6rt\u00e9nik, amikor egy kulcs \u00e1talak\u00edt\u00f3t pr\u00f3b\u00e1l be\u00e1ll\u00edtani egy nem-k\u00f6zvetlen kulcs\u00fa DirectMapMapping lek\u00e9pez\u00e9shez.
+
+209=Ez a le\u00edr\u00f3 tartalmaz egy DirectMapMapping lek\u00e9pez\u00e9st, \u00e9s nincs be\u00e1ll\u00edtva kulcs mez\u0151.
+
+21=Probl\u00e9ma a kinyer\u0151 oszt\u00e1lyban a(z) [{0}] sorb\u00f3l.  A(z) [{1}] statikus met\u00f3dus a (DatabaseRow) param\u00e9terrel nem el\u00e9rhet\u0151.
+
+210=A(z) [{0}] eset\u00e9n be van \u00e1ll\u00edtva egy listasorrend mez\u0151, azonban az attrib\u00fatum nem val\u00f3s\u00edtja meg a List oszt\u00e1lyt.
+
+211=A(z) [{0}] eset\u00e9n be van \u00e1ll\u00edtva egy listasorrend mez\u0151, \u00e9s a listasorrend mez\u0151 \u00e9rv\u00e9nyes\u00edt\u00e9si m\u00f3dja CORRECTION, ami megk\u00f6veteli, hogy az IndirectList hozz\u00e1rendelhet\u0151 legyen az attrib\u00fatumhoz.
+
+212=A(z) [{0}] eset\u00e9n megadott listasorrend mez\u0151 helytelen [{1}] t\u00e1bl\u00e1t tartalmaz. Helyette a k\u00f6vetkez\u0151t kell haszn\u00e1lnia: {2}.
+
+213=A(z) {0} megk\u00f6veteli, hogy minden c\u00e9l idegen kulcs mez\u0151 egyazon t\u00e1bl\u00e1hoz tartozzon, de t\u00f6bb tal\u00e1lhat\u00f3: {1}.
+
+214=A(z) {0} egy olyan rel\u00e1ci\u00f3s t\u00e1bl\u00e1t ad meg, amely nem kompatibilis az addForeignKey(Name) met\u00f3dussal, haszn\u00e1lja helyette az addSourceRelationKeyField(Name) \u00e9s az addTargetRelationKeyFieldName met\u00f3dust.
+
+215=A(z) {0} eset\u00e9n egy nem-null RelationTableMechanism megad\u00e1sa k\u00f6telez\u0151.
+
+216=A CacheKeyType nem lehet ID_VALUE egy \u00f6sszetett els\u0151dleges kulcs eset\u00e9n.
+
+217=\u00c9rv\u00e9nytelen XPath az XMLDirectMapping/XMLCompositeDirectCollectionMapping eset\u00e9n. Az XPath kifejez\u00e9snek tartalmaznia kell egy @ szimb\u00f3lumot az attrib\u00fatumokhoz, vagy sz\u00f6veg csom\u00f3pontok eset\u00e9n a /text() karaktersorozattal kell v\u00e9gz\u0151dnie. P\u00e9ld\u00e1ul: "@name" vagy "name/text()"
+
+218=NullPointerException t\u00f6rt\u00e9nt volna egy nem l\u00e9tez\u0151 \u00e1tsz\u00f6v\u00f6tt [{0}] _vh_ method el\u00e9r\u00e9sekor.  Az oszt\u00e1ly \u00e1tsz\u00f6v\u00e9se nem volt megfelel\u0151 - EE telep\u00edt\u00e9sek eset\u00e9n ellen\u0151rizze a modulok sorrendj\u00e9t az application.xml telep\u00edt\u00e9si le\u00edr\u00f3ban, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a perzisztencia egys\u00e9get tartalmaz\u00f3 modul b\u00e1rmely m\u00e1s, a modult haszn\u00e1l\u00f3 modul el\u0151tt van.
+
+219=Egy n\u00e9zeteket haszn\u00e1l\u00f3 \u00f6r\u00f6kl\u00e9si hierarchi\u00e1n bel\u00fcl nem enged\u00e9lyezettek tov\u00e1bbi felt\u00e9telek a k\u00f6vetkez\u0151b\u0151l: [{1}].
+
+22=Probl\u00e9ma az \u00faj p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ban.  A(z) [{0}] l\u00e9trehoz\u00e1si met\u00f3dus nem \u00e9rhet\u0151 el.
+
+220=Hi\u00e1nyz\u00f3 particion\u00e1l\u00e1si ir\u00e1nyelv a k\u00f6vetkez\u0151 n\u00e9vhez: [{0}].
+
+221=A SerializedObjectPolicy mez\u0151 nincs be\u00e1ll\u00edtva.
+
+222=Kiv\u00e9tel t\u00f6rt\u00e9nt egy els\u0151dleges kulcs oszt\u00e1lyp\u00e9ld\u00e1ny lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+
+23=A(Z) [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus a (Session) param\u00e9terrel el\u00e9rhetetlen.
+
+24=A(z) [{1}] objektumban l\u00e9v\u0151 [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3 el\u00e9rhetetlen. {3}Argumentum: [{2}]
+
+25=A(z) [{0}] met\u00f3dus a(z) [{1}] argumentummal el\u00e9rhetetlen.
+
+26=A rendszer megpr\u00f3b\u00e1lja lek\u00e9rdezni a(z) [{1}] t\u00edpus\u00fa [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3 \u00e9rt\u00e9k\u00e9t a(z) [{2}] objektumb\u00f3l.  A megadott objektum nem az alapul szolg\u00e1l\u00f3 mez\u0151t deklar\u00e1l\u00f3 oszt\u00e1ly vagy fel\u00fclet p\u00e9ld\u00e1nya.
+
+27=A rendszer megpr\u00f3b\u00e1lja megh\u00edvni a(z) [{0}] met\u00f3dust a(z) [{1}] objektumhoz.  A t\u00e9nyleges \u00e9s form\u00e1lis param\u00e9terek sz\u00e1ma elt\u00e9r, vagy egy kicsomagol\u00f3 \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+28=Illeg\u00e1lis argumentum egy met\u00f3dus-alap\u00fa proxy p\u00e9ld\u00e1nyos\u00edt\u00e1sakor egy Transformation lek\u00e9pez\u00e9sben.
+
+29=A t\u00e9nyleges \u00e9s form\u00e1lis param\u00e9terek sz\u00e1ma elt\u00e9r, vagy egy kicsomagol\u00f3 \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+30=A(z) [{0}] met\u00f3dus eset\u00e9n a t\u00e9nyleges \u00e9s form\u00e1lis param\u00e9terek sz\u00e1ma elt\u00e9r, vagy egy kicsomagol\u00f3 \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+31=A(z) [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus eset\u00e9n a t\u00e9nyleges \u00e9s form\u00e1lis param\u00e9terek sz\u00e1ma elt\u00e9r, vagy egy kicsomagol\u00f3 \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+32=A rendszer megpr\u00f3b\u00e1lja be\u00e1ll\u00edtani a(z) [{0}] \u00e9rt\u00e9ket a(z) [{2}] t\u00edpus\u00fa [{1}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3hoz az objektumban.  A megadott objektum nem az alapul szolg\u00e1l\u00f3 mez\u0151t deklar\u00e1l\u00f3 oszt\u00e1ly vagy fel\u00fclet p\u00e9ld\u00e1nya, vagy a kicsomagol\u00f3 \u00e1talak\u00edts meghi\u00fasult.
+
+33=A rendszer megpr\u00f3b\u00e1lja megh\u00edvni a(z) [{0}] met\u00f3dust az objektumhoz a(z) [{1}] \u00e9rt\u00e9kkel.  A t\u00e9nyleges \u00e9s form\u00e1lis param\u00e9terek sz\u00e1ma elt\u00e9r, vagy egy kicsomagol\u00f3 \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+34=Ez az oszt\u00e1ly nem hat\u00e1roz meg nyilv\u00e1nos alap\u00e9rtelmezett konstruktort, vagy a konstruktor kiv\u00e9telt okozott.
+
+35=\u00c9rv\u00e9nytelen esem\u00e9ny.
+
+36=\u00c9rv\u00e9nytelen esem\u00e9nyk\u00f3d: [{0}].
+
+37=\u00c9rv\u00e9nytelen le\u00edr\u00f3 esem\u00e9nyk\u00f3d: [{0}].
+
+38=Az azonoss\u00e1gt\u00e9rk\u00e9p konstruktor meghi\u00fasult, mert egy \u00e9rv\u00e9nytelen azonoss\u00e1gt\u00e9rk\u00e9p lett megadva.
+
+39=Ez a le\u00edr\u00f3 nem ad meg egy Java oszt\u00e1lyt.
+
+40=A(z) [{0}] le\u00edr\u00f3ja hi\u00e1nyzik.  Val\u00f3sz\u00edn\u0171leg nem lett hozz\u00e1adva a munkamenethez.
+
+41=Egy nem \u00edr\u00e1sv\u00e9dett lek\u00e9pez\u00e9st meg kell adni a sorozatsz\u00e1m mez\u0151h\u00f6z.
+
+43=Hi\u00e1nyz\u00f3 oszt\u00e1ly a(z) [{1}] t\u00edpus\u00fa [{0}] jelz\u0151 mez\u0151\u00e9rt\u00e9khez.
+
+44=Az oszt\u00e1ly jelz\u0151 mez\u0151 hi\u00e1nyzik a(z) [{0}] adatb\u00e1zis sorb\u00f3l.
+
+45=A(z) [{0}] mez\u0151 lek\u00e9pez\u00e9se hi\u00e1nyzik.
+
+46=Legal\u00e1bb egy nem \u00edr\u00e1sv\u00e9dett lek\u00e9pez\u00e9st meg kell adni a(z) [{0}] els\u0151dleges kulcs mez\u0151h\u00f6z.
+
+47=A t\u00f6bb t\u00e1bla els\u0151dleges kulcs lek\u00e9pez\u00e9st meg kell adni, amikor egy\u00e9ni t\u00f6bb t\u00e1bl\u00e1s \u00f6sszef\u00e9s\u00fcl\u00e9st haszn\u00e1lt.
+
+48=T\u00f6bb \u00edrhat\u00f3 lek\u00e9pez\u00e9s l\u00e9tezik a(z) [{0}] mez\u0151h\u00f6z.  Csak egyetlen hat\u00e1rozhat\u00f3 meg \u00edrhat\u00f3k\u00e9nt, a t\u00f6bbit \u00edr\u00e1sv\u00e9dettk\u00e9nt kell megadni.
+
+49=Ehhez a lek\u00e9pez\u00e9shez nincs megadva attrib\u00fatum \u00e1talak\u00edt\u00e1si met\u00f3dusn\u00e9v.
+
+50=Ehhez a lek\u00e9pez\u00e9shez nincs be\u00e1ll\u00edtva mez\u0151n\u00e9v.
+
+51=Ehhez a lek\u00e9pez\u00e9shez nincsenek megadva idegen kulcsok.
+
+52=Ehhez a lek\u00e9pez\u00e9shez nincs megadva hivatkoz\u00e1si kulcs.
+
+53=Ehhez a lek\u00e9pez\u00e9shez nincs be\u00e1ll\u00edtva a rel\u00e1ci\u00f3s t\u00e1bla neve.
+
+54=Ehhez a lek\u00e9pez\u00e9shez nincsenek megadva forr\u00e1s rel\u00e1ci\u00f3s kulcsok.
+
+55=A(z) [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus nem tal\u00e1lhat\u00f3.  Argumentumak\u00e9nt egy Session vagy DescriptorEvent argumentumot kell felvennie.
+
+56=Nem tal\u00e1lhat\u00f3 [{0}] met\u00f3dus (Record) vagy (Record, Session) param\u00e9terrel.
+
+57=El\u00e9rhetetlen konstruktor.
+
+58=Nem tal\u00e1lhat\u00f3 [{0}] met\u00f3dus () vagy (Session) param\u00e9terrel.
+
+59=A(z) [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3 nincs meghat\u00e1rozva a(z) [{1}] tartom\u00e1nyoszt\u00e1lyban, vagy nem \u00e9rhet\u0151 el.
+
+6=Az attrib\u00fatumn\u00e9v hi\u00e1nyzik.
+
+60=A(z) [{0}] vagy a(z) [{1}] met\u00f3dus nincs meghat\u00e1rozva a(z) [{2}] objektumban.
+
+61=A(z) [{0}] statikus oszt\u00e1ly kinyer\u00e9si met\u00f3dus a (Record) param\u00e9terrel nem l\u00e9tezik vagy el\u00e9rhetetlen.
+
+62=A param\u00e9terek n\u00e9lk\u00fcli [{0}] kl\u00f3noz\u00f3 met\u00f3dus nem l\u00e9tezik vagy el\u00e9rhetetlen.
+
+63=A param\u00e9terek n\u00e9lk\u00fcli [{0}] p\u00e9ld\u00e1nyl\u00e9trehoz\u00e1si met\u00f3dus nem l\u00e9tezik vagy el\u00e9rhetetlen.
+
+64=Ehhez a lek\u00e9pez\u00e9shez nincsenek megadva c\u00e9l idegen kulcsok.
+
+65=Ehhez a lek\u00e9pez\u00e9shez nincsenek megadva c\u00e9l rel\u00e1ci\u00f3s kulcsok.
+
+66=Az objektum nem alak\u00edthat\u00f3 vissza a byte t\u00f6mbb\u0151l.
+
+67=Az objektum nem soros\u00edthat\u00f3 byte t\u00f6mbbe.
+
+68=Egy \u00f6sszes\u00edt\u00e9s \u00e9rt\u00e9ke a(z) [{0}] objektumban null.  A null\u00e9rt\u00e9kek nem enged\u00e9lyezettek \u00f6sszes\u00edt\u00e9si lek\u00e9pez\u00e9sekhez, kiv\u00e9ve, ha a "Null enged\u00e9lyez\u00e9se" be\u00e1ll\u00edt\u00e1s van megadva.
+
+69=NullPointerException kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00e9rt\u00e9k kinyer\u00e9sekor a(z) [{1}] objektumban tal\u00e1lhat\u00f3 [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3b\u00f3l.
+
+7=A(z) [{0}] attrib\u00fatumnak egy {1} fel\u00fcletet megval\u00f3s\u00edt\u00f3 t\u00edpusnak kell lennie.
+
+70=NullPointerException kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00e9rt\u00e9k kinyer\u00e9sekor a(z) [{1}] objektumban tal\u00e1lhat\u00f3 [{0}] met\u00f3duson kereszt\u00fcl.
+
+71=NullPointerException kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3 \u00e9rt\u00e9k\u00e9nek be\u00e1ll\u00edt\u00e1sakor a(z) [{1}] \u00e9rt\u00e9kre.
+
+72=NullPointerException kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00e9rt\u00e9k be\u00e1ll\u00edt\u00e1sakor a(z) [{0}] met\u00f3duson kereszt\u00fcl, a(z) [{1}] argumentummal.
+
+73=Nem tal\u00e1lhat\u00f3 le\u00edr\u00f3 a(z) [{0}] sz\u00fcl\u0151oszt\u00e1lyhoz.
+
+74=Ehhez a le\u00edr\u00f3hoz nincsenek be\u00e1ll\u00edtva els\u0151dleges kulcs mez\u0151k.
+
+75=Ehhez a le\u00edr\u00f3hoz nincs megadva referencia oszt\u00e1ly.
+
+77=A(z) [{0}] referencia le\u00edr\u00f3j\u00e1t egy Aggregate le\u00edr\u00f3ra kell be\u00e1ll\u00edtani.
+
+78=A lek\u00e9pez\u00e9s [{0}] referencia mez\u0151j\u00e9nek l\u00e9teznie kell a referencia t\u00e1bl\u00e1ban.
+
+79=Ehhez a lek\u00e9pez\u00e9shez nincs megadva referencia t\u00e1bla.
+
+8=A(z) [{0}] le\u00edr\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy \u00f6r\u00f6kl\u00e9st haszn\u00e1ljon, azonban nincs meghat\u00e1rozva oszt\u00e1lyjelz\u0151. {2}\u00d6r\u00f6kl\u00e9s haszn\u00e1latakor egy oszt\u00e1lyjelz\u0151 mez\u0151t vagy oszt\u00e1ly kinyer\u00e9si met\u00f3dust be kell \u00e1ll\u00edtani. {2}Sz\u00fcl\u0151 le\u00edr\u00f3: [{1}]
+
+80=A lek\u00e9pez\u00e9s [{0}] rel\u00e1ci\u00f3s kulcs mez\u0151j\u00e9nek l\u00e9teznie kell a rel\u00e1ci\u00f3s t\u00e1bl\u00e1ban.
+
+81=A(z) [{0}] met\u00f3dusnak a lek\u00e9pezett attrib\u00fatum t\u00edpus\u00e1t kell visszaadnia, nem \u00fcres (void) t\u00edpust.
+
+82=A(z) [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus a (DescriptorEvent) param\u00e9terrel nem hozz\u00e1f\u00e9rhet\u0151.
+
+83=A(Z) [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus a (Session) param\u00e9terrel nem hozz\u00e1f\u00e9rhet\u0151.
+
+84=A(z) [{0}] met\u00f3dus a (Record) vagy (Record, Session) param\u00e9terrel nem hozz\u00e1f\u00e9rhet\u0151.
+
+85=A(z) [{0}] met\u00f3dus a () vagy (Session) param\u00e9terrel nem hozz\u00e1f\u00e9rhet\u0151.
+
+86=A(z) [{1}] oszt\u00e1lyban l\u00e9v\u0151 [{0}] p\u00e9ld\u00e1nyv\u00e1ltoz\u00f3 nem hozz\u00e1f\u00e9rhet\u0151.
+
+87=A(z) [{0}], [{1}] met\u00f3dus a(z) [{2}] objektumban nem hozz\u00e1f\u00e9rhet\u0151
+
+88=A(z) [{0}] statikus oszt\u00e1lymet\u00f3dus a (Record) param\u00e9terrel nem el\u00e9rhet\u0151.
+
+89=A param\u00e9terek n\u00e9lk\u00fcli [{0}] kl\u00f3noz\u00f3 met\u00f3dus nem hozz\u00e1f\u00e9rhet\u0151.
+
+9=Ehhez a lek\u00e9pez\u00e9shez nincs be\u00e1ll\u00edtva k\u00f6zvetlen mez\u0151n\u00e9v.
+
+90=A param\u00e9terek n\u00e9lk\u00fcli [{0}] p\u00e9ld\u00e1nyl\u00e9trehoz\u00e1si met\u00f3dus nem hozz\u00e1f\u00e9rhet\u0151.
+
+91=Sorrendben el\u0151\u00e1ll\u00edtott azonos\u00edt\u00f3k haszn\u00e1lat\u00e1hoz a "Sorozatsz\u00e1m neve" \u00e9s a "Sorozatsz\u00e1m mez\u0151 neve" tulajdons\u00e1gokat be kell \u00e1ll\u00edtani a le\u00edr\u00f3hoz.
+
+92=A c\u00e9l els\u0151dleges kulcs\u00e1nak m\u00e9rete nem felel meg a k\u00fcls\u0151 kulcs m\u00e9ret\u00e9nek.
+
+93=A(z) [{0}] t\u00e1bla nem szerepel ebben a le\u00edr\u00f3ban.
+
+94=a le\u00edr\u00f3knak meg kell hat\u00e1rozniuk egy t\u00e1blanevet.
+
+96=A c\u00e9l kulcsok sz\u00e1ma nem egyezik a forr\u00e1s kulcsok sz\u00e1m\u00e1val.
+
+97=Probl\u00e9ma a(z) [{0}] objektum kl\u00f3noz\u00e1s\u00e1val.  A(z) [{1}] kl\u00f3noz\u00e1si met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+98=Az alapul szolg\u00e1l\u00f3 [{0}] le\u00edr\u00f3 visszah\u00edv\u00e1si met\u00f3dus a (DescriptorEvent) param\u00e9terrel egy kiv\u00e9telt aktiv\u00e1lt.
+
+99=A(z) [{1}] objektumhoz megh\u00edvott [{0}] met\u00f3dus aktiv\u00e1lt egy kiv\u00e9telt.
+

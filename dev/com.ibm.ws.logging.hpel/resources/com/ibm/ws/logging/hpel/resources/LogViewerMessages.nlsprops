@@ -1,0 +1,296 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=The repository directory is not found.
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=M/d/yy
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=MMM d,yyyy H:mm a z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=M/d/yy H:m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=Unable to parse start date/time.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=Unable to write to output log location.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=Unable to parse stop date/time.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=LogViewerMessages
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=Unable to parse thread ID. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=Unable to write to exported binary repository location.  Ensure that the specified directory is empty and has write permissions.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=Operation Complete
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=Unable to parse the Level {0}  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=Unable to use Repositories original Locale. Using default Locale of the system. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=Unable to write to the output file 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Writing output to: 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=Please select a server
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I=Processed {0} records in {1} seconds ({2} records per second).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=Unable to parse {0} interval: {1}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=Directory specified does not currently contain any log or trace files.  Continuing to monitor this directory.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=Directory specified does not contain any log or trace files.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=Option {0} requires {1} parameters.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Unknown Argument: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=Either the argument -repositoryDir is missing or no HPEL repository is found at that location.\n\t -repositoryDir is required when logViewer is invoked outside the profile bin directory.\n\t If -repositoryDir does not point to an HPEL repository, then either the specification\n\t is incorrect or the repository has not yet been created.\n\t This could be because HPEL is not enabled, or because the server\n\t has not been started since HPEL was enabled.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=Invalid date arguments: The -startDate is after the -stopDate
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=Invalid Level arguments: The -minLevel is higher than the -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Incorrect output format specified: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=Use option -help for usage information.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I=Using {0} as repository directory. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=LogViewer\nUse the logViewer command to view, query and filter the HPEL log and trace repositories. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I=Using {0} as repository directory.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [options]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Options:\n\n-repositoryDir <directory name>\n\t Specifies the path to the repository directory. In the case where you\n\t want to query both the log and trace data together, provide the path to\n\t the parent directory, which contains both the log data and tracedata\n\t directories. If you use the default repository location,\n\t profile_root/logs/application_server/, and run this tool from the profile\n\t bin directory, then this argument is optional. The tool checks the default\n\t location if one is not provided. If multiple application servers exist in\n\t this profile with HPEL repositories, you are prompted to select which\n\t server log and trace repository you want to view. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <file_name>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t Specifies the file name to which the text output should be written. If you do not\n\t provide this information, the text output is displayed on the console. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <date_time>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t Specifies the earliest date or date and time for which log entries \n\t should be extracted. You may specify either just a date or a date \n\t and time.  If only a date is specified, it is equivalent to specifying\n\t the time as 00:00:00:000 in your time zone. Dates should be entered\n\t in the {0} format. Dates and times should be in the\n\t  {1} format, where H is the hour in 24 hour format, m \n\t is the minutes, s is the seconds, and S is the milliseconds, and \n\t the z is the time zone. When including the time with this \n\t option, quotes must be used  as there are spaces in the date time \n\t format.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t Examples: \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <date_time>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t Specifies the latest date or date and time for which log entries \n\t should be extracted. You may specify either just a date or a date and \n\t time.  If only a date is specified, it is equivalent to specifying the\n\t time as 23:59:59:999 in your time zone.  Dates should be entered in\n\t the {0} format. Dates and times should be in the \n\t {1} format, where H is the hour in 24 hour format, m \n\t is the minutes, s is the seconds, and S is the milliseconds, and \n\t the z is the time zone. When including the time with this \n\t option, quotes must be used as there are spaces in the date time \n\t format.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t Examples: \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Specifies that LogViewer only extract log entries from the specified\n\t level. If combined with -minLevel or -maxLevel, the last \n\t option(s) are used.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Specifies that LogViewer not show log entries that are below the \n\t specified level. Specifying a level will extract all messages at that \n\t level and those above it.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Specifies that LogViewer not show log entries that are above the \n\t specified level. Specifying a level will extract all messages at that \n\t level and those below it.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t Specifies the output format. Supported formats include basic, advanced, and\n\t the CBE-1.0.1 format. If you do not include this parameter, the output is\n\t in basic format. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [interval]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Specifies that you want the logViewer to continuously monitor the repository\n\t and output new log record entries as they are created. You can provide an\n\t optional integer argument after this parameter to specify how often you want\n\t the LogViewer tool to query the repository for new records. By default the\n\t LogViewer queries the repository for new records every 5 seconds. When used\n\t with other filtering options, only those new records that match the filter\n\t criteria are displayed. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [interval]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t A synonym for -tail.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <logger_names>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Specifies which loggers should be included in the output. Multiple \n\t entries should be separated with a comma. If this option is used in \n\t combination with the -excludeLoggers option and a logger matches an \n\t entry in both logger name lists, the most specific entry will be used to determine if \n\t a logger is included or excluded.  This scenario is illustrated in the last \n\t example below, which will exclude all com.ibm  loggers, except for \n\t com.ibm.ws.config loggers.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t Examples: \n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <logger_names>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Specifies which loggers should be excluded in the output. Multiple \n\t entries should be separated with a comma. If this option is used in \n\t combination with the -includeLoggers option and a logger matches an \n\t entry in both logger name lists, the most specific entry will be used to determine if \n\t a logger is included or excluded.  This scenario is illustrated in the last \n\t example below, which will exclude all com.ibm loggers, except for \n\t com.ibm.ws.config loggers.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t Examples: \n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <thread_id>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Displays log entries from a specific thread. This option will filter\n\t out any log messages which were not created by the thread ID you \n\t specify. Note: Specify the thread ID in hexidecimal format.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <directory_name>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Extracts records and writes output to a new binary repository. You \n\t can use this option with other filtering options to transfer a subset \n\t of log and trace records into the new repository.  This option uses \n\t the directory path where the new repository must be written as \n\t an argument; therefore, the directory must be empty. If the \n\t directory does not exist, the directory is created.  However, errors \n\t that occur during the directory creation might cause extraneous \n\t directories to be created.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t Lists the IDs of available server process instances \n\t that are available to use with the -instance option. After running \n\t LogViewer with the -listInstances option, you can then use the \n\t -instance option to invoke LogViewer with one of the server process \n\t instance IDs as an argument. Since this option does not process \n\t any log or trace records, all other options are ignored when \n\t it is used. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <instanceid>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Retrieves the log and trace data for a given server \n\t process instance ID. Run LogViewer, \n\t along with the -listInstances option, before you use this option \n\t to obtain a valid instance ID. This option is required when viewing \n\t log and trace data from an environment that contains subprocesses, \n\t such as the z/OS operating system. If this option is combined with \n\t -latestInstance, -instance is ignored.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       Instance ID                                                            Start Date
+
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=Instance ID                  Start Date
+
+# Instance Start Date format
+CWTRA0073I=MM/dd/yy HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=M/d/yy
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=M/d/yy H:m:s:S z
+
+NoLevelNameInCustomLevelsFile=Format problem in {0}. Integer level {1}. Value should have level name.
+TooManyValuesInCustomLevelsFile=Format problem in {0}. Integer level {1}. Value "{2}" contains more than {3} items.
+LevelIdTooBigInCustomLevelsFile=Format problem in {0}. Integer level {1}. At least one of the {2} or {3} should be one character level ID.
+NotIntegerKeyInCustomLevelsFile=Format problem in {0}. Key {1} should be an integer.
+SpecifiedCustomLevelsFileNotFound=File {0} containing custom level specification is not found.
+ErrorReadingCustomLevelsFile=Fail to read file {0} containing custom level specification. Error: {1}
+SpecifiedCustomHeaderFileNotFound=File {0} containing custom header specification is not found.
+ErrorReadingCustomHeaderFile=Fail to read file {0} containing custom header specification. Error: {1}
+
+ErrorUsingHeaderTimeZone=Log header contains incorrect time zone specification: {0}. Using system default instead.
+
+UnsupportedEncodingError=The specified encoding {0} is not support in this JVM.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=Unable to use the instance id value that was provided for -instance option.  Use one of the valid instance id values that are displayed when using the -listInstances option.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Retrieves the log and trace data from the most recent \n\t server instance.  If this option is used with the -instance option, the \n\t -instance option is ignored.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <message>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Retrieves only log or trace data with a message field \n\t that matches the requested text. Use an asterisk (*) to represent a series \n\t of characters or a question mark (?) to represent a single character, when \n\t you retrieve log or trace data.
+
+LVM_HELP_EXTENSIONS=-includeExtensions name[=value][,name[=value]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\t Retrieves the log and trace data with an extension name that matches \n\t the requested name, and an extension value that matches the requested \n\t value. You can also use this option to retrieve the log and trace data \n\t with an extension name that matches the requested name, and an \n\t extension value that matches any value, if you omit the =value part \n\t of the option. Separate multiple name=value arguments with a comma. \n\t Specify '==' (two equals signs) in place of '=' (one equals sign) in \n\t cases where the name or value must contain an equal sign. \n\t Specify ',,' (two commas) in place of ',' (one comma) in cases where \n\t the name or value must contain a comma.
+
+LVM_HELP_ENCODING=-encoding <charset>
+
+LVM_HELP_ENCODING_DESCR=\t Specifies the character set that the LogViewer will use for text output.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=The following are examples of using Log Viewer with some of the available options \nlisted above.
+LVM_HELP_SAMPLE1= To retrieve only log entries from a repository that might have both log and trace entries: \n\t logViewer.bat -minLevel DETAIL
+LVM_HELP_SAMPLE2= To retrieve log entries with a minimum level of SEVERE from the logger com.my.company.name.MyClass \noccurring between {0} and {1}:\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.my.company.name.MyClass"  -minLevel SEVERE
+LVM_HELP_SAMPLE3= To make a backup of the repository where {1} will contain a copy of the \nexisting repository from log and trace data from {0}: \n\t logViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= To show the log and trace entries from your own application code (assuming logger names \nall start with com.mycompany): \n\t logViewer.bat -includeloggers com.mycompany.*

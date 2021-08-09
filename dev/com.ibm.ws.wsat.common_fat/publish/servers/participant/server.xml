@@ -1,0 +1,31 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>wsAtomicTransaction-1.2</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+    
+	<httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    	
+    <jdbcDriver id="DerbyDB" libraryRef="DerbyRef"/>
+    <library id="DerbyRef">
+        <fileset dir="${shared.resource.dir}derby" includes="derby.jar"/>
+    </library>
+
+    <dataSource id="TestDB" jdbcDriverRef="DerbyDB" jndiName="jdbc/TestDB" type="javax.sql.XADataSource">
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
+        <properties.derby.embedded createDatabase="create" databaseName="memory:database"/>
+    </dataSource>
+
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/testParticipant.war" className="java.security.AllPermission"/>
+</server>

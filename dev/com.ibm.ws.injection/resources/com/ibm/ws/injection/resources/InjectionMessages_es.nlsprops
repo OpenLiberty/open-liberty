@@ -1,0 +1,103 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/injection/resources/InjectionMessages.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI=CWNEN1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWNEN1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CWNEN1000-CWNEN1999 are reserved for use in this message file. All other
+#       CWNEN ranges are reserved by com/ibm/wsspi/injection/injection.nlsprops
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNEN1000E=CWNEN1000E: Una operaci\u00f3n JNDI en un nombre java:comp/env no se puede completar porque la hebra actual no est\u00e1 asociada a un componente de aplicaci\u00f3n Java Enterprise Edition. Esta condici\u00f3n puede producirse cuando el cliente JNDI que utiliza el nombre java:comp/env no se ejecuta en la hebra de una solicitud de aplicaci\u00f3n de servidor. Aseg\u00farese de que una aplicaci\u00f3n Java EE no ejecuta operaciones JNDI en nombres java:comp/env dentro de bloques de c\u00f3digo est\u00e1tico o en hebras creadas por dicha aplicaci\u00f3n. Dicho c\u00f3digo no se ejecuta necesariamente en la hebra de una solicitud de aplicaci\u00f3n de servidor y, por lo tanto, no est\u00e1 soportado por las operaciones JNDI en nombres java:comp/env.
+JNDI_NON_JEE_THREAD_CWNEN1000E.explanation=Las operaciones JNDI en un nombre java:comp/env s\u00f3lo est\u00e1n soportadas en hebras asociadas a un componente de aplicaci\u00f3n Java EE.
+JNDI_NON_JEE_THREAD_CWNEN1000E.useraction=Modifique la aplicaci\u00f3n de modo que la operaci\u00f3n JNDI se produzca en una hebra asociada a un componente de aplicaci\u00f3n Java EE.
+
+#-------------------------------------------------------------------------------
+# {0} the JNDI name that could not be resolved
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E=CWNEN1001E: No se ha podido crear una instancia del objeto referenciado por el nombre JNDI {0}. Si el nombre de referencia se correlaciona con un nombre JNDI en los enlaces del descriptor de despliegue de la aplicaci\u00f3n que realiza la b\u00fasqueda JNDI, aseg\u00farese de que la correlaci\u00f3n de nombres JNDI del enlace del descriptor de despliegue sea correcta. Si la correlaci\u00f3n de nombres JNDI es correcta, aseg\u00farese de que el recurso de destino puede resolverse con el nombre especificado relativo al contexto inicial por omisi\u00f3n.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.explanation=Se ha producido un error al crear una instancia de la referencia de objeto mediante el nombre JNDI especificado.
+JNDI_CANNOT_INSTANTIATE_OBJECT_CWNEN1001E.useraction=Consulte la excepci\u00f3n anidada o un error anterior para obtener m\u00e1s informaci\u00f3n sobre el error.
+
+#-------------------------------------------------------------------------------
+APPXML_REF_NAMESPACE_CWNEN1002E=CWNEN1002E: La referencia {0} declarada por el archivo META-INF/application.xml en la aplicaci\u00f3n {1} no est\u00e1 en el contexto java:global o java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.explanation=Las referencias declaradas en el archivo META-INF/application.xml s\u00f3lo pueden utilizar nombres en los contextos java:global o java:app.
+APPXML_REF_NAMESPACE_CWNEN1002E.useraction=Elimine la referencia o actualice el nombre de referencia para que tenga un prefijo java:global/ o java:app/. 
+
+#-------------------------------------------------------------------------------
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E=CWNEN1003E: El servidor no ha podido encontrar el enlace {0} con el tipo {1} para la referencia {2}.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.explanation=El servidor no ha podido encontrar un enlace con el nombre y tipo especificados.
+BINDING_OBJECT_NOT_FOUND_CWNEN1003E.useraction=Defina un recurso con el nombre especificado o configure los enlaces de aplicaci\u00f3n para que utilicen un recurso que ya est\u00e9 definido.
+
+#-------------------------------------------------------------------------------
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E=CWNEN1004E: El servidor no ha podido encontrar el enlace predeterminado {0} con el tipo {1} para la referencia {2}.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.explanation=El servidor no ha podido encontrar un enlace con el nombre y tipo especificados. La aplicaci\u00f3n no ha especificado el nombre del enlace, por lo que se ha utilizado un nombre de enlace predeterminado.
+DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E.useraction=Defina un recurso con el nombre especificado o configure los enlaces de aplicaci\u00f3n para que utilicen un recurso que ya est\u00e9 definido.
+#-------------------------------------------------------------------------------
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E=CWNEN1005E: El servidor no ha podido encontrar el enlace {0} con el tipo {1} para la referencia {2}. El enlace ha sido especificado por el servicio {3}.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.explanation=El servidor no ha podido encontrar un enlace con el nombre y tipo especificados.
+LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E.useraction=P\u00f3ngase en contacto con el proveedor de servicios.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_FAILED_CWNEN1006E=CWNEN1006E: El servidor no ha podido obtener un objeto para el enlace {0} con el tipo {1}. El mensaje de la excepci\u00f3n es: {2}
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.explanation=El servidor ha encontrado un enlace con el nombre y tipo especificados, pero se ha producido un error al acceder a \u00e9l. 
+INDIRECT_LOOKUP_FAILED_CWNEN1006E.useraction=Consulte el mensaje de excepci\u00f3n para obtener m\u00e1s informaci\u00f3n.
+
+#-------------------------------------------------------------------------------
+EJB_REF_NOT_SUPPORTED_CWNEN1007E=CWNEN1007E: En la configuraci\u00f3n del servidor falta una caracter\u00edstica para dar soporte a la referencia de EJB {0} en el componente {1} del m\u00f3dulo {2} de la aplicaci\u00f3n {3}.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.explanation=La aplicaci\u00f3n declara una referencia para un EJB de sesi\u00f3n pero el servidor no se ha configurado con una caracter\u00edstica que d\u00e9 soporte a los EJB de sesi\u00f3n.
+EJB_REF_NOT_SUPPORTED_CWNEN1007E.useraction=Modifique la configuraci\u00f3n del servidor para habilitar una caracter\u00edstica que d\u00e9 soporte a los EJB de sesi\u00f3n.  Por ejemplo, habilite la caracter\u00edstica ejbLite-3.1.
+
+#-------------------------------------------------------------------------------
+INDIRECT_LOOKUP_LOOP_CWNEN1008E=CWNEN1008E: El enlace contiene una b\u00fasqueda indirecta que hace referencia a s\u00ed mismo.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.explanation=El enlace contiene una b\u00fasqueda indirecta que hace referencia a s\u00ed mismo. Por ejemplo, si se utiliza la anotaci\u00f3n @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), el nombre tiene un prefijo java:comp/env/ impl\u00edcito, por lo que la serie de b\u00fasqueda hace referencia a la referencia de recurso, que crea un bucle infinito.
+INDIRECT_LOOKUP_LOOP_CWNEN1008E.useraction=Cambie la b\u00fasqueda o el nombre de enlace del recurso de destino. Por ejemplo, si se utiliza la anotaci\u00f3n @Resource(name="jdbc/ds", lookup="java:comp/env/jdbc/ds"), la b\u00fasqueda puede cambiarse por jdbc/ds, que localizar\u00e1 el recurso en el espacio de nombres predeterminado.

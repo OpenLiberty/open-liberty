@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: Parametrul specificat nu specific\u0103 un filtru de nume de fi\u015fier valid. {0}={1}
+badFilter.explanation=Valoarea pentru parametrul de configurare specificat nu a fost sau nu a putut fi convertit\u0103 la o valoare \u015eir.
+badFilter.useraction=Verifica\u0163i valoarea specificat\u0103 \u00een configura\u0163ia serverului.
+
+badInterval=CWWKE0401W: Parametrul specificat nu reprezint\u0103 un interval de monitorizare valid. {0}={1}
+badInterval.explanation=Valoarea pentru parametrul de configurare specificat nu a putut fi parsat\u0103 ca interval de monitorizare.
+badInterval.useraction=Verifica\u0163i valoarea specificat\u0103 \u00een configura\u0163ia serverului \u015fi asigura\u0163i-v\u0103 c\u0103 valoarea este un interval de monitorizare valid. \
+De exemplu, 1s pentru o secund\u0103. \
+Unit\u0103\u0163ile valide sunt ms=milisecunde, s=secunde, m=minute, h=ore.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: Loca\u0163ia cache specificat\u0103 nu a putut fi alocat\u0103, a\u015fadar toate informa\u0163iile despre fi\u015fierele monitorizate vor fi stocate \u00een memorie. {0}={1}
+badDiskCache.explanation=Serviciul nu a putut crea o loca\u0163ie cache pentru un set de resurse monitorizate.
+badDiskCache.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere la directorul de server \u015fi zona de lucru.
+
+createMonitorException=CWWKE0403W: A ap\u0103rut o excep\u0163ie \u00een timpul cre\u0103rii unui monitor pentru {0}. Este dezactivat\u0103 monitorizarea pentru aceast\u0103 resurs\u0103. Mesajul excep\u0163iei a fost: {1}
+createMonitorException.explanation=A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul cre\u0103rii unui monitor pentru resursa  specificat\u0103. Resursa nu va fi monitorizat\u0103. 
+createMonitorException.useraction=Verifica\u0163i c\u0103 a\u0163i citit accesul la resursa specificat\u0103. Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: Fi\u015fierul cache {0} nu a putut fi \u015fters.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=Serviciul nu a putut \u015fterge o loca\u0163ie cache pentru un set de resurse monitorizate.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Verifica\u0163i c\u0103 ave\u0163i acces de scriere \u00een directorul serverului \u015fi zona de lucru
+
+fileMonitorException=CWWKE0405W: A ap\u0103rut o excep\u0163ie \u00een timp ce se notifica un monitor \u00een leg\u0103tur\u0103 cu urm\u0103toarele cre\u0103ri, modific\u0103ri \u015fi \u015ftergeri: {0}, {1}, {2}. Clasa de monitor este {3}. Mesajul excep\u0163iei a fost: {4}
+fileMonitorException.explanation=A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u00een timpul cre\u0103rii unui monitor pentru resursa  specificat\u0103. 
+fileMonitorException.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+fileMonitorDisabled=CWWKE0406W: Au ap\u0103rut mai mult de {0} excep\u0163ii \u00een timp ce se notifica un monitor de modific\u0103ri. Clasa de monitor este {1}. Acest FileMonitor a fost dezactivat acum. 
+fileMonitorDisabled.explanation=Au ap\u0103rut prea multe excep\u0163ii consecutive \u00een timp ce se notifica un monitor pentru resursa specificat\u0103. Resursa nu va mai fi monitorizat\u0103. 
+fileMonitorDisabled.useraction=Vede\u0163i excep\u0163iile \u015fi mesajele FFDC asociate pentru informa\u0163ii suplimentare.

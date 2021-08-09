@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Egyetlen IdentityStore objektum sem t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore objektum t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9st.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Egyetlen IdentityStore objektum sem tal\u00e1lhat\u00f3 a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9hez. Ez\u00e9rt a felhaszn\u00e1l\u00f3 nem hiteles\u00edthet\u0151.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore objektum t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9t.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: A(z) {0} modul HttpAuthenticationMechanism objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} alkalmaz\u00e1sban.
+JAVAEESEC_ERROR_NO_HAM.explanation=Az ok, ami\u00e9rt a HttpAuthenticationMechanism nem hozhat\u00f3 l\u00e9tre, v\u00e1ltoz\u00f3. A HttpAuthenticationMechanism objektum hiba\u00fczenetei biztos\u00edtanak inform\u00e1ci\u00f3kat arr\u00f3l, hogy a HttpAuthenticationMechanism objektum mi\u00e9rt nem hozhat\u00f3 l\u00e9tre.
+JAVAEESEC_ERROR_NO_HAM.useraction=Vizsg\u00e1lja ki a HttpAuthenticationMechanism objektum hiba\u00fczeneteit, \u00e9s v\u00e9gezze el a jav\u00edt\u00e1sokat a hiba\u00fczeneteket alapj\u00e1n.
+
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Az azonoss\u00e1gt\u00e1rol\u00f3 feljegyz\u00e9s ''{0}'' attrib\u00fatum\u00e1hoz tartoz\u00f3 Expression Language (EL) kifejez\u00e9s nem oldhat\u00f3 fel egy \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. Helyette az alap\u00e9rtelmezett ''{1}'' attrib\u00fatum\u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=A hiba oka, hogy az EL eredm\u00e9ny \u00e9s a v\u00e1rt attrib\u00fatum\u00e9rt\u00e9k t\u00edpusa elt\u00e9r\u0151. Ha p\u00e9ld\u00e1ul a v\u00e1rt attrib\u00fatumt\u00edpus karaktersorozat, akkor az EL eredm\u00e9nynek is karaktersorozatnak kell lennie.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9sek \u00e9rv\u00e9nyesek, a kifejez\u00e9sben haszn\u00e1lt hivatkozok bean-ek feloldhat\u00f3k, \u00e9s hogy az eredm\u00e9ny t\u00edpusa megfelel az attrib\u00fatumnak.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm sz\u00e1m\u00e1ra megadott {0} hashAlgorithm param\u00e9ter nem megfelel\u0151 form\u00e1tumban van. A fogadott param\u00e9ter: {1}. A k\u00f6telez\u0151 form\u00e1tum n\u00e9v=\u00e9rt\u00e9k.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Egy hashAlgorithm param\u00e9terlista nem megfelel\u0151 form\u00e1tumban van, \u00e9s nem \u00e9rtelmezhet\u0151.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Jav\u00edtsa ki a hashAlgorithmParameters elemet a DatabaseIdentityStore feljegyz\u00e9sen.
+
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: A(z) {0} h\u00edv\u00f3 hiteles\u00edt\u00e9si adatai nem \u00e9rv\u00e9nyes\u00edthet\u0151k. A DatabaseIdentityStore objektum nem tudta lefuttatni a(z) ''{1}'' lek\u00e9rdez\u00e9st a k\u00f6vetkez\u0151 hib\u00e1val: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=Keress meg a hib\u00e1val meghi\u00fasult h\u00edv\u00f3t.
+JAVAEESEC_ERROR_GEN_DB.useraction=Tekintse \u00e1t a hiba\u00fczenetet, \u00e9s v\u00e9gezze el a keres\u00e9s jav\u00edt\u00e1s\u00e1t a hiba\u00fczenet alapj\u00e1n.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: A DatabaseIdentityStore nem tudta futtatni a(z) ''{1}'' lek\u00e9rdez\u00e9st a(z) {0} h\u00edv\u00f3 csoportjainak lek\u00e9rdez\u00e9s\u00e9hez. A csoportok r\u00e9szleges list\u00e1ja: {2}. A hiba: {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A h\u00edv\u00f3 csoportjainak csak egy r\u00e9szletes list\u00e1ja \u00e9rkezett vissza a csoportok teljes list\u00e1ja helyett a lek\u00e9rdez\u00e9sben tal\u00e1lhat\u00f3 hiba miatt.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Tekintse \u00e1t a biztos\u00edtott hib\u00e1t, \u00e9s v\u00e9gezze el a lek\u00e9rdez\u00e9s jav\u00edt\u00e1s\u00e1t, hogy a h\u00edv\u00f3 csoportjainak teljes list\u00e1ja visszaadhat\u00f3 legyen. 
+
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Az IdentityStore objektumnak biztos\u00edtott azonos\u00edt\u00f3 nem egy UsernamePasswordCredential oszt\u00e1ly, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Az IdentityStore objektumnak biztos\u00edtott azonos\u00edt\u00f3 nem egy UsernamePasswordCredential oszt\u00e1ly, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Vizsg\u00e1lja fel\u00fcl az IdentityStore sz\u00e1m\u00e1ra a HttpAuthMechanism megval\u00f3s\u00edt\u00e1s \u00e1ltal \u00e1tadott hiteles\u00edt\u00e9si adatok t\u00edpus\u00e1t.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: A kivonatol\u00e1si algoritmus komponens nem tal\u00e1lhat\u00f3 a {0} oszt\u00e1ly eset\u00e9n.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=A DatabaseIdentityStoreDefinition feljegyz\u00e9s hashAlgorithm elem\u00e9ben felsorolt kivonatol\u00e1si algoritmus nem tal\u00e1lhat\u00f3.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Vegye fel az egy\u00e9ni kivonatol\u00e1si algoritmust az alkalmaz\u00e1s sz\u00e1m\u00e1ra el\u00e9rhet\u0151 komponensk\u00e9nt.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: A(z) ''{1}'' lek\u00e9rdez\u00e9s nem adott vissza jelsz\u00f3t a(z) {0} h\u00edv\u00f3nak a DatabaseIdentityStore feljegyz\u00e9sen.
+JAVAEESEC_WARNING_NO_PWD.explanation=A lek\u00e9rdez\u00e9s nem adott vissza jelsz\u00f3t a megadott h\u00edv\u00f3 lek\u00e9rdez\u00e9snek.
+JAVAEESEC_WARNING_NO_PWD.useraction=Ha a v\u00e1rt eredm\u00e9ny jelsz\u00f3 volt, akkor tekintse \u00e1t a h\u00edv\u00f3 lek\u00e9rdez\u00e9st \u00e9s az adatb\u00e1zis tartalmakat.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: A(z) ''{1}'' lek\u00e9rdez\u00e9s t\u00f6bb eredm\u00e9ny adott vissza a(z) {0} h\u00edv\u00f3nak a DatabaseIdentityStore feljegyz\u00e9sen.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=T\u00f6bb eredm\u00e9ny \u00e9rkezett vissza a lek\u00e9r\u0151 h\u00edv\u00f3nak. A h\u00edv\u00f3 lek\u00e9rdez\u00e9s csak egyetlen eredm\u00e9nyt adhat vissza.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Tekintse \u00e1t a h\u00edv\u00f3 lek\u00e9rdez\u00e9st \u00e9s az adatb\u00e1zis tartalmakat. M\u00f3dos\u00edtsa a h\u00edv\u00f3 lek\u00e9rdez\u00e9st, hogy csak egy eredm\u00e9nyt adjon vissza.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND=CWWKS3400W: A(z) {0} h\u00edv\u00f3 k\u00f6t\u00e9se meghi\u00fasult. A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6t\u00e9s l\u00e9trehoz\u00e1sakor a megadott h\u00edv\u00f3val.
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.useraction=Tekintse \u00e1t a biztos\u00edtott kiv\u00e9telt.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH=CWWKS3401E: A(z) {0} h\u00edv\u00f3 keres\u00e9se a(z) {1} sz\u0171r\u0151vel \u00e9s a(z) {2} keres\u00e9si alappal meghi\u00fasult. A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {3}
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a biztos\u00edtott h\u00edv\u00f3 keres\u00e9sekor.
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.useraction=Tekintse \u00e1t a biztos\u00edtott kiv\u00e9telt.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH=CWWKS3402E: A(z) {0} csoportjainak keres\u00e9se meghi\u00fasult. A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott felhaszn\u00e1l\u00f3 csoportjainak keres\u00e9sekor.
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.useraction=Tekintse \u00e1t a biztos\u00edtott kiv\u00e9telt.
+
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP=CWWKS3403W: T\u00f6bb eredm\u00e9ny ker\u00fclt visszaad\u00e1sra az LdapIdentityStore {0} h\u00edv\u00f3ja eset\u00e9n a(z) {1} sz\u0171r\u0151 \u00e9s a(z) {2} keres\u00e9si alap haszn\u00e1lat\u00e1val.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.explanation=T\u00f6bb eredm\u00e9ny \u00e9rkezett vissza a lek\u00e9r\u0151 h\u00edv\u00f3nak. A h\u00edv\u00f3 keres\u00e9s csak egyetlen eredm\u00e9nyt adhat vissza.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.useraction=Tekintse \u00e1t a callerSearchFilter, a searchBase \u00e9s a repository elem tartalm\u00e1t.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3404W: A(z) {1} attrib\u00fatum keres\u00e9se a(z) {0} entit\u00e1shoz meghi\u00fasult. A k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {2}
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott entit\u00e1s attrib\u00fatumainak keres\u00e9sekor.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Tekintse \u00e1t a biztos\u00edtott kiv\u00e9telt.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3405W: A(z){0} h\u00edv\u00f3b\u00f3l hi\u00e1nyzik a(z) {1} callerNameAttribute.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=A megadott h\u00edv\u00f3 nem tartalmazza a megadott attrib\u00fatumot, amint az LdapIdentityStore elemben meg van adva.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Tekintse \u00e1t a callerNameAttribute \u00e9s a repository elem tartalm\u00e1t.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3406W: A(z) {0} csoportb\u00f3l hi\u00e1nyzik a(z) {1} groupNameAttribute.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=A megadott csoport nem tartalmazza a megadott attrib\u00fatumot, amint az LdapIdentityStore elemben meg van adva.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Tekintse \u00e1t a groupNameAttribute \u00e9s a repository elem tartalm\u00e1t.

@@ -1,0 +1,89 @@
+<!--
+    Copyright (c) 2018,2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>jndi-1.0</feature>
+    </featureManager>
+ 
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+ 
+    <library id="FATDriverLib">
+        <file name="${server.config.dir}/derby/FATDriver.jar"/>
+    </library>
+
+    <library id="ProxyDriverLib">
+        <file name="${server.config.dir}/proxydriver/ProxyDriver.jar"/>
+    </library>
+
+    <dataSource id="DefaultDataSource">
+      <jdbcDriver libraryRef="FATDriverLib"/>
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <dataSource id="derby" jndiName="jdbc/derby" type="java.sql.Driver">
+      <jdbcDriver libraryRef="DerbyLib"/>
+      <properties.derby.embedded url="jdbc:derby:" databaseName="memory:derbydb" create="true" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <!-- the following is unusable because no ConnectionPoolDataSource implementation is provided by the driver -->
+    <dataSource id="fatConnectionPoolDataSource" jndiName="jdbc/fatConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="FATDriverLib"/>
+      <properties databaseName="memory:jdbcdriver1" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="fatDataSource" jndiName="jdbc/fatDataSource">
+      <jdbcDriver libraryRef="FATDriverLib"/>
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" loginTimeout="660"/>
+    </dataSource>
+
+    <dataSource id="fatDriver" jndiName="jdbc/fatDriver">
+      <jdbcDriver libraryRef="FATDriverLib"/>
+      <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;loginTimeout=0" user="dbuser2" password="{xor}Oz0vKDtt"/>
+      <containerAuthData user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    
+    <dataSource id="fatDriverInvalidURLLoginTimeout" jndiName="jdbc/fatDriverInvalidURLLoginTimeout">
+      <jdbcDriver libraryRef="FATDriverLib"/>
+      <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;LoginTimeout=10"/>
+    </dataSource>
+
+    <dataSource id="proxydriver" jndiName="jdbc/proxydriver">
+      <jdbcDriver libraryRef="ProxyDriverLib"/>
+      <properties URL="jdbc:proxydriver:proxydb" Catalog="proxydb" Schema="pxschema1"/>
+    </dataSource>
+
+    <dataSource id="proxypoolds" jndiName="jdbc/proxypoolds">
+      <jdbcDriver libraryRef="ProxyDriverLib"/>
+      <properties catalog="proxydb" loginTimeout="200" schema="pxschema2"/>
+    </dataSource>
+
+    <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+
+    <javaPermission codeBase="${server.config.dir}derby/FATDriver.jar" className="java.security.AllPermission"/>
+    
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+
+    <!-- so the test can can compare class loaders with instances returned by the unwrap operation -->
+    <javaPermission codeBase="${server.config.dir}apps/jdbcapp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="jdbcapp.war" >
+        <classloader commonLibraryRef="FATDriverLib"/>
+    </application>
+
+</server>

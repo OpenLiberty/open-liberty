@@ -1,0 +1,44 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+src: \
+  fat/src,\
+  test-applications/BasicSseApp/src,\
+  test-applications/BroadcasterApp/src,\
+  test-applications/DelaySseApp/src,\
+  test-applications/SseClientBehaviorApp/src,\
+  test-applications/SseJaxbApp/src,\
+  test-applications/SseJsonbApp/src
+
+fat.project: true
+
+# These features get added programmatically
+tested.features: \
+  restfulwsclient-3.0,\
+  jsonb-2.0,\
+  restfulws-3.0,,\
+  cdi-3.0,\
+  jsonp-2.0
+
+
+-buildpath: \
+  com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  com.ibm.wsspi.org.osgi.core;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.jsonb.1.0;version=latest
+

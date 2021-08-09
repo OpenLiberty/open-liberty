@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.7,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-must: ipNetworkNumber
+m-oid: 1.3.6.1.1.1.2.7
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Abstraction of an IP network
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: ipNetwork
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: ipNetmaskNumber
+m-may: l
+m-may: description
+m-may: manager

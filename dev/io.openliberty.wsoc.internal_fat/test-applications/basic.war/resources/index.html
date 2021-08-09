@@ -1,0 +1,378 @@
+<html>
+	<!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ 	-->
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Test Program></title>
+    
+    <script src='dojo.js'></script>
+
+    <script language="javascript" type="text/javascript">
+    
+     
+       var websocket;
+       var url;
+       var lastMsg;
+       var verify;
+       
+       // Wire all the buttons once page is loaded...
+       require(["dojo/dom", "dojo/on", "dojo/domReady!"], function(dom, on){
+         
+            // Make sure buttons are enabled correctly.
+	        setDisconnectedButtons();
+	        
+		    // Check for the various File API support.
+			if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+               log("File operations not available on this browser.")
+			}
+
+	        on(dom.byId("connect"), "click", function(){
+	        
+	            
+			     //  Build the URI to connect to
+	             var path = dom.byId("wsocUrl").value;
+	             var path2 = dom.byId("urlField").value;
+	             
+	             var secure = dom.byId("secure").checked;
+	             var prefix = "ws://";	             
+	             if (secure)
+	                prefix = "wss://";
+	             url = prefix + window.document.location.host + path;
+	             if (path2) {
+	                url = path2;
+	             }
+	           
+	             //Connect and setup handlers
+	             websocket = new WebSocket(url);
+	             websocket.onopen = function(evt) { onOpen(evt) };
+                 websocket.onmessage = function(evt) { onMessage(evt) };
+                 websocket.onerror = function(evt) { onError(evt) };
+                 websocket.onclose = function(evt) { onClose(evt) };
+	         });
+	         
+	         on(dom.byId("disconnect"), "click", function(){
+	        	 
+	             websocket.close(1000, "Normal Closure");
+	             log("Disconn from:", url);
+	             setDisconnectedButtons();
+	         });
+	         
+	         
+	         // Text send actions, 3 of them.
+	         on(dom.byId("textSendText"), "click", function(){
+	             var txt = dom.byId("textToSend").value;
+	             log("Message sent:",  txt);
+	             verify = dom.byId("verify").checked;
+	             if (verify) {
+	                lastMsg = txt;
+	             }
+	             websocket.send(txt);
+	            
+	         });
+	         
+	          on(dom.byId("textSendBlob"), "click", function(){
+	             var txt = dom.byId("textToSend").value;
+	             var blob = new Blob([txt], { type: "text/plain" });
+
+	             log("Message sent:",  blob);
+	             verify = dom.byId("verify").checked;
+	             if (verify) {
+	                lastMsg = blob;
+	             }
+	             websocket.binaryType = "blob";
+	             websocket.send(blob);
+	            
+	         });
+	         
+	         on(dom.byId("textSendArray"), "click", function(){
+	             var txt = dom.byId("textToSend").value;
+	             var arr = getBytesFromString(txt)
+	       
+	             log("Message sent:",  arr);
+	             verify = dom.byId("verify").checked;
+	             if (verify) {
+	                lastMsg = arr;
+	             }
+	             websocket.binaryType = "arraybuffer";
+	             websocket.send(arr);
+	            
+	         });
+	         
+	       
+	         // File send button actions., 3 of them.
+	         on(dom.byId("fileSendText"), "click", function(){       
+	             var file = dom.byId("fileToSend").files;
+	             if (file.length != 1) {
+	                log("No file selected, skipping operation.", "");
+	                return;
+	             }
+	             var reader = new FileReader();           
+	             // Closure to capture the file information.
+		         reader.onloadend = function(evt) {
+		                 if (evt.target.readyState == FileReader.DONE) {	
+		                                   
+		                   websocket.send(evt.target.result);   
+		                   log("Message sent:",  evt.target.result);    
+		                     
+		                 }
+		         }
+	             reader.readAsText(file[0]);   
+	           });   
+	           
+	           on(dom.byId("fileSendBlob"), "click", function(){       
+	             var file = dom.byId("fileToSend").files;
+	             if (file.length != 1) {
+	                log("No file selected, skipping operation.", "");
+	                return;
+	             }
+	             var reader = new FileReader();           
+	             // Closure to capture the file information.
+		         reader.onloadend = function(evt) {
+		                 if (evt.target.readyState == FileReader.DONE) {	
+		                   websocket.binaryType = "blob";                  
+		                   websocket.send(evt.target.result); 
+		                   log("Message sent:",  evt.target.result);            
+		                 }
+		         }
+	             reader.readAsBinaryString(file[0]);   
+	           }); 
+	           
+	           on(dom.byId("fileSendArray"), "click", function(){       
+	             var file = dom.byId("fileToSend").files;
+	             if (file.length != 1) {
+	                log("No file selected, skipping operation.", "");
+	                return;
+	             }
+	             var reader = new FileReader();           
+	             // Closure to capture the file information.
+		         reader.onloadend = function(evt) {
+		                 if (evt.target.readyState == FileReader.DONE) {
+		                   websocket.binaryType = "arraybuffer";
+		                   websocket.send(evt.target.result);   
+		                   log("Message sent:",  evt.target.result);          
+		                 }
+		         }
+	             reader.readAsArrayBuffer(file[0]);   
+	           });   	
+	           
+	           //  Wire up the file select info area
+	           dom.byId('fileToSend').addEventListener('change', handleFileSelect, false);
+	           	
+	 	 });
+	
+        
+        function onOpen(msg) {
+               log("Connected to:",  url);
+               	require(["dojo/dom"], function(dom){
+			         setConnectedButtons();
+			    });
+	   
+        }
+        
+        function onClose(msg) {
+               log("onClose received:", "reason X" + msg.reason + "X code " + msg.code + " wasClean " + msg.wasClean + ", disconnected from " + url);
+               	require(["dojo/dom"], function(dom){
+			         setDisconnectedButtons();
+			    });
+	   
+        }
+
+        function onMessage(msg) {
+          
+             log("Message recv:",  msg.data);
+             if (msg.data instanceof ArrayBuffer) {
+                            
+             }
+             else if (msg.data instanceof Blob) {
+                
+             }
+             else {  
+	              if (verify) {
+	                if (lastMsg != msg.data) {
+	                   log("ERROR:  message sent does not equal message received.");
+	                }        
+	             }
+	         }
+            
+        }
+
+        function onError(msg) {
+            log("QQQQError received:",  msg.data);
+        } 
+        
+        
+        //Simple conversion routines for Text to byte array.  Logic coudl be wrong...
+        function getStringFromBytes(buf) {
+           return String.fromCharCode.apply(null, new Uint16Array(buf));
+        }
+        function getBytesFromString(str) {
+	       var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+	       var bufView = new Uint16Array(buf);
+	       for (var i=0, strLen=str.length; i<strLen; i++) {
+	         bufView[i] = str.charCodeAt(i);
+	       }
+      	   return buf;
+     	}
+        
+        
+        function setConnectedButtons() {
+        
+          require(["dojo/dom"], function(dom){
+            dom.byId("connect").disabled = true;
+			dom.byId("disconnect").disabled = false;
+			dom.byId("textSendText").disabled = false;
+			dom.byId("textSendBlob").disabled = false;
+			dom.byId("textSendArray").disabled = false;
+			dom.byId("fileSendText").disabled = false;
+			dom.byId("fileSendBlob").disabled = false;
+			dom.byId("fileSendArray").disabled = false;
+			})
+			
+        }
+        
+        function setDisconnectedButtons() {
+           
+           require(["dojo/dom"], function(dom){
+            dom.byId("connect").disabled = false;
+			dom.byId("disconnect").disabled = true;
+			dom.byId("textSendText").disabled = true;
+			dom.byId("textSendBlob").disabled = true;
+			dom.byId("textSendArray").disabled = true;
+			dom.byId("fileSendText").disabled = true;
+			dom.byId("fileSendBlob").disabled = true;
+			dom.byId("fileSendArray").disabled = true;
+			})
+        }
+        
+        function handleFileSelect(evt) {
+
+		    var files = evt.target.files; // FileList object
+		
+		    // files is a FileList of File objects. List some properties.
+		    var output = [];
+		    for (var i = 0, f; f = files[i]; i++) {
+		      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+		                  f.size, ' bytes, last modified: ',
+		                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+		                  '</li>');
+		    }
+		    require(["dojo/dom"], function(dom){
+		       dom.byId('files').innerHTML = '<ul>' + output.join('') + '</ul>';
+		       })
+		  }
+		  
+		  function log(action, data) {	
+		     if (data.length) {
+
+			     if (data.length > 100) {
+			     
+			        data = data.substr(0,100);
+			        data = data + "  .......NOT SHOWING ALL DATA";
+			     }		
+			  }       
+			  require(["dojo/dom"], function(dom){
+		        var newtext = action + "&nbsp;&nbsp;&nbsp;&nbsp" + data;
+		        var last = dom.byId("lastmessage").innerHTML;
+		        dom.byId("lastmessage").innerHTML =  newtext;
+			    dom.byId("content").innerHTML =  last + "<br>" + dom.byId("content").innerHTML;
+		     });   
+			
+			    
+        }
+		            
+     </script> 
+    </head>
+    <body>
+    
+      
+    
+		 <div id="header" >
+	
+		
+		  
+		    <div id="actions" style="height:240px;width:1000px;" align="left">
+			 <form>
+			 
+					<b>Connect:&nbsp;&nbsp;&nbsp;&nbsp;</b>
+					<select size="1" id="wsocUrl">
+						<option value="/basic/annotatedText" selected>Echo | T | AnnoText</option>
+					    <option value="/basic/annotatedAsyncText" selected>Echo | T | AnnoAsyncText</option>
+					    <option value="/basic/annotatedFutureText" selected>Echo | T | AnnoFutureText</option>
+						<option value="/basic/annotatedByteBuffer">Echo | B | AnnoByteBuffer</option>
+						<option value="/basic/annotatedByteArray">Echo | B | AnnoByteArray</option>
+						<option value="/basic/annotatedReader">Echo | T | AnnoReader</option>					
+         				<option value="/basic/annotatedInputStream">Echo | B | AnnoInputStreamr</option>
+						<option value="/basic/annotatedBoolean">Echo | T | AnnoBoolean</option>
+						<option value="/basic/annotatedOnMsgVoidReturn">Echo | T | AnnoOnMsgVoidReturn</option>
+					    <option value="/basic/codedText">Echo | T | CodedText</option>
+					    <option value="/basic/codedAsyncText">Echo | T | CodedAsyncText</option>
+					    <option value="/basic/codedReader">Echo | T | CodedReader</option>
+					    <option value="/basic/codedInputStream">Echo | B | CodedInputStream</option>
+					    <option value="/basic/codedByteBuffer">Echo | B | CodedByteBuffer</option>
+					    <option value="/basic/codedByteArray">Echo | B | CodedByteArray</option>
+					    <option value="/basic/codedCoding">Echo | S:S:S | CodedCoding</option>
+					    <option value="/basic/extendedText">Echo | T | ExtText</option>
+					    <option value="/basic/extendedAsyncText">Echo | T | ExtAsyncText</option>
+					    <option value="/basic/extendedReader">Echo | T | ExtReader</option>
+					    <option value="/basic/extendedInputStream">Echo | B | ExtInputStream</option>
+					    <option value="/basic/extendedByteBuffer">Echo | B | ExtByteBuffer</option>
+					    <option value="/basic/extendedByteArray">Echo | B | ExtByteArray</option>
+					    <option value="/basic/multiText">Echo | T | MultiText</option>
+					    <option value="/basic/codedClose">Close | C:R | CodedClose</option>
+					    
+						
+						
+						
+					</select>
+					    or enter URL:<input type="text" id="urlField">
+
+				    <button type="button" id="connect" >Connect</button>
+				    <button type="button"  id="disconnect" disabled>Disconnect</button>
+				 
+				    &nbsp;&nbsp;&nbsp;<input type="checkbox" id="secure">Secure
+				  
+				    <hr>
+
+				    
+					
+				<b>Text Send:&nbsp;&nbsp;&nbsp;</b>
+				<textarea cols="35" rows="3" id="textToSend">Enter text to send....</textarea>
+				<button type="button" id="textSendText">SendText</button>
+				&nbsp;<button  type="button" id="textSendBlob">SendBlob</button>
+				&nbsp;<button  type="button" id="textSendArray">SendArray</button>
+				&nbsp;&nbsp;<input type="checkbox" id="verify"> Verify echoed response(txt only)
+				<hr>
+			    <b>File Send:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+				<input type="file" id="fileToSend">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" id="fileSendText">SendText</button>
+				&nbsp;&nbsp;<button type="button" id="fileSendBlob">SendBlob</button>
+				&nbsp;&nbsp;<button type="button" id="fileSendArray">SendArray</button>
+				<br>
+				<div style="font-size:75%;color:green">
+				
+				<list id="files"></list>
+				</div>	
+		    
+			 </form>
+		    <hr>
+		    </div>
+		    
+		     <div id="lastmessage"  style="height:10px;width:1000px;font-family:arial;color:green;font-size:75%"></div>
+			 <br>
+			 <div id="content" style="height:600px;width:1000px;font-family:arial;color:blue;font-size:75%">
+
+			 </div>
+        
+           </div>
+
+    </body>
+</html>

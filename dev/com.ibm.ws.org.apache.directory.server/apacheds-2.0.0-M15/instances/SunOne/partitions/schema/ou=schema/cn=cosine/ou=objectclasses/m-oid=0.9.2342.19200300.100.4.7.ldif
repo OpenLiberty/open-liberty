@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.4.7,ou=objectClasses,cn=cosine,ou=schema
+m-must: cn
+m-oid: 0.9.2342.19200300.100.4.7
+m-supobjectclass: top
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: room
+creatorsname: uid=admin,ou=system
+m-may: roomNumber
+m-may: description
+m-may: seeAlso
+m-may: telephoneNumber

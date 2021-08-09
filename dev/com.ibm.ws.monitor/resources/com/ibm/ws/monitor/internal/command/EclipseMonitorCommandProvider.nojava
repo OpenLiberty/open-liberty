@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2010 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+package com.ibm.ws.monitor.internal.command;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.osgi.framework.console.CommandInterpreter;
+import org.eclipse.osgi.framework.console.CommandProvider;
+
+public class EclipseMonitorCommandProvider extends MonitorCommandProvider implements CommandProvider {
+
+    public String getHelp() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getDescription());
+        sb.append(getSyntaxInformation());
+        return sb.toString();
+    }
+
+    private final static class EquinoxMessageStream implements MonitorCommandProvider.MessageStream {
+        CommandInterpreter ci;
+
+        EquinoxMessageStream(CommandInterpreter ci) {
+            this.ci = ci;
+        }
+        
+        public void print(Object o) {
+            ci.print(o);
+        }
+        
+        public void println(Object o) {
+            ci.println(o);
+        }
+    }
+
+    public void _monitor(CommandInterpreter commandInterpreter) {
+        List<String> args = new ArrayList<String>();
+        args.add("monitor");
+        while (true) {
+            String arg = commandInterpreter.nextArgument();
+            args.add(arg);
+            if (arg == null) {
+                break;
+            }
+        }
+        executeCommand(args, new EquinoxMessageStream(commandInterpreter), new EquinoxMessageStream(commandInterpreter));
+    }
+}

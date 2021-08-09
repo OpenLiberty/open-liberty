@@ -1,0 +1,3 @@
+<server>
+    <product2 id="predefined-product2" contextPath="/product2" contextName="WAB1" />
+</server> 

@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: Le service de chiffrement de mot de passe personnalis\u00e9 a d\u00e9marr\u00e9. Le nom de la classe est {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=Aucune action n'est requise.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: Le service de chiffrement de mot de passe personnalis\u00e9 s''est arr\u00eat\u00e9. Le nom de la classe est {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=Aucune action n'est requise.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: Une exception inattendue s'est produite lors du d\u00e9chiffrement du mot de passe \u00e0 l'aide du service de chiffrement de mot de passe personnalis\u00e9.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=Une exception inattendue s'est produite lors de l'op\u00e9ration de d\u00e9chiffrement \u00e0 l'aide du service de chiffrement de mot de passe personnalis\u00e9.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=Pour plus d'informations sur la cause de l'exception, examinez les journaux du service de chiffrement et du serveur.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: Une exception inattendue s'est produite lors du chiffrement du mot de passe \u00e0 l'aide du service de chiffrement de mot de passe personnalis\u00e9.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=Une exception inattendue s'est produite lors de l'op\u00e9ration de chiffrement \u00e0 l'aide du service de chiffrement de mot de passe personnalis\u00e9.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=Pour plus d'informations sur la cause de l'exception, examinez les journaux du service de chiffrement et du serveur.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: Le service de mot de passe personnalis\u00e9 tiers n'est pas disponible pour traiter le mot de passe personnalis\u00e9 chiffr\u00e9.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=Le mot de passe chiffr\u00e9 personnalis\u00e9 n'a pas pu \u00eatre trait\u00e9 car le service de mot de passe personnalis\u00e9 n'est pas disponible.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=V\u00e9rifiez que la fonction utilisateur de mot de passe personnalis\u00e9 qui impl\u00e9mente l'interface com.ibm.wsspi.security.crypto.CustomPasswordEncryption est configur\u00e9e et d\u00e9marr\u00e9e.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: Le mot de passe n''a pas \u00e9t\u00e9 trait\u00e9 car l''algorithme de mot de passe {0} n''est pas pris en charge. Les types pris en charge sont {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=Le mot de passe n'a pas \u00e9t\u00e9 chiffr\u00e9 ou d\u00e9chiffr\u00e9 vu que le nom d'algorithme de mot de passe soumis n'est pas pris en charge.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Prenez soin d'utiliser l'un des algorithmes pris en charge.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: Le mot de passe n'a pas \u00e9t\u00e9 trait\u00e9 car une exception inconnue d'algorithme de mot de passe a \u00e9t\u00e9 renvoy\u00e9e.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=L'algorithme sp\u00e9cifi\u00e9 n'est pas pris en charge.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Examinez le journal du serveur et, si le chiffrement de mot de passe personnalis\u00e9 est utilis\u00e9, v\u00e9rifiez les journaux de chiffrement de mot de passe personnalis\u00e9 pour plus d'informations.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: Le mot de passe n'a pas \u00e9t\u00e9 trait\u00e9 car une exception de chiffrement de mot de passe non valide a \u00e9t\u00e9 renvoy\u00e9e.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=Le mot de passe n'a pas \u00e9t\u00e9 chiffr\u00e9 ou d\u00e9chiffr\u00e9 car l'exception a \u00e9t\u00e9 renvoy\u00e9e lors du traitement du mot de passe.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Examinez le journal du serveur et, si le chiffrement de mot de passe personnalis\u00e9 est utilis\u00e9, v\u00e9rifiez les journaux de chiffrement de mot de passe personnalis\u00e9 pour plus d'informations.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: Le mot de passe n'a pas \u00e9t\u00e9 trait\u00e9 car une exception de codage non pris en charge a \u00e9t\u00e9 renvoy\u00e9e.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Le mot de passe n'a pas \u00e9t\u00e9 chiffr\u00e9 ou d\u00e9chiffr\u00e9 car l'exception a \u00e9t\u00e9 renvoy\u00e9e lors du traitement du mot de passe.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Examinez le journal du serveur et, si le chiffrement de mot de passe personnalis\u00e9 est utilis\u00e9, v\u00e9rifiez les journaux de chiffrement de mot de passe personnalis\u00e9 pour plus d'informations.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Le mot de passe n'a pas \u00e9t\u00e9 d\u00e9chiffr\u00e9 car une exception de d\u00e9codage a \u00e9t\u00e9 renvoy\u00e9e.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=Le mot de passe chiffr\u00e9 n'a pas \u00e9t\u00e9 cod\u00e9 correctement.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=V\u00e9rifiez que le mot de passe chiffr\u00e9 n'a pas \u00e9t\u00e9 tronqu\u00e9 et cod\u00e9 en utilisant le codage Base64.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Plusieurs impl\u00e9mentations CustomPasswordEncryption ont \u00e9t\u00e9 d\u00e9tect\u00e9es. Une seule impl\u00e9mentation CustomPasswordEncryption est prise en charge. La liste des impl\u00e9mentations CustomPasswordEncryption d\u00e9tect\u00e9es est la suivante :
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Une erreur a \u00e9t\u00e9 signal\u00e9e lors du traitement du fichier manifeste d''extension {0}. Ce fichier sera ignor\u00e9. Le chiffrement personnalis\u00e9 n''est pas disponible. Le message d''erreur est le suivant : {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=L''en-t\u00eate obligatoire {0} est introuvable dans le fichier manifeste {1}. Le chiffrement personnalis\u00e9 n''est pas disponible.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Le fichier manifeste de fonction correspondant au fichier manifeste d''extension {0} est introuvable. Le chiffrement personnalis\u00e9 n''est pas disponible.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=L'op\u00e9ration de d\u00e9chiffrement n'est pas prise en charge par l'algorithme de hachage. 

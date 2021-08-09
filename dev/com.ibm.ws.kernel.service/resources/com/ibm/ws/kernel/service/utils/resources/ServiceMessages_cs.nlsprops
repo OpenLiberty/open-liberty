@@ -1,0 +1,77 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Zadan\u00fd parametr nen\u00ed \u0159et\u011bzec nebo pole \u0159et\u011bzc\u016f. {1}={2} pro {0}
+invalidStringArray.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na \u0159et\u011bzec nebo pole \u0159et\u011bzc\u016f.
+invalidStringArray.useraction=Zkontrolujte hodnotu zadanou v konfiguraci serveru a ujist\u011bte se, \u017ee hodnota je platnou reprezentac\u00ed \u0159et\u011bzce nebo pole \u0159et\u011bzc\u016f.
+
+invalidStringCollection=CWWKE0102W: Zadan\u00fd parametr nen\u00ed \u0159et\u011bzec nebo kolekce \u0159et\u011bzc\u016f. {1}={2} pro {0}
+invalidStringCollection.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na \u0159et\u011bzec nebo kolekci \u0159et\u011bzc\u016f.
+invalidStringCollection.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed \u0159et\u011bzce nebo kolekce \u0159et\u011bzc\u016f.
+
+invalidBoolean=CWWKE0103W: Zadan\u00fd parametr nep\u0159edstavuje logickou hodnotu. {1}={2} pro {0}
+invalidBoolean.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na logickou (boolean) hodnotu.
+invalidBoolean.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed logick\u00e9 hodnoty.
+
+invalidLong=CWWKE0104W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu typu long. {1}={2} pro {0}
+invalidLong.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na hodnotu typu long.
+invalidLong.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed hodnoty typu long.
+
+invalidInteger=CWWKE0105W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu typu integer. {1}={2} pro {0}
+invalidInteger.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na hodnotu typu integer.
+invalidInteger.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed hodnoty typu integer.
+
+invalidIntegerArray=CWWKE0106W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu pole typu integer. {1}={2} pro {0}
+invalidIntegerArray.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na pole typu integer.
+invalidIntegerArray.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed pole typu integer.
+
+invalidDuration=CWWKE0107W: Zadan\u00fd parametr nep\u0159edstavuje hodnotu trv\u00e1n\u00ed. {1}={2} pro {0}
+invalidDuration.explanation=Hodnota zadan\u00e9ho konfigura\u010dn\u00edho parametru nen\u00ed nebo nem\u016f\u017ee b\u00fdt p\u0159evedena na hodnotu trv\u00e1n\u00ed.
+invalidDuration.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci serveru je platnou reprezentac\u00ed hodnoty trv\u00e1n\u00ed.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#
+
+memory.information.unexpected=CWWKE0947E: Byly rozpozn\u00e1ny neo\u010dek\u00e1van\u00e9 informace o pam\u011bti opera\u010dn\u00edho syst\u00e9mu v {0}: {1}
+memory.information.unexpected.explanation=N\u011bkter\u00e9 informace o pam\u011bti opera\u010dn\u00edho syst\u00e9mu nebyly v o\u010dek\u00e1van\u00e9m form\u00e1tu. Produkt mohl \u010d\u00edst soubor nebo spou\u0161t\u011bt program v dob\u011b, kdy do\u0161lo k v\u00fdskytu neo\u010dek\u00e1van\u00e9ho form\u00e1tu. Text zpr\u00e1vy nab\u00edz\u00ed bu\u010f n\u00e1zev souboru opera\u010dn\u00edho syst\u00e9mu a obsah souboru, nebo n\u00e1zev programu a v\u00fdstup programu. Tyto informace m\u016f\u017eete pou\u017e\u00edt k odstran\u011bn\u00ed probl\u00e9mu.
+memory.information.unexpected.useraction=Zkontrolujte informace v textu zpr\u00e1vy. Opravte probl\u00e9my a ujist\u011bte se, \u017ee se opera\u010dn\u00ed syst\u00e9m chov\u00e1 spr\u00e1vn\u011b a \u017ee nebyly rozpozn\u00e1ny \u017e\u00e1dn\u00e9 neo\u010dek\u00e1van\u00e9 informace o pam\u011bti opera\u010dn\u00edho syst\u00e9mu.
+
+memory.information.unavailable=CWWKE0948E: V tomto opera\u010dn\u00edm syst\u00e9mu nebyly naimplementov\u00e1ny informace o dostupn\u00e9 pam\u011bti.
+memory.information.unavailable.explanation=Tato funkce nebyla naimplementov\u00e1na pro tento opera\u010dn\u00ed syst\u00e9m.
+memory.information.unavailable.useraction=Pomoc\u00ed rozhran\u00ed OperatingSystem API z\u00edskejte typ opera\u010dn\u00edho syst\u00e9mu a vyhn\u011bte se vol\u00e1n\u00ed t\u00e9to funkce pro tento typ opera\u010dn\u00edho syst\u00e9mu.
+
+os.pagesize.unavailable=CWWKE0949E: V tomto opera\u010dn\u00edm syst\u00e9mu nebyly naimplementov\u00e1ny informace o velikosti str\u00e1nky.
+os.pagesize.unavailable.explanation=Tato funkce nebyla naimplementov\u00e1na pro tento opera\u010dn\u00ed syst\u00e9m.
+os.pagesize.unavailable.useraction=Pomoc\u00ed rozhran\u00ed OperatingSystem API z\u00edskejte typ opera\u010dn\u00edho syst\u00e9mu a vyhn\u011bte se vol\u00e1n\u00ed t\u00e9to funkce pro tento typ opera\u010dn\u00edho syst\u00e9mu.
+
+os.execute.error=CWWKE0950E: Program {0} se nezda\u0159ilo spustit. N\u00e1vratov\u00fd k\u00f3d je {1}. V\u00fdstup je {2}
+os.execute.error.explanation=R\u016fzn\u00e9 situace mohou zp\u016fsobit selh\u00e1n\u00ed. Nap\u0159. program se nezda\u0159il kv\u016fli chybov\u00e9mu stavu zaznamenan\u00e9mu do n\u00e1vratov\u00e9ho k\u00f3du a v\u00fdstupu.
+os.execute.error.useraction=Ujist\u011bte se, \u017ee p\u0159\u00edkaz existuje a \u017ee je v jednom z adres\u00e1\u0159\u016f v prom\u011bnn\u00e9 prost\u0159ed\u00ed PATH.

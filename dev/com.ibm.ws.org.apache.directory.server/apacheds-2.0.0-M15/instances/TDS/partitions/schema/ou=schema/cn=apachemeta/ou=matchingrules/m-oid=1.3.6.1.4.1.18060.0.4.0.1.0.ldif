@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.0,ou=matchingRules,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.1.0
+creatorsname: uid=admin,ou=system
+objectclass: metaMatchingRule
+objectclass: metaTop
+objectclass: top
+m-name: nameOrNumericIdMatch
+m-description: A name or numeric id matchingRule
+m-obsolete: FALSE
+m-syntax: 1.3.6.1.4.1.18060.0.4.0.0.0
+entryUUID: 0c7d58f7-3a36-4bab-b966-463f790bbfc1
+entryCSN: 20130919065344.941000Z#000000#000#000000
+entryParentId: 349a1459-2ed4-4338-a303-a2ab6c687de4
+createTimestamp: 20130919065352.759Z

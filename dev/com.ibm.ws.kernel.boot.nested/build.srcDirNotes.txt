@@ -1,0 +1,18 @@
+These classes have access to: 
+ * org.osgi core APIs
+ * aries util classes
+ * Tr/FFDC
+ 
+**
+NOTE:  
+These classes do not have access to anything loaded by the parent classloader
+that is not com.ibm.ws.kernel.boot.* 
+
+If they reference such a class, it will be reloaded inside the nested classloader
+(you will have two copies).
+**
+ 
+Classes from this source directory should not directly call System.out or System.err,
+because Tr and FFDC are available, and should be used.
+
+Exported packages are seen by the framework as though provided by the OSGi Framework's system bundle.

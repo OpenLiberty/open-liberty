@@ -1,0 +1,194 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.common/resources/com/ibm/ws/security/csiv2/internal/resources/CSIv2CommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9500 - CWWKS9599
+
+# Client CSIv2 Configuration related messages CWWKS9500 - CWWKS9509
+# -------------------------------------------------------------------------------------------------
+
+# Server CSIv2 Configuration related messages CWWKS9510 - CWWKS9519
+# -------------------------------------------------------------------------------------------------
+
+
+# Client CSIv2 runtime related messages CWWKS9520 - CWWKS9579
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED=CWWKS9520E: Elt\u00e9r\u00e9s van a CSIv2 \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelvei k\u00f6z\u00f6tt. \n {0}
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.explanation=Inkompatibilit\u00e1sok vannak a CSIv2 \u00fcgyf\u00e9l \u00e9s kiszolg\u00e1l\u00f3 megadott biztons\u00e1gi ir\u00e1nyelvei k\u00f6z\u00f6tt.  
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelvei kompatibilisek.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED=CWWKS9521E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si, hiteles\u00edt\u00e9si \u00e9s attrib\u00fatumr\u00e9teg a(z) <{0}> \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> \u00e9rt\u00e9kkel a konfigur\u00e1ci\u00f3s f\u00e1jlban t\u00e1mogatottk\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva k\u00f6telez\u0151k\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si, hiteles\u00edt\u00e9si \u00e9s/vagy attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1s, hiteles\u00edt\u00e9s \u00e9s/vagy attrib\u00fatumr\u00e9tegek tekintet\u00e9ben rendelkezik kompatibilis t\u00e1mogatott \u00e9s a kiszolg\u00e1l\u00f3n k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED=CWWKS9522E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si \u00e9s attrib\u00fatumr\u00e9teg a(z) <{0}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban t\u00e1mogatottk\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva k\u00f6telez\u0151k\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si \u00e9s/vagy attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1s \u00e9s/vagy attrib\u00fatumr\u00e9tegek tekintet\u00e9ben rendelkezik kompatibilis t\u00e1mogatott \u00e9s a kiszolg\u00e1l\u00f3n k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED=CWWKS9523E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si, hiteles\u00edt\u00e9si \u00e9s attrib\u00fatumr\u00e9teg a(z) <{0}> \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> \u00e9rt\u00e9kkel a konfigur\u00e1ci\u00f3s f\u00e1jlban k\u00f6telez\u0151k\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva t\u00e1mogatottk\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si, hiteles\u00edt\u00e9si \u00e9s/vagy attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1s, hiteles\u00edt\u00e9s \u00e9s/vagy attrib\u00fatumr\u00e9tegek tekintet\u00e9ben rendelkezik kompatibilis k\u00f6telez\u0151 \u00e9s a kiszolg\u00e1l\u00f3n t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED=CWWKS9524E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si \u00e9s attrib\u00fatumr\u00e9teg a(z) <{0}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban k\u00f6telez\u0151k\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva t\u00e1mogatottk\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si \u00e9s/vagy attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1s \u00e9s/vagy attrib\u00fatumr\u00e9tegek tekintet\u00e9ben rendelkezik kompatibilis k\u00f6telez\u0151 \u00e9s a kiszolg\u00e1l\u00f3n t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED=CWWKS9525E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si r\u00e9teg a(z) {0} \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> \u00e9rt\u00e9kkel a konfigur\u00e1ci\u00f3s f\u00e1jlban t\u00e1mogatottk\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva k\u00f6telez\u0151k\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si \u00e9s/vagy attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis t\u00e1mogatott \u00e9s a kiszolg\u00e1l\u00f3n k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED=CWWKS9526E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si r\u00e9teg a(z) <{0}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban t\u00e1mogatottk\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva k\u00f6telez\u0151k\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si r\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis \u00fcgyf\u00e9l \u00e1ltal t\u00e1mogatott \u00e9s a kiszolg\u00e1l\u00f3n k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED=CWWKS9527E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si r\u00e9teg a(z) {0} \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> \u00e9rt\u00e9kkel a konfigur\u00e1ci\u00f3s f\u00e1jlban k\u00f6telez\u0151k\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva t\u00e1mogatottk\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.explanation=Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si r\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis k\u00f6telez\u0151 \u00e9s a kiszolg\u00e1l\u00f3n t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED=CWWKS9528E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a sz\u00e1ll\u00edt\u00e1si r\u00e9teg a(z) <{0}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban k\u00f6telez\u0151k\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva t\u00e1mogatottk\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.explanation= Inkompatibilit\u00e1sok vannak a sz\u00e1ll\u00edt\u00e1si r\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis k\u00f6telez\u0151 \u00e9s a kiszolg\u00e1l\u00f3n t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelvekkel.
+	
+# Do not translate Supported and Required	
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED=CWWKS9529E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben az attrib\u00fatumr\u00e9teg a(z) {0} \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> \u00e9rt\u00e9kkel a konfigur\u00e1ci\u00f3s f\u00e1jlban t\u00e1mogatottk\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva k\u00f6telez\u0151k\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.explanation=Inkompatibilit\u00e1sok vannak az attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g a sz\u00e1ll\u00edt\u00e1si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis t\u00e1mogatott \u00e9s a kiszolg\u00e1l\u00f3n k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED=CWWKS9530E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben az attrib\u00fatumr\u00e9teg a(z) <{0}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban t\u00e1mogatottk\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva k\u00f6telez\u0151k\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.explanation=Inkompatibilit\u00e1sok vannak az attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g az attrib\u00fatumr\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis t\u00e1mogatott \u00e9s a kiszolg\u00e1l\u00f3n k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED=CWWKS9531E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben az attrib\u00fatumr\u00e9teg a(z) {0} \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> \u00e9rt\u00e9kkel a konfigur\u00e1ci\u00f3s f\u00e1jlban k\u00f6telez\u0151k\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva t\u00e1mogatottk\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.explanation=Inkompatibilit\u00e1sok vannak az attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g az attrib\u00fatumr\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis k\u00f6telez\u0151 \u00e9s a kiszolg\u00e1l\u00f3n t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelvekkel.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED=CWWKS9532E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben az attrib\u00fatumr\u00e9teg a(z) <{0}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban k\u00f6telez\u0151k\u00e9nt, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> \u00e9rt\u00e9kkel van be\u00e1ll\u00edtva t\u00e1mogatottk\u00e9nt. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.explanation=Inkompatibilit\u00e1sok vannak az attrib\u00fatumr\u00e9tegben a megadott CSIv2 \u00fcgyf\u00e9l k\u00f6telez\u0151 biztons\u00e1gi ir\u00e1nyelve \u00e9s a kiszolg\u00e1l\u00f3 t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g az attrib\u00fatumr\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis k\u00f6telez\u0151 \u00e9s a kiszolg\u00e1l\u00f3n t\u00e1mogatott biztons\u00e1gi ir\u00e1nyelvekkel.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED=CWWKS9533E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben az attrib\u00fatumr\u00e9teg a(z) {0} \u00e9rt\u00e9khez van be\u00e1ll\u00edtva a(z) <{1}> azonoss\u00e1g-ellen\u0151rz\u00e9si t\u00edpussal a konfigur\u00e1ci\u00f3s f\u00e1jlban, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{2}> azonoss\u00e1g-ellen\u0151rz\u00e9si t\u00edpussal van be\u00e1ll\u00edtva. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.explanation=Inkompatibilit\u00e1sok vannak az attrib\u00fatumr\u00e9teg azonoss\u00e1g-ellen\u0151rz\u00e9s\u00e9ben az \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9lbiztons\u00e1g az attrib\u00fatumr\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis azonoss\u00e1gellen\u0151rz\u00e9s t\u00edpussal.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED=CWWKS9534E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben az attrib\u00fatumr\u00e9teg a(z) <{0}> azonoss\u00e1g-ellen\u0151rz\u00e9si t\u00edpussal van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban, \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve a(z) <{1}> azonoss\u00e1g-ellen\u0151rz\u00e9s t\u00edpussal van be\u00e1ll\u00edtva. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.explanation=Inkompatibilit\u00e1sok vannak az attrib\u00fatumr\u00e9teg azonoss\u00e1g-ellen\u0151rz\u00e9s\u00e9ben az \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelve az attrib\u00fatumr\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis azonoss\u00e1gellen\u0151rz\u00e9s t\u00edpussal.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED=CWWKS9535E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a hiteles\u00edt\u00e9si r\u00e9teg a(z) {0} mechanizmussal van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban, a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve pedig a(z) {1} mechanizmussal van be\u00e1ll\u00edtva. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.explanation=Inkompatibilit\u00e1sok vannak a hiteles\u00edt\u00e9si r\u00e9teg mechanizmus\u00e1ban az \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelve a hiteles\u00edt\u00e9si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis mechanizmussal.
+
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED=CWWKS9536E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a hiteles\u00edt\u00e9si r\u00e9teg le van tiltva a konfigur\u00e1ci\u00f3s f\u00e1jlban, a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelv\u00e9nek hiteles\u00edt\u00e9si r\u00e9tege pedig a(z) {0} mechanizmussal van be\u00e1ll\u00edtva. 
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.explanation=Inkompatibilit\u00e1sok vannak a hiteles\u00edt\u00e9si r\u00e9teg mechanizmus\u00e1ban az \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelve a hiteles\u00edt\u00e9si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis mechanizmussal.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED=CWWKS9537E: Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv\u00e9ben a hiteles\u00edt\u00e9si r\u00e9teg a(z) {0} mechanizmussal van be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3s f\u00e1jlban, a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelv\u00e9nek hiteles\u00edt\u00e9si r\u00e9tege pedig le van tiltva. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.explanation=Inkompatibilit\u00e1sok vannak a hiteles\u00edt\u00e9si r\u00e9teg mechanizmus\u00e1ban az \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelve k\u00f6z\u00f6tt az alkalmaz\u00e1skiszolg\u00e1l\u00f3-k\u00f6rnyezetbeli server.xml f\u00e1jlban, illetve az alkalmaz\u00e1s\u00fcgyf\u00e9l-k\u00f6rnyezetbeli client.xml f\u00e1jlban.  
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a CSIv2 \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelve a hiteles\u00edt\u00e9si r\u00e9teg tekintet\u00e9ben rendelkezik kompatibilis mechanizmussal.
+
+CSIv2_CLIENT_POLICY_NULL_ERROR=CWWKS9538E: Az \u00fcgyf\u00e9lbiztons\u00e1gi ir\u00e1nyelv a k\u00e9r\u00e9sazonos\u00edt\u00f3 eset\u00e9ben null\u00e9rt\u00e9k\u0171: {0}.
+CSIv2_CLIENT_POLICY_NULL_ERROR.explanation= A CSIv2 \u00fcgyf\u00e9lbiztons\u00e1gi ir\u00e1nyelv nincs meghat\u00e1rozva a konfigur\u00e1ci\u00f3s f\u00e1jlban.
+CSIv2_CLIENT_POLICY_NULL_ERROR.useraction= El\u0151fordulhat, hogy a felhaszn\u00e1l\u00f3nak ig\u00e9ny szerint kell meghat\u00e1roznia az \u00fcgyf\u00e9lbiztons\u00e1gi ir\u00e1nyelvet.
+ 
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR=CWWKS9539E: A kiszolg\u00e1l\u00f3 a(z) {1} k\u00e9r\u00e9sazonos\u00edt\u00f3 eset\u00e9ben a(z) {0} v\u00e1ratlan CSIv2 \u00fczenetet fogadta az \u00fcgyf\u00e9lt\u0151l.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.explanation= Az \u00fcgyf\u00e9l olyan CSIv2 \u00fczenetet k\u00fcld\u00f6tt, amelyet csak kiszolg\u00e1l\u00f3knak kell v\u00e1laszk\u00e9nt elk\u00fcldeni\u00fck.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.useraction= Nincs teend\u0151.
+ 
+CSIv2_SERVER_CONFIG_NULL_ERROR=CWWKS9540E: Az \u00fcgyf\u00e9lbiztons\u00e1gi ir\u00e1nyelv k\u00e9r\u00e9sazonos\u00edt\u00f3j\u00e1ban nem tal\u00e1lhat\u00f3 \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3: {0}.
+CSIv2_SERVER_CONFIG_NULL_ERROR.explanation= A CSIv2 kiszolg\u00e1l\u00f3biztons\u00e1gi ir\u00e1nyelv nincs meghat\u00e1rozva a konfigur\u00e1ci\u00f3s f\u00e1jlban.
+CSIv2_SERVER_CONFIG_NULL_ERROR.useraction= El\u0151fordulhat, hogy a felhaszn\u00e1l\u00f3nak ig\u00e9ny szerint kell meghat\u00e1roznia a kiszolg\u00e1l\u00f3biztons\u00e1gi konfigur\u00e1ci\u00f3t.
+
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR=CWWKS9541E: Nem tal\u00e1lhat\u00f3 biztons\u00e1giszolg\u00e1ltat\u00e1s-kontextus a(z) {0} k\u00e9r\u00e9sazonos\u00edt\u00f3hoz.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.explanation= A felhaszn\u00e1l\u00f3 nem hat\u00e1rozott meg biztons\u00e1gi kontextust a kiszolg\u00e1l\u00f3n vagy az \u00fcgyf\u00e9len.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.useraction= El\u0151fordulhat, hogy a felhaszn\u00e1l\u00f3nak a kiszolg\u00e1l\u00f3n \u00e9s az \u00fcgyf\u00e9len egyar\u00e1nt meg kell hat\u00e1roznia a biztons\u00e1gi kontextust.  
+
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR=CWWKS9542E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} k\u00e9r\u00e9sazonos\u00edt\u00f3hoz tartoz\u00f3 kimen\u0151 CSIv2 k\u00e9r\u00e9s elk\u00fcld\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel\u00fczenet: {1}.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.explanation= V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a kimen\u0151 CSIv2 k\u00e9r\u00e9s elk\u00fcld\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.useraction= A kiv\u00e9tel ok\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a napl\u00f3kat.
+
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR=CWWKS9543E: Az \u00fcgyf\u00e9l CSIv2 {0} kontextusazonos\u00edt\u00f3j\u00fa \u00e1llapot\u0151rz\u0151 munkamenetet k\u00e9rt a(z) {1} k\u00e9r\u00e9sazonos\u00edt\u00f3 sz\u00e1m\u00e1ra, de a kiszolg\u00e1l\u00f3 nem t\u00e1mogatja az \u00e1llapot\u0151rz\u0151 munkameneteket.
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.explanation= A kiszolg\u00e1l\u00f3 eset\u00e9ben nem v\u00e1rt esem\u00e9ny a CompleteEstablishContext \u00fczenet fogad\u00e1sa. 
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.useraction= Nincs teend\u0151.
+
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR=CWWKS9544E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} k\u00e9r\u00e9sazonos\u00edt\u00f3hoz tartoz\u00f3 bej\u00f6v\u0151 CSIv2 k\u00e9r\u00e9s fogad\u00e1sa sor\u00e1n. A kiv\u00e9tel\u00fczenet: {1}
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.explanation= V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a bej\u00f6v\u0151 CSIv2 k\u00e9r\u00e9s fogad\u00e1sa sor\u00e1n.
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.useraction= A kiv\u00e9tel ok\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a napl\u00f3kat.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER=CWWKS9545E: Az \u00fcgyf\u00e9l nem tudja l\u00e9trehozni az ITTAnonymous azonoss\u00e1g-ellen\u0151rz\u00e9si tokent, mert azt a t\u00e1voli kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja nem t\u00e1mogatja.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.explanation=A kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege nem t\u00e1mogatja az azonoss\u00e1g-ellen\u0151rz\u00e9st ITTAnonymous tokennel a server.xml f\u00e1jlban.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e1voli kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege a server.xml f\u00e1jlban t\u00e1mogatja az ITTAnonymous haszn\u00e1lat\u00e1t.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT=CWWKS9546E: Az \u00fcgyf\u00e9l nem tudja l\u00e9trehozni az ITTAnonymous azonoss\u00e1g-ellen\u0151rz\u00e9si tokent, mert azt az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3ja nem t\u00e1mogatja.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.explanation=Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege nem t\u00e1mogatja az azonoss\u00e1g-ellen\u0151rz\u00e9st ITTAnonymous tokennel a server.xml f\u00e1jlban.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege a server.xml f\u00e1jlban t\u00e1mogatja az ITTAnonymous haszn\u00e1lat\u00e1t.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY=CWWKS9547E: Az \u00fcgyf\u00e9l egy hiteles\u00edtett t\u00e1rgyat nem tud ellen\u0151rizni, mert az csak az ITTAnonymous tokennel v\u00e9gzett azonoss\u00e1g-ellen\u0151rz\u00e9seket t\u00e1mogatja.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.explanation=Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege t\u00e1mogatja az azonoss\u00e1g-ellen\u0151rz\u00e9st ITTAnonymous tokennel a server.xml f\u00e1jlban \u00e9s a hiteles\u00edtett felhaszn\u00e1l\u00f3t nem lehet ezzel a tokent\u00edpussal ellen\u0151rizni. 
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege a server.xml f\u00e1jlban m\u00e1sik azonoss\u00e1g-ellen\u0151rz\u00e9s t\u00edpust is t\u00e1mogat az ITTAnonymous mellett, amikor hiteles\u00edtett felhaszn\u00e1l\u00f3t ellen\u0151riznek.
+
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED=CWWKS9548E: Az \u00fcgyf\u00e9l egy hiteles\u00edtett t\u00e1rgyat nem tud ellen\u0151rizni, mert a t\u00e1voli kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja a(z) <{0}> t\u00edpus\u00fa azonoss\u00e1g-ellen\u0151rz\u00e9seket nem t\u00e1mogatja.
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.explanation=Az \u00fcgyf\u00e9l biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege nem t\u00e1mogatja az azonoss\u00e1g-ellen\u0151rz\u00e9st a jelzett t\u00edpusokkal. 
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 biztons\u00e1gi ir\u00e1nyelv attrib\u00fatumr\u00e9tege a server.xml f\u00e1jlban a jelzett azonoss\u00e1g-ellen\u0151rz\u00e9s t\u00edpusok legal\u00e1bb egyik\u00e9t t\u00e1mogatja.
+
+# Do not translate GSSUP, WSLogin, and JAAS
+CSIv2_SERVER_CANNOT_DECODE_GSSUP=CWWKS9549E: A kiszolg\u00e1l\u00f3 nem tudja visszafejteni az \u00fcgyf\u00e9l \u00e1ltal k\u00fcld\u00f6tt GSSUP tokent, \u00e9s nem tudja hiteles\u00edteni azt.
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.explanation=A hiteles\u00edt\u00e9s a GSSUP tokennel nem hajthat\u00f3 v\u00e9gre, mert azt nem lehet visszafejteni. 
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.useraction=Gondoskodjon arr\u00f3l, hogy az \u00fcgyf\u00e9lalkalmaz\u00e1s v\u00e9grehajtson programozott bejelentkez\u00e9st a WSLogin JAAS konfigur\u00e1ci\u00f3val alapvet\u0151 hiteles\u00edt\u00e9si t\u00e1rgy l\u00e9trehoz\u00e1s\u00e1hoz.
+
+# Server CSIv2 runtime related messages CWWKS9580 - CWWKS9589
+# -------------------------------------------------------------------------------------------------
+
+SOCKET_BIND_ERROR=CWWKS9580E: A kiszolg\u00e1l\u00f3socket nem nyithat\u00f3 meg a k\u00f6vetkez\u0151re vonatkoz\u00f3an: {0}:{1}.  A kiv\u00e9tel\u00fczenet: {2}.
+SOCKET_BIND_ERROR.explanation= A kiszolg\u00e1l\u00f3socket megnyit\u00e1sa sor\u00e1n v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+SOCKET_BIND_ERROR.useraction= A kiv\u00e9tel ok\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg a napl\u00f3kat.
+
+IOR_NO_MATCHING_ADDRESS=CWWKS9581E: Nem tal\u00e1lhat\u00f3k egyez\u0151 iiopsOptions elemek a(z) {0} sslRef attrib\u00fatummal be\u00e1ll\u00edtva.
+IOR_NO_MATCHING_ADDRESS.explanation= Az sslRef attrib\u00fatummal be\u00e1ll\u00edtott egyes sz\u00e1ll\u00edt\u00e1sir\u00e9teg-elemeknek meg kell egyezni\u00fck legal\u00e1bb egy iiopsOptions elemmel. Az iiopsOptions elemeket a sz\u00e1ll\u00edt\u00e1sir\u00e9teg-elemekkel megegyez\u0151 sslRef attrib\u00fatummal kell be\u00e1ll\u00edtani, valamint azoknak egy ezen ORB elem \u00e1ltal hivatkozott iiopEndpoint elemben kell elhelyezkedni\u00fck.
+IOR_NO_MATCHING_ADDRESS.useraction= \u00c1ll\u00edtson be legal\u00e1bb egy iiopsOptions elemet a sz\u00e1ll\u00edt\u00e1si r\u00e9tegben haszn\u00e1lttal azonos sslRef attrib\u00fatum\u00e9rt\u00e9kkel.
+
+# Do not translate sslRef, orb, defaultKeyStore, defaultSSLConfig, ssl in "ssl element".
+SSL_SERVICE_NOT_STARTED=CWWKS9582E: A(z) {1} azonos\u00edt\u00f3j\u00fa orb elem \u00e1ltal ig\u00e9nyelt {0} sslRef attrib\u00fatumok nem ker\u00fcltek felold\u00e1sra {2} m\u00e1sodpercen bel\u00fcl. Ennek eredm\u00e9nyek\u00e9pp az alkalmaz\u00e1s nem fog elindulni. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy tartalmazott egy keyStore elemet, \u00e9s hogy a V\u00e9dett socket r\u00e9teg (SSL) helyesen van konfigur\u00e1lva. Ha az sslRef \u00e9rt\u00e9ke defaultSSLConfig, akkor adjon hozz\u00e1 egy keyStore elemet defaultKeyStore azonos\u00edt\u00f3val \u00e9s egy jelsz\u00f3val.
+SSL_SERVICE_NOT_STARTED.explanation= Az alkalmaz\u00e1sok nem indultak el, mert az adott orb elem sslRef attrib\u00fatum\u00e1ban hivatkozott legal\u00e1bb egy ssl elem nem ker\u00fclt felold\u00e1sra egy bizonyos id\u0151 ut\u00e1n. A hib\u00e1t okozhatja \u00e9rv\u00e9nytelen SSL konfigur\u00e1ci\u00f3, p\u00e9ld\u00e1ul egy hi\u00e1nyz\u00f3 keyStore elem, vagy hogy az SSL tan\u00fas\u00edtv\u00e1ny nem j\u00f6n l\u00e9tre a rendelkez\u00e9sre \u00e1ll\u00f3 id\u0151n bel\u00fcl. A konfigur\u00e1ci\u00f3s hiba jav\u00edt\u00e1sa ut\u00e1n az alkalmaz\u00e1sok el fognak indulni.
+SSL_SERVICE_NOT_STARTED.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy be\u00e1ll\u00edtott egy keyStore elemet, \u00e9s hogy mindegyik sslRef attrib\u00fatum \u00e9rv\u00e9nyes, helyesen konfigur\u00e1lt ssl elemre mutat. Ha az sslRef \u00e9rt\u00e9ke defaultSSLConfig, akkor adjon hozz\u00e1 egy keyStore elemet defaultKeyStore azonos\u00edt\u00f3val \u00e9s egy jelsz\u00f3val. Ha az SSL tan\u00fas\u00edtv\u00e1ny nem j\u00f6tt l\u00e9tre, akkor a securityUtility parancs createSSLCertificate feladat\u00e1val hozza l\u00e9tre k\u00e9zzel az SSL tan\u00fas\u00edtv\u00e1nyt.
+
+
+# Common CSIv2  related messages CWWKS9590 - CWWKS9599
+# -------------------------------------------------------------------------------------------------
+
+
+# Do not translate Supported and Required
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: \u00dagy t\u0171nik, hogy a k\u00e9rt {0} rejtjelk\u00e9szlet {1} hozz\u00e1rendel\u00e9si be\u00e1ll\u00edt\u00e1ssal rendelkezik, amelyek nem felelnek meg a megadott {2} t\u00e1mogatott be\u00e1ll\u00edt\u00e1soknak \u00e9s a k\u00f6telez\u0151 {3} be\u00e1ll\u00edt\u00e1soknak.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=El\u0151fordulhat, hogy a rejtjelk\u00e9szlet nem felel meg az egy\u00fcttm\u0171k\u00f6d\u00e9sre k\u00e9pes objektumhivatkoz\u00e1sba (IOR) \u00edrt, vagy az IOR egyeztet\u00e9s\u00e9hez haszn\u00e1lt hozz\u00e1rendel\u00e9si be\u00e1ll\u00edt\u00e1soknak.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Ellen\u0151rizze, hogy a k\u00e9rt rejtjelk\u00e9szlet megfelel-e a megadott hozz\u00e1rendel\u00e9si be\u00e1ll\u00edt\u00e1soknak, vagy t\u00e1vol\u00edtsa el azt.
+
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: A(z) {0} SSL konfigur\u00e1ci\u00f3 nem l\u00e9tezik. Ezt okozhatja a konfigur\u00e1ci\u00f3ban egy hi\u00e1nyz\u00f3 SSL elem, illetve kulcst\u00e1rol\u00f3ra vagy kulcst\u00e1rol\u00f3 elemre mutat\u00f3 \u00e9rv\u00e9nytelen hivatkoz\u00e1s. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=A konfigur\u00e1ci\u00f3 hib\u00e1ja miatt nem lehet beolvasni a sz\u00fcks\u00e9ges SSL konfigur\u00e1ci\u00f3s elemet. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.useraction=Ellen\u0151rizze, hogy az SSL konfigur\u00e1ci\u00f3s elem l\u00e9tezik, \u00e9s \u00e9rv\u00e9nyes kulcst\u00e1rol\u00f3ra vagy kulcst\u00e1rol\u00f3 elemekre mutat\u00f3 hivatkoz\u00e1sokat tartalmaz. 

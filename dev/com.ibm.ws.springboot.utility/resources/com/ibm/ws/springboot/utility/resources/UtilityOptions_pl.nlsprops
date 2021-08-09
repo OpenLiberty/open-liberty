@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Opis:
+global.actions=Dzia\u0142ania:
+global.options=Opcje:
+global.usage=Sk\u0142adnia:
+global.required=Wymagane:
+global.options.statement=\tU\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [nazwa_akcji]
+
+
+# -------- THIN OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+thin.desc=\tUtw\u00f3rz cienk\u0105 aplikacj\u0119 na potrzeby konfiguracji serwera. 
+#Note to translator the word "thin" should not be translated
+thin.usage.options=\t{0} thin --sourceAppPath=\u015bcie\u017cka [opcje]
+
+thin.required-key.sourceapp=\ \ \ \ --sourceAppPath=plik
+thin.required-desc.sourceapp=\t\u015acie\u017cka pliku aplikacji \u017ar\u00f3d\u0142owej do cienkiej aplikacji.
+
+thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=plik
+#Note to translator the word ".spring" should not be translated
+thin.optional-desc.targetthinapp=\t\u015acie\u017cka u\u017cywana do zapisywania pliku cienkiej aplikacji.\n\
+\tJe\u015bli ta opcja nie zostanie podana, nowy plik zostanie utworzony\n\
+\tz rozszerzeniem .spring w katalogu macierzystym aplikacji \u017ar\u00f3d\u0142owej. 
+
+thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=katalog
+#Note to translator the word "lib.index.cache" should not be translated
+thin.optional-desc.targetlibcache=\t\u015acie\u017cka do katalogu u\u017cywana do zapisywania pami\u0119ci podr\u0119cznej biblioteki.\n\
+\tJe\u015bli ta opcja nie zostanie podana, zostanie utworzony katalog o nazwie\n\
+\tlib.index.cache w katalogu macierzystym aplikacji \u017ar\u00f3d\u0142owej.
+
+thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=katalog
+thin.optional-desc.parentlibcache=\t\u015acie\u017cka do katalogu macierzystej pami\u0119ci podr\u0119cznej (tylko do odczytu) biblioteki.\n\
+\tNajpierw przeszukiwana jest macierzysta pami\u0119\u0107 podr\u0119czna biblioteki\n\
+\tw celu znalezienia istniej\u0105cych bibliotek. Je\u015bli biblioteka nie zostanie znaleziona, jest ona\n\
+\tprzechowywana w dost\u0119pnej do zapisu pami\u0119ci podr\u0119cznej biblioteki podanej\n\
+\tw opcji --targetLibCachePath. Je\u015bli ta opcja nie zostanie podana,\n\
+\tnie zostanie przeszukana \u017cadna macierzysta pami\u0119\u0107 podr\u0119czna biblioteki.
+
+
+

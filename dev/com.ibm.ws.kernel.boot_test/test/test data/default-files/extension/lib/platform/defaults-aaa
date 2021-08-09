@@ -1,0 +1,3 @@
+# These defaults are used by the test bucket only.
+WebSphere-DefaultKernel: kernelCoreTestA-1.0
+WebSphere-DefaultExtension-aaa: aaaExtensions-1.0

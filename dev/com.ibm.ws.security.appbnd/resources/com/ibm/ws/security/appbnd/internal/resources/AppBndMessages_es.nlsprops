@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Durante el inicio de la aplicaci\u00f3n, la aplicaci\u00f3n no ha podido iniciarse porque se han encontrado varias aplicaciones con el nombre {0}. Las pol\u00edticas de autorizaci\u00f3n de seguridad requieren que los nombres sean exclusivos. Revise la configuraci\u00f3n de la aplicaci\u00f3n en server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Los nombres de aplicaci\u00f3n deben ser exclusivos para poder aplicar la pol\u00edtica de autorizaci\u00f3n de seguridad.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Revise la configuraci\u00f3n para verificar que las aplicaciones tienen nombres exclusivos, y reinicie la aplicaci\u00f3n.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: Se ha producido un error interno durante el inicio de la aplicaci\u00f3n. La tabla de autorizaciones de la aplicaci\u00f3n {0} no se ha podido crear y, por lo tanto, no se autorizar\u00e1 a ning\u00fan usuario para los recursos protegidos.
+AUTHZ_TABLE_NOT_CREATED.explanation=La tabla de autorizaciones para una aplicaci\u00f3n no se ha creado y, por lo tanto, no se autorizar\u00e1 a ning\u00fan usuario para los recursos protegidos.
+AUTHZ_TABLE_NOT_CREATED.useraction=Examine la configuraci\u00f3n de autorizaci\u00f3n de la aplicaci\u00f3n para determinar por qu\u00e9 no se ha creado la tabla de autorizaciones.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Configuraci\u00f3n de ejecutar como no v\u00e1lida para el nombre de rol de seguridad {0} en la aplicaci\u00f3n {1}. Compruebe la configuraci\u00f3n de ejecutar como y confirme que el ID de usuario y la contrase\u00f1a se han configurado correctamente. La identidad de interlocutor inicial se utilizar\u00e1 para la autorizaci\u00f3n, ya que el rol runAs no se ha podido aplicar.
+RUNAS_INVALID_CONFIG.explanation= La configuraci\u00f3n de ejecutar como para el nombre de rol de seguridad no es v\u00e1lida para la aplicaci\u00f3n. Compruebe la configuraci\u00f3n de ejecutar como y aseg\u00farese de que el ID de usuario y la contrase\u00f1a se hayan configurado correctamente.
+RUNAS_INVALID_CONFIG.useraction=Revise la configuraci\u00f3n de ejecutar como de la aplicaci\u00f3n para el nombre de rol de seguridad, para asegurarse de que el nombre de usuario y la contrase\u00f1a se hayan configurado correctamente.

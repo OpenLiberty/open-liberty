@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: \u627e\u4e0d\u5230 {0} \u4e2d\u7684 XML \u6587\u4ef6\u3002
+XML_NOT_FOUND.explanation=\u627e\u4e0d\u5230\u6307\u5b9a\u7684 XML \u6587\u4ef6\u3002
+XML_NOT_FOUND.useraction=\u8bf7\u786e\u4fdd\u8be5\u6587\u4ef6\u4f4d\u4e8e\u6b63\u786e\u7684\u4f4d\u7f6e\uff0c\u5e76\u4e14\u672a\u79fb\u52a8\u3002
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: \u65e0\u6cd5\u8bfb\u53d6 {0} \u4e2d\u7684 XML \u6587\u4ef6\u3002
+XML_STREAM_ERROR.explanation=\u65e0\u6cd5\u8bfb\u53d6\u6307\u5b9a\u7684 XML \u6587\u4ef6\u3002
+XML_STREAM_ERROR.useraction=\u8bf7\u786e\u4fdd\u8be5\u6587\u4ef6\u7684\u683c\u5f0f\u5df2\u6b63\u786e\u8bbe\u7f6e\u4e3a XML\u3002
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: \u5de5\u4f5c\u7a7a\u95f4\u5e94\u7528\u7a0b\u5e8f\u4e2d\u58f0\u660e\u7684 XML \u6587\u4ef6\u5f15\u7528 {0} \u4e2d\u7684\u6587\u4ef6\uff0c\u5e76\u5305\u62ec\u65e0\u6548\u7684\u201cexcludes\u201d\u5c5e\u6027\u3002
+EXCLUDES_ON_FILE.explanation=XML \u6587\u4ef6\u5143\u7d20\u5177\u6709\u65e0\u6548\u7684\u201cexcludes\u201d\u5c5e\u6027\u3002\u5df2\u5ffd\u7565\u8be5\u5c5e\u6027\u3002
+EXCLUDES_ON_FILE.useraction=\u8bf7\u4ece\u8be5\u5143\u7d20\u9664\u53bb\u201cexcludes\u201d\u5c5e\u6027\u3002
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: \u5de5\u4f5c\u7a7a\u95f4\u5e94\u7528\u7a0b\u5e8f\u4e2d\u58f0\u660e\u7684 XML \u6587\u4ef6\u5f15\u7528\u540d\u4e3a {0} \u7684\u5f52\u6863\uff0c\u5e76\u5305\u62ec\u65e0\u6548\u7684\u201cexcludes\u201d\u5c5e\u6027\u3002
+EXCLUDES_ON_ARCHIVE.explanation=XML \u5f52\u6863\u5143\u7d20\u5177\u6709\u65e0\u6548\u7684\u201cexcludes\u201d\u5c5e\u6027\u3002\u5df2\u5ffd\u7565\u8be5\u5c5e\u6027\u3002
+EXCLUDES_ON_ARCHIVE.useraction=\u8bf7\u4ece\u8be5\u5143\u7d20\u9664\u53bb\u201cexcludes\u201d\u5c5e\u6027\u3002
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: \u5de5\u4f5c\u7a7a\u95f4\u5e94\u7528\u7a0b\u5e8f\u4e2d\u58f0\u660e\u7684 XML \u6587\u4ef6\u5305\u542b\u65e0\u6548\u7684\u201cexcludes\u201d\u5c5e\u6027\uff1a{0}
+INVALID_EXCLUDE_PATTERN.explanation=\u201cexcludes\u201d\u5c5e\u6027\u65e0\u6548\uff0c\u5e76\u4e14\u65e0\u6cd5\u7406\u89e3\u3002
+INVALID_EXCLUDE_PATTERN.useraction=\u8bf7\u5c06\u8be5\u5c5e\u6027\u66f4\u6539\u4e3a\u6b63\u786e\u7684\u8bed\u6cd5\uff0c\u6216\u5728\u4e0d\u9700\u8981\u8be5\u5c5e\u6027\u65f6\u5c06\u5176\u9664\u53bb\u3002
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: \u5de5\u4f5c\u7a7a\u95f4\u5e94\u7528\u7a0b\u5e8f\u4e2d\u58f0\u660e\u7684 XML \u6587\u4ef6\u5f15\u7528\u627e\u4e0d\u5230\u7684\u6587\u4ef6 {0}\u3002
+DECLARED_FILE_NOT_FOUND.explanation=\u627e\u4e0d\u5230\u4e3a\u5de5\u4f5c\u7a7a\u95f4\u5e94\u7528\u7a0b\u5e8f\u58f0\u660e\u7684\u6587\u4ef6\u3002
+DECLARED_FILE_NOT_FOUND.useraction=\u8bf7\u786e\u4fdd\u8be5\u6587\u4ef6\u4f4d\u4e8e\u5f15\u7528\u7684\u4f4d\u7f6e\uff0c\u6216\u786e\u4fdd\u5f15\u7528\u7684\u4f4d\u7f6e\u4e0e\u8be5\u6587\u4ef6\u7684\u4f4d\u7f6e\u5339\u914d\u3002

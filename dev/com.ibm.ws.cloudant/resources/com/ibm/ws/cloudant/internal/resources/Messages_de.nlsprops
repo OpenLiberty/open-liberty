@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: Im Cloudant-Konfigurationselement {0} muss entweder eine URL oder ein Kontoattribut angegeben werden.
+error.cloudant.config.CWWKD0300E.explanation=Zum Erstellen eines Cloudant-Clients m\u00fcssen Sie die URL einer Datenbank oder ein Konto in der Konfiguration angeben.
+error.cloudant.config.CWWKD0300E.useraction=F\u00fcgen Sie der Serverkonfiguration eine URL oder ein Kontoattribut hinzu.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: F\u00fcr die Suche der Cloudant-ClientBuilder-Klasse {0} ist eine Ressourcenreferenz erforderlich.
+direct.lookup.CWWKD0301E.explanation=\u00c4nderbare Ressourcen wie CloudantBuilder m\u00fcssen \u00fcber eine Ressourcenreferenz gesucht werden, sodass f\u00fcr jede Suche eine neue Instanz zur\u00fcckgegeben wird. W\u00e4re eine Suche ohne Ressourcenreferenz zul\u00e4ssig, w\u00fcrde diese zu einer gemeinsam genutzten ClientBuilder-Instanz und damit zu einem unvorhersehbaren Verhalten f\u00fchren, wenn Anwendungen diese Instanz mehrfach suchen und jeweils andere \u00c4nderungen vornehmen.
+direct.lookup.CWWKD0301E.useraction=Schlie\u00dfen Sie eine Ressourcenreferenz f\u00fcr ClientBuilder in Ihre Anwendung ein und verwenden Sie die Ressourcenreferenz, um die Cloudant-ClientBuilder-Klasse zu suchen. Alternativ k\u00f6nnen Sie die Ressourceninjektion verwenden (bei der implizit eine Ressourcenreferenz erstellt wird), um eine ClientBuilder-Instanz in Ihre Anwendung einzuf\u00fcgen.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: {0} konnte nicht geladen werden, weil das Cloudant-Konfigurationselement {1} nicht mit einer libraryRef konfiguriert ist und der aktuelle Thread keinen Zugriff auf ein Anwendungsklassenladeprogramm hat.
+class.not.found.CWWKD0302E.explanation=Das Cloudant-Konfigurationselement muss entweder mit einer libraryRef konfiguriert sein, die auf die Cloudant-Bibliotheken zeigt, oder die Cloudant-Bibliotheken m\u00fcssen in der Anwendung enthalten sein. In diesem Fall muss die Cloudant-JNDI-Ressource \u00fcber einen Anwendungsthread gesucht werden.
+class.not.found.CWWKD0302E.useraction=F\u00fcgen Sie dem Cloudant-Konfigurationselement eine libraryRef hinzu oder aktualisieren Sie den Anwendungscode, damit die Cloudant-JNDI-Ressource nur \u00fcber Anwendungsthreads gesucht wird.

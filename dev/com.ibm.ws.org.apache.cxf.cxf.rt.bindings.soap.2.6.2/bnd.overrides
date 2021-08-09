@@ -1,0 +1,115 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime SOAP Binding
+Bundle-Description: Apache CXF Runtime SOAP Binding, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2
+Bundle-Activator: com.ibm.ws.cxf.rt.bindings.soap.NoOpActivator
+
+
+Export-Package: \
+  !schemas.configuration, \
+  !schemas.configuration.blueprint, \
+  org.apache.cxf.binding.soap;version="2.6.2", \
+  org.apache.cxf.binding.soap.blueprint;version="2.6.2", \
+  org.apache.cxf.binding.soap.interceptor;version="2.6.2", \
+  org.apache.cxf.binding.soap.jms.interceptor;version="2.6.2", \
+  org.apache.cxf.binding.soap.model;version="2.6.2", \
+  org.apache.cxf.binding.soap.saaj;version="2.6.2", \
+  org.apache.cxf.binding.soap.spring;version="2.6.2", \
+  org.apache.cxf.binding.soap.tcp;version="2.6.2", \
+  org.apache.cxf.binding.soap.tcp.frames;version="2.6.2", \
+  org.apache.cxf.binding.soap.wsdl.extensions;version="2.6.2", \
+  org.apache.cxf.binding.soap.wsdl11;version="2.6.2", \
+  com.ibm.ws.cxf.rt.bindings.soap
+
+Import-Package: \
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  javax.activation;resolution:=optional, \
+  javax.annotation, \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.jws.soap, \
+  javax.wsdl, \
+  javax.wsdl.extensions, \
+  javax.wsdl.extensions.mime, \
+  javax.wsdl.extensions.soap, \
+  javax.wsdl.extensions.soap12, \
+  javax.wsdl.factory, \
+  javax.xml.namespace, \
+  javax.xml.soap;resolution:=optional, \
+  javax.xml.stream, \
+  javax.xml.stream.events, \
+  javax.xml.transform, \
+  javax.xml.transform.dom, \
+  javax.xml.validation, \
+  javax.xml.xpath, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.annotations;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.attachment;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.jms.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.tcp;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.tcp.frames;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.wsdl.extensions;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.soap.wsdl11;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.bus.blueprint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.xmlschema;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.blueprint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.spring;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.databinding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.headers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.io;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.staxutils;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  org.apache.mina.core.buffer;resolution:=optional, \
+  org.apache.mina.core.filterchain;resolution:=optional, \
+  org.apache.mina.core.future;resolution:=optional, \
+  org.apache.mina.core.service;resolution:=optional, \
+  org.apache.mina.core.session;resolution:=optional, \
+  org.apache.mina.filter.codec;resolution:=optional, \
+  org.apache.mina.filter.logging;resolution:=optional, \
+  org.apache.mina.transport.socket.nio;resolution:=optional, \
+  org.apache.ws.commons.schema, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.w3c.dom, \
+  org.xml.sax
+
+Private-Package: \
+  schemas.configuration, \
+  schemas.configuration.blueprint

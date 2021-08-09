@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Das Format des Werts der Eigenschaft {0} ist nicht g\u00fcltig. Der Wert der Eigenschaft muss den richtigen Datentyp und das richtige Format haben.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=Das Format des Werts der Eigenschaft ist nicht g\u00fcltig. Beispiel: Eine Eigenschaft hat den Typ Integer, aber der Wert ist keine g\u00fcltige ganze Zahl.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=Stellen Sie sicher, dass der Wert der Eigenschaft den richtigen Datentyp und das richtige Format hat.
+
+ENTITY_NOT_FOUND=CWIML4001E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Entit\u00e4t {0} wurde nicht gefunden. Geben Sie die richtige Entit\u00e4t an, oder erstellen Sie die fehlende Entit\u00e4t.
+ENTITY_NOT_FOUND.explanation=Der angegebene Entit\u00e4tsname, der ein uniqueName oder eine uniqueId sein kann, wurde nicht im zugrunde liegenden Repository gefunden. Die Benutzerregistry-Operation kann ohne diese Entit\u00e4t nicht fortgesetzt werden.
+ENTITY_NOT_FOUND.useraction=Stellen Sie sicher, dass die Entit\u00e4t in dem zugrunde liegenden Repository vorhanden ist. Wenn die Entit\u00e4t vorhanden ist, stellen Sie sicher, dass die Leseberechtigung f\u00fcr die Entit\u00e4t definiert wurde, und wiederholen Sie den Vorgang.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es sind mehrere Datens\u00e4tze f\u00fcr den Principalnamen {0} in den konfigurierten Benutzerregistrys vorhanden. Der Principalname muss in allen Benutzerregistrys eindeutig sein.
+MULTIPLE_PRINCIPALS_FOUND.explanation=F\u00fcr den angegebenen Principalnamen wurden mehrere Principals gefunden. Der Anmeldevorgang kann nicht fortgesetzt werden.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Stellen Sie sicher, dass der richtige Principalname angegeben wird. Dieser Ausnahmebedingungstyp kann zum Beispiel vermieden werden, wenn der Principalname als eindeutiger Name angegeben wird.

@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.4.2.1,ou=objectClasses,cn=java,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.42.2.27.4.2.1
+m-name: javaContainer
+m-description: Container for a Java object
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: cn
+entryUUID: d991df75-b186-4e8a-a3df-808569c2831f
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919065345.346000Z#000000#000#000000
+entryParentId: 8873be5e-de27-472f-805d-f61af2165bcb
+createTimestamp: 20130919065353.299Z

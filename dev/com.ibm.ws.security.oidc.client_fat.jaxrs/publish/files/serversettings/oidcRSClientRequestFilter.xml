@@ -1,0 +1,135 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="myAuthFilter_basicConfig">
+		<requestUrl
+			id="myRequestUrl_a"
+			urlPattern="helloworld_basicConfig"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_basicConfig"
+		scope="openid profile"
+		clientId="client01_injecter"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample},https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample},http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/jwtInjecter,https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/jwtInjecter,
+http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/jwtInjecter,https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/jwtInjecter"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="myAuthFilter_basicConfig"
+		audiences="client01,client01_noJWT,client01_injecter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter_uniqueHeaderName">
+		<requestUrl
+			id="myRequestUrl_b"
+			urlPattern="helloworld_uniqueHeaderName"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_uniqueHeaderName"
+		headerName="myJwtHeaderName"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample},https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample},http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/jwtInjecter,https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/jwtInjecter,
+http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/jwtInjecter,https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/jwtInjecter"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="myAuthFilter_uniqueHeaderName"
+		audiences="client01,client01_noJWT,client01_injecter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter_extraBuilder">
+		<requestUrl
+			id="myRequestUrl_b"
+			urlPattern="helloworld_extraBuilder"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client02_extraBuilder"
+		headerName="myJwtHeaderName"
+		scope="openid profile"
+		clientId="client02"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample},https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample},http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/extraInjecter,https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/extraInjecter,
+http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/extraInjecter,https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/extraInjecter"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="myAuthFilter_extraBuilder"
+		audiences="client02"
+	>
+	</openidConnectClient>
+
+	<authFilter id="myAuthFilter_extraBuilder2">
+		<requestUrl
+			id="myRequestUrl_bb"
+			urlPattern="helloworld_anotherExtraBuilder"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client02_extraBuilder2"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample},https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample},http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/jwtInjecter2,https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/jwtInjecter2,
+http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/jwtInjecter2,https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/jwtInjecter2"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="myAuthFilter_extraBuilder2"
+		audiences="client01"
+	>
+	</openidConnectClient>
+
+</server>

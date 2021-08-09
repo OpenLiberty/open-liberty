@@ -1,0 +1,101 @@
+The script in this directory provides a utility for establishing a Liberty
+JMX MBean server connection. This has been tested for Jython 2.5.3.
+
+1) Environment set up
+
+a. Set the classpath to include the restConnector.jar
+   e.g) WINDOWS
+   set CLASSPATH=${wlp.install.dir}\clients\restConnector.jar
+   e.g) LINUX / UNIX
+   export CLASSPATH=${wlp.install.dir}/clients/restConnector.jar
+
+b. Set the jython path to include the restConnector.py
+   e.g) WINDOWS
+   set JYTHONPATH=${wlp.install.dir}\clients\jython\restConnector.py
+   e.g) LINUX / UNIX
+   export JYTHONPATH=${wlp.install.dir}/clients/jython/restConnector.py
+
+
+2) Examples
+
+The following two examples show how to get a Liberty JMX MBean server
+connection using the utility:
+
+Example 1 - Simple connection using connector.connect(host,port,user,password)
+
+from restConnector import JMXRESTConnector
+JMXRESTConnector.trustStore = "c:/key.jks"
+JMXRESTConnector.trustStorePassword = "Liberty"
+
+connector = JMXRESTConnector()
+connector.connect("foo.bar.com",9443,"theUser","thePassword")
+mconnection = connector.getMBeanServerConnection()
+# mconnection.invoke(...)
+connector.disconnect()
+
+Example 2 - Advanced connection using connector.connect(host,port,map) with
+            user provided properties
+
+import java
+import javax
+import jarray
+import com.ibm.websphere.jmx.connector.rest
+import com.ibm.ws.jmx.connector.client.rest
+ 
+map=java.util.HashMap()
+map.put("jmx.remote.provider.pkgs","com.ibm.ws.jmx.connector.client")
+map.put(javax.management.remote.JMXConnector.CREDENTIALS,jarray.array(["theUser","thePassword"],java.lang.String))
+map.put(com.ibm.websphere.jmx.connector.rest.ConnectorSettings.READ_TIMEOUT,2*60*1000)
+map.put(com.ibm.websphere.jmx.connector.rest.ConnectorSettings.DISABLE_HOSTNAME_VERIFICATION, True) 
+
+connector = JMXRESTConnector()
+connector.connect("foo.bar.com",9443,map)
+mconnection = connector.getMBeanServerConnection()
+# mconnection.invoke(...)
+connector.disconnect()
+
+The following example shows how to register a notification listener:
+
+Example 3 - Notification listener 
+
+import java
+import javax
+
+from restConnector import JMXRESTConnector
+from restConnector import BaseNotificationListener
+
+class SampleNotificationListener(BaseNotificationListener):
+	def __init__(self):
+		pass
+
+	def handleNotification(self,notification,handback):
+		print "Notification received:"
+		print "  Source: " + notification.getSource().toString()
+		print "  Type: " + notification.getType()
+		print "  Message: " + notification.getMessage()
+
+# main starts here
+
+JMXRESTConnector.trustStore = "c:/key.jks"
+JMXRESTConnector.trustStorePassword = "Liberty"
+
+connector = JMXRESTConnector()
+connector.connect("foo.bar.com",9443,"theUser","thePassword")
+mconnection = connector.getMBeanServerConnection()
+
+listener=SampleNotificationListener()
+handback=java.lang.Object()
+
+notifier1=javax.management.ObjectName("web:name=Notifier1")
+mconnection.addNotificationListener(notifier1,listener,None,handback)
+
+3) API
+
+* JMXRESTConnector.trustStore - Set the path to the SSL key store file
+* JMXRESTConnector.trustStorePassword - Set the password for the key 
+* JMXRESTConnector.connect(host,port,user,password) - Create a connector to the server
+* JMXRESTConnector.connect(host,port,map) - Create a connector with user properties
+* JMXRESTConnector.getMBeanServerConnection - Get a connection to the MBean server
+* JMXRESTConnector.disconnect() - Close the connection
+
+For more info, refer to the InfoCenter "Establishing a JMX MBean Liberty server connection"

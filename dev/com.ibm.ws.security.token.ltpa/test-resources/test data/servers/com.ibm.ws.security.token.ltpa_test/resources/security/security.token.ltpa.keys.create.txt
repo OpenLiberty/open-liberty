@@ -1,0 +1,8 @@
+#Sat Aug 27 16:42:49 CDT 2011
+com.ibm.websphere.CreationDate=Sat Aug 27 16\:42\:49 CDT 2011
+com.ibm.websphere.ltpa.version=1.0
+com.ibm.websphere.ltpa.3DESKey=NobCSpMLev54izIvjuiop3VcpNAFOAvQ3/cGjIn+mR4\=
+com.ibm.websphere.CreationHost=host1
+com.ibm.websphere.ltpa.PrivateKey=QXZBxjwCJ7GAh5fB+0GZMaUXQx5xIrFiFcc3IuL3jFu7ySGIXFv20ce2ZdigUpJRKJ1Zp+WDuYyay4jZuZ5fzirXhW5hxPYlfcvboquOj0ANPb3MSu9vJuNKy36BIrJgTl0s+UNbYtZAIpgMzU+/8bNoef6gYumm958IDwsXzYMsdi/R4O+lYtumnYrKMs+aREzXIFzFFFHSNKVFvYs0FYmbHD5AmH8/eIA8XXut9iTQlitc/yd40GS2MV47f72iNEkuyh7Bf2wArYRKY4ZI4itagLEDG2YtEl252FdGeA4hqxDJAQGk2OEFKVvB1/Y9d+HEGdc5AJgZ3/n+xuqsz0u7sBoUGKeCm41XkivJICA\=
+com.ibm.websphere.ltpa.Realm=SecureRealm
+com.ibm.websphere.ltpa.PublicKey=ALHCxHArg2V3jC5m+qLIkCanRrgcyqp0bJxmDvJ2X/yWJanPZJuO7opu+CKRqKG/mBZwB8kGu5jZKA0sTYBhamSZknNGMxcAaw9se2bqglI6npv+h+xQDbHqJRDJr3qsl6fQO+iPBBTFMgyrEbVkBM8jsL1oJGat/wVL9Il3Jve3AQAB

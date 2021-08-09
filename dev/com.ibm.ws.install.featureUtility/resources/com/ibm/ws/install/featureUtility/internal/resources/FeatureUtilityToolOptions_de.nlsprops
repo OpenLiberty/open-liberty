@@ -1,0 +1,109 @@
+###############################################################################
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntax: {0}
+
+global.description=Beschreibung:
+global.actions=Aktionen:
+global.options=Optionen:
+global.options.lower=Optionen
+global.usage=Syntax:
+global.options.statement=\tVerwenden Sie den Befehl help [Aktionsname], um detaillierte Optionsinformationen f\u00fcr jede Aktion anzuzeigen.
+task.unknown=Unbekannte Aktion: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tGibt die Hilfeinformationen zur angegebenen Aktion aus.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tInstalliert ein Feature oder eine Liste mit durch Leerzeichen getrennten Features.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ Name ...
+installFeature.option-desc.name...=\tEin oder mehrere durch Leerzeichen voneinander getrennte Features. Geben Sie f\u00fcr \n\
+\tFeatures den Featurekurznamen oder die Maven-Koordinate an. Wenn Sie eine \n\
+\tMaven-Koordinate angeben, muss mindestens die \n\
+\tGruppen-ID und die Artefakt-ID \n\
+\t(z. B. io.openliberty.features:mpHealth-2.0) enthalten sein. Als Version wird \n\
+\tstandardm\u00e4\u00dfig der Wert der aktuellen Laufzeitversion angenommen \n\
+\tund der Pakettyp nimmt den Wert ESA an, wenn die Version und das Paket \n\
+\tnicht angegeben werden.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tGibt an, wo das Feature installiert werden soll. Das Feature kann an\n\
+\tjeder konfigurierten Produkterweiterungsposition oder als Benutzerfeature installiert werden. Wenn diese\n\
+\tOption nicht angegeben wird, wird das Feature als Benutzerfeature\n\
+\tinstalliert.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven-Koordinate
+installFeature.option-desc.--featuresBom=\tGeben Sie die Maven-Koordinate f\u00fcr die Feature-BOM-Datei an. \n\
+\tDiese Option erm\u00f6glicht die Installation von Benutzerfeatures aus dem \n\
+\tkonfigurierten Maven-Repository. Stellen Sie sicher, dass das \n\
+\tRepository auch die zugeh\u00f6rige Feature-JSON-Datei enth\u00e4lt, die\n\
+\tdieselbe Gruppen-ID wie die BOM-Datei hat.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=Dateipfad
+installFeature.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines Maven-Artefaktrepositorys\n\
+\tals Quelle anzugeben, in der featureUtility Assets installieren soll.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tZeigt zus\u00e4tzliche Debuginformationen an, w\u00e4hrend die Aktion ausgef\u00fchrt wird.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
+installFeature.option-desc.--acceptLicense=\tLizenzvereinbarung wird akzeptiert.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tFeatures, die aus einem fernen Repository \n\
+\t(z. B. Maven Central) installiert werden, werden nicht lokal zwischengespeichert.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tInstalliert die erforderlichen Features f\u00fcr einen angegebenen Server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ Name ...
+installServerFeatures.option-desc.name...=\tDer Name eines vorhandenen Servers in derselben Liberty-Umgebung.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven-Koordinate
+installServerFeatures.option-desc.--featuresBom=\tGeben Sie die Maven-Koordinate f\u00fcr die Feature-BOM-Datei an. \n\
+\tDiese Option erm\u00f6glicht die Installation von Benutzerfeatures aus dem \n\
+\tkonfigurierten Maven-Repository. Stellen Sie sicher, dass das \n\
+\tRepository auch die zugeh\u00f6rige Feature-JSON-Datei enth\u00e4lt, die\n\
+\tdieselbe Gruppen-ID wie die BOM-Datei hat.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=Dateipfad
+installServerFeatures.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines Maven-Artefaktrepositorys\n\
+\tals Quelle anzugeben, in der featureUtility Assets installieren soll.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tZeigt zus\u00e4tzliche Debuginformationen an, w\u00e4hrend die Aktion ausgef\u00fchrt wird.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
+installServerFeatures.option-desc.--acceptLicense=\tLizenzvereinbarung wird akzeptiert.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tFeatures, die aus einem fernen Repository \n\
+\t(z. B. Maven Central) installiert werden, werden nicht lokal zwischengespeichert.
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tSucht Features aus den Repositorys.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tVerwenden Sie den Suchbegriff, um Features in den Repositorys zu suchen.
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tZeigt die Repositorys und Proxy-Einstellungen an.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tVerwenden Sie diese Option, um die detaillierten Nachrichten der \n\
+\tValidierung der konfigurierten Datei featureUtility.properties anzuzeigen.           \n\
+\tJede Nachricht enth\u00e4lt einen Fehlercode, die Nummer der Zeile, in der der\n\
+\tFehler gefunden wurde, und die Fehlerursache.

@@ -1,0 +1,91 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Do\u0161lo k intern\u00ed chyb\u011b v konektoru Kafka syst\u00e9mu Reactive Messaging. Chyba je: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Do\u0161lo k chyb\u011b syst\u00e9mu Reactive Messaging br\u00e1n\u00edc\u00ed norm\u00e1ln\u00ed \u010dinnosti.
+internal.kafka.connector.error.CWMRX1000E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Do\u0161lo k chyb\u011b p\u0159i potvrzov\u00e1n\u00ed offset\u016f \u010dten\u00ed u zprost\u0159edkovatele Kafka. Chyba je: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Do\u0161lo k chyb\u011b v p\u0159\u00edchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Do\u0161lo k chyb\u011b p\u0159i v\u00fdzv\u011b zprost\u0159edkovatele Kafka. Chyba je: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Do\u0161lo k chyb\u011b v p\u0159\u00edchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Do\u0161lo k chyb\u011b p\u0159i odes\u00edl\u00e1n\u00ed zpr\u00e1vy do zprost\u0159edkovatele Kafka. Chyba je: {0}.
+kafka.send.error.CWMRX1003E.explanation=Do\u0161lo k chyb\u011b v odchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.send.error.CWMRX1003E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Odchoz\u00ed konektor Kafka syst\u00e9mu Reactive Messaging p\u0159ijal chybu. Chyba: {0}
+kafka.output.error.signal.CWMRX1004E.explanation=Odchoz\u00ed konektor Kafka p\u0159ijal chybov\u00fd sign\u00e1l, kter\u00fd br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Vlastnost group.id nebyla nastavena v konfiguraci pro tento kan\u00e1l. Nastavte vlastnost {0} v jednom z konfigura\u010dn\u00edch zdroj\u016f MicroProfile pro tuto aplikaci.
+kafka.groupid.not.set.CWMRX1005E.explanation=ID skupiny z\u00e1kazn\u00edk\u016f Kafka mus\u00ed b\u00fdt nastaveno tak, aby umo\u017e\u0148ovalo spr\u00e1vnou funkci Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Nastavte vlastnost v jednom z um\u00edst\u011bn\u00ed MicroProfile ConfigSource pro tuto aplikaci, nap\u0159\u00edklad soubor mikroprofile-config.properties.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: T\u0159\u00eddy ze souboru JAR klient\u016f kafka nelze na\u010d\u00edst. Ujist\u011bte se, \u017ee soubor JAR klient\u016f kafka a jeho z\u00e1vislosti jsou dostupn\u00e9 jako knihovny pro va\u0161i aplikaci.
+kafka.library.not.present.CWMRX1006E.explanation=Aplikace, kter\u00e9 pou\u017e\u00edvaj\u00ed klienta Kafka syst\u00e9mu Reactive Messaging, mus\u00ed poskytovat soubor JAR klient\u016f kafka a jeho z\u00e1vislost\u00ed. Tento soubor a jeho z\u00e1vislosti je mo\u017en\u00e9 poskytovat bu\u010f zabalen\u00edm jako knihovnu v r\u00e1mci aplikace, nebo jako sd\u00edlenou knihovnu.
+kafka.library.not.present.CWMRX1006E.useraction=Zabalte soubor JAR klient\u016f kafka a jeho z\u00e1vislosti jako knihovnu v aplikaci nebo jako sd\u00edlenou knihovnu. Soubor JAR klient\u016f kafka lze st\u00e1hnout z webu Apache Kafka nebo Maven Central.
+
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: P\u0159\u00edchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it. Chyba je {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro p\u0159\u00edchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v, kter\u00fd br\u00e1n\u00ed norm\u00e1ln\u00ed operaci syst\u00e9mu MicroProfile Reactive Messaging. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.incoming.error.CWMRX1007E.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Odchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it. Chyba je {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro odchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v, kter\u00fd br\u00e1n\u00ed norm\u00e1ln\u00ed operaci syst\u00e9mu MicroProfile Reactive Messaging. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: P\u0159\u00edchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it, tato operace se opakuje. Chyba je {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro p\u0159\u00edchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a zjist\u011bte, zda byl probl\u00e9m p\u0159echodn\u00fd a byl vy\u0159e\u0161en opakov\u00e1n\u00edm nastaven\u00ed konektoru.
+
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Odchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it, tato operace se opakuje. Chyba je {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro odchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a zjist\u011bte, zda byl probl\u00e9m p\u0159echodn\u00fd a byl vy\u0159e\u0161en opakov\u00e1n\u00edm nastaven\u00ed konektoru.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b syst\u00e9mu Reactive Messaging: {0}.
+temporary.CWMRX1999E.explanation=Do\u0161lo k chyb\u011b syst\u00e9mu Reactive Messaging br\u00e1n\u00edc\u00ed norm\u00e1ln\u00ed \u010dinnosti.
+temporary.CWMRX1999E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.

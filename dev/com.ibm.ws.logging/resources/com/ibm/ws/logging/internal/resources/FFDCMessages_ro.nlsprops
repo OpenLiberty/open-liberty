@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: FFDC nu a putut deschide sau crea un fi\u015fier flux incident {0}. Excep\u0163ie: {1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=Un fi\u015fier flux incident nu a putut fi deschis sau creat. Fie sistemul de fi\u015fiere ce con\u0163ine fi\u015fierul istoric nu este disponibil, fie procesul care ruleaz\u0103 FFDC nu are permisiunea de a crea \u015fi accesa fi\u015fiere din directorul de istorice.
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=Verifica\u0163i c\u0103 sistemul de fi\u015fiere ce con\u0163ine directorul de istorice este disponibil \u015fi c\u0103 procesul care ruleaz\u0103 FFDC are permisiunea de a crea \u015fi accesa fi\u015fiere din directorul de istorice.
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: S-a creat un Incident FFDC: "{0}" la {1}
+lwas.FFDCIncidentEmitted.explanation=S-a creat un Incident FFDC \u00een loca\u0163ia de istoric configurat\u0103.
+lwas.FFDCIncidentEmitted.useraction=Nu este necesar\u0103 nici o ac\u0163iune.

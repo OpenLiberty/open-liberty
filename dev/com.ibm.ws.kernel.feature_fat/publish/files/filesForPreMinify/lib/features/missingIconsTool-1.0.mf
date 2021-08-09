@@ -1,0 +1,16 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: missingIconsTool-1.0
+Subsystem-SymbolicName: test.icons.missingIconsTool-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Description: This is the description text for a feature where all the files specified in the the icon header are missing
+Subsystem-Vendor: IBM
+Subsystem-Icon: OSGI-INF/missingtoolicon.png,OSGI-INF/toolicon.png
+Subsystem-Content: test.icons.missingIconsTool-1.0; version="[1,1.0.100)"
+IBM-Screenshots: 
+IBM-Feature-Version: 2
+IBM-AppliesTo: com.ibm.websphere.appserver; productVersion=2014.2.0.0; productInstallType=Archive
+Subsystem-License: http://www.ibm.com/licenses/L-JTHS-9A6KF2
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-License-Information: wlp/lafiles/LI
+IBM-InstallTo: core

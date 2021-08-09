@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+        <feature>configExtensionsTest-1.0</feature>
+    </featureManager>
+
+    <testExtensionSub id="test.config.extensions.sub.config1" testAttr1Rename="renamed value" testAttribute2="2" testAttr4RenameSub="fourSub"/>
+    
+    <test.config.extensions.sub.sub id="test.config.extensions.sub.sub.config1" testAttr1Rename="rqd" testAttr2Rename="2" testAttr3RenameSub="3" testAttr4RenameSubSub="fourSubNext" testAttribute5="5" />
+    
+    <test.config.extensions.sub.non.factorypid testAttr4="four" />
+    
+    <test.config.extensions.extends.non.factorypid testAttr5="five"/>
+    
+    <test.config.extensions.extends.attr.required.parent testAttribute1="1" />
+    
+    <test.config.extensions.extends.attr.required/>
+
+	<test.config.extensions.sub.error.no.parent.override.attr/>
+
+	<test.config.extensions.internal.sub1 id="internal1" internalAttr1="sub1Attr1"/>
+	
+	<test.config.extensions.internal.sub2 internalAttr2="sub2Attr1"/>
+	
+	<test.config.extensions.override.final id="test.config.extensions.override.final.1" testFinalAttr="subFinalValue"/>
+	
+</server>

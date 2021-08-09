@@ -1,0 +1,2 @@
+-Doracle.jdbc.timezoneAsRegion=false
+-Djavax.net.debug=ssl:handshake:verbose:keymanager:trustmanager

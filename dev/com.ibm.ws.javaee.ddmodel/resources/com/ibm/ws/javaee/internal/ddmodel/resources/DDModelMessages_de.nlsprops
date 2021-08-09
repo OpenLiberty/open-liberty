@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: Im Element {2} fehlt das erforderliche Attribut {3} im Implementierungsdeskriptor {0} in Zeile {1}.
+required.attribute.missing.explanation=Ein erforderliches Attribut fehlt im angegebenen Element.
+required.attribute.missing.useraction=Korrigieren Sie den Implementierungsdeskriptor, indem Sie das fehlende Attribut hinzuf\u00fcgen.
+
+invalid.root.element=CWWKC2252E: Das lokale Stammelement {2} im Implementierungsdeskriptor {0} in Zeile {1} ist ung\u00fcltig.
+invalid.root.element.explanation=Das Stammelement ist falsch.
+invalid.root.element.useraction=\u00dcberpr\u00fcfen Sie die XML-Datei, und stellen Sie sicher, dass das Stammelement korrekt ist.
+
+root.element.not.found=CWWKC2253E: Das Stammelement des Implementierungsdeskriptors {0} in Zeile {1} wurde nicht gefunden.
+root.element.not.found.explanation=Das Stammelement fehlt im Implementierungsdeskriptor.
+root.element.not.found.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+end.element.not.found=CWWKC2254E: Das Endelementtag des Elements {2} wurde nicht im Implementierungsdeskriptor {0} in Zeile {1} gefunden.
+end.element.not.found.explanation=Der Implementierungsdeskriptor scheint keine g\u00fcltige XML zu sein.
+end.element.not.found.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+incorrect.id.attr.namespace=CWWKC2255E: Der Namespace des Attributs id des Elements {2} ist {3}, sollte aber {4} im Implementierungsdeskriptor {0} in Zeile {1} sein.
+incorrect.id.attr.namespace.explanation=Die Namespaces der Elemente und Attribute im Implementierungsdeskriptor sind nicht konsistent.
+incorrect.id.attr.namespace.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+unexpected.attribute=CWWKC2256E: Das nicht erwartete Attribut {3} wurde beim Parsen des Elements {2} im Implementierungsdeskriptor {0} in Zeile {1} gefunden.
+unexpected.attribute.explanation=Es wurde ein Attribut gefunden, das nicht im Implementierungsdeskriptor definiert ist.
+unexpected.attribute.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+unexpected.content=CWWKC2257E: Es wurde nicht erwarteter Inhalt im Element {2} im Implementierungsdeskriptor {0} in Zeile {1} gefunden.
+unexpected.content.explanation=Es wurde Textinhalt gefunden, der nicht im Implementierungsdeskriptor definiert ist.
+unexpected.content.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+incorrect.child.element.namespace=CWWKC2258E: Der Namespace des untergeordneten Elements {3} des \u00fcbergeordneten Elements {2} im Implementierungsdeskriptor {0} in Zeile {1} ist {4} und nicht {5}.
+incorrect.child.element.namespace.explanation=Die Namespaces der Elemente und Attribute im Implementierungsdeskriptor sind nicht konsistent.
+incorrect.child.element.namespace.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+unexpected.child.element=CWWKC2259E: Das nicht erwartete untergeordnete Element {3} des \u00fcbergeordneten Elements {2} wurde im Implementierungsdeskriptor {0} in Zeile {1} gefunden.
+unexpected.child.element.explanation=Es wurde ein Element gefunden, das nicht im Implementierungsdeskriptor definiert ist.
+unexpected.child.element.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+invalid.href.prefix=CWWKC2260E: Der href-Attributwert des Elements {2} beginnt nicht mit {3} im Implementierungsdeskriptor {0} in Zeile {1}.
+invalid.href.prefix.explanation=Ein href-Attribut muss mit dem richtigen Pfad zum referenzierten Deskriptor beginnen.
+invalid.href.prefix.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Beim Bestimmen der Version des Implementierungsdeskriptors {0} ist ein Fehler aufgetreten.
+unknown.deployment.descriptor.version.explanation=Die Version oder der Namespace ist ung\u00fcltig oder nicht im Stammelement des Implementierungsdeskriptors angegeben.
+unknown.deployment.descriptor.version.useraction=\u00dcberpr\u00fcfen und korrigieren Sie die Version oder den Namespace im Stammelement des Implementierungsdeskriptors.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: Der Server kann die Version {3} und den Namespace {2} im Implementierungsdeskriptor {0} in Zeile {1} nicht verarbeiten.
+invalid.deployment.descriptor.namespace.explanation=Entweder sind die angegebene Version und der angegebene Namespace nicht g\u00fcltig oder die Serverkonfiguration hat kein Feature, das die Version und den Namespace verarbeiten kann.
+invalid.deployment.descriptor.namespace.useraction=\u00dcberpr\u00fcfen und korrigieren Sie die Version oder den Namespace im Stammelement des Implementierungsdeskriptors oder \u00fcberpr\u00fcfen und korrigieren Sie die Features in der Serverkonfiguration.
+
+invalid.deployment.descriptor.version=CWWKC2263E: Das Versionsattribut {2}, das im Implementierungsdeskriptor {0} in Zeile {1} angegeben ist, ist nicht g\u00fcltig.
+invalid.deployment.descriptor.version.explanation=Es wurde eine ung\u00fcltige Version im Stammelement des Implementierungsdeskriptors angegeben.
+invalid.deployment.descriptor.version.useraction=\u00dcberpr\u00fcfen und korrigieren Sie die Versionsnummer im Stammelement des Implementierungsdeskriptors.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: Beim Bestimmen des Namespace des Implementierungsdeskriptors {0} in Zeile {1} ist ein Fehler aufgetreten.
+missing.deployment.descriptor.namespace.explanation=Es wurde ein ung\u00fcltiger Namespace im Stammelement des Implementierungsdeskriptors angegeben.
+missing.deployment.descriptor.namespace.useraction=\u00dcberpr\u00fcfen und korrigieren Sie den Namespace im Stammelement des Implementierungsdeskriptors.
+
+missing.deployment.descriptor.version=CWWKC2265E: Beim Bestimmen der Version des Implementierungsdeskriptors {0} in Zeile {1} ist ein Fehler aufgetreten.
+missing.deployment.descriptor.version.explanation=Es wurde keine Version im Stammelement des Implementierungsdeskriptors angegeben.
+missing.deployment.descriptor.version.useraction=\u00dcberpr\u00fcfen und korrigieren Sie die Version im Stammelement des Implementierungsdeskriptors.
+
+at.most.one.occurrence=CWWKC2266E: Es darf nur ein einziges untergeordnetes Element {3} des \u00fcbergeordneten Elements {2} im Implementierungsdeskriptor {0} in Zeile {1} enthalten sein.
+at.most.one.occurrence.explanation=Einige Elemente im Implementierungsdeskriptor d\u00fcrfen nur ein einziges mal vorkommen.
+at.most.one.occurrence.useraction=Korrigieren Sie den Implementierungsdeskriptor.
+
+required.method.element.missing=CWWKC2267E: F\u00fcr das Element {2} muss mindestens ein untergeordnetes Element {3} im Implementierungsdeskriptor {0} in Zeile {1} definiert werden.
+required.method.element.missing.explanation=Im angegebenen \u00fcbergeordneten Element fehlt ein erforderliches untergeordnetes Element. 
+required.method.element.missing.useraction=Korrigieren Sie den Implementierungsdeskriptor, indem Sie das erforderliche untergeordnete Element hinzuf\u00fcgen.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Wenn ein Modusattribut des Elements <run-as-mode> im Implementierungsdeskriptor {0} in Zeile {1} auf SPECIFIED_IDENTITY gesetzt ist, muss das untergeordnete Element <specified-identity> definiert werden.
+runasmode.missing.specifiedID.element.explanation=Das untergeordnete Element <specified-identity> f\u00fcr das Element <run-as-mode>, dessen Modus auf SPECIFIED_IDENTITY gesetzt ist, fehlt.
+runasmode.missing.specifiedID.element.useraction=Korrigieren Sie den Implementierungsdeskriptor, indem Sie das erforderliche untergeordnete Element hinzuf\u00fcgen, oder \u00e4ndern Sie den Modus.
+
+found.duplicate.ejbname=CWWKC2269E: Das Namensattribut f\u00fcr alle Bean-Elemente <session> und <message-driven> muss eindeutig sein. Der Name {1} wurde im Implementierungsdeskriptor {0} doppelt gefunden.
+found.duplicate.ejbname.explanation=Die Namen aller Session-Beans und Message-driven Beans m\u00fcssen eindeutig sein. Der angegebene Bean-Name wird mehrfach verwendet.
+found.duplicate.ejbname.useraction=Korrigieren Sie den Implementierungsdeskriptor, indem Sie eines der Vorkommen des doppelten Bean-Namens umbenennen.
+
+found.duplicate.attribute.value=CWWKC2270E: Das Attribut {2} f\u00fcr alle Elemente {1} muss eindeutig sein. Der Name {3} wurde im Implementierungsdeskriptor {0} doppelt gefunden.
+found.duplicate.attribute.value.explanation=Der Wert des angegebenen Attributs muss in allen Elementen desselben Typs eindeutig sein. 
+found.duplicate.attribute.value.useraction=Korrigieren Sie den Implementierungsdeskriptor, indem Sie eines der Vorkommen des doppelten Attributwerts umbenennen.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Es wurde eine Datei validation.xml f\u00fcr das Modul {0} gefunden. Diese Datei validation.xml ist jedoch nicht f\u00fcr Validierung konfiguriert und wird deshalb ignoriert.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=Der Service BeanValidationService kann keine ValidatorFactory erstellen, weil beim Parsen der Datei validation.xml mithilfe der Schemadatei validation-configuration-1.0.xsd ein Fehler aufgetreten ist. Dieser Fehler kann ein Hinweis darauf sein, dass die Datei validation.xml nicht f\u00fcr die Bean-Validation-Laufzeitumgebung bestimmt ist. Deshalb wird die Datei ignoriert.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Wenn die Datei validation.xml nicht f\u00fcr die Erstellung einer ValidatorFactory-Instanz bestimmt ist, ignorieren Sie die Nachricht. Ist die Datei validation.xml jedoch f\u00fcr die Erstellung einer ValidatorFactory-Instanz bestimmt, liegt ein Problem vor. Aktivieren Sie die Traceerstellung f\u00fcr die Bean-Validation-Laufzeitumgebung im Anwendungsserver, stoppen Sie die Anwendung, starten Sie die Anwendung erneut, und suchen Sie dann in der Traceausgabedatei nach einem Traceereignis wie dem folgenden: Unexpected exception when trying to unmarshall the validation.xml file (Unerwartete Ausnahme beim Unmarshaling der Datei validation.xml). Verwenden Sie den Ausnahme-Stack-Trace zur Debugunterst\u00fctzung.
+
+xml.error=CWWKC2272E: Beim Parsing des Implementierungsdeskriptors {0} ist in Zeile {1} ein Fehler aufgetreten. Fehlernachricht: {2}
+xml.error.explanation=Beim Parsing des XML-Implementierungsdeskriptors ist ein Fehler aufgetreten. Suchen Sie in der Fehlernachricht nach weiteren Erl\u00e4uterungen.
+xml.error.useraction=Korrigieren Sie den Implementierungsdeskriptor, um den Fehler zu beheben.
+
+invalid.enum.value=CWWKC2273E: Der Wert {2} im Implementierungsdeskriptor {0} in Zeile {1} ist nicht g\u00fcltig. Die g\u00fcltigen Werte sind {3}.
+invalid.enum.value.explanation=Im Implementierungsdeskriptor ist ein nicht g\u00fcltiger Wert angegeben.
+invalid.enum.value.useraction=Korrigieren Sie den Implementierungsdeskriptor und geben Sie einen der erwarteten Werte an.
+
+invalid.int.value=CWWKC2274E: Der Wert {2} im Implementierungsdeskriptor {0} in Zeile {1} ist keine g\u00fcltige ganze Zahl.
+invalid.int.value.explanation=Im Implementierungsdeskriptor ist ein Wert angegeben, der nicht im Bereich -2147483648 bis 2147483647 liegt.
+invalid.int.value.useraction=Korrigieren Sie den Implementierungsdeskriptor und geben Sie eine g\u00fclige ganze Zahl an.
+
+invalid.long.value=CWWKC2275E: Der Wert {2} im Implementierungsdeskriptor {0} in Zeile {1} ist keine g\u00fcltige Langzahl.
+invalid.long.value.explanation=Im Implementierungsdeskriptor ist ein Wert angegeben, der nicht im Bereich -9223372036854775808 bis 9223372036854775807 liegt.
+invalid.long.value.useraction=Korrigieren Sie den Implementierungsdeskriptor und geben Sie eine g\u00fclige Langzahl an.
+
+module.name.not.specified=CWWKC2276E: Das Element {0} muss ein moduleName-Attribut enthalten.
+module.name.not.specified.explanation=Die Bindungs- und Erweiterungskonfiguration f\u00fcr EJB- und Webmodule muss ein moduleName-Attribut enthalten, das das Modul f\u00fcr die entsprechende Konfiguration angibt. 
+module.name.not.specified.useraction=F\u00fcgen Sie dem Element web-bnd, web-ext, ejb-bnd oder ejb-ext ein moduleName-Attribut hinzu. 
+
+module.name.invalid=CWWKC2277E: Einer oder mehrere Modulnamen im Element {1} sind ung\u00fcltig. Ung\u00fcltige Modulnamen sind: {0}.
+module.name.invalid.explanation=Die Bindungs- und Erweiterungskonfiguration f\u00fcr Webmodule muss ein g\u00fcltiges moduleName-Attribut angeben. Mindestens eine Konfguration enth\u00e4lt einen ung\u00fcltigen Modulnamen. Der Modulname muss der Name der Archivdatei sein, der die Web- oder EJB-Anwendung enth\u00e4lt.
+module.name.invalid.useraction=Korrigieren Sie das Attribut moduleName in der Bindungs- oder Erweiterungskonfiguration. 

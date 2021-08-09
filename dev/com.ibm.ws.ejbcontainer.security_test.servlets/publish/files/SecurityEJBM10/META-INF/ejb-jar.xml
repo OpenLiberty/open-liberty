@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>     
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_ID" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" 
+	metadata-complete="false" version="3.1">
+
+  <display-name>SecurityEJBM10</display-name>
+  
+  <enterprise-beans>
+     <session id="SecurityEJBM10">
+        <ejb-name>SecurityEJBM10Bean</ejb-name>
+        <ejb-class>com.ibm.ws.ejbcontainer.security.test.SecurityEJBM10Bean</ejb-class>
+          <security-identity>
+			 <use-caller-identity />
+		  </security-identity>
+     </session>
+  </enterprise-beans>
+  
+  <assembly-descriptor id="AssemblyDescriptor_1">
+    <security-role id="SecurityRole_1">
+      <description>Manager in an enterprise</description>
+      <role-name>Manager</role-name>
+    </security-role>
+    <security-role id="SecurityRole_2">
+      <description>Employee in an enterprise</description>
+      <role-name>Employee</role-name>
+    </security-role>
+
+     <exclude-list>
+       <description>These methods are uncallable</description>
+       <method id="MethodElement_2">
+          <ejb-name>SecurityEJBM10Bean</ejb-name>
+          <method-name>denyAll</method-name>
+       </method>
+     </exclude-list>
+     
+  </assembly-descriptor>
+  
+</ejb-jar>

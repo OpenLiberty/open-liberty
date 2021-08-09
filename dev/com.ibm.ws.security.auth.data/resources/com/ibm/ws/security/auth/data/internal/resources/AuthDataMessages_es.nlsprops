@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.auth.data/resources/com/ibm/ws/security/auth/data/internal/resources/AuthDataMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Data
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1350 - CWWKS1399
+# Do not translate DefaultPrincipalMapping, JAAS, HashMap, and WSMappingCallbackHandler.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER=CWWKS1350E: El inicio de sesi\u00f3n program\u00e1tico de JAAS DefaultPrincipalMapping no puede llevarse a cabo porque el WSMappingCallbackHandler se ha creado sin el objeto HashMap de propiedades de correlaci\u00f3n.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.explanation=El WSMappingCallbackHandler utilizado para realizar el inicio de sesi\u00f3n program\u00e1tico de JAAS DefaultPrincipalMapping no conten\u00eda un par\u00e1metro a java.util.Map parameter.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.useraction=Verifique que la aplicaci\u00f3n que realiza el inicio de sesi\u00f3n program\u00e1tico de JAAS DefaultPrincipalMapping crea el WSMappingCallbackHandler con una instancia de java.util.Map.
+
+# Do not translate DefaultPrincipalMapping, JAAS, HashMap, WSMappingCallbackHandler, and com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER=CWWKS1351E: El inicio de sesi\u00f3n program\u00e1tico de JAAS DefaultPrincipalMapping no puede llevarse a cabo porque la entrada com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS no se ha encontrado en el objeto HashMap de propiedades de correlaci\u00f3n.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.explanation=El par\u00e1metro java.util.Map del WSMappingCallbackHandler utilizado para realizar el inicio de sesi\u00f3n program\u00e1tico de JAAS DefaultPrincipalMapping no conten\u00eda un valor para la entrada com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.useraction=Verifique que la aplicaci\u00f3n que realiza el inicio de sesi\u00f3n program\u00e1tico de JAAS DefaultPrincipalMapping crea el WSMappingCallbackHandler con una instancia de java.util.Map con un valor para la entrada com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.

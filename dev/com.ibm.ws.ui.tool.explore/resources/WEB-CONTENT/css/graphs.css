@@ -1,0 +1,552 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+.statusGraph {
+    display: none;
+    position: relative;
+    vertical-align: top;
+    background-color: white;
+    border: solid 1px #e3e4e6;
+    margin: 14px;
+    white-space: nowrap;
+}
+
+.statusGraphNarrow {
+    width: 443px;
+    height: 356px;
+}
+
+.statusGraph.new {
+    border-color: #17af4b;
+    border-width: 2px;
+}
+
+.statusGraphInfo {
+    border-right: solid 1px #e3e4e6;
+}
+
+.statusGraphTitle {
+    color: #404041;
+    font-size: 16px;
+    padding-top: 18px;
+    padding-left: 20px;
+    padding-bottom: 6px;
+    padding-right: 41px;
+}
+
+.statusGraphGraph {
+    padding: 14px 14px 0px 5px;
+}
+
+.statusGraphChart {
+    width: 411px;
+    height: 243px;
+}
+
+.statusLogAnalyticsGraphChart {
+    width: 920px;
+    height: 243px;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.statusGraphSummary {
+    text-align: left;
+    font-size: 12px;
+    color: #404041;
+    padding-left: 20px;
+}
+
+.overlayMessage {
+    z-index: 3;
+    position: absolute;
+    padding-left: 15%;
+}
+
+.overlayMessageText {
+    background-color: #C0E6FF;
+    text-align: left;
+    font-size: 12px;
+    color: #404041;
+    padding-left: 24px;
+    opacity: 0.7;
+    width: 80%;
+}
+
+.liveMessage {
+    height: 20px;
+    display: block;
+}
+
+.liveMessageTextInfoIcon {
+    text-align: left;
+    background-image: url("../images/chart-overlay-info-D.png");
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    cursor: default;
+}
+
+.liveMessageTextInfoIcon:hover {
+    text-align: left;
+    background-image: url("../images/chart-overlay-info-hover_D.png");
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    cursor: pointer;
+}
+
+.liveMessageDetail {
+    word-wrap: break-word;
+    white-space: normal;
+    display: none;
+}
+
+.liveMessageDetailInfoIcon {
+    text-align: left;
+    background-image: url("../images/chart-overlay-info-D.png");
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+}
+
+.liveMessageTextCloseIcon {
+    text-align: left;
+    background-image: url("../images/chart-overlay-close-D.png");
+    background-repeat: no-repeat;
+    background-position: 100% 20%;
+    float: right;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    padding-right: 1%;
+}
+
+.statusGraphActionButtonNode {
+    position: absolute;
+    right: -10px; /* -8px for positioning + -2 more for the border added to the button */
+    top: -10px;
+    width: 36px; /* 32px for icon + (2 * 2px) transparent border added for hovering */
+    height: 36px;
+}
+
+.statusGraphActionButton {
+    border: 2px solid transparent;
+    z-index: 1;
+}
+
+.statusGraphActionButton:hover {
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    border-radius: 40px;
+}
+
+.statusGraphActionButtonFocused {
+    outline: none !important;
+    box-shadow: #7CC7FF 0px 0px 2px 1px;
+    border-radius: 40px;
+}
+
+.statusGraphDeleteButton {
+    border: 2px solid transparent;
+    padding: 0px;
+    background-color: transparent;
+    /* height: 36px; */ /* icon-width(32px) + (2*2px transparent border needed for hover indication) */
+    z-index: 1;
+}
+
+.statusGraphDeleteButton:hover {
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    border-radius: 40px;
+    cursor: pointer;
+}
+
+/* for some weird reason, outline none doesn't work. For now, use the default outline as focus. Otherwise
+   both outline and box-shadow are shown.
+.statusGraphDeleteButtonFocused {
+	box-shadow: #7CC7FF 0 0 2px 1px;
+    border-radius: 40px;
+    outline: none !important;
+}
+*/
+
+.statusGraphActionButton, .statusGraphDeleteButton {
+    position: relative;
+}
+
+.statusGraphActionMenu {
+    min-width: 170px;
+}
+
+.statusGraphActionMenuItems {
+    border: none;
+    background-color: #404e56;
+    color: #ffffff;
+    height: 42px;
+    font-size: 12px;
+}
+
+.statusGraphActionMenu td.dijitMenuItemLabel {
+    padding: 0px;
+}
+
+.statusGraphActionMenu td.dijitMenuItemIconCell {
+    border: none;
+    padding: 0px;
+}
+
+.statusGraphActionMenu .dijitMenuItemSelected {
+    background: none repeat scroll 0 0 #2c363b !important;
+    color: #ffffff !important;
+}
+
+.statusGraphActionMenu tr:focus, .statusGraphActionMenu tr:hover {
+    background-color: #2c363b;
+}
+
+.statusGraphNoIcon {
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+.statusGraphAddDashboardIcon, .statusGraphLegendShowIcon, .statusGraphLegendHideIcon {
+    height: 20px;
+    width: 24px;
+    margin: 11px 0px 11px 16px !important;
+}
+
+.statusGraphLegendShowIcon {
+    background-image: url("../images/action-menu-show-legend.png");
+}
+
+.statusGraphLegendHideIcon {
+    background-image: url("../images/action-menu-hide-legend.png");
+}
+
+.statusGraphAddDashboardIcon {
+    background-image: url("../images/action-menu-add-to-dashboard.png");
+}
+
+.statusGraphLegend {
+    vertical-align: top;
+    padding-top: 18px;
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 12px;
+    color: #404041;
+    height: 323px;
+    min-width: 80px;
+    overflow: auto;
+}
+
+.statusGraphSingleLegend {
+    height: 35px;
+    padding-left: 25px;
+    padding-top: 5px;
+    font-size: 12px;
+    color: #404041;
+}
+
+.showGraphsDialog {
+    right: 0px;
+    font-size: 0;
+    display: block;
+    position: absolute;
+    height: 100%;
+    z-index: 5;
+}
+
+.showGraphsDialogButton {
+    display: inline-block;
+    vertical-align: top;
+    position: absolute;
+    right: 290px;
+    z-index: 5;
+}
+
+.showGraphsDialogContainer {
+    position: absolute;
+    right: 0px;
+    width: 290px;
+    overflow: auto;
+    display: inline-block;
+    opacity: .90;
+    background-color: #2c2c2c;
+}
+
+.showGraphsDialogTableCell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#showGraphsDialogId_openButton, #showGraphsDialogId_closeButton {
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.showGraphs_closeButtonIcon {
+    background-image: url(../images/show-hide-graphs-right-T.png);
+    background-repeat: no-repeat;
+    background-position: 3px 14px;
+    background-color: #2c2c2c;
+    height: 54px;
+    width: 16px;
+}
+
+.showGraphs_closeButton.dijitButton, 
+.showGraphs_openButton.dijitButton,
+.addGraphButton.dijitButton {
+	margin: 0px;
+}
+
+.oneui .showGraphs_closeButton .dijitButtonNode, 
+.oneui .showGraphs_openButton .dijitButtonNode,
+.oneui .addGraphButton .dijitButtonNode {
+	padding: 0px !important; 
+	min-width: 0px;
+    border: none; 
+}
+
+.showGraphs_openButtonIcon {
+    background-image: url(../images/show-hide-graphs-left-T.png);
+    background-repeat: no-repeat;
+    background-position: 3px 14px;
+    background-color: #2c2c2c;
+    height: 54px;
+    width: 16px;
+}
+
+.showGraphs_openButton:hover, .showGraphs_openButton.dijitButtonFocused, .showGraphs_closeButton:hover, .showGraphs_closeButton.dijitButtonFocused {
+    box-shadow: 0 0 2px 2px #7CC7FF;  /* rgba(255, 255, 255, 0.3); - hardly visible especially for focus */
+}
+
+.showGraphsDialogTitle {
+    color: white;
+    height: 54px;
+    padding-left: 20px;
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 16px;
+}
+
+.categorySeparator {
+    background-color: #4b4c51;
+    height: 30px;
+    padding-left: 20px;
+    width: 100%;
+}
+
+.categorySeparatorHidden {
+    display: none;
+}
+
+.categorySection {
+    color: white;
+    font-size: 14px;
+    width: 100%;
+}
+
+.hideGraph {
+    display: none;
+}
+
+.displayGraph {
+    display: inline-block;
+    position: relative;
+    z-index: 0;
+}
+
+.showGraphsOptionTable {
+    padding-left: 30px;
+    width: 100%;
+    height: 30px;
+}
+
+.showGraphsOption {
+    color: white;
+    display: table-cell;
+    font-size: 14px; /* see above */
+}
+
+.showGraphsOption.disabled {
+    color: #b8babc;
+}
+
+.showGraphsOptionButton {
+    padding-right: 20px;
+}
+
+.oneui .showGraphsButton {
+	margin: 12px 14px 0px 0px !important;
+} 
+
+.oneui .showGraphsButton .dijitButtonNode { 
+	padding: 0px !important;
+    min-width: 0px;
+    border: none;
+    width: 35px;
+    box-shadow: none;
+}
+	
+.showGraphsButtonIcon {
+    width: 35px;
+    height: 28px;
+    background-image: url('../images/add-widget-T.png'); 
+    background-repeat: no-repeat; 
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+}
+
+.showGraphsButton:hover, .oneui .showGraphsButton.dijitButtonFocused {
+    box-shadow: 0 0 2px 1px #7CC7FF; 
+}
+
+.showGraphsButton:hover {
+	cursor: pointer;
+}
+
+.showGraphsButton_ContentPane {
+    height: 42px !important;
+}
+
+.showGraphs_saveCancelBar {
+    background-color: #f8f8f7;
+    height: 41px;
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-color: #cdced2;
+}
+
+.showGraphs_buttonArea {
+    float: right;
+}
+
+.configureGraphsButton {
+    font-size: 16px;
+    text-align: center;
+    color: #ffffff;
+    min-width: 70px;
+    margin-right: 6px;
+    margin-top: 6px;
+    border: solid;
+    border-width: 2px;
+}
+
+.configureGraphsButton span {
+    padding-top: 4px;
+    padding-bottom: 3px;
+    padding-left: 28px;
+    padding-right: 28px;
+}
+
+.configureGraphsSaveButton {
+    background-color: #4178BE;
+    border-color: #5AAAFA;
+}
+
+.configureGraphsSaveButton:hover, .configureGraphsSaveButtonFocused {
+    background-color: #325C80;
+    border-color: #4178BE;
+}
+
+.configureGraphsDoneButton {
+    background-color: #4178BE;
+}
+
+.configureGraphsCancelButton {
+    background-color: #58595b;
+    border-color: #a8a8a8;
+}
+
+.configureGraphsCancelButton:hover, .configureGraphsCancelButtonFocused {
+    background-color: #404041;
+    border-color: #878a8c;
+}
+
+.configureGraphsSelectOptions {
+    display: block;
+    position: absolute;
+    top: 168px;
+    left: 58px;
+    color: #404041;
+    font-size: 16px;
+}
+
+.enableGraphButtonIcon {
+    background-image: url(../images/add-metric-enabled-T.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+}
+
+.hoverEnableGraphButtonIcon {
+    background-image: url(../images/add-highlight-15.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+}
+
+.addGraphButton.dijitButton {
+	float: right;
+}
+
+.oneui .addGraphButton .dijitButtonNode {
+	background-color: transparent;
+	background-image: none;
+}
+
+.disableGraphButtonIcon {
+    background-image: url(../images/monitoring-added-check-DT.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+    cursor: default;
+}
+
+.dijitContentPane div.statsUnavailableDialogContentPane.dijitContentPane {
+    padding-top: 140px;
+    padding-bottom: 140px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.dijitContentPane div.statusGraphTitle.statsUnavailableMessage {
+    font-size: 22px;
+    padding-left: 52px; /* the width of the icon + 20px padding/margin */
+    white-space: normal;
+}
+
+.dijitContentPane div.statusGraphTitle.statsUnavailableMessageDialog {
+    font-size: 18px;
+    color: #d0d2d3;
+    display: block;
+    padding-left: 32px; /* the width of the icon + 10px padding */
+}
+
+.statsUnavailableMessageIcon {
+    text-align: center;
+    background-image: url("../imagesShared/dialog-alert-T.png");
+    height: 32px;
+    width: 32px;
+    float: left;
+    padding-right: 20px;
+}
+
+.statsUnavailableMessageIconDialog {
+    text-align: center;
+    background-image: url("../images/alert-no-available-metric-S.png");
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 22px;
+    float: left;
+    padding-right: 10px;
+}

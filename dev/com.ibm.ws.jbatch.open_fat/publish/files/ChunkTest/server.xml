@@ -1,0 +1,46 @@
+<server>
+
+	<featureManager>
+		<feature>componentTest-1.0</feature>
+		<feature>osgiconsole-1.0</feature>
+		<feature>batch-1.0</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+	
+	<include location="../fatTestPorts.xml"/>
+
+    <!-- Configured with schema -->
+    <batchPersistence jobStoreRef="BatchDatabaseStore" />
+
+    <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
+
+    <!-- The derby driver -->
+    <library id="DerbyLib">
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	</library>
+	
+	<!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+   	is required beyond a single server start, configure the databaseName with a file location such as:
+   	databaseName="${shared.config.dir}/data/derbydb" -->
+
+    <!-- Derby datasource used for batch tables-->
+    <dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:ChunkBatchDB" user="user" password="pass" />
+    </dataSource>
+
+    <!-- Derby datasource used by chunk tests, transactional -->
+    <dataSource jndiName="jdbc/myds" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:ChunkTestTwoResources" user="user" password="pass" />
+    </dataSource>
+
+    <!-- Derby datasource used by chunk tests, non-transactional -->
+    <dataSource jndiName="jdbc/mydsNonTran" type="javax.sql.ConnectionPoolDataSource" transactional="false">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:ChunkTestTwoResourcesNonTran" user="user" password="pass" />
+    </dataSource>
+
+	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+
+</server>

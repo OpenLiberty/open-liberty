@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.5322.10.2.3,ou=objectClasses,cn=krb5kdc,ou=schema
+m-must: krb5RealmName
+m-oid: 1.3.6.1.4.1.5322.10.2.3
+m-obsolete: FALSE
+m-supobjectclass: top
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: krb5Realm
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

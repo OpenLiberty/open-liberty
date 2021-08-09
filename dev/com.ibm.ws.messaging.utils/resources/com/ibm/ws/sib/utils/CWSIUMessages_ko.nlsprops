@@ -1,0 +1,189 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: \ub9b4\ub9ac\uc2a4: {0} \ub808\ubca8: {1}
+WPM_SPLASH_CWSIU0000.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \ud604\uc7ac \uba54\uc2dc\uc9d5 \ube4c\ub4dc \ub9b4\ub9ac\uc2a4 \ubc0f \ub808\ubca8\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+WPM_SPLASH_CWSIU0000.useraction=\uc5c6\uc74c
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: \ub7f0\ud0c0\uc784 \ud2b9\uc131 {0}\uc774(\uac00) {1} \uac12\uc73c\ub85c \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+RUNTIME_CWSIU0001.explanation=\ub7f0\ud0c0\uc784 \uae30\ubcf8\uac12\uc774 \uc544\ub2cc \uac12\uc73c\ub85c \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+RUNTIME_CWSIU0001.useraction=\uc5c6\uc74c
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: {0} \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \ub2e4\uc74c {1}\ubd84 \ub3d9\uc548 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=\ub85c\uadf8\uac00 \ub3d9\uc77c\ud55c \uba54\uc2dc\uc9c0 \uc0ac\ubcf8\uc73c\ub85c \ucc44\uc6cc\uc9c0\uc9c0 \uc54a\ub3c4\ub85d \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: {0} \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=\ub85c\uadf8\uac00 \ub3d9\uc77c\ud55c \uba54\uc2dc\uc9c0 \uc0ac\ubcf8\uc73c\ub85c \ucc44\uc6cc\uc9c0\uc9c0 \uc54a\ub3c4\ub85d \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubaa8\ub4e0 \ubc1c\uc0dd\uc774 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: {0} \uba54\uc2dc\uc9c0\uac00 \ub9c8\uc9c0\ub9c9 {2}\ubd84({3} - {4}) \ub3d9\uc548 {1}\ubc88 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+\uc774 \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \ub2e4\uc74c {5}\ubd84 \ub3d9\uc548 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=\uba54\uc2dc\uc9c0\uac00 \uc5ec\ub7ec \ubc88 \ubc1c\uc0dd\ud588\uc9c0\ub9cc \ud45c\uc2dc\ub418\uc9c0\ub294 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: \ub2e4\uc74c \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \ub2e4\uc74c {1}\ubd84 \ub3d9\uc548 \uc5b5\uc81c\ub429\ub2c8\ub2e4. {0} 
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=\ub85c\uadf8\uac00 \ub3d9\uc77c\ud55c \uba54\uc2dc\uc9c0 \uc0ac\ubcf8\uc73c\ub85c \ucc44\uc6cc\uc9c0\uc9c0 \uc54a\ub3c4\ub85d \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: \ub2e4\uc74c \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \uc5b5\uc81c\ub429\ub2c8\ub2e4. {0}.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=\ub85c\uadf8\uac00 \ub3d9\uc77c\ud55c \uba54\uc2dc\uc9c0 \uc0ac\ubcf8\uc73c\ub85c \ucc44\uc6cc\uc9c0\uc9c0 \uc54a\ub3c4\ub85d \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubaa8\ub4e0 \ubc1c\uc0dd\uc774 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: {0} \uba54\uc2dc\uc9c0\uac00 \ub9c8\uc9c0\ub9c9 {2}\ubd84({3} - {4}) \ub3d9\uc548 {1}\ubc88 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
+\uc774 \uba54\uc2dc\uc9c0\uc758 \ucd94\ud6c4 \ubc1c\uc0dd\uc774 \ub2e4\uc74c {5}\ubd84 \ub3d9\uc548 \uc5b5\uc81c\ub429\ub2c8\ub2e4.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=\uba54\uc2dc\uc9c0\uac00 \uc5ec\ub7ec \ubc88 \ubc1c\uc0dd\ud588\uc9c0\ub9cc \ud45c\uc2dc\ub418\uc9c0\ub294 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: {0} \ubb38\uc790\ub294 SIB \uc8fc\uc81c \uc640\uc77c\ub4dc\uce74\ub4dc \ubb38\uc790\uc5f4 {1}\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=\ubb3c\uc74c\ud45c \ubb38\uc790\ub294 SIB \uc8fc\uc81c \uc640\uc77c\ub4dc\uce74\ub4dc \uad6c\ubb38\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=\uc81c\uacf5\ub41c \uc8fc\uc81c \uc640\uc77c\ub4dc\uce74\ub4dc \ubb38\uc790\uc5f4\uc5d0\uc11c \ubb3c\uc74c\ud45c \ubb38\uc790 \uc778\uc2a4\ud134\uc2a4\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: \uc8fc\uc81c \ubb38\uc790\uc5f4 {0}\uc5d0 \uad6c\ubd84\ub418\uc9c0 \uc54a\uc740 \ubcc4\ud45c\uac00 \uc788\uc73c\ubbc0\ub85c SIB \uad6c\ubb38\uc73c\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=\ubcc4\ud45c \ubb38\uc790\ub294 \uc2ac\ub798\uc2dc\ub85c \uc644\uc804\ud788 \uad6c\ubd84\ub41c \uacbd\uc6b0\ub97c \uc81c\uc678\ud558\uace0 SIB \uc640\uc77c\ub4dc\uce74\ub4dc \uad6c\ubb38\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=\uc81c\uacf5\ub41c \uc8fc\uc81c \ubb38\uc790\uc5f4\uc5d0\uc11c \ubcc4\ud45c \ud55c \ucabd\uc5d0 \uc2ac\ub798\uc2dc\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: {1} \uc608\uc678\ub85c \uc778\ud574 {0} \ud2b9\uc131 \ud30c\uc77c\uc744 \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+EXCP_DURING_LOAD_CWSIU0050.explanation=CMSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=CMSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: \uc774\uc804 {0} \uba54\uc2dc\uc9c0 \ubc1c\uc0dd\uc774 {1}\uc5d0\uc11c \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=\uc774\uc804\uc5d0 \uba54\uc2dc\uc9c0\uac00 \ubc1c\uc0dd\ud588\uc73c\ub098 \uac00\uc7a5 \ucd5c\uadfc \ubc1c\uc0dd\ud55c \uba54\uc2dc\uc9c0\uac00 \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=\uc5c6\uc74c
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: {2} \ubc0f {3} \uc0ac\uc774\uc5d0 {1}\ubc88 \ubc1c\uc0dd\ud55c {0} \uba54\uc2dc\uc9c0\uac00 \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=\uba54\uc2dc\uc9c0\uac00 \uc5ec\ub7ec \ubc88 \ubc1c\uc0dd\ud588\uc9c0\ub9cc \ud45c\uc2dc\ub418\uc9c0\ub294 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=\uc5c6\uc74c
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: \uc774\uc804 "{0}" \ubc1c\uc0dd\uc774 {1}\uc5d0\uc11c \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=\uc774\uc804\uc5d0 \uba54\uc2dc\uc9c0\uac00 \ubc1c\uc0dd\ud588\uc73c\ub098 \ud604\uc7ac \uba54\uc2dc\uc9c0 \uc774\uc804\uc5d0 \uac00\uc7a5 \ucd5c\uadfc \ubc1c\uc0dd\ud55c \uba54\uc2dc\uc9c0\ub294 \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=\uc5c6\uc74c
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: "{0}"\uc774(\uac00) {2} \ubc0f {3} \uc0ac\uc774\uc5d0\uc11c {1}\ubc88 \ubc1c\uc0dd\ud588\uc73c\ub098 \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=\uba54\uc2dc\uc9c0\uac00 \uc5ec\ub7ec \ubc88 \ubc1c\uc0dd\ud588\uc9c0\ub9cc \ud45c\uc2dc\ub418\uc9c0\ub294 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=\uc5c6\uc74c
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: 16\uc9c4 \ubb38\uc790\uc5f4 {0}\uc774(\uac00) \uc798\ubabb \ud615\uc2dd\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+BAD_HEX_STRING_CWSIU0200.explanation=16\uc9c4\uc774 \uc544\ub2cc \ubb38\uc790 \ub610\ub294 \ud640\uc218\uc758 \ubb38\uc790\ub97c \ud3ec\ud568\ud558\ub294 \ubb38\uc790\uc5f4\ub85c \uc778\ud574 \ubb38\uc790\uc5f4\uc5d0\uc11c \ubc14\uc774\ud2b8 \ubc30\uc5f4\ub85c \ubcc0\ud658\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+BAD_HEX_STRING_CWSIU0200.useraction=\ubcc0\ud658\uc774 \uc2e4\ud328\ud55c \ubb38\uc790\uc5f4\uc758 \ucee8\ud150\uce20\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ucda9\ubd84\ud55c \uc815\ubcf4\uac00 \uc5c6\ub294 \uacbd\uc6b0, \ucd94\uac00 \ub3c4\uc6c0\ub9d0\uc744 \ubcf4\ub824\uba74 \uc774\uc804 \uba54\uc2dc\uc9c0\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+TEMPORARY_CWSIU9999.useraction=\ubb38\uc81c\uc810\uc744 \ud574\uacb0\ud560 \uc218 \uc5c6\uc73c\uba74, \uc2dc\uc2a4\ud15c \uad00\ub9ac\uc790\uc5d0\uac8c \ub3c4\uc6c0\uc744 \uc694\uccad\ud558\uc2ed\uc2dc\uc624.
+

@@ -1,0 +1,3 @@
+dev/com.ibm.ws.security.openidconnect.clients.common/test/com/ibm/ws/security/openidconnect/clients/common/AttributeToSubjectTest.java
+dev/com.ibm.ws.security.openidconnect.clients.common/test/com/ibm/ws/security/openidconnect/clients/common/OIDCClientAuthenticatorUtilTest.java
+dev/com.ibm.ws.security.social/test/com/ibm/ws/security/social/tai/TAIEncryptionUtilsTest.java

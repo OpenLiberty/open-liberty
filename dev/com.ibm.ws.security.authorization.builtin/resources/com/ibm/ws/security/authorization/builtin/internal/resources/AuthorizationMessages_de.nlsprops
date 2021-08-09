@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: Es sind mehrere Ressourcen mit dem Namen {0} vorhanden. Die Berechtigungsrichtlinie kann nicht bestimmt werden.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=Es sind mehrere Ressourcen mit demselben Namen vorhanden, und die richtige Berechtigungsrichtlinie kann nicht bestimmt werden. Ressourcennamen m\u00fcssen eindeutig sein.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=\u00c4ndern Sie den Namen einer der Ressourcen, so dass alle Ressourcen eindeutig sind.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: Die Rollendefinition ist nicht g\u00fcltig: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=Die Syntax f\u00fcr die Definition einer Rolle ist <{1} name="..." />.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=\u00c4ndern Sie die Rollendefinition in der Konfiguration.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: Es wurden mehrere Elemente vom Typ {0} mit dem Namen {1} gefunden.
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=Es ist nur eine einzige Definition einer bestimmten Rolle zul\u00e4ssig.
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=Entfernen Sie doppelten Rollendefinitionen in der Konfiguration.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: Der Rolle {0} wurde mehr als ein Benutzer, mehr als eine Gruppe oder mehr als ein Sondersubjekt hinzugef\u00fcgt.
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=Es ist nur eine einzige Definition eines Members pro Rolle zul\u00e4ssig.
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=Entfernen Sie doppelten Rollenmemberdefinitionen in der Konfiguration.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: Die Berechtigungsentscheidung f\u00fcr die Ressourcen in der Anwendung {0} wird anhand der Gruppennamen des Benutzers getroffen, der den f\u00fcr den Zugriff auf diese Ressource erforderlichen Rollen entspricht.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=In der Anwendung ist keine Berechtigungstabelle definiert. Deshalb wird der f\u00fcr den Zugriff auf die Ressource erforderliche Rollenname als Gruppenname f\u00fcr die Zugriffspr\u00fcfung behandelt. Wenn f\u00fcr den Zugriff auf die Ressource beispielsweise der Rollenname Manager erforderlich ist und der authentifizierte Benutzer zur Gruppe Manager geh\u00f6rt, wird der Zugriff erteilt.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=Die implizite Berechtigungspr\u00fcfung kann inaktiviert werden, indem das Attribut useGroupToRoleName des Berechtigungselements in der Datei server.xml auf false gesetzt wird. 

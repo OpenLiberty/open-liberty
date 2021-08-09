@@ -1,0 +1,24 @@
+#include("cas/header.vm")
+  <cas:authenticationSuccess>
+    <cas:user>$escapeUtils.escapeXml($ticketValidationResponse.userName)</cas:user>
+    #if($ticketValidationResponse.pgtIou)
+      <cas:proxyGrantingTicket>$escapeUtils.escapeXml($ticketValidationResponse.pgtIou)</cas:proxyGrantingTicket>
+    #end
+    #if($ticketValidationResponse.attributes.size() > 0)
+      <cas:attributes>
+        #foreach($attr in $ticketValidationResponse.attributes.keySet())
+          #foreach($value in $ticketValidationResponse.attributes.get($attr))
+            <cas:$escapeUtils.escapeXml($attr)>$escapeUtils.escapeXml($value)</cas:$escapeUtils.escapeXml($attr)>
+          #end
+        #end
+      </cas:attributes>
+    #end
+    #if($ticketValidationResponse.proxies.size() > 0)
+      <cas:proxies>
+        #foreach($proxy in $ticketValidationResponse.proxies)
+          <cas:proxy>$escapeUtils.escapeXml($proxy)</cas:proxy>
+        #end
+      </cas:proxies>
+    #end
+  </cas:authenticationSuccess>
+#include("cas/footer.vm")

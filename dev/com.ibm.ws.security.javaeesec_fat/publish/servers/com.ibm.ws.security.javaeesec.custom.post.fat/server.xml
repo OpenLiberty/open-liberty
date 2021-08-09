@@ -1,0 +1,39 @@
+<server description="JavaEESec Security FAT">
+
+	<featureManager>
+		<feature>appSecurity-3.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>ldapRegistry-3.0</feature>
+	</featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <webContainer deferServletLoad="true" />   <!-- load servlet immediately in order to catch EL error -->
+
+ 	<application type="war" id="JavaEESecBasicAuthServlet" name="JavaEESecBasicAuthServlet" location="JavaEESecBasicAuthServlet.war">
+ 		<application-bnd>
+			<security-role name="javaeesec_basic">
+                                <user name="jaspiuser1" access-id="user:defaultRealm/jaspiuser1" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application type="war" id="JavaEESecAnnotatedBasicAuthServlet" name="JavaEESecAnnotatedBasicAuthServlet" location="JavaEESecAnnotatedBasicAuthServlet.war">
+ 		<application-bnd>
+			<security-role name="javaeesec_basic">
+				<user name="jaspildapuser1" access-id="user:localhost:${ldap.1.port}/uid=jaspildapuser1,o=ibm,c=us" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="javaeesec_basic_everyone">
+				<special-subject type="EVERYONE" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml" />
+</server>

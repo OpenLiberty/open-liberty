@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.18.9,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: booleanMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DIRECTORY_OPERATION
+m-oid: 2.5.18.9
+m-name: hasSubordinates
+m-description: X.501: entry has children
+m-obsolete: FALSE
+entryUUID: cac46c5f-9717-4314-95c1-9f7e54eac298
+entryCSN: 20130919065345.655000Z#000001#000#000000
+entryParentId: 8d7781fa-8bd8-4ab1-8c8c-ae6a13d0b74a
+createTimestamp: 20130919065352.068Z

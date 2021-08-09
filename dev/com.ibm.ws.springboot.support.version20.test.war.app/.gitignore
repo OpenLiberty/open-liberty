@@ -1,0 +1,8 @@
+/build/
+/module/build/
+
+### STS ###
+.apt_generated
+.factorypath
+.springBeans
+

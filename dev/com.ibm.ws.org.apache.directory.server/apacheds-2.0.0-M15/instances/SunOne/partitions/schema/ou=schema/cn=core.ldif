@@ -1,0 +1,7 @@
+version: 1
+dn: cn=core,ou=schema
+cn: core
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+creatorsname: uid=admin,ou=system

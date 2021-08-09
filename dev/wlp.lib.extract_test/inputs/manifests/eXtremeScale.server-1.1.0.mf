@@ -1,0 +1,15 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: eXtremeScale.server-1.1.0;visibility:=public
+Subsystem-Version: 1.1.0
+Subsystem-Content:
+ com.ibm.websphere.appserver.transaction-1.1; type="osgi.subsystem.feature", 
+ com.ibm.ws.xs.server; version=1.1.0,
+ com.ibm.ws.xs.server_bridge,
+ com.ibm.ws.xs.xio.native,
+ com.ibm.ws.xs.xm.native,
+ eXtremeScale.client-1.1.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-ShortName: eXtremeScale.server-1.1
+IBM-Feature-Version: 2
+IBM-API-Package: com.ibm.websphere.objectgrid.hibernate.cache; type="ibm-api"; version="1.0.0",
+ com.ibm.websphere.objectgrid.security.plugins.builtins; type="ibm-api"; version=1.0.0

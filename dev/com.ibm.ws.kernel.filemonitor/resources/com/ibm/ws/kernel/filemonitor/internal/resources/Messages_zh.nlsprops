@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: \u6307\u5b9a\u7684\u53c2\u6570\u672a\u6307\u5b9a\u6709\u6548\u6587\u4ef6\u540d\u8fc7\u6ee4\u5668\u3002{0}={1}
+badFilter.explanation=\u6307\u5b9a\u914d\u7f6e\u53c2\u6570\u7684\u503c\u672a\u8f6c\u6362\u4e3a\u6216\u65e0\u6cd5\u8f6c\u6362\u4e3a\u5b57\u7b26\u4e32\u503c\u3002
+badFilter.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u3002
+
+badInterval=CWWKE0401W: \u6307\u5b9a\u7684\u53c2\u6570\u672a\u8868\u793a\u6709\u6548\u76d1\u89c6\u65f6\u95f4\u95f4\u9694\u3002{0}={1}
+badInterval.explanation=\u6307\u5b9a\u914d\u7f6e\u53c2\u6570\u7684\u503c\u65e0\u6cd5\u89e3\u6790\u4e3a\u76d1\u89c6\u65f6\u95f4\u95f4\u9694\u3002
+badInterval.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\uff0c\u5e76\u786e\u4fdd\u8be5\u503c\u662f\u6709\u6548\u7684\u76d1\u89c6\u65f6\u95f4\u95f4\u9694\u3002\
+\u4f8b\u5982\uff0c1s \u8868\u793a 1 \u79d2\u3002\
+\u6709\u6548\u7684\u5355\u4f4d\u5305\u62ec ms = \u6beb\u79d2\u3001s = \u79d2\u3001m = \u5206\u949f\u548c h = \u5c0f\u65f6\u3002
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: \u672a\u80fd\u5206\u914d\u6307\u5b9a\u7684\u9ad8\u901f\u7f13\u5b58\u4f4d\u7f6e\uff0c\u6240\u4ee5\u6709\u5173\u53d7\u76d1\u89c6\u6587\u4ef6\u7684\u6240\u6709\u4fe1\u606f\u5c06\u5b58\u50a8\u5728\u5185\u5b58\u4e2d\u3002{0}={1}
+badDiskCache.explanation=\u670d\u52a1\u65e0\u6cd5\u4e3a\u4e00\u7ec4\u53d7\u76d1\u89c6\u8d44\u6e90\u521b\u5efa\u9ad8\u901f\u7f13\u5b58\u4f4d\u7f6e\u3002
+badDiskCache.useraction=\u8bf7\u9a8c\u8bc1\u60a8\u5bf9\u8be5\u670d\u52a1\u5668\u76ee\u5f55\u548c\u5de5\u4f5c\u533a\u662f\u5426\u5177\u6709\u5199\u8bbf\u95ee\u6743\u3002
+
+createMonitorException=CWWKE0403W: \u4e3a {0} \u521b\u5efa\u76d1\u89c6\u5668\u65f6\u53d1\u751f\u5f02\u5e38\u3002\u5c06\u4f1a\u7981\u7528\u6b64\u8d44\u6e90\u7684\u76d1\u89c6\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{1}
+createMonitorException.explanation=\u4e3a\u6307\u5b9a\u7684\u8d44\u6e90\u521b\u5efa\u76d1\u89c6\u5668\u65f6\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002\u5c06\u4e0d\u4f1a\u76d1\u89c6\u8be5\u8d44\u6e90\u3002
+createMonitorException.useraction=\u8bf7\u9a8c\u8bc1\u60a8\u5bf9\u6307\u5b9a\u7684\u8d44\u6e90\u662f\u5426\u5177\u6709\u8bfb\u8bbf\u95ee\u6743\u3002\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: \u672a\u80fd\u5220\u9664\u9ad8\u901f\u7f13\u5b58\u6587\u4ef6 {0}\u3002
+UNABLE_TO_DELETE_CACHE_FILE.explanation=\u670d\u52a1\u65e0\u6cd5\u4e3a\u4e00\u7ec4\u53d7\u76d1\u89c6\u8d44\u6e90\u5220\u9664\u9ad8\u901f\u7f13\u5b58\u4f4d\u7f6e\u3002
+UNABLE_TO_DELETE_CACHE_FILE.useraction=\u8bf7\u9a8c\u8bc1\u60a8\u5bf9\u8be5\u670d\u52a1\u5668\u76ee\u5f55\u548c\u5de5\u4f5c\u533a\u662f\u5426\u5177\u6709\u5199\u8bbf\u95ee\u6743
+
+fileMonitorException=CWWKE0405W: \u5411\u76d1\u89c6\u5668\u901a\u77e5\u4ee5\u4e0b\u6587\u4ef6\u521b\u5efa\u3001\u4fee\u6539\u548c\u5220\u9664\u64cd\u4f5c\u65f6\u53d1\u751f\u5f02\u5e38\uff1a{0}\u3001{1} \u548c {2}\u3002\u76d1\u89c6\u7c7b\u4e3a\uff1a{3}\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{4}
+fileMonitorException.explanation=\u4e3a\u6307\u5b9a\u7684\u8d44\u6e90\u521b\u5efa\u76d1\u89c6\u5668\u65f6\u53d1\u751f\u610f\u5916\u5f02\u5e38\u3002
+fileMonitorException.useraction=\u8bf7\u53c2\u9605\u5f02\u5e38\u548c\u5173\u8054\u7684 FFDC \u6d88\u606f\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+fileMonitorDisabled=CWWKE0406W: \u5411\u76d1\u89c6\u5668\u901a\u77e5\u66f4\u6539\u65f6\u53d1\u751f\u8d85\u8fc7 {0} \u4e2a\u5f02\u5e38\u3002\u76d1\u89c6\u7c7b\u4e3a\uff1a{1}\u3002FileMonitor \u73b0\u5728\u5df2\u7981\u7528\u3002
+fileMonitorDisabled.explanation=\u5411\u76d1\u89c6\u5668\u901a\u77e5\u6709\u5173\u6307\u5b9a\u8d44\u6e90\u7684\u4fe1\u606f\u65f6\u53d1\u751f\u592a\u591a\u8fde\u7eed\u5f02\u5e38\u3002\u5c06\u4e0d\u518d\u76d1\u89c6\u8be5\u8d44\u6e90\u3002
+fileMonitorDisabled.useraction=\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u5f02\u5e38\u53ca\u5173\u8054 FFDC \u6d88\u606f\u3002

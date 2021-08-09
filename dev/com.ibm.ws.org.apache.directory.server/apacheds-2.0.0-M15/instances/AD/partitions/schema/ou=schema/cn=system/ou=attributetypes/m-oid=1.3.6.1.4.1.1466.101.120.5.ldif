@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.101.120.5,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: DSA_OPERATION
+m-oid: 1.3.6.1.4.1.1466.101.120.5
+m-name: namingContexts
+m-description: RFC2252: naming contexts
+m-obsolete: FALSE
+entryUUID: 12324cbc-9369-43b9-b263-4d239e7c53b5
+entryCSN: 20130919081859.227000Z#000000#000#000000
+entryParentId: 00d07a58-ce34-4e15-b277-c443ee6d991b
+createTimestamp: 20130919081909.088Z

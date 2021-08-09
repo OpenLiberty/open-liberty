@@ -1,0 +1,99 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=B\u0142\u0105d: {0}
+error.inputConsoleNotAvailable=Konsola wej\u015bciowa jest niedost\u0119pna.
+error.missingIO=B\u0142\u0105d. Brak urz\u0105dzenia we/wy: {0}.
+
+usage=U\u017cycie: {0}
+task.unknown=Nieznane zadanie: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Zbyt wiele argument\u00f3w.
+insufficientArgs=Za ma\u0142o argument\u00f3w.
+invalidArg=Niepoprawny argument {0}.
+missingArg=Brak argumentu {0}.
+missingValue=Brak warto\u015bci argumentu {0}.
+missingArg2=Nale\u017cy udost\u0119pni\u0107 warto\u015b\u0107 argumentu {0} albo argumentu {1}.
+exclusiveArg=Nale\u017cy okre\u015bli\u0107 argument {0} albo argument {1}, ale nie obydwa.
+serverNotFound=W po\u0142o\u017ceniu {1} nie znaleziono podanego serwera {0}
+
+
+encode.enterText=Wpisz tekst:
+encode.reenterText=Wpisz tekst ponownie:
+encode.readError=B\u0142\u0105d odczytu tekstu.
+encode.entriesDidNotMatch=Wpisy nie s\u0105 zgodne.
+
+
+password.enterText=Wprowad\u017a has\u0142o:
+password.reenterText=Wprowad\u017a ponownie has\u0142o:
+password.readError=B\u0142\u0105d odczytu has\u0142a.
+password.entriesDidNotMatch=Has\u0142a nie s\u0105 zgodne.
+
+name=nazwa
+days=dni
+
+sslCert.abort=Tworzenie certyfikatu zostanie przerwane:
+sslCert.createFailed=Nie mo\u017cna utworzy\u0107 domy\u015blnego certyfikatu SSL:\n\
+{0}
+sslCert.errorEncodePassword=B\u0142\u0105d podczas kodowania has\u0142a (certyfikat nie zosta\u0142 utworzony):\n\
+{0}
+sslCert.createKeyStore=Tworzenie magazynu kluczy {0}\n
+sslCert.oneType=Nie mo\u017cna okre\u015bla\u0107 jednocze\u015bnie argument\u00f3w {0} i {1}.
+sslCert.clientNotFound=Okre\u015blony klient {0} nie zosta\u0142 znaleziony w po\u0142o\u017ceniu {1}.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Utworzono certyfikat SSL dla serwera {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\
+\n\
+Dodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Utworzono certyfikat SSL dla klienta {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\
+\n\
+Dodaj nast\u0119puj\u0105ce wiersze do pliku client.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
+
+fileUtility.failedDirCreate=Utworzenie katalogu {0} nie powiod\u0142o si\u0119
+file.exists=Plik kluczy {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0107 pliku kluczy w tym po\u0142o\u017ceniu.
+file.requiredDirNotCreated=Nie mo\u017cna utworzy\u0107 wymaganej struktury katalog\u00f3w dla {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tNiestandardowe szyfrowanie has\u0142a jest tak\u017ce dost\u0119pne.
+encode.option-desc.custom.feature=\n\
+\tNazwa sk\u0142adnika {0} jest nast\u0119puj\u0105ca:\n\
+\t
+encode.option-desc.custom.description=\n\
+\tOpis elementu {0} jest nast\u0119puj\u0105cy:\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=Nie wykryto niestandardowego szyfrowania has\u0142a.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Przerywanie tworzenia pliku kluczy \
+LTPA:
+createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie \
+mo\u017cna utworzy\u0107 pliku kluczy LTPA w tym po\u0142o\u017ceniu.
+createLTPAKeys.createdFile=Utworzono plik \
+kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n

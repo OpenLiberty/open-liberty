@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Acces refuzat la calea {0}.
+ACCESS_DENIED_ERROR.explanation=S-a f\u0103cut o \u00eencercare de a accesa o cale care este \u00een afara regiunii de citire/scriere configurate.
+ACCESS_DENIED_ERROR.useraction=Asigura\u0163i-v\u0103 de calea cerut\u0103 c\u0103 este \u00een regiunea de citire/scriere configurat\u0103.
+
+PATH_ERROR=CWWKX7901E: Calea sistemului de fi\u015fiere {0} nu este valid\u0103.
+PATH_ERROR.explanation=Calea sistemului de fi\u015fiere specificat\u0103 nu poate fi rezolvat\u0103.
+PATH_ERROR.useraction=Furniza\u0163i o cale de sistem de fi\u015fiere valid\u0103.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: Crearea arhivei prin File Transfer MBean a fost refuzat\u0103 pentru calea sursei {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=A fost efectuat\u0103 o \u00eencercare de a citi informa\u0163iile dintr-o cale care se afl\u0103 \u00een afara regiunii de citire configurate.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: Crearea arhivei prin File Transfer MBean a fost refuzat\u0103 pentru calea \u0163int\u0103 {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=A fost efectuat\u0103 o \u00eencercare de a scrie informa\u0163iile \u00eentr-o cale care se afl\u0103 \u00een afara regiunii de scriere configurate.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: Arhiva {1} a fost creat\u0103 cu succes din {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=Arhiva a fost creat\u0103 cu succes.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: Arhiva {1} nu a putut fi creat\u0103 din {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=Cererea de creare a arhivei a e\u015fuat.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: Expansiunea arhiv\u0103 a fost refuzat\u0103 pentru calea surs\u0103 {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=A fost efectuat\u0103 o \u00eencercare de a citi informa\u0163iile dintr-o cale care se afl\u0103 \u00een afara regiunii de citire configurate.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: Expansiunea arhiv\u0103 a fost refuzat\u0103 pentru calea \u0163int\u0103 {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=A fost efectuat\u0103 o \u00eencercare de a scrie informa\u0163iile \u00eentr-o cale care se afl\u0103 \u00een afara regiunii de scriere configurate.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: Arhiva {0} a fost expandat\u0103 cu succes \u00een {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=Arhiva a fost expandat\u0103 cu succes.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: Arhiva {0} nu a putut fi expandat\u0103 \u00een {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=Cererea de expandare a arhivei a e\u015fuat.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Acest mesaj este doar \u00een scopuri informa\u0163ionale. Nu este necesar\u0103 nici o ac\u0163iune.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: Opera\u0163ia ''{0}'' este disponibil\u0103 numai c\u00e2nd acest MBean este accesat prin Conectorul JMX REST al IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=Accesul la opera\u0163ia MBean specificat\u0103 este disponibil numai c\u00e2nd este accesat prin Conectorul JMX REST al IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Accesa\u0163i acest MBean prin Conectorul JMX REST al IBM.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: Serviciul OSGi {0} nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=A\u0163i primit aceast\u0103 eroare intern\u0103 deoarece serviciul specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea "clean" (cur\u0103\u0163are).
+
+ATTRIBUTE_UPDATED=CWWKX7912I: Atributul FileServiceMXBean {0} a fost actualizat cu succes.
+ATTRIBUTE_UPDATED.explanation=Atributul specificat de FileServiceMXBean a fost actualizat cu succes.
+ATTRIBUTE_UPDATED.useraction=Nici o ac\u0163iune nu este necesar\u0103.

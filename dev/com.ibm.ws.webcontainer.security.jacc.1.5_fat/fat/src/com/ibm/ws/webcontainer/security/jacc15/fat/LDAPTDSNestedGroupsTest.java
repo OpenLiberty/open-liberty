@@ -1,0 +1,97 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+package com.ibm.ws.webcontainer.security.jacc15.fat;
+
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
+import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
+
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.LDAPUtils;
+
+/**
+ * This test covers nested LDAP groups and roles based authorization decisions based on the nested groups
+ * for IBM Tivoli Directory Server (TDS) LDAP. This test uses the filters groupMemberIdMap with ibm-allGroups:member;ibm-allGroups:uniqueMember
+ * which worked with 8502 Standalone LDAP to perform the nested group search.
+ * This test assumes that the nested groups have already been defined in the TDS LDAP registry as follows:
+ *
+ * Top level group: nested_g1 (Mapped to Employee role)
+ * User in top group: topng_user1
+ *
+ * SubGroup: embedded_group1 (Mapped to Manager role)
+ * User: ng_user1
+ *
+ * SubGroup: embedded_group2 (not mapped to a role)
+ * User: ng_user2
+ *
+ * The server.xml file maps nested_g1 to Employee and subgroup, embedded_group1, to Manager role.
+ * The subgroup embedded_group1 should have both Employee and Manager role as it is part of top group.
+ * The subgroup embedded_group2 does not have a role mapping and should inherit Employee Role from top group.
+ *
+ */
+@RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
+public class LDAPTDSNestedGroupsTest extends LDAPNestedGroupsBase {
+
+    protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.webcontainer.security.fat.basicauth.ldap.tds.nested");
+    protected static Class<?> logClass = LDAPNestedGroupsBase.class;
+    protected static BasicAuthClient myClient;
+
+    public LDAPTDSNestedGroupsTest() {
+        super(myServer, logClass, myClient);
+    }
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        LDAPUtils.addLDAPVariables(myServer);
+
+        JACCFatUtils.installJaccUserFeature(myServer);
+        JACCFatUtils.transformApps(myServer, "basicauth.war");
+
+        myServer.addInstalledAppForValidation("basicauth");
+        myServer.startServer(true);
+        assertNotNull("FeatureManager did not report update was complete",
+                      myServer.waitForStringInLog("CWWKF0008I"));
+        assertNotNull("Security service did not report it was ready",
+                      myServer.waitForStringInLog("CWWKS0008I"));
+        assertNotNull("The application did not report is was started",
+                      myServer.waitForStringInLog("CWWKZ0001I"));
+        assertNotNull("JACC feature did not report it was starting", myServer.waitForStringInLog("CWWKS2850I"));
+        assertNotNull("JACC feature did not report it was ready", myServer.waitForStringInLog("CWWKS2851I"));
+
+        myClient = new BasicAuthClient(myServer);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        try {
+            myServer.stopServer();
+        } finally {
+            JACCFatUtils.uninstallJaccUserFeature(myServer);
+        }
+    }
+
+    @After
+    public void resetConnection() {
+        myClient.resetClientState();
+    }
+
+}

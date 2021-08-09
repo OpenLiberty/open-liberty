@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: Impossibile creare HttpUpgradeHandler: {0}.  Verificare che abbia un costruttore predefinito e che sia possibile crearne l''istanza.
+failed.to.create.httpupgradehandler.explanation=Impossibile creare HttpUpgradeHandler.
+failed.to.create.httpupgradehandler.useraction=Vedere i log FFDC per ulteriori dettagli sull'errore.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: La funzione servlet-3.1 non \u00e8 in uso.
+servlet.31.not.in.use.explanation=La funzione servlet-3.1 non \u00e8 in uso.  \u00c8 possibile che una versione precedente del servlet sia gi\u00e0 in uso.
+servlet.31.not.in.use.useraction=Aggiungere la funzione servlet-3.1 al file server.xml.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: Non \u00e8 possibile avviare questa operazione da un listener aggiunto in modo programmatico quando si utilizza la funzione servlet-3.1. (Operazione: {0} | Listener: {1} | Applicazione: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=Non \u00e8 possibile avviare delle specifiche operazioni da un listener aggiunto in modo programmatico perch\u00e9 non c'\u00e8 alcuna opzione di configurazione per limitarne l'avvio quando sono definite in un TLD (Tag Library Descriptor).
+Unsupported.op.from.servlet.context.listener.31.useraction=Aggiungere il listener utilizzando un'annotazione o nel file web.xml per abilitare l'avvio di questo metodo.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null=SRVE9003E: L''oggetto HttpUpgradeHandler passato \u00e8 null con applicazione web: {0}.
+handlerClass.is.null.explanation=Impossibile eseguire l'aggiornamento della richiesta perch\u00e9 l'oggetto HttpUpgradeHandler passato \u00e8 null.
+handlerClass.is.null.useraction= Assicurarsi che venga fornito l'oggetto HttpUpgradeHandler corretto.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: Il tentativo di impostazione di un ReadListener non \u00e8 riuscito perch\u00e9 l'oggetto ReadListener era null.
+readlistener.is.null.explanation=L'argomento variabile passato all'API setReadListener deve essere un oggetto readListener valido.
+readlistener.is.null.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+writelistener.is.null=SRVE9005E: Il tentativo di impostazione di un WriteListener non \u00e8 riuscito perch\u00e9 l'oggetto WriteListener era null.
+writelistener.is.null.explanation=L'argomento variabile passato all'API WriteListener deve essere un oggetto writeListener valido.
+writelistener.is.null.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: Il tentativo di impostazione di un ReadListener non \u00e8 riuscito perch\u00e9 la richiesta associata non \u00e8 stata avviata in modo asincrono o non \u00e8 aggiornata.
+readlistener.async.not.started.explanation=\u00c8 possibile impostare ReadListener sulla richiesta solo se viene avviata in modo asincrono o se viene richiamato il metodo init di un UpgradeHandler.
+readlistener.async.not.started.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: Il tentativo di impostazione di un WriteListener non \u00e8 riuscito perch\u00e9 la richiesta associata non \u00e8 stata avviata in modo asincrono o non \u00e8 aggiornata.
+writelistener.async.not.started.explanation=\u00c8 possibile impostare WriteListener sulla richiesta se viene avviata in modo asincrono o se viene richiamato il metodo init di un UpgradeHandler.
+writelistener.async.not.started.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+readlistener.already.started=SRVE9008E: Il tentativo di impostazione di un ReadListener non \u00e8 riuscito perch\u00e9 ReadListener \u00e8 gi\u00e0 impostato.
+readlistener.already.started.explanation=ReadListener non pu\u00f2 essere impostato pi\u00f9 di una volta.
+readlistener.already.started.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+writelistener.already.started=SRVE9009E: Il tentativo di impostazione di un WriteListener non \u00e8 riuscito perch\u00e9 WriteListener \u00e8 gi\u00e0 impostato.
+writelistener.already.started.explanation=WriteListener non pu\u00f2 essere impostato pi\u00f9 di una volta.
+writelistener.already.started.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: Un tentativo di lettura non \u00e8 riuscito perch\u00e9 l'API isReady restituisce false.
+read.failed.isReady.false.explanation= Se isReady restituisce false non \u00e8 possibile richiamare un metodo di lettura (read).
+read.failed.isReady.false.useraction= Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: Un tentativo di lettura da un InputStream o di scrittura su un OutputStream non \u00e8 riuscito perch\u00e9 un argomento variabile byte[] era null.
+read.write.bytearray.null.explanation=L'argomento variabile byte[] passato all'API di scrittura o lettura non deve essere null.
+read.write.bytearray.null.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: Un tentativo di lettura o scrittura non \u00e8 riuscito perch\u00e9 l''offset di uno degli argomenti variabile: {0} o la lunghezza: {1} sono negativi o offset+lunghezza \u00e8 maggiore della lunghezza byte[] fornita: {2}.
+read.write.offset.length.bytearraylength.explanation= L'offset degli argomenti variabile era negativo, la lunghezza era negativa oppure la lunghezza era maggiore di byte[].length \u2013 offset.
+read.write.offset.length.bytearraylength.useraction=Modificare il codice dell'applicazione e verificare che il valore di offset fornito all'API di lettura o scrittura non sia negativo. Assicurarsi che il valore di lunghezza fornito all'API di lettura non sia negativo. Inoltre, assicurarsi che il valore di lunghezza fornito sia maggiore della lunghezza byte[] lunghezza meno il valore offset fornito.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: Durante l''impostazione di ReadListener su una richiesta aggiornata, si \u00e8 verificata un''eccezione nella lettura iniziale: {0}
+setReadListener.initialread.failed.explanation=Durante l'impostazione di ReadListener il listener tenta di leggere, l'operazione non riesce.
+setReadListener.initialread.failed.useraction=Esaminare i log JVM per l'eccezione.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: Un tentativo di modifica dell''ID sessione non \u00e8 riuscito perch\u00e9 nessuna sessione era associata alla richiesta per: {0}
+changeSessionId.no.session.associated.with.request.explanation=Per modificare l'ID di sessione per una richiesta, assicurarsi prima che la richiesta utilizzata abbia una sessione associata.
+changeSessionId.no.session.associated.with.request.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: Impossibile ottenere l'oggetto richiesta o risposta dopo un AsyncContext.dispatch() o AsyncContext.complete().
+asynccontext.getRequestResponse.illegalstateexception.explanation= A partire da Servlet 3.1, AsyncContext.getRequest() e AsyncContext.getResponse() devono emettere un IllegalStateException se nel ciclo asincrono viene richiamato il metodo complete() o uno qualsiasi dei metodi dispatch(). 
+asynccontext.getRequestResponse.illegalstateexception.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: Tentativo di lettura o scrittura non riuscito poich\u00e9 il flusso \u00e8 stato chiuso.
+stream.is.closed.no.read.write.explanation=L'API di scrittura sull'oggetto OutputStream e l'API di lettura sull'oggetto InputStream dichiarano che pu\u00f2 essere emessa una IOException se il flusso \u00e8 stato chiuso.
+stream.is.closed.no.read.write.useraction=Modificare il codice applicazione in base alla spiegazione dell'errore.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: Post body contiene un numero di byte inferiore a quello specificato dalla lunghezza contenuto.
+post.body.contains.less.bytes.than.specified.explanation=\u00c8 possibile che la richiesta in entrata sia in un formato non corretto o sia corrotta come risultato di un errore di rete o di un'applicazione lato client.
+post.body.contains.less.bytes.than.specified.useraction=Esaminare la rete o l'applicazione lato client per determinare il motivo per cui la richiesta \u00e8 stata troncata.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: Il blocco di scrittura tentato non \u00e8 consentito perch\u00e9 I/O non bloccanti sono gi\u00e0 stati avviati dall''applicazione che registra il WriteListener [{0}].
+blocking.write.not.allowed.explanation=Il blocco scrittura richiesto non pu\u00f2 essere completato perch\u00e9 I/O non bloccanti sono gi\u00e0 stati avviati.
+blocking.write.not.allowed.useraction=Esaminare l'applicazione per determinare se il blocco scrittura \u00e8 stato eseguito. Ad esempio, potrebbe derivare da un servlet dopo la registrazione del WriteListener o da un WriteListener che effettua una seconda scrittura dopo la chiamata dell'API isReady(). Una volta determinato il blocco scrittura, modificare l'applicazione per assicurarsi che venga eseguito come parte del WriteListener e/o dopo la chiamata di isReady().
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: Si \u00e8 verificata un''eccezione durante l''API WriteListener [{0}] onError(), eccezione [{1}]
+writeListener.onError.failed.explanation= Si \u00e8 verificata un'eccezione durante l'API WriteListener onError().
+writeListener.onError.failed.useraction=Esaminare i log per determinare l'eccezione emessa dall'implementazione applicazione dell'API onError() e come risolvere il problema. Notare che se si \u00e8 verificata un'eccezione I/O, l'API onError() non pu\u00f2 scrivere l'output.
+# --------------------------------
+ 

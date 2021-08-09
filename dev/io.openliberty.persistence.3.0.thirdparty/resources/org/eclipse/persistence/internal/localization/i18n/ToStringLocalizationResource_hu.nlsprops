@@ -1,0 +1,183 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=Profil kezdete:
+
+class=oszt\u00e1ly
+
+commit_depth=(v\u00e9gleges\u00edt\u00e9s m\u00e9lys\u00e9ge = {0})
+
+connected=csatlakoztatva
+
+connector=csatol\u00f3
+
+context=Kontextus:    
+
+database_name=adatb\u00e1zisn\u00e9v
+
+datasource=adatforr\u00e1s
+
+datasource_URL=adatforr\u00e1s URL
+
+datasource_name=adatforr\u00e1sn\u00e9v
+
+depth_reset_key=(m\u00e9lys\u00e9g = {0}, vissza\u00e1ll\u00edt\u00e1s kulcs = {1}, vissza\u00e1ll\u00edt\u00e1s v\u00e1ltozat = {2})
+
+disconnected=sz\u00e9tkapcsolva
+
+empty_commit_order_dependency_node=\u00dcres CommitOrderDependencyNode
+
+end_profile=Profil v\u00e9ge
+
+error_printing_expression=Hiba kifejez\u00e9s ki\u00edr\u00e1s\u00e1ban
+
+lazy=k\u00e9sleltetett
+
+local_time=helyi id\u0151
+
+login=bejelentkez\u00e9s
+
+longestTime=leghosszabb id\u0151
+
+min_max=(kapcsolatok minim\u00e1lis sz\u00e1ma = {0}, kapcsolatok maxim\u00e1lis sz\u00e1ma = {1})
+
+mulitple_files=t\u00f6bb f\u00e1jl
+
+multiple_readers=t\u00f6bb olvas\u00f3
+
+name=N\u00e9v: 
+
+nest_level=(be\u00e1gyaz\u00e1si szint = {0})
+
+no_files=nincs f\u00e1jl
+
+no_streams=nincs adatfolyam
+
+node=Csom\u00f3pont ({0})
+
+non_lazy=nem k\u00e9sleltetett
+
+not_instantiated=nem p\u00e9ld\u00e1nyos\u00edtott
+
+number_of_objects=objektumok sz\u00e1ma
+
+objects_second=objektum/m\u00e1sodperc
+
+platform=platform
+
+pooled=csoportos
+
+profile=Profil
+
+profiling_time=profilk\u00e9sz\u00edt\u00e9s ideje
+
+reader=olvas\u00f3
+
+schema=S\u00e9ma: 
+
+sdo_classgenerator_usage_help_1of8={0} Haszn\u00e1lat: org.eclipse.persistence.sdo.helper.{0} [-param\u00e9terek]
+
+sdo_classgenerator_usage_help_2of8=Param\u00e9terek:
+
+sdo_classgenerator_usage_help_3of8=    -help                        Ki\u00edrja a s\u00fag\u00f3 \u00fczenetsz\u00f6veget
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <F\u00e1jlN\u00e9v>        A bemeneti s\u00e9maf\u00e1jl (k\u00f6telez\u0151)
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   A k\u00f6nyvt\u00e1r a Java forr\u00e1s el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz (nem k\u00f6telez\u0151)
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        Megadja a napl\u00f3z\u00e1si szint eg\u00e9sz \u00e9rt\u00e9k\u00e9t (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(alap\u00e9rtelmezett),1=FINEST,0=ALL).
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces                Ne \u00e1ll\u00edtson el\u0151 fel\u00fclet oszt\u00e1lyokat
+
+sdo_classgenerator_usage_help_8of8=    -noImpls                     Ne \u00e1ll\u00edtson el\u0151 megval\u00f3s\u00edt\u00e1si oszt\u00e1lyokat
+
+sdo_classgenerator_usage_missing_sourcefile={0} A -sourceFile param\u00e9ter nem volt megadva, de k\u00f6telez\u0151.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} A -sourceFile \u00e9rt\u00e9ke nem volt megadva.
+
+sdo_classgenerator_usage_missing_targetdir={0} A -targetDirectory \u00e9rt\u00e9ke nem volt megadva.
+
+server_name=kiszolg\u00e1l\u00f3n\u00e9v
+
+shortestTime=legr\u00f6videbb id\u0151
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           Megadja a napl\u00f3z\u00e1si f\u00e1jlt.
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           Megadja a napl\u00f3z\u00e1si szint eg\u00e9sz \u00e9rt\u00e9k\u00e9t (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(alap\u00e9rtelmezett),1=FINEST,0=ALL).
+
+staticweave_commandline_help_message_14of19=    Az oszt\u00e1ly\u00fatvonalnak tartalmaznia kell az \u00f6sszes oszt\u00e1lyt, amely sz\u00fcks\u00e9ges a forr\u00e1sban az oszt\u00e1lyok bet\u00f6lt\u00e9s\u00e9hez.
+
+staticweave_commandline_help_message_15of19=    A bef\u0171z\u00e9s helyben ker\u00fcl v\u00e9grehajt\u00e1sra, ha a forr\u00e1s \u00e9s a c\u00e9l ugyanarra a helyre mutat.  A helyben megval\u00f3sul\u00f3 bef\u0171z\u00e9s CSAK k\u00f6nyvt\u00e1ralap\u00fa forr\u00e1sok eset\u00e9n alkalmazhat\u00f3.
+
+staticweave_commandline_help_message_16of19=  P\u00e9lda:
+
+staticweave_commandline_help_message_17of19=    A C:\\foo-source.jar \u00e1ltal tartalmazott \u00f6sszes entit\u00e1s \u00f6sszef\u0171z\u00e9se a C:\\foo-containing-persistence-xml.jar \u00e1ltal tartalmazott persistence.xml f\u00e1jllal,
+
+staticweave_commandline_help_message_18of19=    \u00e9s kimenet a C:\\foo-target.jar f\u00e1jlba:
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  Haszn\u00e1lat: StaticWeave [param\u00e9terek] source target
+
+staticweave_commandline_help_message_2of19=  Param\u00e9terek:
+
+staticweave_commandline_help_message_3of19=    -classpath classpath
+
+staticweave_commandline_help_message_4of19=           Be\u00e1ll\u00edtja a felhaszn\u00e1l\u00f3i oszt\u00e1ly\u00fatvonalat.  Hat\u00e1rol\u00f3k\u00e9nt haszn\u00e1lja a ";" karaktert Windows rendszeren, \u00e9s a ":" karaktert Unix rendszeren.
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           Kifejezetten azonos\u00edtja a META-INF/persistence.xml t\u00e1rol\u00e1si hely\u00e9t.  Ennek kell lennie a META-INF/persistence.xml gy\u0151ker\u00e9nek.
+
+staticweave_commandline_help_message_7of19=           Ez a param\u00e9ter jellemz\u0151en a f\u0151 jar f\u00e1jlt megad\u00e1s\u00e1ra szolg\u00e1l, amikor <jar-file> bejegyz\u00e9s hivatkozik a bef\u0171zend\u0151 f\u00e1jlokra a persistence.xml f\u00e1jlban.
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           A persistence.xml hely\u00e9t azonos\u00edtja a perzisztencia egys\u00e9ghez k\u00e9pest relat\u00edv m\u00f3don, ha az nem a META-INF/persistence.xml
+
+staticweave_processor_dir_not_created=A(z) {0} k\u00f6nyvt\u00e1r nem hozhat\u00f3 l\u00e9tre.
+
+staticweave_processor_file_not_created=A(z) {0} f\u00e1jl nem hozhat\u00f3 l\u00e9tre.
+
+staticweave_processor_unknown_outcome=Egy k\u00f6nyvt\u00e1rban t\u00e1rolt oszt\u00e1lyok bef\u0171z\u00e9se \u00e9s a kimenetnek egy JAR f\u00e1jlba ir\u00e1ny\u00edt\u00e1sa gyakran nem v\u00e1rt eredm\u00e9nyekre vezet.
+
+time_object=id\u0151/objektum
+
+total_time=teljes id\u0151
+
+unknown=ismeretlen
+
+user_name=felhaszn\u00e1l\u00f3n\u00e9v
+
+writer=\u00edr\u00f3
+

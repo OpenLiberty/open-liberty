@@ -1,0 +1,759 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 93022           2013-27-02 kavitha new message added for Invalid XID 
+# 
+# -------------------------------------------------------------------------------------------------
+
+# File com.ibm.ws.sib.example.CWSISMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0001=CWSIS0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0001.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0001.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+# I have allocated ranges of message ids (500 messages each) so we can avoid tripping over each other.
+# If you need a new range - just allocate it (but check no-one has it already).
+#
+#   - Msgs in the range CWSIS0000-CWSIS0499 belong to the interface stuff (eg PTvL)
+#   - Msgs in the range CWSIS0500-CWSIS0999 belong to the core implementation stuff (eg PTvL)
+#   - Msgs in the range CWSIS1000-CWSIS1499 belong to the transaction stuff (eg GB)
+#   - Msgs in the range CWSIS1500-CWSIS1999 belong to the persistence stuff (eg BTD)
+#   - Msgs in the range CWSIS2000-CWSIS2499 belong to the expiry stuff (eg KC)
+#
+#   - CWSIS9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.4,0,03/04/23,08:38:27
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/msgstore/CWSISMessages.nlsprops
+#COMPONENTPREFIX CWSIS
+#COMPONENTNAMEFOR CWSIS MessageStore
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Interface
+# -------------------------------------------------------------------------------------------------
+
+
+# {0} is the text of the exception thrown
+INVALID_ITEM_CONSTRUCTOR_SIMS0001=CWSIS0001E: Egy elem nem rendelkezik el\u00e9rhet\u0151 (nyilv\u00e1nos) alap\u00e9rtelmezett {0} konstruktorral.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.explanation=Egy elem hozz\u00e1ad\u00e1sra ker\u00fclt az \
+adatt\u00e1rol\u00f3hoz, ami nem rendelkezik megfelel\u0151 konstruktorral.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+STARTUP_EXCEPTION_SIMS0002=CWSIS0002E: Az \u00fczenetkezel\u00e9si alrendszer egy kiv\u00e9telt \u00e9szlelt az ind\u00edt\u00e1s sor\u00e1n. Kiv\u00e9tel: {0}
+STARTUP_EXCEPTION_SIMS0002.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor tekintse \
+meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket a tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+STARTUP_EXCEPTION_SIMS0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REFERENCE_CONSISTENCY_SIMS0003=CWSIS0003E: A(z) {0} hivatkoz\u00e1s nem rendelkezik hivatkozott elemmel \u00e9s nem adhat\u00f3 a(z) {1} elemhez.
+REFERENCE_CONSISTENCY_SIMS0003.explanation=Egy hivatkoz\u00e1s hivatkoz\u00e1si adatfolyamhoz hozz\u00e1ad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely megs\u00e9rti a k\u00f6vetkezetess\u00e9gi megszor\u00edt\u00e1sokat.
+REFERENCE_CONSISTENCY_SIMS0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#STREAM_NOT_STORED_SIMS0004=CWSIS0004E: It is not possible to add {0} to {1} because it is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.explanation=An attempt was made to add an item to a stream that is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_ADD_CONFLICT_SIMS0005=CWSIS0005E: A(z) {0} nem adhat\u00f3 hozz\u00e1 a(z) {1} m\u00e1sodik adatfolyamhoz.
+STREAM_ADD_CONFLICT_SIMS0005.explanation=Egy elem adatfolyamhoz hozz\u00e1ad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amikor az elem m\u00e1r egy m\u00e1sik adatfolyamban volt.
+STREAM_ADD_CONFLICT_SIMS0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_WRONG_STATE_SIMS0006=CWSIS0006E: A(z) {1} \u00e1llapot\u00fa {0} adatfolyamhoz nem adhat\u00f3 hozz\u00e1 elem.
+STREAM_WRONG_STATE_SIMS0006.explanation=Egy olyan adatfolyamhoz hozz\u00e1ad\u00e1sra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely helytelen \u00e1llapotban volt.
+STREAM_WRONG_STATE_SIMS0006.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Implementation
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+STREAM_STORAGE_MISMATCH_SIMS0500=CWSIS0500E: A(z) {0} elemt\u00e1rol\u00e1si strat\u00e9gia t\u00fall\u00e9p a tulajdonos adatfolyam {1} elemt\u00e1rol\u00e1si strat\u00e9gi\u00e1j\u00e1n.
+STREAM_STORAGE_MISMATCH_SIMS0500.explanation=Egy elem adatfolyamhoz hozz\u00e1ad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, ahol az elem nagyobb elemt\u00e1rol\u00e1si strat\u00e9gi\u00e1val rendelkezett, mint az adatfolyam.
+STREAM_STORAGE_MISMATCH_SIMS0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_NOT_EMPTY_SIMS0501=CWSIS0501E: Egy nem \u00fcres adatfolyam nem t\u00f6r\u00f6lhet\u0151.
+STREAM_NOT_EMPTY_SIMS0501.explanation=Egy nem \u00fcres adatfolyam t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt.
+STREAM_NOT_EMPTY_SIMS0501.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORING_ITEM_SIMS0502=CWSIS0502E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy elem vissza\u00e1ll\u00edt\u00e1sa sor\u00e1n.
+RESTORING_ITEM_SIMS0502.explanation=Egy elem vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult.
+RESTORING_ITEM_SIMS0502.useraction=CMSG0002
+
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503=CWSIS0503E: Configuration information for the data store is not available.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.explanation=The data store did not receive its configuration.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.useraction=CMSG0002
+
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504=CWSIS0504E: A gy\u00f6k\u00e9r t\u00e1rolhat\u00f3 objektum nem hozhat\u00f3 l\u00e9tre.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.explanation=A gy\u00f6k\u00e9r t\u00e1rolhat\u00f3 objektum nem ker\u00fclt l\u00e9trehoz\u00e1sra.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.useraction=CMSG0002
+
+INVALID_MSGSTORE_STATE_SIMS0505=CWSIS0505E: Az \u00fczenett\u00e1rol\u00f3 helytelen ({0}) \u00e1llapotban van.
+INVALID_MSGSTORE_STATE_SIMS0505.explanation=Az adatt\u00e1rol\u00f3 nem helyes \u00e1llapotban van a k\u00e9rt m\u0171velet v\u00e9grehajt\u00e1s\u00e1hoz.
+INVALID_MSGSTORE_STATE_SIMS0505.useraction=CMSG0002
+
+#INVALID_AUTHENTICATION_DATA_SIMS0506=CWSIS0506E: The authentication data associated with the alias, {0}, is invalid.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.explanation=The authentication data provided cannot be used to access the database containing the data store.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.useraction=Provide an alternate authentication alias and try again.
+
+STREAM_NOT_EMPTY_SIMS0507=CWSIS0507E: Egy nem \u00fcres adatfolyam nem t\u00f6r\u00f6lhet\u0151. Elemek \
+az adatfolyamon={0}. Adatfolyam oszt\u00e1ly={1}
+STREAM_NOT_EMPTY_SIMS0507.explanation=Egy nem \u00fcres adatfolyam t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt. \
+Az adatfolyamon h\u00e1tral\u00e9v\u0151 elemek sz\u00e1ma \u00e9s t\u00edpusa meg van adva az \u00fczenetben, hogy seg\u00edtsen \
+meg\u00e1llap\u00edtani ennek a megk\u00eds\u00e9relt m\u0171veletnek az ok\u00e1t.
+STREAM_NOT_EMPTY_SIMS0507.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Transaction messages
+# -------------------------------------------------------------------------------------------------
+
+XA_PROTOCOL_ERROR_SIMS1000=CWSIS1000E: A k\u00e9rt m\u0171velet nem teljes\u00edthet\u0151, mert nem tesz eleget az XA tranzakci\u00f3s protokollnak.
+XA_PROTOCOL_ERROR_SIMS1000.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt. Az XA tranzakci\u00f3s protokollhoz nem megfelel\u0151 az alkalmazkod\u00e1s.
+XA_PROTOCOL_ERROR_SIMS1000.useraction=CMSG0002
+
+TRAN_PROTOCOL_ERROR_SIMS1001=CWSIS1001E: A k\u00e9rt m\u0171velet nem teljes\u00edthet\u0151, mert nem tesz eleget az er\u0151forr\u00e1s-kezel\u0151 bels\u0151 tranzakci\u00f3s protokollj\u00e1nak.
+TRAN_PROTOCOL_ERROR_SIMS1001.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt. Az er\u0151forr\u00e1s-kezel\u0151 \
+tranzakci\u00f3s protokollhoz nem megfelel\u0151 az alkalmazkod\u00e1s.
+TRAN_PROTOCOL_ERROR_SIMS1001.useraction=CMSG0002
+
+COMPLETION_EXCEPTION_SIMS1002=CWSIS1002E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a tranzakci\u00f3 befejez\u00e9se sor\u00e1n. Kiv\u00e9tel: {0}
+COMPLETION_EXCEPTION_SIMS1002.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt. A tranzakci\u00f3 feldolgoz\u00e1sa meghi\u00fasult, amikor egy k\u00e9r\u00e9s \u00e9rkezett az er\u0151forr\u00e1s-kezel\u0151h\u00f6z a feladata befejez\u00e9s\u00e9re.
+COMPLETION_EXCEPTION_SIMS1002.useraction=CMSG0002
+
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003=CWSIS1003E: Egy WebSphere funkci\u00f3 nem haszn\u00e1lhat\u00f3 WebSphere rendszeren k\u00edv\u00fcl.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.explanation=Egy WebSphere rendszerre jellemz\u0151 \
+funkci\u00f3 haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy nem WebSphere fut\u00e1si k\u00f6rnyezetben.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.useraction=CMSG0002
+
+CANNOT_COMMIT_COMPLETE_SIMS1004=CWSIS1004E: A tranzakci\u00f3 nem v\u00e9gleges\u00edthet\u0151. A tranzakci\u00f3 befejez\u0151d\u00f6tt vagy befejez\u00e9s alatt \u00e1ll.
+CANNOT_COMMIT_COMPLETE_SIMS1004.explanation=Egy olyan tranzakci\u00f3 v\u00e9gleges\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely m\u00e1r befejez\u0151d\u00f6tt vagy befejez\u00e9s alatt \u00e1ll.
+CANNOT_COMMIT_COMPLETE_SIMS1004.useraction=CMSG0002
+
+CANNOT_ROLLBACK_COMPLETE_SIMS1005=CWSIS1005E: A tranzakci\u00f3 nem g\u00f6rgethet\u0151 vissza. A tranzakci\u00f3 befejez\u0151d\u00f6tt vagy befejez\u00e9s alatt \u00e1ll.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.explanation=Egy olyan tranzakci\u00f3 visszag\u00f6rget\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, amely m\u00e1r befejez\u0151d\u00f6tt vagy befejez\u00e9s alatt \u00e1ll.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.useraction=CMSG0002
+
+HEURISTIC_HAZARD_SIMS1006=CWSIS1006E: Az \u00fczenett\u00e1rol\u00f3 tartalm\u00e1nak m\u00f3dos\u00edt\u00e1s\u00e1ra haszn\u00e1lt tranzakci\u00f3 eredm\u00e9nye nem hat\u00e1rozhat\u00f3 meg. Az \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1sra ker\u00fcl az adatveszt\u00e9s elker\u00fcl\u00e9se \u00e9rdek\u00e9ben.
+HEURISTIC_HAZARD_SIMS1006.explanation=Heurisztikus vesz\u00e9ly t\u00f6rt\u00e9nt. Az \u00fczenetkezel\u00e9si \
+alrendszer szinkroniz\u00e1l\u00e1son k\u00edv\u00fcl lehet, \u00e9s \u00fajra kell ind\u00edtani annak meghat\u00e1roz\u00e1s\u00e1hoz, \
+hogy az \u00fczenett\u00e1rol\u00f3j\u00e1n v\u00e9gzett m\u00f3dos\u00edt\u00e1sok sikeresek voltak-e.
+HEURISTIC_HAZARD_SIMS1006.useraction=CMSG0002
+
+XID_NOT_RECOGNISED_SIMS1007=CWSIS1007E: Nem lehets\u00e9ges a(z) {0} m\u0171velet, mivel a megadott XID-t nem ismeri fel az \u00fczenetkezel\u0151 alrendszer. XID: \
+{1}
+XID_NOT_RECOGNISED_SIMS1007.explanation=A k\u00e9rt m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert az \u00fczenetkezel\u0151 alrendszer nem ismeri fel a megadott XID-\u00e9rt\u00e9ket. \
+Ez akkor fordulhat el\u0151, ha az \u00fczenetkezel\u0151 alrendszer kor\u00e1bban m\u00e9g nem l\u00e1tta az XID-t, vagy ha az XID rossz \u00e1llapot\u00fa.
+XID_NOT_RECOGNISED_SIMS1007.useraction=CMSG0002
+
+XID_STILL_ASSOCIATED_SIMS1008=CWSIS1008E: A(z) {0} m\u0171velet nem lehets\u00e9ges, mivel m\u00e9g nem ker\u00fclt sor a megadott XID megh\u00edv\u00e1s\u00e1ra, hogy befejezze az XID t\u00e1rs\u00edt\u00e1s\u00e1t az \u00fczenetkezel\u00e9si alrendszerrel. XID: \
+{1}
+XID_STILL_ASSOCIATED_SIMS1008.explanation=A k\u00e9rt m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert az \u00fczenetkezel\u00e9si alrendszer tov\u00e1bbra is t\u00e1rs\u00edtva van a megadott XID-del. \
+Sz\u00fcntesse meg a XID t\u00e1rs\u00edt\u00e1s\u00e1t az \u00fczenetkezel\u00e9si alrendszerrel. Ehhez h\u00edvja meg az XA befejez\u00e9se met\u00f3dust, miel\u0151tt megk\u00eds\u00e9rli elv\u00e9gezni a tranzakci\u00f3\u00e1gat.
+XID_STILL_ASSOCIATED_SIMS1008.useraction=CMSG0002
+
+XID_ALREADY_ASSOCIATED_SIMS1009=CWSIS1009E: Nem lehets\u00e9ges a(z) {0} m\u0171velet, mivel a megadott XID m\u00e1r t\u00e1rs\u00edtva van ezzel az \u00fczenetkezel\u00e9si alrendszerrel. XID: \
+{1}
+XID_ALREADY_ASSOCIATED_SIMS1009.explanation=A k\u00e9rt m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert az \u00fczenetkezel\u00e9si alrendszer m\u00e1r t\u00e1rs\u00edtva van a megadott XID-del.
+XID_ALREADY_ASSOCIATED_SIMS1009.useraction=CMSG0002
+
+INVALID_XID_STRING_SIMS1010=CWSIS1010E: \u00c9rv\u00e9nytelen XID karaktersorozat ker\u00fclt \u00e1tad\u00e1sra a v\u00e9gleges\u00edt\u00e9s vagy visszag\u00f6rget\u00e9s m\u0171velet sz\u00e1m\u00e1ra.
+INVALID_XID_STRING_SIMS1010.explanation=A megadott XID karaktersorozattal a v\u00e9gleges\u00edt\u00e9si vagy visszag\u00f6rget\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre.
+INVALID_XID_STRING_SIMS1010.useraction= Adjon meg \u00e9rv\u00e9nyes XID karaktersorozatot
+
+UNEXPECTED_EXCEPTION_SIMS1099=CWSIS1099E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt. Kiv\u00e9tel: {0}
+UNEXPECTED_EXCEPTION_SIMS1099.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt. A kiv\u00e9tel \
+inform\u00e1ci\u00f3inak haszn\u00e1lat\u00e1val \u00e1llap\u00edtsa meg a hiba ok\u00e1t.
+UNEXPECTED_EXCEPTION_SIMS1099.useraction=CMSG0002
+
+# ------------------------------------------------- Unrecoverable Messages ------------------------------------------------- #
+
+UNRECOVERABLE_ERROR_SIMS1499=CWSIS1499E: Helyre\u00e1ll\u00edthatatlan hiba t\u00f6rt\u00e9nt \u00e9s az \u00fczenetkezel\u00e9si alrendszer nem tudja folytatni a m\u0171k\u00f6d\u00e9s\u00e9t.
+UNRECOVERABLE_ERROR_SIMS1499.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt.
+UNRECOVERABLE_ERROR_SIMS1499.useraction=CMSG0002
+
+
+
+# -------------------------------------------------------------------------------------------------
+# Persistence
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500=CWSIS1500E: Az ir\u00e1ny\u00edt\u00f3 nem tud feladatot fogadni.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.explanation=Az ir\u00e1ny\u00edt\u00f3 nem tud t\u00f6bb feladatot fogadni egy kor\u00e1bbi adatt\u00e1rol\u00e1si hiba miatt.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.useraction=CMSG0002
+
+DATASOURCE_EXCEPTION_SIMS1501=CWSIS1501E: Az adatforr\u00e1s egy v\u00e1ratlan kiv\u00e9telt \u00e1ll\u00edtott el\u0151: {0}.
+DATASOURCE_EXCEPTION_SIMS1501.explanation=Az adatt\u00e1rol\u00f3k\u00e9nt be\u00e1ll\u00edtott adatforr\u00e1s egy kiv\u00e9telt \u00e1ll\u00edtott el\u0151.
+DATASOURCE_EXCEPTION_SIMS1501.useraction=CMSG0002
+
+INVALID_TUPLE_TYPE_SIMS1502=CWSIS1502E: A(z) {0} rekordt\u00edpus \u00e9rv\u00e9nytelen.
+INVALID_TUPLE_TYPE_SIMS1502.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt.
+INVALID_TUPLE_TYPE_SIMS1502.useraction=CMSG0002
+
+#DATABASE_NOT_SUPPORTED_SIMS1503=CWSIS1503E: Database: {0}, version: {1}, platform: {2}, is not supported
+#DATABASE_NOT_SUPPORTED_SIMS1503.explanation=The specified database is not recognized as a supported database.
+#DATABASE_NOT_SUPPORTED_SIMS1503.useraction=Rerun the command and specify a supported database.
+
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504=CWSIS1504E: The messaging engine is stopping due to an exception from the data source.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.explanation=An exception from the data source caused the messaging engine to stop in order to avoid data corruption.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.useraction=CMSG0002
+
+#KEY_GENERATOR_UPDATE_FAILED_SIMS1505 is no longer used.
+
+#KEY_GENERATOR_MISSING_SIMS1506 is no longer used.
+
+INVALID_PERSISTABLE_OPERATION_SIMS1507=CWSIS1507E: A(z) {0} elem nem tartalmazhat m\u00e1s elemeket, mert {1} t\u00edpus\u00fa.
+INVALID_PERSISTABLE_OPERATION_SIMS1507.explanation=Helytelen m\u0171velet t\u00f6rt\u00e9nt a bels\u0151 \u00fczenet\u00e1br\u00e1zol\u00e1sban.
+INVALID_PERSISTABLE_OPERATION_SIMS1507.useraction=CMSG0002
+
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508=CWSIS1508E: The item table identifier, {0}, is outside of the allowed range.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.explanation=A maximum of 32 item tables can be used, with identifiers in the range 0 - 31.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.useraction=CMSG0002
+
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509=CWSIS1509E: An incorrect number of stream tables, {0}, were found.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.explanation=There must be only one stream table.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510=CWSIS1510E: An incorrect number of permanent tables, {0}, were found.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.explanation=There must be at least one permanent table.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511=CWSIS1511E: An incorrect number of temporary tables, {0}, were found.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.explanation=There must be at least one temporary table.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.useraction=Correct the problem and try again.
+
+#UNKNOWN_ITEM_TABLE_KEY_SIMS1512 is no longer used.
+
+ROLLBACK_ONLY_EXCEPTION_SIMS1513=CWSIS1513E: A csak visszag\u00f6rget\u00e9s \u00e1llapot nem \u00e1ll\u00edthat\u00f3 be egy automatikus v\u00e9gleges\u00edt\u00e9s\u0171 kapcsolat eset\u00e9n.
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.explanation=Egy automatikus v\u00e9gleges\u00edt\u00e9s\u0171 kapcsolat \u00e1llapot\u00e1nak 'csak visszag\u00f6rget\u00e9s' \u00e9rt\u00e9kre be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt.
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.useraction=CMSG0002
+
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514=CWSIS1514E: A data source JNDI name has not been specified.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.explanation=A JNDI name is needed in order to identify the data source to use as a data store.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.useraction=Correct the problem and try again.
+
+#DATABASE_NOT_RECOGNIZED_SIMS1515=CWSIS1515E: The database, {0}, is not recognized as a valid database.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.explanation=An internal error has occurred.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.useraction=CMSG0002
+
+#INVALID_TABLE_ENTRY_SIMS1516=CWSIS1516E: Both data columns of table, {0}, were non-null.
+#INVALID_TABLE_ENTRY_SIMS1516.explanation=An internal error has occurred.
+#INVALID_TABLE_ENTRY_SIMS1516.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517=CWSIS1517W: Reliable persistent data could not be written to the data store by messaging engine {0}.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.explanation=An earlier exception prevented the writing of reliable persistent data to the data store for the messaging engine. The data cannot be recovered.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.useraction=CMSG0002
+
+#MAX_DATA_SIZE_SIMS1518 is no longer used.
+
+# {0} is the messaging engine's name
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519=CWSIS1519E: Messaging engine {0} cannot obtain the lock on its data store, which ensures it has exclusive access to the data.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.explanation=The data store lock is already held, probably by another active or recently failed messaging engine.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.useraction=CMSG0002
+
+INVALID_TASK_OPERATION_SIMS1520=CWSIS1520E: A tranzakci\u00f3 nem szab\u00e1lyszer\u0171 \u00e1llapotban van a m\u0171velet v\u00e9grehajt\u00e1s\u00e1hoz. Az \u00e1llapota {0}.
+INVALID_TASK_OPERATION_SIMS1520.explanation=A tranzakci\u00f3nak \u00e9rv\u00e9nyes \u00e1llapotban kell lennie a feladat v\u00e9grehajt\u00e1s\u00e1hoz.
+INVALID_TASK_OPERATION_SIMS1520.useraction=CMSG0002
+
+#UNSUPPORTED_TASK_OPERATION_SIMS1521 is no longer used.
+
+#CONNECTION_WAIT_TIMEOUT_SIMS1522=CWSIS1522E: The messaging engine's request for a database connection timed out.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.explanation=The connection pool for the data source used by the messaging engine is too small.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.useraction=CMSG0002
+
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523=CWSIS1523E: Dynamic allocation of database objects in DB2 for z/OS is not allowed.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.explanation=Database tables required by the data store cannot be created dynamically.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.useraction=Use the sibDDLGenerator tool to generate the DDL statements for the data store tables.
+
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524=CWSIS1524E: Data source, {0}, not found.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.explanation=The look up of the specified JNDI name has failed to locate the data source.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.useraction=Verify that the JNDI name is valid and try again.
+
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525=CWSIS1525E: Incorrect item table type, {0}.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.explanation=An item table type has not been recognized as valid.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.useraction=Correct the problem and try again.
+
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526=CWSIS1526E: The item table, {0}, is not able to perform the operation. It is of type, {1}.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.explanation=The item table cannot perform the requested operation because it is not of the correct type.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.useraction=CMSG0002
+
+INVALID_PERSISTABLE_STATE_SIMS1527=CWSIS1527E: Egy t\u00e1rolhat\u00f3 objektum helytelen \u00e1llapotban van. Elind\u00edtott m\u0171veletek sz\u00e1ma: {0}, befejez\u0151d\u00f6tt m\u0171veletek sz\u00e1ma: {1}.
+INVALID_PERSISTABLE_STATE_SIMS1527.explanation=A t\u00e1rolhat\u00f3 objektum helytelen \
+\u00e1llapotban van, mert a befejez\u0151d\u00f6tt m\u0171veletek sz\u00e1ma meghaladja az elind\u00edtottak sz\u00e1m\u00e1t.
+INVALID_PERSISTABLE_STATE_SIMS1527.useraction=CMSG0002
+
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528=CWSIS1528E: New connections cannot be provided because the persistence layer is stopped.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.explanation=The data store persistence layer has been stopped so no more connections will be provided.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.useraction=Restart the messaging engine and try again.
+
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529=CWSIS1529E: The column, {0}, was not found in the table, {1}, as expected.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.explanation=The messaging engine expected to find the column in the relevant table.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.useraction=Correct the problem and try again.
+
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530=CWSIS1530E: The data type, {0}, was found instead of the expected type, {1}, for column, {2}, in table, {3}.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.explanation=The messaging engine expects certain data types to be used for the columns in the data store tables.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.useraction=Correct the problem and try again.
+
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531=CWSIS1531E: The maximum data size, {0} bytes, of the data store has been exceeded. The data size was, {1} bytes.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.explanation=The maximum data size that can be stored in the data store tables has been exceeded.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.useraction=CMSG0002
+
+#MISSING_TABLE_EXCEPTION_SIMS1532=CWSIS1532E: The table, {0}, is missing.
+#MISSING_TABLE_EXCEPTION_SIMS1532.explanation=The messaging engine was unable to find the table in the DBMS, and the option to have the messaging engine automatically create it was not selected.
+#MISSING_TABLE_EXCEPTION_SIMS1532.useraction=Correct the problem and try again.
+
+#MISSING_SCHEMA_EXCEPTION_SIMS1533=CWSIS1533E: The schema, {0}, does not exist.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.explanation=The messaging engine was unable to locate the schema in the DBMS.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.useraction=Correct the problem and try again.
+
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534=CWSIS1534E: A(z) {0} oszt\u00e1lyhivatkoz\u00e1s nem ker\u00fclt felold\u00e1sra.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.explanation=Az \u00fczenetkezel\u00e9si alrendszernek nem siker\u00fcl megtal\u00e1lnia egy olyan oszt\u00e1lynevet, amely a hivatkoz\u00e1snak felel meg.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.useraction=CMSG0002 
+
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535=CWSIS1535E: The messaging engine''s unique id does not match that found in the data store. ME_UUID={0}, ME_UUID(DB)={1}
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.explanation=The unique id of your messaging engine does not match that in the data store.
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                               by a different messaging engine. Either point your messaging engine's data source \ 
+#                                               to a separate set of tables or remove the existing ones.
+
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536=CWSIS1536E: The messaging engine''s version does not match that found in the data store. VERSION={0}, VERSION(DB)={1}
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.explanation=The version of your messaging engine does not match that in the data store.
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                                by a different messaging engine. Either point your messaging engine's data source \ 
+#                                                to a separate set of tables or remove the existing ones.
+
+#DBLOCK_ACQUIRED_SIMS1537=CWSIS1537I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has acquired an exclusive lock on the data store.
+#DBLOCK_ACQUIRED_SIMS1537.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1537.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1538=CWSIS1538I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain an exclusive lock on the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.useraction=No action is required.
+
+#DDLGENERATOR_USAGE_INFO_SIMS1539=CWSIS1539I: sibDDLGenerator [{0} <DBMS name>] [{1} <DBMS version>] [{2} <DBMS platform>] [{3} <schema>] [{4} <user>] [{5}|{6}] [{7} <database> (z/OS only)][{8} <true|false> (z/OS only)][{9} <tablespace prefix, maximum 5 characters> (z/OS only)][{10} <storage group> [{11} <high-level qualifier>] (z/OS only)] [{12} <buffer pool> (z/OS only)] [{13} <terminator>] [{14}] [{15}] [{16} <statements>] [{17} <statements>] [{18} <number of permanent tables>] [{19} <number of temporary tables>]
+#DDLGENERATOR_USAGE_INFO_SIMS1539.explanation=DDLGenerator usage information.
+#DDLGENERATOR_USAGE_INFO_SIMS1539.useraction=Rerun the command using the correct syntax.
+
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540=CWSIS1540E: An invalid number of tables has been specified, {0}.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.explanation=The specified number of tables must be a positive integer.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.useraction=Correct the error and try again.
+
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541=CWSIS1541E: The maximum number of SIBnnn tables that can be used by a messaging engine, {0}, has been exceeded.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.explanation=The total number of stream (there is always one stream table), permanent and temporary tables should not exceed the maximum.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.useraction=Reduce the number of permanent or temporary tables specified, and restart the server.
+
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542=CWSIS1542E: The configured number of permanent or temporary tables, {1}, is less than the number currently in use, {0}.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.explanation=The number of permanent or temporary tables cannot be decreased.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.useraction=Restore the original values for the number of permanent and temporary tables, and restart the server. 
+
+#DBLOCK_NO_OWNER_SIMS1543=CWSIS1543I: No previous owner was found in the messaging engine's data store.
+#DBLOCK_NO_OWNER_SIMS1543.explanation=The data store has not been used by another messaging engine.
+#DBLOCK_NO_OWNER_SIMS1543.useraction=No action is required.
+
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544=CWSIS1544E: Multiple previous owner id's found in the messaging engine's data store.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.explanation=The data store has identified more than one messagine engine as its owner.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.useraction=CMSG0002
+
+#DBLOCK_ONE_OWNER_SIMS1545=CWSIS1545I: A single previous owner was found in the messaging engine''s data store, ME_UUID={0}, INC_UUID={1}
+#DBLOCK_ONE_OWNER_SIMS1545.explanation=The messaging engine identified has previously used the data store.
+#DBLOCK_ONE_OWNER_SIMS1545.useraction=No action is required.
+
+#DBLOCK_NOT_HELD_SIMS1546 is no longer used.
+
+#SCHEMA_NAME_UNDEFINED_SIMS1547=CWSIS1547E: Unable to determine the schema name for the messaging engine.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.explanation=The schema name was not defined explicitly for the data store, and the database user id was not provided.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.useraction=Provide a schema name and try again.
+
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548=CWSIS1548W: A napl\u00f3f\u00e1jl m\u00e9rete most nem \
+m\u00f3dos\u00edthat\u00f3 az \u00fczenetkezel\u00e9si alrendszer f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1nak \u00e9rt\u00e9k\u00e9re.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.explanation=A f\u00e1jlt\u00e1rol\u00f3 megl\u00e9v\u0151 tartalmai megakad\u00e1lyozz\u00e1k az \u00e9rt\u00e9kek hat\u00e1sba l\u00e9p\u00e9s\u00e9t a be\u00e1ll\u00edt\u00e1sban.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.useraction=Semmit sem kell tennie. Az \u00fczenetkezel\u00e9si alrendszer megpr\u00f3b\u00e1lja \u00fajra alkalmazni a be\u00e1ll\u00edt\u00e1s m\u00f3dos\u00edt\u00e1sait a k\u00f6vetkez\u0151 indul\u00e1skor.
+
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549=CWSIS1549W: A t\u00e1rol\u00f3f\u00e1jl m\u00e9rete most nem \
+m\u00f3dos\u00edthat\u00f3 az \u00fczenetkezel\u00e9si alrendszer f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1nak \u00e9rt\u00e9k\u00e9re.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.explanation=A f\u00e1jlt\u00e1rol\u00f3 megl\u00e9v\u0151 tartalmai megakad\u00e1lyozz\u00e1k az \u00e9rt\u00e9kek hat\u00e1sba l\u00e9p\u00e9s\u00e9t a be\u00e1ll\u00edt\u00e1sban.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.useraction=Semmit sem kell tennie. Az \u00fczenetkezel\u00e9si alrendszer megpr\u00f3b\u00e1lja \u00fajra alkalmazni a be\u00e1ll\u00edt\u00e1s m\u00f3dos\u00edt\u00e1sait a k\u00f6vetkez\u0151 indul\u00e1skor.
+
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550=CWSIS1550I: A napl\u00f3f\u00e1jl jelenlegi m\u00e9rete {0} byte. A napl\u00f3f\u00e1jl be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3iban a m\u00e9ret {1} byte.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.useraction=Semmit sem kell tennie.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551=CWSIS1551I: Az \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jl jelenlegi minim\u00e1lis fenntartott m\u00e9rete {0} byte. A jelenlegi maxim\u00e1lis m\u00e9ret {1} byte.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.useraction=Semmit sem kell tennie.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552=CWSIS1552I: Az \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jl jelenlegi minim\u00e1lis fenntartott m\u00e9rete {0} byte. A jelenlegi maxim\u00e1lis m\u00e9ret korl\u00e1tlan.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.useraction=Semmit sem kell tennie.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553=CWSIS1553I: A minim\u00e1lis fenntartott m\u00e9ret az \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jl be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3iban {0} byte. A maxim\u00e1lis m\u00e9ret {1} byte.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.useraction=Semmit sem kell tennie.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554=CWSIS1554I: A minim\u00e1lis fenntartott m\u00e9ret az \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jl be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3iban {0} byte. A maxim\u00e1lis m\u00e9ret korl\u00e1tlan.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.useraction=Semmit sem kell tennie.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555=CWSIS1555I: Az ideiglenes t\u00e1rol\u00f3f\u00e1jl jelenlegi minim\u00e1lis fenntartott m\u00e9rete {0} byte. A jelenlegi maxim\u00e1lis m\u00e9ret {1} byte.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.useraction=Semmit sem kell tennie.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556=CWSIS1556I: Az ideiglenes t\u00e1rol\u00f3f\u00e1jl jelenlegi minim\u00e1lis fenntartott m\u00e9rete {0} byte. A jelenlegi maxim\u00e1lis m\u00e9ret korl\u00e1tlan.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.useraction=Semmit sem kell tennie.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557=CWSIS1557I: A minim\u00e1lis fenntartott m\u00e9ret az ideiglenes t\u00e1rol\u00f3f\u00e1jl be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3iban {0} byte. A maxim\u00e1lis m\u00e9ret {1} byte.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.useraction=Semmit sem kell tennie.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558=CWSIS1558I: A minim\u00e1lis fenntartott m\u00e9ret az ideiglenes t\u00e1rol\u00f3f\u00e1jl be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3iban {0} byte. A maxim\u00e1lis m\u00e9ret korl\u00e1tlan.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.explanation=Ez a f\u00e1jlt\u00e1rol\u00f3 be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3inak r\u00e9sze.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.useraction=Semmit sem kell tennie.
+
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559=CWSIS1559I: Az adatok az \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jlban {0} byte-ot foglalnak el.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.explanation=Ez az \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jl tartalmai \u00e1ltal feldolgozott ter\u00fclet byte-jainak sz\u00e1ma. A minim\u00e1lis fenntartott m\u00e9retet nem lehet ezen \u00e9rt\u00e9k al\u00e1 cs\u00f6kkenteni.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.useraction=Semmit sem kell tennie.
+
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560=CWSIS1560I: Az adatok az ideiglenes t\u00e1rol\u00f3f\u00e1jlban {0} byte-ot foglalnak el.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.explanation=Ez az ideiglenes t\u00e1rol\u00f3f\u00e1jl tartalmai \u00e1ltal feldolgozott ter\u00fclet byte-jainak sz\u00e1ma. A minim\u00e1lis fenntartott m\u00e9retet nem lehet ezen \u00e9rt\u00e9k al\u00e1 cs\u00f6kkenteni.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.useraction=Semmit sem kell tennie.
+
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561=CWSIS1561E: Az \u00fczenetkezel\u00e9si alrendszer egyedi azonos\u00edt\u00f3ja nem egyezik meg a f\u00e1jlt\u00e1rol\u00f3ban tal\u00e1lttal. ME_UUID={0}, ME_UUID(FS)={1}.
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.explanation=Az \u00fczenetkezel\u00e9si alrendszer egyedi azonos\u00edt\u00f3ja nem egyezik meg azzal, amely a f\u00e1jlt\u00e1rol\u00f3ban tal\u00e1lhat\u00f3.
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.useraction=F\u00e1jlok olyan l\u00e9tez\u0151 halmaz\u00e1hoz pr\u00f3b\u00e1l csatlakozni, amelyeket egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszer birtokol. \
+Ir\u00e1ny\u00edtsa az \u00fczenetkezel\u00e9si alrendszer f\u00e1jlt\u00e1rol\u00f3j\u00e1t a f\u00e1jlok egy \u00f6n\u00e1ll\u00f3 halmaz\u00e1ra, vagy t\u00e1vol\u00edtsa el a l\u00e9tez\u0151ket.
+
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562=CWSIS1562E: Az \u00fczenetkezel\u00e9si alrendszer v\u00e1ltozata nem egyezik meg a f\u00e1jlt\u00e1rol\u00f3ban tal\u00e1lttal. VERSION={0}, VERSION(FS)={1}.
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.explanation=Az \u00fczenetkezel\u00e9si alrendszer v\u00e1ltozata nem egyezik meg azzal, amely a f\u00e1jlt\u00e1rol\u00f3ban tal\u00e1lhat\u00f3.
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.useraction=F\u00e1jlok olyan l\u00e9tez\u0151 halmaz\u00e1hoz pr\u00f3b\u00e1l csatlakozni, amelyeket egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszer birtokol. \
+Ir\u00e1ny\u00edtsa az \u00fczenetkezel\u00e9si alrendszer f\u00e1jlt\u00e1rol\u00f3j\u00e1t a f\u00e1jlok egy \u00f6n\u00e1ll\u00f3 halmaz\u00e1ra, vagy t\u00e1vol\u00edtsa el a l\u00e9tez\u0151ket.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ACQUIRED_SIMS1563=CWSIS1563I: Az \u00fczenetkezel\u00e9si alrendszer (ME_UUID={0}, INC_UUID={1}) megszerzett egy kiz\u00e1r\u00f3lagos z\u00e1rol\u00e1st a f\u00e1jlt\u00e1rol\u00f3ban.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.explanation=Az UUID azonos\u00edt\u00f3k \u00e1ltal azonos\u00edtott \u00fczenetkezel\u00e9si alrendszer tulajdonjogot l\u00e9tes\u00edtett a f\u00e1jlt\u00e1rol\u00f3 eset\u00e9n.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.useraction=Semmit sem kell tennie.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564=CWSIS1564I: Az \u00fczenetkezel\u00e9si alrendszer (ME_UUID={0}, INC_UUID={1}) megpr\u00f3b\u00e1l megszerezni egy kiz\u00e1r\u00f3lagos z\u00e1rol\u00e1st a f\u00e1jlt\u00e1rol\u00f3ban.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.explanation=Az UUID azonos\u00edt\u00f3k \u00e1ltal azonos\u00edtott \u00fczenetkezel\u00e9si alrendszer tulajdonjogot pr\u00f3b\u00e1l l\u00e9tes\u00edteni a f\u00e1jlt\u00e1rol\u00f3 eset\u00e9n.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.useraction=Semmit sem kell tennie.
+
+FILE_STORE_LOCK_NO_OWNER_SIMS1565=CWSIS1565I: Nem tal\u00e1lhat\u00f3 el\u0151z\u0151 tulajdonos az \u00fczenetkezel\u00e9si alrendszer f\u00e1jlt\u00e1rol\u00f3j\u00e1ban.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.explanation=A f\u00e1jlt\u00e1rol\u00f3t nem haszn\u00e1lta m\u00e1s \u00fczenetkezel\u00e9si alrendszer.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.useraction=Semmit sem kell tennie.
+
+# {0} is the UUID of the messaging engine found in the file store
+# {1} is the INC_UUID of the messaging engine found in the file store
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566=CWSIS1566I: Egyetlen el\u0151z\u0151 tulajdonos tal\u00e1lhat\u00f3 az \u00fczenetkezel\u00e9si alrendszer f\u00e1jlt\u00e1rol\u00f3j\u00e1ban. ME_UUID={0}, INC_UUID={1}.
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.explanation=Az eml\u00edtett \u00fczenetkezel\u00e9si alrendszer haszn\u00e1lta el\u0151z\u0151leg a f\u00e1jlt\u00e1rol\u00f3t.
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.useraction=Semmit sem kell tennie.
+
+# {0} is the messaging engine's name
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567=CWSIS1567E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer nem tudta megszerezni a z\u00e1rol\u00e1st a f\u00e1jlt\u00e1rol\u00f3j\u00e1hoz, amely kiz\u00e1r\u00f3lagos hozz\u00e1f\u00e9r\u00e9st biztos\u00edtana az adatokhoz.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.explanation=A f\u00e1jlt\u00e1rol\u00f3 m\u00e1r z\u00e1rolva van, val\u00f3sz\u00edn\u0171leg egy m\u00e1sik akt\u00edv vagy nem r\u00e9g meghib\u00e1sodott \u00fczenetkezel\u00e9si alrendszer \u00e1ltal.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568=CWSIS1568I: Messaging engine {0} is using a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.explanation=The message store for the messaging engine is a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.useraction=No action is required.
+
+# {0} is the messaging engine's name
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569=CWSIS1569I: A(z) {0} \u00fczenetkezel\u00e9si alrendszer egy f\u00e1jlt\u00e1rol\u00f3t haszn\u00e1l.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.explanation=Az \u00fczenetkezel\u00e9si alrendszer \u00fczenett\u00e1rol\u00f3ja egy f\u00e1jlt\u00e1rol\u00f3.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.useraction=Semmit sem kell tennie.
+
+# {0} is the text of the exception thrown
+#DBLOCK_EXCEPTION_SIMS1570=CWSIS1570E: The messaging engine encountered an exception while locking the data store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1570.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1570.useraction=CMSG0002
+
+# {0} is the number of permanent tables in use
+# {1} is the number of temporary tables in use
+#NUMBER_OF_TABLES_IN_USE_SIMS1571=CWSIS1571I: Data store table summary: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.explanation=The data store is using these permanent and temporary tables.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.useraction=No action is required.
+
+# This message is also issued if the number of tables is changing
+# {0} is the number of permanent tables previously in use
+# {1} is the number of temporary tables previously in use
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572=CWSIS1572I: Data store table summary before configuration change: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.explanation=The data store was using these permanent and temporary tables before the configuration was changed.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.useraction=No action is required.
+
+FILE_STORE_LOG_FULL_SIMS1573E=CWSIS1573E: A f\u00e1jlt\u00e1rol\u00f3 napl\u00f3f\u00e1jlja megtelt.
+FILE_STORE_LOG_FULL_SIMS1573E.explanation=A f\u00e1jlt\u00e1rol\u00f3nak nincs t\u00f6bb ter\u00fclete a napl\u00f3f\u00e1jlban az \u00fczenetek t\u00e1rol\u00e1s\u00e1hoz. \
+Ez az \u00fczenetek egy nem v\u00e1rt \u00f6ssze\u00e1ll\u00edt\u00e1sa miatt lehet, vagy a f\u00e1jlm\u00e9ret t\u00fal kicsi. 
+FILE_STORE_LOG_FULL_SIMS1573E.useraction=Takar\u00edtsa ki a felesleges \u00fczeneteket, vagy ha sz\u00fcks\u00e9ges, akkor n\u00f6velje a napl\u00f3f\u00e1jl m\u00e9ret\u00e9t.
+
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E=CWSIS1574E: A f\u00e1jlt\u00e1rol\u00f3 \u00e1lland\u00f3 t\u00e1rol\u00f3 f\u00e1jlja megtelt.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.explanation=A f\u00e1jlt\u00e1rol\u00f3nak nincs t\u00f6bb ter\u00fclete az \u00e1lland\u00f3 t\u00e1rol\u00f3 f\u00e1jlban az \u00fczenetek t\u00e1rol\u00e1s\u00e1hoz. \
+Ez az \u00fczenetek egy nem v\u00e1rt \u00f6ssze\u00e1ll\u00edt\u00e1sa miatt lehet, vagy a f\u00e1jlm\u00e9ret t\u00fal kicsi.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.useraction=Takar\u00edtsa ki a felesleges \u00fczeneteket, vagy ha sz\u00fcks\u00e9ges, akkor n\u00f6velje az \u00e1lland\u00f3 t\u00e1rol\u00f3 f\u00e1jl m\u00e9ret\u00e9t.
+
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E=CWSIS1575E: A f\u00e1jlt\u00e1rol\u00f3 ideiglenes t\u00e1rol\u00f3 f\u00e1jlja megtelt.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.explanation=A f\u00e1jlt\u00e1rol\u00f3nak nincs t\u00f6bb ter\u00fclete az ideiglenes t\u00e1rol\u00f3 f\u00e1jlban az \u00fczenetek t\u00e1rol\u00e1s\u00e1hoz. \
+Ez az \u00fczenetek egy nem v\u00e1rt \u00f6ssze\u00e1ll\u00edt\u00e1sa miatt lehet, vagy a f\u00e1jlm\u00e9ret t\u00fal kicsi.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.useraction=Takar\u00edtsa ki a felesleges \u00fczeneteket, vagy ha sz\u00fcks\u00e9ges, akkor n\u00f6velje az ideiglenes t\u00e1rol\u00f3 f\u00e1jl m\u00e9ret\u00e9t.
+
+SPILL_DISPATCHER_IS_FULL_SIMS1576E=CWSIS1576E: Az \u00e1tmeneti ir\u00e1ny\u00edt\u00f3 megtelt. 
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.explanation=Az \u00e1tmeneti ir\u00e1ny\u00edt\u00f3 megtelt \u00e9s nem \
+fogadhat el \u00faj \u00fczeneteket, am\u00edg nem lesz ter\u00fclet szabadd\u00e1 t\u00e9ve. \
+A megl\u00e9v\u0151 \u00fczenet elt\u00e1vol\u00edt\u00e1sa seg\u00edthet az ir\u00e1ny\u00edt\u00f3nak a ter\u00fclet-felszabad\u00edt\u00e1s\u00e1ban.
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.useraction=Az ir\u00e1ny\u00edt\u00f3 szok\u00e1soshoz visszat\u00e9r\u00e9s\u00e9hez semmilyen m\u0171velet nem sz\u00fcks\u00e9ges. \
+Azonban ez annak a t\u00fcnete lehet, hogy az ideiglenes t\u00e1rol\u00f3 f\u00e1jl m\u00e9rete t\u00fal kicsi.
+
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577=CWSIS1577E: Az \u00e1lland\u00f3 ir\u00e1ny\u00edt\u00f3 nem tud \
+feladatot fogadni.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.explanation=Az \u00e1lland\u00f3 ir\u00e1ny\u00edt\u00f3 nem tud \
+t\u00f6bb feladatot fogadni egy kor\u00e1bbi hiba miatt.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.useraction=CMSG0002
+
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578=CWSIS1578E: Az \u00e1tmeneti ir\u00e1ny\u00edt\u00f3 nem tud \
+feladatot fogadni.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.explanation=Az \u00e1tmeneti ir\u00e1ny\u00edt\u00f3 nem tud \
+t\u00f6bb feladatot fogadni egy kor\u00e1bbi hiba miatt.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.useraction=CMSG0002
+
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579=CWSIS1579E: A f\u00e1jlt\u00e1rol\u00f3 napl\u00f3f\u00e1jlj\u00e1t egy m\u00e1sik \
+folyamat z\u00e1rolja.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.explanation=Amikor a f\u00e1jlt\u00e1rol\u00f3 megk\u00eds\u00e9relte z\u00e1rolni \
+a napl\u00f3f\u00e1jlj\u00e1t, nem tudott \u00edgy tenni, mert egy m\u00e1sik folyamat m\u00e1r tartja a f\u00e1jl \
+z\u00e1rol\u00e1s\u00e1t. \
+Ez a folyamat lehet egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszer vagy valamely m\u00e1s \
+alkalmaz\u00e1sfolyamat.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.useraction=Ellen\u0151rizze, hogy a napl\u00f3f\u00e1jlt, amire a \
+f\u00e1jlt\u00e1rol\u00f3ja hivatkozik, kiz\u00e1r\u00f3lag az a f\u00e1jlt\u00e1rol\u00f3 haszn\u00e1lja. \
+Ha egy m\u00e1sodik \u00fczenetkezel\u00e9si alrendszer haszn\u00e1lja ugyanazt a f\u00e1jlt, akkor ez egy \
+helytelen be\u00e1ll\u00edt\u00e1s, vagy egy helytelen \u00e1t\u00e1ll\u00e1si k\u00eds\u00e9rlet miatt lehet. \
+Ezen \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1s\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez \u00e1llap\u00edtsa meg, hogy melyik \
+\u00fczenetkezel\u00e9si alrendszer haszn\u00e1lja a napl\u00f3f\u00e1jlt, \u00e9s \u00e1ll\u00edtsa le azt az \u00fczenetkezel\u00e9si \
+alrendszert.
+
+# {0} is the path to the log file that was provided from the configuration.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580=CWSIS1580E: A f\u00e1jlt\u00e1rol\u00f3 napl\u00f3f\u00e1jlja a \
+megadott helyen nem tal\u00e1lhat\u00f3: {0}.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.explanation=Amikor a f\u00e1jlt\u00e1rol\u00f3 \
+megpr\u00f3b\u00e1lta megnyitni vagy l\u00e9trehozni a napl\u00f3f\u00e1jlj\u00e1t, nem tudott \u00edgy tenni. \
+Ezen probl\u00e9ma \u00e1ltal\u00e1nos oka, hogy egy lemez beilleszt\u00e9s nincs jelen, vagy a biztos\u00edtott \
+el\u00e9r\u00e9si \u00fat helytelen\u00fcl lett megadva.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.useraction=Ellen\u0151rizze a megadott \u00fatvonalat, \
+hogy megn\u00e9zze, hogy az egy el\u00e9rhet\u0151 lemezre vagy k\u00f6nyvt\u00e1rra hivatkozik-e.
+
+# {0} The log file name
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581=CWSIS1581I: A f\u00e1jlt\u00e1rol\u00f3 megk\u00eds\u00e9rli a(z) {0} napl\u00f3f\u00e1jl inicializ\u00e1l\u00e1s\u00e1t.
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.explanation=A f\u00e1jlt\u00e1rol\u00f3 elindul \u00e9s megpr\u00f3b\u00e1lja beolvasni a napl\u00f3f\u00e1jl tartalm\u00e1t.
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.useraction=Semmit sem kell tennie.
+
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582=CWSIS1582I: A f\u00e1jlt\u00e1rol\u00f3 probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt napl\u00f3f\u00e1jlja inicializ\u00e1l\u00e1sa k\u00f6zben, de \u00fajb\u00f3li k\u00eds\u00e9rletet tesz.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.explanation=A f\u00e1jlt\u00e1rol\u00f3 jelen inicializ\u00e1l\u00e1si k\u00eds\u00e9rlete meghi\u00fasult. \
+Egy kor\u00e1bbi \u00fczenet kimenetk\u00e9nt r\u00e9szletezi a hiba ok\u00e1t. \
+A f\u00e1jlt\u00e1rol\u00f3 \u00fajb\u00f3l megpr\u00f3b\u00e1lkozik az inicializ\u00e1l\u00e1ssal, h\u00e1tha a hiba helyre\u00e1ll\u00edthat\u00f3.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.useraction=Ha t\u00f6bbsz\u00f6r\u00f6s pr\u00f3b\u00e1lkoz\u00e1s ut\u00e1n sem siker\u00fcl a f\u00e1jlt\u00e1rol\u00f3nak az inicializ\u00e1l\u00e1s, akkor tekintse \u00e1t a napl\u00f3t olyan \u00fczenetek\u00e9rt, amik esetleges konfigur\u00e1ci\u00f3s vagy csatlakoz\u00e1si probl\u00e9m\u00e1kra utalhatnak.
+
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583=CWSIS1583E: A f\u00e1jlt\u00e1rol\u00f3 t\u00fall\u00e9pte az inicializ\u00e1l\u00e1s \u00fajrapr\u00f3b\u00e1l\u00e1si korl\u00e1tj\u00e1t \u00e9s le\u00e1ll.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.explanation=Az \u00fczenetkezel\u0151 alrendszerek f\u00e1jlt\u00e1rol\u00f3ja el\u00e9rte az inicializ\u00e1l\u00e1s \u00fajrapr\u00f3b\u00e1l\u00e1s\u00e1nak id\u0151korl\u00e1tj\u00e1t \u00e9s le\u00e1ll. \
+Az inicializ\u00e1l\u00e1s ism\u00e9telt meghi\u00fasul\u00e1s\u00e1nak ok\u00e1t kor\u00e1bbi \u00fczenetekben tal\u00e1lja. \
+A f\u00e1jlt\u00e1rol\u00f3 le\u00e1ll\u00e1sa ut\u00e1n az \u00fczenetkezel\u0151 alrendszer alkalmas lehet \u00e1t\u00e1ll\u00e1sra, ha a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja t\u00e1mogatja azt.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.useraction=A kor\u00e1bbi \u00fczenetek kimenete seg\u00edts\u00e9get ny\u00fajthat a f\u00e1jlt\u00e1rol\u00f3 inicializ\u00e1l\u00e1si hiba okainak meghat\u00e1roz\u00e1s\u00e1ban.
+
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584=CWSIS1584I: A f\u00e1jlt\u00e1rol\u00f3 sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.explanation=A f\u00e1jlt\u00e1rol\u00f3 sikeresen megnyitotta \u00e9s inicializ\u00e1lta napl\u00f3f\u00e1jlj\u00e1t.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.useraction=Semmit sem kell tennie.
+
+# {0} The permanent store file name
+# {1} The temporary store file name
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585=CWSIS1585I: A f\u00e1jlt\u00e1rol\u00f3 megk\u00eds\u00e9rli elind\u00edtani \u00e1lland\u00f3 ({0}) \u00e9s ideiglenes ({1}) t\u00e1rol\u00f3it.
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.explanation=A f\u00e1jlt\u00e1rol\u00f3 meg fog pr\u00f3b\u00e1lkozni t\u00e1rol\u00f3f\u00e1jljai megnyit\u00e1s\u00e1val \u00e9s azok tartalm\u00e1nak olvas\u00e1s\u00e1val. \
+Ha az \u00fczenetkezel\u00e9si alrendszer el\u0151 alkalommal indul el, akkor a f\u00e1jlok most fognak l\u00e9trej\u00f6nni.
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.useraction=Semmit sem kell tennie.
+
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586=CWSIS1586I: A f\u00e1jlt\u00e1rol\u00f3 \u00e1lland\u00f3 t\u00e1rol\u00f3ja sikeresen elindult.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.explanation=A f\u00e1jlt\u00e1rol\u00f3 sikeresen megnyitotta \u00e1lland\u00f3 t\u00e1rol\u00f3f\u00e1jlj\u00e1t \u00e9s ellen\u0151rizte annak tartalm\u00e1t.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.useraction=Semmit sem kell tennie.
+
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587=CWSIS1587I: A f\u00e1jlt\u00e1rol\u00f3 ideiglenes t\u00e1rol\u00f3ja sikeresen elindult.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.explanation=A f\u00e1jlt\u00e1rol\u00f3 sikeresen megnyitotta ideiglenes t\u00e1rol\u00f3f\u00e1jlj\u00e1t \u00e9s ellen\u0151rizte annak tartalm\u00e1t.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.useraction=Semmit sem kell tennie.
+
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588=CWSIS1588I: A f\u00e1jlt\u00e1rol\u00f3 sikeresen elindult.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.explanation=A f\u00e1jlt\u00e1rol\u00f3 sikeresen megnyitotta \u00e9s beolvasta f\u00e1jljait, \u00e9s k\u00e9szen \u00e1ll \u00faj munka fogad\u00e1s\u00e1ra.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.useraction=Semmit sem kell tennie.
+
+FILE_STORE_STOP_EXPECTED_SIMS1589=CWSIS1589I: A f\u00e1jlt\u00e1rol\u00f3 sikeresen le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+FILE_STORE_STOP_EXPECTED_SIMS1589.explanation=A f\u00e1jlt\u00e1rol\u00f3 ir\u00e1ny\u00edtott le\u00e1ll\u00edt\u00e1si folyamat r\u00e9szek\u00e9nt sikeresen le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+FILE_STORE_STOP_EXPECTED_SIMS1589.useraction=Semmit sem kell tennie.
+
+FILE_STORE_STOP_UNEXPECTED_SIMS1590=CWSIS1590E: A f\u00e1jlt\u00e1rol\u00f3 v\u00e1ratlanul le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.explanation=A f\u00e1jlt\u00e1rol\u00f3 egy v\u00e1ratlan hiba folyt\u00e1n le\u00e1llt. A napl\u00f3ban l\u00e9v\u0151 kor\u00e1bbi \u00fczenetek b\u0151vebb felvil\u00e1gos\u00edt\u00e1st ny\u00fajtanak a hib\u00e1r\u00f3l.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.useraction=Tekintse \u00e1t a napl\u00f3 \u00fczeneteit, hogy meg\u00e1llap\u00edthassa a v\u00e1ratlan le\u00e1ll\u00edt\u00e1s f\u0151 ok\u00e1t.
+
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591=CWSIS1591E: A f\u00e1jlt\u00e1rol\u00f3 nem v\u00e1rt kiv\u00e9telt fogott el inicializ\u00e1ci\u00f3 sor\u00e1n.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.explanation=V\u00e1ratlan kiv\u00e9tel ker\u00fclt elfog\u00e1sra a f\u00e1jlt\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa sor\u00e1n, ami megg\u00e1tolta az \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1s\u00e1t.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.useraction=CMSG0002
+
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592=CWSIS1592E: A f\u00e1jlt\u00e1rol\u00f3 nem v\u00e1rt I/O kiv\u00e9telt fogott el.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.explanation=V\u00e1ratlan I/O kiv\u00e9tel ker\u00fclt elfog\u00e1sra a f\u00e1jlt\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa sor\u00e1n. \
+K\u00eds\u00e9relje meg ism\u00e9t az inicializ\u00e1l\u00e1st.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 napl\u00f3iban, hogy a f\u00e1jlt\u00e1rol\u00f3 inicializ\u00e1ci\u00f3 \u00fajb\u00f3li pr\u00f3b\u00e1l\u00e1sa sor\u00e1n megold\u00f3dik-e a probl\u00e9ma.
+
+# Messages CWSIS1593 & CWSIS1594 introduced to replace message CWSIS1546 which is ambiguous
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_FAILED_SIMS1593=CWSIS1593I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has failed to gain an initial lock on the data store.
+#DBLOCK_FAILED_SIMS1593.explanation=The messaging engine, identified by the UUIDs in the message, has been unable to get an exclusive lock \ 
+#                                   on the database tables that hold its data. This could be due to another instance of the messaging engine \ 
+#                                   running against the same set of tables. It could also be the result of a lock from a previously running \ 
+#                                   instance being held for longer than expected in the database. The messaging engine will retry for a \ 
+#                                   period during startup to see if it is able to acquire the lock.
+#DBLOCK_FAILED_SIMS1593.useraction=If the messaging engine does not succeed in acquiring the lock during the startup retry period then \ 
+#                                  check that no other instance of the messaging engine is running and that there are no outstanding locks \ 
+#                                 on the tables for this messaging engine being held on your database server.
+
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_LOST_SIMS1594=CWSIS1594I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has lost the lock on the data store.
+#DBLOCK_LOST_SIMS1594.explanation=The messaging engine, identified by the UUIDs in the message, has lost an existing lock on the tables that \ 
+#                                 hold its data. This may be due to a connectivity problem between the messaging engine and the database server \ 
+#                                 or that another instance of the messaging engine has started and taken control of the tables.
+#DBLOCK_LOST_SIMS1594.useraction=Check that a network connection between your messaging engine and database server is available and that there is \ 
+#                               only one instance of the messaging engine running.
+
+#INVALID_PARAMETER_COMBINATION_SIMS1595=CWSIS1595E: An invalid combination of parameters has been specified, Database: {0}, version: {1}, platform: {2} . Refer to the documentation for the correct parameters for your database.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.explanation=The combination of parameters used was unrecognized by the sibDDLGenerator.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.useraction=Refer to the documentation for a valid combination of parameters to use for your database. Rerun the command with a valid combination of parameters.
+
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596=CWSIS1596I: The data store exclusive lock cannot be disabled.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.explanation=The data store exclusive lock ensures integrity of the data within the data store and cannot \ 
+#                                                        be disabled for this messaging engine.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.useraction=If you have identified a need to disable the data store exclusive lock contact IBM Support.
+
+#DATASTORE_LOCK_DISABLED_CWSIS1597=CWSIS1597I: The data store exclusive lock has been disabled for {0} milliseconds.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.explanation=A request was made to disable the data store exclusive lock. The lock will remain disabled for the \ 
+#                                              length of time stated in the message at which point it will re-enable automatically.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.useraction=No action is required.
+
+#DATASTORE_LOCK_REENABLED_CWSIS1598=CWSIS1598I: The data store exclusive lock has been automatically re-enabled.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.explanation=The messaging engines data store has re-enabled its exclusive lock after the requested time period.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1599=CWSIS1599I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain ownership on the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.useraction=No action is required.
+
+#DBLOCK_EXCEPTION_SIMS1600=CWSIS1600E: Unable to update Messaging Engine status as the messaging engine encountered an exception while acquiring ownership on the message store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1600.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1600.useraction=CMSG0002
+
+#DBLOCK_ACQUIRED_SIMS1601=CWSIS1601I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has obtained ownership on the data store.
+#DBLOCK_ACQUIRED_SIMS1601.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1601.useraction=No action is required.
+
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602=CWSIS1602W: Restrict database locking feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603=CWSIS1603W: Keep count of failed deliveries feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+
+# -------------------------------------------------------------------------------------------------
+# Expiry
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_EXPIRABLE_SIMS2000=CWSIS2000E: Az elem nem egyedi kulccsal rendelkezik ({0}).
+DUPLICATE_EXPIRABLE_SIMS2000.explanation=Egy nem egyedi objektum lej\u00e1rati t\u00e1rgymutat\u00f3hoz hozz\u00e1ad\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt.
+DUPLICATE_EXPIRABLE_SIMS2000.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+EXPIRY_DAEMON_TERMINATED_SIMS2001=CWSIS2001E: A lej\u00e1rati d\u00e9mon rendellenesen \u00e1llt le egy v\u00e1ratlan kiv\u00e9tel miatt: {0}.
+EXPIRY_DAEMON_TERMINATED_SIMS2001.explanation=A lej\u00e1rati d\u00e9monsz\u00e1l megszak\u00edt\u00e1sra ker\u00fclt \u00e9s le\u00e1llt.
+EXPIRY_DAEMON_TERMINATED_SIMS2001.useraction=CMSG0002
+ 
+# {0} is the text of the exception thrown
+CACHE_LOADER_TERMINATED_SIMS2003=CWSIS2003E: CWSIS2003E: A gyors\u00edt\u00f3t\u00e1r-bet\u00f6lt\u0151 d\u00e9mon rendellenesen \u00e1llt le egy v\u00e1ratlan kiv\u00e9tel miatt: {0}.
+CACHE_LOADER_TERMINATED_SIMS2003.explanation=A gyors\u00edt\u00f3t\u00e1r-bet\u00f6lt\u0151 d\u00e9monsz\u00e1l megszak\u00edt\u00e1sra ker\u00fclt \u00e9s le\u00e1llt.
+CACHE_LOADER_TERMINATED_SIMS2003.useraction=CMSG0002
+
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004=CWSIS2004E: A lej\u00e1rati d\u00e9mon m\u00e1r fut.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.explanation=A lej\u00e1rati d\u00e9mon elind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, de az m\u00e1r fut.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# DeliveryDelayManager
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010=CWSIS2010E: Az elem nem egyedi kulccsal rendelkezik ({0}).
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy nem egyedi objektum sz\u00e1ll\u00edt\u00e1si k\u00e9sleltet\u00e9si indexhez t\u00f6rt\u00e9n\u0151 hozz\u00e1ad\u00e1s\u00e1ra.
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.useraction=Ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} is the text of the exception thrown
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011=CWSIS2011E: CWSIS2003E: A sz\u00e1ll\u00edt\u00e1si k\u00e9sleltet\u00e9s kezel\u0151 d\u00e9mon rendellenesen \u00e1llt le egy v\u00e1ratlan kiv\u00e9tel miatt: {0}.
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.explanation=A sz\u00e1ll\u00edt\u00e1si k\u00e9sleltet\u00e9s kezel\u0151 d\u00e9monsz\u00e1l megszak\u00edt\u00e1sra ker\u00fclt \u00e9s le\u00e1llt.
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.useraction=Ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+ 
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012=CWSIS2012E: A sz\u00e1ll\u00edt\u00e1si k\u00e9sleltet\u00e9s kezel\u0151 d\u00e9mon m\u00e1r fut.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.explanation=A sz\u00e1ll\u00edt\u00e1si k\u00e9sleltet\u00e9s kezel\u0151 d\u00e9mon elind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, de az m\u00e1r fut.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.useraction=Ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIMS9999=CWSIS9999E: {0}
+TEMPORARY_SIMS9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor tekintse \
+meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket a tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+TEMPORARY_SIMS9999.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.

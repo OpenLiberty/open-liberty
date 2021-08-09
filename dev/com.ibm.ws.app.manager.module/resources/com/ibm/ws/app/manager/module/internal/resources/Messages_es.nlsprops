@@ -1,0 +1,52 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.module/resources/com/ibm/ws/app/manager/module/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.
+
+#{0} is the web module name
+error.cache.adapt=CWWKZ0107E: Se ha producido un error interno. No se ha podido adaptar la memoria cach\u00e9 para el m\u00f3dulo web {0}.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+#{0} is the connector module name
+error.cache.adapt.connector=CWWKZ0108E: El gestor de aplicaciones no puede adaptar memoria cach\u00e9 para el m\u00f3dulo de conector {0}
+error.cache.adapt.connector.explanation=Se ha producido un error interno durante la instalaci\u00f3n de un m\u00f3dulo de conector. La informaci\u00f3n de m\u00f3dulo no se ha a\u00f1adido a la memoria cach\u00e9.
+error.cache.adapt.connector.useraction=Consulte la informaci\u00f3n de determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: La aplicaci\u00f3n {0} ha encontrado un error de an\u00e1lisis al procesar el descriptor de la aplicaci\u00f3n {1}: {2}
+error.application.parse.descriptor.explanation=Se ha producido un error al analizar el descriptor de la aplicaci\u00f3n.  No hay m\u00f3dulos disponibles para la aplicaci\u00f3n.
+error.application.parse.descriptor.useraction=Consulte la informaci\u00f3n de la excepci\u00f3n para obtener detalles adicionales.  Revise el contenido del descriptor de la aplicaci\u00f3n para asegurarse de que el contenido es v\u00e1lido como datos XML.
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.

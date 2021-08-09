@@ -1,0 +1,500 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.CWSJUMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJU0001=CWSJU0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSJU9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.22.1.6
+#
+#CMVCPATHNAME SIB/ws/code/sib.processor/src/com/ibm/ws/sib/processor/CWSJUMessages.nlsprops
+#COMPONENTPREFIX CWSJU
+#COMPONENTNAMEFOR CWSJU Message Tracing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0001=CWSJU0001I: \u751f\u7522\u8005 {0} \u5df2\u5229\u7528 {4} \u4ea4\u6613\uff0c\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 {3} \u76ee\u7684\u5730\u3002
+PRODUCER_SEND_CWSJU0001.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_CWSJU0001.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0002=CWSJU0002I: \u751f\u7522\u8005 {0} \u5df2\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 {3} \u76ee\u7684\u5730\u3002
+PRODUCER_SEND_NO_TRAN_CWSJU0002.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_NO_TRAN_CWSJU0002.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0003=CWSJU0003I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2}\u3001\u76ee\u6a19\u70ba {4} \u50b3\u8a0a\u5f15\u64ce\u7684\u8a0a\u606f\uff0c\u78ba\u5b9a\u81f3\u76ee\u7684\u5730 {3}\u3002
+PRODUCER_SEND_COMMIT_CWSJU0003.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_COMMIT_CWSJU0003.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_QUEUE_CWSJU0004=CWSJU0004I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u653e\u5728 {3} \u4f47\u5217\u4e2d
+PRODUCER_SEND_QUEUE_CWSJU0004.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_QUEUE_CWSJU0004.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The JMS Correlation Id
+# {2} The destination name
+PRODUCER_SEND_TOPICSPACE_CWSJU0005=CWSJU0005I: \u5df2\u5c07 ID \u70ba {0} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {1} \u7684\u8a0a\u606f\u653e\u5728 {2} \u4e3b\u984c\u7a7a\u9593\u4e2d
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_SERVICE_CWSJU0006=CWSJU0006I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u653e\u5728 {3} \u670d\u52d9\u4e2d
+PRODUCER_SEND_SERVICE_CWSJU0006.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_SERVICE_CWSJU0006.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_PORT_CWSJU0007=CWSJU0007I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u653e\u5728 {3} \u57e0\u4e2d
+PRODUCER_SEND_PORT_CWSJU0007.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_PORT_CWSJU0007.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The destination name
+# {2} The number of matched consumers
+PUBLICATION_COUNT_CWSJU0008=CWSJU0008I: \u5728 {1} \u76ee\u7684\u5730\u7684\u8a0a\u606f ID {0} \u7b26\u5408 {2} \u500b\u6d88\u8cbb\u8005
+PUBLICATION_COUNT_CWSJU0008.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PUBLICATION_COUNT_CWSJU0008.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The transaction id
+MESSAGE_ROLLBACK_CWSJU0010=CWSJU0010I: \u5df2\u5728 {3} \u4ea4\u6613\u4e2d\uff0c\u5f9e {2} \u76ee\u7684\u5730\u56de\u5fa9 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u7684\u8a0a\u606f\u3002
+MESSAGE_ROLLBACK_CWSJU0010.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+MESSAGE_ROLLBACK_CWSJU0010.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+MESSAGE_EXPIRED_CWSJU0011=CWSJU0011I: \u5728 {2} \u76ee\u7684\u5730\u4e2d\uff0cID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u7684\u8a0a\u606f\u5df2\u904e\u671f\u3002
+MESSAGE_EXPIRED_CWSJU0011.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+MESSAGE_EXPIRED_CWSJU0011.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The reason.
+# {5} The explanation for why the message was exception destinationed
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012=CWSJU0012I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u653e\u5728\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730 {3}\uff0c\u539f\u56e0\u70ba {4}\uff0c\u8aaa\u660e\u70ba {5}
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.explanation=\u5df2\u5c07\u6307\u5b9a ID \u7684\u8a0a\u606f\u50b3\u9001\u81f3\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u3002
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.useraction=\u8acb\u6aa2\u67e5\u8a0a\u606f\u653e\u5728\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u7684\u539f\u56e0\uff0c\u4e26\u66f4\u6b63\u932f\u8aa4\u3002
+
+# Missing 13
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_BUS_CWSJU0014=CWSJU0014I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u653e\u5728 {3} \u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u4e2d
+PRODUCER_SEND_BUS_CWSJU0014.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_BUS_CWSJU0014.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The link name
+PRODUCER_SEND_LINK_CWSJU0015=CWSJU0015I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u653e\u5728 {3} \u93c8\u7d50\u50b3\u8f38\u4e32\u6d41\u4e2d
+PRODUCER_SEND_LINK_CWSJU0015.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_LINK_CWSJU0015.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The mq link name
+PRODUCER_SEND_MQLINK_CWSJU0016=CWSJU0016I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u653e\u5728 WebSphere MQ \u93c8\u7d50\u50b3\u8f38\u4e32\u6d41 {3} \u4e2d
+PRODUCER_SEND_MQLINK_CWSJU0016.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_MQLINK_CWSJU0016.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_BUS_CWSJU0017=CWSJU0017I: \u751f\u7522\u8005 {0} \u5df2\u5229\u7528 {4} \u4ea4\u6613\uff0c\u5c07\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u50b3\u7d66 {3} \u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u3002
+PRODUCER_SEND_BUS_CWSJU0017.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_BUS_CWSJU0017.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The link name
+# {4} The transaction id
+PRODUCER_SEND_LINK_CWSJU0018=CWSJU0018I: \u751f\u7522\u8005 {0} \u5df2\u5229\u7528 {4} \u4ea4\u6613\uff0c\u5c07\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 {3} \u93c8\u7d50\u3002
+PRODUCER_SEND_LINK_CWSJU0018.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_LINK_CWSJU0018.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_MQLINK_CWSJU0019=CWSJU0019I: \u751f\u7522\u8005 {0} \u5df2\u5229\u7528 {4} \u4ea4\u6613\uff0c\u5c07\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 WebSphere MQ \u93c8\u7d50 {3}\u3002
+PRODUCER_SEND_MQLINK_CWSJU0019.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_MQLINK_CWSJU0019.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_CWSJU0020=CWSJU0020I: \u5df2\u5f9e\u76ee\u7684\u5730\u70ba {4}\u3001ID \u70ba {3} \u7684\u50b3\u8a0a\u5f15\u64ce\u4e2d\uff0c\u6536\u5230 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u3002
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0021=CWSJU0021I: \u6b63\u5728\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 ID \u70ba {3}\u3001\u76ee\u7684\u5730\u70ba {4} \u7684\u50b3\u8a0a\u5f15\u64ce
+OUTBOUND_MESSAGE_SENT_CWSJU0021.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+OUTBOUND_MESSAGE_SENT_CWSJU0021.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_CWSJU0022=CWSJU0022I: \u6b63\u5728\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 ID \u70ba {3}\u3001\u76ee\u7684\u5730\u70ba {4} \u7684\u50b3\u8a0a\u5f15\u64ce
+MESSAGE_FORWARDED_CWSJU0022.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+MESSAGE_FORWARDED_CWSJU0022.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0023=CWSJU0023I: \u6b63\u5728\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u95dc\u6027 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 ID \u70ba {3} \u4e14\u8207\u4ea4\u4e92\u532f\u6d41\u6392\u93c8\u7d50 {4} \u76f8\u95dc\u806f\u7684\u50b3\u8a0a\u5f15\u64ce
+OUTBOUND_MESSAGE_SENT_CWSJU0023.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+OUTBOUND_MESSAGE_SENT_CWSJU0023.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0024=CWSJU0024I: \u6b63\u5728\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u95dc\u6027 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 ID \u70ba {3} \u4e14\u8207 WebSphere MQ \u93c8\u7d50 {4} \u76f8\u95dc\u806f\u7684\u50b3\u8a0a\u5f15\u64ce
+OUTBOUND_MESSAGE_SENT_CWSJU0024.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+OUTBOUND_MESSAGE_SENT_CWSJU0024.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_REQUEST_SENT_CWSJU0030=CWSJU0030I: \u4ee3\u8868\u5f9e uuid={3} \u7684\u76ee\u7684\u5730\u6536\u96c6\u7684\u6d88\u8cbb\u8005\uff0c\u628a\u5c0d\u65bc\u76ee\u7684\u5730 {0} \u7684\u8a0a\u606f\u7684\u8981\u6c42\u5f9e ME {1} \u50b3\u9001\u81f3 ME {2}\u3002
+REMOTE_REQUEST_SENT_CWSJU0030.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+REMOTE_REQUEST_SENT_CWSJU0030.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_MESSAGE_SENT_CWSJU0031=CWSJU0031I: \u4ee3\u8868\u5f9e uuid={3} \u7684\u76ee\u7684\u5730\u6536\u96c6\u7684\u6d88\u8cbb\u8005\uff0c\u628a\u5c0d\u65bc\u76ee\u7684\u5730 {0} \u8981\u6c42\u7684\u8a0a\u606f\u5f9e ME {1} \u50b3\u9001\u81f3 ME {2}\u3002
+REMOTE_MESSAGE_SENT_CWSJU0031.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+REMOTE_MESSAGE_SENT_CWSJU0031.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+# {1} The message
+REMOTE_REQUEST_SATISFIED_CWSJU0032=CWSJU0032I: \u8a0a\u606f {1} \u5df2\u6307\u6d3e\u7d66 ID \u70ba {0} \u7684\u9060\u7aef\u8981\u6c42
+REMOTE_REQUEST_SATISFIED_CWSJU0032.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+REMOTE_REQUEST_SATISFIED_CWSJU0032.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+REMOTE_REQUEST_EXPIRED_CWSJU0033=CWSJU0033I: ID \u70ba {0} \u7684\u9060\u7aef\u8981\u6c42\u5df2\u904e\u671f\u3002
+REMOTE_REQUEST_EXPIRED_CWSJU0033.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+REMOTE_REQUEST_EXPIRED_CWSJU0033.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message 
+# {1} The request id
+# {2} The destination
+# {3} The source me
+# {4} The target me
+# {5} The gatheirng uuid
+REMOTE_MESSAGE_EXPIRED_CWSJU0034=CWSJU0034I: \u6d88\u8cbb\u8005 {5} \u5f9e ME {3} \u5c0d\u65bc ME {4} \u7684\u76ee\u7684\u5730 {2} \u7684\u8981\u6c42 ID {1} \u6240\u8981\u6c42\u7684\u6301\u7e8c\u8a0a\u606f {0} \u73fe\u5728\u5df2\u904e\u671f\uff0c\u5b83\u5c07\u5728\u4f86\u6e90 ME \u4e0a\u518d\u5ea6\u6210\u70ba\u53ef\u7528\u7684\u8a0a\u606f\u3002
+
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+# {5} The transaction id
+CONSUMER_RECEIVE_CWSJU0040=CWSJU0040I: ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u5df2\u5229\u7528 {5} \u4ea4\u6613\uff0c\u5f9e {4} \u76ee\u7684\u5730\u905e\u9001\u7d66 {3} \u6d88\u8cbb\u8005
+CONSUMER_RECEIVE_CWSJU0040.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+CONSUMER_RECEIVE_CWSJU0040.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041=CWSJU0041I: ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u5df2\u5f9e {4} \u76ee\u7684\u5730\u905e\u9001\u7d66 {3} \u6d88\u8cbb\u8005
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+# {2} The transaction id
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042=CWSJU0042I: {0} \u6d88\u8cbb\u8005\u672a\u5229\u7528 {2} \u4ea4\u6613\uff0c\u5f9e {1} \u76ee\u7684\u5730\u6536\u5230\u4efb\u4f55\u8a0a\u606f
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043=CWSJU0043I: {0} \u6d88\u8cbb\u8005\u672a\u5f9e {1} \u76ee\u7684\u5730\u6536\u5230\u4efb\u4f55\u8a0a\u606f
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0051=CWSJU0051I: \u751f\u7522\u8005 {0} \u5df2\u5229\u7528 {4} \u4ea4\u6613\uff0c\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u50b3\u7d66 {3} \u8abf\u89e3\u9ede\u3002
+PRODUCER_SEND_CWSJU0051.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_CWSJU0051.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0052=CWSJU0052I: \u751f\u7522\u8005 {0} \u5df2\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u50b3\u7d66 {3} \u8abf\u89e3\u9ede\u3002
+PRODUCER_SEND_NO_TRAN_CWSJU0052.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_NO_TRAN_CWSJU0052.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0053=CWSJU0053I: ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2}\u3001\u76ee\u6a19\u70ba {4} \u50b3\u8a0a\u5f15\u64ce\u7684\u8a0a\u606f\uff0c\u5df2\u78ba\u5b9a\u81f3 {3} \u8abf\u89e3\u9ede
+PRODUCER_SEND_COMMIT_CWSJU0053.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_COMMIT_CWSJU0053.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_CWSJU0054=CWSJU0054I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u653e\u5728 {3} \u8abf\u89e3\u9ede\u4e2d
+PRODUCER_SEND_CWSJU0054.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_CWSJU0054.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061=CWSJU0061I: \u751f\u7522\u8005 {0} \u5df2\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u50b3\u7d66 {3} \u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u3002
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062=CWSJU0062I: \u751f\u7522\u8005 {0} \u5df2\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u50b3\u7d66 {3} \u93c8\u7d50\u3002
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063=CWSJU0063I: \u751f\u7522\u8005 {0} \u5df2\u5c07 ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\uff0c\u50b3\u7d66 WebSphere MQ \u93c8\u7d50 {3}\u3002
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064=CWSJU0064I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u95dc\u6027 ID \u70ba {2}\u3001\u76ee\u6a19\u70ba\u50b3\u8a0a\u5f15\u64ce {4} \u7684\u8a0a\u606f\uff0c\u78ba\u5b9a\u81f3\u5916\u90e8\u76ee\u7684\u5730 {3}\u3002
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065=CWSJU0065I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u95dc\u6027 ID \u70ba {2}\u3001\u76ee\u6a19\u70ba\u50b3\u8a0a\u5f15\u64ce {4} \u7684\u8a0a\u606f\uff0c\u78ba\u5b9a\u81f3\u5916\u90e8\u76ee\u7684\u5730 {3}\u3002
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066=CWSJU0066I: ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1} \u548c\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2}\u3001\u76ee\u6a19\u70ba {4} \u4f3a\u670d\u5668\u7684\u8a0a\u606f\uff0c\u5df2\u78ba\u5b9a\u81f3 {3} WebSphere MQ \u93c8\u7d50\u3002
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101=CWSJU0101I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u653e\u5728\u66ab\u6642\u4f47\u5217 {3} \u4e2d
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102=CWSJU0102I: \u5df2\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u653e\u5728\u66ab\u6642\u4e3b\u984c\u7a7a\u9593 {3} \u4e2d
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120=CWSJU0120I: \u5df2\u5f9e\u76ee\u7684\u5730\u70ba {4}\u3001ID \u70ba {3} \u7684\u50b3\u8a0a\u5f15\u64ce\u4e2d\uff0c\u6536\u5230 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u3002
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121=CWSJU0121I: \u6b63\u5728\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 ID \u70ba {3}\u3001\u76ee\u7684\u5730\u70ba {4} \u7684\u50b3\u8a0a\u5f15\u64ce
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_TEMP_CWSJU0122=CWSJU0122I: \u6b63\u5728\u5c07 ID \u70ba {0}\u3001\u7cfb\u7d71\u8a0a\u606f ID \u70ba {1}\u3001\u76f8\u4e92\u95dc\u4fc2 ID \u70ba {2} \u7684\u8a0a\u606f\u50b3\u7d66 ID \u70ba {3}\u3001\u66ab\u6642\u76ee\u7684\u5730\u70ba {4} \u7684\u50b3\u8a0a\u5f15\u64ce
+MESSAGE_FORWARDED_TEMP_CWSJU0122.explanation=\u9019\u5247\u53c3\u8003\u8a0a\u606f\u6307\u793a\u7a0b\u5f0f\u72c0\u614b\u3002
+MESSAGE_FORWARDED_TEMP_CWSJU0122.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJU9999=CWSJU9999E: {0}
+TEMPORARY_CWSJU9999.explanation=\u5982\u679c\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8aaa\u660e\u3002
+TEMPORARY_CWSJU9999.useraction=\u8acb\u53c3\u95b1\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002

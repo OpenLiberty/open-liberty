@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+  <tlibversion>1.0</tlibversion>
+  <jspversion>1.1</jspversion>
+  <shortname>jsxFunction</shortname>
+  <info>The JavaScript Function Tag Library provides a mechanism to call functions in a script library from a simple JSP tag</info>
+  <tag>
+    <name>call</name>
+    <tagclass>com.ibm.ws.jsp.jsx.tags.CallTag</tagclass>
+    <teiclass>com.ibm.ws.jsp.jsx.tags.CallTagTEI</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <attribute>
+      <name>source</name>
+      <required>yes</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>function</name>
+      <required>yes</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>no</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>arg</name>
+    <tagclass>com.ibm.ws.jsp.jsx.tags.ArgTag</tagclass>
+    <bodycontent>empty</bodycontent>
+    <attribute>
+      <name>value</name>
+      <required>yes</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>
+
+
+       
+
+

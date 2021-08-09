@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!DOCTYPE Stats SYSTEM "stats.dtd">
+
+<Stats type="com.ibm.ws.session.monitor.xml.servletSessionsModule">
+    <description>servletSessionsModule.desc</description>
+	<resourceBundle>com.ibm.ws.pmi.properties.PMIText</resourceBundle>
+         <CountStatistic name="servletSessionsModule.createdSessions" ID="1">              
+              <level>low</level>
+              <unit>unit.none</unit>
+              <description>servletSessionsModule.createdSessions.desc</description>
+              <comment>Number of sessions that were created</comment>
+              <updateOnRequest>true</updateOnRequest> 
+              <statisticSet>basic</statisticSet>              
+          </CountStatistic>
+
+          <CountStatistic name="servletSessionsModule.invalidatedSessions" ID="2">              
+              <level>low</level>
+              <unit>unit.none</unit>
+              <description>servletSessionsModule.invalidatedSessions.desc</description>
+              <comment>Number of sessions that were invalidated</comment>
+              <updateOnRequest>true</updateOnRequest> 
+              <statisticSet>basic</statisticSet>
+          </CountStatistic>
+         <RangeStatistic name="servletSessionsModule.activeSessions" ID="6">              
+              <level>high</level>
+              <unit>unit.none</unit>
+              <description>servletSessionsModule.activeSessions.desc</description>
+              <comment>The number of concurrently active sessions</comment>
+              <updateOnRequest>true</updateOnRequest> 
+              <statisticSet>basic</statisticSet>
+          </RangeStatistic>
+
+          <RangeStatistic name="servletSessionsModule.liveSessions" ID="7">              
+              <level>high</level>
+              <unit>unit.none</unit>
+              <description>servletSessionsModule.liveSessions.desc</description>
+              <comment>The number of concurrently live sessions in cache</comment>
+              <updateOnRequest>true</updateOnRequest> 
+              <statisticSet>basic</statisticSet>              
+         </RangeStatistic>
+
+
+          <CountStatistic name="servletSessionsModule.invalidatedViaTimeout" ID="16">              
+              <level>low</level>
+              <unit>unit.none</unit>
+              <description>servletSessionsModule.invalidatedViaTimeout.desc</description>
+              <comment>The number of sessions that are invlidated via timeout</comment>
+              <updateOnRequest>true</updateOnRequest> 
+              <statisticSet>basic</statisticSet>
+         </CountStatistic>
+
+</Stats>

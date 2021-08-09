@@ -1,0 +1,393 @@
+###############################################################################
+# Copyright (c) 2007, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME ws/code/metadata/src/com/ibm/ws/injectionengine/injection.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+#CWNEN0001W=CWNEN0001W:
+#CWNEN0001W.explanation=
+#CWNEN0001W.useraction=
+
+# --------------------------------
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E=CWNEN0001E: Motorul de injec\u0163ie a prins {0} \u015fi a creat eroarea urm\u0103toare: {1}.
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.explanation=
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.useraction=
+
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E=CWNEN0005E: Serviciul motorului de injec\u0163ie nu este disponibile.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.explanation=Serviciul motorului de injec\u0163ie pentri serverul specificat nu este disponibil.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.useraction=Serviciul motorului d einjec\u0163ie este pornit ca serviciu singleton pe toate procesele serverului de aplica\u0163ii.  Verifica\u0163i c\u0103 serverul de aplica\u0163ii a pornit f\u0103r\u0103 nicio eroare.
+
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E=CWNEN0006E: Motorul de injec\u0163ie nu poate \u00eenregistra procesoarele de injec\u0163ie p\u00e2n\u0103 c\u00e2nd serviciul motorului de injec\u0163ie nu este ini\u0163ializat.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.explanation=Motorul de injec\u0163ie ini\u0163ializeaz\u0103 un set de procesoare de injec\u0163ie implicite \u00een timpul pornirii.  Pentru ca procesoarele de injec\u0163ie suplimentare s\u0103 poat\u0103 fi \u00eenregistrate cu motorul de injec\u0163ie, trebuie pornit \u015fi ini\u0163ializat \u00een prealabil serviciul motorului de injec\u0163ie.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.useraction=Asigura\u0163i-v\u0103 c\u0103 procesoarele de injec\u0163ie sunt \u00eenregistrate dup\u0103 ce este pornit serverul de aplica\u0163ii.
+
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E=CWNEN0008E:  Metoda {0} trebuie s\u0103 fie o metod\u0103 setter; adnotarea este ignorat\u0103.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.explanation=Metoda pentru destina\u0163ia injec\u0163iei trebuie s\u0103 fie o metod\u0103 de proprietate setter.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea sau XML-ul destina\u0163iei de injec\u0163ie specific\u0103 metoda inten\u0163ionat\u0103.
+
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E=CWNEN0009E: Ma\u015fina de injectare a e\u015fuat procesarea codului XML din descriptorul de implementare datorit\u0103 erorii urm\u0103toare: {0}
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.explanation=A fost o eroare la procesarea meta-datelor din descriptorul de implementare.
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.useraction=Asigura\u0163i-v\u0103 c\u0103 XML-ul con\u0163inut \u00een descriptorul de implementare este corect.
+
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E=CWNEN0010E:  Motorul de injec\u0163ie a e\u015fuat procesarea adnot\u0103rii {0} sau {1} din clasa {2}.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.explanation=Motorul de injec\u0163ie nu a putut seta corect destina\u0163iile de injec\u0163ie pentru clasa specificat\u0103.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.useraction=Asigura\u0163i-v\u0103 c\u0103 adnot\u0103rile corecte sunt cuprinse \u00een clasa \u015fi \u00een XML-ul din descriptorul de implementare.
+
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E=CWNEN0011E: Motorul de injectare a e\u015fuat procesarea leg\u0103turilor pentru metadate datorit\u0103 erorii urm\u0103toare: {0}
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.explanation=Leg\u0103turile \u015fi informa\u0163iile de injec\u0163ie con\u0163in erori.
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.useraction=Asigura\u0163i-v\u0103 c\u0103 adnot\u0103rile con\u0163inute \u00een clasa \u015fi XML-ul din descriptorul de implementare sunt corecte.
+
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E=CWNEN0012E: Motorul de injec\u0163ie a e\u015fuat ini\u0163ializarea procesorului {0}.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.explanation=Procesorul a e\u015fuat ini\u0163ializarea.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.useraction=Asigura\u0163i-v\u0103 c\u0103 procesorul este disponibil \u015fi \u00eenregistrat corespunz\u0103tor cu motorul de injec\u0163ie.
+
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W=CWNEN0013W: Excep\u0163ia NumberFormatException urm\u0103toare a ap\u0103rut c\u00e2nd motorul de injec\u0163ie a \u00eencercat s\u0103 converteasc\u0103 {0} &lt;env-entry-name&gt; {1} &lt;env-entry-value&gt;: {2}
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.explanation=Containerul nu poate procesa o intrare de mediu din cauza unei excep\u0163ii NumberFormatException.
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea pentru intrarea de mediu este o reprezentare de \u015fir valid\u0103 pentru tipul specificat.
+
+INVALID_BOOLEAN_FORMAT_CWNEN0014W=CWNEN0014W: Intrarea de mediu cotextual java:comp/env pentru bean-ul de enterprise {0}, care este de tipul Boolean, nu este setat\u0103 la o valoare Boolean valid\u0103: {1}.  Prin urmare, intr\u0103rii \u00eei este alocat\u0103 o valoare fals\u0103.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.explanation=O intrare de mediu contextual java:comp/env pentru un bean de enterprise de tip boolean trebuie s\u0103 aib\u0103 alocat\u0103 o valoare adev\u0103rat sau fals. Orice alt\u0103 valoare rezult\u0103 \u00eentr-o valoare fals\u0103, dar ar putea indica o problem\u0103 de configurare. Aplica\u0163ia s-ar putea s\u0103 nu se comporte cum se a\u015fteapt\u0103.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.useraction=Modifica\u0163i intrarea de mediu contextual java:comp/env de tip boolean la o valoare adev\u0103rat sau fals.
+
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W=CWNEN0015W: Excep\u0163ia urm\u0103toare a fost prins\u0103 la \u00eencercarea de construire {0} &lt;env-entry-name&gt; {1} &lt;env-entry-value&gt;: \n \ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.explanation=Motorul de injec\u0163ie a \u00eent\u00e2lnit o excep\u0163ie c\u00e2nd a \u00eencercat s\u0103 creeze o intrare java:comp/env.
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.useraction=Ac\u0163iona\u0163i pe baza mesajului asociat cu excep\u0163ia.
+
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W=CWNEN0016W: Tipul {0}, care nu este valid, a fost specificat intrarea de mediu simpl\u0103 {1} din componenta {2} a modulului {3}.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.explanation=Motorul de injec\u0163ie a \u00eent\u00e2lnit un tip care nu este valid pentru o intrare de mediu.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.useraction=Asigura\u0163i-v\u0103 c\u0103 utiliza\u0163i unul din urm\u0103toarele tipuri de intr\u0103ri de mediu: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class \u015fi orice subclas\u0103 a Enum.
+
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E=CWNEN0017E: Motorul de injec\u0163ie nu poate rezolva destina\u0163ia declara\u0163iei resource-ref {0} la loca\u0163ia de leg\u0103tur\u0103 asociat\u0103 din spa\u0163iul nume global.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.explanation=Motorul de injec\u0163ie nu poate face leg\u0103tura \u00eentre numele care este declarat \u00een spa\u0163iul nume java:comp/env \u015fi numele resursei destina\u0163ie din spa\u0163iul nume JNDI (Java Naming and Directory Interface) global.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.useraction=Asigura\u0163i-v\u0103 c\u0103 numele care este declarat pe injec\u0163ie, utiliz\u00e2nd adnotarea @Resource sau declara\u0163ia resource-ref declaration, se potrive\u015fte aceluia\u015fi nume \u00een fi\u015fierul XML de legare.
+
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E=CWNEN0018E: Destina\u0163ia de injec\u0163ie {0} este specificat\u0103 \u00eentr-o adnotare care nu exist\u0103 \u00een descriptorul de implementare XML.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.explanation=Urm\u0103toarele informa\u0163ii sunt afirmate \u00een regulile de \u00eenlocuire ale specifica\u0163iei EJB: \n C\u00e2nd o destina\u0163ie de injec\u0163ie este deja prezent\u0103 \u015fi este specificat\u0103 utiliz\u00e2nd XML, destina\u0163ia de injec\u0163ie a adnot\u0103rii trebuie s\u0103 specifice acela\u015fi c\u00e2mp sau proprietate.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.useraction=Modifica\u0163i destina\u0163ia de injec\u0163ie a adnot\u0103rii s\u0103 se potriveasc\u0103 destina\u0163iei de injec\u0163ie XML definite anterior a aceluia\u015fi c\u00e2mp sau metode de proprietate.
+
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E=CWNEN0019E: C\u00e2mpul destina\u0163ei de injec\u0163ie {0} nu trebuie s\u0103 fie declarat final.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.explanation=Conform specifica\u0163iei EJB, un c\u00e2mp destina\u0163ie de injec\u0163ie nu trebuie declarat final.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.useraction=Corecta\u0163i fie numele c\u00e2mpului fie semn\u0103tura c\u00e2mpului pentru a specifica unul dintre c\u00e2mpurile de clas\u0103 neprivate.
+
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E=CWNEN0020E: Motorul de injec\u0163ie a prins urm\u0103toarea excep\u0163ie de securitate c\u00e2nd a \u00eencercat s\u0103 acceseze membrul {1}: {0}.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.explanation=Motorul de injec\u0163ie nu avea acredit\u0103ri de securitate corespunz\u0103toare pentru a accesa membrul.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.useraction=Ac\u0163iona\u0163i pe baza mesajului care este asociat cu excep\u0163ia.
+
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W=CWNEN0021W: C\u00e2mpul {0} este declarat ca {1} dar tipul de injec\u0163ie necesar pentru c\u00e2mp este {2}.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.explanation=Tipul c\u00e2mpului indicat pe destina\u0163ia de injec\u0163ie nu este corect.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea sau XML-ul destina\u0163iei de injec\u0163ie specific\u0103 c\u00e2mpul inten\u0163ionat.
+
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E=CWNEN0022E: O destina\u0163ie de injec\u0163ie pentru referin\u0163a {0} nu poate fi procesat\u0103 deoarece nici metoda {1} nici c\u00e2mpul {2} nu exist\u0103 pe clasa {3}.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.explanation=Clasa nu are o metod\u0103 sau c\u00e2mp cu numele propriet\u0103\u0163ii destina\u0163iei de injec\u0163ie configurate.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.useraction=Asigura\u0163i-v\u0103 c\u0103 numele propriet\u0103\u0163ii destina\u0163iei de injec\u0163ie este ortografiat corect \u015fi clasa con\u0163ine c\u00e2mpul sau metoda propriet\u0103\u0163ii corespunz\u0103toare.
+
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E=CWNEN0023E: Unul sau mai multe din argumentele urm\u0103toare este nul: {0} targetClass, {1} targetName, {2} injectionClass.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.explanation=Motorul de injec\u0163ie a \u00eent\u00e2lnit o eroare c\u00e2nd a \u00eencercat s\u0103 utilizeze informa\u0163iile destina\u0163iei de injec\u0163ie care sunt specificate \u00een codul XML.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.useraction=Asigura\u0163i-v\u0103 c\u0103 XML-ul, care exist\u0103 \u00een descriptorul de implementare, este corect.
+
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E=CWNEN0024E: Motorul de injec\u0163ie a e\u015fuat s\u0103 \u00eencarce clasa ObjectFactory {0}.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.explanation=Motorul de injec\u0163ie a e\u015fuat s\u0103 \u00eencarce \u015fi s\u0103 instan\u0163ieze clasa de obiect specificat\u0103.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa este disponibil\u0103 \u015fi c\u0103 constructorul este vizibil \u015fi accesibil.
+
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W=CWNEN0025W: Bean-ul de enterprise este legat de un \u015fir gol din spa\u0163iul nume JNDI (Java  Naming and Directory Interface) global.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.explanation=Adnotarea informa\u0163iilor sau destina\u0163ia de injec\u0163ie sunt incorecte sau incomplete.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea sau XML-ul destina\u0163iei de injec\u0163ie pentru bean-ul de enterprise sunt corecte.
+
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E=CWNEN0026E: Bean-ul de enterprise de domiciliu \u015fi la distan\u0163\u0103 {0}, sau elementele locale-domiciliu \u015fi locale, fie lipsesc fie nu pot fi rezolvate.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.explanation=Elementele de domiciliu \u015fi la distan\u0163\u0103, sau locale \u015fi locale-domiciliu, fie lipsesc, fie nu pot fi rezolvate.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.useraction=Asigura\u0163i-v\u0103 c\u0103 tagurile &lt;ejb-ref&gt; sau &lt;ejb-local-ref&gt; sunt specificate corect \u00een descriptorul de implementare XML.
+
+
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E=CWNEN0027E: Motorul de injec\u0163ie a prins urm\u0103toarea excep\u0163ie de denumire {0} la \u00eencercarea de legare {1} \u00een spa\u0163iul nume JNDI (Java Naming and Directory Interface) global.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.explanation=Motorul de injec\u0163ie a \u00eent\u00e2lnit o excep\u0163ie c\u00e2nd a \u00eencercat legarea.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.useraction=Ac\u0163iona\u0163i pe baza mesajului asociat cu excep\u0163ia.
+
+INJECTION_FAILED_CWNEN0028E=CWNEN0028E: Motorul de injectare a \u00eent\u00e2lnit urm\u0103toarea eroare la injectarea {0} \u00een {1}: {2}
+INJECTION_FAILED_CWNEN0028E.explanation=Tipul specificat nu este injectabil \u00een clasa specificat\u0103.
+INJECTION_FAILED_CWNEN0028E.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea sau XML-ul destina\u0163iei de injec\u0163ie pentru bean-ul de enterprise sunt corecte.
+
+INJECTION_FAILED_CWNEN0029E=CWNEN0029E: Motorul de injec\u0163ie a \u00eent\u00e2lnit o eroare la injectarea {0} \u00een {1}.  Tipul {0} poate fi injectat numai \u00eentr-un bean de enterprise {1}.
+INJECTION_FAILED_CWNEN0029E.explanation=Numai obiectele EJBContext sau TimerService pot fi injectate direct \u00eentr-un bean de enterprise.
+INJECTION_FAILED_CWNEN0029E.useraction=Asigura\u0163i-v\u0103 c\u0103 tipul specificat este un obiect EJBContext sau TimerService.
+
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E=CWNEN0030E: Fabrica {0} a \u00eent\u00e2lnit o problem\u0103 la ob\u0163inerea obiectului de legare instan\u0163\u0103 obiect {1}.  Mesajul excep\u0163iei a fost: {2}
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.explanation=Fabrica de obiecte specificat\u0103 este incorect\u0103 pentru obiectul de legare.
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.useraction=Asigura\u0163i-v\u0103 c\u0103 fabrica are un obiect legat corect.
+
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E=CWNEN0031E: A ap\u0103rut o eroare la crearea referin\u0163ei {0} de tipul {1}.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.explanation=A fost detectat\u0103 o problem\u0103 la crearea unei referin\u0163e de g\u0103sit \u00een spa\u0163iul nume JNDI (Java Naming and Directory Interface) global.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.useraction=Asigura\u0163i-v\u0103 c\u0103 referin\u0163a specificat\u0103 este corect\u0103.
+
+FAILED_TO_PROCESS_XML_CWNEN0032E=CWNEN0032E: S-a e\u015fuat procesarea XML-ului pentru {0} {1}
+FAILED_TO_PROCESS_XML_CWNEN0032E.explanation=XML-ul pentru referin\u0163a specificat\u0103 este incorect sau incomplet.
+FAILED_TO_PROCESS_XML_CWNEN0032E.useraction=Asigura\u0163i-v\u0103 c\u0103 XML-ul, care exist\u0103 \u00een descriptorul de implementare, este corect.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W=CWNEN0033W: Interfa\u0163a {0}, care este specificat\u0103 pentru tagurile &lt;ejb-ref&gt; sau &lt;ejb-local-ref&gt;, nu poate fi g\u0103sit\u0103.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.explanation=Clasa interfe\u0163ei fie lipse\u015fte, fie nu poate fi g\u0103sit\u0103.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.useraction=Asigura\u0163i-v\u0103 c\u0103 tagurile &lt;ejb-ref&gt; sau &lt;ejb-local-ref&gt; sunt specificate corect \u00een desriptorul de implementare XML \u015fi c\u0103 clasa este disponibil\u0103.
+
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E=CWNEN0034E: ejb-link/beanName-ul este specificat incorect. Bean-ul {0}: numele modulului {1} trebuie s\u0103 se termine cu .jar sau .war.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.explanation=Adnotarea informa\u0163iilor sau destina\u0163ia injec\u0163iei este incorect\u0103 sau incomplet\u0103.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea sau XML-ul destina\u0163iei de injec\u0163ie pentru bean-ul de enterprise sunt corecte.
+
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E=CWNEN0035E: Referin\u0163a {0} de tip {1} pentru componenta {2} din modulul {3} al aplica\u0163iei {4} nu poate fi rezolvat.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.explanation=Aplica\u0163ia a declarat o referin\u0163\u0103 la un obiect care nu s-a putut g\u0103si.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.useraction=C\u0103uta\u0163i un mesaj anterior care indic\u0103 de ce obiectul cu referin\u0163\u0103 nu a putut fi g\u0103sit \u015fi verifica\u0163i configura\u0163ia pentru referin\u0163\u0103 s\u0103 fie corect\u0103.
+
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E=CWNEN0036E: Obiectul de legare {0} nu este o Referin\u0163\u0103.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.explanation=Obiectul specificat este incorect.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.useraction=Asigura\u0163i-v\u0103 c\u0103 obiectul este setat la un tip de Referin\u0163\u0103.
+
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E=CWNEN0037E: Fabrica {0} nu este pentru crearea unei Referin\u0163e pentru obiectul de legare {1}.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.explanation=Fabrica a fost specificat\u0103 incorect.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.useraction=Specifica\u0163i o fabric\u0103 pentru obiectul de legare utilizat.
+
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E=CWNEN0038E: Adresa pentru Referin\u0163\u0103 {0} este goal\u0103 (null).
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.explanation=Nu s-a specificat un nume RefAddr pentru referin\u0163\u0103.
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.useraction=Specifica\u0163i RefAddr pentru referin\u0163\u0103.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E=CWNEN0039E: Interfa\u0163a {0} care este specificat\u0103 pentru tagurile  &lt;ejb-ref&gt; sau &lt;ejb-local-ref&gt; nu poate fi g\u0103sit\u0103.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.explanation=Clasa interfe\u0163ei fie lipse\u015fte, fie nu poate fi g\u0103sit\u0103.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.useraction=Asigura\u0163i-v\u0103 c\u0103 tagurile &lt;ejb-ref&gt; sau &lt;ejb-local-ref&gt; sunt specificate corect \u00een descriptorul de implementare XML \u015fi c\u0103 clasa este disponibil\u0103.
+
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W=CWNEN0040W: C\u00e2mpul sau metoda {0} a fost configurat\u0103 s\u0103 fie injectat\u0103 de mai multe ori.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.explanation=C\u00e2nd sunt configurate mai multe destina\u0163ii de injec\u0163ie pentru acela\u015fi c\u00e2mp sau aceea\u015fi metod\u0103, motorul de injec\u0163ie nu poate determina ce destina\u0163ie s\u0103 injecteze.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.useraction=Nu configura\u0163i acela\u015fi c\u00e2mp sau aceea\u015fi metod\u0103 cu mai multe destina\u0163ii de injec\u0163ie.
+
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E=CWNEN0041E: Referin\u0163a EJB {0} din modulul {1} la interfa\u0163a {2} bean-ului enterprise {3} nu poate fi rezolvat\u0103 pentru acest nod.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.explanation=Domeniul AutoLink este limitat la aplica\u0163ia \u00een care apare referin\u0163a EJB \u015fi la serverele care nu sunt membre ale unui cluster de servere de aplica\u0163ii.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.useraction=Verifica\u0163i c\u0103 bean-urile enterprise, la care se face referire, exist\u0103 \u00een aceea\u015fi aplica\u0163ie.
+
+#Do no translate env-entry
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W=CWNEN0042W: Declara\u0163ia env-entry {0} este specificat\u0103 deja cu tipul {1}.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.explanation=Nu sunt permise instruc\u0163iunile env-entry duplicate cu acela\u015fi nume.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.useraction=Nu configura\u0163i un env-entry cu acela\u015fi nume.
+
+#Do no translate UserTransaction
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E=CWNEN0043E: Injectarea unei interfe\u0163e UserTransaction \u00eentr-un bean de tranzac\u0163ie gestionat de container nu este permis\u0103.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.explanation=Specifica\u0163ia EJB (Enterprise JavaBeans) becesit\u0103 ca interfa\u0163a UserTransaction s\u0103 nu fie disponibil\u0103 pentru bean-urile de enterprise cu demarcarea tranzac\u0163iilor gestionate de container.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.useraction=Nu injecta\u0163i o interfa\u0163\u0103 UserTransaction \u00eentr-un bean de tranzac\u0163ie gestionat de container.
+
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E=CWNEN0044E: O legare referin\u0163\u0103 de resurs\u0103 nu a putut fi g\u0103sit\u0103 pentru referin\u0163a de resurs\u0103 {0}, definit\u0103 pentru componenta {1}.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.explanation=O legare pentru referin\u0163a de resurs\u0103 se poate s\u0103 fi fost omis\u0103 sau specificat\u0103 incorect.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.useraction=O referin\u0163\u0103 de resurs\u0103 este definit\u0103 pentru o component\u0103 cu adnotarea @Resource \u00eentr-un fi\u015fier de clas\u0103 de componente sau una dintre urm\u0103toarele stan\u0163e XML \u00een descriptorul de implementare: resource-env-ref, resource-ref, message-destination-ref.  Asigura\u0163i-v\u0103 c\u0103 legarea este definit\u0103 pentru referin\u0163a resursei \u00een fi\u015fierul ibm-ejb-jar-bnd file dac\u0103 componenta este un modul EJB (enterprise Java bean) \u00een fi\u015fierul ibm-web-bnd dac\u0103 componenta este un modul de aplica\u0163ii web sau ibm-application-client-bnd dac\u0103 este un modul de client.
+
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W=CWNEN0045W: Env-entry-ul {0} definit pentru componenta {1} nu are nicio destina\u0163ie de injec\u0163ie sau valoare specificat\u0103.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.explanation=Trebuie specificat\u0103 o valoare pentru env-entry dac\u0103 valoarea destina\u0163iei de injec\u0163ie nu este setat\u0103.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.useraction=Specifica\u0163i o valoarea, destina\u0163ia de injec\u0163ie sau ambele pentru env-entry.
+
+#-------------------------------------------------------------------------------
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W=CWNEN0046W: Tipul {0} specificat pe resource-ref, resource-env-ref sau  message-destination-ref cu numele {1} din modulul {2} nu a putut fi \u00eenc\u0103rcat. Verificarea tipului de compatibilitate nu va fi realizat\u0103 pentru aceast\u0103 referin\u0163\u0103 de resurs\u0103.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.explanation=Tipul resursei identificate de legarea referin\u0163ei de resurs\u0103 nu poate fi verificat pentru compatibilitate cu tipul definit \u00eentr-una din urm\u0103toarele stan\u0163e ale XML din descriptorul de implementare: resource-env-ref, resource-ref, message-destination-ref.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.useraction=Modifica\u0163i tipul declarat pentru referin\u0163a resursei \u00een descriptorul de implementare la un tip care poate fi \u00eenc\u0103rcat.
+
+#-------------------------------------------------------------------------------
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W=CWNEN0047W: Adnot\u0103rile de resurse de pe c\u00e2mpurile clasei {0} vor fi ignorate. Adnot\u0103rile nu au putut fi ob\u0163inute din cauza excep\u0163iei: {1}
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.explanation=Aplica\u0163ia nu va func\u0163iona corect, dac\u0103 clasa specificat\u0103 este folosit\u0103.
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.useraction=Clasa ar trebui \u00eenl\u0103turat\u0103 din aplica\u0163ie sau ar trebui corectat\u0103 cauza excep\u0163iei.
+
+#-------------------------------------------------------------------------------
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W=CWNEN0048W: Adnot\u0103rile de resurse de pe c\u00e2mpurile clasei {0} vor fi ignorate. Clasa {0} este procesat\u0103 pentru adnot\u0103ri pentru c\u0103 are referin\u0163\u0103 de la clasa de aplica\u0163ii {1}. Adnot\u0103rile nu au putut fi ob\u0163inute din cauza excep\u0163iei: {2}
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.explanation=Aplica\u0163ia nu va func\u0163iona corect, dac\u0103 clasa specificat\u0103 este folosit\u0103.
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.useraction=Clasa ar trebui \u00eenl\u0103turat\u0103 din aplica\u0163ie sau ar trebui corectat\u0103 cauza excep\u0163iei.
+
+#-------------------------------------------------------------------------------
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W=CWNEN0049W: Adnot\u0103rile de resurse de pe metodele clasei {0} vor fi ignorate. Adnot\u0103rile nu au putut fi ob\u0163inute din cauza excep\u0163iei: {1}
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.explanation=Aplica\u0163ia nu va func\u0163iona corect, dac\u0103 clasa specificat\u0103 este folosit\u0103.
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.useraction=Clasa ar trebui \u00eenl\u0103turat\u0103 din aplica\u0163ie sau ar trebui corectat\u0103 cauza excep\u0163iei.
+
+#-------------------------------------------------------------------------------
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W=CWNEN0050W: Adnot\u0103rile de resurse de pe metodele clasei {0} vor fi ignorate. Clasa {0} este procesat\u0103 pentru adnot\u0103ri pentru c\u0103 are referin\u0163\u0103 de la clasa de aplica\u0163ii {1}. Adnot\u0103rile nu au putut fi ob\u0163inute din cauza excep\u0163iei: {2}
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.explanation=Aplica\u0163ia nu va func\u0163iona corect, dac\u0103 clasa specificat\u0103 este folosit\u0103.
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.useraction=Clasa ar trebui \u00eenl\u0103turat\u0103 din aplica\u0163ie sau ar trebui corectat\u0103 cauza excep\u0163iei.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_TYPES_CWNEN0051E=CWNEN0051E: Bean-ul {0} din modulul {1} al aplica\u0163iei {2} are date de configurare conflictuale \u00een descriptorul de implementare XML. Exist\u0103 tipuri de elemente conflictuale cu aceea\u015fi valoare de element {3}: {4}. Tipurile de elemente conflictuale sunt {5} \u015fi {6}.
+CONFLICTING_XML_TYPES_CWNEN0051E.explanation=C\u00e2nd sunt definite mai multe referin\u0163e de resurse \u00een descriptorul de implementare XML pentru acela\u015fi spa\u0163iu nume de component\u0103 cu acela\u015fi nume, tipul resursei trebuie s\u0103 fie acela\u015fi.  Un scenariu tipic \u00een care s-ar putea \u00eent\u00e2mpla asta este c\u00e2nd se definesc referin\u0163e de resurse pentru un EJB (Enterprise Java Bean) pentru o clas\u0103 interceptor corespunz\u0103toare. At\u00e2t EJB-ul c\u00e2t \u015fi interceptorul \u00eempart acela\u015fi spa\u0163iu nume de component\u0103, a\u015fadar referin\u0163ele de resurse care sunt comune \u00eentre cele dou\u0103 trebuie s\u0103 fie de acela\u015fi tip.
+CONFLICTING_XML_TYPES_CWNEN0051E.useraction=\u00cen descriptorul de implementare XML, modifica\u0163i numele uneia dintre referin\u0163ele resursei sau modifica\u0163i tipul uneia dintre referin\u0163e pentru a se potrivi celeilalte.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWNEN0052E=CWNEN0052E: Bean-ul {0} din modulul {1} al aplica\u0163iei {2} are date de configurare conflictuale \u00een descriptorul de implementare XML. Exist\u0103 valori de element {3} conflictuale pentru mai multe elemente {4} cu aceea\u015fi valoare de element {5}: {6}. Valorile elementelor {3} conflictuale sunt {7} \u015fi {8}.
+CONFLICTING_XML_VALUES_CWNEN0052E.explanation=C\u00e2nd sunt definite mai multe referin\u0163e de resurse \u00een descriptorul de implementare XML pentru acela\u015fi spa\u0163iu nume de component\u0103 cu acela\u015fi nume, toate atributele resursei trebuie s\u0103 fie ori acelea\u015fi, ori unul trebuie s\u0103 poat\u0103 fi asignat celuilalt. Un scenariu tipic \u00een care s-ar putea \u00eent\u00e2mpla asta este c\u00e2nd se definesc referin\u0163e de resurse pentru un EJB (Enterprise Java Bean) pentru o clas\u0103 interceptor corespunz\u0103toare. At\u00e2t EJB-ul c\u00e2t \u015fi interceptorul \u00eempart acela\u015fi spa\u0163iu nume de component\u0103, a\u015fadar referin\u0163ele de resurse care sunt comune \u00eentre cele dou\u0103 trebuie s\u0103 fie compatibile.
+CONFLICTING_XML_VALUES_CWNEN0052E.useraction=\u00cen descriptorul de implementare XML, modifica\u0163i numele uneia dintre referin\u0163ele resursei sau modifica\u0163i una dintre valorile conflictuale \u00een a\u015fa fel \u00eenc\u00e2t s\u0103 aib\u0103 aceea\u015fi valoare sau una s\u0103 poat\u0103 fi asignat\u0103 celeilalte.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E=CWNEN0053E: Bean-ul {0} din modulul {1} al aplica\u0163iei {2} are date de configurare conflictuale \u00eentre descriptorul de implementare XML \u015fi adnot\u0103rile codului surs\u0103. Exist\u0103 valori de element {3} conflictuale sau valori de atribute {4} pentru mai multe elemente {5} sau adnot\u0103ri {6} cu aceea\u015fi valoare de element {7} sau valoare de atribut {8}: {9}. Valorile elementelor {3} conflictuale sau ale atributelor {4} sunt {10} \u015fi {11}.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.explanation=C\u00e2nd sunt definite mai multe referin\u0163e de resurse \u00een descriptorul de implementare XML \u015fi \u00een adnot\u0103rile codului surs\u0103 pentru acela\u015fi spa\u0163iu nume de component\u0103 cu acela\u015fi nume, unele atribute ale resursei trebuie s\u0103 fie ori acelea\u015fi, ori unul trebuie s\u0103 poat\u0103 fi asignat celuilalt.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.useraction=\u00cen descriptorul de implementare XML sau \u00een adnot\u0103rile codului surs\u0103, modifica\u0163i numele uneia dintre referin\u0163ele resursei sau modifica\u0163i una dintre valorile conflictuale \u00een a\u015fa fel \u00eenc\u00e2t s\u0103 aib\u0103 aceea\u015fi valoare sau una s\u0103 poat\u0103 fi asignat\u0103 celeilalte.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E=CWNEN0054E: Bean-ul {0} din modulul {1} al aplica\u0163iei {2} are date de configurare conflictuale \u00een adnot\u0103rile codului surs\u0103. Exist\u0103 valori de atribut {3} conflictuale pentru mai multe adnot\u0103ri {4} cu aceea\u015fi valoare de atribut {5}: {6}. Valorile atributelor {3} conflictuale sunt {7} \u015fi {8}.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.explanation=C\u00e2nd sunt definite mai multe referin\u0163e de resurse \u00een adnot\u0103rile codului surs\u0103 pentru acela\u015fi spa\u0163iu nume de component\u0103 cu acela\u015fi nume, toate atributele resursei trebuie s\u0103 fie ori acelea\u015fi, ori unul trebuie s\u0103 poat\u0103 fi asignat celuilalt.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.useraction=\u00cen adnot\u0103rile codului surs\u0103, modifica\u0163i numele uneia dintre referin\u0163ele resursei sau modifica\u0163i una dintre valorile conflictuale \u00een a\u015fa fel \u00eenc\u00e2t s\u0103 aib\u0103 aceea\u015fi valoare sau una s\u0103 poat\u0103 fi asignat\u0103 celeilalte.
+
+#-------------------------------------------------------------------------------
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E=CWNEN0055E: Destina\u0163ia mesajului {0} din modului {1} al aplica\u0163iei {2} nu poate fi g\u0103sit pe acest nod.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.explanation=Domeniul AutoLink este limitat la aplica\u0163ia \u00een care apare referin\u0163a destina\u0163iei mesajului \u015fi la serverele care nu sunt membre ale unui cluster de servere de aplica\u0163ii.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.useraction=Verifica\u0163i c\u0103 destina\u0163ia mesajului, la care se face referire, exist\u0103 \u00een aceea\u015fi aplica\u0163ie. Sau, defini\u0163i o legare pentru destina\u0163ia mesajului.
+
+#-------------------------------------------------------------------------------
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E=CWNEN0056E: Injec\u0163ia resursei {0} a fost specificat\u0103 at\u00e2t pentru o variabil\u0103 instan\u0163\u0103 de proprietate c\u00e2t \u015fi pentru metoda sa set corespunz\u0103toare pe clasa {1} din  modulul {2} al aplica\u0163iei {3}.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.explanation=Cererea injec\u0163iei unei resurse at\u00e2t \u00een variabila instan\u0163ei de proprietate, c\u00e2t \u015fi \u00een metoda set corespunz\u0103toare ei este o eroare.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.useraction=\u00cenl\u0103tura\u0163i una dintre adnot\u0103ri, fie din c\u00e2mp, fie din metod\u0103.  Ori c\u00e2mpul, ori metoda ar putea cere injec\u0163ia unei resurse cu un alt nume (neimplicit). Specific\u00e2nd explicit numele JNDI al unei resurse, o singur\u0103 resurs\u0103 poate fi injectat\u0103 \u00een mai multe c\u00e2mpuri sau metode ale mai multor clase.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W=CWNEN0057W: Destina\u0163ia de injec\u0163ie {0}.{1} nu trebuie s\u0103 fie declarat\u0103 static.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.explanation=Conform specifica\u0163iei EJB, o destina\u0163ie de injec\u0163ie poate fi declarat\u0103 static\u0103 numai dac\u0103 exist\u0103 \u00een containerul client.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.useraction=Fie modifica\u0163i codul pentru destina\u0163ia de injec\u0163ie s\u0103 fie nestatic, alege\u0163i o alt\u0103 destina\u0163ie de injec\u0163ie sau \u00eenl\u0103tura\u0163i destina\u0163ia de injec\u0163ie \u015fi popula\u0163i-o manual.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E=CWNEN0058E: Destina\u0163ia de injec\u0163ie {0}.{1} trebuie s\u0103 fie declarat\u0103 static\u0103 \u00een containerul client.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.explanation=Conform specifica\u0163iei EJB, o destina\u0163ie de injec\u0163ie \u00een containerul client trebuie declarat\u0103 static\u0103.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.useraction=Fie modifica\u0163i codul pentru destina\u0163ia de injec\u0163ie s\u0103 fie static, alege\u0163i o alt\u0103 destina\u0163ie de injec\u0163ie sau \u00eenl\u0103tura\u0163i destina\u0163ia de injec\u0163ie \u015fi popula\u0163i-o manual.
+
+#-------------------------------------------------------------------------------
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E=CWNEN0059E: Motorul de Injec\u0163ie a e\u015fuat injectarea obiectului de legare {0} \u00een fi\u015fierul EJB (Enterprise Javabeans) {1}:{2} deoarece injec\u0163ia \u00eencercat\u0103 este recursiv\u0103 sau ciclic\u0103.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.explanation=O injec\u0163ie ciclic\u0103 sau recursiv\u0103 apare c\u00e2nd injec\u0163ia unui obiect necesit\u0103 o alt\u0103 injec\u0163ie a aceluia\u015fi obiect. De exemplu, acest scenariu poate ap\u0103rea c\u00e2nd un bean de sesiune stateful \u00eencearc\u0103 s\u0103 injecteze o instan\u0163\u0103 de acela\u015fi tip \u00een ea \u00eens\u0103\u015fi.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.useraction=Modifica\u0163i codul aplica\u0163iei sau configura\u0163ia pentru ca destina\u0163iile de injec\u0163ie s\u0103 nu depind\u0103 de sine nici direct, nici indirect.
+
+#--------------------------------------------------------------------------------
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E=CWNEN0060E: Nu poate s\u0103 injecteze o instan\u0163\u0103 UserTransaction \u00een clasa {0}, asociat\u0103 cu componenta {1} din modulul {2} din aplica\u0163ia {3}.  O instan\u0163\u0103 UserTransaction nu poate fi injectat\u0103 \u00een aceast\u0103 clas\u0103 deoarece este asociat\u0103 cu o component\u0103 bean care nu este configurat\u0103 pentru a permite tranzac\u0163ii gestionate de bean.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.explanation=Clasa a fost configurat\u0103 pentru a avea o instan\u0163\u0103 UserTransaction injectat\u0103 \u00een ea, ceea ce nu este permis.  Dac\u0103 clasa este un bean, atunci bean-ul nu este configurat pentru tranzac\u0163ii gestionate de bean.  Dac\u0103 clasa este un interceptor sau un handler de servicii Web, atunci ea este utilizat\u0103 de unul sau mai multe bean-uri care nu sunt configurate pentru tranzac\u0163ii gestionate de bean.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.useraction=Modifica\u0163i clasa pentru a opri injectarea unei instan\u0163e UserTransaction sau modifica\u0163i configura\u0163ia bean-ului pentru a permite tranzac\u0163ii gestionate de bean.  Dac\u0103 aceast\u0103 clas\u0103 este un interceptor, sau clas\u0103 handler de servicii Web utilizat\u0103 de bean-uri multiple, dintre care unele sunt configurate pentru tranzac\u0163ii gestionate de bean \u015fi altele nu sunt, atunci crea\u0163i un nou interceptor sau clas\u0103 handler de servicii Web care s\u0103 nu injecteze o instan\u0163\u0103 UserTransaction \u015fi utiliza\u0163i-o cu bean-urile care sunt configurate pentru tranzac\u0163ii gestionate de bean.
+
+#--------------------------------------------------------------------------------
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E=CWNEN0061E: Numele propriet\u0103\u0163ii destina\u0163iei de injec\u0163ie {0} pentru referin\u0163a {1} este ambiguu \u00een clasa {2}.  Metoda {3} \u015fi metoda {4} sunt compatibile cu tipul {5}.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.explanation=Clasa a fost configurat\u0103 pentru a avea injec\u0163ie de metod\u0103, dar metode multiple sunt compatibile cu tipul de obiect care va fi injectat.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.useraction=Modifica\u0163i configura\u0163ia bean-ului pentru a specifica tipul exact al uneia din metode, modifica\u0163i clasa pentru a avea o metod\u0103 cu un tip de parametru care s\u0103 fie exact la fel ca tipul configura\u0163iei injec\u0163iei sau modifica\u0163i clasa prin \u00eenl\u0103turarea sau redenumirea uneia din metodele ambigue.
+
+#--------------------------------------------------------------------------------
+CONFLICTING_REFERENCES_CWNEN0062E=CWNEN0062E: Componenta {0} \u015fi componenta {1} din modulul {2} al aplica\u0163iei {3} au valori conflictuale pentru proprietatea {4} a referin\u0163ei {5}.  Valorile conflictuale sunt {6} \u015fi {7}.
+CONFLICTING_REFERENCES_CWNEN0062E.explanation=C\u00e2nd este definit\u0103 o referin\u0163\u0103 cu acela\u015fi nume de mai multe componente care \u00eempart acela\u015fi spa\u0163iu nume component\u0103, toate leg\u0103rile \u015fi propriet\u0103\u0163ile de extensie ale referin\u0163ei trebuie s\u0103 fie la fel.
+CONFLICTING_REFERENCES_CWNEN0062E.useraction=\u00cen fi\u015fierul de legare sau de extensie al modulului, modifica\u0163i una din valorile conflictuale astfel \u00eenc\u00e2t sa fie fel.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Enum
+INVALID_ENUM_IDENTIFIER_CWNEN0063E=CWNEN0063E: Intrarea de mediu simpl\u0103 {0} din modulul {1} al aplica\u0163iei {2}, care este se tip Enum {3}, nu este setat\u0103 la un identificator Enum valid: {4}.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.explanation=O intrare de mediu simpl\u0103 pentru un modul enterprise de tip Enum trebuie s\u0103 fie alocat la valoare identificator Enum valid\u0103.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.useraction=Modifica\u0163i intrarea de mediu simpl\u0103 de tip Enum la o valoare identificator Enum valid\u0103.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class, and  Enum
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E=CWNEN0064E: Un tip, care nu este valid, a fost specificat pentru intrarea de mediu  simpl\u0103 {0} din modulul {1} al aplica\u0163iei {2}: {3}.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.explanation=O intrare de mediu simpl\u0103 pentru un modul enterprise ar putea fi unul din urm\u0103toarele tipuri Java: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class \u015fi orice subclas\u0103 a Enum.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.useraction=Modifica\u0163i intrarea de mediu simpl\u0103 la unul din tipurile suportate.
+
+#--------------------------------------------------------------------------------
+INVALID_REFERENCE_NAME_CWNEN0065E=CWNEN0065E: Referin\u0163a {0} pentru componenta {1} din modulul {2} din aplica\u0163ia {3} are un nume care nu este valid.
+INVALID_REFERENCE_NAME_CWNEN0065E.explanation=Numele de referin\u0163\u0103 trebuie s\u0103 fie relativ la java:comp/env sau s\u0103 \u00eenceap\u0103 cu java:global, java:app, java:module sau java:comp.
+INVALID_REFERENCE_NAME_CWNEN0065E.useraction=Modifica\u0163i numele de referin\u0163\u0103 din descriptorul de implementare \u015fi adnot\u0103rile codului surs\u0103.
+
+#--------------------------------------------------------------------------------
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E=CWNEN0066E: Adnotarea de cod surs\u0103 {0} cu atributul {1} {2} pentru componenta {3} \u00een modulul {4} din aplica\u0163ia {5} are urm\u0103toarele date de configura\u0163ie pentru atributul propriet\u0103\u0163ilor care nu este valid: {6}
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.explanation=Formatul pentru propriet\u0103\u0163ile specificate \u00een adnotare este name=value.
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.useraction=Modifica\u0163i atributul de propriet\u0103\u0163i din adnotarea de cod surs\u0103 astfel \u00eenc\u00e2t s\u0103 aib\u0103 formatul name=value.
+
+#--------------------------------------------------------------------------------
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E=CWNEN0067E: Adnotarea de cod surs\u0103 @DataSourceDefinition cu atributul de nume {0} pentru componenta {1} din modulul {2} al aplica\u0163iei {3} are urm\u0103toarele date de configurare pentru atributul isolationLevel care nu sunt valide: {4}
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.explanation=Atributul isolationLevel trebuie s\u0103 fie una dintre urm\u0103toarele constante din clasa the java.sql.Connection: TRANSACTION_NONE, TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ sau TRANSACTION_SERIALIZABLE.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.useraction=Modifica\u0163i atributul isolationLevel din adnotarea de cod surs\u0103 astfel \u00eenc\u00e2t s\u0103 aib\u0103 una dintre valorile valide.
+
+#--------------------------------------------------------------------------------
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E=CWNEN0068E: Referin\u0163a EJB {0} din modulul {1} la interfa\u0163a {2} unui bean enterprise nu poate fi rezolvat\u0103 pentru acest nod.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.explanation=Domeniul AutoLink este limitat la aplica\u0163ia \u00een care apare referin\u0163a EJB \u015fi la serverele care nu sunt membre ale unui cluster de servere de aplica\u0163ii.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.useraction=Verifica\u0163i c\u0103 bean-urile enterprise, la care se face referire, exist\u0103 \u00een aceea\u015fi aplica\u0163ie.
+
+#--------------------------------------------------------------------------------
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E=CWNEN0069E: Metoda de injec\u0163ie {0}.{1} trebuie s\u0103 fie declarat\u0103 cu exact un parametru, nu {2} parametri.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.explanation=Metodele de injec\u0163ie trebuie s\u0103 respecte conven\u0163iile metodelor setului de propriet\u0103\u0163i JavaBeans.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.useraction=Modifica\u0163i codul pentru metoda de injec\u0163ie astfel \u00eenc\u00e2t s\u0103 aib\u0103 exact un parametru, alege\u0163i alt\u0103 \u0163int\u0103 de injec\u0163ie sau \u00eenl\u0103tura\u0163i \u0163inta de injec\u0163ie \u015fi popula\u0163i valoarea manual.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W=CWNEN0070W: Clasa {0} de adnotare nu va fi recunoscut\u0103 din cauza faptului c\u0103 a fost \u00eenc\u0103rcat\u0103 din loca\u0163ia {1} \u015fi nu dintr-un produs \u00eenc\u0103rc\u0103tor de clas\u0103.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.explanation=\u00cenc\u0103rc\u0103torul al clasei aplica\u0163ie sau un \u00eenc\u0103rc\u0103tor al clasei server de aplica\u0163ii a \u00eenc\u0103rcat o clas\u0103 de adnotare ce ar fi trebuit s\u0103 fie \u00eenc\u0103rcat\u0103 de un produs \u00eenc\u0103rc\u0103tor de clas\u0103. Aceasta se \u00eent\u00e2mpl\u0103 atunci c\u00e2nd un \u00eenc\u0103rc\u0103tor de clas\u0103 a fost configurat pentru a \u00eenc\u0103rca clasele mai \u00eent\u00e2i cu \u00eenc\u0103rc\u0103torul local de clas\u0103 (p\u0103rintele ultimul). Adnotarea nu va fi recunoscut\u0103 doar dac\u0103 este \u00eenc\u0103rcat\u0103 de un produs \u00eenc\u0103rc\u0103tor de clas\u0103.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.useraction=\u00cenl\u0103tura\u0163i clasa de adnotare din aplica\u0163ie sau calea clasei serverului de aplica\u0163ii.
+
+#--------------------------------------------------------------------------------
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E=CWNEN0071E: Referin\u0163a {0} pentru componenta {1} din modulul {2} din aplica\u0163ia {3} are tipul {4} \u015fi o valoare pentru atributul {5} ce nu este valid\u0103: {6}
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.explanation=Atributul specificat trebuie ori s\u0103 nu fie specificat, ori s\u0103 aib\u0103 valoare implicit\u0103.
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.useraction=\u00cenl\u0103tura\u0163i atributul din adnotarea surs\u0103 cod sau din descriptorul de implementare.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E=CWNEN0072E: Referin\u0163a {0} are valori conflictuale pentru atributul {1}: {2} \u015fi {3}
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.explanation=Specifica\u0163ia Java Enterprise Edition stabile\u015fte c\u0103 dac\u0103 mai multe componente declar\u0103 o referin\u0163\u0103 \u00eentr-un spa\u0163iu de nume partajat, atributele tuturor declara\u0163iilor trebuie s\u0103 fie consistente.
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.useraction=Modifica\u0163i atributele declara\u0163iilor ca s\u0103 fie consistente.
+
+#--------------------------------------------------------------------------------
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E=CWNEN0073E: Adnotarea de nivel de clas\u0103 {0} pe clasa {1} \u00een modulul {2} al aplica\u0163iei {3} nu specific\u0103 un nume JNDI.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.explanation=Un JNDI trebuie s\u0103 fie specificat pentru adnot\u0103rile  de nivel de clase.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.useraction=Specifica\u0163i un nume JNDI \u00een adnotarea de clas\u0103 de nivel cod surs\u0103.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E=CWNEN0074E: Tipul {0} instan\u0163ei de obiect ob\u0163inute pentru referin\u0163a {1} este incompatibil cu tipul membrului {2}.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.explanation=O instan\u0163\u0103 de obiect utilizat\u0103 pentru injec\u0163ie trebuie s\u0103 se potriveasc\u0103 cu tipul c\u00e2mpului sau parametrul metodei.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.useraction=Verifica\u0163i dac\u0103 legarea de referin\u0163\u0103 este corect\u0103 pentru referin\u0163\u0103.
+
+#--------------------------------------------------------------------------------
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E=CWNEN0075E: A ap\u0103rut o eroare \u00een timpul c\u0103ut\u0103rii \u00een clasa {0} pentru \u0163inta de injec\u0163ie {1} a referin\u0163ei {2} a componentei {3} din modulul {4} din aplica\u0163ia {5}: {6}
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.explanation=\u0162inta de injec\u0163ie nu a putut fi g\u0103sit\u0103 deoarece o eroare de \u00eenc\u0103rcare clas\u0103 a ap\u0103rut \u00een timpul ob\u0163inerii unei liste de c\u00e2mpuri sau metode pentru clas\u0103.
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.useraction=Asigura\u0163i-v\u0103 c\u0103 set\u0103rile de \u00eempachetare aplica\u0163ii \u015fi se \u00eenc\u0103rc\u0103tor de clas\u0103 sunt corecte.
+
+#-------------------------------------------------------------------------------
+#
+# CWNEN1000 - CWNEN1999 are reserved for liberty...
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# For emergency use only....
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I=CWNEN8990I: Acest mesaj este un mesaj informativ doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.explanation=Acest mesaj informa\u0163ional nu este tradus.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.useraction=Consulta\u0163i mesajul pentru detalii.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W=CWNEN8991W: Acest mesaj este un mesaj de avertisment doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.explanation=Acest mesaj de avertisment nu este tradus.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.useraction=Consulta\u0163i mesajul pentru detalii.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E=CWNEN8992E: Acest mesaj este un mesaj de eroare doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.explanation=Acest mesaj de eroare nu este tradus.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.useraction=Consulta\u0163i mesajul pentru detalii.
+
+#-------------------------------------------------------------------------------
+# CWNEN9000 and up are reserved for command line / gui messages...
+# Place all other messages above this point.
+#-------------------------------------------------------------------------------

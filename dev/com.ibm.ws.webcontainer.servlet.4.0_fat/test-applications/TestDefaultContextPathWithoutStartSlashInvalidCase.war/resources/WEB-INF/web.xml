@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="4.0"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+  <display-name>TestDefaultContextPathWithoutStartSlashInvalidCase</display-name>
+  
+  <welcome-file-list>  
+  	<welcome-file>index.html</welcome-file>  
+  </welcome-file-list>  
+  
+  <!-- The default context path must start with a “/” character but not end with a “/” character.
+  	   Since the value doesn't start with “/”, an error should be thrown. -->
+  <default-context-path>
+	WebDefaultContextPath
+  </default-context-path>
+    
+</web-app>

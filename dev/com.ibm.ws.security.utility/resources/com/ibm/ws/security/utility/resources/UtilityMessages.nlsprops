@@ -1,0 +1,96 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Error: {0}
+error.inputConsoleNotAvailable=Input console is not available.
+error.missingIO=Error, missing I/O device: {0}.
+
+usage=Usage: {0}
+task.unknown=Unknown task: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Too many arguments.
+insufficientArgs=Insufficient arguments.
+invalidArg=Invalid argument {0}.
+missingArg=Missing argument {0}.
+missingValue=Missing value for argument {0}.
+missingArg2=Either the {0} argument or the {1} argument must be provided.
+exclusiveArg=The {0} argument or the {1} argument must be specified, but not both.
+serverNotFound=Specified server {0} could not be found at location {1}
+
+
+encode.enterText=Enter text:
+encode.reenterText=Re-enter text:
+encode.readError=Error reading in text.
+encode.entriesDidNotMatch=Entries did not match.
+
+
+password.enterText=Enter password:
+password.reenterText=Re-enter password:
+password.readError=Error reading in password.
+password.entriesDidNotMatch=Passwords did not match.
+
+name=name
+days=days
+
+sslCert.abort=Aborting certificate creation:
+sslCert.createFailed=Unable to create default SSL certificate:\n{0}
+sslCert.errorEncodePassword=Error encoding password (certificate not created):\n{0}
+sslCert.createKeyStore=Creating keystore {0}\n
+sslCert.oneType=The {0} and {1} arguments can not be specified at the same time.
+sslCert.clientNotFound=Specified client {0} could not be found at location {1}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=\
+Created SSL certificate for server {0}. The certificate is created with {1} as the SubjectDN.\n\
+\n\
+Add the following lines to the server.xml to enable SSL:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=\
+Created SSL certificate for client {0}. The certificate is created with {1} as the SubjectDN.\n\
+\n\
+Add the following lines to the client.xml to enable SSL:
+
+fileUtility.failedDirCreate=Failed to create directory {0}
+file.exists=The {0} keystore file already exists.  Unable to create a keystore file in that location.
+file.requiredDirNotCreated=Could not create required directory structure for {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\
+\n\tThe custom password encryption is also available.
+encode.option-desc.custom.feature=\
+\n\tThe feature name of {0} is as follows:\n\t
+encode.option-desc.custom.description=\
+\n\tThe description of {0} is as follows:\n\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=The custom password encryption is not detected.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Aborting LTPA key file creation:
+createLTPAKeys.fileExists=The {0} file already exists.  Unable to create a LTPA keys file in that location.
+createLTPAKeys.createdFile=Created LTPA keys file: {0}\n\
+Include the following configuration to your server.xml\n\
+{1}\n

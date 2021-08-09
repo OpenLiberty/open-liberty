@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+    
+    <!-- 
+   		Composite component test case for the getType method. 
+    	It tests the returned type for untyped and typed composite components.
+    	According to the SPECS 5.6.2.2, the getType method is implemented. 
+    	Hence, there shouldn't be null values in this test case.
+    -->
+	<cc:interface>
+
+		<cc:attribute name="untypedXunset" />
+        <cc:attribute name="untypedXliteral" />
+        <cc:attribute name="untypedXwideEL" />
+        <cc:attribute name="untypedXmediumEL" />
+       	<cc:attribute name="untypedXnarrowEL" />
+        <cc:attribute name="untypedXnullEL" />
+
+        <cc:attribute name="typedXunset"
+            type="com.ibm.ws.jsf22.fat.backwards.beans.AnimalBean$Dog" />
+
+        <cc:attribute name="typedXliteral" type="java.lang.Integer" />
+
+        <cc:attribute name="typedXwideEL"
+            type="com.ibm.ws.jsf22.fat.backwards.beans.AnimalBean$Dog" />
+
+        <cc:attribute name="typedXmediumEL"
+            type="com.ibm.ws.jsf22.fat.backwards.beans.AnimalBean$Dog" />
+
+        <cc:attribute name="typedXnarrowEL"
+            type="com.ibm.ws.jsf22.fat.backwards.beans.AnimalBean$Dog" />
+
+        <cc:attribute name="typedXnullEL"
+            type="com.ibm.ws.jsf22.fat.backwards.beans.AnimalBean$Dog" />
+
+    </cc:interface>
+    <cc:implementation>
+
+		#{testGetType.setTest('untypedXliteral')}
+        Untyped Literal From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('typedXliteral')}
+        Typed Literal From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('untypedXunset')}
+        Untyped Unset From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('typedXunset')}
+        Typed Unset From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('untypedXwideEL')}
+        Untyped WideEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('typedXwideEL')}
+        Typed WideEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('untypedXmediumEL')}
+        Untyped MediumEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('typedXmediumEL')}
+        Typed MediumEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('untypedXnarrowEL')}
+        Untyped NarrowEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('typedXnarrowEL')}
+        Typed NarrowEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('untypedXnullEL')}
+        Untyped NullEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        #{testGetType.setTest('typedXnullEL')}
+        Typed NullEL From Map - #{testGetType.from(cc.attrs)}
+        <br/>
+        
+    </cc:implementation> 
+</html>

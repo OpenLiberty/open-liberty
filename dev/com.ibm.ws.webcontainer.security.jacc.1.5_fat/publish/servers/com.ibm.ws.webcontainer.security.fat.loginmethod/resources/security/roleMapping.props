@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)):
+
+loginmethod::Employee::USER::user:BasicRealm/user1
+loginmethod::Employee::GROUP::group:BasicRealm/group1
+#
+loginmethod::Manager::USER::user:BasicRealm/user2
+loginmethod::Manager::GROUP::group:BasicRealm/group2
+#
+loginmethod::DeclaredManager::USER::user:BasicRealm/user7
+loginmethod::DeclaredManager::GROUP::group:BasicRealm/group7
+#
+loginmethod::DeclaredManagerDyn::USER::user:BasicRealm/user8
+loginmethod::DeclaredManagerDyn::GROUP::group:BasicRealm/group8
+#
+loginmethod::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+loginmethod::DeclaredRole01::USER::user:BasicRealm/user5
+#

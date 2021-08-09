@@ -1,0 +1,442 @@
+<server>
+
+	<authFilter id="myAuthFilter">
+		<requestUrl
+			id="myRequestUrla"
+			urlPattern="helloworld"
+			matchType="contains" />
+		<requestUrl
+			id="myRequestUrlb"
+			urlPattern="helloworld_"
+			matchType="notContain" />
+	</authFilter>
+
+	<openidConnectClient
+		id="defaultJWT"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/defaultJWT,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/defaultJWT,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/defaultJWT,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/defaultJWT"
+		signatureAlgorithm="RS256"
+		trustStoreRef="rsa_trust"
+		trustAliasName="rsacert"
+		clockSkew="2s"
+		authFilterRef="myAuthFilter"
+	>
+	</openidConnectClient>
+
+
+	<authFilter id="jwt1_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_jwt1"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="jwt1"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwt1,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwt1,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwt1,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwt1"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwt1/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="jwt1_filter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="jwkEnabled_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_jwkEnabled"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="jwkEnabled"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="jwkEnabled_filter"
+	>
+	</openidConnectClient>
+
+    <authFilter id="jwkFromServerX509_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_jwkFromServerX509"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="jwkFromServerX509"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkFromServerX509,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkFromServerX509,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkFromServerX509,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkFromServerX509"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkFromServerX509/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="jwkFromServerX509_filter"
+	>
+	</openidConnectClient>
+
+    <authFilter id="jwkFromKeyStoreX509_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_jwkFromKeyStoreX509"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="jwkFromKeyStoreX509"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkFromKeyStoreX509,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkFromServerX509,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkFromKeyStoreX509,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkFromKeyStoreX509"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkFromKeyStoreX509/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="jwkFromKeyStoreX509_filter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="http_rs_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_httpsValidation"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="https_rs"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled"
+		jwkEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwt/ibm/api/jwkEnabled/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="http_rs_filter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="http_size_1024_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_size_1024"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="size_1024"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_1024,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_1024,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_1024,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_1024"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_size_1024/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="http_size_1024_filter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="http_size_2048_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_size_2048"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="size_2048"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_2048,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_2048,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_2048,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_2048"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_size_2048/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="http_size_2048_filter"
+	>
+	</openidConnectClient>
+	
+		<authFilter id="http_size_4096_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_size_4096"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="size_4096"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_4096,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_4096,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_4096,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_4096"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_size_4096/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="http_size_4096_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="http_size_invalid_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_size_invalid"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="size_invalid"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_invalid,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_size_invalid,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_invalid,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_size_invalid"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_size_invalid/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="http_size_invalid_filter"
+	>
+	</openidConnectClient>
+
+
+	<openidConnectClient
+		id="RS256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_RS256,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jjwkEnabled_RS256,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_RS256,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_RS256"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_RS256/jwk"
+		signatureAlgorithm="RS256"
+		clockSkew="2s"
+		authFilterRef="RS256_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="RS256_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_RS256"
+			matchType="contains" />
+	</authFilter>
+
+<!--		
+	<openidConnectClient
+		id="RS384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_RS384,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_RS384,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_RS384,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_RS384"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_RS384/jwk"
+		signatureAlgorithm="RS384"
+		clockSkew="2s"
+		authFilterRef="RS384_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="RS384_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_RS384"
+			matchType="contains" />
+	</authFilter>
+	
+	<openidConnectClient
+		id="RS512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_RS512,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_RS512,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_RS512,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_RS512"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_RS512/jwk"
+		signatureAlgorithm="RS512"
+		clockSkew="2s"
+		authFilterRef="RS512_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="RS512_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_RS512"
+			matchType="contains" />
+	</authFilter>
+	
+	<openidConnectClient
+		id="ES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_ES256,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_ES256,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_ES256,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_ES256"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_ES256/jwk"
+		signatureAlgorithm="ES256"
+		clockSkew="2s"
+		authFilterRef="ES256_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="ES256_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_ES256"
+			matchType="contains" />
+	</authFilter>
+		
+	<openidConnectClient
+		id="ES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_ES384,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_ES384,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_ES384,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_ES384"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_ES384/jwk"
+		signatureAlgorithm="ES384"
+		clockSkew="2s"
+		authFilterRef="ES384_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="ES384_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_ES384"
+			matchType="contains" />
+	</authFilter>
+	
+	<openidConnectClient
+		id="ES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_ES512,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_ES512,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_ES512,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_ES512"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_ES512/jwk"
+		signatureAlgorithm="ES512"
+		clockSkew="2s"
+		authFilterRef="ES512_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="ES512_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_ES512"
+			matchType="contains" />
+	</authFilter>
+	
+	<openidConnectClient
+		id="PS256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_PS256,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_PS256,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_PS256,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_PS256"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_PS256/jwk"
+		signatureAlgorithm="PS256"
+		clockSkew="2s"
+		authFilterRef="PS256_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="PS256_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_PS256"
+			matchType="contains" />
+	</authFilter>
+		
+	<openidConnectClient
+		id="PS384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_PS384,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_PS384,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_PS384,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_PS384"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_PS384/jwk"
+		signatureAlgorithm="PS384"
+		clockSkew="2s"
+		authFilterRef="PS384_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="PS384_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_PS384"
+			matchType="contains" />
+	</authFilter>
+	
+	<openidConnectClient
+		id="PS512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		httpsRequired="false"
+		inboundPropagation="required"
+		issuerIdentifier="http://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_PS512,http://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default}/jwt/jwkEnabled_PS512,https://${fat.server.hostname}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_PS512,https://${fat.server.hostip}:${bvt.prop.security_1_HTTP_default.secure}/jwt/jwkEnabled_PS512"
+		jwkEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/jwt/ibm/api/jwkEnabled_PS512/jwk"
+		signatureAlgorithm="PS512"
+		clockSkew="2s"
+		authFilterRef="PS512_filter"
+	>
+	</openidConnectClient>
+	
+	<authFilter id="PS512_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_PS512"
+			matchType="contains" />
+	</authFilter>
+			
+	-->
+	
+	<!-- validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}" -->
+</server>

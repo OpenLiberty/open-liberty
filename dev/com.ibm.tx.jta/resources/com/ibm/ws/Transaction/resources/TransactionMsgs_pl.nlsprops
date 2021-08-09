@@ -1,0 +1,1140 @@
+###############################################################################
+# Copyright (c) 2002, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  02-11-18  irobins               Initial creation from seriousMessages
+#  02-12-05  awilkins      1442    Server quiesce - tx marked rollback only
+#  02-12-16  awilkins  LIDB1673.17 Embedded RAR recovery
+#  03-01-13  irobins   156517      390-specific message range reserved
+#  20/01/03  gareth    LIDB1673.1  JTA2 new messages
+#  28/02/03  hursdlg   LIDB1673.19.1 Add full exception for sync msgs
+#  14/03/03  mallam    160995      New message for inactivity timeout
+#  03/04/03  hursdlg   LIDB1673.22 Update messages 63/64
+#  14/04/03  hursdlg   163015      Fix duplicate message WTRN0068
+#  14/04/03  hursdlg   163130      Add new messages WTRN0081      
+#  15/07/03  hursdlg   170422      Add new messages WTRN0082      
+#  18/07/03  hursdlg   172027      Add new messages WTRN0083
+#  25/07/03  hursdlg   172471      Add new messages WTRN0084
+#  19/08/03  johawkes  174593      Add new messages WTRN0085
+#  18/09/03  johawkes  169114      Add new messages WTRN0086-90
+#  23/09/03  johawkes  177208      Add new messages WTRN0091
+#  09/12/03  mallam    184693      New message for quiesce WTRN0092
+#  04/02/04  hursdlg   189567      New messages for heuristic completion
+#  18/02/04  hursdlg   191317      Add new message WTRN0102
+#  18/05/04  hursdlg   191317.1    Fix punctuation and merge z/OS msgs
+#                                  from pok defect MD19484
+#  16/06/04  mallam    209935      New message for clean shutdown
+#  25/06/04  johawkes  210807      Indicate JTA demarcation disabled in client
+#  02/02/05  hursdlg   252732      New msgs 107-113
+#  17/01/05  mallam    LIDB3645    Recovery-mode restart
+#  20/04/05  hursdlg   266988      WSAT CFW message
+#  25/07/05  kaczyns   LI3187      Add z/OS BBOT messages
+#  18/10/05  mezarin   314369      z/OS messages temp fix
+#  11/11/05  hursdlg   311071      Add msg WTRN0116/117
+#  03/02/06  hursdlg   342682      Add msg WTRN0118
+#  26/02/07  awilkins  422999      Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163      Message review: improve contact IBM support user action
+#  07-04-27  awilkins  416102      Move z/OS BBOT messages into separate file
+#  07-05-03  mallam    422072      Migrate PK38831 to WASX
+#  25-07-07  mallam    453651      New message for log low on space
+#  22/10/07  mallam    476740      Improvements to out of space message 
+#  21/11/07  awilkins  481738      Output stack of thread when tx times out 
+#  06/12/07  hursdlg   467618      Commit priority validation messages
+#  18/12/07  johawkes  LIDB2778-12.10 WS-TX WS-Policy
+#  11/01/08  hursdlg   491762.1    WSTX 1.1 validation messages
+#  11/02/08  mallam    496337      PII additions
+#  25/02/08  johawkes  499078      Fix WTRN0080 user action wording
+#  29-02-08  johawkes  501807      Style changes
+#  29/01/09  jstidder  PK76761     Clarify WTRN0027/WTRN0028
+#  11/11/09  hursdlg   F923-4347.2 Add WTRN0130/131
+#  17/03/10  hursdlg   PM07874     New msgs WTRN0132-151
+#  13/05/10  hursdlg   649934      Further PM07874 changes
+#  12/10/10  johawkes  672987      Fix validation errors
+#  19/01/11  jstidder  PM30478     Clarify/expand WTRN0122
+#  10/07/12  johawkes  628170.3    Users of HA manager need proper log/error when HA not working
+#-----------------------------------------------------------------------
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined. 
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided. 
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table. 
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.15,0,02/08/23,04:09:52
+#
+#CMVCPATHNAME SERV1/ws/code/transaction.impl/src/com/ibm/ws/Transaction/resources/TransactionMsgs.nlsprops
+#COMPONENTPREFIX WTRN
+#COMPONENTNAMEFOR WTRN WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+WTRN0000_ERR_INT_ERROR=WTRN0000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w metodzie {0} w klasie {1}. Dane \u015bledzenia stosu wyj\u0105tku: {2}.
+WTRN0000_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0000_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0001_ERR_INT_ERROR=WTRN0001E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w metodzie \
+{0}, klasie {1}.
+WTRN0001_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0001_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS=WTRN0002W: Us\u0142uga transakcji nie \
+mo\u017ce znale\u017a\u0107 klasy zasob\u00f3w {0}.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.explanation=Us\u0142uga transakcji nie mog\u0142a znale\u017a\u0107 klasy zasob\u00f3w XA okre\u015blonej w komunikacie.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.useraction=Sprawd\u017a, czy skonfigurowano powi\u0105zanego dostawc\u0119 zasob\u00f3w XA i zrestartuj serwer. Mo\u017cna wtedy zdekonfigurowa\u0107 zas\u00f3b i wy\u0142\u0105czy\u0107 serwer.
+
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: Nie znaleziono \
+wymaganego pliku JAR podczas odtwarzania. Do wyszukiwania pliku u\u017cyto \u015bcie\u017cki {0}.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=Podczas odtwarzania z zastosowaniem osadzonego pliku RAR nie znaleziono wymaganego pliku JAR. Odtwarzanie transakcji nie mo\u017ce zosta\u0107 zako\u0144czone bez wymienionego pliku JAR.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=Brak. Jest to wewn\u0119trzny b\u0142\u0105d systemowy.
+
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: Nie mo\u017cna utworzy\u0107 \
+fabryki XAResourceFactory. Nazwa klasy fabryki XAResourceFactory to {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=Okre\u015blona fabryka s\u0142u\u017c\u0105ca do tworzenia obiekt\u00f3w XAResource nie zosta\u0142a znaleziona podczas odtwarzania serwera. Jest to wewn\u0119trzny b\u0142\u0105d systemowy.
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
+
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: Nie mo\u017cna utworzy\u0107 ponownie \
+obiektu XAResource dla uczestnika transakcji, przez co poprawne odtworzenie \
+transakcji mo\u017ce okaza\u0107 si\u0119 niemo\u017cliwe. Zas\u00f3b: {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE.explanation=W trakcie odtwarzania serwera obiekt XAResource nie m\u00f3g\u0142 zosta\u0107 odtworzony przez odpowiadaj\u0105c\u0105 mu fabryk\u0119.
+WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
+
+WTRN0006_TRANSACTION_HAS_TIMED_OUT=WTRN0006W: Limit czasu transakcji {0} zosta\u0142 przekroczony po up\u0142ywie nast\u0119puj\u0105cej liczby sekund: {1}.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.explanation=Okre\u015blona w komunikacie transakcja zosta\u0142a zako\u0144czona (wycofana) przez us\u0142ug\u0119 transakcji.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.useraction=Aby zredukowa\u0107 przypadki przekroczenia limitu czasu, zwi\u0119ksz warto\u015bci limitu czasu transakcji.
+
+WTRN0007_CANT_IMPORT_NULL_CONTEXT=WTRN0007W: Us\u0142uga transakcji nie mo\u017ce \
+zaimportowa\u0107 transakcji z niepoprawnym kontekstem lub kontekstem o warto\u015bci \
+NULL.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.explanation=Zaimportowany do serwera kontekst nie zawiera danych transakcji lub zawiera niepoprawne dane transakcji, przez co nie mo\u017cna zainicjowa\u0107 transakcji.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.useraction=CMSG0002
+
+WTRN0008_CANT_IMPORT_NESTED_TRAN=WTRN0008W: Us\u0142uga transakcji nie mo\u017ce \
+zaimportowa\u0107 zagnie\u017cd\u017conej transakcji {0}.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.explanation=Serwer zdalny pr\u00f3bowa\u0142 zaimportowa\u0107 zagnie\u017cd\u017con\u0105 transakcj\u0119. To dzia\u0142anie nie jest obs\u0142ugiwane.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.useraction=CMSG0002
+
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT=WTRN0009E: Brak identyfikatora transakcji \
+globalnej dla zasobu koordynatora.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.explanation=W zaimportowanym kontek\u015bcie transakcji nie podano identyfikatora transakcji globalnej.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.useraction=CMSG0002
+
+WTRN0010_EXC_AT_COORD_REG=WTRN0010E: Transakcja zosta\u0142a wycofana ze \
+wzgl\u0119du na wyj\u0105tek podczas rejestrowania koordynatora w obiekcie nadrz\u0119dnym {0}.
+WTRN0010_EXC_AT_COORD_REG.explanation=Po zaimportowaniu transakcji zdalnej na serwer wyst\u0105pi\u0142 b\u0142\u0105d, wi\u0119c transakcja zosta\u0142a wycofana.
+WTRN0010_EXC_AT_COORD_REG.useraction=CMSG0002
+
+WTRN0011_FACTORY_BIND_FAILURE=WTRN0011E: Nie mo\u017cna zarejestrowa\u0107 fabryki \
+transakcji w przestrzeni nazw JNDI.
+WTRN0011_FACTORY_BIND_FAILURE.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas inicjowania us\u0142ugi transakcji.
+WTRN0011_FACTORY_BIND_FAILURE.useraction=CMSG0002
+
+WTRN0012_UNEXP_FACTORY_REG_FAILURE=WTRN0012E: Nieoczekiwane niepowodzenie \
+podczas rejestrowania fabryki transakcji.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas inicjowania us\u0142ugi transakcji.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.useraction=CMSG0002
+
+WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: Nie okre\u015blono dziennika transakcji. \
+Rejestrowanie w pami\u0119ci.
+WTRN0013_LOGGING_IN_MEMORY.explanation=Us\u0142uga transakcji zosta\u0142a skonfigurowana w taki spos\u00f3b, aby nie zapisywa\u0107 dziennika w pami\u0119ci trwa\u0142ej. Mo\u017ce to powodowa\u0107 problemy z integralno\u015bci\u0105 danych lub zablokowanie zasob\u00f3w (na przyk\u0142ad tabel baz danych), je\u015bli zaleg\u0142e transakcje zatwierdzania dwufazowego dzia\u0142aj\u0105 po zatrzymaniu serwera.
+WTRN0013_LOGGING_IN_MEMORY.useraction=Je\u015bli wymagane jest odtwarzanie transakcji, skonfiguruj ponownie us\u0142ug\u0119 transakcji, aby stosowane by\u0142o rejestrowanie, i zrestartuj serwer.
+
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: Us\u0142uga transakcji wykry\u0142a \
+niepoprawny \u0142a\u0144cuch konfiguracyjny pliku dziennika. Us\u0142uga transakcji b\u0119dzie kontynuowa\u0107 dzia\u0142anie bez funkcji rejestrowania na potrzeby odtwarzania.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Ustawiona w polu Katalog dziennik\u00f3w transakcji nazwa katalogu dla pliku dziennika transakcji jest niepoprawna. Na format tej nazwy powinna sk\u0142ada\u0107 si\u0119 pe\u0142na nazwa katalogu pliku dziennika, wyst\u0119puj\u0105cy po niej opcjonalnie znak ';', a tak\u017ce warto\u015b\u0107 wielko\u015bci pliku dziennika z umieszczon\u0105 na ko\u0144cu liter\u0105 M (je\u015bli wielko\u015b\u0107 podana jest w megabajtach) lub liter\u0105 K (je\u015bli wielko\u015b\u0107 podana jest w kilobajtach). Domy\u015bln\u0105, a zarazem minimaln\u0105 wielko\u015bci\u0105 pliku dziennika jest 1 MB.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Popraw konfiguracj\u0119 katalogu dziennika transakcji. Zrestartuj serwer, aby w\u0142\u0105czy\u0107 rejestrowanie na potrzeby odtwarzania transakcji.
+
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: Okre\u015blono niepoprawn\u0105 \
+wielko\u015b\u0107 pliku dziennika transakcji: {0}. Us\u0142uga transakcji b\u0119dzie u\u017cywa\u0107 domy\u015blnej wielko\u015bci pliku dziennika wynosz\u0105cej 1 MB.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=Ustawiona w polu Katalog dziennik\u00f3w transakcji wielko\u015b\u0107 pliku dziennika transakcji jest niepoprawna. Na format tej nazwy powinna sk\u0142ada\u0107 si\u0119 pe\u0142na nazwa katalogu pliku dziennika, wyst\u0119puj\u0105cy po niej opcjonalnie znak ';', a tak\u017ce warto\u015b\u0107 wielko\u015bci pliku dziennika z umieszczon\u0105 na ko\u0144cu liter\u0105 M (je\u015bli wielko\u015b\u0107 podana jest w megabajtach) lub liter\u0105 K (je\u015bli wielko\u015b\u0107 podana jest w kilobajtach). Domy\u015bln\u0105, a zarazem minimaln\u0105 wielko\u015bci\u0105 pliku dziennika jest 1 MB.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Popraw konfiguracj\u0119 katalogu dziennika transakcji.
+
+WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: Wychwycono wyj\u0105tek podczas \
+odtwarzania us\u0142ugi transakcji. {0}
+WTRN0016_EXC_DURING_RECOVERY.explanation=Wykryto wyj\u0105tek podczas podj\u0119tej przez us\u0142ug\u0119 transakcji pr\u00f3by odtwarzania po uprzedniej awarii serwera.
+WTRN0016_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION=WTRN0017W: Nie mo\u017cna rozpocz\u0105\u0107 \
+zagnie\u017cd\u017conej transakcji. Zagnie\u017cd\u017cone transakcje nie s\u0105 obs\u0142ugiwane.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.explanation=Ten b\u0142\u0105d wskazuje, \u017ce nast\u0105pi\u0142a pr\u00f3ba rozpocz\u0119cia zagnie\u017cd\u017conej transakcji, podczas gdy zagnie\u017cd\u017cone transakcje nie s\u0105 obs\u0142ugiwane.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.useraction=Sprawd\u017a, czy nie nast\u0119puje pr\u00f3ba rozpocz\u0119cia transakcji, podczas gdy w w\u0105tku aktywna jest ju\u017c inna transakcja.
+
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT=WTRN0018W: Zas\u00f3b jednofazowy nie \
+obs\u0142uguje zatwierdzania.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.explanation=Zas\u00f3b, kt\u00f3ry obs\u0142uguje tylko zoptymalizowane zatwierdzanie jednofazowe zosta\u0142 zarejestrowany w us\u0142udze transakcji i wywo\u0142any do przetworzenia standardowej operacji zatwierdzania dwufazowego. Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.useraction=CMSG0002
+
+WTRN0019_LOGFILE_CORRUPTED=WTRN0019E: Plik dziennika us\u0142ugi transakcji \
+{0} zosta\u0142 uszkodzony.
+WTRN0019_LOGFILE_CORRUPTED.explanation=Plik dziennika odtwarzania us\u0142ugi transakcji zosta\u0142 uszkodzony, w wyniku czego uruchomienie serwera nie powiod\u0142o si\u0119.
+WTRN0019_LOGFILE_CORRUPTED.useraction=Aby wykona\u0107 zimny start serwera, usu\u0144 pliki dziennika transakcji i zrestartuj serwer. Konieczne jest r\u0119czne zako\u0144czenie wszystkich transakcji oczekuj\u0105cych w powi\u0105zanych mened\u017cerach zasob\u00f3w.
+
+WTRN0020_RECOVERING_TRANSACTIONS=WTRN0020W: Odtwarzanie transakcji \
+serwera {0} na serwerze bie\u017c\u0105cym.
+WTRN0020_RECOVERING_TRANSACTIONS.explanation=Ten serwer odtwarza \
+dzienniki transakcji z innego serwera. Je\u015bli zasoby skonfigurowane na tym \
+serwerze nie s\u0105 zgodne ze skonfigurowanymi zasobami serwera, dla kt\u00f3rego \
+utworzone zosta\u0142y dzienniki, odtwarzanie mo\u017ce nie zosta\u0107 zako\u0144czone.
+WTRN0020_RECOVERING_TRANSACTIONS.useraction=Sprawd\u017a, czy podczas odtwarzania wyprowadzane s\u0105 jakiekolwiek komunikaty o b\u0142\u0119dach, i popraw wszystkie \u017c\u0105dane dzia\u0142ania.
+
+WTRN0021_TMRESUME_NOT_SUPPORTED=WTRN0021W: Operacja TMRESUME nie jest \
+obs\u0142ugiwana.
+WTRN0021_TMRESUME_NOT_SUPPORTED.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0021_TMRESUME_NOT_SUPPORTED.useraction=CMSG0002
+
+WTRN0022_UNKNOWN_XARESOURCE_STATE=WTRN0022W: Nieznany stan obiektu XAResource.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.explanation=Obiekt XAResource znajduje si\u0119 w nieoczekiwanym stanie. Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.useraction=CMSG0002
+
+WTRN0023_INVALID_XAEND_FLAG=WTRN0023W: Niepoprawna flaga ko\u0144cowa \
+XA: {0}.
+WTRN0023_INVALID_XAEND_FLAG.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0023_INVALID_XAEND_FLAG.useraction=CMSG0002
+
+WTRN0024_INCONSISTENT_LOGS=WTRN0024E: Niesp\u00f3jne dzienniki odtwarzania \
+transakcji i zasobu XA.
+WTRN0024_INCONSISTENT_LOGS.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0024_INCONSISTENT_LOGS.useraction=CMSG0002
+
+WTRN0025_TRAN_RECOVERY_FAILED=WTRN0025E: Odtwarzanie transakcji nie \
+powiod\u0142o si\u0119 {0}
+WTRN0025_TRAN_RECOVERY_FAILED.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by odtworzenia transakcji.
+WTRN0025_TRAN_RECOVERY_FAILED.useraction=CMSG0002
+
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY=WTRN0026E: Wychwycono wyj\u0105tek podczas \
+zapisu punktu przywracania po odtwarzaniu. {0}
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.useraction=CMSG0002
+
+WTRN0027_RECOVERING_TXN=WTRN0027I: Odtwarzanie transakcji przez us\u0142ug\u0119 transakcji: 1.
+WTRN0027_RECOVERING_TXN.explanation=Us\u0142uga transakcji wykry\u0142a, \u017ce podczas ostatniego zatrzymania serwera dzia\u0142a\u0142a transakcja. Us\u0142uga transakcji odtwarza teraz t\u0119 transakcj\u0119.  Wyprowadzane mog\u0105 by\u0107 dalsze komunikaty kontroli, kt\u00f3re b\u0119d\u0105 wskazywa\u0107 \
+post\u0119p przetwarzania operacji odtwarzania.
+WTRN0027_RECOVERING_TXN.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0028_RECOVERING_TXNS=WTRN0028I: Odtwarzanie transakcji przez us\u0142ug\u0119 transakcji: {0}.
+WTRN0028_RECOVERING_TXNS.explanation=Us\u0142uga transakcji \
+wykry\u0142a, \u017ce podczas ostatniego zatrzymania serwera dzia\u0142a\u0142y transakcje. Us\u0142uga \
+transakcji odtwarza teraz te transakcje.  Wyprowadzane mog\u0105 by\u0107 dalsze komunikaty kontroli, kt\u00f3re b\u0119d\u0105 wskazywa\u0107 \
+post\u0119p przetwarzania operacji odtwarzania.
+WTRN0028_RECOVERING_TXNS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN=WTRN0029E: B\u0142\u0105d podczas zamykania \
+dziennika przy zamykaniu systemu.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.explanation=Us\u0142uga transakcji napotka\u0142a b\u0142\u0105d podczas zamykania swojego dziennika odtwarzania przy zamykaniu serwera.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.useraction=CMSG0002
+
+WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Odtwarzanie danych obiektu \
+XAResource nie powiod\u0142o si\u0119 {0}
+WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
+
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: Operacja xa_rollback, wykonywana \
+na zasobie transakcyjnym, nie powiod\u0142a si\u0119. Transakcja globalna to {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0031_XA_ROLLBACK_FAILED.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ania przez us\u0142ug\u0119 transakcji operacji xa_rollback na zasobie zarejestrowanym w transakcji globalnej okre\u015blonej w komunikacie.
+WTRN0031_XA_ROLLBACK_FAILED.useraction=Transakcja mog\u0142a zako\u0144czy\u0107 si\u0119 rezultatem heurystycznym. W takim przypadku popraw wszystkie problemy z danymi aplikacji, kt\u00f3re zosta\u0142y spowodowane rezultatem heurystycznym.
+
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND=WTRN0032E: W \u017c\u0105daniu przychodz\u0105cym \
+odebrano kontekst transakcji zale\u017cny od implementacji.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.useraction=CMSG0002
+
+WTRN0033_TRANSACTION_FACTORY_CREATE=WTRN0033E: Wychwycono wyj\u0105tek {0} \
+podczas tworzenia fabryki transakcji.
+WTRN0033_TRANSACTION_FACTORY_CREATE.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0033_TRANSACTION_FACTORY_CREATE.useraction=CMSG0002
+
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED=WTRN0034W: Znaleziono transakcj\u0119 {0} podczas wyciszania serwera. Pr\u00f3ba wycofania tej transakcji zako\u0144czy\u0142a si\u0119 pomy\u015blnie.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.explanation=Znaleziono zaleg\u0142\u0105 transakcj\u0119 w trakcie fazy wyciszania przy zamykaniu serwera. Transakcja ta zosta\u0142a pomy\u015blnie wycofana.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED=WTRN0035W: Znaleziono \
+transakcj\u0119 {0} podczas wyciszania serwera. Pr\u00f3ba wycofania tej transakcji nie powiod\u0142a si\u0119.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.explanation=Znaleziono zaleg\u0142\u0105 transakcj\u0119 w trakcie fazy wyciszania przy zamykaniu serwera. Transakcja ta nie zosta\u0142a pomy\u015blnie wycofana.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Ta transakcja zostanie odtworzona po nast\u0119pnym uruchomieniu serwera.
+
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: Znaleziono transakcj\u0119 {0} podczas wyciszania serwera. Transakcja zosta\u0142a tylko zaznaczona do wycofania.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=Znaleziono zaleg\u0142\u0105 transakcj\u0119 w trakcie fazy wyciszania przy zamykaniu serwera. Transakcja ta zosta\u0142a tylko zaznaczona do wycofania.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Transakcja zostanie wycofana podczas zamykania serwera lub zostanie odzyskana po zrestartowaniu serwera.
+
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: Us\u0142uga transakcji napotka\u0142a b\u0142\u0105d w \
+operacji xa_recover. Zas\u00f3b: {0}. Kod b\u0142\u0119du: {1}. Dane \u015bledzenia stosu wyj\u0105tku: {2}
+WTRN0037_XA_RECOVER_ERROR.explanation=Us\u0142uga transakcji napotka\u0142a b\u0142\u0105d podczas wywo\u0142ywania operacji xa_recover na zasobie w celu okre\u015blenia przygotowanych transakcji przechowywanych przez odpowiedniego mened\u017cera zasob\u00f3w. Operacja zostanie ponowiona.
+WTRN0037_XA_RECOVER_ERROR.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: Wyst\u0105pi\u0142 wyj\u0105tek podczas \
+niszczenia zasobu XA. Dane \u015bledzenia stosu wyj\u0105tku: {0}
+WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=Us\u0142uga transakcji nie mog\u0142a zniszczy\u0107 obiektu XAResource.
+WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107, poniewa\u017c takie zachowanie nie powinno mie\u0107 wp\u0142ywu na us\u0142ug\u0119 transakcji.
+
+WTRN0039_SERIALIZE_FAILED=WTRN0039E: Nie mo\u017cna przekszta\u0142ci\u0107 obiektu do \
+bajtowej postaci szeregowej.
+WTRN0039_SERIALIZE_FAILED.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0039_SERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0040_OBJECT_DESERIALIZE_FAILED=WTRN0040W: Nie mo\u017cna przekszta\u0142ci\u0107 \
+obiektu z postaci szeregowej. Dane \u015bledzenia stosu wyj\u0105tku: {0}
+WTRN0040_OBJECT_DESERIALIZE_FAILED.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0040_OBJECT_DESERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0041_TXN_ROLLED_BACK=WTRN0041I: Transakcja {0} zosta\u0142a wycofana. 
+WTRN0041_TXN_ROLLED_BACK.explanation=Transakcja zosta\u0142a wcze\u015bniej \
+oznaczona jako rollbackOnly i w\u0142a\u015bnie zosta\u0142a wycofana. Mog\u0142o to by\u0107 spowodowane przekroczeniem limitu czasu transakcji lub decyzj\u0105 aplikacji, aby oznaczy\u0107 transakcj\u0119 jako rollbackOnly.                             
+WTRN0041_TXN_ROLLED_BACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika, chyba \u017ce wycofanie nie jest po\u017c\u0105dane i wyst\u0119puje z powodu przekroczenia limitu czasu transakcji. W takim przypadku sprawd\u017a, co powoduje, \u017ce zako\u0144czenie transakcji nie nast\u0119puje w limicie czasu i rozwa\u017c mo\u017cliwo\u015b\u0107 zwi\u0119kszenia warto\u015bci limitu czasu transakcji dla tego serwera.
+
+WTRN0042_GLOBAL_TRAN_ROLLBACK=WTRN0042I: Transakcja globalna zosta\u0142a wycofana z \
+powodu przekroczenia limitu czasu lub wywo\u0142ania metody setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.explanation=Transakcja globalna zosta\u0142a wycofana z powodu osi\u0105gni\u0119cia warto\u015bci limitu czasu lub wywo\u0142ania metody setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.useraction=Je\u015bli warto\u015b\u0107 limitu czasu jest zbyt du\u017ca lub zbyt ma\u0142a, u\u017cyj Konsoli administracyjnej, aby j\u0105 zmodyfikowa\u0107.
+
+WTRN0043_LOCAL_TRAN_ROLLBACK=WTRN0043I: Transakcja lokalna zosta\u0142a wycofana z \
+powodu wywo\u0142ania metody setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.explanation=Transakcja lokalna zosta\u0142a wycofana z powodu wywo\u0142ania metody setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: Mo\u017cliwe wyst\u0105pienie \
+warunku heurystycznego dla transakcji {0}.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=Us\u0142uga transakcji wykry\u0142a, \u017ce okre\u015blona transakcja uwzgl\u0119dnia zasoby mieszane - jednofazowe i dwufazowe. Us\u0142uga transakcji przekaza\u0142a \u017c\u0105danie zatwierdzenia jednofazowego do pojedynczego zasobu jednofazowego, ale przed zako\u0144czeniem zatwierdzania nast\u0105pi\u0142a awaria serwera. Nie mo\u017cna stwierdzi\u0107, czy zas\u00f3b zosta\u0142 zatwierdzony pomy\u015blnie.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=Wszystkie zasoby dwufazowe zostan\u0105 wycofane. Je\u015bli zas\u00f3b jednofazowy pomy\u015blnie przetworzy\u0142 operacj\u0119 zatwierdzania, wyst\u0105pi\u0142o uszkodzenie heurystyczne i wszystkie problemy dotycz\u0105ce danych aplikacji, kt\u00f3re zosta\u0142y spowodowane rezultatem heurystycznym, musz\u0105 zosta\u0107 poprawione.
+
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: Us\u0142uga transakcji nie mo\u017ce \
+odtworzy\u0107 zasobu {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d systemowy podczas przeprowadzanej przez us\u0142ug\u0119 transakcji pr\u00f3by zrekonstruowania uczestnika transakcji podczas odtwarzania. Jest to prawdopodobnie spowodowane wcze\u015bniejszym niepowodzeniem.
+WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
+
+WTRN0046_PREPARE_FAILED=WTRN0046E: Przeprowadzona przez mened\u017cer \
+transakcji pr\u00f3ba wywo\u0142ania metody przygotowawczej na zasobie transakcyjnym \
+zako\u0144czy\u0142a si\u0119 b\u0142\u0119dem. Kod b\u0142\u0119du: {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0046_PREPARE_FAILED.explanation=Przetworzenie wywo\u0142ania metody przygotowawczej przez zas\u00f3b transakcyjny nie powiod\u0142o si\u0119. Niepowodzenie to zostanie potraktowane jako wniosek o wycofanie.
+WTRN0046_PREPARE_FAILED.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: Wyst\u0105pi\u0142 b\u0142\u0105d XAER_RMERR podczas \
+zatwierdzania pracy w ga\u0142\u0119zi transakcji. Zas\u00f3b: {0}
+WTRN0047_XAER_RMERR_ON_COMMIT.explanation=Wykryto niepowodzenie podczas procesu zatwierdzania transakcji.
+WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane przez to niepowodzenie.
+
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: Przeprowadzona przez mened\u017cer \
+transakcji pr\u00f3ba wywo\u0142ania metody zatwierdzania na zasobie transakcyjnym \
+zako\u0144czy\u0142a si\u0119 b\u0142\u0119dem XAER_RMFAIL. Zas\u00f3b: {0}
+WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=Wywo\u0142anie metody zatwierdzania na zasobie transakcyjnym nie powiod\u0142o si\u0119, poniewa\u017c mened\u017cer zasob\u00f3w by\u0142 niedost\u0119pny. Wywo\u0142anie metody zatwierdzania b\u0119dzie ponawiane w regularnych odst\u0119pach czasu.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Sprawd\u017a, czy mened\u017cer zasob\u00f3w jest dost\u0119pny.
+
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: Przeprowadzona przez \
+mened\u017cer transakcji pr\u00f3ba wywo\u0142ania metody wycofania na zasobie transakcyjnym \
+zako\u0144czy\u0142a si\u0119 b\u0142\u0119dem XAER_RMFAIL. Zas\u00f3b: {0}
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=Wywo\u0142anie metody wycofania na zasobie transakcyjnym nie powiod\u0142o si\u0119, poniewa\u017c mened\u017cer zasob\u00f3w by\u0142 niedost\u0119pny. Wywo\u0142anie metody wycofania b\u0119dzie ponawiane w regularnych odst\u0119pach czasu.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Sprawd\u017a, czy mened\u017cer zasob\u00f3w jest dost\u0119pny.
+
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: Przeprowadzona przez \
+mened\u017cer transakcji pr\u00f3ba wywo\u0142ania metody zatwierdzania na zasobie \
+transakcyjnym zako\u0144czy\u0142a si\u0119 nieoczekiwanym b\u0142\u0119dem. Kod b\u0142\u0119du XA: {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=Wywo\u0142anie metody zatwierdzania na zasobie transakcyjnym nie powiod\u0142o si\u0119 z powodu wyst\u0105pienia nieoczekiwanej awarii. Wywo\u0142anie metody zatwierdzania b\u0119dzie ponawiane w regularnych odst\u0119pach czasu.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: Przeprowadzona przez \
+mened\u017cer transakcji pr\u00f3ba wywo\u0142ania metody wycofania na zasobie transakcyjnym \
+zako\u0144czy\u0142a si\u0119 nieoczekiwanym b\u0142\u0119dem. Kod b\u0142\u0119du XA: {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=Wywo\u0142anie metody wycofania na zasobie transakcyjnym nie powiod\u0142o si\u0119 z powodu wyst\u0105pienia nieoczekiwanej awarii. Wywo\u0142anie metody wycofania b\u0119dzie ponawiane w regularnych odst\u0119pach czasu.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: Przeprowadzona przez \
+mened\u017cer transakcji pr\u00f3ba wywo\u0142ania metody zatwierdzania jednofazowego na \
+zasobie transakcyjnym zako\u0144czy\u0142a si\u0119 b\u0142\u0119dem XAER_RMFAIL. Zas\u00f3b: {0}
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=Wywo\u0142anie metody zatwierdzania jednofazowego na zasobie transakcyjnym nie powiod\u0142o si\u0119, poniewa\u017c mened\u017cer zasob\u00f3w by\u0142 niedost\u0119pny.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=Transakcja zostanie wycofana.
+
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: Przeprowadzona przez mened\u017cer transakcji pr\u00f3ba wywo\u0142ania metody zatwierdzania \
+jednofazowego na zasobie transakcyjnym zako\u0144czy\u0142a si\u0119 nieoczekiwanym b\u0142\u0119dem. Kod b\u0142\u0119du XA: {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=Wywo\u0142anie metody zatwierdzania jednofazowego na zasobie transakcyjnym nie powiod\u0142o si\u0119 z powodu wyst\u0105pienia nieoczekiwanej awarii.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=Mened\u017cer transakcji podejmie pr\u00f3b\u0119 wycofania tej transakcji.
+
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: Podczas operacji xa_forget na zasobie \
+transakcyjnym napotkano wyj\u0105tek. Kod b\u0142\u0119du: {0}.  Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0054_XA_FORGET_ERROR.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania przez us\u0142ug\u0119 transakcji operacji xa_forget na zasobie.
+WTRN0054_XA_FORGET_ERROR.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY=WTRN0055W: Zrezygnowano z \
+dostarczenia wynik\u00f3w dla transakcji {0}.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.explanation=Us\u0142uga transakcji nie mog\u0142a dostarczy\u0107 wyniku operacji zatwierdzania lub wycofywania do uczestnika transakcji.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane przez to niepowodzenie.
+
+WTRN0056_TRAN_RESYNC_FAILURE=WTRN0056I: Ponowna synchronizacja transakcji \
+{0} od inicjatora nie powiod\u0142a si\u0119. Ponawianie pr\u00f3by...
+WTRN0056_TRAN_RESYNC_FAILURE.explanation=Nie powiod\u0142o si\u0119 ponowne zsynchronizowanie transakcji podczas odtwarzania, a poniewa\u017c wynik jest nieznany serwer b\u0119dzie ponawia\u0107 pr\u00f3by.
+WTRN0056_TRAN_RESYNC_FAILURE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0057_HEURISTIC_ON_SUBORDINATE=WTRN0057E: Zg\u0142oszono decyzj\u0119 heurystyczn\u0105 \
+podczas wywo\u0142ywania metody przygotowawczej/zatwierdzania jednofazowego na \
+obiekcie podrz\u0119dnym.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.explanation=Transakcja podrz\u0119dna podj\u0119\u0142a pr\u00f3b\u0119 zoptymalizowania u\u017cycia metody zatwierdzania jednofazowego podczas metody przygotowawczej, co spowodowa\u0142o wyst\u0105pienie b\u0142\u0119du heurystycznego.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.useraction=CMSG0002
+
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT=WTRN0058E: Wychwycono wyj\u0105tek w \
+operacji zatwierdzania podczas odtwarzania transakcji {0}: {1}
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.explanation=Wykryto wyj\u0105tek podczas pr\u00f3by odtworzenia transakcji.
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.useraction=CMSG0002
+
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK=WTRN0059E: Wychwycono wyj\u0105tek w \
+operacji wycofywania podczas odtwarzania transakcji {0}: {1}
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.explanation=Wykryto wyj\u0105tek podczas pr\u00f3by odtworzenia transakcji.
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.useraction=CMSG0002
+
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET=WTRN0060E: Wychwycono wyj\u0105tek w \
+operacji forget podczas odtwarzania transakcji {0}: {1}
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.explanation=Wykryto wyj\u0105tek podczas pr\u00f3by odtworzenia transakcji.
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.useraction=CMSG0002
+
+WTRN0061_ERR_CREATING_JTAXARESOURCE=WTRN0061E: Napotkano b\u0142\u0105d podczas budowania \
+obiektu JTAXAResource.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.useraction=CMSG0002
+
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES=WTRN0062E: Wyst\u0105pi\u0142a \
+niedozwolona pr\u00f3ba u\u017cycia w obr\u0119bie transakcji globalnej wielu zasob\u00f3w \
+obs\u0142uguj\u0105cych tylko zatwierdzanie jednofazowe.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.explanation=W transakcji globalnej mo\u017ce zosta\u0107 zarejestrowany tylko pojedynczy zas\u00f3b obs\u0142uguj\u0105cy zatwierdzanie jednofazowe. Ten b\u0142\u0105d wyst\u0119puje, je\u015bli wiele mened\u017cer\u00f3w zasob\u00f3w obs\u0142uguj\u0105cych tylko zatwierdzanie jednofazowe zostanie u\u017cytych w transakcji globalnej lub je\u015bli wiele niewsp\u00f3\u0142u\u017cytkowanych po\u0142\u0105cze\u0144 z jednego takiego mened\u017cera zasob\u00f3w jest u\u017cywanych w transakcji globalnej.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.useraction=Zmodyfikuj aplikacj\u0119, tak aby u\u017cywa\u0142a jednego zasobu ograniczonego do obs\u0142ugi zatwierdzania jednofazowego lub u\u017cyj obiekt\u00f3w XAResource z mo\u017cliwo\u015bci\u0105 zatwierdzania dwufazowego.
+
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE=WTRN0063E: Wyst\u0105pi\u0142a niedozwolona pr\u00f3ba \
+zatwierdzenia zasobu jednofazowego przy u\u017cyciu istniej\u0105cego zasobu dwufazowego.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.explanation=Us\u0142uga transakcji odrzuci\u0142a pr\u00f3b\u0119 zatwierdzenia zasobu jednofazowego przy u\u017cyciu transakcji uwzgl\u0119dniaj\u0105cej ju\u017c inne zasoby dwufazowe. Rozszerzenie obs\u0142ugi ostatniego uczestnika nie jest dost\u0119pne lub, je\u015bli jest ono dost\u0119pne, aplikacja nie akceptuje ryzyka heurystycznego zwi\u0105zanego z t\u0105 sytuacj\u0105.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.useraction=Sprawd\u017a, czy zasoby jednofazowe i dwufazowe nie uczestnicz\u0105 w tej samej transakcji lub, je\u015bli dost\u0119pne jest rozszerzenie obs\u0142ugi ostatniego uczestnika, przeprowad\u017a ponown\u0105 konfiguracj\u0119 aplikacji, tak aby akceptowa\u0142a ona zwi\u0105zane z tym ryzyko heurystyczne.
+
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: Wyst\u0105pi\u0142a niedozwolona \
+pr\u00f3ba zatwierdzenia zasobu jednofazowego w podrz\u0119dnej ga\u0142\u0119zi transakcji.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=Us\u0142uga transakcji odrzuci\u0142a pr\u00f3b\u0119 zatwierdzenia zasobu jednofazowego w rozproszonej podrz\u0119dnej ga\u0142\u0119zi transakcji. Transakcja zostanie wycofana.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Sprawd\u017a, czy zasoby jednofazowe nie s\u0105 u\u017cywane w podrz\u0119dnej ga\u0142\u0119zi transakcji rozproszonej.
+
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: Ta transakcja nie rozpoznaje \
+obiektu XAResource. Zas\u00f3b: {0}
+WTRN0065_XARESOURCE_NOT_KNOWN.explanation=Mened\u017cer transakcji nie m\u00f3g\u0142 wyrejestrowa\u0107 obiektu XAResource, poniewa\u017c nie zosta\u0142 on wcze\u015bniej zarejestrowany w bie\u017c\u0105cej transakcji. Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
+
+WTRN0066_LOG_WRITE_ERROR=WTRN0066W: Napotkano wyj\u0105tek podczas operacji \
+zapisu pliku dziennika transakcji. Dane \u015bledzenia stosu wyj\u0105tku: {0}
+WTRN0066_LOG_WRITE_ERROR.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas zapisu do pliku dziennika transakcji. Transakcja zostanie wycofana.
+WTRN0066_LOG_WRITE_ERROR.useraction=Jest to najprawdopodobniej b\u0142\u0105d we/wy. Przejrzyj informacje dotycz\u0105ce \u015bledzenia stosu wyj\u0105tku, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0067_PROG_MODEL_EXCEEDED=WTRN0067W: Us\u0142uga transakcji wykry\u0142a dzia\u0142anie, \
+kt\u00f3re wykracza poza model programistyczny aplikacji produktu WebSphere.
+WTRN0067_PROG_MODEL_EXCEEDED.explanation=Aplikacja dzia\u0142aj\u0105ca na tym serwerze u\u017cywa funkcji us\u0142ugi transakcji, kt\u00f3re nie stanowi\u0105 cz\u0119\u015bci modelu programistycznego aplikacji.
+WTRN0067_PROG_MODEL_EXCEEDED.useraction=Sprawd\u017a, czy mo\u017cna zmodyfikowa\u0107 t\u0119 aplikacj\u0119, tak aby korzysta\u0142a ona wy\u0142\u0105cznie z funkcji transakcji obs\u0142ugiwanych przez model programistyczny aplikacji.
+
+WTRN0068_COMMIT_FAILED=WTRN0068E: Operacja zatwierdzania nie powiod\u0142a \
+si\u0119. Wyj\u0105tek: {0}
+WTRN0068_COMMIT_FAILED.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas zatwierdzania transakcji.
+WTRN0068_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0069_COMMIT_BAD_STATE=WTRN0069E: Odebrano \u017c\u0105danie zatwierdzenia przy \
+niew\u0142a\u015bciwym stanie transakcji {0}
+WTRN0069_COMMIT_BAD_STATE.explanation=Transakcja nie by\u0142a w poprawnym stanie, kiedy odebrano \u017c\u0105danie przeprowadzenia zatwierdzania.
+WTRN0069_COMMIT_BAD_STATE.useraction=CMSG0002
+
+WTRN0070_ONE_PHASE_COMMIT_FAILED=WTRN0070E: Zatwierdzanie jednofazowe nie \
+powiod\u0142o si\u0119. Wyj\u0105tek: {0}
+WTRN0070_ONE_PHASE_COMMIT_FAILED.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas zatwierdzania transakcji przy u\u017cyciu protoko\u0142u zatwierdzania jednofazowego.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0071_ROLLBACK_FAILED=WTRN0071E: Operacja wycofywania nie powiod\u0142a \
+si\u0119. Wyj\u0105tek: {0}
+WTRN0071_ROLLBACK_FAILED.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas wycofywania transakcji.
+WTRN0071_ROLLBACK_FAILED.useraction=CMSG0002
+
+WTRN0072_ROLLBACK_BAD_STATE=WTRN0072E: Odebrano \u017c\u0105danie wycofania przy \
+niew\u0142a\u015bciwym stanie transakcji {0}.
+WTRN0072_ROLLBACK_BAD_STATE.explanation=Transakcja nie by\u0142a w poprawnym stanie, kiedy odebrano \u017c\u0105danie przeprowadzenia wycofywania.
+WTRN0072_ROLLBACK_BAD_STATE.useraction=CMSG0002
+
+WTRN0073_FORGET_BAD_STATE=WTRN0073E: Odebrano \u017c\u0105danie forget przy \
+niew\u0142a\u015bciwym stanie transakcji {0}.
+WTRN0073_FORGET_BAD_STATE.explanation=Transakcja nie by\u0142a w poprawnym stanie, kiedy odebrano \u017c\u0105danie przeprowadzenia operacji forget.
+WTRN0073_FORGET_BAD_STATE.useraction=CMSG0002
+
+WTRN0074_SYNCHRONIZATION_EXCEPTION=WTRN0074E: Wychwycono wyj\u0105tek w \
+operacji synchronizacji {0}: {1}
+WTRN0074_SYNCHRONIZATION_EXCEPTION.explanation=Obiekt Synchronization zg\u0142osi\u0142 wyj\u0105tek po odebraniu informacji o bie\u017c\u0105cym stanie zako\u0144czenia transakcji.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.useraction=CMSG0002
+
+WTRN0075_HEURISTIC_ON_COMMIT=WTRN0075W: Transakcja {0} odebra\u0142a wyj\u0105tek \
+heurystyczny podczas zatwierdzania zasobu.
+WTRN0075_HEURISTIC_ON_COMMIT.explanation=Us\u0142uga transakcji odebra\u0142a odpowied\u017a heurystyczn\u0105 podczas dostarczania wyniku zatwierdzania uczestnikowi transakcji.
+WTRN0075_HEURISTIC_ON_COMMIT.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane rezultatem heurystycznym.
+
+WTRN0076_HEURISTIC_ON_ROLLBACK=WTRN0076W: Transakcja {0} odebra\u0142a wyj\u0105tek \
+heurystyczny podczas wycofywania zasobu.
+WTRN0076_HEURISTIC_ON_ROLLBACK.explanation=Us\u0142uga transakcji odebra\u0142a odpowied\u017a heurystyczn\u0105 podczas dostarczania wyniku wycofania uczestnikowi transakcji.
+WTRN0076_HEURISTIC_ON_ROLLBACK.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane rezultatem heurystycznym.
+
+WTRN0077_OPERATOR_CANCELLED=WTRN0077W: Transakcja {0} zosta\u0142a anulowana \
+przez operatora.
+WTRN0077_OPERATOR_CANCELLED.explanation=Dostarczenie wyniku dla transakcji wymienionej w komunikacie zosta\u0142o zarzucone na \u017c\u0105danie operatora.
+WTRN0077_OPERATOR_CANCELLED.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane przez to niepowodzenie.
+
+WTRN0078_START_FAILED=WTRN0078E: Przeprowadzona przez mened\u017cer \
+transakcji pr\u00f3ba wywo\u0142ania metody start na zasobie transakcyjnym zako\u0144czy\u0142a si\u0119 \
+b\u0142\u0119dem. Kod b\u0142\u0119du: {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0078_START_FAILED.explanation=Przetworzenie wywo\u0142ania metody start przez zas\u00f3b transakcyjny nie powiod\u0142o si\u0119. Transakcja zostanie wycofana.
+WTRN0078_START_FAILED.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0079_END_FAILED=WTRN0079E: Przeprowadzona przez mened\u017cer transakcji \
+pr\u00f3ba wywo\u0142ania metody end na zasobie transakcyjnym zako\u0144czy\u0142a si\u0119 b\u0142\u0119dem. Kod b\u0142\u0119du: {0}. Dane \u015bledzenia stosu wyj\u0105tku: {1}
+WTRN0079_END_FAILED.explanation=Przetworzenie wywo\u0142ania metody end przez zas\u00f3b transakcyjny nie powiod\u0142o si\u0119. Transakcja zostanie wycofana.
+WTRN0079_END_FAILED.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107 przyczyn\u0119 problemu.
+
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT=WTRN0080W: Limit czasu transakcji {0} \
+zosta\u0142 przekroczony z powodu braku dzia\u0142ania klienta przez czas d\u0142u\u017cszy ni\u017c \
+nast\u0119puj\u0105ca liczba sekund: {1}.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.explanation=Klient pozostawa\u0142 \
+nieaktywny przez czas d\u0142u\u017cszy ni\u017c warto\u015b\u0107 limitu czasu bezczynno\u015bci.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.useraction=Je\u015bli klient roz\u0142\u0105czy\u0142 si\u0119, pozostawiaj\u0105c aktywn\u0105 transakcj\u0119, zignoruj ten komunikat. Je\u015bli klient jest wci\u0105\u017c aktywny, ustal, czy nie jest konieczna zmiana warto\u015bci limitu czasu nieaktywno\u015bci klienta.
+
+WTRN0081_NULL_JTSXARESOURCE=WTRN0081W: Obiekt JTAXAResource ma warto\u015b\u0107 NULL.
+WTRN0081_NULL_JTSXARESOURCE.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy, kt\u00f3ry prawdopodobnie zosta\u0142 spowodowany wcze\u015bniejszym niepowodzeniem.
+WTRN0081_NULL_JTSXARESOURCE.useraction=CMSG0002
+
+WTRN0082_OPERATOR_ROLLBACK=WTRN0082W: Transakcja {0} zosta\u0142a wycofana \
+przez operatora.
+WTRN0082_OPERATOR_ROLLBACK.explanation=Transakcja wymieniona w komunikacie zosta\u0142a wycofana na \u017c\u0105danie operatora.
+WTRN0082_OPERATOR_ROLLBACK.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane przez to niepowodzenie.
+
+WTRN0083_LOG_FULL_ERROR=WTRN0083W: Dziennik transakcji jest pe\u0142ny. Transakcja {0} zosta\u0142a wycofana.
+WTRN0083_LOG_FULL_ERROR.explanation=Pliki dziennika transakcji s\u0105 zape\u0142nione rekordami pochodz\u0105cymi z aktywnych transakcji. Wszystkie dalsze transakcje zatwierdzane dwufazowo zostan\u0105 wycofane.  Aby dalsze prace zatwierdzane dwufazowo mog\u0142y by\u0107 kontynuowane, serwer musi zosta\u0107 zrestartowany.
+WTRN0083_LOG_FULL_ERROR.useraction=Je\u015bli ten problem powtarza si\u0119, zrestartuj serwer po zwi\u0119kszeniu warto\u015bci ustawienia wielko\u015bci pliku dziennika transakcji.
+
+WTRN0084_RESOURCE_ENDING=WTRN0084W: \u017b\u0105danie zarejestrowania nie powiod\u0142o si\u0119 z \
+powodu zako\u0144czenia dzia\u0142ania adaptera zasob\u00f3w.
+WTRN0084_RESOURCE_ENDING.explanation=\u017b\u0105danie zarejestrowania zasobu w transakcji zosta\u0142o odrzucone, poniewa\u017c serwer lub adapter zasob\u00f3w jest wy\u0142\u0105czony.
+WTRN0084_RESOURCE_ENDING.useraction=Uruchom ponownie transakcj\u0119, kiedy adapter zasob\u00f3w b\u0119dzie dost\u0119pny.
+
+WTRN0085_BAD_DISSOCIATE=WTRN0085E: Nie znaleziono transakcji, dla kt\u00f3rej mo\u017cna \
+usun\u0105\u0107 powi\u0105zanie.
+WTRN0085_BAD_DISSOCIATE.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy.
+WTRN0085_BAD_DISSOCIATE.useraction=CMSG0002
+
+
+WTRN0086_PREPARE_DIAG=WTRN0086I: Napotkano wyj\u0105tek XAException podczas \
+fazy przygotowawczej transakcji {0}. Dalej nast\u0119puj\u0105 komunikaty zasob\u00f3w lokalnych.
+WTRN0086_PREPARE_DIAG.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+WTRN0086_PREPARE_DIAG.useraction=Te informacje umo\u017cliwiaj\u0105 administratorom systemu przeprowadzenie odtwarzania r\u0119cznego po wyst\u0105pieniu b\u0142\u0119d\u00f3w transakcji.
+
+WTRN0087_COMPLETION_DIAG=WTRN0087I: Napotkano wyj\u0105tek XAException podczas \
+fazy ko\u0144czenia transakcji {0}. Dalej nast\u0119puj\u0105 komunikaty zasob\u00f3w lokalnych.
+WTRN0087_COMPLETION_DIAG.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+WTRN0087_COMPLETION_DIAG.useraction=Te informacje umo\u017cliwiaj\u0105 administratorom systemu przeprowadzenie odtwarzania r\u0119cznego po wyst\u0105pieniu b\u0142\u0119d\u00f3w transakcji.
+
+WTRN0088_EXCEPTION_DIAG=WTRN0088I: {0} - napotkano wyj\u0105tek XAException o \
+kodzie b\u0142\u0119du {1}.
+WTRN0088_EXCEPTION_DIAG.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+WTRN0088_EXCEPTION_DIAG.useraction=Te informacje umo\u017cliwiaj\u0105 administratorom systemu przeprowadzenie odtwarzania r\u0119cznego po wyst\u0105pieniu b\u0142\u0119d\u00f3w transakcji.
+
+WTRN0089_PREPARED=WTRN0089I: {0}: zg\u0142oszenie: {1}.
+WTRN0089_PREPARED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+WTRN0089_PREPARED.useraction=Te informacje umo\u017cliwiaj\u0105 administratorom systemu przeprowadzenie odtwarzania r\u0119cznego po wyst\u0105pieniu b\u0142\u0119d\u00f3w transakcji.
+
+WTRN0090_COMPLETED=WTRN0090I: {0}: zg\u0142oszenie: {1}. Wynik: {2}.
+WTRN0090_COMPLETED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+WTRN0090_COMPLETED.useraction=Te informacje umo\u017cliwiaj\u0105 administratorom systemu przeprowadzenie odtwarzania r\u0119cznego po wyst\u0105pieniu b\u0142\u0119d\u00f3w transakcji.
+
+WTRN0091_ASSOCIATE_FAILED=WTRN0091E: Powi\u0105zanie kontekstu wykonania nie \
+powiod\u0142o si\u0119. Identyfikator XID: {0}, limit czasu {1}.
+WTRN0091_ASSOCIATE_FAILED.explanation=Jest to wewn\u0119trzny b\u0142\u0105d systemowy.
+WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
+
+WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: Znaleziono niezako\u0144czon\u0105 \
+transakcj\u0119 (localid={0}) podczas wyciszania serwera. Us\u0142uga transakcji b\u0119dzie \
+czeka\u0107.
+WTRN0092_QUIESCE_UNFINISHED.explanation=Przychodz\u0105ca praca transakcji nie zosta\u0142a jeszcze zako\u0144czona. Us\u0142uga transakcji op\u00f3\u017ani zamkni\u0119cie serwera, aby umo\u017cliwi\u0107 inicjatorowi przeprowadzenie pr\u00f3by zako\u0144czenie transakcji.
+WTRN0092_QUIESCE_UNFINISHED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: Wynik transakcji podrz\u0119dnej \
+{0} jest niedost\u0119pny. Transakcja jest heurystycznie zatwierdzana.
+WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 wyniku transakcji od jej obiektu nadrz\u0119dnego w skonfigurowanym okresie ponawiania pr\u00f3b. Transakcja zostanie heurystycznie zatwierdzona.
+WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane rezultatem heurystycznym.
+
+WTRN0094_ROLLBACK_REPLAY_COMPLETION=WTRN0094W: Wynik transakcji \
+podrz\u0119dnej {0} jest niedost\u0119pny. Transakcja jest heurystycznie wycofywana.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 wyniku transakcji od jej obiektu nadrz\u0119dnego w skonfigurowanym okresie ponawiania pr\u00f3b. Transakcja zostanie heurystycznie wycofana.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane rezultatem heurystycznym.
+
+WTRN0095_MANUAL_REPLAY_COMPLETION=WTRN0095W: Wynik transakcji podrz\u0119dnej \
+{0} jest niedost\u0119pny. Transakcja oczekuje na interwencj\u0119 administratora w celu okre\u015blenia wyniku.
+WTRN0095_MANUAL_REPLAY_COMPLETION.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 wyniku transakcji od jej obiektu nadrz\u0119dnego w skonfigurowanym okresie ponawiania pr\u00f3b. Transakcja oczekuje na r\u0119czne ustawienie wyniku przez administratora.
+WTRN0095_MANUAL_REPLAY_COMPLETION.useraction=Okre\u015bl powodzenie lub niepowodzenie transakcji nadrz\u0119dnej, a nast\u0119pnie r\u0119cznie ustaw wynik transakcji. Pozwoli to zagwarantowa\u0107, \u017ce nie wyst\u0105pi uszkodzenie heurystyczne oraz, \u017ce dane aplikacji pozostan\u0105 poprawne.
+
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED=WTRN0096W: Mo\u017cliwe, \u017ce wyst\u0105pi\u0142 \
+warunek heurystyczny dla transakcji {0}. Transakcja jest heurystycznie zatwierdzana.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.explanation=Us\u0142uga transakcji wykry\u0142a, \u017ce okre\u015blona transakcja uwzgl\u0119dnia zasoby mieszane - jednofazowe i dwufazowe. Us\u0142uga transakcji przekaza\u0142a \u017c\u0105danie zatwierdzenia jednofazowego do pojedynczego zasobu jednofazowego, ale przed zako\u0144czeniem zatwierdzania nast\u0105pi\u0142a awaria serwera. Nie mo\u017cna stwierdzi\u0107, czy zas\u00f3b zosta\u0142 zatwierdzony pomy\u015blnie.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.useraction=Wszystkie zasoby dwufazowe zostan\u0105 zatwierdzone. Je\u015bli przetworzenie operacji zatwierdzania przez zas\u00f3b jednofazowy nie powiod\u0142o si\u0119, wyst\u0105pi\u0142o uszkodzenie heurystyczne i wszystkie problemy dotycz\u0105ce danych aplikacji, spowodowane rezultatem heurystycznym, musz\u0105 zosta\u0107 poprawione.
+
+WTRN0097_HEURISTIC_MANUAL_COMPLETION=WTRN0097W: Wyst\u0105pi\u0142 nieznany wynik \
+transakcji {0}. Transakcja oczekuje na interwencj\u0119 administratora w celu okre\u015blenia wyniku.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.explanation=Us\u0142uga transakcji wykry\u0142a, \u017ce okre\u015blona transakcja uwzgl\u0119dnia zasoby mieszane - jednofazowe i dwufazowe. Us\u0142uga transakcji przekaza\u0142a \u017c\u0105danie zatwierdzenia jednofazowego do pojedynczego zasobu jednofazowego, ale przed zako\u0144czeniem zatwierdzania nast\u0105pi\u0142a awaria serwera. Nie mo\u017cna stwierdzi\u0107, czy zas\u00f3b zosta\u0142 zatwierdzony pomy\u015blnie.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.useraction=Okre\u015bl powodzenie lub niepowodzenie \u017c\u0105dania zatwierdzenia jednofazowego, a nast\u0119pnie r\u0119cznie ustaw wynik transakcji. Pozwoli to zagwarantowa\u0107, \u017ce nie wyst\u0105pi uszkodzenie heurystyczne oraz, \u017ce dane aplikacji pozostan\u0105 poprawne.
+
+WTRN0098_COMMIT_RA_UNINSTALLED=WTRN0098W: Wynik dla transakcji {0} jest \
+niedost\u0119pny, poniewa\u017c zdeinstalowany zosta\u0142 adapter zasob\u00f3w {1}. Transakcja jest heurystycznie zatwierdzana.
+WTRN0098_COMMIT_RA_UNINSTALLED.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 wyniku transakcji od adaptera zasob\u00f3w, poniewa\u017c zosta\u0142 on zdeinstalowany. Transakcja zostanie heurystycznie zatwierdzona.
+WTRN0098_COMMIT_RA_UNINSTALLED.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane rezultatem heurystycznym.
+
+WTRN0099_ROLLBACK_RA_UNINSTALLED=WTRN0099W: Wynik dla transakcji {0} jest \
+niedost\u0119pny, poniewa\u017c zdeinstalowany zosta\u0142 adapter zasob\u00f3w {1}. Transakcja jest heurystycznie wycofywana.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 wyniku transakcji od adaptera zasob\u00f3w, poniewa\u017c zosta\u0142 on zdeinstalowany. Transakcja zostanie heurystycznie wycofana.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.useraction=Popraw wszystkie problemy dotycz\u0105ce danych aplikacji spowodowane rezultatem heurystycznym.
+
+WTRN0100_GENERIC_ERROR=WTRN0100E: {0}
+WTRN0100_GENERIC_ERROR.explanation=Ten kod komunikatu s\u0142u\u017cy do obs\u0142ugi komunikat\u00f3w, kt\u00f3rym nie przydzielono jeszcze ich w\u0142asnych kod\u00f3w.
+WTRN0100_GENERIC_ERROR.useraction=Wi\u0119cej informacji zawiera tekst komunikatu.
+
+WTRN0101_MANUAL_RA_UNINSTALLED=WTRN0101W: Wynik dla transakcji {0} jest \
+niedost\u0119pny, poniewa\u017c zdeinstalowany zosta\u0142 adapter zasob\u00f3w {1}. Transakcja oczekuje na interwencj\u0119 administratora w celu okre\u015blenia wyniku.
+WTRN0101_MANUAL_RA_UNINSTALLED.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 wyniku transakcji od adaptera zasob\u00f3w, poniewa\u017c zosta\u0142 on zdeinstalowany.
+WTRN0101_MANUAL_RA_UNINSTALLED.useraction=Okre\u015bl powodzenie lub niepowodzenie transakcji na podstawie inicjatora adaptera zasob\u00f3w transakcji, a nast\u0119pnie r\u0119cznie ustaw wynik transakcji. Pozwoli to zagwarantowa\u0107, \u017ce nie wyst\u0105pi uszkodzenie heurystyczne oraz, \u017ce dane aplikacji pozostan\u0105 poprawne.
+
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED=WTRN0102W: Mo\u017cliwe, \u017ce wyst\u0105pi\u0142 \
+warunek heurystyczny dla transakcji {0}. Transakcja jest heurystycznie wycofywana.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.explanation=Us\u0142uga transakcji wykry\u0142a, \u017ce okre\u015blona transakcja uwzgl\u0119dnia zasoby mieszane - jednofazowe i dwufazowe. Us\u0142uga transakcji przekaza\u0142a \u017c\u0105danie zatwierdzenia jednofazowego do pojedynczego zasobu jednofazowego, ale przed zako\u0144czeniem zatwierdzania nast\u0105pi\u0142a awaria serwera. Nie mo\u017cna stwierdzi\u0107, czy zas\u00f3b zosta\u0142 zatwierdzony pomy\u015blnie.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.useraction=Wszystkie zasoby dwufazowe zostan\u0105 wycofane. Je\u015bli zas\u00f3b jednofazowy pomy\u015blnie przetworzy\u0142 operacj\u0119 zatwierdzania, wyst\u0105pi\u0142o uszkodzenie heurystyczne i wszystkie problemy dotycz\u0105ce danych aplikacji, kt\u00f3re zosta\u0142y spowodowane rezultatem heurystycznym, musz\u0105 zosta\u0107 poprawione.
+
+# Msgs 103 and 104 added by pok defect MD19484 for V5.1
+
+WTRN0103_RECOVERY_LOG_FAILED=WTRN0103E: Dziennik odtwarzania zostanie \
+oznaczony jako uszkodzony. [{0} {1}]
+WTRN0103_RECOVERY_LOG_FAILED.explanation=Dziennik odtwarzania zosta\u0142 uszkodzony i dalszy dost\u0119p do niego nie jest mo\u017cliwy. Komponent oraz wyj\u0105tek zosta\u0142y wskazane w komunikacie.
+WTRN0103_RECOVERY_LOG_FAILED.useraction=Aby mo\u017cliwa by\u0142a naprawa dziennika, konieczny jest restart serwera. Spr\u00f3buj poprawi\u0107 wszystkie warunki wskazane w komunikacie wyj\u0105tku.
+
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL=WTRN0104E: Szczeg\u00f3\u0142y dotycz\u0105ce \
+niepowodzenia zwi\u0105zanego z dziennikiem odtwarzania: {0}
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.explanation=Ten komunikat jest wy\u015bwietlany razem z komunikatem WTRN0103E, aby wskaza\u0107 szczeg\u00f3\u0142y dotycz\u0105ce niepowodzenia zwi\u0105zanego z dziennikiem odtwarzania.
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.useraction=U\u017cyj informacji zawartej w tym komunikacie oraz w komunikacie WTRN0103E, aby poprawi\u0107 warunek, kt\u00f3ry spowodowa\u0142 niepowodzenie zwi\u0105zane z dziennikiem odtwarzania.
+
+WTRN0105_CLEAN_SHUTDOWN=WTRN0105I: Us\u0142uga transakcji zosta\u0142a pomy\u015blnie \
+zamkni\u0119ta bez pozostawienia transakcji wymagaj\u0105cych odtwarzania.
+WTRN0105_CLEAN_SHUTDOWN.explanation=Jest to normalne zdarzenie. Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+WTRN0105_CLEAN_SHUTDOWN.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0106_JTADEMARCATION_DISALLOWED=WTRN0106I: Rozgraniczenie JTA klienta jest \
+niedozwolone.
+WTRN0106_JTADEMARCATION_DISALLOWED.explanation=Rozgraniczenie JTA zosta\u0142o skonfigurowane w niedozwolony dla tej aplikacj\u0119 klienckiej spos\u00f3b.
+WTRN0106_JTADEMARCATION_DISALLOWED.useraction=Aby u\u017cywa\u0107 rozgraniczenia JTA, u\u017cyj pakietu narz\u0119dzi Application Server Toolkit w celu ustawienia w\u0142a\u015bciwo\u015bci dopuszczaj\u0105cej rozgraniczenie JTA w deskryptorze wdra\u017cania klienta.
+
+WTRN0107_GENERIC_WARNING=WTRN0107W: {0}
+WTRN0107_GENERIC_WARNING.explanation=Ten kod komunikatu s\u0142u\u017cy do obs\u0142ugi komunikat\u00f3w, kt\u00f3rym nie przydzielono jeszcze ich w\u0142asnych kod\u00f3w.
+WTRN0107_GENERIC_WARNING.useraction=Wi\u0119cej informacji zawiera tekst komunikatu.
+
+WTRN0108_GENERIC_INFOMSG=WTRN0108I: {0}
+WTRN0108_GENERIC_INFOMSG.explanation=Ten kod komunikatu s\u0142u\u017cy do obs\u0142ugi komunikat\u00f3w, kt\u00f3rym nie przydzielono jeszcze ich w\u0142asnych kod\u00f3w.
+WTRN0108_GENERIC_INFOMSG.useraction=Wi\u0119cej informacji zawiera tekst komunikatu.
+
+WTRN0109_MBEAN_ACTIVATE=WTRN0109W: Napotkano wyj\u0105tek podczas aktywowania \
+komponentu MBean JMX transakcji: {0}
+WTRN0109_MBEAN_ACTIVATE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by aktywowania komponentu MBean JMX dla us\u0142ugi transakcji. Chocia\u017c nie zatrzyma to uruchamiania us\u0142ugi transakcji, wszystkie us\u0142ugi administracyjne wymagaj\u0105ce dost\u0119pu do us\u0142ugi transakcji nie powiod\u0105 si\u0119.
+WTRN0109_MBEAN_ACTIVATE.useraction=CMSG0002
+
+
+WTRN0110_BAD_CUSTOM_PROPERTY=WTRN0110W: Warto\u015b\u0107 {0} nie jest poprawn\u0105 \
+w\u0142a\u015bciwo\u015bci\u0105 niestandardow\u0105 us\u0142ugi transakcji.
+WTRN0110_BAD_CUSTOM_PROPERTY.explanation=Okre\u015blona w konfiguracji us\u0142ugi transakcji dla tego serwera w\u0142a\u015bciwo\u015b\u0107 niestandardowa jest niepoprawna i zosta\u0142a zignorowana.
+WTRN0110_BAD_CUSTOM_PROPERTY.useraction=Popraw konfiguracj\u0119 niestandardowych w\u0142a\u015bciwo\u015bci us\u0142ugi transakcji.
+
+WTRN0111_LOG_ALLOCATION=WTRN0111E: Dost\u0119p do dziennika odtwarzania \
+jest niemo\u017cliwy lub jego utworzenie nie jest mo\u017cliwe. Konfiguracja dziennika: {0}
+WTRN0111_LOG_ALLOCATION.explanation=Us\u0142uga transakcji nie mog\u0142a uzyska\u0107 dost\u0119pu do dziennik\u00f3w odtwarzania lub nie mog\u0142a ich utworzy\u0107. Je\u015bli s\u0105 to dzienniki odtwarzania dla lokalnego serwera, nast\u0105pi zatrzymanie serwera. Je\u015bli s\u0105 to dzienniki odtwarzania dla serwera odtwarzania w\u0119z\u0142a sieci, odtwarzanie zostanie zatrzymane i przypisane do innego serwera, a serwer raportuj\u0105cy b\u0119dzie kontynuowa\u0107 normalne dzia\u0142anie.
+WTRN0111_LOG_ALLOCATION.useraction=Sprawd\u017a wszystkie pokrewne komunikaty, aby ustali\u0107 przyczyn\u0119 problemu. Upewnij si\u0119, \u017ce serwer ma dost\u0119p do dziennik\u00f3w odtwarzania lub, je\u015bli nie zosta\u0142y one jeszcze utworzone, sprawd\u017a, czy dost\u0119pna jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca na dysku i czy serwer ma poprawne uprawnienia dost\u0119pu do plik\u00f3w lub katalog\u00f3w okre\u015blonych w komunikatach.
+
+WTRN0112_LOG_OPEN_FAILURE=WTRN0112E: Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas \
+otwierania dziennika odtwarzania. Konfiguracja dziennika: {0}
+WTRN0112_LOG_OPEN_FAILURE.explanation=Us\u0142uga transakcji nie mog\u0142a otworzy\u0107 dziennik\u00f3w odtwarzania. Je\u015bli s\u0105 to dzienniki odtwarzania dla lokalnego serwera, nast\u0105pi zatrzymanie serwera. Je\u015bli s\u0105 to dzienniki odtwarzania dla serwera odtwarzania w\u0119z\u0142a sieci, odtwarzanie zostanie zatrzymane i przypisane do innego serwera, a serwer raportuj\u0105cy b\u0119dzie kontynuowa\u0107 normalne dzia\u0142anie.
+WTRN0112_LOG_OPEN_FAILURE.useraction=Sprawd\u017a wszystkie pokrewne komunikaty, aby ustali\u0107 przyczyn\u0119 problemu. 
+
+WTRN0113_LOG_DOWNLEVEL=WTRN0113W: Przetwarzanie operacji odtwarzania dla nieaktualnej wersji serwera r\u00f3wnorz\u0119dnego produktu WebSphere nie jest mo\u017cliwe i zosta\u0142o zatrzymane ({0}).
+WTRN0113_LOG_DOWNLEVEL.explanation=Us\u0142uga transakcji nie mog\u0142a odtworzy\u0107 okre\u015blonego serwera aplikacji za po\u015brednictwem w\u0119z\u0142a sieci, poniewa\u017c dzienniki zosta\u0142y sformatowane we wcze\u015bniejszej wersji produktu, kt\u00f3ra nie jest kompatybilna z tym serwerem. Ta instancja odtwarzania w\u0119z\u0142a sieci zostanie zatrzymana i przypisana do innego serwera, a serwer raportuj\u0105cy b\u0119dzie kontynuowa\u0142 normalne dzia\u0142anie. 
+WTRN0113_LOG_DOWNLEVEL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. W zale\u017cno\u015bci od konfiguracji klastra, je\u015bli istnieje tylko jeden element na poziomie konkretnej wersji, odtwarzanie w\u0119z\u0142a sieci dla tej wersji serwera mo\u017ce nie by\u0107 mo\u017cliwe, je\u015bli format dziennika sta\u0142 si\u0119 niezgodny mi\u0119dzy wersjami.
+
+WTRN0114_TRAN_RETRY_NEEDED=WTRN0114I: Transakcja {0} nie mo\u017ce powiadomi\u0107 \
+wszystkich zasob\u00f3w o jej wyniku.  Liczba sekund pozosta\u0142ych do nast\u0119pnej pr\u00f3by: {1}.
+WTRN0114_TRAN_RETRY_NEEDED.explanation=Podczas restartu odtwarzania nie mo\u017cna by\u0142o skontaktowa\u0107 si\u0119 ze zdalnym mened\u017cerem zasob\u00f3w. Ta operacja b\u0119dzie ponawiana w regularnych odst\u0119pach czasu.
+WTRN0114_TRAN_RETRY_NEEDED.useraction=Sprawd\u017a, czy mened\u017cer zasob\u00f3w jest dost\u0119pny.
+
+WTRN0115_NO_CFW_AVAILABLE=WTRN0115E: Konfiguracja struktury kana\u0142\u00f3w nie zosta\u0142a \
+zdefiniowana lub jest niepoprawna w przypadku obs\u0142ugi transakcji Web Services \
+Atomic Transaction (WSAT).
+WTRN0115_NO_CFW_AVAILABLE.explanation=Kontener WWW nie zosta\u0142 zdefiniowany pod k\u0105tem korzystania ze struktury kana\u0142\u00f3w lub zosta\u0142 zdefiniowany niepoprawnie. Transakcje WS-AT wymagaj\u0105 u\u017cywania struktury kana\u0142\u00f3w do przesy\u0142ania kontekst\u00f3w transakcyjnych mi\u0119dzy us\u0142ugami Web Services.
+WTRN0115_NO_CFW_AVAILABLE.useraction=Popraw lub zdefiniuj konfiguracj\u0119 struktury kana\u0142\u00f3w dla kontenera WWW.
+
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: Okre\u015blono \
+niepoprawny \u0142a\u0144cuch konfiguracyjny pliku dziennika transakcji: {0}. Us\u0142uga transakcji b\u0119dzie kontynuowa\u0107 dzia\u0142anie bez funkcji rejestrowania na potrzeby odtwarzania serwera WebSphere ({1}).
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Ustawiona w polu Katalog dziennik\u00f3w transakcji nazwa katalogu dla pliku dziennika transakcji jest niepoprawna. Na format tej nazwy powinna sk\u0142ada\u0107 si\u0119 pe\u0142na nazwa katalogu pliku dziennika, wyst\u0119puj\u0105cy po niej opcjonalnie znak ';', a tak\u017ce warto\u015b\u0107 wielko\u015bci pliku dziennika z umieszczon\u0105 na ko\u0144cu liter\u0105 M (je\u015bli wielko\u015b\u0107 podana jest w megabajtach) lub liter\u0105 K (je\u015bli wielko\u015b\u0107 podana jest w kilobajtach). Domy\u015bln\u0105, a zarazem minimaln\u0105 wielko\u015bci\u0105 pliku dziennika jest 1 MB.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Popraw konfiguracj\u0119 katalogu dziennika transakcji. Zrestartuj serwer, aby w\u0142\u0105czy\u0107 rejestrowanie na potrzeby odtwarzania transakcji.
+
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: Okre\u015blono niepoprawn\u0105 \
+wielko\u015b\u0107 pliku dziennika transakcji: {0}. Us\u0142uga transakcji b\u0119dzie u\u017cywa\u0107 domy\u015blnej wielko\u015bci pliku dziennika wynosz\u0105cej 1 MB dla serwera WebSphere ({1}).
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=Ustawiona w polu Katalog dziennik\u00f3w transakcji wielko\u015b\u0107 pliku dziennika transakcji jest niepoprawna. Na format tej nazwy powinna sk\u0142ada\u0107 si\u0119 pe\u0142na nazwa katalogu pliku dziennika, wyst\u0119puj\u0105cy po niej opcjonalnie znak ';', a tak\u017ce warto\u015b\u0107 wielko\u015bci pliku dziennika z umieszczon\u0105 na ko\u0144cu liter\u0105 M (je\u015bli wielko\u015b\u0107 podana jest w megabajtach) lub liter\u0105 K (je\u015bli wielko\u015b\u0107 podana jest w kilobajtach). Domy\u015bln\u0105, a zarazem minimaln\u0105 wielko\u015bci\u0105 pliku dziennika jest 1 MB.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Popraw konfiguracj\u0119 katalogu dziennika transakcji.
+
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: W konfiguracji us\u0142ugi \
+transakcji znaleziono nieaktualn\u0105 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 {0}.  
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.explanation=Okre\u015blono nieaktualn\u0105 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 w konfiguracji us\u0142ugi transakcji dla tego serwera. W\u0142a\u015bciwo\u015b\u0107 ta przes\u0142oni odpowiadaj\u0105c\u0105 w konfiguracji og\u00f3ln\u0105 w\u0142a\u015bciwo\u015b\u0107 us\u0142ugi transakcji. Nieaktualna w\u0142a\u015bciwo\u015b\u0107 niestandardowa zostanie usuni\u0119ta w nast\u0119pnej wersji produktu.
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.useraction=Usu\u0144 z konfiguracji nieaktualn\u0105 w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 us\u0142ugi transakcji i u\u017cyj odpowiadaj\u0105cej jej w\u0142a\u015bciwo\u015bci og\u00f3lnej przy u\u017cyciu Konsoli administracyjnej.
+
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT=WTRN0119W: Liczba komunikat\u00f3w \
+protoko\u0142u WS-TX, w przypadku kt\u00f3rych nie powiod\u0142a si\u0119 autoryzacja: {0}.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.explanation=Odebrano wymienion\u0105 w komunikacie liczb\u0119 komunikat\u00f3w protoko\u0142u WS-AT (Web Services Atomic Transactions) i WS-BA (Web Service Business Activities) (na przyk\u0142ad komunikat przygotowawczy) bez oczekiwanych referencji zabezpiecze\u0144.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.useraction=Upewnij si\u0119, \u017ce serwer zosta\u0142 poprawnie skonfigurowany do obs\u0142ugi protoko\u0142\u00f3w WS-AT oraz WS-BA w \u015brodowisku chronionym.
+
+WTRN0120_INVALID_HA_LOGNAME=WTRN0120W: Specyfikacja katalogu dziennika \
+transakcji (;0) dla serwera {1} jest niepoprawna, poniewa\u017c serwer znajduje si\u0119 \
+w klastrze {0}, w kt\u00f3rym w\u0142\u0105czono obs\u0142ug\u0119 wysokiej dost\u0119pno\u015bci (HA).
+WTRN0120_INVALID_HA_LOGNAME.explanation=Je\u015bli w klastrze w\u0142\u0105czono funkcj\u0119 wysokiej dost\u0119pno\u015bci, konieczne jest podanie poprawnej \u015bcie\u017cki do dziennika transakcji dla ka\u017cdego serwera w klastrze.
+WTRN0120_INVALID_HA_LOGNAME.useraction=Zmie\u0144 ustawienie pliku dziennika transakcji, aby wskazywa\u0142o na poprawne miejsce w systemie plik\u00f3w.
+
+WTRN0121_INVALID_HA_CONFIG=WTRN0121E: Konfiguracja wysokiej dost\u0119pno\u015bci (HA) \
+jest niepoprawna. Serwer zostanie zatrzymany.
+WTRN0121_INVALID_HA_CONFIG.explanation=W przypadku co najmniej jednego serwera w klastrze, w kt\u00f3rym w\u0142\u0105czono funkcj\u0119 wysokiej dost\u0119pno\u015bci, nie zdefiniowano poprawnego katalogu dziennika transakcji.
+WTRN0121_INVALID_HA_CONFIG.useraction=Przejrzyj towarzysz\u0105ce komunikaty w poszukiwaniu informacji o powoduj\u0105cych problemy serwerach. W przypadku tych serwer\u00f3w popraw katalogi dziennik\u00f3w transakcji, a nast\u0119pnie zrestartuj klaster.
+
+WTRN0122_LOG_FREE_SPACE=WTRN0122W: Liczba bajt\u00f3w u\u017cytych przez dziennik \
+us\u0142ugi transakcji {0}: {1} (\u0142\u0105czna liczba bajt\u00f3w: {2}). Mo\u017ce okaza\u0107 si\u0119 konieczne zwi\u0119kszenie wielko\u015bci pliku dziennika.
+WTRN0122_LOG_FREE_SPACE.explanation=Po pomy\u015blnie \
+zako\u0144czonej operacji punktu kluczowego (podczas kt\u00f3rej usuni\u0119te i zako\u0144czone \
+pozycje s\u0105 usuwane z pliku dziennika, kt\u00f3ry osi\u0105gn\u0105\u0142 maksymaln\u0105 wielko\u015b\u0107) \
+wykryto, \u017ce plik dziennika jest nadal w ponad 75% zape\u0142niony z powodu bie\u017c\u0105cego \
+aktywnego obci\u0105\u017cenia transakcyjnego. Je\u015bli plik dziennika zostanie zape\u0142niony, konieczne b\u0119dzie zrestartowanie serwera. Ten komunikat jest wy\u015bwietlany jedynie po zako\u0144czonej powodzeniem operacji \
+punktu kluczowego na pliku dziennika. Tylko wtedy mo\u017cna obliczy\u0107 aktualne \
+zape\u0142nienie plik\u00f3w dziennika.
+WTRN0122_LOG_FREE_SPACE.useraction=Rozwa\u017c ustawienie wi\u0119kszej warto\u015bci wielko\u015bci pliku dla dziennik\u00f3w transakcji.
+
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: Okre\u015blono \
+niepoprawny przedrostek adresu URL protoko\u0142u HTTP(S) zewn\u0119trznej transakcji \
+WS-Transaction: {0}.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.explanation=Przedrostek adresu URL protoko\u0142u HTTP(S) zewn\u0119trznej transakcji WS-Transaction musi by\u0107 poprawnym identyfikatorem URI.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.useraction=Podaj poprawny przedrostek adresu URL protoko\u0142u HTTP(S) zewn\u0119trznej transakcji WS-Transaction.
+
+WTRN0124_TIMED_OUT_TRANSACTION_STACK=WTRN0124I: W momencie przekroczenia \
+limitu czasu transakcja jest lub by\u0142a ostatnio powi\u0105zana z w\u0105tkiem {0}. \u015aledzenie stosu tego w\u0105tku w momencie przekroczenia limitu czasu: {1}.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.explanation=Aby pom\u00f3c w diagnozowaniu i debugowaniu limit\u00f3w czasu transakcji, udost\u0119pniono warto\u015b\u0107 stosu przechwycon\u0105 w momencie przekroczenia limitu czasu.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.useraction=Dokonaj analizy stosu, aby okre\u015bli\u0107, jakiego rodzaju przetwarzanie by\u0142o przeprowadzane w momencie przekroczenia limitu czasu.
+
+WTRN0125_COMMIT_PRIORITY=WTRN0125W: Nie mo\u017cna znale\u017a\u0107 modu\u0142u {0} w \
+w\u0119\u017ale {1}, poniewa\u017c modu\u0142 okre\u015bla obs\u0142ug\u0119 funkcji porz\u0105dkowania zatwierdzania \
+zasob\u00f3w, kt\u00f3ra nie jest obs\u0142ugiwana w w\u0119\u017ale.
+WTRN0125_COMMIT_PRIORITY.explanation=Obs\u0142uga funkcji porz\u0105dkowania zatwierdzania zasob\u00f3w jest dost\u0119pna tylko w w\u0119z\u0142ach w wersji 7.0 lub nowszych.
+WTRN0125_COMMIT_PRIORITY.useraction=Zainstaluj modu\u0142 na serwerze aplikacji w wersji 7.0 (lub nowszej) lub przy u\u017cyciu edytora deskryptora wdra\u017cania aplikacji z pakietu narz\u0119dzi do tworzenia aplikacji usu\u0144 wszystkie ustawienia funkcji porz\u0105dkowania zatwierdzania zasob\u00f3w przed zainstalowaniem modu\u0142u.  Mo\u017cna tego dokona\u0107, przechodz\u0105c do sekcji porz\u0105dkowania zatwierdzania w rozszerzeniach produktu WebSphere, i usuwaj\u0105c ustawienie priorytetu zatwierdzania dla ka\u017cdego zasobu transakcyjnego.
+
+WTRN0126_COMMIT_PRIORITY_CLUSTER=WTRN0126W: Nie mo\u017cna wdro\u017cy\u0107 aplikacji \
+{0} w w\u0119\u017ale {1} w klastrze {2}, poniewa\u017c aplikacja okre\u015bla obs\u0142ug\u0119 funkcji \
+porz\u0105dkowania zatwierdzania zasob\u00f3w, kt\u00f3ra nie jest obs\u0142ugiwana w w\u0119\u017ale.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.explanation=Obs\u0142uga funkcji porz\u0105dkowania zatwierdzania zasob\u00f3w jest dost\u0119pna tylko w w\u0119z\u0142ach w wersji 7.0 lub nowszych.  W\u0119ze\u0142 nie zostanie dodany do klastra.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.useraction=Utw\u00f3rz elementy klastra w w\u0119z\u0142ach, w kt\u00f3rych zainstalowano serwer aplikacji w wersji 7.0 (lub nowszej), lub przy u\u017cyciu edytora deskryptora wdra\u017cania aplikacji z pakietu narz\u0119dzi do tworzenia aplikacji usu\u0144 wszystkie ustawienia funkcji porz\u0105dkowania zatwierdzania zasob\u00f3w przed utworzeniem elementu klastra.   Mo\u017cna tego dokona\u0107, przechodz\u0105c do sekcji porz\u0105dkowania zatwierdzania w rozszerzeniach produktu WebSphere, i usuwaj\u0105c ustawienie priorytetu zatwierdzania dla ka\u017cdego zasobu transakcyjnego.
+
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION=WTRN0127E: Operacja zosta\u0142a zablokowana \
+przez konfiguracj\u0119 typu strategii.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.explanation=Operacja zosta\u0142a zablokowana zgodnie z efektywn\u0105 konfiguracj\u0105 typu strategii.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.useraction=Upewnij si\u0119, \u017ce konfiguracja typu strategii jest w\u0142a\u015bciwa dla tej operacji.
+
+WTRN0128_WSTX_APP_START_FAILURE=WTRN0128E: Nie mo\u017cna uruchomi\u0107 aplikacji \
+{0}, poniewa\u017c aplikacja wymaga specyfikacji transakcji WS Transaction, kt\u00f3re \
+nie s\u0105 obs\u0142ugiwane na wszystkich serwerach w klastrze.
+WTRN0128_WSTX_APP_START_FAILURE.explanation=Aplikacja zosta\u0142a skonfigurowana wed\u0142ug strategii us\u0142ugi WebService, w kt\u00f3rej okre\u015blono specyfikacje transakcji WS Transaction nieobs\u0142ugiwane na wszystkich serwerach w klastrze.  \u017b\u0105dania aplikacji lub ich odtwarzanie mo\u017ce by\u0107 kierowane do dowolnego serwera w klastrze, wi\u0119c wszystkie aplikacje musz\u0105 korzysta\u0107 z funkcji, kt\u00f3re s\u0105 obs\u0142ugiwane na wszystkich serwerach.
+WTRN0128_WSTX_APP_START_FAILURE.useraction=Zdeinstaluj aplikacj\u0119 lub zmodyfikuj konfiguracj\u0119 strategii transakcji WS Transaction w taki spos\u00f3b, aby aplikacja korzysta\u0142a z obs\u0142ugiwanych funkcji.  Alternatywnie zaktualizuj wszystkie w\u0119z\u0142y w klastrze do wersji 7.0 lub nowszej.
+
+WTRN0129_WSTX_APP_START_FAILURE=WTRN0129W: Ustawienie domy\u015blne poziomu \
+specyfikacji transakcji WS Transaction jest nieodpowiednie dla klastra o \
+r\u00f3\u017cnych wersjach.
+WTRN0129_WSTX_APP_START_FAILURE.explanation=Skonfigurowane dla serwera ustawienie domy\u015blne poziomu specyfikacji transakcji WS Transaction mo\u017ce powodowa\u0107 problemy dotycz\u0105ce wykonywania, poniewa\u017c nie wszystkie serwery w klastrze maj\u0105 tak\u0105 sam\u0105 wersj\u0119 serwera aplikacji.  Wszystkie serwery w klastrze musz\u0105 obs\u0142ugiwa\u0107 ten sam poziom specyfikacji, poniewa\u017c \u017c\u0105dania aplikacji lub ich odtwarzanie mo\u017ce zosta\u0107 przekierowane do dowolnego serwera.  Je\u015bli serwery obs\u0142uguj\u0105 r\u00f3\u017cne poziomy specyfikacji, zachowanie aplikacji mo\u017ce r\u00f3\u017cni\u0107 si\u0119 w zale\u017cno\u015bci od serwera, na kt\u00f3rym jest ona wykonywana.
+WTRN0129_WSTX_APP_START_FAILURE.useraction=Ustaw domy\u015blny poziom specyfikacji transakcji WS Transaction na warto\u015b\u0107 wsp\u00f3ln\u0105 dla wszystkich serwer\u00f3w w klastrze.
+
+WTRN0130_BRANCH_COUPLING=WTRN0130W: Nie mo\u017cna znale\u017a\u0107 modu\u0142u {0} w w\u0119\u017ale {1}, poniewa\u017c modu\u0142 okre\u015bla obs\u0142ug\u0119 funkcji powi\u0105zania ga\u0142\u0119zi \
+zasob\u00f3w, kt\u00f3ra nie jest obs\u0142ugiwana w w\u0119\u017ale.
+WTRN0130_BRANCH_COUPLING.explanation=Obs\u0142uga funkcji powi\u0105zania \
+ga\u0142\u0119zi zasob\u00f3w jest dost\u0119pna tylko w w\u0119z\u0142ach w wersji 8.0 lub nowszych.
+WTRN0130_BRANCH_COUPLING.useraction=Zainstaluj modu\u0142 na serwerze aplikacji w \
+wersji 8.0 (lub nowszej) lub przy u\u017cyciu edytora deskryptora wdra\u017cania \
+aplikacji z pakietu narz\u0119dzi do tworzenia aplikacji usu\u0144 wszystkie ustawienia \
+funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w przed zainstalowaniem modu\u0142u.  Mo\u017cna tego \
+dokona\u0107, przechodz\u0105c do sekcji powi\u0105zania ga\u0142\u0119zi w rozszerzeniach \
+produktu WebSphere i usuwaj\u0105c ustawienie powi\u0105zania ga\u0142\u0119zi dla ka\u017cdego \
+zasobu transakcyjnego.
+
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: Nie mo\u017cna wdro\u017cy\u0107 aplikacji \
+{0} w w\u0119\u017ale {1} w klastrze {2}, poniewa\u017c aplikacja okre\u015bla obs\u0142ug\u0119 funkcji \
+powi\u0105zania ga\u0142\u0119zi zasob\u00f3w, kt\u00f3ra nie jest obs\u0142ugiwana w w\u0119\u017ale.
+WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=Obs\u0142uga funkcji powi\u0105zania \
+ga\u0142\u0119zi zasob\u00f3w jest dost\u0119pna tylko w w\u0119z\u0142ach w wersji 8.0 lub nowszych.  W\u0119ze\u0142 nie zostanie dodany do klastra.
+WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Utw\u00f3rz elementy klastra w w\u0119z\u0142ach, \
+w kt\u00f3rych zainstalowano serwer aplikacji w wersji 8.0 (lub nowszej), lub przy \
+u\u017cyciu edytora deskryptora wdra\u017cania aplikacji z pakietu narz\u0119dzi do tworzenia \
+aplikacji usu\u0144 wszystkie ustawienia funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w \
+przed utworzeniem elementu klastra.   Mo\u017cna tego \
+dokona\u0107, przechodz\u0105c do sekcji powi\u0105zania ga\u0142\u0119zi w rozszerzeniach \
+produktu WebSphere i usuwaj\u0105c ustawienie powi\u0105zania ga\u0142\u0119zi dla ka\u017cdego \
+zasobu transakcyjnego.
+
+# 0 - servername
+# 1 - server uuid or server long name (zos)
+# 2 - server restart epoch value
+WTRN0132_RECOVERY_INITIATED=WTRN0132I: Zainicjowano odtwarzanie dla \
+serwera {0}. Identyfikator UUID serwera: {1}, epoka restartowania: {2}.
+WTRN0132_RECOVERY_INITIATED.explanation=Rozpocz\u0119to proces odtwarzania \
+transakcji dla serwera.  Przedstawiony identyfikator UUID serwera i epoka \
+zosta\u0142y odczytane z istniej\u0105cych dziennik\u00f3w transakcji.  Te warto\u015bci s\u0142u\u017c\u0105 do \
+identyfikowania wszelkich w\u0105tpliwych identyfikator\u00f3w XID w mened\u017cerach zasob\u00f3w \
+XA, jakie mog\u0105 pochodzi\u0107 z wcze\u015bniejszych instancji tego serwera.  Je\u015bli podczas \
+uruchamiania serwera nie istnia\u0142y dzienniki transakcji, warto\u015bciami wyj\u015bciowymi \
+identyfikatora UUID i epoki b\u0119d\u0105 warto\u015bci, kt\u00f3re zostan\u0105 zapisane w dziennikach \
+i u\u017cyte w przysz\u0142o\u015bci przez serwer.
+WTRN0132_RECOVERY_INITIATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0133_RECOVERY_COMPLETE=WTRN0133I: Przetwarzanie operacji odtwarzania \
+transakcji dla tego serwera zosta\u0142o zako\u0144czone.
+WTRN0133_RECOVERY_COMPLETE.explanation=Proces odtwarzania transakcji dla tego \
+serwera zosta\u0142 zako\u0144czony.  Wszystkie informacje dotycz\u0105ce transakcji i \
+mened\u017cer\u00f3w zasob\u00f3w XA pochodz\u0105ce z poprzednich instancji serwera zosta\u0142y \
+usuni\u0119te z dziennik\u00f3w.
+WTRN0133_RECOVERY_COMPLETE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - number of resource managers
+WTRN0134_RECOVERING_XARMS=WTRN0134I: Odtwarzanie mened\u017cer\u00f3w zasob\u00f3w XA z \
+dziennik\u00f3w partnera transakcji (liczba mened\u017cer\u00f3w: {0}).
+WTRN0134_RECOVERING_XARMS.explanation=Us\u0142uga transakcji wykry\u0142a, \u017ce \
+dzia\u0142anie serwera mog\u0142o zosta\u0107 poprzednio przerwane przy istniej\u0105cych \
+w\u0105tpliwych transakcjach. W ramach procesu odtwarzania zostanie nawi\u0105zany \
+kontakt z podan\u0105 liczb\u0105 zarejestrowanych mened\u017cer\u00f3w transakcji XA.
+WTRN0134_RECOVERING_XARMS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WTRN0135_RECOVERING_NOTXNS=WTRN0135I: Us\u0142uga transakcji nie odzyska\u0142a \u017cadnych \
+transakcji.
+WTRN0135_RECOVERING_NOTXNS.explanation=Us\u0142uga transakcji przetworzy\u0142a dzienniki \
+odtwarzania transakcji, w wyniku czego ustalono, \u017ce nie istnieje potrzeba \
+odtwarzania \u017cadnych transakcji.  Zmiany wszelkich w\u0105tpliwych zasob\u00f3w XA \
+pochodz\u0105cych z tego serwera zosta\u0142y wycofane.
+WTRN0135_RECOVERING_NOTXNS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction xid
+# 1 - transaction id
+# 2 - transaction status
+WTRN0136_RECOVERING_TRAN=WTRN0136I: Przetwarzanie odzyskanej transakcji \
+{0} (TID={1}) o statusie {2}.
+WTRN0136_RECOVERING_TRAN.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105.  Ten komunikat wskazuje r\u00f3wnie\u017c bie\u017c\u0105cy status transakcji w \
+czasie odtwarzania.  Warto\u015b\u0107 TID jest u\u017cywana w innych komunikatach dotycz\u0105cych \
+przetwarzania operacji odtwarzania oraz w Konsoli administracyjnej, stanowi\u0105c \
+odniesienie do danej transakcji.
+WTRN0136_RECOVERING_TRAN.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name 
+WTRN0137_REC_TXN_COMMIT=WTRN0137I: Odtwarzanie transakcji (TID={0}). Trwa \
+zatwierdzanie zasobu o identyfikatorze XID {1} przy u\u017cyciu mened\u017cera {2}.
+WTRN0137_REC_TXN_COMMIT.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105 i wydaje mened\u017cerowi zasob\u00f3w komend\u0119 zatwierdzenia.
+WTRN0137_REC_TXN_COMMIT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0138_REC_TXN_ROLLBACK=WTRN0138I: Odtwarzanie transakcji (TID={0}). \
+Trwa wycofywanie zmian zasobu o identyfikatorze XID {1} przy u\u017cyciu mened\u017cera \
+{2}.
+WTRN0138_REC_TXN_ROLLBACK.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105 i wydaje mened\u017cerowi zasob\u00f3w komend\u0119 wycofania zmian.
+WTRN0138_REC_TXN_ROLLBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0139_REC_TXN_FORGET=WTRN0139I: Odtwarzanie transakcji (TID={0}). Trwa \
+wykonywanie operacji forget dla zasobu o identyfikatorze XID {1} przy u\u017cyciu \
+mened\u017cera {2}.
+WTRN0139_REC_TXN_FORGET.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105 i wydaje mened\u017cerowi zasob\u00f3w komend\u0119 wykonania operacji \
+forget.
+WTRN0139_REC_TXN_FORGET.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0140_REC_TXN_COMMITED=WTRN0140I: Odtwarzanie transakcji (TID={0}). \
+Pomy\u015blnie zatwierdzono zas\u00f3b o identyfikatorze XID {1} przy u\u017cyciu mened\u017cera \
+{2}.
+WTRN0140_REC_TXN_COMMITED.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105. Zas\u00f3b zosta\u0142 pomy\u015blnie zatwierdzony.
+WTRN0140_REC_TXN_COMMITED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0141_REC_TXN_COMMITERR=WTRN0141I: Odtwarzanie transakcji (TID={0}). \
+Podczas zatwierdzania zasobu o identyfikatorze XID {1} przy u\u017cyciu mened\u017cera \
+{2} zosta\u0142 zwr\u00f3cony kod odpowiedzi {3}.
+WTRN0141_REC_TXN_COMMITERR.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105. Podczas zatwierdzania zasobu zosta\u0142 zwr\u00f3cony kod odpowiedzi \
+podany w komunikacie.
+WTRN0141_REC_TXN_COMMITERR.useraction=Sprawd\u017a kod odpowiedzi, aby ustali\u0107, czy \
+operacja zatwierdzenia zosta\u0142a wykonana pomy\u015blnie, i podejmij odpowiednie \
+dzia\u0142anie.  Je\u015bli kod wskazuje na wynik heurystyczny, rozwi\u0105\u017c wszelkie problemy \
+z danymi, jakie mog\u0142y zaistnie\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0142_REC_TXN_ROLLED=WTRN0142I: Odtwarzanie transakcji (TID={0}). \
+Pomy\u015blnie wycofano zmiany zasobu o identyfikatorze XID {1} przy u\u017cyciu \
+mened\u017cera {2}.
+WTRN0142_REC_TXN_ROLLED.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105. Pomy\u015blnie wycofano zmiany zasobu.
+WTRN0142_REC_TXN_ROLLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0143_REC_TXN_ROLLEDERR=WTRN0143I: Odtwarzanie transakcji (TID={0}). \
+Podczas wycofywania zasobu o identyfikatorze XID {1} przy u\u017cyciu mened\u017cera {2} \
+zosta\u0142 zwr\u00f3cony kod odpowiedzi {3}.
+WTRN0143_REC_TXN_ROLLEDERR.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105. Podczas wycofywania zmian zasobu zosta\u0142 zwr\u00f3cony kod \
+odpowiedzi podany w komunikacie.
+WTRN0143_REC_TXN_ROLLEDERR.useraction=Sprawd\u017a kod odpowiedzi, aby ustali\u0107, czy \
+operacja wycofywania zmian zosta\u0142a wykonana pomy\u015blnie, i podejmij odpowiednie \
+dzia\u0142anie.  Je\u015bli kod wskazuje na wynik heurystyczny, rozwi\u0105\u017c wszelkie problemy \
+z danymi, jakie mog\u0142y zaistnie\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0144_REC_TXN_FORGOT=WTRN0144I: Odtwarzanie transakcji (TID={0}). \
+Pomy\u015blnie wykonano operacj\u0119 forget dla zasobu o identyfikatorze XID {1} przy \
+u\u017cyciu mened\u017cera {2}.
+WTRN0144_REC_TXN_FORGOT.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105. Pomy\u015blnie wykonano operacj\u0119 forget dla zasobu.
+WTRN0144_REC_TXN_FORGOT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0145_REC_TXN_FORGETERR=WTRN0145I: Odtwarzanie transakcji (TID={0}). \
+Podczas wykonywania operacji forget dla zasobu o identyfikatorze XID {1} przy \
+u\u017cyciu mened\u017cera {2} zosta\u0142 zwr\u00f3cony kod odpowiedzi {3}.
+WTRN0145_REC_TXN_FORGETERR.explanation=Us\u0142uga transakcji odzyskuje \
+transakcj\u0119 nazwan\u0105. Podczas wykonywania operacji forget dla zasobu zosta\u0142 \
+zwr\u00f3cony kod odpowiedzi podany w komunikacie.
+WTRN0145_REC_TXN_FORGETERR.useraction=Sprawd\u017a kod odpowiedzi, aby ustali\u0107, czy \
+operacja forget zosta\u0142a wykonana pomy\u015blnie, i podejmij odpowiednie dzia\u0142anie.
+
+# 0 - number of xids
+# 1 - resource manager name
+# 2 - number of xids
+WTRN0146_REC_XA_RECOVERED=WTRN0146I: Operacja odtwarzania XA w ramach \
+mened\u017cera {1} pozwoli\u0142a uzyska\u0107 identyfikatory XID. Liczba uzyskanych \
+identyfikator\u00f3w: {0}. Liczba identyfikator\u00f3w, kt\u00f3re zostan\u0105 przetworzone przez \
+ten serwer: {2}.
+WTRN0146_REC_XA_RECOVERED.explanation=Us\u0142uga transakcji pomy\u015blnie wyda\u0142a \
+komend\u0119 odtwarzania XA w ramach zarejestrowanego mened\u017cera zasob\u00f3w.
+WTRN0146_REC_XA_RECOVERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - restart epoch value
+WTRN0147_REC_XID_LATE=WTRN0147W: Identyfikator XID {0} odtworzony w \
+ramach mened\u017cera {1} pochodzi ze zrestartowanej wcze\u015bniej instancji serwera o \
+epoce {2}.
+WTRN0147_REC_XID_LATE.explanation=Us\u0142uga transakcji pomy\u015blnie wyda\u0142a \
+komend\u0119 odtwarzania XA w ramach zarejestrowanego mened\u017cera zasob\u00f3w, uzyskuj\u0105c \
+identyfikator XID, kt\u00f3ry powinien by\u0107 odtworzony przy poprzednim restarcie \
+serwera.  Warto\u015b\u0107 epoki wskazuje instancj\u0119 serwera, w ramach kt\u00f3rej ten \
+identyfikator XID by\u0142 powi\u0105zany z transakcj\u0105.
+WTRN0147_REC_XID_LATE.useraction=Sprawd\u017a warto\u015b\u0107 epoki wskazan\u0105 w tym \
+komunikacie i por\u00f3wnaj j\u0105 z bie\u017c\u0105c\u0105 epok\u0105 restartu serwera podan\u0105 w komunikacie \
+WTRN0132.  Je\u015bli restarty serwera bior\u0105cego udzia\u0142 w operacji przebieg\u0142y \
+pomy\u015blnie, sprawd\u017a dzienniki z poprzednich instancji i z instancji bie\u017c\u0105cej w \
+celu okre\u015blenia przyczyny, dla kt\u00f3rej ten identyfikator XID nie zosta\u0142 \
+przetworzony w trakcie odtwarzania.  Na przyk\u0142ad podczas poprzedniego restartu \
+serwera mened\u017cer zasob\u00f3w m\u00f3g\u0142 nie by\u0107 dost\u0119pny.
+
+# 0 - xid
+# 1 - resource manager name
+WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Identyfikator XID {0} odtworzony w \
+ramach mened\u017cera {1} nie ma skojarzonej transakcji. Zmiany zostan\u0105 wycofane.
+WTRN0148_REC_XA_ROLLBACK.explanation=Us\u0142uga transakcji pomy\u015blnie wyda\u0142a \
+komend\u0119 odtwarzania XA w ramach zarejestrowanego mened\u017cera zasob\u00f3w, uzyskuj\u0105c \
+identyfikator XID, kt\u00f3ry nie odpowiada zarejestrowanej transakcji.  W ramach \
+procesu odtwarzania us\u0142uga transakcji wycofa zmiany dla tego identyfikatora \
+XID.
+WTRN0148_REC_XA_ROLLBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - transaction id
+# 3 - transaction state
+WTRN0149_REC_XA_TRAN=WTRN0149I: Identyfikator XID {0} odtworzony w ramach \
+mened\u017cera {1} ma skojarzon\u0105 transakcj\u0119 (TID={2}) o zarejestrowanym stanie {3}.
+WTRN0149_REC_XA_TRAN.explanation=Us\u0142uga transakcji pomy\u015blnie wyda\u0142a \
+komend\u0119 odtwarzania XA w ramach zarejestrowanego mened\u017cera zasob\u00f3w, uzyskuj\u0105c \
+identyfikator XID, kt\u00f3ry odpowiada zarejestrowanej transakcji.  W ramach procesu \
+odtwarzania us\u0142uga transakcji doko\u0144czy t\u0119 transakcj\u0119.
+WTRN0149_REC_XA_TRAN.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - error code
+WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Podczas wycofywania zmian dla \
+identyfikatora XID {0} odtworzonego w ramach mened\u017cera {1} zosta\u0142 zwr\u00f3cony kod b\u0142\u0119du {2}.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Us\u0142uga transakcji pomy\u015blnie wyda\u0142a \
+komend\u0119 odtwarzania XA w ramach zarejestrowanego mened\u017cera zasob\u00f3w, uzyskuj\u0105c \
+identyfikator XID, kt\u00f3ry nie odpowiada zarejestrowanej transakcji.  W \
+ramach procesu odtwarzania us\u0142uga transakcji podj\u0119\u0142a pr\u00f3b\u0119 wycofania zmian dla \
+tego identyfikatora XID.
+WTRN0150_REC_XA_ROLLEDBACK.useraction=Sprawd\u017a kod b\u0142\u0119du, aby okre\u015bli\u0107, czy operacja wycofywania zmian zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+# 0 - resource manager name
+WTRN0151_REC_XA_RECOVER=WTRN0151I: Przygotowywanie do wywo\u0142ania \
+odtwarzania XA w ramach mened\u017cera {0}.
+WTRN0151_REC_XA_RECOVER.explanation=Us\u0142uga transakcji jest \
+przygotowywana do wywo\u0142ania odtwarzania XA w ramach zarejestrowanego mened\u017cera \
+zasob\u00f3w. Przygotowanie polega na otwarciu po\u0142\u0105czenia i uzyskaniu zasobu XA.  W \
+przypadku pomy\u015blnego uzyskania zasobu XA zostanie wygenerowany kolejny \
+komunikat wskazuj\u0105cy liczb\u0119 identyfikator\u00f3w zwr\u00f3conych przez operacj\u0119 \
+odtwarzania XA.  W razie niepowodzenia podczas nawi\u0105zywania po\u0142\u0105czenia lub \
+uzyskiwania zasobu XA kolejne komunikaty b\u0119d\u0105 zawiera\u0142y opis przyczyny tego \
+niepowodzenia.
+WTRN0151_REC_XA_RECOVER.useraction=Je\u015bli kolejne komunikaty wskazuj\u0105 na \
+niepowodzenie podczas nawi\u0105zywania po\u0142\u0105czenia lub uzyskiwania zasobu XA, okre\u015bl \
+przyczyn\u0119 niepowodzenia i podejmij odpowiednie dzia\u0142ania.
+
+WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Wykryto niestandardow\u0105 konfiguracj\u0119 HA.
+WTRN0152_UNUSUAL_HA_CONFIG.explanation=Funkcja HA zosta\u0142a w\u0142\u0105czona dla tego klastra, ale mened\u017cer funkcji HA jest wy\u0142\u0105czony.
+WTRN0152_UNUSUAL_HA_CONFIG.useraction=Je\u015bli jest to po\u017c\u0105dana konfiguracja, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie nale\u017cy poprawi\u0107 konfiguracj\u0119 funkcji HA.
+
+# --------------------------------
+# WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.52,ou=attributeTypes,cn=samba,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.7165.2.1.52
+m-name: sambaPrivilegeList
+m-description: Privileges List
+m-obsolete: FALSE
+entryUUID: 73343903-5f30-46ae-9bfa-d330b44a7834
+entryCSN: 20130919065345.582000Z#000001#000#000000
+entryParentId: ad480692-fbdc-43ac-a835-b4dd7e42d307
+createTimestamp: 20130919065351.637Z

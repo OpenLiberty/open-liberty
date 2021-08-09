@@ -1,0 +1,348 @@
+Scan Basics:
+
+Basic Division:
+
+1) Scan for startup: Annotations data is made available based on explicit requests.
+2) Scan for update: Annotations data is forwarded based on registration.
+
+These notes describe updates to enable cache of results for startup scans.
+The updates are designed to facilitate update scans.  However, update scans
+are not implemented at this time.
+
+Initial Scan Implementation, Key Notes:
+
+The initial scan implementation placed scan results directly into aggregate
+result tables.  The initial scan implementation recorded occurrences, but did
+not record details.
+
+Annotation Cache Requirements:
+
+Annotation caching is the recording of annotation scan results, with later
+requests for scan results obtaining the results preferentially from the cached
+results.
+
+Annotation scans are meaningful for modules.  Scanning is not meaningful for
+applications as a whole, and are meaningful only for jar files which are module
+archives, or which are contained by module archives. 
+
+Partial invalidation is taken as a requirement: A prior result which has an update
+to a subset of must only rescan the subset showing changes.
+
+Change detection is taken to be required only for entire jar files.  Change
+detection for expanded directories and for class loader scoped results is not
+performed.  Such locations are considered to always be invalid, and are always
+rescanned. 
+
+Annotation Cache Typical Scenarios:
+
+The two basic scenarios are a scan with no cache (baseline) and a scan with a cache.
+
+1) Scan with no cache
+
+A scan with no cache is the baseline scenario.  Scan results are obtained based
+on a new scan.  No cache data structures are present.  No lookup is performed for
+prior results.  New results are not stored.
+
+A non-cache scan is performed only when specified by annotations options.  The
+default will be to use the annotations cache (see the next scenario).
+
+2) Scan with a cache
+
+A scan with a cache.  Scan results are obtained as needed based on the validity of
+the prior scan results.  Invalid locations are rescanned, with new results generated
+by combining new results from the invalid locations with prior results which are
+still valid.  New results are written to cache.
+
+A scan with a cache is the default scenario, and will be performed unless otherwise
+disabled.
+
+Annotation Scans: Usual Class Path Structure
+
+The usual class path structure for a module has:
+
+1) A root location, which is either a subset of a module archive, or the entire
+   module archive.  The root location may be expanded as a directory.
+   
+2) Child locations of the module archive.  This will be the case for most web module
+   archives and for most resource archives.  This is never the case for EJB jars and
+   never the case for application client jars.
+
+3) Locations external to the module archive.  These would typically include the
+   manifest class path of the module archive, the application library elements,
+   and the external references class loader of the module.  The external references
+   class loader includes shared libraries of the application, includes the server
+   defined class loader for the application, and includes the java root class loader.
+
+Validation of Class Path Locations; Consequences:
+
+In the finest detail, class path locations are invalidated on a single class bases,
+and only for class changes which are significant to scan results.
+
+However, invalidation to this level of detail has a high cost, and is not a current
+requirement.
+
+More coarsely, class path locations which java archives (or subsets of module archives
+which are not expanded) are invalidated on the boundary of the whole archive, using
+the time stamp of the archive.
+
+The consequence of invalidating on whole archive boundaries are:
+
+1) Changes are detected simply, by comparing time stamps.
+2) Invalidation is wider than strictly necessary: All of the classes of an
+   archive showing a change are invalidated together.
+3) Since the root directory time stamp is not a reliable gauge of whether
+   any child class files have been update, change detection is not possible
+   for locations expanded to directories.  Such locations are always assumed
+   to be invalid and are always rescanned.
+4) Time stamps are not assignable to class loader based locations.  Class loader
+   based locations are always rescanned.
+
+However, detection of significant changes is still possible (see below).
+
+Partial Invalidation:
+
+Most simply, invalidation of any part of the class path of a module could cause
+the entire class path of the module to be rescanned.  Since typical scenarios
+use expanded directories, or have one or a handful of jars being invalidated,
+this simplest scenario is taken as unusable.
+
+Instead, invalidation of a subset of the class path should cause a rescan of
+only the invalid subset of the class path.  Results from the remainder of the
+class path should remain valid and should be reusable.
+
+Detecting Consequential Changes
+
+That a location is invalid and requires a new scan does not preclude detection
+of significant changes.  For example, a class may be recompiled because of changes
+made to a method implementation, with no changes to the class inheritance relationship
+and with no changes to annotations on the class.  When a location is noted as
+invalid and no significant changes are detected to classes obtained from that
+location, the time stamp of the location is updated and the location is considered
+as valid despite the time stamp change.
+
+Implementation Consequences:
+
+Partial invalidation requires that scan results be partitioned into subsets
+which align with the boundaries of the class path.  That is, individual scan
+results must be generated for the root location, for child locations, and for
+the tail class loader location.
+
+This is a change from the previous implementation, which placed the scan results
+into a single result table.
+
+Preparing for Incremental Updates:
+
+The results from basic scenario #1 (startup scans) do not require details for
+the annotation results.  Only basic occurrence information is provided through
+the annotation result tables.
+
+Basic scenario #2 (update scans) are intended to detect and forward notification
+regarding significant changes of scan results.  Detecting significant changes
+means detecting changes to annotation locations and means detecting changes to
+annotation details.
+
+For example, a class, which already has an annotation on a method, may place new
+occurrences of that annotation on other methods.  This change is not detectable
+in the class occurrences table of the annotation results, but is a significant
+change.  Or, a class may retain an annotation but assign a new value to an
+attribute of the annotation.  This change is also not detectable in the class
+occurrences table.
+
+Detection of detail changes requires that details data be recorded for annotation
+occurrences. 
+
+Preparing for Incremental Updates, Implementation Details:
+
+To support incremental updates, the annotations results are updated to include
+detailed information.  A single string signature is generated for each annotation
+occurrence, and this signature is associated with the java element (package, class,
+class plus method, or class plus field) to which the annotation is attached.  
+
+Data structures and invalidation scenarios are coded to maintain the new details
+tables, however, until incremental updates are supported, the additional code
+is dormant.
+
+===
+
+Annotation Scanning Options:
+
+Annotation scanning is controlled by options, as detailed below:
+
+Consolidated Options:
+
+  <annotations
+    scanOptions="[Enable]/Disable,
+                 [NoShareStrings]/ShareStrings"
+    scanArchives="[*]/PATTERN"
+    scanClasses="[*]/**PATTERN**"
+    scanAnnotation="[*]/**PATTERN**"/>
+    
+    cacheOptions="[Enable]/Disable,
+                  [TestForValid]/AlwaysValid,
+                  [Save]/NoSave,
+                  [DiscardDetail]/RetainDetail"
+    cacheRoot="[CACHE_HOME/annoCache]/**ROOT_FOLDER**"
+
+Annotations options are specified through a new "annotations" configuration
+element.
+
+The annotations configuration element is entirely optional.  Defaults are set
+according to the most typical configured values.  (In the element structure,
+shown above, default values are notated by square brackets, "[]".)
+
+Annotation options may be specified globally, per application, or per module,
+with all options in finer scopes overriding options specified at coarser
+scopes.
+
+Annotations options are divided into two sections:
+
+1) Scan options.
+
+Scan options control the overall scanning process.  Options include
+enablement and string sharing options, and include archive, class, and
+annotation selection options.
+
+2) Caching options.
+
+Caching options control particular details of how the annotation cache is used, and
+where the annotations cache is located.
+
+===
+
+String Sharing:
+
+String values for annotations results may be shared at application scope or at
+a global scope.
+
+String sharing is necessary because the process of scanning annotations data creates
+new string values for the many strings obtained from class scans.  Class scans obtain
+a new string value for every package, class, field, and method names which is obtained
+from the scan.  This could result in many non-unique but equal string instances, but is
+avoided by intern'ing the string values at the module level.
+
+By default, intern'ing is performed independently per module.  This provides isolation
+between operations on several modules, which improves performance, but consumes more
+memory, since opportunities for sharing between modules or between applications are
+neglected.
+
+The 'shareStrings' options is provided to enable sharing of string values at between
+modules and between applications.  When specified as a global annotation scanning
+option, sharing is enabled between applications.  When specified as an application
+option, sharing is enabled between the modules of the application.
+
+Sharing strings between modules and applications reduces memory overhead, but, incurs
+a performance cost by adding synchronization overhead between operations which access
+annotations results data.
+
+====
+
+  <annotations
+    scanOptions="[Enable]/Disable,
+                 [NoShareStrings]/ShareStrings"
+    scanArchives="[*]/PATTERN"
+    scanClasses="[*]/**PATTERN**"
+    scanAnnotation="[*]/**PATTERN**"/>
+    
+    cacheOptions="[Enable]/Disable,
+                  [TestForValid]/AlwaysValid,
+                  [Save]/NoSave,
+                  [DiscardDetail]/RetainDetail"
+    cacheRoot="[CACHE_HOME/annoCache]/**ROOT_FOLDER**"
+-- May be specified as a global option, as a per application option,
+   or as a per module option.
+-- Values specified at a finer level override values specified at a coarser level.
+
+* scanOptions
+-- Options for annotation scanning.
+
+** [NoShareStrings]/ShareStrings (scanOptions)
+-- Share annotation string data at the level (global or application; not applicable at the module level)
+-- Incurs a performance cost because of additional synchronization
+-- Useful when applications or modules have significant overlap of string data.
+-- By default, string data is not shared at the global or application level.
+
+** [Enable]/Disable (scanOptions)
+-- Perform no scans.  All annotations and class results are empty.
+-- By default, annotation scans are enabled.
+
+* scanArchives
+-- Specific archives which are to be scanned.  Only class reference information
+   is obtained from the selected archives.
+-- Parameter is a regular expression.   
+-- Defaults to select all archives (selectArchives="*").
+
+* scanClasses
+-- Specific classes which are to be scanned.  Only class reference information
+   is obtained from the selected classes.
+-- Parameter is regular expression.
+-- Defaults to select all classes (selectClasses="*").
+
+* scanAnnotations
+-- Specific annotations which are to be recorded.  Annotations which are not
+   selected are ignored.
+-- Parameter is a regular expression.
+-- Defaults to select all annotations (selectAnnotations="*").
+
+* cacheOptions
+-- Options for annotation scan caching.
+
+** [Enable]/Disable (cacheOptions)
+-- Do not read or write cache data.  Always scan.
+-- By default, annotation caching is enabled.
+
+** [TestForValid]/AlwaysValid (cacheOptions)
+-- Assume that any saved scan results are valid.  Do scan for any absent data.
+-- By default, scan results are not assumed valid.
+
+** [Save]/NoSave (cacheOptions)
+-- Do not save new results.  Do test for changes, and rescan if necessary.
+-- By default, save of results is enabled.
+
+** [DiscardDetail]/RetainDetail (cacheOptions)
+-- Do retain detail.
+-- By default, detail information is not retained after initial scan results
+   are generated.
+
+* cacheRoot
+-- Alternate root location for cache data.
+-- Parameter is a file location, possibly relative to the default temporary
+   folder for the application, possibly relative to a previously defined
+   folder variable, possibly as an absolute location.
+-- Defaults to a location relative to the application temporary folder.
+
+---
+
+1) (Base): No cache
+2) (Basic Cache): Cache; no prior data
+3) (Basic Reuse): Cache; prior data; unchanged stamps; unchanged scans
+4) (Basic Reuse): Cache; prior data; changed stamps; unchanged scans
+
+5) (Full Reuse): Cache; prior data; unchanged stamps; initial changes only
+6) (Full Reuse): Cache; prior data; changed stamps; initial and intermediate changes
+
+---
+ 
+1) (Base): No cache
+    No cache is provided.  Scans are performed with all data generated.
+1.1) (Base): No cache; no runtime updates;
+    Detail data is not collected
+1.2) (Base): No cache; runtime updates
+    Detail data is collected
+
+2) (Basic Cache): Cache; no prior data
+    The cache is queried; scans are performed; time stamps are associated with the
+    scan results; scan data is written to the cache.
+
+3) (Basic Reuse): Cache; prior data; unchanged stamps; unchanged scans
+    The cache is queried.  New stamps are obtained, and show changes only for
+    directory and class loader regions.  Scans are performed for regions
+    showing a changed stamp.  Data is compared for newly scanned data.  Scans show no
+    changes.  Stamps are updated, but no other data is written.  Result data is used
+    without any modifications.
+  
+4) (Basic Reuse): Cache; prior data; changed stamps; unchanged scans
+    As #3, but stamps also show changes for jar based regions.
+  
+5) (Full Reuse): Cache; prior data; unchanged stamps; initial changes only
+6) (Full Reuse): Cache; prior data; changed stamps; initial and intermediate changes
+ 

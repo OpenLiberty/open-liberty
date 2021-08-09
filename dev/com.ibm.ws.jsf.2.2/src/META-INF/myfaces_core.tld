@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
+   <description>This tag library implements the standard JSF core tags.</description>
+   <display-name>JSF core tag library.</display-name>
+   <tlib-version>1.2</tlib-version>
+   <short-name>f</short-name>
+   <uri>http://java.sun.com/jsf/core</uri>
+
+    <!-- Component Tags -->
+   <tag>
+      <description><![CDATA[Base class for components that provide a new "namespace" for the ids of their
+child components.
+<p>
+See the javadocs for interface NamingContainer for further details.
+</p>]]></description>
+      <name>subview</name>
+      <tag-class>org.apache.myfaces.taglib.core.SubviewTag</tag-class>
+      <body-content>JSP</body-content>
+      
+      <attribute>
+         <description><![CDATA[A boolean value that indicates whether this component should be rendered. Default value: true.]]></description>
+         <name>rendered</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></description>
+         <name>id</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.component.UIComponent</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[TODO: documentation on jsp and pld are not the same. It appear two
+params: maxlength and for, but no property getter and setter founded here. 
+If maxlength is used, we can put something like this: 
+JSFJspProperty(name = "maxlength", returnType = "java.lang.String")]]></description>
+      <name>viewParam</name>
+      <tag-class>org.apache.myfaces.taglib.core.ViewParamTag</tag-class>
+      <body-content>JSP</body-content>
+      
+      <attribute>
+         <description><![CDATA[The max number or characters allowed for this param]]></description>
+         <name>maxlength</name>
+         <deferred-value>
+             <type>int</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A boolean value that indicates whether an input value is required.
+<p>
+If this value is true and no input value is provided by a postback operation, then the "requiredMessage" text is
+registered as a FacesMessage for the request, and validation fails.
+</p>
+<p>
+Default value: false.
+</p>]]></description>
+         <name>required</name>
+         <deferred-value>
+             <type>boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Text to be displayed to the user as an error message when conversion of a submitted value to the target type
+fails.
+<p>
+</p>]]></description>
+         <name>converterMessage</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Text to be displayed to the user as an error message when this component is marked as "required" but no input
+data is present during a postback (ie the user left the required field blank).]]></description>
+         <name>requiredMessage</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A method-binding EL expression which is invoked during the validation phase for this component.
+<p>
+The invoked method is expected to check the submitted value for this component, and if not acceptable then report
+a validation error for the component.
+</p>
+<p>
+The method is expected to have the prototype
+</p>
+<code>public void aMethod(FacesContext, UIComponent,Object)</code>]]></description>
+         <name>validator</name>
+        <deferred-method>
+            <method-signature>void myMethod( javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object )</method-signature>
+
+        </deferred-method>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Text which will be shown if validation fails.]]></description>
+         <name>validatorMessage</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A method which is invoked during postback processing for the current view if the submitted value for this
+component is not equal to the value which the "value" expression for this component returns.
+<p>
+The phase in which this method is invoked can be controlled via the immediate attribute.
+</p>]]></description>
+         <name>valueChangeListener</name>
+        <deferred-method>
+            <method-signature>void myMethod( javax.faces.event.ValueChangeEvent )</method-signature>
+
+        </deferred-method>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Gets The initial value of this component.]]></description>
+         <name>value</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[An expression that specifies the Converter for this component.
+<p>
+The value can either be a static value (ID) or an EL expression. When a static id is
+specified, an instance of the converter type registered with that id is used. When this
+is an EL expression, the result of evaluating the expression must be an object that
+implements the Converter interface.
+</p>]]></description>
+         <name>converter</name>
+         <deferred-value>
+             <type>javax.faces.convert.Converter</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></description>
+         <name>id</name>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.component.UIComponent</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Creates a JSF View, which is a container that holds all of the components that are part of the view.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+See the javadoc for this class in the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
+Specification</a> for further details.
+</p>]]></description>
+      <name>view</name>
+      <tag-class>org.apache.myfaces.taglib.core.ViewTag</tag-class>
+      <body-content>JSP</body-content>
+      
+      <attribute>
+         <description><![CDATA[MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
+phase except for restore view.]]></description>
+         <name>afterPhase</name>
+        <deferred-method>
+            <method-signature>void myMethod( javax.faces.event.PhaseEvent )</method-signature>
+
+        </deferred-method>
+      </attribute>
+      <attribute>
+         <description><![CDATA[MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
+every phase except for restore view.]]></description>
+         <name>beforePhase</name>
+        <deferred-method>
+            <method-signature>void myMethod( javax.faces.event.PhaseEvent )</method-signature>
+
+        </deferred-method>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The locale for this view.
+<p>
+Defaults to the default locale specified in the faces configuration file.
+</p>]]></description>
+         <name>locale</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Defines what renderkit should be used to render this view.]]></description>
+         <name>renderKitId</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag associates a parameter name-value pair with the nearest parent UIComponent. A UIComponent is created to
+represent this name-value pair, and stored as a child of the parent component; what effect this has depends upon the
+renderer of that parent component.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>]]></description>
+      <name>param</name>
+      <tag-class>org.apache.myfaces.taglib.core.ParamTag</tag-class>
+      <body-content>JSP</body-content>
+      
+      <attribute>
+         <description><![CDATA[The value of this component.]]></description>
+         <name>value</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The name under which the value is stored.]]></description>
+         <name>name</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></description>
+         <name>id</name>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.component.UIComponent</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag associates a single SelectItem with the nearest parent UIComponent. The item represents a single option for
+a component such as an h:selectBooleanCheckbox or h:selectOneMenu. See also component selectItems.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+UISelectItem should be nestetd inside a UISelectMany or UISelectOne component, and results in the addition of a
+SelectItem instance to the list of available options for the parent component
+</p>]]></description>
+      <name>selectItem</name>
+      <tag-class>org.apache.myfaces.taglib.core.SelectItemTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[The initial value of this component.]]></description>
+         <name>value</name>
+         <deferred-value>
+             <type>javax.faces.model.SelectItem</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Determine whether this item can be chosen by the user. When true, this item cannot be chosen by the user. If this
+method is ever called, then any EL-binding for the disabled property will be ignored.]]></description>
+         <name>itemDisabled</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The escape setting for the label of this selection item.]]></description>
+         <name>escape</name>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[For use in development tools.]]></description>
+         <name>itemDescription</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The string which will be presented to the user for this option.]]></description>
+         <name>itemLabel</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The value for this Item.]]></description>
+         <name>itemValue</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Indicate this component represent no selection option. 
+Default value is false.]]></description>
+         <name>noSelectionOption</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></description>
+         <name>id</name>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.component.UIComponent</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag associates a set of selection list items with the nearest
+parent UIComponent. The set of SelectItem objects is retrieved via
+a value-binding.
+<p>
+Unless otherwise specified, all attributes accept static values
+or EL expressions.
+</p>
+<p>
+UISelectItems should be nested inside a UISelectMany or UISelectOne component,
+and results in  the addition of one ore more SelectItem instance to the list of available options
+for the parent component
+</p>]]></description>
+      <name>selectItems</name>
+      <tag-class>org.apache.myfaces.taglib.core.SelectItemsTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[The initial value of this component.]]></description>
+         <name>value</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Name of a request-scope attribute under which the current item
+of the collection, array, etc. of the value attribute will be 
+exposed so that it can be referred to in EL for other attributes 
+of this component.]]></description>
+         <name>var</name>
+         <rtexprvalue>false</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The value for the current item.]]></description>
+         <name>itemValue</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The label of the current item.]]></description>
+         <name>itemLabel</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The description of the current item.]]></description>
+         <name>itemDescription</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Determines if the current item is selectable or not.]]></description>
+         <name>itemDisabled</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Determines if the rendered markup for the current item receives
+normal JSF HTML escaping or not.]]></description>
+         <name>itemLabelEscaped</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></description>
+         <name>id</name>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.component.UIComponent</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <!-- Converter tags -->
+   <tag>
+      <description><![CDATA[This tag associates a date time converter with the nearest parent UIComponent.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></description>
+      <name>convertDateTime</name>
+      <tag-class>org.apache.myfaces.taglib.core.ConvertDateTimeTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[The style of the date.  Values include: default, short, medium, 
+long, and full.]]></description>
+         <name>dateStyle</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The name of the locale to be used, instead of the default.]]></description>
+         <name>locale</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A custom Date formatting pattern, in the format used by java.text.SimpleDateFormat.]]></description>
+         <name>pattern</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The style of the time.  Values include:  default, short, medium, long, 
+and full.]]></description>
+         <name>timeStyle</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The time zone to use instead of GMT (the default timezone). When
+this value is a value-binding to a TimeZone instance, that
+timezone is used. Otherwise this value is treated as a String
+containing a timezone id, ie as the ID parameter of method
+java.util.TimeZone.getTimeZone(String).]]></description>
+         <name>timeZone</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Specifies whether the date, time, or both should be 
+parsed/formatted.  Values include:  date, time, and both.
+Default based on setting of timeStyle and dateStyle.]]></description>
+         <name>type</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a DateTimeConverter.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.convert.DateTimeConverter</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag creates a number formatting converter and associates it
+with the nearest parent UIComponent.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></description>
+      <name>convertNumber</name>
+      <tag-class>org.apache.myfaces.taglib.core.ConvertNumberTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[ISO 4217 currency code]]></description>
+         <name>currencyCode</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The currency symbol used to format a currency value.  Defaults
+to the currency symbol for locale.]]></description>
+         <name>currencySymbol</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Specifies whether output will contain grouping separators.  Default: true.]]></description>
+         <name>groupingUsed</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[Specifies whether only the integer part of the input will be parsed.  Default: false.]]></description>
+         <name>integerOnly</name>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The name of the locale to be used, instead of the default as
+specified in the faces configuration file.]]></description>
+         <name>locale</name>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The maximum number of digits in the fractional portion of the number.]]></description>
+         <name>maxFractionDigits</name>
+         <deferred-value>
+             <type>java.lang.Integer</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The maximum number of digits in the integer portion of the number.]]></description>
+         <name>maxIntegerDigits</name>
+         <deferred-value>
+             <type>java.lang.Integer</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The minimum number of digits in the fractional portion of the number.]]></description>
+         <name>minFractionDigits</name>
+         <deferred-value>
+             <type>java.lang.Integer</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The minimum number of digits in the integer portion of the number.]]></description>
+         <name>minIntegerDigits</name>
+         <deferred-value>
+             <type>java.lang.Integer</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[A custom Date formatting pattern, in the format used by java.text.SimpleDateFormat.]]></description>
+         <name>pattern</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The type of formatting/parsing to be performed.  Values include:
+number, currency, and percent.  Default: number.]]></description>
+         <name>type</name>
+         <deferred-value>
+            <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a NumberConverter.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.convert.NumberConverter</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <!-- Validator tags -->
+   <tag>
+      <description><![CDATA[Creates a validator and associateds it with the nearest parent
+UIComponent.  When invoked, the validator ensures that values are
+valid doubles that lie within the minimum and maximum values specified.
+
+Commonly associated with a h:inputText entity.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></description>
+      <name>validateDoubleRange</name>
+      <tag-class>org.apache.myfaces.taglib.core.ValidateDoubleRangeTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[The largest value that should be considered valid.]]></description>
+         <name>maximum</name>
+         <deferred-value>
+             <type>java.lang.Double</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The smallest value that should be considered valid.]]></description>
+         <name>minimum</name>
+         <deferred-value>
+             <type>java.lang.Double</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a DoubleRangeValidator.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.validator.DoubleRangeValidator</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Creates a validator and associateds it with the nearest parent
+UIComponent.  When invoked, the validator ensures that values are
+valid strings with a length that lies within the minimum and maximum
+values specified.
+
+Commonly associated with a h:inputText entity.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></description>
+      <name>validateLength</name>
+      <tag-class>org.apache.myfaces.taglib.core.ValidateLengthTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[The largest value that should be considered valid.]]></description>
+         <name>maximum</name>
+         <deferred-value>
+             <type>java.lang.Integer</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The smallest value that should be considered valid.]]></description>
+         <name>minimum</name>
+         <deferred-value>
+             <type>java.lang.Integer</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a LengthValidator.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.validator.LengthValidator</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Creates a validator and associateds it with the nearest parent
+UIComponent.  When invoked, the validator ensures that values
+are valid longs that lie within the minimum and maximum values specified.
+
+Commonly associated with a h:inputText entity.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></description>
+      <name>validateLongRange</name>
+      <tag-class>org.apache.myfaces.taglib.core.ValidateLongRangeTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[The largest value that should be considered valid.]]></description>
+         <name>maximum</name>
+         <deferred-value>
+             <type>java.lang.Long</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[The smallest value that should be considered valid.]]></description>
+         <name>minimum</name>
+         <deferred-value>
+             <type>java.lang.Long</type>
+         </deferred-value>             
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a LongRangeValidator.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.validator.LongRangeValidator</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[<p>
+  <strong>RegexValidator</strong> is a {@link javax.faces.validator.Validator}
+  that checks the value of the corresponding component against specified
+  pattern using Java regular expression syntax.
+
+  The regular expression syntax accepted by the RegexValidator class is
+  same as mentioned in class {@link java.util.regex.Pattern} in package
+  <code>java.util.regex</code>.
+</p>
+
+<p>
+  The following algorithm is implemented:
+</p>
+
+<ul>
+  <li>If the passed value is <code>null</code>, exit immediately.</li>
+  <li>
+    If the passed value is not a String, exit with a {@link #NOT_MATCHED_MESSAGE_ID}
+    error message.
+  </li>
+  <li>
+    If no pattern has been set, or pattern resolves to <code>null</code> or an
+    empty String, throw a {@link javax.faces.validator.ValidatorException}
+    with a {@link #PATTERN_NOT_SET_MESSAGE_ID} message.
+  </li>
+  <li>
+    If pattern is not a valid regular expression, according to the rules as defined
+    in class {@link java.util.regex.Pattern}, throw a {@link ValidatorException}
+    with a (@link #MATCH_EXCEPTION_MESSAGE_ID} message.
+  </li>
+  <li>
+    If a <code>pattern</code> property has been configured on this
+    {@link javax.faces.validator.Validator}, check the passed value against this pattern.
+    If value does not match pattern throw a {@link ValidatorException}
+    containing a {@link #NOT_MATCHED_MESSAGE_ID} message.
+  </li>
+</ul>]]></description>
+      <name>validateRegex</name>
+      <tag-class>org.apache.myfaces.taglib.core.ValidateRegexTag</tag-class>
+      <body-content>empty</body-content>
+      
+      <attribute>
+         <description><![CDATA[Return the ValueExpression that yields the regular expression pattern when evaluated.]]></description>
+         <name>pattern</name>
+         <required>true</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a RegexValidator.]]></description>
+         <name>binding</name>
+         <deferred-value>
+             <type>javax.faces.validator.RegexValidator</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <!-- Single Tags -->
+   <tag>
+      <description><![CDATA[This tag adds its child as a facet of the nearest parent UIComponent. A child consisting of multiple elements should
+be nested within a container component (i.e., within an h:panelGroup for HTML library components).
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></description>
+      <name>facet</name>
+      <tag-class>javax.faces.webapp.FacetTag</tag-class>
+      <body-content>JSP</body-content>
+      <attribute>
+         <description><![CDATA[The name of the facet to be created. This must be a static value.]]></description>
+         <name>name</name>
+         <required>true</required>
+         <rtexprvalue>false</rtexprvalue>
+         <type>java.lang.String</type>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag creates an instance of the specified ActionListener, and associates it with the nearest parent UIComponent.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>]]></description>
+      <name>actionListener</name>
+      <tag-class>org.apache.myfaces.taglib.core.ActionListenerTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[The fully qualified class name of the ActionListener class.]]></description>
+         <name>type</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Value binding expression that evaluates to an object that implements javax.faces.event.ActionListener.]]></description>
+         <name>binding</name>
+         <required>false</required>
+         <deferred-value>
+             <type>javax.faces.event.ActionListener</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag associates an attribute with the nearest parent UIComponent.
+<p>
+When the value is not an EL expression, this tag has the same effect as calling component.getAttributes.put(name,
+value). When the attribute name specified matches a standard property of the component, that property is set. However
+it is also valid to assign attributes to components using any arbitrary name; the component itself won't make any use
+of these but other objects such as custom renderers, validators or action listeners can later retrieve the attribute
+from the component by name.
+</p>
+<p>
+When the value is an EL expression, this tag has the same effect as calling component.setValueBinding. A call to
+method component.getAttributes().get(name) will then cause that expression to be evaluated and the result of the
+expression is returned, not the original EL expression string.
+</p>
+<p>
+See the javadoc for UIComponent.getAttributes for more details.
+</p>
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>]]></description>
+      <name>attribute</name>
+      <tag-class>org.apache.myfaces.taglib.core.AttributeTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[The name of the attribute.]]></description>
+         <name>name</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The attribute's value.]]></description>
+         <name>value</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[This tag creates an instance of the specified Converter, and associates it with the nearest parent UIComponent.]]></description>
+      <name>converter</name>
+      <tag-class>org.apache.myfaces.taglib.core.ConverterImplTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[The converter's registered ID.]]></description>
+         <name>converterId</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to a Converter.]]></description>
+         <name>binding</name>
+         <required>false</required>
+         <deferred-value>
+             <type>javax.faces.convert.Converter</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Loads a resource bundle and saves it as a variable in the request scope.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+TODO: We should find a way to save loaded bundles in the state, because otherwise on the next request the bundle map
+will not be present before the render phase and value bindings that reference to the bundle will always log annoying
+"Variable 'xxx' could not be resolved" error messages.
+</p>]]></description>
+      <name>loadBundle</name>
+      <tag-class>org.apache.myfaces.taglib.core.LoadBundleTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[The base name of the resource bundle.]]></description>
+         <name>basename</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[The name of the variable in request scope that the resources are saved to. This must be a static value.]]></description>
+         <name>var</name>
+         <required>true</required>
+         <rtexprvalue>false</rtexprvalue>
+         <type>java.lang.String</type>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Register a PhaseListener instance]]></description>
+      <name>phaseListener</name>
+      <tag-class>org.apache.myfaces.taglib.core.PhaseListenerTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[Class name of the PhaseListener to be created and registered.]]></description>
+         <name>type</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Value binding expression that evaluates to a PhaseListener.]]></description>
+         <name>binding</name>
+         <required>false</required>
+         <deferred-value>
+             <type>javax.faces.event.PhaseListener</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[]]></description>
+      <name>setPropertyActionListener</name>
+      <tag-class>org.apache.myfaces.taglib.core.SetPropertyActionListenerTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[ValueExpression for the destination of the value attribute.]]></description>
+         <name>target</name>
+         <required>true</required>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[ValueExpression for the value of the target attribute.]]></description>
+         <name>value</name>
+         <required>true</required>
+         <deferred-value>
+             <type>java.lang.Object</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Creates a validator and associates it with the nearest parent UIComponent.
+<p>
+During the validation phase (or the apply-request-values phase for immediate components), if the associated component
+has any submitted value and the conversion of that value to the required type has succeeded then the specified
+validator type is invoked to test the validity of the converted value.
+</p>
+<p>
+Commonly associated with an h:inputText entity, but may be applied to any input component.
+</p>
+<p>
+Some validators may allow the component to use attributes to define component-specific validation constraints; see
+the f:attribute tag. See also the "validator" attribute of all input components, which allows a component to specify
+an arbitrary validation &lt;i&gt;method&lt;/i&gt; (rather than a registered validation type, as this tag does).
+</p>
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>]]></description>
+      <name>validator</name>
+      <tag-class>org.apache.myfaces.taglib.core.ValidatorImplTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[The registered ID of the desired Validator.]]></description>
+         <name>validatorId</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[A ValueExpression that evaluates to an implementation of the javax.faces.validator.Validator interface.]]></description>
+         <name>binding</name>
+         <required>false</required>
+         <deferred-value>
+             <type>javax.faces.validator.Validator</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[Adds the specified ValueChangeListener to the nearest parent UIComponent (which is expected to be a UIInput
+component).
+<p>
+Whenever the form containing the parent UIComponent is submitted, an instance of the specified type is created. If
+the submitted value from the component is different from the component's current value then a ValueChangeEvent is
+queued. When the ValueChangeEvent is processed (at end of the validate phase for non-immediate components, or at end
+of the apply-request-values phase for immediate components) the object's processValueChange method is invoked.
+</p>
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>]]></description>
+      <name>valueChangeListener</name>
+      <tag-class>org.apache.myfaces.taglib.core.ValueChangeListenerTag</tag-class>
+      <body-content>empty</body-content>
+      <attribute>
+         <description><![CDATA[The name of a Java class that implements ValueChangeListener.]]></description>
+         <name>type</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.String</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Value binding expression that evaluates to an implementation of the javax.faces.event.ValueChangeListener
+interface.]]></description>
+         <name>binding</name>
+         <required>false</required>
+         <deferred-value>
+             <type>javax.faces.event.ValueChangeListener</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+   <tag>
+      <description><![CDATA[]]></description>
+      <name>verbatim</name>
+      <tag-class>org.apache.myfaces.taglib.core.VerbatimTag</tag-class>
+      <body-content>JSP</body-content>
+      <attribute>
+         <description><![CDATA[If true, generated markup is escaped. Default: false.]]></description>
+         <name>escape</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+      <attribute>
+         <description><![CDATA[Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on
+any subsequent form submit. The default value for this property is true.]]></description>
+         <name>rendered</name>
+         <required>false</required>
+         <deferred-value>
+             <type>java.lang.Boolean</type>
+         </deferred-value>
+      </attribute>
+   </tag>
+</taglib>

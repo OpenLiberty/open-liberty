@@ -1,0 +1,41 @@
+<server>
+  	<!-- Enable features -->
+	<featureManager>
+		<feature>jaxrs-2.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>appSecurity-2.0</feature>
+	</featureManager>
+   
+  	<include location="../fatTestPorts.xml"/>
+
+	<webAppSecurity ssoUseDomainFromURL="true" />
+
+	<webApplication id="jaxrs20ltpaclient" location="jaxrs20ltpaclient.war"
+		name="jaxrs20ltpaclient">
+		<application-bnd>
+			<security-role name="BasicLogin_WebUsers">
+				<user name="user1" />
+			</security-role>
+		</application-bnd>
+	</webApplication>
+
+	<basicRegistry id="myRegistry">
+		<user name="user1" password="pass1" />
+		<user name="user2" password="pass2" />
+		<group name="group1">
+			<member name="user1" />
+		</group>
+	</basicRegistry>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+  	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+  	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+  	<javaPermission className="com.ibm.websphere.security.WebSphereRuntimePermission" name="getSSLConfig"/>
+  	
+
+</server>

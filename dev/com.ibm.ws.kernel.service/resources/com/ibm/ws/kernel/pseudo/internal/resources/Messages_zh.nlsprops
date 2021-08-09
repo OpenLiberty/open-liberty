@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/pseudo/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0800 - 0899 com.ibm.ws.kernel.pseudo.internal.PseudoServiceMessages
+# -------------------------------------------------------------------------------------------------
+
+jndi.not.installed=CWWKE0800W: \u5c1d\u8bd5\u68c0\u7d22 [{0}] \u7684\u521d\u59cb\u4e0a\u4e0b\u6587\uff0c\u4f46\u672a\u914d\u7f6e JNDI \u529f\u80fd\u90e8\u4ef6\u3002
+jndi.not.installed.explanation=JNDI \u529f\u80fd\u90e8\u4ef6\u63d0\u4f9b JNDI \u6ce8\u518c\u8868\u53ca\u5173\u8054\u5b9e\u7528\u7a0b\u5e8f\u3002\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u6216\u529f\u80fd\u90e8\u4ef6\u9700\u8981\u5728 JNDI \u4e0a\u4e0b\u6587\u4e2d\u67e5\u627e\u6761\u76ee\uff0c\u90a3\u4e48\u901a\u5e38\u9700\u8981\u6b64\u9879\u3002
+jndi.not.installed.useraction=\u8bf7\u786e\u4fdd\u5df2\u63d0\u4f9b JNDI \u5b9e\u73b0\uff08\u4f8b\u5982\uff0c\u901a\u8fc7\u5728\u6b64\u670d\u52a1\u5668\u7684\u914d\u7f6e\u4e2d\u914d\u7f6e JNDI \u529f\u80fd\u90e8\u4ef6\uff09\u3002
+

@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Toate firele de execu\u0163ie din executorul implicit Liberty apar ca fiind blocate.  Liberty a crescut automat num\u0103rul de fire de execu\u0163ie de la {0} la {1}.  Totu\u015fi, toate firele de execu\u0163ie \u00eenc\u0103 apar ca fiind blocate.
+unbreakableExecutorHang.explanation=A ap\u0103rut o eroare care a a f\u0103cut ca un executor s\u0103 se blocheze \u015fi rularea Liberty a ad\u0103ugat un num\u0103r semnificativ de fire de execu\u0163ie \u00een \u00eencercarea de a \u00eencheia condi\u0163ia de blocare.  Totu\u015fi, executorul r\u0103m\u00e2ne \u00eentr-o stare f\u0103r\u0103 r\u0103spuns.  
+unbreakableExecutorHang.useraction=Determina\u0163i dac\u0103 exist\u0103 o g\u00e2tuire, cum ar fi un tabel blocat de baz\u0103 de date, care ar putea \u00eempiedica firele de execu\u0163ie s\u0103 se rezolve \u00een server.  Dac\u0103 nu exist\u0103 nicio astfel de g\u00e2tuire \u015fi serverul necesit\u0103 \u00een mod legitim fire de execu\u0163ie suplimentare, ajusta\u0163i atributul coreThreads al elementului de configura\u0163ie executor.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Un task nu poate fi lansat la executorul {0} deoarece coada de taskuri cu maxQueueSize de {1} r\u0103m\u00e2ne la capacitate dup\u0103 {2} nanosecunde de a\u015fteptare.
+CWWKE1201.queue.full.abort.explanation=Atributul maxQueueSize controleaz\u0103 c\u00e2te lans\u0103ri de taskuri pot fi puse \u00een coad\u0103. Atributul maxWaitForEnqueue controleaz\u0103 c\u00e2t s\u0103 se a\u015ftepte pentru ca o pozi\u0163ie din coad\u0103 pozi\u0163ie s\u0103 devin\u0103 disponibil\u0103, dar acest interval poate fi scurtat de restul de timeout dac\u0103 folosi\u0163i metodele sincronizate invokeAll sau invokeAny pentru a lansa taskuri. Atributul queueFullAction determin\u0103 ce ac\u0163iune se ia dup\u0103 ce se termin\u0103 intervalul \u015fi \u00eenc\u0103 nu devine nicio pozi\u0163ie disponibil\u0103 \u00een coad\u0103. Pentru a evita dep\u0103\u015firea maximului de apari\u0163ii simultane sau pentru a onora timeout-ul specificat, metodele invokeAll \u015fi invokeAny pot ignora queueFullAction \u015fi s\u0103 renun\u0163e la lansarea taskului c\u00e2nd nu poate fi pus \u00een coad\u0103.
+CWWKE1201.queue.full.abort.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 aplica\u0163ia trateaz\u0103 RejectedExecutionException. Altfel, executa\u0163i orice combina\u0163ii dintre urm\u0103toarele ac\u0163iuni: cre\u015fte\u0163i maxQueueSize, cre\u015fte\u0163i maxWaitForEnqueue, utiliza\u0163i alt queueFullAction, sau cre\u015fte\u0163i timeout-ul care este furnizat la metodele invokeAll sau invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: Un task nu poate fi lansat deoarece executorul {0} a fost oprit.
+CWWKE1202.submit.after.shutdown.explanation=Nu sunt permise lans\u0103rile de taskuri dup\u0103 ce i s-a cerut serviciului s\u0103-\u015fi opreasc\u0103 activitatea.
+CWWKE1202.submit.after.shutdown.useraction=Trimite\u0163i taskuri numai c\u0103tre o instan\u0163\u0103 de serviciu c\u0103reia nu i s-a cerut serviciului s\u0103-\u015fi opreasc\u0103 activitatea.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: Nu este permis\u0103 actualizarea configura\u0163iei la {0} deoarece executorului {1} i s-a oprit activitatea.
+CWWKE1203.config.update.after.shutdown.explanation=Nu este posibil\u0103 actualizarea configura\u0163iei dup\u0103 ce i s-a cerut serviciului executor s\u0103-\u015fi opreasc\u0103 activitatea.
+CWWKE1203.config.update.after.shutdown.useraction=Actualiza\u0163i numai configura\u0163ia unei instan\u0163e de serviciu executor c\u0103reia nu i s-a cerut s\u0103-\u015fi opreasc\u0103 activitatea.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: Executorul {0} nu a putut lansa {1} din {2} taskuri \u00een intervalul repartizat de {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=Executorul a rejectat opera\u0163ia invokeAll sau invokeAny deoarece era insuficient timpul disponibil sau insuficient\u0103 capacitatea cozii disponibile pentru a lansa toate taskurile cerute \u00een intervalul specificat.
+CWWKE1204.unable.to.invoke.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 aplica\u0163ia trateaz\u0103 RejectedExecutionException. Altfel, executa\u0163i orice combina\u0163ii dintre urm\u0103toarele ac\u0163iuni: cre\u015fte\u0163i maxQueueSize, cre\u015fte\u0163i maxConcurrency sau cre\u015fte\u0163i valoarea de timeout care este furnizat\u0103 la metodele invokeAll sau invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: Executorul {0} nu a putut porni taskul {1} dup\u0103 {2} nanosecunde deoarece taskul a dep\u0103\u015fit propriul startTimeout de {3} nanosecunde.
+CWWKE1205.start.timeout.explanation=C\u00e2nd este configurat un startTimeout pe un executor sau este cerut prin program pentru un task, executorul urm\u0103re\u015fte timpul scurs \u00eentre lansarea taskului \u015fi momentul c\u00e2nd este posibil\u0103 rularea taskului. Dac\u0103 timpul scurs dep\u0103\u015fe\u015fte startTimeout, executorul abandoneaz\u0103 taskul, \u00een loc s\u0103-l porneasc\u0103. 
+CWWKE1205.start.timeout.useraction=Nu este necesar\u0103 nicio ac\u0163iune dac\u0103 aplica\u0163ia a\u015fteapt\u0103 ca unele taskuri s\u0103 fie abandonate deoarece \u015fi-au dep\u0103\u015fit propriul startTimeout. Altfel, executa\u0163i orice combina\u0163ii dintre urm\u0103toarele ac\u0163iuni: cre\u015fte\u0163i startTimeout, cre\u015fte\u0163i maxConcurrency.

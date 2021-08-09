@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: Le serveur de noms CORBA est maintenant disponible sur {0}.
+NAME_SERVER_AVAILABLE.explanation=Ce message est affich\u00e9 \u00e0 titre purement informatif.
+NAME_SERVER_AVAILABLE.useraction=Aucune action n'est requise.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: Le serveur de noms CORBA n''est plus disponible sur {0}.
+NAME_SERVER_UNAVAILABLE.explanation=Ce message est affich\u00e9 \u00e0 titre purement informatif.
+NAME_SERVER_UNAVAILABLE.useraction=Aucune action n'est requise.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: La demande au serveur s\u00e9curis\u00e9 sur l''h\u00f4te {0} a \u00e9chou\u00e9 car dans la configuration en cours, la s\u00e9curit\u00e9 n''est pas activ\u00e9e. Vous devez configurer Common Secure Interoperability Version 2 (CSIv2) c\u00f4t\u00e9 client (sortant) en incluant un \u00e9l\u00e9ment keyStore et en ajoutant la version ad\u00e9quate de la fonction appSecurity dans un serveur ou appSecurityClient dans un conteneur de client d''application.  
+PORT_ZERO.explanation= Une demande au serveur sur l'h\u00f4te indiqu\u00e9 a \u00e9chou\u00e9. Sur le serveur en question, la s\u00e9curit\u00e9 CSIv2 est activ\u00e9e mais elle ne l'est pas dans la configuration en cours. Un client connect\u00e9 \u00e0 ce serveur doit \u00e9galement \u00eatre configur\u00e9 avec les types de s\u00e9curit\u00e9 CSIv2 et Secure Sockets Layer (SSL).
+PORT_ZERO.useraction= Vous devez configurer Common Secure Interoperability Version 2 (CSIv2) c\u00f4t\u00e9 client (sortant) en incluant un \u00e9l\u00e9ment keyStore et en ajoutant la version ad\u00e9quate de la fonction appSecurity dans un serveur ou d'appSecurityClient dans un conteneur de client d'application. Consultez la documentation pour d\u00e9terminer la version actuelle des fonctions appSecurity ou appSecurityClient \u00e0 ajouter \u00e0 votre configuration et \u00e0 toute autre configuration requise.

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   12/26/2012  syed           New CXF Web service
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>x509enc</display-name>
+
+    <servlet>
+        <servlet-name>x509enc</servlet-name>
+        <display-name>x509enc</display-name>
+        <description>X509 XML Encryption CXF Endpoint</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc1</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService1X</servlet-name>
+        <display-name>X509XmlEncService1X</display-name>
+        <description>X509 XML Encryption CXF Endpoint</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc1X</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService3</servlet-name>
+        <display-name>X509XmlEncService3</display-name>
+        <description>X509 XML Encryption X509XmlEncService3</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc3</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService4</servlet-name>
+        <display-name>X509XmlEncService4</display-name>
+        <description>X509 XML Encryption X509XmlEncService4</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc4</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService5</servlet-name>
+        <display-name>X509XmlEncService5</display-name>
+        <description>X509 XML Encryption X509XmlEncService5</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc5</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService6</servlet-name>
+        <display-name>X509XmlEncService6</display-name>
+        <description>X509 XML Encryption X509XmlEncService6</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc6</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService7</servlet-name>
+        <display-name>X509XmlEncService7</display-name>
+        <description>X509 XML Encryption X509XmlEncService7</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc7</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService8</servlet-name>
+        <display-name>X509XmlEncService8</display-name>
+        <description>X509 XML Encryption X509XmlEncService8</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc8</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService9</servlet-name>
+        <display-name>X509XmlEncService9</display-name>
+        <description>X509 XML Encryption X509XmlEncService9</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc9</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>X509XmlEncService10</servlet-name>
+        <display-name>X509XmlEncService10</display-name>
+        <description>X509 XML Encryption X509XmlEncService10</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509enc.X509EncWebSvc10</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+                          
+    <servlet-mapping>
+       <servlet-name>x509enc</servlet-name>
+       <url-pattern>/X509XmlEncService1</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService1X</servlet-name>
+       <url-pattern>/X509XmlEncService1X</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService3</servlet-name>
+       <url-pattern>/X509XmlEncService3</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService4</servlet-name>
+       <url-pattern>/X509XmlEncService4</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService5</servlet-name>
+       <url-pattern>/X509XmlEncService5</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService6</servlet-name>
+       <url-pattern>/X509XmlEncService6</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService7</servlet-name>
+       <url-pattern>/X509XmlEncService7</url-pattern>
+    </servlet-mapping>
+    
+     <servlet-mapping>
+       <servlet-name>X509XmlEncService8</servlet-name>
+       <url-pattern>/X509XmlEncService8</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService9</servlet-name>
+       <url-pattern>/X509XmlEncService9</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+       <servlet-name>X509XmlEncService10</servlet-name>
+       <url-pattern>/X509XmlEncService10</url-pattern>
+    </servlet-mapping>
+              
+    <session-config>
+       <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

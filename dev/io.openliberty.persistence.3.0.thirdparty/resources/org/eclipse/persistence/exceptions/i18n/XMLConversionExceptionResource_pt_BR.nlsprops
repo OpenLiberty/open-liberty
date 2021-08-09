@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25501=N\u00e3o \u00e9 poss\u00edvel criar a URL para o arquivo [{0}].
+
+25502=Formato gDay incorreto: [{0}] (esperado [----DD])
+
+25503=Formato gMonth incorreto: [{0}] (esperado [--MM--])
+
+25504=Formato gMonthDay incorreto: [{0}] (esperado [--MM-DD])
+
+25505=Formato gYear incorreto: [{0}] (esperado [AAAA])
+
+25506=Formato gYearMonth incorreto : [{0}] (esperado [AAAA-MM])
+
+25507=Formato de data/hora do registro de data e hora incorreto: [{0}] (esperado [AAAA-MM-DD''T''HH:MM:SS.NNNNNNNNN])
+
+25508=Formato de hora do registro de data e hora: [{0}] (esperado [HH:MM:SS.NNNNNNNNN])
+

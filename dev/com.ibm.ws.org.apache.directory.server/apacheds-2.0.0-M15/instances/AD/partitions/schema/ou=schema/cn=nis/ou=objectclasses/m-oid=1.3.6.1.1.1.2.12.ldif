@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.12,ou=objectClasses,cn=nis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.12
+m-name: bootableDevice
+m-description: A device with boot parameters
+m-obsolete: FALSE
+m-supobjectclass: top
+entryUUID: 2219eb31-8400-40fc-b69a-21b143df9d15
+m-may: bootFile
+m-may: bootParameter
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919081859.021000Z#000001#000#000000
+entryParentId: 8df15f8c-2157-419e-9521-c39c3dedaac8
+createTimestamp: 20130919081908.951Z

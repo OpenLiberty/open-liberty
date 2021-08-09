@@ -1,0 +1,296 @@
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/LogViewerMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Date Translation Comment - There are two types of date format strings in this properties file. 
+#
+# 1. The first is a date format string which is used  by Java. These date format strings should not be translated but
+# rearranged to represent the  date format convention appropriate for the locale.
+# For example, a Jan 31st date in the US is represented as 01/31/2011 or M/d/yy. In the case of a
+# locale where the day comes before the month, such as 31/01/2011, the string should be changed to d/M/yy. 
+#  The messages IDs CWTRA0001I, CWTRA0002I, CWTRA0003I, and CWTRA0073I
+# must have the strings remain in English - as they are used by the product. But the character order should be 
+# changed as needed to be locale appropriate.
+# 
+# 2. Date format strings in the file that need to be both translated and have characters rearranged per 
+# localization rules of the language being translated. These date strings will appear as-is and are
+# used to demonstrate to the user the date format expected by user input. 
+#
+# For example, a message id with the key M/d/yy will continue to be displayed as M/d/yy.  In another locale, such 
+# as Spanish, it needs to be considered that the month and day position will be swapped and characters might need
+# to be translated, as a US locale understands that y represents year while the spanish word for year is ano and y 
+# might not make sense to the user.  This applies to message ids CWTRA0074I and CWTRA0075I
+# -------------------------------------------------------------------------------------------------
+
+CWTRA0000E=Directorul magaziei nu a fost g\u0103sit.
+
+# Example output in the En_en locale is: 4/27/10
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0001I=d/M/yy
+
+# Example output in the En_en locale is: April 27, 2010 1:30 A.M. CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0002I=d MMM,yyyy H:mm z
+
+# Example output in the En_en locale is: 4/27/10 1:30:0:100 CDT
+# Note to translator, see Date Translation Comment above as this is type 1.
+CWTRA0003I=d/M/yy H:m:s:S z
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0004E=Nu se poate parsa data/ora de \u00eencepere.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0005E=Nu s-a putut scrie \u00een loca\u0163ia istoricului de ie\u015fire.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0006E=Nu se poate parsa data/ora de sf\u00e2r\u015fit.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0007I=LogViewerMessages
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0008E=Nu se poate parsa ID fir. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0009E=Nu se poate scrie \u00een loca\u0163ia magazei de binari exporta\u0163i.  Asigura\u0163i-v\u0103 c\u0103 directorul specificat este gol \u015fi are permisiuni de scriere.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0010I=Opera\u0163ia s-a terminat
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0013E=Nu poate fi parsat Nivelul {0}  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0014I=Nu se poate folosi locale-ul original al magaziei. Se folose\u015fte Locale-ul implicit al sistemului. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0015I=Nu s-a putut scrie \u00een fi\u015fierul de ie\u015fire 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0016I=Scriere ie\u015fire la: 
+
+# -------------------------------------------------------------------------------------------------
+LVM_SelectServerPrompt=V\u0103 rug\u0103m selecta\u0163i un server
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0018I=Au fost procesate {0} \u00eenregistr\u0103ri \u00een {1} secunde ({2} \u00eenregistr\u0103ri pe secund\u0103).
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0019E=Nu s-a putut parsa intervalul {0}: {1}.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0020I=Directorul specificat nu con\u0163ine curent niciun fi\u015fier istoric sau de urm\u0103rire.  Se continu\u0103 monitorizarea acestui director.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0021E=Directorul specificat nu con\u0163ine niciun fi\u015fier istoric sau de urm\u0103rire.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0022E=Op\u0163iunea {0} necesit\u0103 {1} parametri.  
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0023E=Argument necunoscut: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0024E=Fie lipse\u015fte argumentul -repositoryDir, fie nu se g\u0103se\u015fte nicio magazie HPEL la acaeast\u0103 loca\u0163ie. \n\t -repositoryDir este necesar atunci c\u00e2nd logViewer este invocat \u00een afara directorului bin al profilului.\n\t Dac\u0103 -repositoryDir nu indic\u0103 c\u0103tre o magazie HPEL, atunci specifica\u0163iile sunt incorecte\n\t fie magazia nu a fost creat\u0103 \u00eenc\u0103.\n\t Aceasta se poate \u00eent\u00e2mpla dac\u0103 HPEL nu este activat sau dac\u0103 serverul \n\t nu a fost \u00eenc\u0103 pornit de c\u00e2nd a fost activat HPEL.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0026E=Argumente de dat\u0103 invalide: -startDate este dup\u0103 -stopDate
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0027E=Argumente de nivel invalide: -minLevel este mai mare dec\u00e2t -maxLevel
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0028E=Formatul de ie\u015fire specificat este incorect: {0}
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0029I=Folosi\u0163i op\u0163iunea -help pentru informa\u0163ii de utilizare.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0030I=Folosire {0} ca director de magazie. 
+
+# -------------------------------------------------------------------------------------------------
+#CWTRA0031I=LogViewer is used to output log data from the HPEL repository (group of common \nbinary log files) to a text file, console, or to a new HPEL repository. \n\n\By default, the LogViewer will output all records in the repository in basic \nformat.  Use options to control what is included in the LogViewer output, to format \nthe output, or to direct where the output is sent. 
+CWTRA0031I=LogViewer\nFolosi\u0163i comanda logViewer pentru a vizualiza, interoga \u015fi filtra magaziile de urme \u015fi istoric HPEL. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0032I=Folosire {0} ca director de magazie.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0033I=logViewer.bat|sh [op\u0163iuni]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0034I=Op\u0163iuni:\n\n-repositoryDir <directory name>\n\t Specific\u0103 calea la directorul magaziei. \u00cen cazul c\u00e2nd dori\u0163i\n\t s\u0103 interoga\u0163i \u00eempreun\u0103 datele de urm\u0103rire \u015fi istoric, furniza\u0163i calea la\n\t directorul p\u0103rinte, care con\u0163ine at\u00e2t directoarele datelor de istoric, c\u00e2t \u015fi\n\t directoarele datelor de urm\u0103rire. Dac\u0103 folosi\u0163i loca\u0163ia de magazie implicit\u0103\n\t profile_root/logs/application_server/ \u015fi rula\u0163i unealta din directorul bin al\n\t profilului, atunci argumentul este op\u0163ional. Unealta verific\u0103 \u00een loca\u0163ia\n\t implicit\u0103, dac\u0103 este furnizat\u0103 una. Dac\u0103 exist\u0103 mai multe servere de aplica\u0163ii\n\t \u00een acest profil cu magazii HPEL, sunte\u0163i invitat s\u0103 selecta\u0163i magazia de \n\t istorice \u015fi urm\u0103rire a serverului pe care vre\u0163i s\u0103 o vizualiza\u0163i. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0035I=-outLog <nume_fi\u015fier>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0036I=\t Specific\u0103 numele fi\u015fierului \u00een care va fi scris textul de ie\u015fire. Dac\u0103 nu\n\t furniza\u0163i aceste informa\u0163ii, ie\u015firea text va fi afi\u015fat\u0103 pe consol\u0103. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0037I=-startDate <dat\u0103_or\u0103>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0038I=\t Specific\u0103 data cea mai devreme, sau dat\u0103 \u015fi or\u0103, pentru care \n\t vor fi extrase intr\u0103rile istoricului. Pute\u0163i specifica doar o dat\u0103 sau o dat\u0103 \n\t \u015fi o or\u0103.  Dac\u0103 este specificat\u0103 doar o dat\u0103, acest lucru este echivalent cu \n\t specificarea orei ca 00:00:00:000 pentru fusul dumneavoastr\u0103 orar. Data trebuie \n\t introdus\u0103 \u00een formatul {0}. Datele \u015fi orele trebuie s\u0103 fie \u00een formatul\n\t  {1}, Unde H ora \u00een formatul de 24 de ore, m \n\t reprezint\u0103 minutele, s secundele \u015fi S milisecundele, iar \n\t z este fusul orar. C\u00e2nd include\u0163i \u015fi ora cu aceast\u0103 op\u0163iune, \n\t trebuie folosite ghilimele deoarece exist\u0103 spa\u0163ii \u00een formatul \n\t dat\u0103-or\u0103.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0039I=\t Exemple: \n\t -startDate {0} \n\t -startDate "{1}"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0040I=-stopDate <data_ora>
+
+# -------------------------------------------------------------------------------------------------
+# Note to translator: Parms {0} and {1} will be substituted with values from CWTRA0074I and CWTRA0075I respectively, so please make sure that if CWTRA0074I and CWTRA0075I are translated, it is possible that H, m, s, S, and z will need to be translated as well.
+# see Date Translation Comment above as an example where translation might be required for type 2.
+CWTRA0041I=\t Specific\u0103 ultima dat\u0103, sau dat\u0103 \u015fi or\u0103, pentru care \n\t vor fi extrase intr\u0103rile istoricului. Pute\u0163i specifica doar o dat\u0103 sau o dat\u0103 \n\t \u015fi o or\u0103.  Dac\u0103 este specificat\u0103 doar o dat\u0103, acest lucru este echivalent cu \n\t specificarea orei ca 23:59:59:999 pentru fusul dumneavoastr\u0103 orar.  Data trebuie \n\t introdus\u0103 \u00een formatul {0}. Datele \u015fi orele trebuie s\u0103 fie \u00een formatul\n\t  {1}, Unde H ora \u00een formatul de 24 de ore, m \n\t reprezint\u0103 minutele, s secundele \u015fi S milisecundele, iar \n\t z este fusul orar. C\u00e2nd include\u0163i \u015fi ora cu aceast\u0103 op\u0163iune, \n\t trebuie folosite ghilimele deoarece exist\u0103 spa\u0163ii \u00een formatul \n\t dat\u0103-or\u0103.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0042I=\t Exemple: \n\t -stopDate {0} \n\t -stopDate "{1}"
+
+# Description of the -level option ----------------------------------------------------------------
+CWTRA0044I=\t Specific\u0103 extragerea de c\u0103tre LogViewer numai a intr\u0103rilor de istoric\n\t de nivelul specificat. Dac\u0103 este combinat cu -minLevel sau -maxLevel, ultimele op\u0163iuni \n\t sunt folosite.
+
+# Description of the -minLevel option -------------------------------------------------------------
+CWTRA0046I=\t Specific\u0103 faptul c\u0103 LogViewer nu arat\u0103 intr\u0103ri de istoric care sunt sub \n\t nivelul specificat. Specificarea unui nivel va extrage toate mesajele de la acel nivel \u015fi \n\t de mai sus.
+
+# Description of the -maxLevel option -------------------------------------------------------------
+CWTRA0048I=\t Specific\u0103 faptul c\u0103 LogViewer nu arat\u0103 intr\u0103ri de istoric care sunt peste \n\t nivelul specificat. Specificarea unui nivel va extrage toate mesajele de la acel nivel \u015fi \n\t de pe nivelurile de mai jos.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0049I=-format <basic | advanced | CBE-1.0.1>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0050I=\t Specific\u0103 formatul de ie\u015fire. Formatele suportate sunt de baz\u0103, avansat \u015fi\n\t formatul CBE-1.0.1. Dac\u0103 nu include\u0163i acest parametru, ie\u015firea este \u00een \n\t formatul de baz\u0103. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0051I=-tail [interval]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0052I=\t Specific\u0103 faptul c\u0103 dori\u0163i ca logViewer s\u0103 monitorizeze continuu magazia\n\t \u015fi s\u0103 trimit\u0103 la ie\u015fire orice nou\u0103 \u00eenregistrare de istoric c\u00e2nd este creat\u0103. \n\t Pute\u0163i furniza un parametru \u00eentreg dup\u0103 acest parametru care s\u0103 specifice c\u00e2t\n\t de des dori\u0163i ca unealta LogViewer s\u0103 interogheze magazia pentru noi \u00eenregistr\u0103ri. \n\t Implicit LogViewer interogheaz\u0103 magazia pentru noi \u00eenregistr\u0103ri la fiecare 5 secunde. \n\t C\u00e2nd este folosit cu alte op\u0163iuni de filtrare, sunt afi\u015fate doar acele  \n\t \u00eenregistr\u0103ri noi care satisfac criteriile de filtrare. 
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0053I=-monitor [interval]
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0054I=\t Un sinonim pentru -tail.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0055I=-includeLoggers <nume_logger>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0056I=\t Specific\u0103 ce \u00eenregistratori vor fi inclu\u015fi \u00een ie\u015fire. Intr\u0103rile \n\t multiple vor fi separate prin virgule. Dac\u0103 aceast\u0103 op\u0163iune este folosit\u0103 \u00een \n\t combina\u0163ie cu op\u0163iunea -excludeLoggers \u015fi un logger se potrive\u015fte \u00een \n\t ambele liste de \u00eenregistratori, va fi folosit\u0103 intrarea cea mai specific\u0103 \n\t pentru a determina dac\u0103 un logger este inclus sau exclus.  Acest scenariu \n\t este ar\u0103tat \u00een ultimul exemplu de mai jos, care va exclude to\u0163i \u00eenregistratorii\n\t com.ibm cu excep\u0163ia \u00eenregistratorilor (logger) com.ibm.ws.config.
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0057I=\t Exemple: \n\t -includeLoggers SystemErr \n\t -includeLoggers "com.ibm.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0058I=-excludeLoggers <nume_logger>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0059I=\t Specific\u0103 ce \u00eenregistratori vor fi exclu\u015fi din ie\u015fire. Intr\u0103rile \n\t multiple vor fi separate prin virgule. Dac\u0103 aceast\u0103 op\u0163iune este folosit\u0103 \u00een \n\t combina\u0163ie cu op\u0163iunea -includeLoggers \u015fi un logger se potrive\u015fte \u00een \n\t ambele liste de \u00eenregistratori, va fi folosit\u0103 intrarea cea mai specific\u0103 \n\t pentru a determina dac\u0103 un logger este inclus sau exclus.  Acest scenariu \n\t este ar\u0103tat \u00een ultimul exemplu de mai jos, care va exclude to\u0163i \u00eenregistratorii\n\t com.ibm cu excep\u0163ia \u00eenregistratorilor (logger) com.ibm.ws.config.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0060I=\t Exemple: \n\t -excludeLoggers SystemErr \n\t -excludeLoggers "com.hp.*,org.apache.struts.*" \n\t -includeLoggers "com.ibm.ws.config" -excludeLoggers "com.ibm.*"
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0061I=-thread <thread_id>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0062I=\t Afi\u015feaz\u0103 intr\u0103ri istoric de la un fir anume. Aceast\u0103 op\u0163iune va\n\t filtra toate mesajele istoric care nu au fost create de ID-ul de fir \n\t de execu\u0163ie pe care-l specifica\u0163i. Not\u0103: Specifica\u0163i ID-ul firului de execu\u0163ie \u00een format hexidecimal.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0065I=-extractToNewRepository <directory_name>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0066I=\t Extrage \u00eenregistr\u0103ri \u015fi scrie ie\u015firea la o nou\u0103 magazie de binari. \n\t Pute\u0163i folosi aceast\u0103 op\u0163iune cu alte op\u0163iuni de filtrare pentru a transfera\n\t un subset \u00eenregistr\u0103ri de istoric \u015fi urm\u0103rire \u00een noua magazie.  Aceast\u0103 op\u0163iune\n\t folose\u015fte calea de director unde trebuie scris\u0103 nou\u0103 magazie ca un \n\t argument; de aceea directorul trebuie s\u0103 fie gol. Dac\u0103 directorul \n\t nu exist\u0103, directorul este creat.  Totu\u015fi, erorile care apar\n\t la crearea directorului pot duce la crearea de directoare \n\t str\u0103ine, f\u0103r\u0103 nicio leg\u0103tur\u0103.
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0067I=-listInstances
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0068I=\t Listeaz\u0103 ID-urile instan\u0163elor de procese server \n\t disponibile pentru folosirea op\u0163iunii -instance. Dup\u0103 ce rula\u0163i \n\t LogViewer cu op\u0163iunea -listInstances, pute\u0163i apoi folosi op\u0163iunea \n\t -instance pentru a invoca LogViewer cu unul din Id-urile de instan\u0163\u0103 proces \n\t server ca argument. Deoarece aceast\u0103 op\u0163iune nu proceseaz\u0103 nicio \u00eenregistrare \n\t de istoric sau urm\u0103rire, toate celelalte op\u0163iuni sunt ignorate atunci \n\t c\u00e2nd este folosit\u0103. 
+
+# ------------------------------------------------------------------------------------------------- 
+CWTRA0069I=-instance <instanceid>
+
+# -------------------------------------------------------------------------------------------------
+CWTRA0070I=\t Extrage datele de istoric \u015fi urm\u0103rire pentru un ID de instan\u0163\u0103 \n\t proces server dat. Rula\u0163i LogViewer \u00eempreun\u0103 cu op\u0163iunea -listInstances, \n\t \u00eenainte de folosirea acestei op\u0163iuni pentru ob\u0163inerea unui ID\n\t de instan\u0163\u0103 valid. Aceast\u0103 op\u0163iune este necesar\u0103 c\u00e2nd vizualiza\u0163i  \n\t istorice \u015fi urme de la un mediu care con\u0163ine subprocese, cum ar fi  \n\t sistemul de operare z/OS. Dac\u0103 aceast\u0103 op\u0163iune este \n\t combinat\u0103 cu -latestInstance, -instance este ignorat\u0103.
+
+# LogViewer command line heading for listinstances on z/OS
+CWTRA0071I=       ID instan\u0163\u0103                                                            Dat\u0103 \u00eencepere
+
+# LogViewer command line heading for listinstances on distributed
+CWTRA0072I=ID instan\u0163\u0103                  Dat\u0103 \u00eencepere
+
+# Instance Start Date format
+CWTRA0073I=dd/MM/yy HH:mm:ss.SSS z
+
+# Example output in the En_en locale is: M/d/yy
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0074I=d/M/yy
+
+# Example output in the En_en locale is: M/d/yy H:m:s:S z
+# Note to translator, see Date Translation Comment above as this is type 2.
+CWTRA0075I=d/M/yy H:m:s:S z
+
+NoLevelNameInCustomLevelsFile=Problem\u0103 de format \u00een {0}. Nivel \u00eentreg {1}. Valoarea trebuie s\u0103 aib\u0103 numele nivelului.
+TooManyValuesInCustomLevelsFile=Problem\u0103 de format \u00een {0}. Nivel \u00eentreg {1}. Valoarea "{2}" con\u0163ine mai mult de {3} articole.
+LevelIdTooBigInCustomLevelsFile=Problem\u0103 de format \u00een {0}. Nivel \u00eentreg {1}. Cel pu\u0163in una din {2} sau {3} trebuie s\u0103 fie un ID de nivel de un caracter.
+NotIntegerKeyInCustomLevelsFile=Problem\u0103 de format \u00een {0}. Cheia {1} trebuie s\u0103 fie un \u00eentreg.
+SpecifiedCustomLevelsFileNotFound=Fi\u015fierul {0} con\u0163ine care con\u0163ine specifica\u0163ia de nivel personalizat nu a fost g\u0103sit.
+ErrorReadingCustomLevelsFile=A e\u015fuat citirea fi\u015fierului {0} care con\u0163ine specifica\u0163ia de nivel personalizat. Eroare: {1}
+SpecifiedCustomHeaderFileNotFound=Fi\u015fierul {0} con\u0163ine care con\u0163ine specifica\u0163ia de antet personalizat nu a fost g\u0103sit.
+ErrorReadingCustomHeaderFile=A e\u015fuat citirea fi\u015fierului {0} care con\u0163ine specifica\u0163ia de antet personalizat. Eroare: {1}
+
+ErrorUsingHeaderTimeZone=Antetul istoricului con\u0163ine specifica\u0163ie de fus orar incorect\u0103: {0}. Se folose\u015fte valoarea implicit\u0103 a sistemului.
+
+UnsupportedEncodingError=Codificarea specificat\u0103 {0} nu este suportat\u0103 \u00een acest JVM.
+
+# -------------------------------------------------------------------------------------------------
+LVM_ERROR_INSTANCEID=Nu s-a putut folosi valoarea ID-ului de instan\u0163\u0103 furnizat\u0103 pentru op\u0163iunea -instance.  Folosi\u0163i una din valorile de id instan\u0163\u0103 valide care sunt afi\u015fate folosind op\u0163iunea -listInstances.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_LATESTINSTANCE=-latestInstance
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_LATESTINSTANCE_DESCR=\t Extrage datele de istoric \u015fi urm\u0103rire de la cea mai\n\t recent\u0103 instan\u0163\u0103 de server.  Dac\u0103 aceast\u0103 op\u0163iune este folosit\u0103\n\t cu op\u0163iunea -instance, op\u0163iunea -instance va fi ignorat\u0103.
+
+
+# ------------------------------------------------------------------------------------------------- 
+LVM_HELP_MESSAGE=-message <mesaj>
+
+# -------------------------------------------------------------------------------------------------
+LVM_HELP_MESSAGE_DESCR=\t Extrage numai date de istoric sau urm\u0103rire \n\t cu un c\u00e2mp de mesaj care se potrive\u015fte cu textul cerut. Folosi\u0163i un asterisc\n\t (*) pentru a reprezenta o serie de caractere sau un semn de \u00eentrebare (?)  \n\t pentru a reprezenta un caracter, c\u00e2nd extrage\u0163i date istoric sau urm\u0103rire.
+
+LVM_HELP_EXTENSIONS=-includeExtensions name[=value][,name[=value]]*
+
+LVM_HELP_EXTENSIONS_DESCR=\tExtrage jurnalul \u015fi datele urm\u0103 cu un nume extensie care se potrive\u015fte cu \n\t numele cerut, \u015fi o valoare extensie care se potrive\u015fte cu valoarea cerut\u0103 \n\t. Pute\u0163i de asemenea s\u0103 folosi\u0163i aceast\u0103 op\u0163iune pentru a extrage \n\t jurnalul \u015fi date urm\u0103 cu numele extensie care se potrive\u015fte cu numele cerut, \u015fi o\n\t valoare extensie care se potrive\u015fte cu orice valoare, dac\u0103 uita\u0163i partea valoare\n\t a op\u0163iunii. Separa\u0163i argumente multiple name=value cu o virgul\u0103. \n\t Specifica\u0163i '==' (dou\u0103 semne egal) \u00een loc de  '=' (un semn egal) \u00een \n \t cazurile \u00een care numele \u015fi valoarea trebuie s\u0103 con\u0163in\u0103 un semn egal. \n\t Specifica\u0163i ',,' (dou\u0103 virgule) \u00een loc de ',' (o virgul\u0103) \u00een cazul \u00een care \n \t numele valorii trebuie s\u0103 con\u0163in\u0103 o virgul\u0103.
+
+LVM_HELP_ENCODING=-encoding <charset>
+
+LVM_HELP_ENCODING_DESCR=\t Specific\u0103 setul de caractere pe care-l va folosi LogViewer pentru ie\u015firea text.
+
+#--------------------------------------------------------------------------------------------------
+LVM_HELP_SAMPLES_INTRO=Urm\u0103toarele sunt exemple de folosire LogViewer cu unele din op\u0163iunile \ndisponibile listate mai sus.
+LVM_HELP_SAMPLE1= Pentru a extrage doar intr\u0103ri istoric din magazia care are \u015fi intr\u0103ri de urm\u0103rire: \n\t logViewer.bat -minLevel DETAIL
+LVM_HELP_SAMPLE2= Pentru a extrage intr\u0103ri istoric cu nivelul minim de SEVERE din logger-ul com.my.company.name.MyClass \ncare au avut loc \u00eentre {0} \u015fi {1}:\n\t logViewer.bat -startDate "{2}" -stopDate "{3}" \n\t-includeLoggers "com.my.company.name.MyClass"  -minLevel SEVERE
+LVM_HELP_SAMPLE3= Pentru a face o salvare de rezerv\u0103 a magaziei unde {1} va con\u0163ine o copie a \nmagaziei existente de la istoric \u015fi date de urm\u0103rire de la  {0}: \n\t logViewer.bat -extractToNewRepository {1} -startDate "{2}"
+LVM_HELP_SAMPLE4= Pentru a afi\u015fa istoricul \u015fi intr\u0103rile de urm\u0103rire de la propriul cod de aplica\u0163ie (presupun\u00e2nd c\u0103 toate numele programelor de \u00eenregistrare \n\u00eencep cu com.mycompany): \n\t logViewer.bat -includeloggers com.mycompany.*

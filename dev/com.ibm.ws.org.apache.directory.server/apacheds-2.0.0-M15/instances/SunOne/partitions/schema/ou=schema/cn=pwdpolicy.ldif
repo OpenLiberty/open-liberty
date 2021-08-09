@@ -1,0 +1,7 @@
+version: 1
+dn: cn=pwdpolicy,ou=schema
+cn: pwdpolicy
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+creatorsname: uid=admin,ou=system

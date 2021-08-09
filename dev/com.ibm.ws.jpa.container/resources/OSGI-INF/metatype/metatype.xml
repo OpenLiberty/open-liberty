@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+  <OCD description="%com.ibm.ws.jpa.container.desc"
+       name="%com.ibm.ws.jpa.container"
+       id="com.ibm.ws.jpacomponent"
+       ibm:alias="jpa">
+
+    <AD name="%default.jta.datasource.jndi.name"
+        description="%default.jta.datasource.jndi.name.desc"
+        id="defaultJtaDataSourceJndiName"
+        required="false"
+        type="String" 
+        default="" />
+
+    <AD name="%default.non.jta.datasource.jndi.name"
+        description="%default.non.jta.datasource.jndi.name.desc"
+        id="defaultNonJtaDataSourceJndiName"
+        required="false"
+        type="String" 
+        default="" />
+
+    <AD name="%excluded.application"
+        description="%excluded.application.desc"
+        id="excludedApplication"
+        required="false"
+        type="String"
+        default=""
+        cardinality="2147483647" />
+
+    <AD name="%default.persistenceprovider"
+        description="%default.persistenceprovider.desc"
+        id="defaultPersistenceProvider"
+        required="false"
+        type="String" />
+
+    <!-- Minimum value 0, maximum 500, but I can't find a way to specify that in metatype -->
+    <AD name="%entitymanager.poolcapacity"
+        description="%entitymanager.poolcapacity.desc"
+        id="entityManagerPoolCapacity"
+        required="false"
+        type="Integer"
+        default="-1" />
+
+    <AD name="%ignore.data.source.errors"
+        description="%ignore.data.source.errors.desc"
+        id="ignoreDataSourceErrors"
+        required="false"
+        type="Boolean" />
+
+    <AD name="%default.properties"
+        description="%default.properties.desc"
+        id="defaultProperties"
+        required="false"
+        type="String"
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.jpacomponent.defaultProperties"
+        ibmui:group="Advanced"
+        ibm:beta="true"
+        ibm:flat="true" />
+
+  </OCD>
+
+  <Designate pid="com.ibm.ws.jpacomponent">
+    <Object ocdref="com.ibm.ws.jpacomponent" />
+  </Designate>
+
+  <!-- Default integration-level properties -->
+  <Designate factoryPid="com.ibm.ws.jpacomponent.defaultProperties">
+    <Object ocdref="com.ibm.ws.jpacomponent.defaultProperties" />
+  </Designate>
+
+  <OCD id="com.ibm.ws.jpacomponent.defaultProperties" name="%default.properties" description="%default.properties.desc" ibm:beta="true" >
+    <AD id="property" name="%default.properties.property" ibm:type="pid" ibm:flat="true" ibm:reference="com.ibm.ws.jpacomponent.defaultProperties.property" required="false" type="String" cardinality="2147483647" default="" description="%default.properties.property.desc" ibm:beta="true"/>
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.jpacomponent.defaultProperties.property">
+    <Object ocdref="com.ibm.ws.jpacomponent.defaultProperties.property"/>
+  </Designate>
+ 
+  <OCD id="com.ibm.ws.jpacomponent.defaultProperties.property" name="%default.properties.property" description="%default.properties.property.desc" ibm:beta="true" >
+    <AD id="name" required="false" type="String" default="" name="%default.properties.property.name" description="%default.properties.property.name.desc" ibm:beta="true"/>
+    <AD id="value" required="false" type="String" default="" name="%default.properties.property.value" description="%default.properties.property.value.desc" ibm:beta="true"/>
+  </OCD>
+
+</metatype:MetaData>

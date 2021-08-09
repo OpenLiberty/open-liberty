@@ -1,0 +1,89 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>cloudant-1.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>ssl-1.0</feature>
+  </featureManager>
+
+  <library id="CloudantLib">
+    <fileset dir="${shared.resource.dir}/cloudant-2.16"/>
+  </library>
+
+  <authData id="cloudantAuthData" user="${cloudant_username}" password="${cloudant_password}"/>
+  <authData id="invalidUserAuthData" user="baduser" password="badpassword"/>
+
+  <cloudant id="defCtrAuth" jndiName="cloudant/defCtrAuth" libraryRef="CloudantLib" url="${cloudant_url}">
+    <containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  </cloudant>
+
+  <cloudantDatabase jndiName="cloudant/testdb-ctrAuth" databaseName="${cloudant_databaseName}" create="true" cloudantRef="defCtrAuth"/>
+
+  <cloudantDatabase jndiName="cloudant/testdb-noAuth" databaseName="${cloudant_databaseName}" create="true" cloudantRef="noAuth"/>
+
+  <cloudantDatabase jndiName="cloudant/dbDoesNotExist" databaseName="db-does-not-exist" create="false" cloudantRef="defCtrAuth"/>
+
+  <cloudantDatabase jndiName="cloudant/dbLoadFromApp" databaseName="${cloudant_databaseName}" create="true" cloudantRef="loadFromApp"/>
+
+  <cloudant id="noAuth" jndiName="cloudant/noAuth" libraryRef="CloudantLib" url="${cloudant_url}"/>
+
+  <cloudant id="withSSL" jndiName="cloudant/withSSL" sslRef="defaultSSLConfig" libraryRef="CloudantLib" url="${cloudant_url_secure}">
+  	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  </cloudant>
+  <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore"/>
+  <keyStore id="defaultKeyStore" location="${server.config.dir}/security/keystore.jks" type="JKS" password="liberty" />
+  
+  <cloudant id="nestedSSL" jndiName="cloudant/nestedSSL" libraryRef="CloudantLib" url="${cloudant_url_secure}">
+  	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  	<ssl keyStoreRef="defaultKeyStore"/>
+  </cloudant>
+
+  <cloudant id="noSSLRef" jndiName="cloudant/noSSLRef" libraryRef="CloudantLib" url="${cloudant_url_secure}">
+  	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  </cloudant>
+  
+  <cloudant id="invalidSSL" jndiName="cloudant/invalidSSL" sslRef="invalidSSLConfig" libraryRef="CloudantLib" url="${cloudant_url_secure}">
+  	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  </cloudant>
+  <ssl id="invalidSSLConfig" keyStoreRef="invalidKeyStore"/>
+  <keyStore id="invalidKeyStore" location="${server.config.dir}/security/invalid_keystore.jks" type="JKS" password="liberty" />
+  
+  <cloudant id="noExistSSLRef" jndiName="cloudant/noExistSSLRef" sslRef="does_not_exist" libraryRef="CloudantLib" url="${cloudant_url_secure}">
+  	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  </cloudant>
+  
+  <cloudant id="sslAuthDisabled" jndiName="cloudant/sslAuthDisabled" disableSSLAuthentication="true" libraryRef="CloudantLib" url="${cloudant_url_secure}">
+  	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
+  </cloudant>
+
+  <cloudant id="loadFromApp" jndiName="cloudant/loadFromApp" url="${cloudant_url_secure}"
+    username="${cloudant_username}" password="${cloudant_password}" ibm.internal.nonship.function="true">
+    <library id="ibm.internal.simulate.no.library.do.not.ship"/> <!-- TODO remove once the feature to make libraryRef optional is GA -->
+  </cloudant>
+
+  <application location="cloudantfat.war">
+    <classloader commonLibraryRef="CloudantLib" />
+  </application>
+
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
+  <variable name="CloudantCodebase" value="${shared.resource.dir}/cloudant-2.16/cloudant-client-2.16.0.jar"/>  
+  <javaPermission codebase="${CloudantCodebase}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${cloudant_url}/_session" actions="POST:ExpectUser-Agent"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${cloudant_url_secure}/_session" actions="POST:ExpectUser-Agent"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.security.AllPermission"/> <!-- TODO replace with URLPermission once it permits wildcards - see bvt bucket-->
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="java.runtime.version" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="java.vendor" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="java.version" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="os.arch" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="os.name" actions="read"/>
+  <javaPermission codebase="${CloudantCodebase}" className="java.util.PropertyPermission" name="os.version" actions="read"/> 
+</server>

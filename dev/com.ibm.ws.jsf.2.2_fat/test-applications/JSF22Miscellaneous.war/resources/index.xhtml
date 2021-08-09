@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>JSF 2.2 Faces Flow / Miscellaneous Test Page</title>
+</h:head>
+    <h:body>
+        In flow ? #{null != facesContext.application.flowHandler.currentFlow}<br/>
+        Flow Id: #{empty facesContext.application.flowHandler.currentFlow.id ? "no flow ID" : facesContext.application.flowHandler.currentFlow.id}<br/><br/>
+        <h:form prependId="false" id="form">
+            Tests nested flows (calling into one flow from another), as well as parameter passing (passing data between the nested flows). Defined via *-flow.xml<br/>
+            <h:commandButton id="declarativeNested" value="declarative nested flow" action="declarativeNested1" immediate="true"/><br/>
+        </h:form>
+    </h:body>
+</html>

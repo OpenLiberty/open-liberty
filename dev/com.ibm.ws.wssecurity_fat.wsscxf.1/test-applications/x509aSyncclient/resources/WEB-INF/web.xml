@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   12/05/2012  chriscr        CXF Web service - XML signature service client
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>x509AsyncSvcClient</display-name>
+
+    <servlet>
+        <servlet-name>x509AsyncSvcClient</servlet-name>
+        <display-name>x509AsyncSvcClient</display-name>
+        <description>CXF X509 Signature Service Client</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.x509Asyncclient.CxfX509AsyncSvcClient</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+<!-- comment out 11/2020
+    <servlet-mapping>
+        <servlet-name>x509AsyncSvcClient</servlet-name>
+        <url-pattern>/CxfX509AsyncSvcClient</url-pattern>
+    </servlet-mapping>
+-->
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

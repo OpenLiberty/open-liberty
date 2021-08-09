@@ -1,0 +1,38 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<applicationbnd:ApplicationBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:applicationbnd="applicationbnd.xmi" xmlns:application="application.xmi" xmlns:common="common.xmi" xmi:id="Application_ID_Bnd" appName="">
+  <application href="META-INF/application.xml#Application_ID_Wssecfvt"/>
+  <authorizationTable xmi:id="AuthorizationTable_1">
+    <authorizations xmi:id="RoleAssignment_1">
+      <role href="META-INF/application.xml#SecurityRole_1"/>
+      <specialSubjects xsi:type="applicationbnd:AllAuthenticatedInTrustedRealms" xmi:id="AllAuthenticatedInTrustedRealms_1" name="AllAuthenticatedInTrustedRealms"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_2">
+      <role href="META-INF/application.xml#SecurityRole_2"/>
+      <users xmi:id="User_3" name="user2"/>
+      <users xmi:id="User_4" name="user4"/>
+      <groups xmi:id="Group_2" name="group2"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_3">
+      <role href="META-INF/application.xml#SecurityRole_3"/>
+      <specialSubjects xsi:type="applicationbnd:AllAuthenticatedUsers" xmi:id="AllAuthenticatedUsers_1" name="AllAuthenticatedUsers"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_4">
+      <role href="META-INF/application.xml#SecurityRole_4"/>
+      <groups xmi:id="Group_3" name="sgroup2@http://ws-rhel4-7.austin.ibm.com/idp" accessId="group:http://ws-rhel4-7.austin.ibm.com/idp/cn=sgroup2,o=ibm,c=us"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_5">
+      <role href="META-INF/application.xml#SecurityRole_5"/>
+    </authorizations>
+  </authorizationTable>
+</applicationbnd:ApplicationBinding>

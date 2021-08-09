@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#COMPONENTPREFIX CWMRX
+
+# LRA is currently using the message prefix CWMRX in the range 5000-5999
+# This is temporary and should be fixed with a proper prefix before GA.
+
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: Az LRA koordin\u00e1tor URI nem \u00e9rv\u00e9nyes.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=Az LRA r\u00e9sztvev\u0151knek k\u00e9peseknek kell lenni\u00fck a kapcsolatba l\u00e9p\u00e9sre a koordin\u00e1torral.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Jav\u00edtsa ki az LRA koordin\u00e1tor konfigur\u00e1ci\u00f3j\u00e1t a server.xml f\u00e1jlban.
+
+
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: Hiba t\u00f6rt\u00e9nt az mpLRA-1.0 szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1sa sor\u00e1n. A hiba: {0}.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=LRA hiba t\u00f6rt\u00e9nt, ami megakad\u00e1lyozza a norm\u00e1lis m\u0171k\u00f6d\u00e9st.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s az FFDC napl\u00f3kat \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.

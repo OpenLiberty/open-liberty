@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.2.2.10,ou=attributeTypes,cn=apachedns,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: integerMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.2.2.10
+m-name: apacheDnsSoaRetry
+m-description: A 32 bit time interval that should elapse before a failed refresh
+  should be retired
+m-obsolete: FALSE
+entryUUID: 23ce654a-e5f5-476d-bc90-8582c6b3f093
+entryCSN: 20130919081858.404000Z#000000#000#000000
+entryParentId: 07185865-c322-4ec6-9ca2-88da43b111e8
+createTimestamp: 20130919081911.336Z

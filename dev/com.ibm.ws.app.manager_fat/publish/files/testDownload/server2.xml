@@ -1,0 +1,16 @@
+<server description="default server">
+	<applicationMonitor dropins="dropins(fish)"/>
+	
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+	   <feature>localConnector-1.0</feature>
+    </featureManager>
+    
+    <applicationMonitor updateTrigger="mbean"/>
+	
+	<include location="../fatTestPorts.xml"/>
+    
+    <application id="testDownloadValidFileFromWWW" location="testDownloadValidFileFromWWW.war" name="testDownloadValidFileFromWWW" type="war"/>
+
+	<application id="downloadApp" location="http://localhost:${bvt.prop.HTTP_default}/testDownloadValidFileFromWWW/downloadApp.war" name="downloadApp" type="war"/>
+</server>

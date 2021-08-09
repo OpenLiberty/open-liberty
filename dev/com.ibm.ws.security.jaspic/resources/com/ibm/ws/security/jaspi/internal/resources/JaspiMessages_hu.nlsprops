@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.jaspic-1.1/resources/com/ibm/ws/security/jaspi/resources/JaspiMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JASPI Authentication
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1650 - CWWKS1699
+
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED=CWWKS1650I: A Java Authentication SPI for Containers (JASPIC) AuthConfigProvider oszt\u00e1lya hozz\u00e1ad\u00e1sra ker\u00fclt az AuthConfigFactory.registerConfigProvider alkalmaz\u00e1sprogramoz\u00e1si fel\u00fcleten kereszt\u00fcl. Az AuthConfigProvider oszt\u00e1ly neve: {0}.
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED.explanation=A JASPIC AuthConfigProvider oszt\u00e1ly ezzel m\u00e1r rendelkez\u00e9sre \u00e1ll a bej\u00f6v\u0151 webes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED.useraction=Nincs teend\u0151. 
+
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED=CWWKS1651I: A Java Authentication SPI for Containers (JASPIC) AuthConfigProvider oszt\u00e1lya elt\u00e1vol\u00edt\u00e1sra ker\u00fclt az AuthConfigFactory.removeRegistration alkalmaz\u00e1sprogramoz\u00e1si fel\u00fcleten kereszt\u00fcl. Az AuthConfigProvider oszt\u00e1ly neve: {0}.
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED.explanation=A JASPIC AuthConfigProvider oszt\u00e1ly m\u00e1r nem \u00e1ll rendelkez\u00e9sre a bej\u00f6v\u0151 webes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED.useraction=Nincs teend\u0151. 
+
+JASPI_PROVIDER_FAILED_AUTHENTICATE=CWWKS1652A: A(z) {1} webes k\u00e9r\u00e9s hiteles\u00edt\u00e9se {0} \u00e1llapottal meghi\u00fasult. A felhaszn\u00e1l\u00f3 \u00e1ltal megadott Java Authentication SPI for Containers (JASPIC) szolg\u00e1ltat\u00e1s ({2}) meg\u00e1llap\u00edtotta, hogy a hiteles\u00edt\u00e9si adatok \u00e9rv\u00e9nytelenek.
+JASPI_PROVIDER_FAILED_AUTHENTICATE.explanation=A webes k\u00e9r\u00e9s felhaszn\u00e1l\u00f3 \u00e1ltal megadott Java Authentication SPI for Containers (JASPIC) szolg\u00e1ltat\u00f3 \u00e1ltali hiteles\u00edt\u00e9se az adott oszt\u00e1lyn\u00e9vvel meghi\u00fasult.
+JASPI_PROVIDER_FAILED_AUTHENTICATE.useraction=Ellen\u0151rizze, hogy a webes k\u00e9r\u00e9s a felhaszn\u00e1l\u00f3 \u00e1ltal megadott JASPIC szolg\u00e1ltat\u00f3 eset\u00e9ben \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si adatokat tartalmazott-e. Keressen a JASPIC szolg\u00e1ltat\u00f3 \u00e1ltal kiadott \u00fczeneteket \u00e9s konzult\u00e1ljon rendszergazd\u00e1j\u00e1val a JASPIC szolg\u00e1ltat\u00f3 hiteles\u00edt\u00e9si adat k\u00f6vetelm\u00e9nyeivel kapcsolatban.
+
+JASPI_PROVIDER_SERVICE_ACTIVATED=CWWKS1653I: Aktiv\u00e1l\u00e1sra ker\u00fclt egy felhaszn\u00e1l\u00f3 \u00e1ltal meghat\u00e1rozott \u00f6sszetev\u0151, amely megval\u00f3s\u00edt egy Java Authentication SPI for Containers (JASPIC) szolg\u00e1ltat\u00e1st. A szolg\u00e1ltat\u00e1s oszt\u00e1lyneve: {0}.
+JASPI_PROVIDER_SERVICE_ACTIVATED.explanation=A felhaszn\u00e1l\u00f3 \u00e1ltal meghat\u00e1rozott \u00f6sszetev\u0151, amely egy JASPIC szolg\u00e1ltat\u00e1st val\u00f3s\u00edt meg, imm\u00e1r rendelkez\u00e9sre \u00e1ll a bej\u00f6v\u0151 webes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
+JASPI_PROVIDER_SERVICE_ACTIVATED.useraction=Nincs teend\u0151. 
+
+JASPI_PROVIDER_SERVICE_DEACTIVATED=CWWKS1654I: Le\u00e1ll\u00edt\u00e1sra ker\u00fclt egy felhaszn\u00e1l\u00f3 \u00e1ltal meghat\u00e1rozott \u00f6sszetev\u0151, amely egy Java Authentication SPI for Containers (JASPIC) szolg\u00e1ltat\u00e1st val\u00f3s\u00edt meg. A szolg\u00e1ltat\u00e1s oszt\u00e1lyneve: {0}.
+JASPI_PROVIDER_SERVICE_DEACTIVATED.explanation=A felhaszn\u00e1l\u00f3 \u00e1ltal meghat\u00e1rozott \u00f6sszetev\u0151, amely egy JASPIC szolg\u00e1ltat\u00e1st val\u00f3s\u00edt meg, m\u00e1r nem \u00e1ll rendelkez\u00e9sre a bej\u00f6v\u0151 webes k\u00e9r\u00e9sek hiteles\u00edt\u00e9s\u00e9hez.
+JASPI_PROVIDER_SERVICE_DEACTIVATED.useraction=Nincs teend\u0151. 
+
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY=CWWKS1655I: Az alap\u00e9rtelmezett Java Authentication SPI for Containers (JASPIC) AuthConfigFactory oszt\u00e1ly ({0}) ker\u00fcl felhaszn\u00e1l\u00e1sra, mert az authconfigprovider.factory Java biztons\u00e1gi tulajdons\u00e1g nincs be\u00e1ll\u00edtva. 
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY.explanation=Az alap\u00e9rtelmezett JASPIC AuthConfigFactory oszt\u00e1ly ker\u00fcl felhaszn\u00e1l\u00e1sra, mert az authconfigprovider.factory Java biztons\u00e1gi tulajdons\u00e1g nincs be\u00e1ll\u00edtva.
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY.useraction=Nincs teend\u0151. 
+
+JASPI_AUTH_CONFIG_FACTORY=CWWKS1656I: A haszn\u00e1lt Java Authentication SPI for Containers (JASPIC) AuthConfigFactory oszt\u00e1ly a k\u00f6vetkez\u0151: {0}. Az oszt\u00e1lyn\u00e9v az authconfigprovider.factory Java biztons\u00e1gi tulajdons\u00e1g \u00e9rt\u00e9ke.  
+JASPI_AUTH_CONFIG_FACTORY.explanation=Az authconfigprovider.factory Java biztons\u00e1gi tulajdons\u00e1g \u00e1ltal megadott oszt\u00e1ly ker\u00fcl felhaszn\u00e1l\u00e1sra JASPIC AuthConfigFactory oszt\u00e1lyk\u00e9nt. 
+JASPI_AUTH_CONFIG_FACTORY.useraction=Nincs teend\u0151. 

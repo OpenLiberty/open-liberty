@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs.2.0.server/resources/com/ibm/ws/jaxrs20/server/internal/resources/JaxRsWebServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS WebContainer Code
+#RANGE 0100 - 0199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+warn.provider.no.public.ctor=CWWKW0100W: Clasa de furnizor JAX-RS, {0} din aplica\u0163ie nu con\u0163ine niciun constructor public. Serverul va ignora acest furnizor.
+warn.provider.no.public.ctor.explanation=Specifica\u0163ia JAX-RS cere ca clasele de furnizor s\u0103 con\u0163in\u0103 cel pu\u0163in un constructor public de invocat pentru implementarea de container JAX-RS. Clasa de furnizor specificat\u0103 nu con\u0163ine un constructor public, a\u015fa c\u0103 serverul o va ignora.
+warn.provider.no.public.ctor.useraction=Dac\u0103 aplica\u0163ia are nevoie de acest furnizor, atunci aceast\u0103 clas\u0103 trebuie modificat\u0103 pentru a include cel pu\u0163in un constructor public. Pentru mai multe informa\u0163ii, vede\u0163i sec\u0163iunea 4.1.2 a specifica\u0163iei JAX-RS 2.0 (JSR 339).
+
+warn.servlet.specified.without.application=CWWKW0101W: Fi\u015fierul web.xml din modulul {0} specific\u0103 un servlet cu numele de {1} \u015fi clasa {2} dar nu specific\u0103 parametrul necesar de ini\u0163ializare Aplica\u0163ie<.
+warn.servlet.specified.without.application.explanation=Fi\u015fierul web.xml trebuie s\u0103 specifice un element de ini\u0163ializare parametri de Aplica\u0163ie la declararea servleturilor JAX-RS.  Pentru mai multe informa\u0163ii, vede\u0163i Knowledge Center: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.without.application.useraction=Actualiza\u0163i fi\u015fierul web.xml pentru a include elementul de ini\u0163ializare parametri necesar pentru a preciza clasa Aplica\u0163iei din acest modul.
+
+warn.servlet.specified.with.invalid.application=CWWKW0102W: Fi\u015fierul web.xml din modulul {0} specific\u0103 un servlet cu numele {1} care declar\u0103 o clas\u0103 invalid\u0103 de Aplica\u0163ie \u00een parametrul de ini\u0163ializare.  Clasa {2} nu este o subclas\u0103 de javax.ws.rs.Application.
+warn.servlet.specified.with.invalid.application.explanation=Fi\u015fierul web.xml trebuie s\u0103 specifice un element de ini\u0163ializare parametri cu numele de parametru "javax.ws.rs.Application" \u015fi valoarea de parametru a unei clase de aplica\u0163ii care extinde javax.ws.rs.Application. Pentru mai multe informa\u0163ii, vede\u0163i Knowledge Center: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.with.invalid.application.useraction=Actualiza\u0163i fi\u015fierul web.xml pentru a specifica o subclas\u0103 de Aplica\u0163ii \u00een acest modul.

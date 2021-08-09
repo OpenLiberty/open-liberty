@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: Le collecteur logstash n''est pas parvenu \u00e0 se connecter au serveur logstash sur l''h\u00f4te {0} et le num\u00e9ro de port {1} sp\u00e9cifi\u00e9s. 
+LOGSTASH_CONNECTION_FAILED.explanation=La connexion au serveur logstash a \u00e9chou\u00e9 vu que ce serveur n'\u00e9tait pas en ex\u00e9cution sur l'h\u00f4te sp\u00e9cifi\u00e9, que les informations de configuration (comme le nom d'h\u00f4te et le num\u00e9ro de port) \u00e9taient incorrectes ou que l'entr\u00e9e lumberjack n'\u00e9tait pas configur\u00e9e sur le serveur logstash.  
+LOGSTASH_CONNECTION_FAILED.useraction=V\u00e9rifiez les informations de configuration et lancez le serveur logstash sur l'h\u00f4te sp\u00e9cifi\u00e9. V\u00e9rifiez que l'entr\u00e9e lumberjack est configur\u00e9e correctement et que l'h\u00f4te et le num\u00e9ro de port sp\u00e9cifi\u00e9s pour la configuration du collecteur logstash dans le fichier server.xml concordent avec la configuration du serveur logstash correspondant.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: Le collecteur logstash n'est pas parvenu \u00e0 envoyer des \u00e9v\u00e9nements au serveur logstash. Une connexion au serveur logstash est requise pour envoyer des \u00e9v\u00e9nements.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=L'envoi d'\u00e9v\u00e9nements a \u00e9chou\u00e9 vu que la connexion au serveur logstash n'est pas disponible. Il se peut que la connexion ait \u00e9t\u00e9 \u00e9tablie auparavant, mais elle semble \u00eatre d\u00e9connect\u00e9e \u00e0 pr\u00e9sent. Le syst\u00e8me poursuivra ses tentatives et se connectera au serveur logstash lorsqu'il deviendra disponible.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=V\u00e9rifiez que le serveur logstash est en op\u00e9ration sur l'h\u00f4te.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: Le collecteur logstash est connect\u00e9 au serveur logstash sur l''h\u00f4te {0} et le num\u00e9ro de port {1} sp\u00e9cifi\u00e9s.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=La connexion du connecteur logstash au serveur logstash a abouti.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Aucune action n'est requise.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: Le collecteur Logstash est d\u00e9connect\u00e9 du serveur Logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=Le collecteur Logstash ferme et r\u00e9tablit la connexion au serveur Logstash lorsque la configuration de ce collecteur est mise \u00e0 jour, notamment en cas de modifications du r\u00e9pertoire SSL d\u00e9pendant et de la configuration du magasin de cl\u00e9s. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Aucune action n'est requise.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: Le collecteur logstash ne reconna\u00eet pas la source {0} sp\u00e9cifi\u00e9e.
+LOGSTASH_SOURCE_UNKNOWN.explanation=La source sp\u00e9cifi\u00e9e n'est pas l'une des sources par d\u00e9faut fournies par l'environnement d'ex\u00e9cution Liberty. Elle peut faire partie d'une fonction Liberty qui n'a pas \u00e9t\u00e9 ajout\u00e9e \u00e0 la configuration de serveur.
+LOGSTASH_SOURCE_UNKNOWN.useraction=V\u00e9rifiez les informations de configuration. Assurez-vous d'avoir sp\u00e9cifi\u00e9 l'une des sources prises en charge pour le collecteur.
+

@@ -1,0 +1,28 @@
+{
+    "goog": "true",
+	"globalization": "true",
+	"editorMessages": "true",
+	"core": "true",
+	"constants": "true",
+	"customizationManager": "true",
+	"editor": "true",
+	"schemaUtils": "true",
+	"xmlUtils": "true",
+	"source": "true",
+	"fileUtils": "true",
+	"includesCustomization": "true",
+	"featureListCustomization": "true",
+	"settings": "true",
+	"editorTree": "true",
+	"fileChangedDuringEditingDialog": "true",
+	"saveBeforeClosingDialog": "true",
+	"stringUtils": "true",
+	"collectiveUtils": "true",
+	"fileExplorer": "true",
+	"serverExplorer": "true",
+	"editorForm": "true",
+	"orion": "true",
+	"login": "true",
+	"apiMsgUtils": "true"
+}
+

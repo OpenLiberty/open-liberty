@@ -1,0 +1,119 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: Der Ressourcenadapter {0} wurde innerhalb von {1} Sekunden installiert.
+J2CA7001.adapter.install.successful.explanation=Der Server hat den Ressourcenadapter erfolgreich installiert.
+J2CA7001.adapter.install.successful.useraction=Es ist keine Aktion erforderlich.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: Beim Installieren des Ressourcenadapters {0} ist eine Ausnahme eingetreten. Ausnahmenachricht: {1}
+J2CA7002.adapter.install.failed.explanation=Der Server konnte den Ressourcenadapter nicht installieren.
+J2CA7002.adapter.install.failed.useraction=Suchen Sie in der Ausnahmenachricht nach weiteren Informationen. 
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=J2CA7006E: Der Server konnte unter {0} keine Downloadposition f\u00fcr den Ressourcenadapter {1} erstellen.
+J2CA7006.cannot.create.directory.explanation=Beim Versuch, einen zu installierenden Ressourcenadapter herunterzuladen, konnte der Server das Downloadverzeichnis nicht erstellen.
+J2CA7006.cannot.create.directory.useraction=Stellen Sie sicher, dass ausreichender Plattenspeicherplatz f\u00fcr den Download verf\u00fcgbar ist.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: Der Ressourcenadapter {0} wurde erfolgreich deinstalliert.
+J2CA7009.adapter.uninstalled.explanation=Der Server hat den Ressourcenadapter erfolgreich deinstalliert.
+J2CA7009.adapter.uninstalled.useraction=Es ist keine Aktion erforderlich.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: Beim Deinstallieren des Ressourcenadapters {0} ist eine Ausnahme eingetreten. Ausnahmenachricht: {1}
+J2CA7010.adapter.uninstall.failed.explanation=Der Server konnte den Ressourcenadapter nicht deinstallieren.
+J2CA7010.adapter.uninstall.failed.useraction=Stellen Sie sicher, dass der Ressourcenadapter einen Zustand hat, in dem er deinstalliert werden kann.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: Der Ressourcenadapter {0} wurde nicht installiert.
+J2CA7012.adapter.not.installed.explanation=Der Ressourcenadapter konnte wegen fr\u00fcherer Fehler nicht installiert werden. 
+J2CA7012.adapter.not.installed.useraction=\u00dcberpr\u00fcfen Sie die Ressourcenadapterkonfiguration und suchen Sie in den Protokollen nach Fehlern, die w\u00e4hrend der Installation des Ressourcenadapters aufgetreten sind.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: Es ist nicht m\u00f6glich, mehrere Ressourcenadapter oder andere Artefakte mit dem Namen {0} zu installieren.
+J2CA7013.duplicate.adapter.name.explanation=Der Ressourcenadaptername muss eindeutig sein. M\u00f6glicherweise wurden mehrere Ressourcenadapter oder andere Artefakte mit demselben Namen konfiguriert. Es ist aber auch m\u00f6glich, dass ein einziger Ressourcenadapter von der Konfiguration in der Datei server.xml und durch Speichern des Ressourcenadapters im Verzeichnis dropins implementiert wurde.
+J2CA7013.duplicate.adapter.name.useraction=Wenn mehrere Ressourcenadapter oder andere Artefakte denselben Namen haben, entfernen Sie einen der Ressourcenadapter bzw. eines der Artefakte. Wenn ein einziger Ressourcenadapter auf zwei verschiedene Arten implementiert wurde, \u00e4ndern Sie die Konfiguration so, dass nur eine einzige Implementierungsmethode verwendet wird.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: Der Ressourcenadapter {0} konnte nicht installiert werden, weil er nicht an der Position {1} gefunden wurde.
+J2CA7014.adapter.not.found.explanation=Der Server hat den Ressourcenadapter nicht an der angegebenen Position (bzw. an relativen Positionen, falls ein relativer Pfad angegeben wurde) gefunden.
+J2CA7014.adapter.not.found.useraction=Vergewissern Sie sich, dass die definierte Position f\u00fcr den Ressourcenadapter korrekt ist.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: Der Ressourcenadapter {0} wird installiert.
+J2CA7018.installing.adapter.explanation=Der Ressourcenadapter wird gerade installiert.
+J2CA7018.installing.adapter.useraction=Es ist keine Aktion erforderlich.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: Der Ressourcenadapter {0} wurde nicht aktualisiert.
+J2CA7020.adapter.not.updated.explanation=Der Ressourcenadapter konnte wegen fr\u00fcherer Fehler nicht installiert werden. 
+J2CA7020.adapter.not.updated.useraction=\u00dcberpr\u00fcfen Sie die Ressourcenadapterkonfiguration und suchen Sie in den Protokollen nach Fehlern, die w\u00e4hrend der Installation des Ressourcenadapters aufgetreten sind.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: Der Ressourcenadapter {1} an der Position {0} ist nicht g\u00fcltig.
+J2CA7021.adapter.at.location.not.valid.explanation=Das Archiv oder Verzeichnis an der angegebenen Position ist nicht g\u00fcltig. Deshalb kann der Ressourcenadapter nicht installiert werden.
+J2CA7021.adapter.at.location.not.valid.useraction=Stellen Sie sicher, dass das angegebenen Archiv oder das Verzeichnis g\u00fcltig sind.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: Der Ressourcenadapter {0} wurde nicht innerhalb von {1} Sekunden installiert.
+J2CA7022.adapter.slow.install.explanation=Der Ressourcenadapter wurde nicht innerhalb der erwarteten Zeit installiert. Das kann an einer Server\u00fcberlastung liegen oder daran, dass der Ressourcenadapter gro\u00df ist. Wenn der Ressourcenadapter im rahmen des Serverstarts installiert wird, wird der Serverstart beendet, ohne das Ende der Ressourcenadapterinstallation abzuwarten.
+J2CA7022.adapter.slow.install.useraction=Wenn die Installation des Ressourcenadapters lange dauert, ist keine Aktion erforderlich. Andernfalls suchen Sie in den Serverprotokollen, ob andere Nachrichten die Ursache f\u00fcr das Problem angeben.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: Beim Versuch, den Ressourcenadapter {0} automatisch zu deinstallieren, ist eine Ausnahme eingetreten.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=Der installierte Ressourcenadapter wurde nicht auf dem Server gefunden.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=Es ist keine Aktion erforderlich.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: Beim Versuch, den Ressourcenadapter {0} automatisch zu installieren, ist eine Ausnahme eingetreten.
+J2CA7056.monitor.adapter.install.fail.explanation=Der Ressourcenadapter konnte vom Server nicht installiert werden.
+J2CA7056.monitor.adapter.install.fail.useraction=Es ist keine Aktion erforderlich.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: Der Ressourcenadapter {0}, der \u00fcber {1} installiert wurde, wurde gel\u00f6scht, obwohl er noch konfiguriert ist.
+J2CA7059.invalid.delete.of.adapter.explanation=Ein Ressourcenadapter, der momentan in der Datei server.xml konfiguriert ist, wurde gel\u00f6scht.
+J2CA7059.invalid.delete.of.adapter.useraction=Wenn das L\u00f6schen des Ressourcenadapters beabsichtigt war, entfernen Sie die Ressourcenadapterkonfiguration aus der Datei server.xml.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: Der Anwendungsserver kann den Ressourcenadapter {0} nicht \u00fcberwachen.
+J2CA7060.adapter.monitoring.fail.explanation=Es wurde ein Ressourcenadapter installiert, aber die \u00dcberwachung auf dem Ressourcenadapter wurde nicht gestartet. Wenn eine Datei im Ressourcenadapter aktualisiert wird, wird die \u00c4nderung vom Server nicht erkannt. 
+J2CA7060.adapter.monitoring.fail.useraction=Deinstallieren Sie bei der Aktualisierung von Dateien in diesem Ressourcenadapter den Ressourcenadapter manuell und installieren Sie ihn dann erneut im Server.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: Der Anwendungsserver konnte den Ressourcenadapter {0} nicht installieren.
+error.not.installed.explanation=Ein fr\u00fcherer Fehler hat die Installation des Ressourcenadapters verhindert.
+error.not.installed.useraction=\u00dcberpr\u00fcfen Sie die Position, die im Konfigurationselement f\u00fcr den Ressourcenadapter angegeben ist.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=J2CA7702E: In der Anwendung {0} ist bei der Verarbeitung des Anwendungsdeskriptors {1} ein Parsing-Fehler aufgetreten: {2}
+error.application.parse.descriptor.explanation=Beim Parsing des Anwendungsdeskriptors ist ein Fehler aufgetreten. Es sind keine Module f\u00fcr die Anwendung verf\u00fcgbar.
+error.application.parse.descriptor.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten. \u00dcberpr\u00fcfen Sie den Inhalt des Anwendungsdeskriptors, um sicherzustellen, dass der Inhalt aus g\u00fcltigen XML-Daten besteht.

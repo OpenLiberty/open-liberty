@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.mfp.CWSIEMessages.props
+#
+# SIB.externals component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIE0001=CWSIE0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIE0001-CWSIE0010 belong to class com.ibm.websphere.sib.SIMessageFactory
+#   - Msgs in the range CWSIE0011-CWSIE0020 belong to class com.ibm.ws.sib.mfp.impl.SISystemMessageFactoryImpl
+#   - Msgs in the range CWSIE0101-CWSIE0110 belong to class com.ibm.websphere.sib.SIDestinationAddressFactory
+#   - Msgs in the range CWSIE0111-CWSIE0120 belong to class com.ibm.websphere.sib.SIDataGraphFactory
+#   - CWSIE9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/websphere/sib/CWSIEMessages.nlsprops
+#COMPONENTPREFIX CWSIE
+#COMPONENTNAMEFOR CWSIE SIBus Externals
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIE0001=CWSIE0001E: Es kann keine SIMessageFactory-Instanz erstellt werden: Ausnahme {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIE0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIE0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_INSTANTIATE_FACTORY_CWSIE0011=CWSIE0011E: Es kann keine SIBusSdoMessageFactory-Instanz erstellt werden: Ausnahme {0}.
+UNABLE_TO_INSTANTIATE_FACTORY_CWSIE0011.explanation=CMSG0001
+UNABLE_TO_INSTANTIATE_FACTORY_CWSIE0011.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+FACTORY_MISSING_CWSIE0012=CWSIE0012E: Die SIMessageFactory kann aufgrund vorausgegangener Fehler nicht verwendet werden: Ausnahme {0}.
+FACTORY_MISSING_CWSIE0012.explanation=CMSG0001
+FACTORY_MISSING_CWSIE0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIE0101=CWSIE0101E: Es kann keine SIDestinationAddressFactory-Instanz erstellt werden: Ausnahme {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIE0101.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIE0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIE0111=CWSIE0111E: Es kann keine SIDataGraphFactory-Instanz erstellt werden: Ausnahme {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIE0111.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIE0111.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIE9999=CWSIE9999E: {0}
+TEMPORARY_CWSIE9999.explanation=Falls die in der Nachricht enthaltenen Informationen nicht ausreichend sind, suchen Sie in Begleitnachrichten nach weiteren Informationen.
+TEMPORARY_CWSIE9999.useraction=Suchen Sie in den Begleitnachrichten nach weiteren Informationen. 

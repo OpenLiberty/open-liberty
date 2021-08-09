@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>JSF 2.3 SelectOneRadio Ajax Request</title>
+    </h:head>
+    <h:body>
+        <H2>JSF 2.3 SelectOneRadio Ajax Request</H2>
+        <br/>
+        <h:form id="f1">
+            <h:selectOneRadio id="radioOther" group="group2" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="staticValue1"/>
+                <f:selectItem itemValue="staticValue2"/>
+                <f:selectItem itemValue="staticValue3"/>
+            </h:selectOneRadio>
+        </h:form>
+
+        <h:form id="f2">
+            <h:selectOneRadio id="radio1" group="group1" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="staticValue1"/>
+                <f:selectItem itemValue="staticValue2"/>
+                <f:selectItem itemValue="staticValue3"/>
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" group="group1"/>
+        </h:form>
+
+        <br/>
+        Select the a radio button below to execute Ajax request
+        <h:form id="f3">
+            <h:selectOneRadio id="radio0" group="group1" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="staticValue1"/>
+                <f:selectItem itemValue="staticValue2"/>
+                <f:selectItem itemValue="staticValue3"/>
+                <f:ajax execute="@this" render="@form :outputText1" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio1A" group="group1">
+                <f:ajax execute="@this radio0" render="@form :outputText1" />
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio1B" group="group1">
+                <f:ajax execute="@this radio0" render="@form :outputText1" />
+            </h:selectOneRadio>
+        </h:form>
+        <br/>
+        <h:outputText id="outputText1" value="Selected Value: #{selectOneRadioGroupBean.selectedValue}" />
+    </h:body>
+</html>

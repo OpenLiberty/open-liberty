@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="MetadataCompleteTrueWebFragment" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" metadata-complete="false">
+  <display-name>Annotation servlets where metadata-complete=true in web-fragment.xml</display-name>
+  <description>Since metadata-complete=true in web-fragment.xml, static annotations are ignored</description>
+  
+  	<!-- MetadataCompleteTrueWebFragment1 not defined in web.xml or in web-fragment.xml. Servlet and security constraints are defined in static annotations
+         But since metadata-complete=true in web-fragment.xml, servlet and security constraints in static annotations are ignored for MetadataCompleteTrueWebFragment1-->
+
+  	<!-- MetadataCompleteTrueWebFragment2 not defined in web.xml, but defined in web-fragment.xml. Security constraints defined in static annotations
+         Since web fragment jar does NOT contain MetadataCompleteTrueWebFragment2 servlet, security constraints in static annotations take effect -->  	
+
+</web-app>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="..."
+      version="3.0">     
+
+  	<!-- MetadataCompleteTrueWebXML2 run-as role not defined in web.metadatacompletetruewebxml.xml. run-as role in web-fragment.xml (Manager) defined for /MetadataCompleteTrueWebXMLFragment2.
+         But since metadata-complete=true, run-as role in  web-fragment.xml is ignored -->
+	<servlet id="Servlet_2">
+    	<servlet-name>MetadataCompleteTrueWebXML2</servlet-name>
+    	<display-name>MetadataCompleteTrueWebXML2</display-name>
+    	<description>MetadataCompleteTrueWebXML2</description>
+    	<servlet-class>web.metadatacompletetruewebxml.MetadataCompleteTrueWebXML2</servlet-class>
+        <run-as>
+        	<role-name>Manager</role-name>
+        </run-as>         
+ 	</servlet>
+                 
+</web-fragment>

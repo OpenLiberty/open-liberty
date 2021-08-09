@@ -1,0 +1,73 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime Data Binding JAX-B
+Bundle-Description: Apache CXF Runtime Data Binding JAX-B, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2
+
+ 
+Export-Package: \
+  org.apache.cxf.endpoint.dynamic;version="2.6.2", \
+  org.apache.cxf.jaxb;version="2.6.2", \
+  org.apache.cxf.jaxb.attachment, \
+  org.apache.cxf.jaxb.io;version="2.6.2"
+
+Import-Package: \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  com.sun.tools.xjc.reader.internalizer;resolution:=optional, \
+  javax.activation, \
+  javax.xml.bind;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.bind.annotation.adapters;version="[2.2,3)", \
+  javax.xml.bind.attachment;version="[2.2,3)", \
+  javax.xml.datatype, \
+  javax.xml.namespace, \
+  javax.xml.stream, \
+  javax.xml.stream.util, \
+  javax.xml.transform.dom, \
+  javax.xml.transform.stream, \
+  javax.xml.validation, \
+  org.apache.commons.lang;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.commons.lang.builder;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.attachment;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.catalog;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.classloader;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.jaxb;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.xmlschema;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.databinding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.jaxb;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.jaxb.attachment;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.jaxb.io;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.resource;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.factory;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.staxutils;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  org.apache.ws.commons.schema, \
+  org.apache.ws.commons.schema.extensions, \
+  org.apache.ws.commons.schema.utils, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.w3c.dom, \
+  org.xml.sax, \
+  org.xml.sax.helpers

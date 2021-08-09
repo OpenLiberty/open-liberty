@@ -1,0 +1,116 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime HTTP Transport
+Bundle-Description: Apache CXF Runtime HTTP Transport, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2
+Bundle-Activator: org.apache.cxf.transport.http.osgi.HTTPTransportActivator
+
+
+DynamicImport-Package: \
+  com.ctc.wstx.*
+
+Export-Package: \
+  META-INF.cxf.osgi;version="2.6.2", \
+  org.apache.cxf.transport.http;version="2.6.2", \
+  org.apache.cxf.transport.http.auth;version="2.6.2", \
+  org.apache.cxf.transport.http.blueprint;version="2.6.2", \
+  org.apache.cxf.transport.http.osgi;version="2.6.2", \
+  org.apache.cxf.transport.http.policy;version="2.6.2", \
+  org.apache.cxf.transport.http.policy.impl;version="2.6.2", \
+  org.apache.cxf.transport.http.spring;version="2.6.2", \
+  org.apache.cxf.transport.https;version="2.6.2", \
+  org.apache.cxf.transport.servlet;version="2.6.2", \
+  org.apache.cxf.transport.servlet.servicelist;version="2.6.2", \
+  org.apache.cxf.transports.http.configuration;version="2.6.2", \
+
+Import-Package: \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  javax.activation, \
+  javax.annotation, \
+  javax.naming, \
+  javax.naming.directory, \
+  javax.naming.ldap, \
+  javax.net.ssl, \
+  javax.security.auth, \
+  javax.security.auth.callback, \
+  javax.security.auth.login, \
+  javax.security.auth.x500, \
+  javax.servlet;resolution:=optional;version="[0.0,4)", \
+  javax.servlet.http;resolution:=optional;version="[0.0,4)", \
+  javax.wsdl, \
+  javax.wsdl.extensions, \
+  javax.wsdl.extensions.http, \
+  javax.wsdl.extensions.soap, \
+  javax.xml.bind;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.namespace, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.attachment;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.classloader;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.blueprint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.jsse;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.security;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.configuration.spring;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.continuations;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.feature;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor.security;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.io;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.policy;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.resource;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.security;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.security.transport;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport.http;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport.http.auth;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport.http.policy.impl;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport.https;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport.servlet;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport.servlet.servicelist;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transports.http;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transports.http.configuration;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.version;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.workqueue;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.addressing;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.ws.policy.builder.jaxb;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl.http;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl11;version="[2.6.2,2.6.3)", \
+  org.apache.neethi;resolution:=optional, \
+  org.ietf.jgss, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.w3c.dom, \
+
+Private-Package: \
+  schemas.configuration, \
+  schemas.wsdl

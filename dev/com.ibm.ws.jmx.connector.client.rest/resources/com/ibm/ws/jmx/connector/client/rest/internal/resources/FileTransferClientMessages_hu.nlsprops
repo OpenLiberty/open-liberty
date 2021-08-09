@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: \u00daj f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l csatlakozott {0} kapcsolatazonos\u00edt\u00f3val.
+filetransfer.client.init.explanation=\u00daj f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l csatlakozott a megadott kapcsolatazonos\u00edt\u00f3val.
+filetransfer.client.init.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+filetransfer.client.error=CWWKX7952E: \u00dcgyf\u00e9loldali "{0}" hiba\u00fczenet a(z) {1} kapcsolat eset\u00e9ben.
+filetransfer.client.error.explanation=A JMX REST csatol\u00f3 \u00fcgyf\u00e9l oldal\u00e1n hiba t\u00f6rt\u00e9nt, \u00e9s a megadott \u00fczenet j\u00f6tt l\u00e9tre.
+filetransfer.client.error.useraction=Az el\u0151\u00e1ll\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel azonos\u00edtsa \u00e9s jav\u00edtsa a hib\u00e1t okoz\u00f3 probl\u00e9m\u00e1t, majd futtassa \u00fajra a m\u0171veletet.
+
+filetransfer.server.error=CWWKX7953E: Kiszolg\u00e1l\u00f3 oldali "{0}" hiba\u00fczenet a(z) {1} kapcsolat eset\u00e9ben.
+filetransfer.server.error.explanation=A JMX REST csatol\u00f3 kiszolg\u00e1l\u00f3 oldal\u00e1n hiba t\u00f6rt\u00e9nt, \u00e9s a megadott \u00fczenetet \u00e1ll\u00edtotta el\u0151.
+filetransfer.server.error.useraction=Az el\u0151\u00e1ll\u00edtott hiba\u00fczenet seg\u00edts\u00e9g\u00e9vel azonos\u00edtsa \u00e9s jav\u00edtsa a hib\u00e1t okoz\u00f3 probl\u00e9m\u00e1t, majd futtassa \u00fajra a m\u0171veletet.
+
+filetransfer.client.bad.credentials=CWWKX7954E: A megadottfelhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 nem jogosult. A kiszolg\u00e1l\u00f3 a(z) {0} k\u00f3ddal \u00e9s"{1}" \u00fczenettel v\u00e1laszolt a(z) {2} kapcsolat eset\u00e9ben.
+filetransfer.client.bad.credentials.explanation=A kapcsolat l\u00e9trehoz\u00e1sakor megadott hiteles\u00edt\u00e9si adatok helytelenek. Lehet, hogy a felhaszn\u00e1l\u00f3 nem l\u00e9tezik, nincs jogosults\u00e1ga a kiszolg\u00e1l\u00f3 el\u00e9r\u00e9s\u00e9hez, vagy helytelen a jelsz\u00f3.
+filetransfer.client.bad.credentials.useraction=Jav\u00edtsa ki a felhaszn\u00e1l\u00f3nevet vagy jelsz\u00f3t, majd hozzon l\u00e9tre \u00faj kapcsolatot.
+
+filetransfer.response.code.error=CWWKX7955E: A f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l {0} v\u00e1laszk\u00f3dot kapott "{1}" \u00fczenettel a(z) {2} kapcsolat eset\u00e9ben.
+filetransfer.response.code.error.explanation=A f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l nem v\u00e1rt v\u00e1laszk\u00f3dot kapott a kiszolg\u00e1l\u00f3t\u00f3l.
+filetransfer.response.code.error.useraction=Az \u00fcgyf\u00e9l v\u00e1laszk\u00f3ddal azonos\u00edtsa \u00e9s oldja meg a probl\u00e9ma ok\u00e1t, majd futtassa \u00fajra a m\u0171veletet.
+
+filetransfer.download.file=CWWKX7956I: A(z) {0} f\u00e1jl let\u00f6lt\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s sikeres volt, \u00e9s a tartalma a(z) {1} f\u00e1jlba lett \u00edrva a(z) {2} kapcsolat alkalmaz\u00e1s\u00e1val.
+filetransfer.download.file.explanation=A megadott f\u00e1jl let\u00f6lt\u00e9si k\u00e9r\u00e9se sikeres volt.
+filetransfer.download.file.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+filetransfer.unsupported.operation=CWWKX7957E: A(z) {0} m\u0171veletet a f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l nem t\u00e1mogatja a(z) {1} kapcsolat eset\u00e9ben.
+filetransfer.unsupported.operation.explanation=A megadott m\u0171veletet nem t\u00e1mogatja a f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l.
+filetransfer.unsupported.operation.useraction=K\u00e9rjen olyan m\u0171veletet, amelyet a f\u00e1jl\u00e1tviteli \u00fcgyf\u00e9l t\u00e1mogat.
+
+filetransfer.upload.file=CWWKX7958I: A(z) {0} f\u00e1jl felt\u00f6lt\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s sikeres volt, \u00e9s a tartalma a(z) {1} f\u00e1jlba lett \u00edrva a(z) {2} kapcsolat alkalmaz\u00e1s\u00e1val.
+filetransfer.upload.file.explanation=A megadott f\u00e1jl felt\u00f6lt\u00e9si k\u00e9r\u00e9se sikeres volt.
+filetransfer.upload.file.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+filetransfer.delete.file=CWWKX7959I: A(z) {0} f\u00e1jl t\u00f6rl\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s sikeres volt a(z) {1} kapcsolat felhaszn\u00e1l\u00e1s\u00e1val.
+filetransfer.delete.file.explanation=A megadott f\u00e1jl t\u00f6rl\u00e9si k\u00e9r\u00e9se sikeres volt.
+filetransfer.delete.file.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+filetransfer.delete.all=CWWKX7960I: A(z) {0} gy\u0171jtem\u00e9nyben l\u00e9v\u0151 \u00f6sszes f\u00e1jl \u00e9s mappa t\u00f6rl\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s siker\u00fclt a(z) {1} kapcsolat haszn\u00e1lat\u00e1val.
+filetransfer.delete.all.explanation=A megadott gy\u0171jtem\u00e9ny t\u00f6rl\u00e9si k\u00e9r\u00e9se sikeres volt.
+filetransfer.delete.all.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.

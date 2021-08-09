@@ -1,0 +1,5 @@
+IBM-API-Package: com.ibm.websphere.kernel.server; type="ibm-api"
+IBM-SPI-Package: com.ibm.websphere.crypto,
+ com.ibm.wsspi.security.crypto,
+ com.ibm.wsspi.kernel.service.location,
+ com.ibm.wsspi.kernel.service.utils

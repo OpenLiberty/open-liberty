@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR CWWKJ J2EE JavaMail
+#CMVCPATHNAME com.ibm.ws.javamail.management.j2ee/resources/com/ibm/ws/javamail/management/j2ee/internal/resources/JavaMailMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKJ0300 - CWWKJ0309
+
+#-----  MailSessionRegistrarImpl
+
+OSGI_SERVICE_ERROR=CWWKJ0300E: Le service OSGi {0} n'est pas disponible.  Essayez de red\u00e9marrer le serveur avec l'option --clean.
+OSGI_SERVICE_ERROR.explanation=Le service sp\u00e9cifi\u00e9 n'est pas disponible, ce qui provoque cette erreur de serveur interne.
+OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur avec l'option --clean.
+

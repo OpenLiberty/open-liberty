@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Alkalmaz\u00e1sind\u00edt\u00e1s sor\u00e1n az alkalmaz\u00e1s ind\u00edt\u00e1sa meghi\u00fasult, mert t\u00f6bb alkalmaz\u00e1s tal\u00e1lhat\u00f3 {0} n\u00e9vvel. A biztons\u00e1gi jogosults\u00e1gi ir\u00e1nyelvek megk\u00f6vetelik, hogy a nevek egyediek legyenek. Tekintse \u00e1t az alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t a server.xml f\u00e1jlban.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Az alkalmaz\u00e1sneveknek egyedieknek kell lenni\u00fck, hogy a biztons\u00e1gi jogosults\u00e1gi ir\u00e1nyelvek betartathat\u00f3ak legyenek.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3ban azt, hogy az alkalmaz\u00e1sok egyedi n\u00e9vvel rendelkeznek-e, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: Bels\u0151 hiba t\u00f6rt\u00e9nt alkalmaz\u00e1sind\u00edt\u00e1s sor\u00e1n. A(z) {0} alkalmaz\u00e1s jogosults\u00e1gi t\u00e1bl\u00e1ja nem hozhat\u00f3 l\u00e9tre, ez\u00e9rt egyetlen felhaszn\u00e1l\u00f3nak sem lesz jogosuls\u00e1ga v\u00e9dett er\u0151forr\u00e1sokhoz.
+AUTHZ_TABLE_NOT_CREATED.explanation=Egy alkalmaz\u00e1shoz nem lett l\u00e9trehozva jogosults\u00e1g t\u00e1bla, ez\u00e9rt egyetlen felhaszn\u00e1l\u00f3nak sem lesznek jogosults\u00e1gai v\u00e9dett er\u0151forr\u00e1sokhoz.
+AUTHZ_TABLE_NOT_CREATED.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1s jogosults\u00e1gbe\u00e1ll\u00edt\u00e1s\u00e1t \u00e9s \u00e1llap\u00edtsa meg, hogy a jogosults\u00e1g t\u00e1bla mi\u00e9rt nem lett l\u00e9trehozva.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: A(z) {0} biztons\u00e1gi szerep n\u00e9v \u00e9rv\u00e9nytelen futtat\u00e1s m\u00e1sk\u00e9nt (run-as) be\u00e1ll\u00edt\u00e1sa a(z) {1} alkalmaz\u00e1sban. Ellen\u0151rizze a futtat\u00e1s m\u00e1sk\u00e9nt be\u00e1ll\u00edt\u00e1st \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s jelsz\u00f3 helyesen van be\u00e1ll\u00edtva. A hiteles\u00edt\u00e9shez a kiindul\u00f3 h\u00edv\u00f3 azonoss\u00e1g ker\u00fcl felhaszn\u00e1l\u00e1sra, mivel a runAs szerep nem alkalmazhat\u00f3.
+RUNAS_INVALID_CONFIG.explanation= Az alkalmaz\u00e1s eset\u00e9ben a biztons\u00e1gi szerep n\u00e9vhez tartoz\u00f3 futtat\u00e1s m\u00e1sk\u00e9nt (run-as) be\u00e1ll\u00edt\u00e1s \u00e9rv\u00e9nytelen. Ellen\u0151rizze a futtat\u00e1s m\u00e1sk\u00e9nt be\u00e1ll\u00edt\u00e1st \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s jelsz\u00f3 helyesen van be\u00e1ll\u00edtva.
+RUNAS_INVALID_CONFIG.useraction=Tekintse \u00e1t az alkalmaz\u00e1shoz tartoz\u00f3 biztons\u00e1gi szerep n\u00e9v be\u00e1ll\u00edt\u00e1sokat, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3n\u00e9v \u00e9s jelsz\u00f3 helyesen vannak be\u00e1ll\u00edtva.

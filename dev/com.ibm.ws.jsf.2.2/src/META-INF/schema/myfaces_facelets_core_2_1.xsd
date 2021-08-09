@@ -1,0 +1,1571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!--
+    ** WARNING: This file was automatically generated. Do not edit it directly,
+    **          or you will lose your changes.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="1.0"
+           xml:lang="en"
+           elementFormDefault="qualified"
+           targetNamespace="http://java.sun.com/jsf/core">
+
+
+
+    <xs:annotation>
+        <xs:documentation>This tag library implements the standard JSF core tags for Facelets.</xs:documentation>
+        <xs:documentation>display-name: JSF Core Facelets Tag Library.</xs:documentation>
+        <xs:documentation>tlib-version: 2.1</xs:documentation>
+        <xs:documentation>short-name: f</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="subview">
+        <xs:annotation>
+          <xs:documentation><![CDATA[Base class for components that provide a new "namespace" for the ids of their
+child components.
+<p>
+See the javadocs for interface NamingContainer for further details.
+</p>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.SubviewTag</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="rendered" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A boolean value that indicates whether this component should be rendered. Default value: true.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="viewAction">
+        <xs:annotation>
+          <xs:documentation><![CDATA[]]></xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="immediate" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="action" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Method Signature: java.lang.Object myMethod(  )]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="actionListener" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Method Signature: void myMethod( javax.faces.event.ActionEvent )]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="phase" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="onPostback" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="rendered" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A boolean value that indicates whether this component should be rendered. Default value: true.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="viewParam">
+        <xs:annotation>
+          <xs:documentation><![CDATA[TODO: documentation on jsp and pld are not the same. It appear two
+params: maxlength and for, but no property getter and setter founded here. 
+If maxlength is used, we can put something like this: 
+JSFJspProperty(name = "maxlength", returnType = "java.lang.String")]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.ViewParamTag</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="maxlength" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The max number or characters allowed for this param]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="required" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A boolean value that indicates whether an input value is required.
+<p>
+If this value is true and no input value is provided by a postback operation, then the "requiredMessage" text is
+registered as a FacesMessage for the request, and validation fails.
+</p>
+<p>
+Default value: false.
+</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="converterMessage" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Text to be displayed to the user as an error message when conversion of a submitted value to the target type
+fails.
+<p>
+</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="requiredMessage" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Text to be displayed to the user as an error message when this component is marked as "required" but no input
+data is present during a postback (ie the user left the required field blank).]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="validator" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A method-binding EL expression which is invoked during the validation phase for this component.
+<p>
+The invoked method is expected to check the submitted value for this component, and if not acceptable then report
+a validation error for the component.
+</p>
+<p>
+The method is expected to have the prototype
+</p>
+<code>public void aMethod(FacesContext, UIComponent,Object)</code>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Method Signature: void myMethod( javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object )]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="validatorMessage" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Text which will be shown if validation fails.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="valueChangeListener" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A method which is invoked during postback processing for the current view if the submitted value for this
+component is not equal to the value which the "value" expression for this component returns.
+<p>
+The phase in which this method is invoked can be controlled via the immediate attribute.
+</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Method Signature: void myMethod( javax.faces.event.ValueChangeEvent )]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Gets The initial value of this component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="converter" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[An expression that specifies the Converter for this component.
+<p>
+The value can either be a static value (ID) or an EL expression. When a static id is
+specified, an instance of the converter type registered with that id is used. When this
+is an EL expression, the result of evaluating the expression must be an object that
+implements the Converter interface.
+</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.convert.Converter]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="param">
+        <xs:annotation>
+          <xs:documentation><![CDATA[This tag associates a parameter name-value pair with the nearest parent UIComponent. A UIComponent is created to
+represent this name-value pair, and stored as a child of the parent component; what effect this has depends upon the
+renderer of that parent component.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.ParamTag</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The value of this component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="name" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name under which the value is stored.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="selectItem">
+        <xs:annotation>
+          <xs:documentation><![CDATA[This tag associates a single SelectItem with the nearest parent UIComponent. The item represents a single option for
+a component such as an h:selectBooleanCheckbox or h:selectOneMenu. See also component selectItems.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+UISelectItem should be nestetd inside a UISelectMany or UISelectOne component, and results in the addition of a
+SelectItem instance to the list of available options for the parent component
+</p>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.SelectItemTag</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The initial value of this component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.model.SelectItem]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemDisabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Determine whether this item can be chosen by the user. When true, this item cannot be chosen by the user. If this
+method is ever called, then any EL-binding for the disabled property will be ignored.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="escape" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The escape setting for the label of this selection item.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemDescription" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[For use in development tools.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemLabel" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The string which will be presented to the user for this option.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemValue" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The value for this Item.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="noSelectionOption" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Indicate this component represent no selection option. 
+Default value is false.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validateBean">
+        <xs:annotation>
+          <xs:documentation><![CDATA[<p>
+<strong>BeanValidator</strong> is a {@link javax.faces.validator.Validator}
+that doesn't do any validation itself, but delegates validation logic to
+Bean Validation.
+</p>]]></xs:documentation>
+          <xs:documentation>tag-class: $component.tagClass</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="validationGroups" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get the Bean Validation validation groups.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a BeanValidator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.BeanValidator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validateDoubleRange">
+        <xs:annotation>
+          <xs:documentation><![CDATA[Creates a validator and associateds it with the nearest parent
+UIComponent.  When invoked, the validator ensures that values are
+valid doubles that lie within the minimum and maximum values specified.
+
+Commonly associated with a h:inputText entity.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.ValidateDoubleRangeTag</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="maximum" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The largest value that should be considered valid.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Double]]></xs:documentation>             
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="minimum" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The smallest value that should be considered valid.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Double]]></xs:documentation>             
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a DoubleRangeValidator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.DoubleRangeValidator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validateLength">
+        <xs:annotation>
+          <xs:documentation><![CDATA[Creates a validator and associateds it with the nearest parent
+UIComponent.  When invoked, the validator ensures that values are
+valid strings with a length that lies within the minimum and maximum
+values specified.
+
+Commonly associated with a h:inputText entity.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.ValidateLengthTag</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="maximum" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The largest value that should be considered valid.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Integer]]></xs:documentation>             
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="minimum" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The smallest value that should be considered valid.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Integer]]></xs:documentation>             
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a LengthValidator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.LengthValidator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validateLongRange">
+        <xs:annotation>
+          <xs:documentation><![CDATA[Creates a validator and associateds it with the nearest parent
+UIComponent.  When invoked, the validator ensures that values
+are valid longs that lie within the minimum and maximum values specified.
+
+Commonly associated with a h:inputText entity.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.ValidateLongRangeTag</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="maximum" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The largest value that should be considered valid.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Long]]></xs:documentation>             
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="minimum" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The smallest value that should be considered valid.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Long]]></xs:documentation>             
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a LongRangeValidator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.LongRangeValidator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validateRegex">
+        <xs:annotation>
+          <xs:documentation><![CDATA[<p>
+  <strong>RegexValidator</strong> is a {@link javax.faces.validator.Validator}
+  that checks the value of the corresponding component against specified
+  pattern using Java regular expression syntax.
+
+  The regular expression syntax accepted by the RegexValidator class is
+  same as mentioned in class {@link java.util.regex.Pattern} in package
+  <code>java.util.regex</code>.
+</p>
+
+<p>
+  The following algorithm is implemented:
+</p>
+
+<ul>
+  <li>If the passed value is <code>null</code>, exit immediately.</li>
+  <li>
+    If the passed value is not a String, exit with a {@link #NOT_MATCHED_MESSAGE_ID}
+    error message.
+  </li>
+  <li>
+    If no pattern has been set, or pattern resolves to <code>null</code> or an
+    empty String, throw a {@link javax.faces.validator.ValidatorException}
+    with a {@link #PATTERN_NOT_SET_MESSAGE_ID} message.
+  </li>
+  <li>
+    If pattern is not a valid regular expression, according to the rules as defined
+    in class {@link java.util.regex.Pattern}, throw a {@link ValidatorException}
+    with a (@link #MATCH_EXCEPTION_MESSAGE_ID} message.
+  </li>
+  <li>
+    If a <code>pattern</code> property has been configured on this
+    {@link javax.faces.validator.Validator}, check the passed value against this pattern.
+    If value does not match pattern throw a {@link ValidatorException}
+    containing a {@link #NOT_MATCHED_MESSAGE_ID} message.
+  </li>
+</ul>]]></xs:documentation>
+          <xs:documentation>tag-class: org.apache.myfaces.taglib.core.ValidateRegexTag</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="pattern" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[Return the ValueExpression that yields the regular expression pattern when evaluated.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a RegexValidator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.RegexValidator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validateRequired">
+        <xs:annotation>
+          <xs:documentation><![CDATA[Check if a value is empty, in the same way as set UIInput required 
+property to true (including all rules related to this property).]]></xs:documentation>
+          <xs:documentation>tag-class: $component.tagClass</xs:documentation>
+          <xs:documentation>body-content: empty</xs:documentation>
+        </xs:annotation>
+     
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a RequiredValidator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.RequiredValidator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="actionListener">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag creates an instance of the specified ActionListener, and associates it with the nearest parent UIComponent.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p><p>Register an ActionListener instance on the UIComponent associated with the closest parent UIComponent custom action.
+<p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/actionListener.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ActionListenerHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[TODO: Document me!]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The fully qualified class name of the ActionListener class.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Value binding expression that evaluates to an object that implements javax.faces.event.ActionListener.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.event.ActionListener]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ajax">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag creates an instance of AjaxBehavior, and associates it with the nearest 
+parent UIComponent that implements ClientBehaviorHolder interface. This tag can
+be used on single or composite components.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+According to the documentation, the tag handler implementing this tag should meet
+the following conditions:  
+</p>
+<ul>
+<li>Since this tag attach objects to UIComponent instances, and those instances 
+implements Behavior interface, this component should implement 
+BehaviorHolderAttachedObjectHandler interface.</li>
+<li>f:ajax does not support binding property. In theory we should do something similar
+to f:convertDateTime tag does: extends from ConverterHandler and override setAttributes
+method, but in this case BehaviorTagHandlerDelegate has binding property defined, so
+if we extend from BehaviorHandler we add binding support to f:ajax.</li>
+<li>This tag works as a attached object handler, but note on the api there is no component
+to define a target for a behavior. See comment inside apply() method.</li>
+</ul>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="event" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="execute" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="immediate" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="listener" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Method Signature: public void m(javax.faces.event.AjaxBehaviorEvent evt) " + "throws javax.faces.event.AbortProcessingException]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="onevent" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="onerror" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="render" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="delay" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="resetValues" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="attribute">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag associates an attribute with the nearest parent UIComponent.
+<p>
+When the value is not an EL expression, this tag has the same effect as calling component.getAttributes.put(name,
+value). When the attribute name specified matches a standard property of the component, that property is set. However
+it is also valid to assign attributes to components using any arbitrary name; the component itself won't make any use
+of these but other objects such as custom renderers, validators or action listeners can later retrieve the attribute
+from the component by name.
+</p>
+<p>
+When the value is an EL expression, this tag has the same effect as calling component.setValueBinding. A call to
+method component.getAttributes().get(name) will then cause that expression to be evaluated and the result of the
+expression is returned, not the original EL expression string.
+</p>
+<p>
+See the javadoc for UIComponent.getAttributes for more details.
+</p>
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p><p>Sets the specified name and attribute on the parent UIComponent. If the "value" specified is not a literal, it will
+instead set the ValueExpression on the UIComponent. <p /> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/attribute.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.AttributeHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of the attribute.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The attribute's value.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="attributes">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.AttributesHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="convertDateTime">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag associates a date time converter with the nearest parent UIComponent.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a><p>Register a DateTimeConverter instance on the UIComponent associated with the closest parent UIComponent custom
+action. <p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertDateTime.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ConvertDateTimeHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[{@inheritDoc}]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="dateStyle" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The style of the date.  Values include: default, short, medium, 
+long, and full.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="locale" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of the locale to be used, instead of the default.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.util.Locale]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="pattern" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A custom Date formatting pattern, in the format used by java.text.SimpleDateFormat.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="timeStyle" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The style of the time.  Values include:  default, short, medium, long, 
+and full.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="timeZone" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The time zone to use instead of GMT (the default timezone). When
+this value is a value-binding to a TimeZone instance, that
+timezone is used. Otherwise this value is treated as a String
+containing a timezone id, ie as the ID parameter of method
+java.util.TimeZone.getTimeZone(String).]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.util.TimeZone]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Specifies whether the date, time, or both should be 
+parsed/formatted.  Values include:  date, time, and both.
+Default based on setting of timeStyle and dateStyle.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a DateTimeConverter.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.convert.DateTimeConverter]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="converter">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag creates an instance of the specified Converter, and associates it with the nearest parent UIComponent.<p>Register a named Converter instance on the UIComponent associated with the closest parent UIComponent custom action.
+<p/> See <a target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/converter.html">tag
+documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ConvertDelegateHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[{@inheritDoc}]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="converterId" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The converter's registered ID.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a Converter.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.convert.Converter]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="convertNumber">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag creates a number formatting converter and associates it
+with the nearest parent UIComponent.
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a><p>Register a NumberConverter instance on the UIComponent associated with the closest parent UIComponent custom action.
+<p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/convertNumber.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ConvertNumberHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[{@inheritDoc}]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="currencyCode" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[ISO 4217 currency code]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="currencySymbol" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The currency symbol used to format a currency value.  Defaults
+to the currency symbol for locale.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="groupingUsed" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Specifies whether output will contain grouping separators.  Default: true.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="integerOnly" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Specifies whether only the integer part of the input will be parsed.  Default: false.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="locale" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of the locale to be used, instead of the default as
+specified in the faces configuration file.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.util.Locale]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="maxFractionDigits" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The maximum number of digits in the fractional portion of the number.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="maxIntegerDigits" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The maximum number of digits in the integer portion of the number.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="minFractionDigits" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The minimum number of digits in the fractional portion of the number.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="minIntegerDigits" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The minimum number of digits in the integer portion of the number.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="pattern" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A custom Date formatting pattern, in the format used by java.text.SimpleDateFormat.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The type of formatting/parsing to be performed.  Values include:
+number, currency, and percent.  Default: number.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to a NumberConverter.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.convert.NumberConverter]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="event">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Registers a listener for a given system event class on the UIComponent associated with this tag.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.EventHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="listener" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Method Signature: public void listener(javax.faces.event.ComponentSystemEvent evt) " + "throws javax.faces.event.AbortProcessingException]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="facet">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag adds its child as a facet of the nearest parent UIComponent. A child consisting of multiple elements should
+be nested within a container component (i.e., within an h:panelGroup for HTML library components).
+
+Unless otherwise specified, all attributes accept static values or EL expressions.
+
+see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a><p>Register a named facet on the UIComponent associated with the closest parent UIComponent custom action. <p/> See <a
+target="_new" href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/facet.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of the facet to be created. This must be a static value.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="loadBundle">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Loads a resource bundle and saves it as a variable in the request scope.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+TODO: We should find a way to save loaded bundles in the state, because otherwise on the next request the bundle map
+will not be present before the render phase and value bindings that reference to the bundle will always log annoying
+"Variable 'xxx' could not be resolved" error messages.
+</p><p>Load a resource bundle localized for the Locale of the current view, and expose it (as a Map) in the request
+attributes of the current request. <p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/loadBundle.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.LoadBundleHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="basename" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The base name of the resource bundle.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="var" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of the variable in request scope that the resources are saved to. This must be a static value.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="passThroughAttribute">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.PassThroughAttributeHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="passThroughAttributes">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.PassThroughAttributesHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="phaseListener">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Register a PhaseListener instance<p>null</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.PhaseListenerHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Class name of the PhaseListener to be created and registered.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Value binding expression that evaluates to a PhaseListener.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.event.PhaseListener]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="resetValues">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ResetValuesActionListenerHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[TODO: Document me!]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="render" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="selectItems">
+        <xs:annotation>
+              <xs:documentation><![CDATA[This tag associates a set of selection list items with the nearest
+parent UIComponent. The set of SelectItem objects is retrieved via
+a value-binding.
+<p>
+Unless otherwise specified, all attributes accept static values
+or EL expressions.
+</p>
+<p>
+UISelectItems should be nested inside a UISelectMany or UISelectOne component,
+and results in  the addition of one ore more SelectItem instance to the list of available options
+for the parent component
+</p><p>null</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.SelectItemsHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="noSelectionValue" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Is either an EL expression pointing to the element in the value collection
+whose value should be marked as a "no selection" item, or a literal string
+that exactly matches the value of the item in the collection that must be 
+marked as the "no selection" item. If the user selects such an item and 
+the field is marked as required, then it will not pass validation.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The initial value of this component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="var" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Name of a request-scope attribute under which the current item
+of the collection, array, etc. of the value attribute will be 
+exposed so that it can be referred to in EL for other attributes 
+of this component.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemValue" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The value for the current item.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemLabel" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The label of the current item.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemDescription" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The description of the current item.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemDisabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Determines if the current item is selectable or not.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="itemLabelEscaped" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Determines if the rendered markup for the current item receives
+normal JSF HTML escaping or not.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="setPropertyActionListener">
+        <xs:annotation>
+              <xs:documentation><![CDATA[<p>null</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.SetPropertyActionListenerHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[TODO: Document me!]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="target" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[ValueExpression for the destination of the value attribute.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[ValueExpression for the value of the target attribute.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validator">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Creates a validator and associates it with the nearest parent UIComponent.
+<p>
+During the validation phase (or the apply-request-values phase for immediate components), if the associated component
+has any submitted value and the conversion of that value to the required type has succeeded then the specified
+validator type is invoked to test the validity of the converted value.
+</p>
+<p>
+Commonly associated with an h:inputText entity, but may be applied to any input component.
+</p>
+<p>
+Some validators may allow the component to use attributes to define component-specific validation constraints; see
+the f:attribute tag. See also the "validator" attribute of all input components, which allows a component to specify
+an arbitrary validation &lt;i&gt;method&lt;/i&gt; (rather than a registered validation type, as this tag does).
+</p>
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p><p>Register a named Validator instance on the UIComponent associated with the closest parent UIComponent custom
+action.<p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/validator.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ValidateDelegateHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="disabled" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[no description]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[{@inheritDoc}]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="validatorId" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The registered ID of the desired Validator.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A ValueExpression that evaluates to an implementation of the javax.faces.validator.Validator interface.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.validator.Validator]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="valueChangeListener">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Adds the specified ValueChangeListener to the nearest parent UIComponent (which is expected to be a UIInput
+component).
+<p>
+Whenever the form containing the parent UIComponent is submitted, an instance of the specified type is created. If
+the submitted value from the component is different from the component's current value then a ValueChangeEvent is
+queued. When the ValueChangeEvent is processed (at end of the validate phase for non-immediate components, or at end
+of the apply-request-values phase for immediate components) the object's processValueChange method is invoked.
+</p>
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p><p>Register an ValueChangeListener instance on the UIComponent associated with the closest parent UIComponent custom
+action.<p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/valueChangeListener.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ValueChangeListenerHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="for" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[TODO: Document me!]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="type" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of a Java class that implements ValueChangeListener.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Value binding expression that evaluates to an implementation of the javax.faces.event.ValueChangeListener
+interface.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.event.ValueChangeListener]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="verbatim">
+        <xs:annotation>
+              <xs:documentation><![CDATA[<p>Handler for f:verbatim</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.VerbatimHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="escape" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[If true, generated markup is escaped. Default: false.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="rendered" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Flag indicating whether or not this component should be rendered (during Render Response Phase), or processed on
+any subsequent form submit. The default value for this property is true.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="view">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Creates a JSF View, which is a container that holds all of the components that are part of the view.
+<p>
+Unless otherwise specified, all attributes accept static values or EL expressions.
+</p>
+<p>
+See the javadoc for this class in the <a href="http://java.sun.com/j2ee/javaserverfaces/1.2/docs/api/index.html">JSF
+Specification</a> for further details.
+</p><p>Container for all JavaServer Faces core and custom component actions used on a page. <p/> See <a target="_new"
+href="http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/tlddocs/f/view.html">tag documentation</a>.</p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ViewHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="locale" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The locale for this view.
+<p>
+Defaults to the default locale specified in the faces configuration file.
+</p>]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.util.Locale]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="renderKitId" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Defines what renderkit should be used to render this view.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="contentType" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="encoding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="beforePhase" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called before
+every phase except for restore view.]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="afterPhase" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[MethodBinding pointing to a method that takes a javax.faces.event.PhaseEvent and returns void, called after every
+phase except for restore view.]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="transient" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="metadata">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Defines the view metadata. It is expected that this tag contains only
+one or many f:viewParam tags.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jsf.core.ViewMetadataHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

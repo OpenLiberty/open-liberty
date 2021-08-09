@@ -1,0 +1,86 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSample"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="OAuthConfigSample" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		filter="request-url!=snooping;request-url!=SimpleServlet_introspectTokens_false_rp"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				introspectTokens="true"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/goodRSConfig,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/goodRPConfig,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPTokenInLTPA_false,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RSTokenInLTPA_false,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RSInboundPropagation_required,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RSInboundPropagation_none,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPDisableLtpaCookie_true,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RSDisableLtpaCookie_true"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+	
+	
+	<openidConnectProvider
+		id="NoIntroSpectOIDC"
+		scope="myScopeSample"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="NoIntroSpectOAuth" />
+
+	<oauthProvider
+		id="NoIntroSpectOAuth"
+		filter="request-url%=SimpleServlet_introspectTokens_false_rp"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="false"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				introspectTokens="false"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/introspectTokens_false_rp,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/introspectTokens_false_introspect_rs,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/introspectTokens_false_userinfo_rs"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+
+	</oauthProvider>
+
+</server>

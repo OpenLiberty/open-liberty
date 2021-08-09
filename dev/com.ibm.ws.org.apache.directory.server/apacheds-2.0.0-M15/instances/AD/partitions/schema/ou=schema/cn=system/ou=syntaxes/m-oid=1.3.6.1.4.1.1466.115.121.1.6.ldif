@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.115.121.1.6,ou=syntaxes,cn=system,ou=schema
+m-oid: 1.3.6.1.4.1.1466.115.121.1.6
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaSyntax
+x-not-human-readable: FALSE
+m-description: Bit String
+m-obsolete: FALSE
+entryUUID: fe31e25b-ffac-4400-956b-13eb50c2b68d
+entrycsn: 20100111202214.878000Z#000000#000#000000
+entryParentId: 80c5f3a6-97e6-4847-b35a-53012e9afcc2
+createtimestamp: 20100111145217Z

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://common.ejbjndi.jaxws.ws.ibm.com/" name="CoffeemateProvider" targetNamespace="http://common.ejbjndi.jaxws.ws.ibm.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://common.ejbjndi.jaxws.ws.ibm.com/" elementFormDefault="unqualified" targetNamespace="http://common.ejbjndi.jaxws.ws.ibm.com/" version="1.0">
+<xs:element name="take" type="tns:take"></xs:element>
+<xs:element name="takeResponse" type="tns:takeResponse"></xs:element>
+<xs:complexType name="take">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="takeResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>  </wsdl:types>
+  <wsdl:message name="take">
+    <wsdl:part element="ns1:take" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="takeResponse">
+    <wsdl:part element="ns1:takeResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CoffeemateProvider">
+    <wsdl:operation name="take">
+      <wsdl:input message="ns1:take" name="take">
+    </wsdl:input>
+      <wsdl:output message="ns1:takeResponse" name="takeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

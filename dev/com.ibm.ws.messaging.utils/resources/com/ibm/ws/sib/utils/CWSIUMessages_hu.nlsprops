@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: Kiad\u00e1s: {0} Szint: {1}.
+WPM_SPLASH_CWSIU0000.explanation=Ez az \u00fczenet a jelenlegi \u00fczenetkezel\u00e9si \u00f6ssze\u00e9p\u00edt\u00e9s kiad\u00e1s\u00e1t \u00e9s szintj\u00e9t mutatja.
+WPM_SPLASH_CWSIU0000.useraction=Nincs.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: A(z) {0} fut\u00e1si tulajdons\u00e1g {1} \u00e9rt\u00e9kre m\u00f3dosult.
+RUNTIME_CWSIU0001.explanation=Egy fut\u00e1si tulajdons\u00e1g egy nem alap\u00e9rtelmezett \u00e9rt\u00e9kre m\u00f3dosult.
+RUNTIME_CWSIU0001.useraction=Nincs.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: A(z) {0} \u00fczenet j\u00f6v\u0151beli el\u0151fordul\u00e1sai el lesznek nyomva a k\u00f6vetkez\u0151 {1} percig.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=Hogy a napl\u00f3k ne legyenek az \u00fczenet azonos m\u00e1solataival kit\u00f6ltve, az \u00fczenet j\u00f6v\u0151beli el\u0151fordul\u00e1sai el lesznek nyomva.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=Nincs teend\u0151. \
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: A(z) {0} \u00fczenet j\u00f6v\u0151beli el\u0151fordul\u00e1sai el lesznek nyomva.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=Hogy a napl\u00f3k ne legyenek az \u00fczenet azonos m\u00e1solataival kit\u00f6ltve, az \u00fczenet \u00f6sszes j\u00f6v\u0151beli el\u0151fordul\u00e1sa el lesz nyomva.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=Nincs teend\u0151. \
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: A(z) {0} \u00fczenet {1} alkalommal fordult el\u0151 az ut\u00f3bbi {2} percben {3} \u00e9s {4} k\u00f6z\u00f6tt. \
+Ezen \u00fczenet tov\u00e1bbi el\u0151fordul\u00e1sai el lesznek nyomva a k\u00f6vetkez\u0151 {5} percig.
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=Az \u00fczenet sz\u00e1mos alkalommal el\u0151fordult, de az \u00fczenet megjelen\u00edt\u00e9se ki volt kapcsolva.
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=Nincs teend\u0151. \
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: A k\u00f6vetkez\u0151 \u00fczenet j\u00f6v\u0151beli el\u0151fordul\u00e1sai el lesznek nyomva a k\u00f6vetkez\u0151 {1} percig: {0} 
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=Hogy a napl\u00f3k ne legyenek az \u00fczenet azonos m\u00e1solataival kit\u00f6ltve, az \u00fczenet j\u00f6v\u0151beli el\u0151fordul\u00e1sai el lesznek nyomva.
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=Nincs teend\u0151. \
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: A k\u00f6vetkez\u0151 \u00fczenet j\u00f6v\u0151beli el\u0151fordul\u00e1sai el lesznek nyomva: {0}.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=Hogy a napl\u00f3k ne legyenek az \u00fczenet azonos m\u00e1solataival kit\u00f6ltve, az \u00fczenet \u00f6sszes j\u00f6v\u0151beli el\u0151fordul\u00e1sa el lesz nyomva.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=Nincs teend\u0151. \
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: A(z) {0} \u00fczenet {1} alkalommal fordult el\u0151 az ut\u00f3bbi {2} percben {3} \u00e9s {4} k\u00f6z\u00f6tt. \
+Ezen \u00fczenet tov\u00e1bbi el\u0151fordul\u00e1sai el lesznek nyomva a k\u00f6vetkez\u0151 {5} percig.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=Az \u00fczenet sz\u00e1mos alkalommal el\u0151fordult, de az \u00fczenet megjelen\u00edt\u00e9se ki volt kapcsolva.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=Nincs teend\u0151. \
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: A(z) {0} karakter nem megengedett a(z) {1} SIB t\u00e9mak\u00f6r helyettes\u00edt\u0151 karakteres karaktersorozatban.
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=A k\u00e9rd\u0151jel karakterek nem enged\u00e9lyezettek az SIB t\u00e9mak\u00f6r helyettes\u00edt\u0151 karakteres szintaxis\u00e1ban.
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=T\u00e1vol\u00edtsa el a k\u00e9rd\u0151jel karakterek p\u00e9ld\u00e1nyait a megadott t\u00e9mak\u00f6r helyettes\u00edt\u0151 karakteres karaktersorozatban.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: A(z) {0} t\u00e9mak\u00f6r karaktersorozat nem alak\u00edthat\u00f3 \u00e1t SIB szintaxis\u00fav\u00e1, mert nem elv\u00e1lasztott csillag karaktereket tartalmaz.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=A csillag karakterek nem megengedettek az SIB helyettes\u00edt\u0151 karakteres szintaxisban, hacsak oszt\u00e1sjellel teljes m\u00e9rt\u00e9kben el nincsenek v\u00e1lasztva egym\u00e1st\u00f3l.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van oszt\u00e1sjel a csillag mindk\u00e9t oldal\u00e1n a megadott t\u00e9mak\u00f6r karaktersorozatban.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: A(z) {0} tulajdons\u00e1gf\u00e1jl nem t\u00f6lthet\u0151 be a(z) {1} kiv\u00e9tel miatt.
+EXCP_DURING_LOAD_CWSIU0050.explanation=CMSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=CMSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: A(z) {0} \u00fczenet egy kor\u00e1bbi el\u0151fordul\u00e1sa el volt nyomva a(z) {1} helyen.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=Az \u00fczenet m\u00e1r el\u0151fordult kor\u00e1bban, de a legutols\u00f3 megjelen\u00e9se el volt nyomva.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=Nincs.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: A(z) {0} \u00fczenet {1} alkalommal fordult el\u0151 {2} \u00e9s {3} k\u00f6z\u00f6tt, de el volt nyomva.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=Az \u00fczenet sz\u00e1mos alkalommal el\u0151fordult, de az \u00fczenet megjelen\u00edt\u00e9se ki volt kapcsolva.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=Nincs.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: A(z) "{0}" egy kor\u00e1bbi el\u0151fordul\u00e1sa el volt nyomva a(z) {1} helyen.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=Az \u00fczenet m\u00e1r el\u0151fordult kor\u00e1bban, de a jelen \u00fczenetet megel\u0151z\u0151 legutols\u00f3 megjelen\u00e9se el volt nyomva.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=Nincs.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: A(z)"{0}" {1} alkalommal fordult el\u0151 {2} \u00e9s {3} k\u00f6z\u00f6tt, de el volt nyomva.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=Az \u00fczenet sz\u00e1mos alkalommal el\u0151fordult, de az \u00fczenet megjelen\u00edt\u00e9se ki volt kapcsolva.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=Nincs.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: A(z) {0} hexadecim\u00e1lis karaktersorozat form\u00e1tuma helytelen.
+BAD_HEX_STRING_CWSIU0200.explanation=Egy karaktersorozatr\u00f3l byte-t\u00f6mbb\u00e9 \
+\u00e1talak\u00edt\u00e1s meghi\u00fasult, mert a karaktersorozat nem hexadecim\u00e1lis karaktereket, vagy \
+p\u00e1ratlan sz\u00e1m\u00fa karaktert tartalmazott.
+BAD_HEX_STRING_CWSIU0200.useraction=Ellen\u0151rizze azon karaktersorozat tartalm\u00e1t, amely eset\u00e9n az \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a kor\u00e1bbi \u00fczeneteket a tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+TEMPORARY_CWSIU9999.useraction=Ha nem tudja megoldani a probl\u00e9m\u00e1t, akkor k\u00e9rje a rendszeradminisztr\u00e1tor seg\u00edts\u00e9g\u00e9t.
+

@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: Loca\u0163ia specificat\u0103 este inaccesibil\u0103. Nu este un copil al unei c\u0103i cunoscute sau configurate; cale={0}.
+unreachableLocation.explanation=Platforma folose\u015fte c\u0103i simbolice pentru a furniza protec\u0163ie rudimentar\u0103 \u00eempotriva accesului arbitrar la sistemul de fi\u015fiere c\u00e2nd serviciul de loca\u0163ie este folosit s\u0103 rezolve c\u0103i specificate. \
+README.TXT con\u0163ine informa\u0163ii despre cum sunt configurate c\u0103ile simbolice.
+unreachableLocation.useraction=Verifica\u0163i bootstrap.properties pentru c\u0103ile configurate \u015fi asigura\u0163i-v\u0103 c\u0103, calea configurat\u0103 este un copil al simbolurilor existente sau este asociat\u0103 cu un simbol definit explicit.
+
+invalidResourceType=CWWKE0201E: Nu se poate crea simbolul; loca\u0163ia specificat\u0103 exist\u0103 \u015fi este \u00een conflict cu tipul necesar: {0}={1}.
+invalidResourceType.explanation=Calea specificat\u0103 pentru un simbol exist\u0103 \u015fi este un tip diferit de resurs\u0103 dec\u00e2t specific\u0103 calea (de exemplu, simbolul descrie un fi\u015fier, dar resursa este un director).
+invalidResourceType.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat\u0103 corect calea. \
+C\u0103ile de director trebuie s\u0103 se termine cu un /. \
+Asigura\u0163i-v\u0103 c\u0103 calea se refer\u0103 la o resurs\u0103 ce fie nu exist\u0103 fie exist\u0103 \u015fi este de tipul necesar.
+
+missingTmpDir=CWWKE0202E: Loca\u0163ia directorului temporar specificat\u0103 nu exist\u0103 \u015fi nu a putut fi creat\u0103: {0}.
+missingTmpDir.explanation=Directorul specificat ca java.io.tmpdir (fie printr-o proprietate de sistem fie o variabil\u0103 de mediu specific\u0103 platformei) nu exist\u0103 \u015fi nu a putut fi creat.
+missingTmpDir.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul specificat exist\u0103 \u015fi are permisiuni de citire/scriere.
+
+relativeTmpDir=CWWKE0203I: java.io.tempdir a fost specificat cu o cale relativp. Calea rezolvat\u0103 este {0}.
+relativeTmpDir.explanation=Directorul specificat ca java.io.tmpdir (fie printr-o proprietate de sistem fie o variabil\u0103 de mediu specific\u0103 platformei) era relativ \u015fi este rezolvat relativ la directorul de lansare.
+relativeTmpDir.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+locationInitializationError=CWWKE0204E: Nu se poate ini\u0163ializa serviciul loca\u0163iei platformei; motiv={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: Cadrul de lucru \u00ee\u015fi opre\u015fte activitatea din cauza unei erori precedente de ini\u0163ializare.
+frameworkShutdown.explanation=Cadrul de lucru \u00ee\u015fi opre\u015fte activitatea din cauza unei erori anterioare din timpul ini\u0163ializ\u0103rii.
+frameworkShutdown.useraction=Rezolva\u0163i eroare \u015fi apoi reporni\u0163i serverul.

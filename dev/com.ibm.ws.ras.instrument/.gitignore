@@ -1,0 +1,5 @@
+/bin/
+/build/
+/generated/
+/Debug-*
+!/test/test data/**/*.class

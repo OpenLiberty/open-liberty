@@ -1,0 +1,159 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+WS-TraceGroup: WSSECURITY
+
+cxfVersion=2.6.2
+
+Bundle-Name: com.ibm.ws.org.apache.cxf.ws.security.2.6.2
+Bundle-Description: cxf ws security, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.ws.security.2.6.2
+Bundle-ActivationPolicy: lazy
+
+Export-Package: \
+  org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.wss4j.policyvalidators;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.builders;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.trust.delegation;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.wstrust14;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.cache;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.model;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.custom;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.wss4j.policyhandlers;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.secext;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.trust;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.kerberos;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.interceptors;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.xmldsig;version=${cxfVersion}, \
+  org.apache.cxf.ws.security;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.utility;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.wss4j;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.tokenstore;version=${cxfVersion}
+
+Import-Package:  \
+  javax.annotation;version="[1.0,2)", \
+  javax.crypto, \
+  javax.jws, \
+  javax.jws.soap, \
+  javax.net.ssl, \
+  javax.security.auth, \
+  javax.security.auth.callback, \
+  javax.security.auth.x500, \
+  javax.wsdl, \
+  javax.xml.bind, \
+  javax.xml.bind.annotation, \
+  javax.xml.bind.annotation.adapters, \
+  javax.xml.bind.util, \
+  javax.xml.namespace, \
+  javax.xml.parsers, \
+  javax.xml.soap, \
+  javax.xml.stream, \
+  javax.xml.transform, \
+  javax.xml.transform.dom, \
+  javax.xml.xpath, \
+  javax.xml.ws;version="[2.2,3)", \
+  javax.xml.ws.handler;version="[2.2,3)", \
+  javax.xml.ws.soap;version="[2.2,3)", \
+  net.sf.ehcache;resolution:=optional;;version="1.0.16", \
+  net.sf.ehcache.config;resolution:=optional;version="1.0.16", \
+  org.apache.cxf;version="[2.6,3)", \
+  org.apache.cxf.binding;version="[2.6,3)", \
+  org.apache.cxf.binding.soap;version="[2.6,3)", \
+  org.apache.cxf.binding.soap.interceptor;version="[2.6,3)", \
+  org.apache.cxf.binding.soap.model;version="[2.6,3)", \
+  org.apache.cxf.binding.soap.saaj;version="[2.6,3)", \
+  org.apache.cxf.buslifecycle;version="[2.6,3)", \
+  org.apache.cxf.common.classloader;version="[2.6,3)", \
+  org.apache.cxf.common.i18n;version="[2.6,3)", \
+  org.apache.cxf.common.injection;version="[2.6,3)", \
+  org.apache.cxf.common.jaxb;version="[2.6,3)", \
+  org.apache.cxf.common.logging;version="[2.6,3)", \
+  org.apache.cxf.common.security;version="[2.6,3)", \
+  org.apache.cxf.common.util;version="[2.6,3)", \
+  org.apache.cxf.configuration;version="[2.6,3)", \
+  org.apache.cxf.configuration.security;version="[2.6,3)", \
+  org.apache.cxf.databinding;version="[2.6,3)", \
+  org.apache.cxf.databinding.source;version="[2.6,3)", \
+  org.apache.cxf.endpoint;version="[2.6,3)", \
+  org.apache.cxf.feature;version="[2.6,3)", \
+  org.apache.cxf.headers;version="[2.6,3)", \
+  org.apache.cxf.helpers;version="[2.6,3)", \
+  org.apache.cxf.interceptor;version="[2.6,3)", \
+  org.apache.cxf.interceptor.security;version="[2.6,3)", \
+  org.apache.cxf.jaxws;version="[2.6,3)";resolution:=optional, \
+  org.apache.cxf.message;version="[2.6,3)", \
+  org.apache.cxf.phase;version="[2.6,3)", \
+  org.apache.cxf.resource;version="[2.6,3)", \
+  org.apache.cxf.security;version="[2.6,3)", \
+  org.apache.cxf.security.transport;version="[2.6,3)", \
+  org.apache.cxf.service;version="[2.6,3)", \
+  org.apache.cxf.service.invoker;version="[2.6,3)", \
+  org.apache.cxf.service.model;version="[2.6,3)", \
+  org.apache.cxf.staxutils;version="[2.6,3)", \
+  org.apache.cxf.transport;version="[2.6,3)", \
+  org.apache.cxf.transport.http;version="[2.6,3)";resolution:=optional, \
+  org.apache.cxf.transport.https;version="[2.6,3)";resolution:=optional, \
+  org.apache.cxf.ws.addressing;version="[2.6,3)", \
+  org.apache.cxf.ws.addressing.policy;version="[2.6,3)", \
+  org.apache.cxf.ws.mex;version="[2.6,3)";resolution:=optional, \
+  org.apache.cxf.ws.mex.model._2004_09;version="[2.6,3)";resolution:=optional, \
+  org.apache.cxf.ws.policy;version="[2.6,3)", \
+  org.apache.cxf.ws.policy.builder.primitive;version="[2.6,3)", \
+  org.apache.cxf.wsdl;version="[2.6,3)", \
+  org.apache.cxf.wsdl11;version="[2.6,3)", \
+  org.apache.neethi;version="[3.0,4)", \
+  org.apache.neethi.builders;version="[3.0,4)", \
+  org.apache.ws.security;version="[1.6,2)", \
+  org.apache.ws.security.action;version="[1.6,2)", \
+  org.apache.ws.security.cache;version="[1.6,2)", \
+  org.apache.ws.security.components.crypto;version="[1.6,2)", \
+  org.apache.ws.security.conversation;version="[1.6,2)", \
+  org.apache.ws.security.conversation.dkalgo;version="[1.6,2)", \
+  org.apache.ws.security.handler;version="[1.6,2)", \
+  org.apache.ws.security.message;version="[1.6,2)", \
+  org.apache.ws.security.message.token;version="[1.6,2)", \
+  org.apache.ws.security.processor;version="[1.6,2)", \
+  org.apache.ws.security.saml;version="[1.6,2)", \
+  org.apache.ws.security.saml.ext;version="[1.6,2)", \
+  org.apache.ws.security.spnego;version="[1.6,2)", \
+  org.apache.ws.security.util;version="[1.6,2)", \
+  org.apache.ws.security.validate;version="[1.6,2)", \
+  org.apache.xml.security.keys.content;version="[1.5,2)", \
+  org.apache.xml.security.keys.content.keyvalues;version="[1.5,2)", \
+  org.opensaml.common;resolution:=optional, \
+  org.opensaml.saml1.core;resolution:=optional, \
+  org.opensaml.saml2.core;resolution:=optional, \
+  org.opensaml.xml;resolution:=optional, \
+  org.w3c.dom, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc
+
+DynamicImport-Package: \
+  org.bouncycastle.jce.provider
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Bundle-DocURL:
+Bundle-License:
+Implementation-Title:
+Implementation-Vendor:
+Implementation-Vendor-Id:
+Implementation-Version:
+Specification-Title:
+Specification-Vendor:
+Specification-Version:

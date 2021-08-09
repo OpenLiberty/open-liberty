@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.7,ou=objectClasses,cn=apachedns,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.18060.0.4.2.3.7
+m-name: apacheDnsMailExchangeRecord
+m-description: A mail exchange MX record
+m-obsolete: FALSE
+m-supobjectclass: apacheDnsAbstractRecord
+m-must: apacheDnsMxPreference
+m-must: apacheDnsDomainName
+entryUUID: f14b5448-2ea5-4ef0-9d32-7f07cc576f33
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.421000Z#000001#000#000000
+entryParentId: 4a0ef78b-970f-47c3-a6fe-0c428cee99b4
+createTimestamp: 20130919081910.303Z

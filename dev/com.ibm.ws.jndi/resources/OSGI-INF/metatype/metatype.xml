@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="com.ibm.ws.jndi.internal.JNDIEntry">
+  <Object ocdref="com.ibm.ws.jndi.internal.jndiEntry" />
+ </Designate>
+ 
+ <OCD id="com.ibm.ws.jndi.internal.jndiEntry" name="%jndi.entry.service.name" description="%jndi.entry.service.desc" ibm:alias="jndiEntry">
+  <AD id="jndiName"  name="%jndi.entry.name" description="%jndi.entry.name.desc" type="String"  required="true" ibm:unique="jndiName" />
+  <AD id="value" name="%jndi.entry.value" description="%jndi.entry.value.desc" type="String"  required="true" />
+  <AD id="decode" name="%jndi.entry.decode" description="%jndi.entry.decode.desc" type="Boolean" required="false" default="false" />
+ </OCD>
+ 
+  <Designate factoryPid="com.ibm.ws.jndi.internal.JNDIURLEntry">
+  <Object ocdref="com.ibm.ws.jndi.internal.jndiURLEntry" />
+ </Designate>
+ 
+ <OCD id="com.ibm.ws.jndi.internal.jndiURLEntry" name="%jndi.url.entry.service.name" description="%jndi.url.entry.service.desc" ibm:alias="jndiURLEntry">
+  <AD id="jndiName"  name="%jndi.url.entry.name" description="%jndi.url.entry.name.desc" type="String"  required="true" ibm:unique="jndiName" />
+  <AD id="value" name="%jndi.url.entry.value" description="%jndi.url.entry.value.desc" type="String"  required="true" />
+ </OCD>
+
+  <Designate factoryPid="com.ibm.ws.jndi.objectFactory">
+    <Object ocdref="com.ibm.ws.jndi.objectFactory"/>
+  </Designate>
+
+  <OCD id="com.ibm.ws.jndi.objectFactory" ibm:alias="jndiObjectFactory" name="%jndi.objectFactory" description="%jndi.objectFactory.desc">
+    <AD id="className" name="%jndi.objectFactory.className" description="%jndi.objectFactory.className.desc"
+        type="String"/>
+    <AD id="objectClassName" name="%jndi.objectFactory.objectClassName" description="%jndi.objectFactory.objectClassName.desc"
+        type="String"
+        default="java.lang.Object"/>
+    <AD id="libraryRef" name="%jndi.objectFactory.libraryRef" description="%jndi.objectFactory.libraryRef.desc"
+        type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary"/>
+    <AD id="library.target" name="internal" description="internal"
+        type="String"
+        ibm:final="true" default="(service.pid=${libraryRef})"/>
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.jndi.referenceEntry">
+    <Object ocdref="com.ibm.ws.jndi.referenceEntry"/>
+  </Designate>
+
+  <OCD id="com.ibm.ws.jndi.referenceEntry" ibm:alias="jndiReferenceEntry" name="%jndi.referenceEntry" description="%jndi.referenceEntry.desc">
+    <AD id="jndiName" name="%jndi.referenceEntry.name" description="%jndi.referenceEntry.name.desc"
+        type="String"
+        ibm:unique="jndiName"/>
+    <AD id="factoryRef" name="%jndi.referenceEntry.factoryRef" description="%jndi.referenceEntry.factoryRef.desc"
+        type="String" ibm:type="pid" ibm:reference="com.ibm.ws.jndi.objectFactory"/>
+    <AD id="factory.target" name="internal" description="internal"
+        type="String"
+        ibm:final="true" default="(service.pid=${factoryRef})"/>
+    <AD id="properties" name="%jndi.referenceEntry.properties" description="%jndi.referenceEntry.properties.desc"
+        type="String" ibm:type="pid" ibm:reference="com.ibm.ws.jndi.referenceEntry.properties"
+        required="false"
+        ibm:flat="true"/>
+  <AD id="decode" name="%jndi.entry.decode" description="%jndi.entry.decode.desc" type="Boolean" required="false" default="false" />
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.jndi.referenceEntry.properties">
+    <Object ocdref="com.ibm.ws.jndi.referenceEntry.properties"/>
+  </Designate>
+
+  <OCD id="com.ibm.ws.jndi.referenceEntry.properties" name="%jndi.referenceEntry.properties" description="%jndi.referenceEntry.properties.desc"
+       ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+    <AD id="config.parentPID" name="internal" description="internal"
+        type="String"/>
+  </OCD>
+</metatype:MetaData>

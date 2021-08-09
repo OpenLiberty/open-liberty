@@ -1,0 +1,70 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: O par\u00e2metro especificado n\u00e3o especifica um filtro de nome do arquivo v\u00e1lido. {0} = {1}
+badFilter.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o era, ou n\u00e3o p\u00f4de ser \
+convertido em, um valor de Sequ\u00eancia.
+badFilter.useraction=Verifique o valor especificado na configura\u00e7\u00e3o do servidor.
+
+badInterval=CWWKE0401W: O par\u00e2metro especificado n\u00e3o representa um intervalo de monitoramento v\u00e1lido. {0} = {1}
+badInterval.explanation=O valor para o par\u00e2metro de configura\u00e7\u00e3o especificado n\u00e3o p\u00f4de ser analisado como um \
+intervalo de monitor.
+badInterval.useraction=Verifique o valor especificado na configura\u00e7\u00e3o do servidor e assegure que o valor seja \
+um intervalo de monitor v\u00e1lido. \
+Por exemplo, 1s para um segundo. \
+As unidades v\u00e1lidas s\u00e3o ms=milissegundos, s=segundos, m=minutos, h=horas.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: O local do cache especificado n\u00e3o p\u00f4de ser alocado, portanto, todas as informa\u00e7\u00f5es sobre \
+arquivos monitorados ser\u00e3o armazenados na mem\u00f3ria. {0} = {1}
+badDiskCache.explanation=O servi\u00e7o n\u00e3o p\u00f4de criar um local do cache para um conjunto de recursos monitorados.
+badDiskCache.useraction=Verifique se voc\u00ea possui acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e \u00e0 \u00e1rea de \
+trabalho.
+
+createMonitorException=CWWKE0403W: Ocorreu uma exce\u00e7\u00e3o ao criar um monitor para {0}. O monitoramento desse recurso est\u00e1 desativado. A mensagem de exce\u00e7\u00e3o \
+foi: {1}
+createMonitorException.explanation=Ocorreu uma exce\u00e7\u00e3o inesperada ao criar um monitor para o recurso especificado. O recurso n\u00e3o ser\u00e1 monitorado. 
+createMonitorException.useraction=Verifique se voc\u00ea tem acesso de leitura ao recurso especificado. Consulte a exce\u00e7\u00e3o e a mensagem de FFDC associada para obter informa\u00e7\u00f5es adicionais.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: O arquivo de cache {0} n\u00e3o p\u00f4de ser exclu\u00eddo.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=O servi\u00e7o n\u00e3o p\u00f4de excluir um local de cache para um conjunto de recursos monitorados.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Verifique se voc\u00ea possui acesso de grava\u00e7\u00e3o para o diret\u00f3rio do servidor e a \u00e1rea de \
+trabalho
+
+fileMonitorException=CWWKE0405W: Ocorreu uma exce\u00e7\u00e3o durante a notifica\u00e7\u00e3o de um monitor sobre as seguintes cria\u00e7\u00f5es, modifica\u00e7\u00f5es e exclus\u00f5es de arquivos: {0}, {1}, {2}. A classe do monitor \u00e9 {3}. A mensagem de exce\u00e7\u00e3o \
+foi: {4}
+fileMonitorException.explanation=Ocorreu uma exce\u00e7\u00e3o inesperada ao criar um monitor para o recurso especificado. 
+fileMonitorException.useraction=Consulte a exce\u00e7\u00e3o e a mensagem de FFDC associada para obter informa\u00e7\u00f5es adicionais.
+
+fileMonitorDisabled=CWWKE0406W: Mais de {0} exce\u00e7\u00f5es ocorreram durante a notifica\u00e7\u00e3o de um monitor sobre as mudan\u00e7as. A classe do monitor \u00e9 {1}. Esse FileMonitor agora est\u00e1 desativado. 
+fileMonitorDisabled.explanation=Ocorreram muitas exce\u00e7\u00f5es consecutivas durante a notifica\u00e7\u00e3o de um monitor para o recurso especificado. O recurso n\u00e3o ser\u00e1 mais monitorado. 
+fileMonitorDisabled.useraction=Consulte as exce\u00e7\u00f5es e as mensagens FFDC associadas para obter mais informa\u00e7\u00f5es.

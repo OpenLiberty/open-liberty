@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webappext:WebAppExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webappext="webappext.xmi" xmi:id="WebAppExtension_1178205132597" reloadInterval="3" reloadingEnabled="true" additionalClassPath="" fileServingEnabled="true" directoryBrowsingEnabled="false" serveServletsByClassnameEnabled="true">
+  <webApp href="WEB-INF/web.xml#WebApp_ID"/>
+</webappext:WebAppExtension>

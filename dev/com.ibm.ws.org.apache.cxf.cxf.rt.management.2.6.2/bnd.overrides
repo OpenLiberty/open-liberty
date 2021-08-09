@@ -1,0 +1,56 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2
+Bundle-Activator: com.ibm.ws.cxf.rt.management.NoOpActivator
+
+
+Export-Package: \
+  org.apache.cxf.management.*;version=2.6.2, \
+  com.ibm.ws.cxf.rt.management, \
+  org.apache.cxf.management.counters;version="2.6.2", \
+  org.apache.cxf.management.interceptor;version="2.6.2", \
+  org.apache.cxf.management.jmx;version="2.6.2", \
+  org.apache.cxf.management.jmx.export.runtime;version="2.6.2", \
+  org.apache.cxf.management.jmx.type;version="2.6.2", \
+  org.apache.cxf.management.persistence;version="2.6.2", \
+  org.apache.cxf.management.utils;version="2.6.2"
+
+Import-Package: \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  javax.annotation, \
+  javax.management, \
+  javax.management.modelmbean, \
+  javax.management.remote, \
+  javax.xml.bind;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.namespace, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.buslifecycle;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.feature;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.io;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.annotation;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.counters;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.jmx.export.runtime;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.jmx.type;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.management.persistence;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.phase;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+
+Private-Package: \
+  schemas.configuration

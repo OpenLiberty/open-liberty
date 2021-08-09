@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Le service des journaux de reprise a \u00e9t\u00e9 suspendu ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=Le service des journaux de reprise a \u00e9t\u00e9 plac\u00e9 en attente pour permettre au syst\u00e8me d'effectuer un copie de sauvegarde des journaux de reprise.
+CWRLS0001_SUSPEND_RLS.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Le service des journaux de reprise a \u00e9t\u00e9 r\u00e9tabli ({0}).
+CWRLS0002_RESUME_RLS.explanation=Le service des journaux de reprise suspendu pr\u00e9c\u00e9demment a \u00e9t\u00e9 restaur\u00e9 dans un \u00e9tat de fonctionnement.
+CWRLS0002_RESUME_RLS.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Ce code de message sert au support des messages qui n'ont pas encore re\u00e7u leur propre code.
+CWRLS0003_GENERIC_ERROR.useraction=R\u00e9f\u00e9rez-vous au texte du message pour plus d'informations.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Impossible de cr\u00e9er le fichier journal {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=Le service des journaux de reprise n'est pas parvenu \u00e0 cr\u00e9er le fichier indiqu\u00e9 dans le message. Le r\u00e9pertoire cible n'est pas accessible ou le syst\u00e8me ne dispose pas des droits d'acc\u00e8s appropri\u00e9s pour cr\u00e9er le fichier requis.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=V\u00e9rifiez que la hi\u00e9rarchie de r\u00e9pertoires requise est valide et que le service des journaux de reprise peut y acc\u00e9der.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Impossible d''obtenir un verrou de fichier en mode exclusif sur {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=Le service des journaux de reprise n'est pas parvenu \u00e0 verrouiller en mode exclusif le fichier indiqu\u00e9 dans le message.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Cr\u00e9ation d''un nouveau fichier journal de reprise {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=Un nouveau journal de reprise a \u00e9t\u00e9 cr\u00e9\u00e9 pour stocker des donn\u00e9es persistantes.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: Journaux de reprise introuvable dans {0}. Premier lancement du journal de reprise.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Les anciens journaux de reprise ont \u00e9t\u00e9 supprim\u00e9s ou c'est la premi\u00e8re fois que les fichiers journaux de reprise sont stock\u00e9s dans cet emplacement. Dans les deux cas, le service associ\u00e9 est lanc\u00e9 et n'effectue pas de traitement de reprise.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Le journal de reprise est consid\u00e9r\u00e9 comme \u00e9tant en \u00e9chec. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Un incident s'est produit sur le fichier de reprise et ce dernier n'est plus accessible. Le message indique le composant et l'exception associ\u00e9e.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Red\u00e9marrez le serveur afin de r\u00e9parer le journal. Essayez de r\u00e9soudre les erreurs indiqu\u00e9es par l'exception dans le message.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Informations sur l''\u00e9chec du journal de reprise : {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Ce message est \u00e9mis avec le message CWRLS0008E pour indiquer des informations sur l'\u00e9chec du journal de reprise.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Utilisez les informations de ce message et du message CWRLS0008E pour r\u00e9soudre l'incident qui a entra\u00een\u00e9 l'\u00e9chec du journal de reprise.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Ex\u00e9cution de la proc\u00e9dure de reprise pour le serveur WebSphere local ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=Le service des journaux de reprise effectue la proc\u00e9dure de reprise des services client associ\u00e9s.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Ex\u00e9cution de la proc\u00e9dure de reprise pour le serveur WebSphere homologue ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=Le service des journaux de reprise effectue la proc\u00e9dure de reprise des services clients associ\u00e9s du serveur homologue.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Le syst\u00e8me a demand\u00e9 \u00e0 tous les services persistants d''ex\u00e9cuter la proc\u00e9dure de reprise pour ce serveur WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=Le service des journaux de reprise a demand\u00e9 \u00e0 tous les services client associ\u00e9s de lancer la reprise.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Le syst\u00e8me a demand\u00e9 \u00e0 tous les services persistants d''ex\u00e9cuter la proc\u00e9dure de reprise pour ce serveur WebSphere ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=Le service des journaux de reprise a demand\u00e9 \u00e0 tous les services client associ\u00e9s de lancer la reprise pour le serveur homologue.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Arr\u00eat des proc\u00e9dure de reprise en cours pour un serveur WebSphere homologue ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=La proc\u00e9dure de reprise est transmise \u00e0 un autre serveur d'applications. En g\u00e9n\u00e9ral, cela se produit lorsqu'un serveur est red\u00e9marr\u00e9 et qu'il reprend possession de ses journaux de reprise.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Le verrouillage des journaux de reprise a \u00e9t\u00e9 d\u00e9sactiv\u00e9 dans les propri\u00e9t\u00e9s de personnalisation du service de transaction.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=Le m\u00e9canisme de verrouillage des fichiers utilis\u00e9 par le service des journaux de reprise pour garantir un acc\u00e8s exclusif aux fichiers journaux de reprise a \u00e9t\u00e9 explicitement d\u00e9sactiv\u00e9.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=V\u00e9rifiez que les contraintes appropri\u00e9es sont appliqu\u00e9es pour prendre en charge ce param\u00e8tre de configuration.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Impossible d''obtenir un verrou de fichier en mode exclusif sur {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Le serveur cible est actif ou la configuration des journaux de reprise est incorrecte.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=V\u00e9rifiez que la configuration des journaux de reprise est valide.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Le syst\u00e8me a interrompu la tentative d''obtention d''un verrou de fichier en mode exclusif pour effectuer la proc\u00e9dure de reprise sur le serveur {0}.   Un autre serveur est en cours d''activation pour effectuer cette proc\u00e9dure de reprise.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Le contr\u00f4le d'un journal de reprise a \u00e9t\u00e9 transmis entre deux serveurs d'applications.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: Le syst\u00e8me a abandonn\u00e9 la tentative d''arr\u00eat de la reprise transactionnelle et du r\u00e9acheminement pour le serveur local ({0}).
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=Le service des journaux de reprise a emp\u00each\u00e9 le serveur local de lib\u00e9rer le contr\u00f4le de ses propres journaux de reprise. Cet incident est peut-\u00eatre d\u00fb \u00e0 une configuration inappropri\u00e9e des strat\u00e9gies du groupe central.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=V\u00e9rifiez que la configuration des strat\u00e9gies n'affecte pas la propri\u00e9t\u00e9 du journal de reprise d'un serveur actif \u00e0 un autre serveur.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: Le service des journaux de reprise a \u00e9t\u00e9 configur\u00e9 pour g\u00e9n\u00e9rer un clich\u00e9 coh\u00e9rent dans les propri\u00e9t\u00e9s personnalis\u00e9es du service de transactions.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Lorsqu'un clich\u00e9 des fichiers journaux est demand\u00e9, toutes les activit\u00e9s de consignation des transactions sont suspendues pendant le clich\u00e9 pour que les fichiers journaux se trouvent dans un \u00e9tat connu coh\u00e9rent avec les autres syst\u00e8mes impliqu\u00e9s dans le clich\u00e9.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: Le service des journaux de reprise n'a PAS \u00e9t\u00e9 configur\u00e9 pour g\u00e9n\u00e9rer un clich\u00e9 coh\u00e9rent dans les propri\u00e9t\u00e9s personnalis\u00e9es du service de transactions.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Lors d'un clich\u00e9 des fichiers journaux, ces derniers peuvent ne pas se trouver dans un \u00e9tat coh\u00e9rent avec les autres syst\u00e8mes impliqu\u00e9s dans le clich\u00e9.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Le syst\u00e8me a demand\u00e9 au service des journaux de reprise de reprendre son ex\u00e9cution ({0}) mais il existe d''autres suspensions en attente.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=Le service des journaux de reprise reprendra son ex\u00e9cution uniquement lorsqu'il n'existera plus d'op\u00e9rations de suspension en attente.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: L''op\u00e9ration de suspension du service des journaux de reprise a d\u00e9pass\u00e9 le d\u00e9lai imparti ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=S'il n'existe pas d'autres op\u00e9rations de suspension en attente, le service des journaux de reprise reprendra son ex\u00e9cution.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: Le service des journaux de reprise a repris son ex\u00e9cution \u00e0 la suite de l'expiration d'une op\u00e9ration de suspension.
+CWRLS0023_RESUME_RLS.explanation=Il s'agit d'un message d'information.
+CWRLS0023_RESUME_RLS.useraction=Aucune action n'est requise.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Exception intercept\u00e9e lors de la reprise. {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= Une exception a \u00e9t\u00e9 intercept\u00e9e lors de la tentative de reprise effectu\u00e9e apr\u00e8s un incident ant\u00e9rieur de serveur.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: Le d\u00e9marrage de serveur en mode reprise n'est pas compatible avec l'activation de la fonction de haute disponibilit\u00e9.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=Dans une configuration de haute disponibilit\u00e9, la reprise d'un serveur peut \u00eatre automatiquement lanc\u00e9e sur un serveur homologue.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Vous ne devez pas tenter de d\u00e9marrer un serveur en mode de reprise s'il n'est pas configur\u00e9 pour la haute disponibilit\u00e9.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Impossible d''obtenir un verrou de fichier en mode exclusif sur {0} - Nouvelle tentative.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=Le service des journaux de reprise ne peut pas verrouiller en mode exclusif le fichier indiqu\u00e9 dans le message au cours de la reprise, car le fichier est en cours d'utilisation. Le service de reprise va tenter r\u00e9guli\u00e8rement d'obtenir le verrou exclusif pour permettre d'ex\u00e9cuter la proc\u00e9dure de reprise. Si le fichier journal de reprise fait partie des journaux de reprise du serveur principal, le d\u00e9marrage est suspendu jusqu'\u00e0 ce qu'il soit possible d'acc\u00e9der aux journaux.  Si le fichier journal de reprise appartient \u00e0 un autre serveur homologue, un autre serveur peut obtenir les verrous et ex\u00e9cuter la reprise homologue. Dans ce cas, ce serveur arr\u00eate de lancer des tentatives de reprise.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Examinez les messages \u00e9ventuels associ\u00e9s pour d\u00e9terminer la cause de l'incident. S'il n'existe pas de messages associ\u00e9s, v\u00e9rifiez l'emplacement des journaux de reprise et v\u00e9rifiez qu'un autre serveur ne les utilise pas. Cette situation peut se produire, par exemple, lorsque plusieurs serveurs sont configur\u00e9s pour utiliser les journaux de reprise d'un autre serveur.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Le m\u00eame r\u00e9pertoire {0} a \u00e9t\u00e9 d\u00e9fini pour les journaux de transactions des serveurs {1} et {2}.
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Les journaux de transactions de deux serveurs utilisent la m\u00eame configuration de r\u00e9pertoire. Cette configuration peut entra\u00eener des conflits de verrou de reprise ou affecter l'int\u00e9grit\u00e9 des donn\u00e9es. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Configurez des r\u00e9pertoires distincts pour chaque serveur.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Un r\u00e9pertoire identique {0} a \u00e9t\u00e9 d\u00e9fini pour les journaux de compensation des serveurs {1} et {2}.
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Les journaux de compensation de deux serveurs utilisent le m\u00eame r\u00e9pertoire. Cela peut entra\u00eener un conflit de verrou de reprise ou un incident d'int\u00e9grit\u00e9 des donn\u00e9es. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Configurez des r\u00e9pertoires distincts pour chaque serveur.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Impossible d'effectuer le traitement de reprise pour le serveur WebSphere local. Arr\u00eat du serveur en cours.
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=Le service des journaux de reprise ne parvient pas \u00e0 effectuer ou \u00e0 terminer la proc\u00e9dure de reprise du serveur local et aucune t\u00e2che ne peut plus s'ex\u00e9cuter. Le serveur va s'arr\u00eater.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Le service attend que HAManager active le traitement de reprise pour le serveur WebSphere local.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=Le service des journaux de reprise ne parvient pas \u00e0 initier le traitement de reprise pour le serveur local car il attend que le gestionnaire de haute disponibilit\u00e9 (HAManager) active les membres du groupe pour les journaux de reprise de ce serveur loal.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Examinez les messages \u00e9ventuels associ\u00e9s pour d\u00e9terminer la cause de l'incident. S'il n'existe pas de messages associ\u00e9s, v\u00e9rifiez la d\u00e9finition des param\u00e8tres DefaultCoreGroup et les d\u00e9finitions de strat\u00e9gies associ\u00e9es du services de journal de reprise du serveur. Par exemple, si la strat\u00e9gie TM en cluster n'a pas \u00e9t\u00e9 configur\u00e9e pour prendre en charge la reprise par restauration, il est possible qu'un autre serveur d\u00e9tienne les journaux et emp\u00eache l'activation de ce serveur.
+

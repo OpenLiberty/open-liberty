@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: ComponentMetaDataAccessor beginContext \uba54\uc18c\ub4dc\uac00 \ub110 ComponentMetaData\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: \uc608\uc0c1\uce58 \uc54a\uc740 \uc608\uc678 \ubc1c\uc0dd: \"{0}\". com.ibm.websphere.threadpool.clearThreadLocal \ud2b9\uc131\uc774 \uc124\uc815\ub418\uace0 {0} \uc2a4\ub808\ub4dc \ud480\uc5d0 \uc801\uc6a9\ub429\ub2c8\ub2e4. \uc774 \uc635\uc158\uc740 \uad8c\uc7a5\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+WSVR0623W.explanation=\uc774 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c\ub294 \uc5ec\uc804\ud788 com.ibm.websphere.threadpool.clearThreadLocal \ud2b9\uc131\uc774 \uc0ac\uc6a9\ub418\uc9c0\ub9cc \uc774\ud6c4 \ub9b4\ub9ac\uc2a4\uc5d0\uc11c\ub294 \uc81c\uac70\ub429\ub2c8\ub2e4.
+WSVR0623W.useraction=com.ibm.websphere.threadpool.clearThreadLocal \ud2b9\uc131\uc744 JVM(Java Virtual Machine) \ud2b9\uc131\uc5d0\uc11c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+# F743-24122
+WSVR0629I=WSVR0629I: \"{0}\" \uc2a4\ub808\ub4dc \ud480\uc5d0 \ub300\ud55c \uc694\uccad \ubc84\ud37c \uc6a9\ub7c9\uc744 \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4.
+WSVR0629I.explanation=\uc9c0\uc815\ub41c \uc2a4\ub808\ub4dc \ud480\uc5d0\uc11c\uc758 \uc791\uc5c5 \ubcf4\ub958 \uc694\uccad\uc758 \ud050\uac00 \ud55c\uacc4\uc5d0 \ub3c4\ub2ec\ud588\uc73c\uba70, \uc774\ub294 \uc7a0\uc7ac\uc801\uc73c\ub85c \uc131\ub2a5 \ubb38\uc81c\ub97c \uc57c\uae30\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+WSVR0629I.useraction=\uc989\uac01\uc801\uc778 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc73c\ub098 \ud5a5\ud6c4 \uc774\ub7ec\ud55c \uc0c1\ud669\uc744 \ubc29\uc9c0\ud558\uae30 \uc704\ud574 \uc2a4\ub808\ub4dc \ud480\uc758 \uc694\uccad \ubc84\ud37c \ud06c\uae30\ub97c \ub298\ub824\uc57c \ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: \uc131\uc7a5 \uac00\ub2a5\ud55c \uc2a4\ub808\ub4dc \ud480 \"{0}\"\uc774(\uac00) \ucd08\uae30\uc5d0 \uc815\uc758\ub41c \ucd5c\ub300 \uc6a9\ub7c9\uc744 \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4. \ud480 \ud06c\uae30\ub294 \ud604\uc7ac \"{1}\"\uc785\ub2c8\ub2e4.
+WSVR0630I.explanation=\uc9c0\uc815\ub41c \uc2a4\ub808\ub4dc \ud480\uc774 \uc0ac\uc804 \uc815\uc758\ub41c \ucd5c\ub300 \ud06c\uae30\uc5d0 \ub3c4\ub2ec\ud558\uc5ec \ucd08\uacfc\ub429\ub2c8\ub2e4.
+WSVR0630I.useraction=\uc989\uac01\uc801\uc778 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc73c\ub098 \ud480\uc740 \uc791\uc5c5 \uc694\uccad\uc774 \ud604\uc7ac \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uc2a4\ub808\ub4dc \uc218\ub97c \ucd08\uacfc\ud558\ub294 \ud55c \uacc4\uc18d\ud574\uc11c \ub298\uc5b4\ub098\uac8c \ub429\ub2c8\ub2e4.

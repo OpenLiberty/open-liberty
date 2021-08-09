@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+
+    <!-- singleton -->
+    
+    <OCD name="person" id="test.config.person" ibm:alias="person">
+        <AD id="firstName" type="String"  />
+        <AD id="lastName" type="String" />
+    </OCD>
+    
+    <Designate pid="test.config.person">
+        <Object ocdref="test.config.person" />
+    </Designate>
+        
+    <!-- factory -->
+    
+    <OCD name="threadpool" id="test.config.threadpool" ibm:alias="threadPool">
+        <AD id="maxThreads" type="Integer" />
+        <AD id="minThreads" type="Integer" />
+    </OCD>
+    
+    <Designate factoryPid="test.config.threadpool" >
+        <Object ocdref="test.config.threadpool" />
+    </Designate>
+    
+</metatype:MetaData>

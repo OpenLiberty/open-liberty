@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: Le syst\u00e8me n''a pas pu cr\u00e9er le nouveau fichier {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Un composant du serveur d'applications n'a pas pu effectuer une op\u00e9ration sur une ressource n\u00e9cessaire.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource et que le disque n'est pas satur\u00e9. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: Le syst\u00e8me n''a pas pu cr\u00e9er le fichier {0} en raison de l''exception suivante : {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Une tentative d'ouverture de la ressource sp\u00e9cifi\u00e9e a \u00e9chou\u00e9. L'exception indique la cause premi\u00e8re de l'\u00e9chec.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource et que le disque n'est pas satur\u00e9. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: Le syst\u00e8me n''a pas pu supprimer le fichier {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Un composant du serveur d'applications n'a pas pu effectuer une op\u00e9ration sur une ressource n\u00e9cessaire.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=V\u00e9rifiez que le nom de fichier sp\u00e9cifi\u00e9 est valide. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource et que le disque n'est pas satur\u00e9. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: Le syst\u00e8me n''a pas pu supprimer le fichier  {0} en raison de l''exception suivante : {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Une tentative de fermeture de la ressource sp\u00e9cifi\u00e9e a \u00e9chou\u00e9. L'exception indique la cause premi\u00e8re de l'\u00e9chec.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examinez l'exception pour d\u00e9terminer la cause premi\u00e8re de l'\u00e9chec. V\u00e9rifiez que l'environnement d'ex\u00e9cution du serveur d'applications est autoris\u00e9 \u00e0 acc\u00e9der en \u00e9criture au r\u00e9pertoire pour la ressource. Si cela ne suffit pas \u00e0 r\u00e9soudre le probl\u00e8me, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Le service gestionnaire du fichier d'audit est en cours de d\u00e9marrage.
+AUDIT_FILEHANDLER_STARTING.explanation=Le service gestionnaire du fichier d'audit est en cours de d\u00e9marrage. Cela peut prendre plusieurs minutes si son initialisation doit avoir lieu une fois pour toutes.
+AUDIT_FILEHANDLER_STARTING.useraction=Aucune action n'est requise.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: Le service gestionnaire du fichier d'audit est pr\u00eat.
+AUDIT_FILEHANDLER_READY.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+AUDIT_FILEHANDLER_READY.useraction=Aucune action n'est requise.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: Le service gestionnaire du fichier d'audit est arr\u00eat\u00e9.
+AUDIT_FILEHANDLER_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+AUDIT_FILEHANDLER_STOPPED.useraction=Aucune action n'est requise.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: Le service d''audit ne peut pas d\u00e9marrer car la configuration du gestionnaire d''audit pour chiffrement des enregistrements d''audit est incorrecte. Configurez une r\u00e9f\u00e9rence de magasin de cl\u00e9s et un alias de certificats corrects. V\u00e9rifiez que le magasin de cl\u00e9s r\u00e9f\u00e9renc\u00e9 par {1} est correct et que l''alias de nom de certificat {0} que vous utilisez pour chiffrer les enregistrements d''audit est pr\u00e9sent dans le magasin de cl\u00e9s. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=Le service d'audit ne peut pas d\u00e9marrer en raison  d'une erreur dans la configuration du gestionnaire d'audit pour chiffrement des enregistrements d'audit. Pour plus d'informations, reportez-vous \u00e0 l'exception dans le message d'\u00e9chec pr\u00e9c\u00e9dent d'activation du service. Sp\u00e9cifiez une r\u00e9f\u00e9rence de magasin de cl\u00e9s valide et v\u00e9rifiez que l'alias de certificat se r\u00e9f\u00e8re \u00e0 un certificat pr\u00e9sent dans ce magasin.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=V\u00e9rifiez que la configuration du gestionnaire d'audit sp\u00e9cifie \u00e0 la fois une r\u00e9f\u00e9rence de magasin de cl\u00e9s et un alias de certificat pour chiffrement des enregistrements d'audit. V\u00e9rifiez que le magasin de cl\u00e9s existe, que le mot de passe a \u00e9t\u00e9 sp\u00e9cifi\u00e9 correctement et que le magasin de cl\u00e9s contient le certificat r\u00e9f\u00e9renc\u00e9 par l'alias de certificat de chiffrement.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: Le service d''audit ne peut pas d\u00e9marrer car la configuration de son gestionnaire pour signature des enregistrements d''audit est incorrecte. Configurez une r\u00e9f\u00e9rence de magasin de cl\u00e9s et un alias de certificat personnel corrects. V\u00e9rifiez que le magasin de cl\u00e9s r\u00e9f\u00e9renc\u00e9 par {1} existe et que le nom d''alias {0} du certificat personnel que vous utilisez pour signer les enregistrements d''audit est pr\u00e9sent dans le magasin de cl\u00e9s. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=Le service d'audit ne peut pas d\u00e9marrer en raison d'une erreur dans la configuration de son gestionnaire pour signature des enregistrements d'audit. Pour plus d'informations, reportez-vous \u00e0 l'exception dans le message d'\u00e9chec pr\u00e9c\u00e9dent d'activation du service. Sp\u00e9cifiez une r\u00e9f\u00e9rence de magasin de cl\u00e9s valide et v\u00e9rifiez que l'alias de certificat personnel se r\u00e9f\u00e8re \u00e0 un certificat personnel pr\u00e9sent dans le magasin de cl\u00e9s.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=V\u00e9rifiez que la configuration du gestionnaire d'audit sp\u00e9cifie \u00e0 la fois une r\u00e9f\u00e9rence de magasin de cl\u00e9s et un alias de certificat personnel pour signature des enregistrements d'audit. V\u00e9rifiez que le magasin de cl\u00e9s existe, que le mot de passe a \u00e9t\u00e9 sp\u00e9cifi\u00e9 correctement et que le magasin de cl\u00e9s contient le certificat personnel r\u00e9f\u00e9renc\u00e9 par l'alias de certificat de signature.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: Le service d''audit ne peut pas d\u00e9marrer en raison d''un \u00e9chec lors de l''initilisation par le service du gestionnaire d''audit pour chiffrement des enregistrements d''audit. L''exception est {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=Le service d'audit ne peut pas d\u00e9marrer en raison d'une erreur lors de l'initialisation du gestionnaire d'audit pour chiffrement des enregistrements d'audit. Pour plus d'informations, reportez-vous \u00e0 l'exception mentionn\u00e9e dans le message.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Reportez-vous \u00e0 l'exception pour d\u00e9terminer la cause de l'erreur.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: Le service d''audit ne peut pas d\u00e9marrer en raison d''un \u00e9chec lors de l''initilisation par le service du gestionnaire d''audit pour signature des enregistrements d''audit. L''exception est {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=Le service d'audit ne peut pas d\u00e9marrer en raison d'une erreur lors de l'initialisation du gestionnaire d'audit pour signature des enregistrements d'audit. Pour plus d'informations, reportez-vous \u00e0 l'exception mentionn\u00e9e dans le message.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Reportez-vous \u00e0 l'exception pour d\u00e9terminer la cause de l'erreur.

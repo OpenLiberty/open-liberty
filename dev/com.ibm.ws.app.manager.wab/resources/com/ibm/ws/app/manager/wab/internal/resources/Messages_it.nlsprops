@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: Si \u00e8 verificato un errore durante l'inizializzazione del programma di installazione WAB.
+bundle.tracker.init.fail.explanation=Il server non \u00e8 riuscito ad inizializzare il programma di installazione WAB (Web Application Bundle), per cui i WAB non sono stati installati.
+bundle.tracker.init.fail.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail=CWWKZ0202E: Impossibile installare il bundle {0} con il root di contesto {1} nel contenitore Web.
+wab.install.fail.explanation=Il server non \u00e8 riuscito ad installare il WAB (Web Application Bundle) nel contenitore Web.
+wab.install.fail.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail.adapt=CWWKZ0203E: Impossibile installare il bundle {0} con il root di contesto {1} nel contenitore Web.
+wab.install.fail.adapt.explanation=Il server non \u00e8 riuscito ad installare il WAB (Web Application Bundle) nel contenitore Web.
+wab.install.fail.adapt.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail.overlay=CWWKZ0204E: Impossibile installare il bundle {0} con il root di contesto {1} nel contenitore Web.
+wab.install.fail.overlay.explanation=Il server non \u00e8 riuscito ad installare il WAB (Web Application Bundle) nel contenitore Web.
+wab.install.fail.overlay.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail.cache=CWWKZ0205E: Impossibile installare il bundle {0} con il root di contesto {1} nel contenitore Web.
+wab.install.fail.cache.explanation=Il server non \u00e8 riuscito ad installare il WAB (Web Application Bundle) nel contenitore Web.
+wab.install.fail.cache.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail.container=CWWKZ0206E: Impossibile installare il bundle {0} con il root di contesto {1} nel contenitore Web.
+wab.install.fail.container.explanation=Il server non \u00e8 riuscito ad installare il WAB (Web Application Bundle) nel contenitore Web.
+wab.install.fail.container.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail.wiring=CWWKZ0207E: Impossibile installare il bundle {0} con il root di contesto {1} nel contenitore Web.
+wab.install.fail.wiring.explanation=Il server non \u00e8 riuscito ad installare il WAB (Web Application Bundle) nel contenitore Web.
+wab.install.fail.wiring.useraction=Per ulteriori informazioni, consultare i log ed i file FFDC.
+
+wab.install.fail.clash=CWWKZ0208E: Il bundle {0} con root di contesto {1} non pu\u00f2 essere installato nel contenitore Web perch\u00e9 ha lo stesso root di contesto dei seguenti bundle: {2}
+wab.install.fail.clash.explanation=Il root di contesto di ogni WAB (Web Application Bundle) nel contenitore Web deve essere univoco. Il server non pu\u00f2 installare il WAB nel contenitore Web perch\u00e9 il suo root di contesto \u00e8 lo stesso di un altro bundle che viene distribuito.
+wab.install.fail.clash.useraction=Utilizzare un root di contesto differente.

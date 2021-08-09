@@ -1,0 +1,10 @@
+version: 1
+dn: cn=autofs,ou=schema
+cn: autofs
+m-disabled: TRUE
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+m-dependencies: cosine
+creatorsname: uid=admin,ou=system

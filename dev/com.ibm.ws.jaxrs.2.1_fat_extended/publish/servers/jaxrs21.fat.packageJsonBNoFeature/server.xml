@@ -1,0 +1,14 @@
+<server>
+	<featureManager>
+		<feature>componenttest-1.0</feature>
+		<feature>jaxrs-2.1</feature>
+	</featureManager>
+	
+	<include location="../fatTestPorts.xml"/>
+	
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+</server>

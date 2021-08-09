@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.ibm.ws.ejbcontainer.ejblink.client.EjbLinkClient
+Class-Path: EjbLinkBean.jar EjbLinkOtherBean.jar EjbLinkInWar.war EjbLinkInOtherWar.war

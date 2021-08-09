@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:test="http://xmlns.jcp.org/jsf/composite/test">
+    
+    <h:head>
+        <title>JSF 2.3 Component Search Expression</title> 
+    </h:head>
+    <h:body id="body">
+        JSF 2.3 Component Search Expression
+        <h:form id="form1">
+            <h:outputLabel value="NamingContainer" for="@namingcontainer"/>
+            <br/>
+
+            <h:outputLabel value="Parent of the form" for=":form1:@parent"/>
+            <br/>
+            
+            <h:outputLabel value="Next Next" for="@next:@next"/>
+            <br/>
+
+            <h:outputLabel value="First Name - Next" for="@next"/>
+            <h:inputText id="inputFirstNameId" value="">
+                <f:validateLength minimum="5" maximum="10" />
+            </h:inputText>
+            <h:message for="@previous"/>
+            <br/>
+
+            <h:outputLabel value="Previous Previous" for="@previous:@previous"/>
+            <br/>
+
+            <h:commandButton id="submitButton" value="Submit">
+            </h:commandButton>
+        </h:form>
+
+        <h:outputLabel value="Parent" for="@parent"/>
+        <br/>
+
+        <h:outputLabel value="Body Child(1)" for="body:@child(1)"/>
+        <br/>
+
+        <h:outputLabel value="Child(0)" for="@child(0)">
+            <h:inputText id="inputTextChild" value="Child"/>
+            <h:outputLabel value="Previous" for="@previous"/>
+        </h:outputLabel>
+        <br/>
+
+        <h:outputLabel value="id(inputTextId)" for="@id(inputTextId)">
+            <h:inputText id="inputTextId" value="InputTextId"/>
+        </h:outputLabel>
+        <br/>
+
+        <h:outputLabel value="Root" for="@root"/>
+        <br/>
+
+        CompositeComponent: <test:compositeTest id="compositeId"/>
+        <br/>
+
+        #{programmaticSearchExpressionBean.testProgrammatic()}
+        <h:messages/>
+
+    </h:body>
+</html>

@@ -1,0 +1,12 @@
+<server description="default server">
+	<applicationManager autoExpand="true"/>
+
+    <include location="../fatTestPorts.xml"/>
+
+	<application location="testWarApplication.war"/>
+	
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+    </featureManager>
+    
+</server>

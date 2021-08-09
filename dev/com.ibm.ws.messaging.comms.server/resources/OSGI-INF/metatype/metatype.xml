@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.messaging.comms.server" ibm:alias="wasJmsEndpoint" name="%wasJmsEndpoint" description="%wasJmsEndpoint.desc" >
+
+      <AD name="%enabled" description="%enabled.desc" id="enabled" required="false" type="Boolean" default="true" />
+    
+      <AD id="host" name="%host" description="%host.desc" required="false" type="String" default="localhost" />
+ 
+      <AD id="wasJmsPort" name="%wasJmsPort" description="%wasJmsPort.desc" required="false"
+          type="Integer" default="7276"  min="-1" max="65535" />
+
+      <AD id="wasJmsSSLPort" name="%wasJmsSSLPort" description="%wasJmsSSLPort.desc" required="false"
+          type="Integer" default="7286" min="-1" max="65535" />
+
+       <AD id="sslOptionsRef" name="%sslOptions" description="%sslOptions.desc"
+            ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
+            type="String" required="false" />            
+
+       <AD id="sslOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String"
+            default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.messaging.comms.server-${id}/*)(id=defaultSSLOptions))))" /> 
+
+      <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
+            ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid"
+            type="String" required="false" default="defaultTCPOptions" />               
+        
+        <AD id="tcpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.messaging.comms.server-${id}/*)(id=defaultTCPOptions))))" />
+
+    </OCD>
+
+   <Designate pid="com.ibm.ws.messaging.comms.server">
+      <Object ocdref="com.ibm.ws.messaging.comms.server" /> 
+   </Designate>
+
+</metatype:MetaData>

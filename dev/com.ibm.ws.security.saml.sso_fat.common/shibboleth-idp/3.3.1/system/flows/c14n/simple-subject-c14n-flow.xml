@@ -1,0 +1,17 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="c14n.abstract">
+
+    <!-- This is a one-step subflow that does Subject Canonicalization using the simplest built-in action. -->
+    
+    <action-state id="SimpleSubjectCanonicalization">
+        <evaluate expression="SimpleSubjectCanonicalization" />
+        <evaluate expression="'proceed'" />
+        
+        <transition on="proceed" to="proceed" />
+    </action-state>
+
+    <bean-import resource="simple-subject-c14n-beans.xml" />
+
+</flow>

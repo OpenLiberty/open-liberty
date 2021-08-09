@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: Niepoprawne mechanizmy warstwy uwierzytelniania podane w zabezpieczeniach {0} klienta. Poprawne warto\u015bci to GSSUP lub LTPA albo GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Podane mechanizmy warstwy uwierzytelniania zabezpiecze\u0144 klienta nie s\u0105 obs\u0142ugiwane.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Sprawd\u017a, czy podany mechanizm warstwy uwierzytelniania zabezpiecze\u0144 klienta to GSSUP lub LTPA albo GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: Mechanizmy warstwy uwierzytelniania podane w zabezpieczeniach klienta maj\u0105 warto\u015b\u0107 NULL.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Podane mechanizmy warstwy uwierzytelniania zabezpiecze\u0144 klienta maj\u0105 warto\u015b\u0107 NULL.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Sprawd\u017a, czy podany mechanizm warstwy uwierzytelniania zabezpiecze\u0144 klienta to GSSUP lub LTPA albo GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: Niepoprawne mechanizmy warstwy uwierzytelniania podane w strategii bezpiecze\u0144stwa serwera {0}. Poprawne warto\u015bci to GSSUP lub LTPA albo GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=Podane mechanizmy warstwy uwierzytelniania strategii bezpiecze\u0144stwa serwera nie s\u0105 obs\u0142ugiwane.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Sprawd\u017a, czy podany mechanizm warstwy uwierzytelniania strategii bezpiecze\u0144stwa serwera to GSSUP lub LTPA albo GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: Mechanizmy warstwy uwierzytelniania podane w zabezpieczeniach klienta maj\u0105 warto\u015b\u0107 NULL.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=Podane mechanizmy warstwy uwierzytelniania zabezpiecze\u0144 klienta maj\u0105 warto\u015b\u0107 NULL.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Sprawd\u017a, czy podany mechanizm warstwy uwierzytelniania zabezpiecze\u0144 klienta to GSSUP lub LTPA albo GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E:  Konfiguracja SSL {0} przychodz\u0105cej warstwy transportowej CSIv2 nie odpowiada konfiguracji SSL w punkcie ko\u0144cowym IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation= Przychodz\u0105ca warstwa transportowa CSIv2 korzysta z konfiguracji SSL, ale punkt ko\u0144cowy IIOP nie u\u017cywa tej samej konfiguracji SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=W pliku server.xml przychodz\u0105cej warstwy transportowej CSIv2 ustaw jedn\u0105 z konfiguracji SSL u\u017cywanych przez punkt ko\u0144cowy IIOP.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E:  Punkt ko\u0144cowy IIOP nie ma konfiguracji SSL, a przychodz\u0105ca warstwa transportowa CSIv2 wymaga, aby punkt ko\u0144cowy IIOP u\u017cywa\u0142 konfiguracji SSL {0}.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation= Punkt ko\u0144cowy IIOP nie ma co najmniej jednego elementu iiopsOptions z konfiguracj\u0105 SSL, do kt\u00f3rego mo\u017ce si\u0119 odwo\u0142a\u0107 przychodz\u0105ca warstwa transportowa CSIv2.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction= Dla punktu ko\u0144cowego IIOP ustaw co najmniej jeden element iiopsOptions z konfiguracj\u0105 SSL u\u017cywan\u0105 przez przychodz\u0105c\u0105 warstw\u0119 transportow\u0105 CSIv2.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: Klient nie mo\u017ce utworzy\u0107 znacznika asercji to\u017csamo\u015bci ITTDistinguishedName dla nazwy wyr\u00f3\u017cniaj\u0105cej {0}. Komunikat o wyj\u0105tku: {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=Podmiot dla u\u017cytkownika, kt\u00f3rego asercj\u0119 przeprowadzasz, nie zawiera poprawnej nazwy wyr\u00f3\u017cniaj\u0105cej, wi\u0119c nie mo\u017cna przeprowadzi\u0107 asercji to\u017csamo\u015bci. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Przeczytaj komunikat o wyj\u0105tku, upewnij si\u0119, \u017ce rejestr u\u017cytkownik\u00f3w skonfigurowany w pliku server.xml obs\u0142uguje nazwy wyr\u00f3\u017cniaj\u0105ce, i ponownie uwierzytelnij u\u017cytkownika.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: Klient nie mo\u017ce utworzy\u0107 znacznika asercji to\u017csamo\u015bci ITTX509CertChain. Komunikat o wyj\u0105tku: {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=Podmiot dla u\u017cytkownika, kt\u00f3rego asercj\u0119 przeprowadzasz, nie zawiera poprawnego certyfikatu, wi\u0119c nie mo\u017cna przeprowadzi\u0107 asercji to\u017csamo\u015bci. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Przejrzyj komunikat o wyj\u0105tku i upewnij si\u0119, \u017ce magazyn kluczy, protok\u00f3\u0142 SSL i warstwa transportowa strategii serwera s\u0105 skonfigurowane w pliku server.xml, i ponownie uwierzytelnij u\u017cytkownika.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: \u0141a\u0144cuch certyfikat\u00f3w klienta jest niedost\u0119pny do kontynuowania asercji to\u017csamo\u015bci.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=Podmiot dla u\u017cytkownika, kt\u00f3rego asercj\u0119 przeprowadzasz, nie zawiera poprawnego certyfikatu, wi\u0119c nie mo\u017cna przeprowadzi\u0107 asercji to\u017csamo\u015bci. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Upewnij si\u0119, \u017ce magazyn kluczy, protok\u00f3\u0142 SSL i warstwa transportowa strategii serwera s\u0105 skonfigurowane w pliku server.xml, i ponownie uwierzytelnij u\u017cytkownika.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: Element orb o atrybucie id {0} wymaga rejestru u\u017cytkownik\u00f3w, ale w ci\u0105gu {1} s nie udost\u0119pniono \u017cadnego rejestru u\u017cytkownik\u00f3w.   W wyniku tego \u017cadna aplikacja nie zostanie uruchomiona. Upewnij si\u0119, \u017ce w pliku server.xml skonfigurowano odpowiedni rejestr u\u017cytkownik\u00f3w.
+NO_USER_REGISTRY.explanation=Nie uruchomiono \u017cadnej aplikacji, poniewa\u017c zabezpieczony obiektowy broker zapyta\u0144 (Object Request Broker - ORB) na serwerze wymaga rejestru u\u017cytkownik\u00f3w, ale nie znaleziono \u017cadnego rejestru u\u017cytkownik\u00f3w. Aplikacje zostan\u0105 uruchomione po skonfigurowaniu odpowiedniego rejestru u\u017cytkownik\u00f3w.
+NO_USER_REGISTRY.useraction=Upewnij si\u0119, \u017ce skonfigurowano rejestr u\u017cytkownik\u00f3w odpowiedni dla danego \u015brodowiska.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: Warstwa uwierzytelniania CSIv2 zosta\u0142a wy\u0142\u0105czona, poniewa\u017c warto\u015bci\u0105 elementu establishTrustInClient jest {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Gdy element establishTrustInClient jest ustawiony na warto\u015b\u0107 Never (Nigdy), warstwa uwierzytelniania CSIv2 jest wy\u0142\u0105czona.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Aby w\u0142\u0105czy\u0107 warstw\u0119 uwierzytelniania CSIv2, ustaw warto\u015b\u0107 elementu establishTrustInClient na warto\u015b\u0107 Supported (Obs\u0142ugiwana) lub Required (Wymagana).
+
+

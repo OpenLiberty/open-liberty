@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd" metadata-complete="true" version="3.2">
+  <display-name>RepeatableDSDXMLEJB</display-name>
+  <enterprise-beans>
+    <session>
+      <ejb-name>RepeatableDSDStatelessBean</ejb-name>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.injection.repeatable.dsdxml.ejb.RepeatableDSDStatelessBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <data-source>
+        <description>Basic Data Source Definition in an SLSB - module level</description>
+        <name>java:module/BasicModLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <database-name>memory:repeatableDsdTest</database-name>
+        <user>dsdTester</user>
+        <password>dsdPassword</password>
+        <property>
+          <name>createDatabase</name>
+          <value>create</value>
+        </property>
+        <login-timeout>1842</login-timeout>
+        <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
+      </data-source>
+      <data-source>
+        <description>Basic Data Source Definition in an SLSB - application level</description>
+        <name>java:app/BasicAppLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <database-name>memory:repeatableDsdTest</database-name>
+        <user>dsdTester</user>
+        <password>dsdPassword</password>
+        <property>
+          <name>createDatabase</name>
+          <value>create</value>
+        </property>
+        <login-timeout>1822</login-timeout>
+        <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
+      </data-source>
+      <data-source>
+        <description>Basic Data Source Definition in an SLSB - global level</description>
+        <name>java:global/BasicGlobalLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <database-name>memory:repeatableDsdTest</database-name>
+        <user>dsdTester</user>
+        <password>dsdPassword</password>
+        <property>
+          <name>createDatabase</name>
+          <value>create</value>
+        </property>
+        <login-timeout>1832</login-timeout>
+        <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
+      </data-source>
+      <data-source>
+        <description>Basic Data Source Definition in an SLSB - comp level</description>
+        <name>BasicCompLevelDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <database-name>memory:repeatableDsdTest</database-name>
+        <user>dsdTester</user>
+        <password>dsdPassword</password>
+        <property>
+          <name>createDatabase</name>
+          <value>create</value>
+        </property>
+        <login-timeout>1813</login-timeout>
+        <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
+      </data-source>
+      <data-source>
+        <description>Verify that since metadata-complete=true the values defined via annotation are ignored and defaults will be taken for loginTimeout and Isolation Level.</description>
+        <name>java:module/MetaDataCompleteValidDS</name>
+        <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
+        <database-name>memory:repeatableDsdTestMetadataComplete</database-name>
+        <property>
+          <name>createDatabase</name>
+          <value>create</value>
+        </property>
+      </data-source>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

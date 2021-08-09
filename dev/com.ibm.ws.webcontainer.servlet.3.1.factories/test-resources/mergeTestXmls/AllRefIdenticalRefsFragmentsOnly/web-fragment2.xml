@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<web-fragment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+	id="WebFragment_ID" version="3.0">
+
+	<name>MyFragment2</name>
+
+
+	<resource-ref>
+		<res-ref-name>RerenceName</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+
+	<ejb-local-ref id="EJBLocalRef_1">
+		<ejb-ref-name>ejb/PriceChangeSessionFacadeBean</ejb-ref-name>
+		<ejb-ref-type>Session</ejb-ref-type>
+		<local-home></local-home>
+		<local>session.ejb3.PriceChangeSessionFacadeBean</local>
+	</ejb-local-ref>
+	
+	<ejb-ref id="EJBRemoteRef_1">
+		<ejb-ref-name>ejb/remote</ejb-ref-name>
+		<ejb-ref-type>Session</ejb-ref-type>
+		<home></home>
+		<remote>session.ejb3.PriceChangeSessionFacadeRemote</remote>
+	</ejb-ref>
+	
+	<env-entry>
+    		<env-entry-name>EntryName</env-entry-name>
+    		<env-entry-value>myValue</env-entry-value>
+    		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<message-destination-ref>
+		<message-destination-ref-name>jms/StockQueue</message-destination-ref-name>
+		<message-destination-type>javax.jms.Queue</message-destination-type>
+		<message-destination-usage>Consumes</message-destination-usage>
+		<message-destination-link>CorporateStocks</message-destination-link>
+	</message-destination-ref>
+	
+	<persistence-context-ref>
+		<persistence-context-ref-name>persistence/RefName</persistence-context-ref-name>
+		<persistence-unit-name>RefName</persistence-unit-name>
+
+	</persistence-context-ref>
+	
+		<resource-env-ref>  
+		<resource-env-ref-name>jms/StockQueueIBM</resource-env-ref-name>  
+		<resource-env-ref-type>javax.jms.Queue</resource-env-ref-type> 
+		
+	</resource-env-ref> 
+	
+	<service-ref>
+		<service-ref-name>sameName</service-ref-name>
+		<service-interface>Interface1</service-interface>
+	</service-ref> 
+
+
+
+</web-fragment>

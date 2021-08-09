@@ -1,0 +1,17 @@
+<server description="Server for testing multiple health checks with the default Readiness overall status MP Config property enabled">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiConsole-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>mpHealth-3.0</feature>
+    </featureManager>
+	
+	<logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:io.openliberty.org.eclipse.microprofile.health.3.0.*=all=enabled"/>
+
+	<application location="DelayedHealthCheckApp.war"/>
+    <webContainer deferServletLoad="false"/> 
+	
+</server>

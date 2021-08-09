@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: Nie mo\u017cna skonfigurowa\u0107 w\u0142a\u015bciwo\u015bci {0} us\u0142ugi {1} z identyfikatorem {2} przy u\u017cyciu warto\u015bci {3}.
+CWKKD0010.prop.error.explanation=Skonfigurowana w\u0142a\u015bciwo\u015b\u0107 nie zosta\u0142a rozpoznana lub nie mo\u017ce zosta\u0107 skonfigurowana z powodu b\u0142\u0119du.
+CWKKD0010.prop.error.useraction=Popraw lub usu\u0144 skonfigurowan\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: Us\u0142uga {0} z identyfikatorem {1} jest zdefiniowana z u\u017cyciem r\u00f3\u017cnej liczby nazw host\u00f3w ({2}) i port\u00f3w ({3}).
+CWKKD0011.hosts.ports.mismatch.explanation=Listy nazw host\u00f3w i numer\u00f3w port\u00f3w musz\u0105 mie\u0107 t\u0119 sam\u0105 liczb\u0119 element\u00f3w. 
+CWKKD0011.hosts.ports.mismatch.useraction=Zaktualizuj konfiguracj\u0119 serwera tak, aby atrybuty nazw host\u00f3w i port\u00f3w zawiera\u0142y t\u0119 sam\u0105 liczb\u0119 element\u00f3w.
+
+CWKKD0012.authentication.error=CWKKD0012E: Us\u0142ugi {0} z identyfikatorem {1} nie mo\u017cna uwierzytelni\u0107 dla bazy danych {2}.
+CWKKD0012.authentication.error.explanation=Baza danych odrzuci\u0142a pr\u00f3b\u0119 uwierzytelnienia.
+CWKKD0012.authentication.error.useraction=Zaktualizuj konfiguracj\u0119 serwera przy u\u017cyciu poprawnej nazwy i has\u0142a u\u017cytkownika.
+
+CWKKD0013.unsupported.driver=CWKKD0013E: Us\u0142uga {0} napotka\u0142a nieobs\u0142ugiwan\u0105 wersj\u0119 sterownika MongoDB w bibliotece wsp\u00f3\u0142u\u017cytkowanej {1}. Oczekiwany minimalny poziom to {2}, lecz znaleziono {3}.
+CWKKD0013.unsupported.driver.explanation=Us\u0142uga MongoDB zosta\u0142a udost\u0119pniona z niepoprawn\u0105 bibliotek\u0105 sterownika.
+CWKKD0013.unsupported.driver.useraction=Zaktualizuj bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 do obs\u0142ugiwanego poziomu.
+
+CWKKD0014.missing.driver=CWKKD0014E: Us\u0142uga {0} nie mog\u0142a znale\u017a\u0107 wymaganych klas sterownika MongoDB w bibliotece wsp\u00f3\u0142u\u017cytkowanej {1}.
+CWKKD0014.missing.driver.explanation=Us\u0142uga MongoDB nie mo\u017ce znale\u017a\u0107 wymaganych klas w skonfigurowanej bibliotece wsp\u00f3\u0142u\u017cytkowanej.
+CWKKD0014.missing.driver.useraction=Zaktualizuj bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 do obs\u0142ugiwanego poziomu.
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: Us\u0142uga {0} o identyfikatorze {1} podejmuje pr\u00f3b\u0119 u\u017cycia protoko\u0142u SSL, ale w pliku server.xml nie ma w\u0142\u0105czonego sk\u0142adnika ssl-1.0.
+CWKKD0015.ssl.feature.missing.explanation=Nie mo\u017cna u\u017cywa\u0107 konfiguracji SSL bez w\u0142\u0105czonego sk\u0142adnika ssl-1.0.
+CWKKD0015.ssl.feature.missing.useraction=Dodaj sk\u0142adnik ssl-1.0 do pliku server.xml.
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: Us\u0142uga {0} o identyfikatorze {1} napotka\u0142a niekompatybiln\u0105 wersj\u0119 sterownika MongoDB w bibliotece wsp\u00f3\u0142u\u017cytkowanej {2}. W przypadku protoko\u0142u SSL wymagany jest co najmniej poziom {3}, ale us\u0142uga znalaz\u0142a poziom {4}.
+CWKKD0017.ssl.incompatible.driver.explanation=Na potrzeby u\u017cywania z protoko\u0142em SSL zosta\u0142a udost\u0119pniona us\u0142uga MongoDB z niepoprawn\u0105 bibliotek\u0105 sterownika.
+CWKKD0017.ssl.incompatible.driver.useraction=Zaktualizuj bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 do obs\u0142ugiwanego poziomu.
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: Us\u0142uga {0} o identyfikatorze {1} napotka\u0142a niezgodn\u0105 kombinacj\u0119 opcji uwierzytelniania. Warto\u015b\u0107 useCertificateAuthentication jest niezgodna z nazw\u0105 u\u017cytkownika i has\u0142em.
+CWKKD0018.ssl.user.pswd.certificate.explanation=Na potrzeby u\u017cywania z protoko\u0142em SSL zosta\u0142a udost\u0119pniona us\u0142uga MongoDB z niezgodnymi opcjami uwierzytelniania.
+CWKKD0018.ssl.user.pswd.certificate.useraction=Zaktualizuj element mongo w pliku server.xml, aby poda\u0107 albo warto\u015bci user i password, albo warto\u015b\u0107 useCertificateAuthentication.
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: Us\u0142uga {0} o identyfikatorze {1} zosta\u0142a skonfigurowana pod k\u0105tem u\u017cywania uwierzytelniania przy u\u017cyciu certyfikatu bez w\u0142\u0105czonego protoko\u0142u SSL.
+CWKKD0019.ssl.certificate.no.ssl.explanation=Us\u0142uga MongoDB zosta\u0142a skonfigurowana pod k\u0105tem u\u017cywania uwierzytelniania przy u\u017cyciu certyfikatu bez protoko\u0142u SSL.
+CWKKD0019.ssl.certificate.no.ssl.useraction=Zaktualizuj element mongo w pliku server.xml, do\u0142\u0105czaj\u0105c ustawienie sslEnabled=true, lub usu\u0144 element useCertificateAuthentication.
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: Us\u0142uga {0} o identyfikatorze {1} odebra\u0142a wyj\u0105tek podczas odczytywania klucza i certyfikatu klienta z podanego magazynu kluczy. Wyj\u0105tek zagnie\u017cd\u017cony {2}
+CWKKD0020.ssl.get.certificate.user.explanation=Us\u0142uga MongoDB pr\u00f3bowa\u0142a odczyta\u0107 klucz i certyfikat klienta z magazynu kluczy i napotka\u0142a problem z magazynem kluczy lub z certyfikatem, kt\u00f3ry si\u0119 w nim znajduje.  
+CWKKD0020.ssl.get.certificate.user.useraction=Wi\u0119cej informacji powinien zawiera\u0107 wyj\u0105tek zagnie\u017cd\u017cony.
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: Us\u0142uga {0} o identyfikatorze {1} napotka\u0142a niekompatybiln\u0105 wersj\u0119 sterownika MongoDB w bibliotece wsp\u00f3\u0142u\u017cytkowanej {2}. W przypadku uwierzytelnianie przy u\u017cyciu certyfikatu wymagany jest co najmniej poziom {3}, ale us\u0142uga znalaz\u0142a poziom {4}.
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=Na potrzeby u\u017cywania z uwierzytelnianiem przy u\u017cyciu certyfikatu zosta\u0142a udost\u0119pniona us\u0142uga MongoDB z niepoprawn\u0105 bibliotek\u0105 sterownika.
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=Zaktualizuj bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 do obs\u0142ugiwanego poziomu.
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: Dla us\u0142ugi {0} o identyfikatorze {1} ustawiono w\u0142a\u015bciwo\u015b\u0107 sslRef w pliku server.xml, ale we w\u0142a\u015bciwo\u015bci sslEnabled nie zosta\u0142a ustawiona warto\u015b\u0107 true.
+CWKKD0024.ssl.sslref.no.ssl.explanation=Ustawienie w\u0142a\u015bciwo\u015bci sslRef bez protoko\u0142u SSL jest niepoprawne.
+CWKKD0024.ssl.sslref.no.ssl.useraction=Ustaw sslEnabled=true lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107 sslRef.
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: Us\u0142uga {0} o identyfikatorze {1} nie mog\u0142a wyodr\u0119bni\u0107 klucza i certyfikatu klienta z magazynu kluczy.  Albo nie ma \u017cadnych kluczy w tym magazynie kluczy lub istnieje wiele kluczy, a parametr clientKeyAlias nie zosta\u0142 ustawiony dla elementu SSL.
+CWKKD0026.ssl.certificate.exception.explanation=Przywo\u0142ywany magazyn kluczy musi zawiera\u0107 co najmniej jedn\u0105 par\u0119 klucz-certyfikat, a je\u015bli zawiera ich wi\u0119cej, nale\u017cy u\u017cy\u0107 parametru clientKeyAlias identyfikuj\u0105cego t\u0119, kt\u00f3ra ma by\u0107 u\u017cywana.
+CWKKD0026.ssl.certificate.exception.useraction=Sprawd\u017a magazyn kluczy przy u\u017cyciu narz\u0119dzia keytool \u015brodowiska Java. Na przyk\u0142ad komenda keytool -list -keystore keystorename.jks wy\u015bwietla wpisy w magazynie kluczy i ich aliasy. Okre\u015bl jeden z tych alias\u00f3w, u\u017cywaj\u0105c parametru clientKeyAlias dla elementu SSL.
+

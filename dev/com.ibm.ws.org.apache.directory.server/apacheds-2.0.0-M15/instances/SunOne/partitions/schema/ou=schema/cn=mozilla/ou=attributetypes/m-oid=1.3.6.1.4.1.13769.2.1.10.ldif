@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.13769.2.1.10,ou=attributeTypes,cn=mozilla,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 1.3.6.1.4.1.13769.2.1.10
+m-obsolete: FALSE
+m-substr: caseIgnoreSubstringsMatch
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-usage: USER_APPLICATIONS
+m-name: mozillaHomeFriendlyCountryName
+creatorsname: uid=admin,ou=system
+m-equality: caseIgnoreMatch

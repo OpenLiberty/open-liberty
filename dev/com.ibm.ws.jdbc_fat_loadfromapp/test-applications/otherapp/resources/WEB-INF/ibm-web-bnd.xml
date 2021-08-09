@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+
+  <resource-ref name="java:app/env/jdbc/ddsLoadFromAppWithWebModLoginModule">
+    <custom-login-configuration name="web1login">
+      <property name="shape" value="rhombus"/>
+      <property name="sides" value="4"/>
+      <property name="sumOfAngles" value="360"/>
+    </custom-login-configuration>
+  </resource-ref>
+
+  <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromTopLevelJarInApp">
+    <custom-login-configuration name="app1login">
+      <property name="shape" value="octagon"/>
+      <property name="sides" value="8"/>
+      <property name="sumOfAngles" value="1080"/>
+    </custom-login-configuration>
+  </resource-ref>
+
+  <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromWebAppNotFoundInEAR">
+    <custom-login-configuration name="notFoundInEarLogin">
+      <property name="shape" value="parallelogram"/>
+      <property name="sides" value="4"/>
+      <property name="sumOfAngles" value="360"/>
+    </custom-login-configuration>
+  </resource-ref>
+
+  <resource-ref name="java:app/env/jdbc/sldsLoginModuleFromWebModuleInApp">
+    <custom-login-configuration name="web1login">
+      <property name="shape" value="triangle"/>
+      <property name="sides" value="3"/>
+      <property name="sumOfAngles" value="180"/>
+    </custom-login-configuration>
+  </resource-ref>
+
+</web-bnd>

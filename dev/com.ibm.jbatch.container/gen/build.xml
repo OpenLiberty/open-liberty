@@ -1,0 +1,142 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.jbatch.container.gen" default="generate">
+
+	<property name="proj.dir" value="${basedir}/.." />
+	<property name="prereq.dir" value="${proj.dir}/prereqs" />
+	<property name="generate.dir" value="${proj.dir}/src.model" />
+	<property name="generate.pkg.dir" value="${generate.dir}/com/ibm/jbatch/jsl/model" />
+	<property name="work.dir" value="${proj.dir}/work" />
+	<property name="stubs.dir" value="${proj.dir}/toStringAndExtraAppendedCodeStubs" />
+
+	<target name="generateJAXB">
+		<taskdef name="xjc" classname="com.ibm.jtc.jax.tools.xjc.XJC2Task">
+			<classpath>
+				<fileset dir="${prereq.dir}">
+					<include name="com.ibm.jaxb.tools.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+		<mkdir dir="${generate.dir}" />
+			
+		<xjc destdir="${generate.dir}">
+			<arg value="-mark-generated" />
+			<binding dir="${proj.dir}/resources">
+				<include name="**/jobXML_1_0.xjb" />
+			</binding>
+			<schema dir="${proj.dir}/resources">
+				<include name="**/jobXML_1_0.xsd" />
+			</schema>
+			<!-- Uncomment if we want to switch to only doing codegen when XSD or XJC has changed. 
+	            <depends dir="${proj.dir}/src/main/resources" includes="**/*"/>
+	            <produces dir="${generate.dir}" includes="**/*.java"/>
+	            -->
+		</xjc>
+	</target>
+
+	<!-- 
+		     The goal here is to have a set of JAXBs implement a common interface (the one that the property from the 
+		     containing Job specifies:  com.ibm.jbatch.container.jsl.ExecutionElement.
+		     Though it seems like there is a way to do this   
+		       http://confluence.highsource.org/display/J2B/Inheritance+plugin
+		     I'm not sure if the IBM JDK version of the JAXB RI is extensible in this way, and don't want to create a 
+		     headache if/when this code is pulled into a build.
+		     
+		     (Even so, there's no requirement to gen during build time, but still...)
+		     
+		     So we'll fix up by hand.-->
+
+	<!--
+		replace="/\*\*\\n\*\n Modified post-XJC-gen by custom build logic in order to deal with the\n\* fact that JAXB does not make it easy to generate\\n* elements implementing a common interface.\n\*/	public class \1 implements com.ibm.jbatch.container.jsl.ExecutionElement \{">
+		-->
+	<target name="AddExecutionElement.Intf.ToJAXBs">
+		<replaceregexp match="public class (.*) \{" replace="/\*\*\${line.separator} \* Modified post-XJC-gen by custom JSR352 RI build logic ${line.separator} \* since we can't seem to get JAXB's XJC to generate ${line.separator} \* elements implementing a common interface. ${line.separator} \*${line.separator} \* This custom logic adds the interface implementation : ${line.separator} \*      implements com.ibm.jbatch.container.jsl.ExecutionElement ${line.separator} \*/${line.separator} public class \1 implements com.ibm.jbatch.container.jsl.ExecutionElement \{">
+
+			<fileset dir="${generate.dir}">
+				<include name="**/Decision.java" />
+				<include name="**/Flow.java" />
+				<include name="**/Split.java" />
+				<include name="**/Step.java" />
+			</fileset>
+		</replaceregexp>
+
+	</target>
+
+	<!-- 
+		     The goal here is to have a set of JAXBs implement a common interface (the one that the property from the 
+		     containing Job specifies:  com.ibm.jbatch.container.jsl.TransitionElement.
+		     Though it seems like there is a way to do this   
+		       http://confluence.highsource.org/display/J2B/Inheritance+plugin
+		     I'm not sure if the IBM JDK version of the JAXB RI is extensible in this way, and don't want to create a 
+		     headache if/when this code is pulled into a build.
+		     
+		     (Even so, there's no requirement to gen during build time, but still...)
+		     
+		     So we'll fix up by hand.-->
+
+	<!--
+		replace="/\*\*\\n\*\n Modified post-XJC-gen by custom build logic in order to deal with the\n\* fact that JAXB does not make it easy to generate\\n* elements implementing a common interface.\n\*/	public class \1 implements com.ibm.jbatch.container.jsl.TransitionElement \{">
+		-->
+	<target name="AddTransitionElement.Intf.ToJAXBs">
+		<replaceregexp match="public class (.*) \{" replace="/\*\*\${line.separator} \* Modified post-XJC-gen by custom JSR352 RI build logic ${line.separator} \* since we can't seem to get JAXB's XJC to generate ${line.separator} \* elements implementing a common interface. ${line.separator} \*${line.separator} \* This custom logic adds the interface implementation : ${line.separator} \*      implements com.ibm.jbatch.container.jsl.TransitionElement ${line.separator} \*/${line.separator} public class \1 implements com.ibm.jbatch.container.jsl.TransitionElement \{">
+
+			<fileset dir="${generate.dir}">
+				<include name="**/End.java" />
+				<include name="**/Fail.java" />
+				<include name="**/Next.java" />
+				<include name="**/Stop.java" />
+			</fileset>
+		</replaceregexp>
+
+	</target>
+
+	<target name="addInterfaces" depends="AddExecutionElement.Intf.ToJAXBs, AddTransitionElement.Intf.ToJAXBs" />
+	
+	<target name="generate" depends="generateJAXB, addInterfaces, addExtraCodes" />
+
+	<macrodef name="appendExtraCode">
+		<attribute name="class" />
+		<sequential>
+			<concat destfile="${generate.dir}/@{class}.java.tmp" force="no">
+				<path path="${generate.pkg.dir}/@{class}.java" />
+				<filterchain>
+					<!-- Strip off last line -->
+					<tailfilter lines="-1" skip="1" />
+				</filterchain>
+			</concat>
+			<concat destfile="${generate.pkg.dir}/@{class}.java" force="no">
+				<path path="${generate.dir}/@{class}.java.tmp" />
+				<path path="${stubs.dir}/@{class}ExtraCode.java" />
+				<footer filtering="no">
+	}</footer>
+				<!-- No, I don't know how to do the whitespace/newline any better .-->
+			</concat>
+			<delete file="${generate.dir}/@{class}.java.tmp" />
+		</sequential>
+	</macrodef>
+
+	<target name="addExtraCodes">
+		<appendExtraCode class="Batchlet" />
+		<appendExtraCode class="Chunk" />
+		<appendExtraCode class="Decision" />
+		<appendExtraCode class="End" />
+		<appendExtraCode class="Fail" />
+		<appendExtraCode class="Flow" />
+		<appendExtraCode class="JSLJob" />
+		<appendExtraCode class="JSLProperties" />
+		<appendExtraCode class="Next" />
+		<appendExtraCode class="Property" />
+		<appendExtraCode class="Split" />
+		<appendExtraCode class="Step" />
+		<appendExtraCode class="Stop" />
+	</target>
+
+</project>

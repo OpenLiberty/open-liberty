@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Security context service
+Bundle-SymbolicName: com.ibm.ws.security.context
+Bundle-Description: Security context service; version=${bVersion}
+
+WS-TraceGroup: \
+  security
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Import-Package: \
+  com.ibm.ws.security.authentication.helper, \
+  com.ibm.ws.security.authentication.principals, \
+  !*.internal.*, *
+
+Private-Package: \
+  com.ibm.ws.security.context.internal.*
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+-dsannotations: \
+  com.ibm.ws.security.context.internal.SecurityContextProviderImpl
+
+instrument.classesExcludes: com/ibm/ws/security/context/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.security.authentication.builtin;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

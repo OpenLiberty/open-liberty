@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE Stats SYSTEM "stats.dtd">
+
+<Stats type="com.ibm.ws.connectionpool.monitor.xml.j2cModule">
+	<description>j2cModule.desc</description>
+	<resourceBundle>com.ibm.ws.pmi.properties.PMIText</resourceBundle>
+	<CountStatistic name="j2cModule.numManagedConnectionsCreated"
+		ID="1"> 		
+		<level>low</level>
+		<unit>unit.none</unit>
+		<description>j2cModule.numManagedConnectionsCreated.desc</description>
+		<comment>Total number of connections created</comment>
+		<updateOnRequest>true</updateOnRequest>
+		<statisticSet>basic</statisticSet>
+	</CountStatistic>
+
+	<CountStatistic name="j2cModule.numManagedConnectionsDestroyed"
+		ID="2">		
+		<level>low</level>
+		<unit>unit.none</unit>
+		<description>j2cModule.numManagedConnectionsDestroyed.desc</description>
+		<comment>Total number of connections destroyed</comment>
+		<updateOnRequest>true</updateOnRequest>
+		<statisticSet>basic</statisticSet>
+	</CountStatistic>
+
+    <BoundedRangeStatistic name="j2cModule.freePoolSize" ID="6">        
+        <level>high</level>   
+        <unit>unit.none</unit>     
+        <description>j2cModule.freePoolSize.desc</description>
+        <comment>Number of free connections in the pool</comment>
+		<updateOnRequest>true</updateOnRequest>        
+        <statisticSet>basic</statisticSet>
+    </BoundedRangeStatistic>
+    
+	<CountStatistic name="j2cModule.numManagedConnections"
+		ID="14">		
+		<level>low</level>
+		<unit>unit.none</unit>
+		<description>j2cModule.numManagedConnections.desc</description>
+		<comment>Number of ManagedConnection objects in use for a particular
+			EIS product name</comment>
+		<updateOnRequest>true</updateOnRequest>
+		<statisticSet>basic</statisticSet>
+	</CountStatistic>
+
+	<CountStatistic name="j2cModule.numConnectionHandles"
+		ID="15">		
+		<level>low</level>
+		<unit>unit.none</unit>
+		<description>j2cModule.numConnectionHandles.desc</description>
+		<comment>Number of Connection objects in use for a particular EIS
+			product name</comment>
+		<updateOnRequest>true</updateOnRequest>
+		<statisticSet>basic</statisticSet>
+	</CountStatistic>
+	
+	<TimeStatistic name="j2cModule.avgWait" ID="13">        
+        <level>medium</level>
+        <unit>unit.ms</unit>        
+        <description>j2cModule.avgWait.desc</description>
+        <comment>Average waiting time in milliseconds until a connection is granted</comment>
+        <updateOnRequest>true</updateOnRequest>
+        <statisticSet>basic</statisticSet>
+    </TimeStatistic>
+</Stats>

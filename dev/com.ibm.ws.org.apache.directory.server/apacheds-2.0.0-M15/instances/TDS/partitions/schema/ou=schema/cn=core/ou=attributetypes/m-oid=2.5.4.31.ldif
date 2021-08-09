@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.4.31,ou=attributeTypes,cn=core,ou=schema
+m-supattributetype: distinguishedName
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.31
+m-name: member
+m-description: RFC2256: member of a group
+m-obsolete: FALSE
+entryUUID: 9ea8c50a-bc09-4b2d-be3f-16f146437d70
+entryCSN: 20130919065345.047000Z#000000#000#000000
+entryParentId: 3738e923-39ad-428e-8f85-8e5ec1c49c21
+createTimestamp: 20130919065353.388Z

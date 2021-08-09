@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: A(z) {0} cloudant konfigur\u00e1ci\u00f3s elemben vagy egy url, vagy egy account (fi\u00f3k) attrib\u00fatumot meg kell adni.
+error.cloudant.config.CWWKD0300E.explanation=Egy Cloundant \u00fcgyf\u00e9l l\u00e9trehoz\u00e1s\u00e1hoz a konfigur\u00e1ci\u00f3ban meg kell adni vagy egy adatb\u00e1zis URL c\u00edm\u00e9t, vagy egy fi\u00f3kot.
+error.cloudant.config.CWWKD0300E.useraction=Adjon hozz\u00e1 egy url vagy fi\u00f3k attrib\u00fatumot a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3hoz.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: A {0} Cloudant ClientBuilder keres\u00e9s er\u0151forr\u00e1shivatkoz\u00e1st ig\u00e9nyel.
+direct.lookup.CWWKD0301E.explanation=Az olyan m\u00f3dos\u00edthat\u00f3 er\u0151forr\u00e1sok, mint a CloudantBuilder, er\u0151forr\u00e1shivatkoz\u00e1son kereszt\u00fcl kereshet\u0151k, \u00edgy minden keres\u00e9shez \u00faj p\u00e9ld\u00e1ny ker\u00fcl visszaad\u00e1sra. Ha az er\u0151forr\u00e1shivatkoz\u00e1s n\u00e9lk\u00fcli keres\u00e9s megengedett volna, akkor az megosztott ClientBuilder p\u00e9ld\u00e1nyt eredm\u00e9nyezne, ami bel\u00e1thatatlan viselked\u00e9st okozna, amikor az alkalmaz\u00e1sok t\u00f6bb alkalommal r\u00e1keresnek, \u00e9s k\u00fcl\u00f6nb\u00f6z\u0151 form\u00e1kban m\u00f3dos\u00edtj\u00e1k.
+direct.lookup.CWWKD0301E.useraction=Adjon meg az alkalmaz\u00e1s\u00e1ban er\u0151forr\u00e1shivatkoz\u00e1st a ClientBuilder sz\u00e1m\u00e1ra, \u00e9s az er\u0151forr\u00e1shivatkoz\u00e1s seg\u00edts\u00e9g\u00e9vel r\u00e1kereshet a Cloudant ClientBuilder er\u0151forr\u00e1sra. Ennek alternat\u00edv\u00e1jak\u00e9nt haszn\u00e1lhatja az er\u0151forr\u00e1s besz\u00far\u00e1st (amely implicit m\u00f3don er\u0151forr\u00e1shivatkoz\u00e1st hoz l\u00e9tre) egy ClientBuilder p\u00e9ld\u00e1ny besz\u00far\u00e1s\u00e1ra az alkalmaz\u00e1s\u00e1ba.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: A(z) {0} nem t\u00f6lthet\u0151 be, mert a(z) {1} cloudant konfigur\u00e1ci\u00f3s elem nem libraryRef elemmel van konfigur\u00e1lva \u00e9s az aktu\u00e1lis sz\u00e1l nem f\u00e9r hozz\u00e1 alkalmaz\u00e1s oszt\u00e1lybet\u00f6lt\u0151h\u00f6z.
+class.not.found.CWWKD0302E.explanation=A cloudant konfigur\u00e1ci\u00f3s elemet olyan libraryRef elemmel kell konfigur\u00e1lni, amely a Cloudant k\u00f6nyvt\u00e1rakra mutat, vagy a Cloudant k\u00f6nyvt\u00e1rakat nem szabad hozz\u00e1adni az alkalmaz\u00e1shoz; ebben az esetben a Cloudant JNDI er\u0151forr\u00e1s kikeres\u00e9s\u00e9t alkalmaz\u00e1ssz\u00e1lb\u00f3l kell elv\u00e9gezni.
+class.not.found.CWWKD0302E.useraction=Adjon hozz\u00e1 libraryRef elemet a cloudant konfigur\u00e1ci\u00f3s elemhez vagy friss\u00edtse az alkalmaz\u00e1s k\u00f3dj\u00e1t, hogy a Cloudant JNDI er\u0151forr\u00e1s kikeres\u00e9s\u00e9t csak alkalmaz\u00e1ssz\u00e1lakb\u00f3l v\u00e9gezze.

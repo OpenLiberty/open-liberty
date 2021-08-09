@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <httpConnector logFile="${shared.config.dir}/access.log" requireClientAuth="no">
+        <port>8080</port>
+        <port>9999</port>
+
+        <ciphers>rsa</ciphers>
+        <ciphers>dsa</ciphers>
+    </httpConnector>
+
+    <threadpool id="webPool" daemon="true" idle="5000" />
+
+    <threadpool id="ejbPool" timeout="1000" />
+
+</server>

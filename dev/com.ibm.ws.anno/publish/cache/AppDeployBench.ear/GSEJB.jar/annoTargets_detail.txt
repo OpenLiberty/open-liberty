@@ -1,0 +1,2226 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: GSEJB.jar
+# ============================================================
+# Package Data:
+Package: com.ibm.websphere.svt.cc.wrapper
+  PackageSource: GSEJB.jar
+  PackageAnnotation: javax.xml.bind.annotation.XmlSchema
+Package: com.ibm.websphere.svt.cc.ejb.session
+  PackageSource: GSEJB.jar
+  PackageAnnotation: javax.xml.bind.annotation.XmlSchema
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.StoreCreditWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.InventoryBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.MfgCategoryLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ResetCCDBResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPInventoryHomeBean_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.MfgCategoryLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPCustomerInfoHome_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.CustomerInfoLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInternalLocalHome_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.wsbank.ejb.BankManagerSoapBindingStub
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.webservices.engine.client.Stub
+  Interface: com.ibm.websphere.svt.wsbank.ejb.BankManager
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.GetCCInfo
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalStatelessStoreManagerHome_a62465ef
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManagerLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: org.omg.stub.javax.ejb._EJBHome_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPSettings_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.SettingsLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPCustomerHomeBean_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.SettingsLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteCustomer_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.CustomerBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInternalHome_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBOS390_V9_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteMfgCategory_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.MfgCategoryBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBeanWithLink
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBeanWithForwardLink
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.CCManagerPortProxy$Descriptor
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInternalLocalHome_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb._StoreManagerHome_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManagerHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPCustomerHome_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.CustomerLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInternalLocalHome_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.ORACLE_V10_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPCategoryHome_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.CategoryLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInternalLocalHome_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPCustomerInfoHomeBean_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInternalHome_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.CreateAccountForGSResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.CustomerInfoWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.ShoppingCartWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInternalHome_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBNT_V82_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBNT_V91_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CustomerBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.cc.wrapper.CCInfoWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: org.omg.stub.java.util._RandomAccess_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: java.util.RandomAccess
+  Interface: java.rmi.Remote
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.ejs.container._EJSRemoteWrapper_Tie
+  ClassSource: GSEJB.jar
+  Superclass: org.omg.CORBA_2_3.portable.ObjectImpl
+  Interface: javax.rmi.CORBA.Tie
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.util.EJBUtils
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBNT_V95_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteStoreCredit_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.StoreCreditBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreManagerBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.SessionBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInternalHome_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPMfgCategoryHome_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.MfgCategoryLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInternalLocalHome_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ValidateCard
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.DoDebitResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteSettings_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.SettingsBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.CCManagerRemote
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.jws.WebService
+  MethodAnnotation: javax.jws.WebMethod
+  MethodAnnotation: javax.jws.WebResult
+  MethodAnnotation: javax.xml.ws.RequestWrapper
+  MethodAnnotation: javax.xml.ws.ResponseWrapper
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CustomerLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.wsbank.ejb.BankManager
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.rmi.Remote
+Class-Seed: org.omg.stub.java.lang._Cloneable_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: java.lang.Cloneable
+  Interface: java.rmi.Remote
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.MfgCategoryKey
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPStoreCreditHomeBean_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb._StoreManager_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManager
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPCategoryHomeBean_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ResetCCDB
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBOS390_COMPAT_V9_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.MSSQLSERVER_V2005_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPCustomer_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.CustomerLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CategoryLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBAS400_V54_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.InventoryLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSRemoteStatelessStoreManager_a62465ef
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManager
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.csi._CSIServant_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.csi.CSIServant
+Class-Seed: com.ibm.websphere.svt.gs.ejb.SettingsBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreManagerLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.csi._TransactionalObject_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.csi.TransactionalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBAS400_V54_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInternalHome_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.MfgCategoryWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInternalLocalHome_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.ORACLE_V10_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.CategoryWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: org.omg.stub.javax.ejb._Handle_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: javax.ejb.Handle
+  Interface: java.rmi.Remote
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreCreditKey
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.MSSQLSERVER_V2005_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBOS390_V9_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.InventoryWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPMfgCategory_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.MfgCategoryLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.CreateAccountForGS
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ValidateCardResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.PaymentInfoWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteCustomerInfo_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.CustomerInfoBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBNT_V82_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ejs.container._EJSRemoteWrapper_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.csi.CSIServant
+  Interface: com.ibm.websphere.csi.TransactionalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreCreditBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.ORACLE_V11_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBNT_V91_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.ejs.container._EJSWrapper_Tie
+  ClassSource: GSEJB.jar
+  Superclass: org.omg.CORBA_2_3.portable.ObjectImpl
+  Interface: javax.rmi.CORBA.Tie
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.SettingsBeanCacheEntryImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPSettingsHomeBean_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.SettingsLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: org.omg.stub.java.lang._Appendable_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: java.lang.Appendable
+  Interface: java.rmi.Remote
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.CCManagerService
+  ClassSource: GSEJB.jar
+  Superclass: javax.xml.ws.Service
+  ClassAnnotation: javax.xml.ws.WebServiceClient
+  MethodAnnotation: javax.xml.ws.WebEndpoint
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.MfgCategoryBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ClearCCDB
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.SettingsBeanAdaptorBinding_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.DoCredit
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.wsn._WSNProxyHome_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.svt.wsn.WSNProxyHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInternalLocalHome_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CustomerInfoBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPCategory_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.CategoryLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CustomerInfoLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreCreditLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.InventoryLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.SettingsBeanExtractor_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreCreditLocal
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.wsbank.ejb.BankManagerProxy
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.wsbank.ejb.BankManager
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.ORACLE_V11_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.CustomerWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb._EJSRemoteStatelessStoreManagerHome_a62465ef_Tie
+  ClassSource: GSEJB.jar
+  Superclass: org.omg.CORBA_2_3.portable.ObjectImpl
+  Interface: javax.rmi.CORBA.Tie
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerInfoBeanCacheEntryImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanCacheEntry_c90ad84d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerInfoBeanAdaptorBinding_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalStatelessStoreManager_a62465ef
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManagerLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPInventory_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.InventoryLocal
+Class-Seed: com.ibm.websphere.svt.wsn._WSNProxy_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: com.ibm.websphere.svt.wsn.WSNProxy
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ObjectFactory
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlRegistry
+  MethodAnnotation: javax.xml.bind.annotation.XmlElementDecl
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.wsbank.ejb.BankManagerServiceLocator
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.webservices.multiprotocol.AgnosticService
+  Interface: com.ibm.ws.webservices.multiprotocol.GeneratedService
+  Interface: com.ibm.websphere.svt.wsbank.ejb.BankManagerService
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInternalLocalHome_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.wrapper.SettingsWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSStatelessStoreManagerHomeBean_a62465ef
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.cart.CartItem
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerBeanAdaptorBinding_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreManagerHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.wsbank.ejb.BankManagerServiceInformation
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.webservices.multiprotocol.ServiceInformation
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInternalLocalHome_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CustomerBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CustomerInfoLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.StoreCreditBeanExtractor_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreManager_RI
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManager
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreManagerLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.SettingsBeanInjectorImpl_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInjector_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPSettingsHome_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.SettingsLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInternalLocalHome_b7bda1cd
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerInfoBeanInjectorImpl_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerInfoBeanInjector_c90ad84d
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.CCManagerPortProxy
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPStoreCredit_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreCreditLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPInventoryHome_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.InventoryLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInternalLocalHome_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.StoreCreditBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.SettingsKey
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.StoreManager
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.rmi.Remote
+  Interface: javax.ejb.EJBObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.CategoryBeanInjectorImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInjector_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteCategory_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.CategoryBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBeanWithLink
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.InventoryBeanCacheEntryImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanCacheEntry_0db0f996
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerInfoBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBOS390_COMPAT_V9_1.RdbRuntimeUpdateTemplate
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.MfgCategoryBeanInjectorImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanInjector_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInternalHome_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.ws.ejbdeploy.JGSEJB.DB2UDBNT_V95_1.RdbRuntimeUpdateTemplate$CodeBuffer
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInternalLocalHome_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerBeanFunctionSet_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CustomerLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.GetCCInfoResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSRemoteStatelessStoreManagerHome_a62465ef
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreManagerHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanInternalLocalHome_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanInternalHome_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPStoreCreditHome_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.StoreCreditLocalHome
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInternalLocalHome_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: org.omg.stub.javax.ejb._HomeHandle_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: javax.ejb.HomeHandle
+  Interface: java.rmi.Remote
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CategoryLocalHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBLocalHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.MfgCategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.ConcreteInventory_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.websphere.svt.gs.ejb.InventoryBean
+  Interface: javax.ejb.EntityBean
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.CustomerBeanCacheEntryImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanCacheEntry_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.MfgCategoryBeanAdaptorBinding_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.cc.wrapper.ObjectFactory
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlRegistry
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CustomerInfoBeanFunctionSet_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.StoreCreditBeanFunctionSet_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.DoCreditResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.MfgCategoryBeanCacheEntryImpl_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.InventoryBeanFunctionSet_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.SettingsBeanCacheEntry_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.StoreCreditBeanInjectorImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanInjector_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.CategoryBeanExtractor_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.DoDebit
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.CategoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_COMPAT_V9_1.StoreCreditBeanCacheEntryImpl_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.StoreCreditBeanCacheEntry_7eb13b58
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: org.omg.stub.javax.ejb._EJBObject_Stub
+  ClassSource: GSEJB.jar
+  Superclass: javax.rmi.CORBA.Stub
+  Interface: javax.ejb.EJBObject
+Class-Seed: com.ibm.websphere.svt.gs.ejb._EJSRemoteStatelessStoreManager_a62465ef_Tie
+  ClassSource: GSEJB.jar
+  Superclass: org.omg.CORBA_2_3.portable.ObjectImpl
+  Interface: javax.rmi.CORBA.Tie
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CategoryBeanAdaptorBinding_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.SettingsBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.cc.ejb.session.ClearCCDBResponse
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.xml.bind.annotation.XmlAccessorType
+  ClassAnnotation: javax.xml.bind.annotation.XmlType
+  FieldAnnotation: javax.xml.bind.annotation.XmlElement
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V11_1.MfgCategoryBeanExtractor_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.InventoryBeanPartialUpdateQueryHelper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CustomerBeanExtractor_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.CategoryBean
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EntityBean
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.CategoryBeanFunctionSet_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V91_1.MfgCategoryBeanFunctionSet_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBOS390_V9_1.CategoryBeanCacheEntryImpl_2ef8e822
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CategoryBeanCacheEntry_2ef8e822
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.SettingsBeanFunctionSet_b7bda1cd
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+  Interface: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSCMPMfgCategoryHomeBean_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSHome
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.ORACLE_V10_1.CustomerBeanInjectorImpl_e56744c5
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.CustomerBeanInjector_e56744c5
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBAS400_V54_1.InventoryBeanExtractor_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V82_1.InventoryBeanInjectorImpl_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.websphere.svt.gs.ejb.websphere_deploy.InventoryBeanInjector_0db0f996
+Class-Seed: com.ibm.websphere.svt.wsbank.ejb.BankManagerService
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.xml.rpc.Service
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MfgCategoryBeanCacheEntry_2b9a0a9d
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.io.Serializable
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.DB2UDBNT_V95_1.StoreCreditBeanAdaptorBinding_7eb13b58
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.CustomerInfoBeanExtractor_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Seed: com.ibm.websphere.svt.gs.ejb.EJSLocalCMPCustomerInfo_c90ad84d
+  ClassSource: GSEJB.jar
+  Superclass: com.ibm.ejs.container.EJSLocalWrapper
+  Interface: com.ibm.websphere.svt.gs.ejb.CustomerInfoLocal
+Class-Seed: com.ibm.websphere.svt.gs.ejb.websphere_deploy.MSSQLSERVER_V2005_1.InventoryBeanAdaptorBinding_0db0f996
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Excluded: javax.xml.bind.annotation.XmlElement
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.Appendable
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: org.omg.CORBA_2_3.portable.ObjectImpl
+  ClassSource: GSEJB.jar
+  Superclass: org.omg.CORBA.portable.ObjectImpl
+Class-Excluded: javax.xml.ws.WebEndpoint
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.jws.WebService
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.xml.bind.annotation.XmlType
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.xml.bind.annotation.XmlAccessorType
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.xml.ws.WebServiceClient
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.Object
+  ClassSource: GSEJB.jar
+Class-Excluded: javax.jws.WebResult
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.rmi.CORBA.Tie
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: org.omg.CORBA.portable.InvokeHandler
+Class-Excluded: javax.xml.ws.Service
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.io.Serializable
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: javax.xml.ws.ResponseWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: org.omg.CORBA.portable.ObjectImpl
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: org.omg.CORBA.Object
+Class-Excluded: javax.jws.WebMethod
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.xml.ws.RequestWrapper
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.rmi.CORBA.Stub
+  ClassSource: GSEJB.jar
+  Superclass: org.omg.CORBA_2_3.portable.ObjectImpl
+  Interface: java.io.Serializable
+Class-Excluded: com.ibm.websphere.svt.wsn.WSNProxyHome
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBHome
+Class-Excluded: java.util.RandomAccess
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: org.omg.CORBA.Object
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: javax.xml.bind.annotation.XmlSchema
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.xml.bind.annotation.XmlElementDecl
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: com.ibm.websphere.svt.wsn.WSNProxy
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: javax.ejb.EJBObject
+Class-Excluded: javax.xml.bind.annotation.XmlRegistry
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.Cloneable
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: org.omg.CORBA.portable.InvokeHandler
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.rmi.Remote
+  ClassSource: GSEJB.jar
+  Superclass: java.lang.Object
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+Class-Unresolved: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBean
+Class-Unresolved: com.ibm.ws.webservices.multiprotocol.AgnosticService
+Class-Unresolved: com.ibm.websphere.rsadapter.DataAccessFunctionSet
+Class-Unresolved: com.ibm.websphere.csi.CSIServant
+Class-Unresolved: com.ibm.ws.webservices.multiprotocol.ServiceInformation
+Class-Unresolved: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBeanWithForwardLink
+Class-Unresolved: com.ibm.ws.ejbpersistence.beanextensions.EJBAdapterBinding
+Class-Unresolved: javax.ejb.EJBLocalHome
+Class-Unresolved: javax.ejb.HomeHandle
+Class-Unresolved: javax.ejb.EJBLocalObject
+Class-Unresolved: javax.xml.rpc.Service
+Class-Unresolved: com.ibm.ws.ejbpersistence.beanextensions.ConcreteBeanWithLink
+Class-Unresolved: com.ibm.ws.webservices.engine.client.Stub
+Class-Unresolved: com.ibm.ejs.container.EJSHome
+Class-Unresolved: javax.ejb.SessionBean
+Class-Unresolved: com.ibm.ws.rsadapter.cci.WSResourceAdapterBase
+Class-Unresolved: com.ibm.ws.ejbpersistence.dataaccess.AbstractEJBExtractor
+Class-Unresolved: javax.ejb.EJBObject
+Class-Unresolved: com.ibm.websphere.csi.TransactionalObject
+Class-Unresolved: javax.ejb.EntityBean
+Class-Unresolved: com.ibm.ejs.container.EJSLocalWrapper
+Class-Unresolved: javax.ejb.EJBHome
+Class-Unresolved: com.ibm.ws.ejbpersistence.cache.DataCacheEntry
+Class-Unresolved: com.ibm.ws.webservices.multiprotocol.GeneratedService
+Class-Unresolved: javax.ejb.Handle
+Class-Unresolved: com.ibm.ws.ejbpersistence.beanextensions.EJBPartialInjector
+Class-Unresolved: com.ibm.ejs.container.EJSWrapper
+# ============================================================

@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.4.2.9,ou=objectClasses,cn=corba,ou=schema
+m-oid: 1.3.6.1.4.1.42.2.27.4.2.9
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: CORBA object representation
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: corbaObject
+m-typeobjectclass: ABSTRACT
+creatorsname: uid=admin,ou=system
+m-may: corbaRepositoryId
+m-may: description

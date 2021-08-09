@@ -1,0 +1,13 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2
+
+Import-Package: \
+  org.apache.ws.commons.schema.constants,\
+  org.apache.ws.commons.schema.extensions,\
+  org.apache.ws.commons.schema.resolver,\
+  org.apache.ws.commons.schema.utils,\
+  org.xml.sax,\
+  javax.xml.transform.sax,\
+  *

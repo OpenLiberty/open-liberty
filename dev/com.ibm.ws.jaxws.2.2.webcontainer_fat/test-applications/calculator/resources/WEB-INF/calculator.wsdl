@@ -1,0 +1,52 @@
+<?xml version="1.0" ?><wsdl:definitions name="Calculator" targetNamespace="http://catalog.jaxws.samples.ibm.com" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://catalog.jaxws.samples.ibm.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xs:schema elementFormDefault="unqualified" targetNamespace="http://catalog.jaxws.samples.ibm.com" version="1.0" xmlns:tns="http://catalog.jaxws.samples.ibm.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="add" type="tns:add"></xs:element>
+<xs:element name="addResponse" type="tns:addResponse"></xs:element>
+<xs:complexType name="add">
+    <xs:sequence>
+      <xs:element form="qualified" name="value1" type="xs:int"></xs:element>
+      <xs:element form="qualified" name="value2" type="xs:int"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="addResponse">
+    <xs:sequence>
+      <xs:element form="qualified" name="return" type="xs:int"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="addResponse">
+    <wsdl:part element="tns:addResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="add">
+    <wsdl:part element="tns:add" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CalculatorPortType">
+    <wsdl:operation name="add">
+      <wsdl:input message="tns:add" name="add">
+    </wsdl:input>
+      <wsdl:output message="tns:addResponse" name="addResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CalculatorSoapBinding" type="tns:CalculatorPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="add">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="add">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="addResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Calculator">
+    <wsdl:port binding="tns:CalculatorSoapBinding" name="CalculatorPort">
+      <soap:address location="http://localhost:8010/calculator/calculator"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

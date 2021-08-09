@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: \u5728\u5ba2\u6237\u673a\u5b89\u5168\u6027 {0} \u4e2d\u6307\u5b9a\u4e86\u65e0\u6548\u8ba4\u8bc1\u5c42\u673a\u5236\u3002\u6709\u6548\u503c\u4e3a\u201cGSSUP or LTPA\u201d\u6216\u201cGSSUP, LTPA\u201d\u3002
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=\u6240\u6307\u5b9a\u5ba2\u6237\u673a\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e0d\u53d7\u652f\u6301\u3002
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=\u786e\u4fdd\u6240\u6307\u5b9a\u5ba2\u6237\u673a\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a\u201cGSSUP or LTPA\u201d\u6216\u201cGSSUP, LTPA\u201d\u3002
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: \u5ba2\u6237\u673a\u5b89\u5168\u6027\u4e2d\u6240\u6307\u5b9a\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a NULL\u3002
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=\u6240\u6307\u5b9a\u5ba2\u6237\u673a\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a NULL\u3002
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=\u786e\u4fdd\u6240\u6307\u5b9a\u5ba2\u6237\u673a\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a\u201cGSSUP or LTPA\u201d\u6216\u201cGSSUP, LTPA\u201d\u3002
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: \u5728\u670d\u52a1\u5668\u5b89\u5168\u7b56\u7565 {0} \u4e2d\u6307\u5b9a\u4e86\u65e0\u6548\u8ba4\u8bc1\u5c42\u673a\u5236\u3002\u6709\u6548\u503c\u4e3a\u201cGSSUP or LTPA\u201d\u6216\u201cGSSUP, LTPA\u201d\u3002
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=\u6240\u6307\u5b9a\u670d\u52a1\u5668\u5b89\u5168\u7b56\u7565\u8ba4\u8bc1\u5c42\u673a\u5236\u4e0d\u53d7\u652f\u6301\u3002
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=\u786e\u4fdd\u6240\u6307\u5b9a\u670d\u52a1\u5668\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a\u201cGSSUP or LTPA\u201d\u6216\u201cGSSUP, LTPA\u201d\u3002
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: \u5ba2\u6237\u673a\u5b89\u5168\u6027\u4e2d\u6240\u6307\u5b9a\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a NULL\u3002
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=\u6240\u6307\u5b9a\u5ba2\u6237\u673a\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a NULL\u3002
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=\u786e\u4fdd\u6240\u6307\u5b9a\u5ba2\u6237\u673a\u5b89\u5168\u8ba4\u8bc1\u5c42\u673a\u5236\u4e3a\u201cGSSUP or LTPA\u201d\u6216\u201cGSSUP, LTPA\u201d\u3002
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: \u5165\u7ad9 CSIv2 \u4f20\u8f93\u5c42\u4e2d\u7684 SSL \u914d\u7f6e {0} \u4e0d\u5bf9\u5e94\u4e8e IIOP \u7aef\u70b9\u4e2d\u7684 SSL \u914d\u7f6e\u3002
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=\u5165\u7ad9 CSIv2 \u4f20\u8f93\u5c42\u4f7f\u7528 SSL \u914d\u7f6e\uff0c\u4f46\u662f IIOP \u7aef\u70b9\u672a\u4f7f\u7528\u540c\u4e00 SSL \u914d\u7f6e\u3002
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=\u8bf7\u786e\u4fdd server.xml \u6587\u4ef6\u4e2d\u5165\u7ad9 CSIv2 \u4f20\u8f93\u5c42\u4e2d\u7684 SSL \u914d\u7f6e\u662f IIOP \u7aef\u70b9\u4f7f\u7528\u7684\u5176\u4e2d\u4e00\u4e2a SSL \u914d\u7f6e\u3002
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: IIOP \u7aef\u70b9\u6ca1\u6709 SSL \u914d\u7f6e\uff0c\u800c\u5165\u7ad9 CSIv2 \u4f20\u8f93\u5c42\u8981\u6c42\u5728 IIOP \u7aef\u70b9\u4e2d\u4f7f\u7528 SSL \u914d\u7f6e {0}\u3002
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=IIOP \u7aef\u70b9\u5e76\u4e0d\u81f3\u5c11\u5177\u6709\u4e00\u4e2a\u5165\u7ad9 CSIv2 \u4f20\u8f93\u5c42\u53ef\u4ee5\u5f15\u7528\u5176 SSL \u914d\u7f6e\u7684 iiopsOptions \u5143\u7d20\u3002
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=\u8bf7\u786e\u4fdd IIOP \u7aef\u70b9\u81f3\u5c11\u6709\u4e00\u4e2a\u5165\u7ad9 CSIv2 \u4f20\u8f93\u5c42\u4f7f\u7528\u540c\u4e00 SSL \u914d\u7f6e\u7684 iiopsOptions \u5143\u7d20\u3002
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: \u5ba2\u6237\u673a\u65e0\u6cd5\u9488\u5bf9\u4e13\u6709\u540d\u79f0 {0} \u521b\u5efa ITTDistinguishedName \u8eab\u4efd\u65ad\u8a00\u4ee4\u724c\u3002\u5f02\u5e38\u6d88\u606f\uff1a{1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=\u8981\u58f0\u660e\u7684\u7528\u6237\u7684\u4e3b\u4f53\u96c6\u4e0d\u5305\u542b\u6709\u6548\u4e13\u6709\u540d\u79f0\uff0c\u65e0\u6cd5\u6267\u884c\u8eab\u4efd\u65ad\u8a00\u3002
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=\u67e5\u770b\u5f02\u5e38\u6d88\u606f\uff0c\u786e\u4fdd server.xml \u6587\u4ef6\u4e2d\u914d\u7f6e\u7684\u7528\u6237\u6ce8\u518c\u8868\u652f\u6301\u4e13\u6709\u540d\u79f0\uff0c\u5e76\u518d\u6b21\u8ba4\u8bc1\u7528\u6237\u3002
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: \u5ba2\u6237\u673a\u65e0\u6cd5\u521b\u5efa ITTX509CertChain \u8eab\u4efd\u65ad\u8a00\u4ee4\u724c\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=\u8981\u58f0\u660e\u7684\u7528\u6237\u7684\u4e3b\u4f53\u96c6\u4e0d\u5305\u542b\u6709\u6548\u8bc1\u4e66\uff0c\u65e0\u6cd5\u6267\u884c\u8eab\u4efd\u65ad\u8a00\u3002
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u6d88\u606f\uff0c\u786e\u4fdd\u5728 server.xml \u6587\u4ef6\u4e2d\u914d\u7f6e\u4e86\u5bc6\u94a5\u5b58\u50a8\u5e93\u3001SSL \u548c\u670d\u52a1\u5668\u7b56\u7565\u4f20\u8f93\u5c42\uff0c\u7136\u540e\u518d\u6b21\u8ba4\u8bc1\u8be5\u7528\u6237\u3002
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: \u5ba2\u6237\u673a\u8bc1\u4e66\u94fe\u4e0d\u53ef\u7528\uff0c\u65e0\u6cd5\u7ee7\u7eed\u6267\u884c\u8eab\u4efd\u65ad\u8a00\u3002
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=\u8981\u58f0\u660e\u7684\u7528\u6237\u7684\u4e3b\u4f53\u96c6\u4e0d\u5305\u542b\u6709\u6548\u8bc1\u4e66\uff0c\u65e0\u6cd5\u6267\u884c\u8eab\u4efd\u65ad\u8a00\u3002
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=\u8bf7\u786e\u4fdd\u5728 server.xml \u6587\u4ef6\u4e2d\u914d\u7f6e\u4e86\u5bc6\u94a5\u5b58\u50a8\u5e93\u3001SSL \u548c\u670d\u52a1\u5668\u7b56\u7565\u4f20\u8f93\u5c42\uff0c\u7136\u540e\u518d\u6b21\u8ba4\u8bc1\u8be5\u7528\u6237\u3002
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: \u5177\u6709\u6807\u8bc6\u5c5e\u6027 {0} \u7684 ORB \u5143\u7d20\u9700\u8981\u7528\u6237\u6ce8\u518c\u8868\uff0c\u4f46\u7528\u6237\u6ce8\u518c\u8868\u4e0d\u4f1a\u5728 {1} \u79d2\u5185\u53d8\u4e3a\u53ef\u7528\u3002\u56e0\u6b64\uff0c\u4e0d\u4f1a\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\u3002\u786e\u4fdd\u60a8\u5df2\u5728 server.xml \u6587\u4ef6\u4e2d\u914d\u7f6e\u76f8\u5e94\u7528\u6237\u6ce8\u518c\u8868\u3002
+NO_USER_REGISTRY.explanation=\u7531\u4e8e\u670d\u52a1\u5668\u4e0a\u7684\u53d7\u4fdd\u62a4\u5bf9\u8c61\u8bf7\u6c42\u4ee3\u7406 (ORB) \u9700\u8981\u7528\u6237\u6ce8\u518c\u8868\uff0c\u4f46\u627e\u4e0d\u5230\u7528\u6237\u6ce8\u518c\u8868\uff0c\u5bfc\u81f4\u5e94\u7528\u7a0b\u5e8f\u672a\u542f\u52a8\u3002\u5df2\u914d\u7f6e\u76f8\u5e94\u7528\u6237\u6ce8\u518c\u8868\u540e\uff0c\u5e94\u7528\u7a0b\u5e8f\u5c06\u542f\u52a8\u3002
+NO_USER_REGISTRY.useraction=\u786e\u4fdd\u60a8\u914d\u7f6e\u4e86\u9002\u7528\u4e8e\u60a8\u73af\u5883\u7684\u7528\u6237\u6ce8\u518c\u8868\u3002
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: \u5df2\u7981\u7528 CSIv2 \u8ba4\u8bc1\u5c42\uff0c\u56e0\u4e3a establishTrustInClient \u7684\u503c\u4e3a {0}\u3002
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=\u5982\u679c establishTrustInClient \u8bbe\u7f6e\u4e3a\u201c\u4ece\u4e0d\u201d\uff0c\u90a3\u4e48 CSIv2 \u8ba4\u8bc1\u5c42\u88ab\u7981\u7528\u3002
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=\u8981\u542f\u7528 CSIv2 \u8ba4\u8bc1\u5c42\uff0c\u8bf7\u5c06 establishTrustInClient \u7684\u503c\u8bbe\u7f6e\u4e3a\u201c\u53d7\u652f\u6301\u201d\u6216\u201c\u5fc5\u9700\u201d\u3002
+
+

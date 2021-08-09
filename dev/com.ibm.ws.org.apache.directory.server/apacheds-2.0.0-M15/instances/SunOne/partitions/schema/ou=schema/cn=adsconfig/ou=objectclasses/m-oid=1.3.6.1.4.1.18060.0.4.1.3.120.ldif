@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.120,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.120
+m-name: ads-changeLog
+m-description: The ChangeLog
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-base
+m-must: ads-changeLogExposed
+m-must: ads-changeLogId
+creatorsname: uid=admin,ou=system

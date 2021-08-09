@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.2.8,ou=objectClasses,cn=samba,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-oid: 1.3.6.1.4.1.7165.2.2.8
+m-name: sambaIdmapEntry
+m-description: Mapping from a SID to an ID
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: sambaSID
+entryUUID: c9dd9fd7-b696-46eb-9d31-3948bf73bd23
+m-may: gidNumber
+m-may: uidNumber
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.626000Z#000001#000#000000
+entryParentId: 8e14d1f0-66fb-4720-9d3a-d644eb1f3fd6
+createTimestamp: 20130919065352.938Z

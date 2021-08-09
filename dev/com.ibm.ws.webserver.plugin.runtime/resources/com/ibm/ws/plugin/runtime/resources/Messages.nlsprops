@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: A request to generate a webserver plug-in configuration file is not processed for cluster {0} because the required collective controller feature MBean is not found.
+collective.mbean.not.available.explanation=The collective controller feature must be enabled for the server to process the request. 
+collective.mbean.not.available.useraction=Enable the collective controller feature in the target server, or direct the request to a server that has the collective controller feature already enabled.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: A request to generate a webserver plug-in configuration file is not processed for this server because the required Java Servlet feature MBean is not found.
+appserver.mbean.not.available.explanation=The Java Servlet feature, 3.0 or 3.1, must be enabled for the server to process the request.
+appserver.mbean.not.available.useraction=Enable the Java Servlet feature, 3.0 or 3.1, in the target server, or direct the request to a server that has the Java Servlet feature already enabled.
+# -------------------------------- 

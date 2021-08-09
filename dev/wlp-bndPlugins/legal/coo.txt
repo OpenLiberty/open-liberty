@@ -1,0 +1,10 @@
+This document contains information required by the Release Services team to
+prepare a 'Certificate of Originality' document for this project.
+
+         
+There should be no binary jars in this project:
+
+This contains source for bnd plugins, if/when we need them.
+
+Current contents are for a plugin that forcibly sets the DS namespace
+to one configured in bnd.

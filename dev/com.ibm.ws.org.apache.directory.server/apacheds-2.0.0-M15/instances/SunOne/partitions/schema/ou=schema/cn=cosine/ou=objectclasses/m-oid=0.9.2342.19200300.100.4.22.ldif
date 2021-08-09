@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.4.22,ou=objectClasses,cn=cosine,ou=schema
+m-must: dSAQuality
+m-oid: 0.9.2342.19200300.100.4.22
+m-obsolete: FALSE
+m-supobjectclass: top
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: qualityLabelledData
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system
+m-may: subtreeMinimumQuality
+m-may: subtreeMaximumQuality

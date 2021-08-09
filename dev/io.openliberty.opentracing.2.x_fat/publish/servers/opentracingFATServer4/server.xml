@@ -1,0 +1,15 @@
+<server>
+
+    <featureManager>
+        <feature>microProfile-4.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="jaxrsHelloWorld.war" />
+
+    <logging
+        traceSpecification="*=info:io.openliberty.opentracing*=all:io.openliberty.microprofile.opentracing*=all"
+        maxFileSize="100" maxFiles="1" />
+
+</server>

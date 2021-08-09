@@ -1,0 +1,5 @@
+dev/com.ibm.websphere.appserver.features/visibility/private/com.ibm.websphere.appserver.jaxrs.common-2.0.feature
+dev/com.ibm.websphere.appserver.features/visibility/private/com.ibm.websphere.appserver.jaxrs.common-2.1.feature
+dev/com.ibm.websphere.appserver.features/visibility/private/com.ibm.websphere.appserver.optional.jaxb-2.2.feature
+dev/com.ibm.websphere.appserver.features/visibility/public/jpaContainer-2.1/com.ibm.websphere.appserver.jpaContainer-2.1.feature
+dev/com.ibm.websphere.appserver.features/visibility/public/jpaContainer-2.2/com.ibm.websphere.appserver.jpaContainer-2.2.feature

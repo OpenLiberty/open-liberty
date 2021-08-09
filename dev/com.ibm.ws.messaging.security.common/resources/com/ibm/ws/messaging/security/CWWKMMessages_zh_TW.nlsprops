@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 114580          06-11-13   balgirid Fixing username not displayed in FFDC for unsuccessful login
+#
+#
+# File com.ibm.ws.messaging.security.CWWKMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKM0000=CWWKM0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKM0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range CWWKM3001-CWWKM3101 belong to class com.ibm.ws.messaging.security
+# -------------------------------------------------------------------------------------------------
+#
+#CMVCPATHNAME New_File_For_Liberty
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Liberty Messaging Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+# -------------------------------------------------------------------------------------------------
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001=CWWKM3001E: \u4f7f\u7528\u8005\u9451\u5225\u5931\u6557\u3002
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.explanation=\u6240\u8f38\u5165\u7684\u4f7f\u7528\u8005\u540d\u7a31\u6216\u5bc6\u78bc\u4e0d\u6b63\u78ba\u3002
+EXCEPTION_OCCURED_DURING_AUTHENTICATION_MSE1001.useraction=\u6307\u5b9a\u6709\u6548\u7684\u4f7f\u7528\u8005\u540d\u7a31\u548c\u5bc6\u78bc\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Token Type
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002=CWWKM3002E: \u4e0d\u652f\u63f4\u6307\u5b9a\u7684\u8a18\u865f\u985e\u578b {0}\u3002
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.explanation=\u4e0d\u652f\u63f4\u7528\u6236\u7aef\u61c9\u7528\u7a0b\u5f0f\u6307\u5b9a\u7684\u8a18\u865f\u985e\u578b\u3002\u53ea\u652f\u63f4 LTPA \u8a18\u865f\u3002
+SECURITY_TOKEN_TYPE_NOT_SUPPORTED_MSE1002.useraction=\u8acb\u6307\u5b9a LTPA \u8a18\u865f\uff0c\u56e0\u70ba\u53ea\u652f\u63f4 LTPA \u8a18\u865f\u3002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003=CWWKM3003E: \u914d\u7f6e\u7ba1\u7406\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\u3002
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.explanation=\u914d\u7f6e\u7ba1\u7406\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\u3002
+CANNOT_FIND_CONFIG_ADMIN_SERVICE_MSE1003.useraction=\u8acb\u9a57\u8b49\u914d\u7f6e\u670d\u52d9\u662f\u5426\u6b63\u5728\u57f7\u884c\u3002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_SECURITY_SERVICE_MSE1004=CWWKM3004E: \u5b89\u5168\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\u3002
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.explanation=\u5b89\u5168\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\u3002
+CANNOT_FIND_SECURITY_SERVICE_MSE1004.useraction=\u8acb\u9a57\u8b49\u5b89\u5168\u670d\u52d9\u662f\u5426\u6b63\u5728\u57f7\u884c\u3002
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_NOT_CONFIGURED_MSE1005=CWWKM3005E: \u672a\u914d\u7f6e\u4f7f\u7528\u8005\u767b\u9304\u3002
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.explanation=\u9019\u90e8\u4f3a\u670d\u5668\u5fc5\u9808\u914d\u7f6e\u4f7f\u7528\u8005\u767b\u9304\u3002
+USER_REGISTRY_NOT_CONFIGURED_MSE1005.useraction=\u8acb\u914d\u7f6e\u81f3\u5c11\u4e00\u500b\u4f7f\u7528\u8005\u767b\u9304\uff08\u4f8b\u5982\uff0cLDAP\u3001BasicUserRegistry \u6216 QuickStartSecurity\uff09\u7d66\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+USER_REGISTRY_EXCEPTION_MSE1006=CWWKM3006E: \u5b58\u53d6\u4f7f\u7528\u8005\u767b\u9304\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+USER_REGISTRY_EXCEPTION_MSE1006.explanation=\u5b58\u53d6\u4f7f\u7528\u8005\u767b\u9304\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+USER_REGISTRY_EXCEPTION_MSE1006.useraction=\u8acb\u6aa2\u67e5\u4f7f\u7528\u8005\u767b\u9304\u662f\u5426\u914d\u7f6e\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007=CWWKM3007E: \u627e\u4e0d\u5230\u5b9a\u7fa9\u7684\u914d\u7f6e\u7ba1\u7406\u7269\u4ef6\u3002
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.explanation=\u627e\u4e0d\u5230\u5b9a\u7fa9\u7684\u914d\u7f6e\u7ba1\u7406\u7269\u4ef6\u3002
+CANNOT_FIND_CONFIG_ADMIN_OBJECT_MSE1007.useraction=\u5167\u5bb9\u5b9a\u7fa9\u4e2d\u53ef\u80fd\u6709\u932f\u8aa4\u3002\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u6a94\u4e2d\u7684\u5167\u5bb9\u5b9a\u7fa9\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008=CWWKM3008E: \u8b80\u53d6\u914d\u7f6e\u6a94\u4e2d\u7684\u8cc7\u6599\u6642\uff0c\u767c\u751f IO \u7570\u5e38\u72c0\u6cc1\u3002
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.explanation=\u8b80\u53d6 server.xml \u6a94\u4e2d\u7684\u8cc7\u6599\u6642\uff0c\u767c\u751f IO \u7570\u5e38\u72c0\u6cc1\u3002
+IO_EXCEPTION_READING_CONFIGURATION_MSE1008.useraction=\u8acb\u9a57\u8b49 server.xml \u6a94\u4e2d\u6307\u5b9a\u7684\u914d\u7f6e\u3002
+
+# -------------------------------------------------------------------------------------------------
+USER_NOT_AUTHENTICATED_MSE1009=CWWKM3009E: \u4f7f\u7528\u8005 {0} \u672a\u901a\u904e\u9451\u5225\uff0c\u7121\u6cd5\u5b58\u53d6 Liberty \u50b3\u8a0a\u670d\u52d9\u3002
+USER_NOT_AUTHENTICATED_MSE1009.explanation=\u4f7f\u7528\u8005\u4e0d\u5177\u5099\u5b58\u53d6 Liberty \u50b3\u8a0a\u670d\u52d9\u7684\u8a31\u53ef\u6b0a\u3002
+USER_NOT_AUTHENTICATED_MSE1009.useraction=\u8acb\u6307\u5b9a\u5df2\u901a\u904e\u9451\u5225\u7684\u6709\u6548\u4f7f\u7528\u8005\u540d\u7a31\uff0c\u4ee5\u9023\u63a5 Liberty \u50b3\u8a0a\u670d\u52d9\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+# {1} - Action Name
+# {2} - Destination
+USER_NOT_AUTHORIZED_MSE1010=CWWKM3010W: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u5728 {2} \u76ee\u7684\u5730\u57f7\u884c {1} \u52d5\u4f5c\u3002
+USER_NOT_AUTHORIZED_MSE1010.explanation=\u6307\u5b9a\u7684\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5728\u6307\u793a\u7684\u76ee\u7684\u5730\u57f7\u884c\u6307\u5b9a\u7684\u52d5\u4f5c\u3002
+USER_NOT_AUTHORIZED_MSE1010.useraction=\u8acb\u6307\u5b9a\u5df2\u7372\u6388\u6b0a\u5728\u6307\u793a\u7684\u76ee\u7684\u5730\u57f7\u884c\u6307\u5b9a\u52d5\u4f5c\u7684\u4f7f\u7528\u8005\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} - User name
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011=CWWKM3011E: \u4f7f\u7528\u8005\u6c92\u6709\u9023\u63a5 Liberty \u50b3\u8a0a\u670d\u52d9\u7684\u6b0a\u9650\u3002
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u9023\u63a5 Liberty \u50b3\u8a0a\u670d\u52d9\u3002
+USER_NOT_AUTHORIZED_TO_CONNECT_MSE1011.useraction=\u8acb\u6307\u5b9a\u7372\u6388\u6b0a\u9023\u63a5 Liberty \u50b3\u8a0a\u670d\u52d9\u7684\u4f7f\u7528\u8005\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Role name which has duplicate entry
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012=CWWKM3012W: \u53e6\u4e00\u500b\u89d2\u8272\u5df2\u5728\u4f7f\u7528\u540d\u7a31 {0}\u3002
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.explanation=\u4e00\u500b\u540d\u7a31\u4e0d\u80fd\u4f9b\u591a\u500b\u89d2\u8272\u4f7f\u7528\u3002
+DUPLICATE_ROLE_NAME_EXISTS_MSE1012.useraction=\u8acb\u63d0\u4f9b\u4e0d\u540c\u7684\u540d\u7a31\uff0c\u4ee5\u907f\u514d\u4e00\u500b\u89d2\u8272\u6709\u91cd\u8907\u7684\u9805\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} - Action Name
+# {1} - Destination
+USER_NOT_AUTHORIZED_MSE1013=CWWKM3013W: \u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5728 {1} \u76ee\u7684\u5730\u57f7\u884c {0} \u52d5\u4f5c\u3002
+USER_NOT_AUTHORIZED_MSE1013.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5728\u6307\u793a\u7684\u76ee\u7684\u5730\u57f7\u884c\u6307\u5b9a\u7684\u52d5\u4f5c\u3002
+USER_NOT_AUTHORIZED_MSE1013.useraction=\u8acb\u63d0\u4f9b\u5df2\u7372\u6388\u6b0a\u5728\u6307\u793a\u7684\u76ee\u7684\u5730\u57f7\u884c\u6307\u5b9a\u52d5\u4f5c\u7684\u4f7f\u7528\u8005\u3002

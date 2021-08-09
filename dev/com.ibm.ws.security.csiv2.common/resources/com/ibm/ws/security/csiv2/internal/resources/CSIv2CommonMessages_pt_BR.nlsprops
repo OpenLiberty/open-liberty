@@ -1,0 +1,194 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.common/resources/com/ibm/ws/security/csiv2/internal/resources/CSIv2CommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9500 - CWWKS9599
+
+# Client CSIv2 Configuration related messages CWWKS9500 - CWWKS9509
+# -------------------------------------------------------------------------------------------------
+
+# Server CSIv2 Configuration related messages CWWKS9510 - CWWKS9519
+# -------------------------------------------------------------------------------------------------
+
+
+# Client CSIv2 runtime related messages CWWKS9520 - CWWKS9579
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED=CWWKS9520E: H\u00e1 uma incompatibilidade entre o cliente CSIv2 e as pol\u00edticas de seguran\u00e7a do servidor. \n {0}
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.explanation=Existem incompatibilidades entre o cliente CSIv2 especificado e as pol\u00edticas de seguran\u00e7a do servidor.  
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.useraction=Assegure-se de que o cliente CSIv2 e as pol\u00edticas de seguran\u00e7a do servidor sejam compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED=CWWKS9521E: A pol\u00edtica de seguran\u00e7a do cliente tem as camadas de transporte, autentica\u00e7\u00e3o e atributo configuradas para <{0}> com <{1}> como Suportado no arquivo configuration e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{2}> como Obrigat\u00f3rio. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.explanation=H\u00e1 incompatibilidades nas camadas de transporte, autentica\u00e7\u00e3o e/ou atributos entre a pol\u00edtica de seguran\u00e7a Suportada do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para as camadas de transporte, autentica\u00e7\u00e3o e/ou atributo tenha pol\u00edticas de seguran\u00e7a Suportada e Obrigat\u00f3ria do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED=CWWKS9522E: A pol\u00edtica de seguran\u00e7a do cliente tem as camadas de transporte e de atributo configuradas com <{0}> como Suportado no arquivo configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{1}> como Obrigat\u00f3rio. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.explanation=H\u00e1 incompatibilidades nas camadas de transporte e/ou atributo entre a pol\u00edtica de seguran\u00e7a Suportada do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para as camadas de transporte/ou atributo tenham pol\u00edticas de seguran\u00e7a Suportada e Obrigat\u00f3ria do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED=CWWKS9523E: A pol\u00edtica de seguran\u00e7a do cliente tem as camadas de transporte, autentica\u00e7\u00e3o e atributo configuradas para <{0}> com <{1}> como Obrigat\u00f3rio no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{2}> como Suportado. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.explanation=H\u00e1 incompatibilidades nas camadas de transporte, autentica\u00e7\u00e3o e/ou atributos entre a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Suportada do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para as camadas de transporte, autentica\u00e7\u00e3o e/ou atributo tenha pol\u00edticas de seguran\u00e7a Obrigat\u00f3ria e Suportada do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED=CWWKS9524E: A pol\u00edtica de seguran\u00e7a do cliente tem as camadas de transporte e de atributo configuradas com <{0}> como Obrigat\u00f3rio no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{1}> como Suportado. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.explanation=H\u00e1 incompatibilidades nas camadas de transporte e/ou atributo entre a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Suportada do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para as camadas de transporte e/ou atributo tenha pol\u00edticas de seguran\u00e7a Obrigat\u00f3ria e Suportada do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED=CWWKS9525E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de transporte configurada para {0} com <{1}> como Suportada no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{2}> como Obrigat\u00f3ria. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.explanation=H\u00e1 incompatibilidades nas camadas de transporte e/ou atributo entre a pol\u00edtica de seguran\u00e7a Suportada do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de transporte tenha pol\u00edticas de seguran\u00e7a Suportada e Obrigat\u00f3ria do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED=CWWKS9526E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de transporte configurada com <{0}> como Suportada no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{1}> como Obrigat\u00f3ria. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.explanation=H\u00e1 incompatibilidades na camada de transporte entre a pol\u00edtica de seguran\u00e7a Suportada do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de transporte tenha pol\u00edticas de seguran\u00e7a Suportada do cliente e Obrigat\u00f3ria do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED=CWWKS9527E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de transporte configurada para {0} com <{1}> como Obrigat\u00f3rio no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{2}> como Suportado. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.explanation=H\u00e1 incompatibilidades na camada de transporte entre a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do cliente CSIv2 especificado e a pol\u00edtica de  seguran\u00e7a Suportada do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de transporte tenha pol\u00edticas de seguran\u00e7a Obrigat\u00f3ria e Suportada do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED=CWWKS9528E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de transporte configurada com <{0}> como Obrigat\u00f3rio no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{1}> como Suportado. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.explanation= H\u00e1 incompatibilidades na camada de transporte entre a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Suportada do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de transporte tenha pol\u00edticas de seguran\u00e7a Obrigat\u00f3ria e Suportada do servidor compat\u00edveis.
+	
+# Do not translate Supported and Required	
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED=CWWKS9529E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de atributo configurada para {0} com <{1}> como Suportada no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{2}> como Obrigat\u00f3ria. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.explanation=H\u00e1 incompatibilidades na camada de atributo entre a pol\u00edtica de seguran\u00e7a Suportada do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de transporte tenha pol\u00edticas de seguran\u00e7a Suportada e Obrigat\u00f3ria do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED=CWWKS9530E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de atributo configurada com <{0}> como Suportada no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{1}> como Obrigat\u00f3ria. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.explanation=H\u00e1 incompatibilidades na camada de atributo entre a pol\u00edtica de seguran\u00e7a Suportada do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de atributo tenha pol\u00edticas de seguran\u00e7a Suportada e Obrigat\u00f3ria do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED=CWWKS9531E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de atributo configurada para {0} com <{1}> como Obrigat\u00f3rio no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{2}> como Suportado. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.explanation=H\u00e1 incompatibilidades na camada de atributo entre a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Suportada do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de atributo tenha pol\u00edticas de seguran\u00e7a Obrigat\u00f3ria e Suportada do servidor compat\u00edveis.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED=CWWKS9532E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de atributo configurada com <{0}> como Obrigat\u00f3rio no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com <{1}> como Suportado. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.explanation=H\u00e1 incompatibilidades na camada de atributo entre a pol\u00edtica de seguran\u00e7a Obrigat\u00f3ria do cliente CSIv2 especificado e a pol\u00edtica de seguran\u00e7a Suportada do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de atributo tenha pol\u00edticas de seguran\u00e7a Obrigat\u00f3ria e Suportada do servidor compat\u00edveis.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED=CWWKS9533E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de atributo configurada para <{0}> com o tipo de asser\u00e7\u00e3o de identidade <{1}> no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com o tipo de asser\u00e7\u00e3o de identidade <{2}>. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.explanation=H\u00e1 incompatibilidades na asser\u00e7\u00e3o de identidade da camada de atributo entre as pol\u00edticas de seguran\u00e7a do cliente e do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de atributo tenha um tipo compat\u00edvel de asser\u00e7\u00e3o de identidade.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED=CWWKS9534E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de atributo configurada com o tipo de asser\u00e7\u00e3o de identidade <{0}> no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com o tipo de asser\u00e7\u00e3o de identidade <{1}>. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.explanation=H\u00e1 incompatibilidades na asser\u00e7\u00e3o de identidade da camada de atributo entre as pol\u00edticas de seguran\u00e7a do cliente e do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.useraction=Assegure-se de que a seguran\u00e7a do cliente CSIv2 para a camada de atributo tenha um tipo compat\u00edvel de asser\u00e7\u00e3o de identidade.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED=CWWKS9535E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de autentica\u00e7\u00e3o configurada com o mecanismo {0} no arquivo de configura\u00e7\u00e3o e a pol\u00edtica de seguran\u00e7a do servidor configurada com o mecanismo {1}. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.explanation=H\u00e1 incompatibilidades no mecanismo de camada de autentica\u00e7\u00e3o entre as pol\u00edticas de seguran\u00e7a do cliente e do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.useraction=Assegure-se de que a pol\u00edtica de seguran\u00e7a do cliente CSIv2 para a camada de autentica\u00e7\u00e3o tenha um mecanismo compat\u00edvel.
+
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED=CWWKS9536E: A camada de autentica\u00e7\u00e3o da pol\u00edtica de seguran\u00e7a do cliente est\u00e1 desativada no arquivo de configura\u00e7\u00e3o e a camada de autentica\u00e7\u00e3o da pol\u00edtica de seguran\u00e7a do servidor est\u00e1 configurada com o mecanismo {0}. 
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.explanation=H\u00e1 incompatibilidades no mecanismo de camada de autentica\u00e7\u00e3o entre as pol\u00edticas de seguran\u00e7a do cliente e do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.useraction=Assegure-se de que a pol\u00edtica de seguran\u00e7a do cliente CSIv2 para a camada de autentica\u00e7\u00e3o tenha um mecanismo compat\u00edvel.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED=CWWKS9537E: A pol\u00edtica de seguran\u00e7a do cliente tem a camada de autentica\u00e7\u00e3o configurada com o mecanismo {0} no arquivo de configura\u00e7\u00e3o e a camada de autentica\u00e7\u00e3o da pol\u00edtica de seguran\u00e7a do servidor est\u00e1 desativada. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.explanation=H\u00e1 incompatibilidades no mecanismo de camada de autentica\u00e7\u00e3o entre as pol\u00edticas de seguran\u00e7a do cliente e do servidor no arquivo server.xml no ambiente de servidor de aplicativos ou o arquivo client.xml no ambiente do aplicativo cliente.  
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.useraction=Assegure-se de que a pol\u00edtica de seguran\u00e7a do cliente CSIv2 para a camada de autentica\u00e7\u00e3o tenha um mecanismo compat\u00edvel.
+
+CSIv2_CLIENT_POLICY_NULL_ERROR=CWWKS9538E: A pol\u00edtica de seguran\u00e7a do cliente \u00e9 nula para o ID da solicita\u00e7\u00e3o: {0}.
+CSIv2_CLIENT_POLICY_NULL_ERROR.explanation= A pol\u00edtica de seguran\u00e7a do cliente CSIv2 n\u00e3o est\u00e1 definida no arquivo de configura\u00e7\u00e3o.
+CSIv2_CLIENT_POLICY_NULL_ERROR.useraction= O usu\u00e1rio pode ter que definir a pol\u00edtica de seguran\u00e7a do cliente conforme o requisito.
+ 
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR=CWWKS9539E: O servidor recebeu uma mensagem CSIv2 inesperada {0} do cliente para o ID da solicita\u00e7\u00e3o{1}.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.explanation= O cliente enviou uma mensagem CSIv2 que apenas um servidor deve enviar como uma resposta.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.useraction= Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+ 
+CSIv2_SERVER_CONFIG_NULL_ERROR=CWWKS9540E: N\u00e3o h\u00e1 nenhuma configura\u00e7\u00e3o do cliente localizada no ID da solicita\u00e7\u00e3o de pol\u00edtica de seguran\u00e7a do cliente: {0}.
+CSIv2_SERVER_CONFIG_NULL_ERROR.explanation= A pol\u00edtica de seguran\u00e7a do servidor CSIv2 n\u00e3o est\u00e1 definida no arquivo de configura\u00e7\u00e3o.
+CSIv2_SERVER_CONFIG_NULL_ERROR.useraction= O usu\u00e1rio pode ter que definir a configura\u00e7\u00e3o de seguran\u00e7a do servidor conforme o requisito.
+
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR=CWWKS9541E: Nenhum contexto de servi\u00e7o de seguran\u00e7a localizado para o ID da solicita\u00e7\u00e3o {0}.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.explanation= O usu\u00e1rio n\u00e3o definiu um contexto de seguran\u00e7a no servidor ou no cliente.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.useraction= O usu\u00e1rio pode ter que definir o contexto de seguran\u00e7a no servidor e no cliente.  
+
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR=CWWKS9542E: Houve uma exce\u00e7\u00e3o inesperada ao tentar enviar uma solicita\u00e7\u00e3o CSIv2 de sa\u00edda para o ID da solicita\u00e7\u00e3o {0}. A mensagem de exce\u00e7\u00e3o \u00e9 {1}.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.explanation= Houve uma exce\u00e7\u00e3o inesperada ao tentar enviar uma solicita\u00e7\u00e3o CSIv2 de sa\u00edda.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.useraction= Verifique os logs para obter mais informa\u00e7\u00f5es sobre a causa da exce\u00e7\u00e3o.
+
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR=CWWKS9543E: O cliente CSIv2 solicitou uma sess\u00e3o stateful com id de contexto {0} para ID da solicita\u00e7\u00e3o {1}, mas o servidor n\u00e3o suporta sess\u00f5es stateful.
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.explanation= O servidor n\u00e3o deveria receber uma mensagem CompleteEstablishContext. 
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.useraction= Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR=CWWKS9544E: Houve uma exce\u00e7\u00e3o inesperada ao tentar receber uma solicita\u00e7\u00e3o CSIv2 de entrada para o ID da solicita\u00e7\u00e3o {0}. A mensagem de exce\u00e7\u00e3o \u00e9 {1}
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.explanation= Houve uma exce\u00e7\u00e3o inesperada ao receber uma solicita\u00e7\u00e3o CSIv2 de entrada.
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.useraction= Verifique os logs para obter mais informa\u00e7\u00f5es sobre a causa da exce\u00e7\u00e3o.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER=CWWKS9545E: O cliente n\u00e3o pode criar o token de asser\u00e7\u00e3o de identidade ITTAnonymous porque este token n\u00e3o \u00e9 suportado pela configura\u00e7\u00e3o do servidor remoto.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.explanation=A camada do atributo de pol\u00edtica de seguran\u00e7a do servidor n\u00e3o suporta asser\u00e7\u00e3o de identidade com ITTAnonymous no arquivo server.xml.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.useraction=Certifique-se de que a camada do atributo de pol\u00edtica de seguran\u00e7a do servidor remoto no arquivo server.xml suporte o ITTAnonymous.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT=CWWKS9546E: O cliente n\u00e3o pode criar o token de asser\u00e7\u00e3o de identidade ITTAnonymous porque este token n\u00e3o \u00e9 suportado pela configura\u00e7\u00e3o deste cliente.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.explanation=A camada do atributo de pol\u00edtica de seguran\u00e7a do cliente n\u00e3o suporta asser\u00e7\u00e3o de identidade com ITTAnonymous no arquivo server.xml.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.useraction=Certifique-se de que a camada do atributo de pol\u00edtica de seguran\u00e7a do cliente no arquivo server.xml suporte o ITTAnonymous.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY=CWWKS9547E: O cliente n\u00e3o pode declarar um assunto autenticado porque este assunto suporta asser\u00e7\u00f5es de identidade somente com o ITTAnonymous.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.explanation=A camada do atributo de pol\u00edtica de seguran\u00e7a do cliente suporta asser\u00e7\u00e3o de identidade com o ITTAnonymous no server.xml, e o usu\u00e1rio autenticado n\u00e3o pode ser declarado usando este tipo de token. 
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.useraction=Certifique-se de que a camada do atributo de pol\u00edtica de seguran\u00e7a do cliente no arquivo server.xml suporte outro tipo de asser\u00e7\u00e3o de identidade al\u00e9m do ITTAnonymous ao declarar um usu\u00e1rio autenticado.
+
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED=CWWKS9548E: O cliente n\u00e3o pode declarar um assunto autenticado porque a configura\u00e7\u00e3o do servidor remoto n\u00e3o suporta asser\u00e7\u00f5es de identidade com os tipos <{0}>.
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.explanation=A camada do atributo de pol\u00edtica de seguran\u00e7a do servidor n\u00e3o suporta asser\u00e7\u00e3o de identidade com os tipos indicados. 
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.useraction=Certifique-se de que a camada do atributo de pol\u00edtica de seguran\u00e7a do servidor no arquivo server.xml suporte pelo menos um dos tipos de asser\u00e7\u00e3o de identidade indicados.
+
+# Do not translate GSSUP, WSLogin, and JAAS
+CSIv2_SERVER_CANNOT_DECODE_GSSUP=CWWKS9549E: O servidor n\u00e3o pode decodificar o token GSSUP enviado pelo cliente e ele n\u00e3o pode autenticar o token.
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.explanation=A autentica\u00e7\u00e3o com o token GSSUP n\u00e3o pode ser executada, porque ela n\u00e3o pode ser codificada.
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.useraction=Assegure-se de que o aplicativo cliente execute um login program\u00e1tico com a configura\u00e7\u00e3o WSLogin JAAS para criar um assunto de autentica\u00e7\u00e3o b\u00e1sico.
+
+# Server CSIv2 runtime related messages CWWKS9580 - CWWKS9589
+# -------------------------------------------------------------------------------------------------
+
+SOCKET_BIND_ERROR=CWWKS9580E: O soquete do servidor n\u00e3o p\u00f4de ser aberto no {0}:{1}.  A mensagem de exce\u00e7\u00e3o \u00e9 {2}.
+SOCKET_BIND_ERROR.explanation= Houve uma exce\u00e7\u00e3o inesperada ao abrir um soquete do servidor.
+SOCKET_BIND_ERROR.useraction= Verifique os logs para obter mais informa\u00e7\u00f5es sobre a causa da exce\u00e7\u00e3o.
+
+IOR_NO_MATCHING_ADDRESS=CWWKS9581E: Nenhum elemento iiopsOptions correspondente foi localizado configurado com sslRef {0}.
+IOR_NO_MATCHING_ADDRESS.explanation= Cada elemento de camada de transporte configurado com um atributo sslRef deve corresponder a um ou mais elementos iiopsOptions. Os elementos iiopsOptions devem ser configurados com o mesmo atributo sslRef que o elemento da camada de transporte e devem ser um elemento iiopEndpoint referenciado por este elemento orb.
+IOR_NO_MATCHING_ADDRESS.useraction= Configure um ou mais elementos iiopsOptions com o mesmo valor de atributo sslRef que o usado na camada de transporte.
+
+# Do not translate sslRef, orb, defaultKeyStore, defaultSSLConfig, ssl in "ssl element".
+SSL_SERVICE_NOT_STARTED=CWWKS9582E: Os atributos {0} sslRef requeridos pelo elemeno orb com o ID {1} n\u00e3o foram resolvidos dentro de {2} segundos. Como resultado, os aplicativos n\u00e3o ser\u00e3o iniciados. Certifique-se de ter inclu\u00eddo um elemento keyStore e que o Secure Sockets Layer (SSL) esteja configurado corretamente. Se o sslRef for defaultSSLConfig, inclua um elemento keyStore com o ID defaultKeyStore e uma senha.
+SSL_SERVICE_NOT_STARTED.explanation= Os aplicativos n\u00e3o iniciaram porque pelo menos um elemento ssl referenciado por um atributo sslRef do elemento orb fornecido n\u00e3o foi resolvido ap\u00f3s um determinado per\u00edodo de tempo. Esta falha pode ser devido a uma configura\u00e7\u00e3o SSL n\u00e3o v\u00e1lida, como um elemento keyStore ausente ou o certificado SSL n\u00e3o ter sido criado dentro do tempo permitido. Ap\u00f3s o erro de configura\u00e7\u00e3o ser corrigido, os aplicativos ser\u00e3o iniciados.
+SSL_SERVICE_NOT_STARTED.useraction= Certifique-se de ter configurado um elemento keyStore e que cada atributo sslRef aponte para um elemento ssl v\u00e1lido configurado apropriadamente. Se o sslRef for defaultSSLConfig, inclua um elemento keyStore com o ID defaultKeyStore e uma senha. Se o certificado SSL n\u00e3o foi criado, use a tarefa createSSLCertificate do comando securityUtility para criar o certificado SSL manualmente.
+
+
+# Common CSIv2  related messages CWWKS9590 - CWWKS9599
+# -------------------------------------------------------------------------------------------------
+
+
+# Do not translate Supported and Required
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: O {0} conjunto de cifras solicitado aparece para ter op\u00e7\u00f5es de associa\u00e7\u00e3o {1} que n\u00e3o correspondem \u00e0s op\u00e7\u00f5es suportadas {2} especificadas e as op\u00e7\u00f5es {3} requeridas.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=O conjunto de cifras pode n\u00e3o corresponder \u00e0s op\u00e7\u00f5es de associa\u00e7\u00e3o que s\u00e3o gravadas para o Interoperable Object Reference (IOR) ou que s\u00e3o usadas para corresponder ao IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Verifique se o conjunto de cifras solicitado corresponde \u00e0s op\u00e7\u00f5es de associa\u00e7\u00e3o especificadas, ou remova-o.
+
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: A configura\u00e7\u00e3o SSL {0} n\u00e3o existe. Isso pode ter acontecido devido a um elemento SSL ausente ou uma refer\u00eancia inv\u00e1lida a um elemento de keystore ou de armazenamento confi\u00e1vel na configura\u00e7\u00e3o. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=N\u00e3o \u00e9 poss\u00edvel obter o elemento de configura\u00e7\u00e3o SSL que \u00e9 necess\u00e1rio devido a um erro na configura\u00e7\u00e3o.
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.useraction=Verifique se o elemento de configura\u00e7\u00e3o SSL existe com refer\u00eancias a elementos v\u00e1lidos de keystore e de armazenamento confi\u00e1vel.

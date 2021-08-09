@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: Le fichier XML dans {0} n''a pas \u00e9t\u00e9 trouv\u00e9.
+XML_NOT_FOUND.explanation=Le fichier XML sp\u00e9cifi\u00e9 est introuvable.
+XML_NOT_FOUND.useraction=Assurez-vous que le fichier est \u00e0 l'emplacement correct et n'a pas \u00e9t\u00e9 d\u00e9plac\u00e9.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: Le fichier XML dans {0} n''a pas pu \u00eatre lu.
+XML_STREAM_ERROR.explanation=Le fichier XML sp\u00e9cifi\u00e9 est n'a pas pu \u00eatre lu.
+XML_STREAM_ERROR.useraction=V\u00e9rifiez si le fichier est dans un format XML correct.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: Le fichier XML d\u00e9clar\u00e9 dans une application de l''espace de travail fait r\u00e9f\u00e9rence \u00e0 un fichier dans {0} et comporte un attribut "excludes" qui n''est pas valide. 
+EXCLUDES_ON_FILE.explanation=L'\u00e9l\u00e9ment dans le fichier XML comporte un attribut "excludes" qui n'est pas valide. L'attribut a \u00e9t\u00e9 ignor\u00e9.
+EXCLUDES_ON_FILE.useraction=Supprimez l'attribut "excludes" de l'\u00e9l\u00e9ment.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: Le fichier XML d\u00e9clar\u00e9 dans une application de l''espace de travail fait r\u00e9f\u00e9rence \u00e0 une archive nomm\u00e9e {0} et comporte un attribut "excludes" qui n''est pas valide. 
+EXCLUDES_ON_ARCHIVE.explanation=L'\u00e9l\u00e9ment d'archive XML comporte un attribut "excludes" qui n'est pas valide. L'attribut a \u00e9t\u00e9 ignor\u00e9.
+EXCLUDES_ON_ARCHIVE.useraction=Supprimez l'attribut "excludes" de l'\u00e9l\u00e9ment.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: Le fichier XML d\u00e9clar\u00e9 dans une application de l''espace de travail contient un attribut "excludes" qui n''est pas valide : {0}
+INVALID_EXCLUDE_PATTERN.explanation=L'attribut "excludes" n'est pas valide et n'est pas compris.
+INVALID_EXCLUDE_PATTERN.useraction=Changez l'attribut en syntaxe correcte ou supprimez-le s'il n'est pas utile.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: Le fichier XML d\u00e9clar\u00e9 dans une application de l''espace de travail fait r\u00e9f\u00e9rence \u00e0 un fichier {0} qui n''a pas \u00e9t\u00e9 trouv\u00e9.
+DECLARED_FILE_NOT_FOUND.explanation=Le fichier d\u00e9clar\u00e9 pour l'application de l'espace de travail n'a pas \u00e9t\u00e9 trouv\u00e9.
+DECLARED_FILE_NOT_FOUND.useraction=Assurez-vous que le fichier est \u00e0 l'emplacement r\u00e9f\u00e9renc\u00e9 ou que l'emplacement r\u00e9f\u00e9renc\u00e9 correspond bien \u00e0 l'endroit o\u00f9 se situe le fichier.

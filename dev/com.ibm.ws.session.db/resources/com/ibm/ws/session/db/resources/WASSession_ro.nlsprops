@@ -1,0 +1,467 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session.db/resources/com/ibm/ws/session/db/resources/WASSession.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.invalidateError=SESN0015E: Invalidarea bazei de date a sesiuni expirate a \u00eent\u00e2lnit o eroare.
+DatabaseHashMap.invalidateError.explanation=A survenit o eroare la nevalidarea unei sesiuni expirate a bazei de date.
+DatabaseHashMap.invalidateError.useraction=Dac\u0103 a survenit o SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru SessionManager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.performInvalidationError=SESN0016E: Invalidarea bazei de date a sesiuni expirate a \u00eent\u00e2lnit o eroare.
+DatabaseHashMap.performInvalidationError.explanation=A survenit o eroare la nevalidarea unei sesiuni expirate a bazei de date.
+DatabaseHashMap.performInvalidationError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru managerul de sesiune (Session Manager).
+
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.checkMinimumInvalidationError=SESN0019E: Timeout-ul sesiunii nu este de cel pu\u0163in 3 ori intervalul dr scriere bazat\u0103 pe timp.
+WsSessionContext.checkMinimumInvalidationError.explanation=C\u00e2nd sunt folosite scrierile bazate pe timp (Time Based Writes), timeout-ul sesiunii trebuie s\u0103 fie de cel pu\u0163in trei ori intervalul de scriere (Write Interval). Timeout-ul sesiunii a fost temporar corectat.
+WsSessionContext.checkMinimumInvalidationError.useraction=Actualiza\u0163i valorile configura\u0163iei managerului sesiunii astfel \u00eenc\u00e2t timeout-ul sesiunii s\u0103 fie de cel pu\u0163in 3 ori intervalul de scriere bazat pe timp (Time Based Write).
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.checkListErr=SESN0026E: A survenit o eroare la procesarea HttpSessionBindingListeners memorat \u00een baza de date.
+DatabaseHashMapMR.checkListErr.explanation=A survenit o eroare la procesarea HttpSessionBindingListeners memorat \u00een baza de date.
+DatabaseHashMapMR.checkListErr.useraction=Dac\u0103 a survenit o SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru managerul de sesiune (Session Manager).
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHandleErr=SESN0028E: A \u00eent\u00e2mpinat o excep\u0163ie la ob\u0163inerea unui obiect EJB utiliz\u00e2nd EJB Handle. Obiectul EJBObject a fost ad\u0103ugat anterior sesiunii. O excep\u0163ie RemoteException a fost \u00eent\u00e2lnit\u0103 la emiterea metodei getEJBObject din EJB handle.
+BackedSession.convertObjectHandleErr.explanation=A survenit o eroare la ob\u0163inerea unui obiect EJB (enterprise bean) folosind EJB handle. Obiectul EJBObject a fost ad\u0103ugat anterior sesiunii. O excep\u0163ie RemoteException a fost \u00eent\u00e2lnit\u0103 la emiterea metodei getEJBObject din tratare (handle).
+BackedSession.convertObjectHandleErr.useraction=Duce\u0163i-v\u0103 la documenta\u0163ia EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHomeErr=SESN0029E: A \u00eent\u00e2mpinat o excep\u0163ie la ob\u0163inerea unui EJB Home utiliz\u00e2nd EJB Home Handle. EJBHome a fost ad\u0103ugat anterior sesiunii. O excep\u0163ie RemoteException a fost \u00eent\u00e2lnit\u0103 la emiterea metodei getEJBHome din Handle.
+BackedSession.convertObjectHomeErr.explanation=A survenit o eroare la ob\u0163inerea unui EJB (enterprise bean) Home folosindEJB Home Handle. EJBHome a fost ad\u0103ugat anterior sesiunii. O excep\u0163ie RemoteException a fost \u00eent\u00e2lnit\u0103 la emiterea metodei getEJBHome din Handle.
+BackedSession.convertObjectHomeErr.useraction=Duce\u0163i-v\u0103 la documenta\u0163ia EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectContextErr=SESN0030E: A \u00eent\u00e2mpinat o excep\u0163ie \u00een a ajunge la Initial Context. Un InitialContext a fost ad\u0103ugat anterior sesiunii. O excep\u0163ie NamingException a fost \u00eent\u00e2lnit\u0103 \u00een timpul reconstruirii metodei javax.naming.InitialContext.
+BackedSession.convertObjectContextErr.explanation=A survenit o eroare \u00een timp ce se ajungea la contextul ini\u0163ial (Initial Context). Un InitialContext a fost ad\u0103ugat anterior sesiunii. O excep\u0163ie NamingException a fost \u00eent\u00e2lnit\u0103 \u00een timpul reconstruirii metodei javax.naming.InitialContext.
+BackedSession.convertObjectContextErr.useraction=Duce\u0163i-v\u0103 la documenta\u0163ia numire server pentru mesajele de eroare.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHandleErr=SESN0031E: A \u00eent\u00e2mpinat o excep\u0163ie la ob\u0163inerea EJB Home. Un EJBHome a fost ad\u0103ugatsesiunii. O excep\u0163ie RemoteException a survenit la emiterea metodei getHomeHandle.
+BackedSession.putValueGutsHandleErr.explanation=A survenit o eroare la ob\u0163inerea EJB Home. Un EJBHome a fost ad\u0103ugat sesiunii. O excep\u0163ie RemoteException a survenit la emiterea metodei getHomeHandle.
+BackedSession.putValueGutsHandleErr.useraction=Duce\u0163i-v\u0103 la documenta\u0163ia EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHomeErr=SESN0032E: A \u00eent\u00e2mpinat o excep\u0163ie la ob\u0163inerea EJB Handle. Un obiect EJBObject a fost pus \u00een sesiune. O excep\u0163ie RemoteException a survenit la emiterea metodei getHandle.
+BackedSession.putValueGutsHomeErr.explanation=A survenit o eroare la ob\u0163inerea EJB Handle. Un obiect EJBObject a fost pus \u00een sesiune. O excep\u0163ie RemoteException a survenit la emiterea metodei getHandle.
+BackedSession.putValueGutsHomeErr.useraction=Duce\u0163i-v\u0103 la documenta\u0163ia EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsContextErr=SESN0033E: Un javax.naming.Context a fost pus \u00een sesiune \u015fi a survenit o excep\u0163ieRemoteException la emiterea getEnvironment()\u00een javax.naming.Context.
+BackedSession.putValueGutsContextErr.explanation=Un javax.naming.Context a fost pus \u00een sesiune \u015fi a survenit o excep\u0163ieRemoteException la emiterea getEnvironment()\u00een javax.naming.Context.
+BackedSession.putValueGutsContextErr.useraction=Duce\u0163i-v\u0103 la documenta\u0163ia numire server pentru mesajele de eroare.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.getSwappableListenersErr=SESN0034E: O \u00eencercare de a deserializa un obiect sesiune din baza de date a rezultat \u00eentr-o excep\u0163ie ClassNotFoundException. Obiectul care va fi deserializat trebuie con\u0163inut \u00een calea de clase pentru toate JVM-urile ce pot accesa sesiunea.
+DatabaseHashMapMR.getSwappableListenersErr.explanation=O \u00eencercare de a deserializa un obiect sesiune din baza de date a rezultat \u00eentr-o excep\u0163ie ClassNotFoundException. Obiectul care va fi deserializat trebuie con\u0163inut \u00een calea de clas\u0103 pentru toate JVM-urile ce pot accesa sesiunea.
+DatabaseHashMapMR.getSwappableListenersErr.useraction=Actualiza\u0163i calea de clase astfel \u00eenc\u00e2t atributul deserializat este \u00een calea de clas\u0103 a aplica\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.removeSessionsError=SESN0035E: A survenit o eroare la \u00eencercarea de a \u00eenl\u0103tura o sesiune din baza de date.
+DatabaseHashMap.removeSessionsError.explanation=A survenit o eroare la \u00eencercarea de a \u00eenl\u0103tura o sesiune din baza de date.
+DatabaseHashMap.removeSessionsError.useraction=Dac\u0103 a survenit o eroare SQLException atunci duce\u0163i-v\u0103 la documneta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.doInvalidationsError=SESN0036E: A survenit o eroare la \u00eencercarea de a nevalida o sesiune \u00een baza de date.
+DatabaseHashMap.doInvalidationsError.explanation=A survenit o eroare la \u00eencercarea de a nevalida o sesiune \u00een baza de date.
+DatabaseHashMap.doInvalidationsError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.pollForInvalidsError=SESN0037E: A survenit o eroare la \u00eencercarea de a face un poll al bazei de date pentru sesiuni nevalide.
+DatabaseHashMap.pollForInvalidsError.explanation=A survenit o eroare la \u00eencercarea de a face un poll al bazei de date pentru sesiuni nevalide.
+DatabaseHashMap.pollForInvalidsError.useraction=Dac\u0103 a survenit o excep\u0163ie SQLException atunci duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare pentru mediul dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor sursa de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getConnectionError=SESN0038E: A survenit o eroare la \u00eencercarea de a ob\u0163ine o conexiune cu baza de date.
+DatabaseHashMap.getConnectionError.explanation=A survenit o eroare la \u00eencercarea de a ob\u0163ine o conexiune cu baza de date.
+DatabaseHashMap.getConnectionError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectAndLockError=SESN0039E: A survenit o eroare a bazei de date.
+DatabaseHashMap.selectAndLockError.explanation=A survenit o eroare a bazei de date.
+DatabaseHashMap.selectAndLockError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.commonSetupError=SESN0040E: Excep\u0163ie prins\u0103 \u00een timp ce \u00eencerca s\u0103 serializeze sesiunea de date pentru a scrie baza de date ulterioar\u0103.
+DatabaseHashMap.commonSetupError.explanation=Datele sesiunii ar putea fi prea mari pentru a fi serializate.
+DatabaseHashMap.commonSetupError.useraction=Fie pune\u0163i mai pu\u0163ine date \u00een sesiune, fie considera\u0163i configurarea Session Manager pentru modul multi-row al bazei de date.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbStoreError=SESN0041E: A survenit o eroare la \u00eencercarea de a stoca o sesiune \u00een baza de date.
+DatabaseHashMap.ejbStoreError.explanation=A survenit o eroare la \u00eencercarea de a stoca o sesiune \u00een baza de date.
+DatabaseHashMap.ejbStoreError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbCreateError=SESN0042E: A survenit o eroare la \u00eencercarea de a introduce o sesiune \u00een baza de date.
+DatabaseHashMap.ejbCreateError.explanation=A survenit o eroare la \u00eencercarea de a introduce o sesiune \u00een baza de date.
+DatabaseHashMap.ejbCreateError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.dataSrcErr=SESN0043E: A survenit o eroare la \u00eencercarea de a ob\u0163ine sursa de date configurat\u0103.
+DatabaseHashMap.dataSrcErr.explanation=A survenit o eroare la \u00eencercarea de a ob\u0163ine sursa de date configurat\u0103.
+DatabaseHashMap.dataSrcErr.useraction=Asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date. C\u00e2nd Session Manager persistence este activat\u0103 configura\u0163ia Session Manager trebuie s\u0103 con\u0163in\u0103 o surs\u0103 de date valid\u0103.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getValueErrBH=SESN0044E: A survenit o eroare la \u00eencercarea de a citi un obiect al datelor aplica\u0163iei pentru o sesiune din baza de date. 
+DatabaseHashMap.getValueErrBH.explanation=A survenit o eroare la \u00eencercarea de a citi un obiect al datelor aplica\u0163iei pentru o sesiune din baza de date. 
+DatabaseHashMap.getValueErrBH.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.createTableError=SESN0047E: A survenit o eroare la \u00eencercarea de a ini\u0163ializa baza de date.
+DatabaseHashMap.createTableError.explanation=A survenit o eroare la \u00eencercarea de a ini\u0163ializa baza de date.
+DatabaseHashMap.createTableError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+BackedHashtable.classNotFoundError=SESN0051E: O incercare de a deserializa un obiect sesiune din back-end a avut ca rezultat o excep\u0163ie ClassNotFoundException.
+BackedHashtable.classNotFoundError.explanation=O incercare de a deserializa un obiect sesiune din back-end a avut ca rezultat o excep\u0163ie ClassNotFoundException. Obiectul care va fi deserializat trebuie s\u0103 fie con\u0163inut \u00een calea de clas\u0103 pentru toate JVM-urile ce pot accesa sesiunea.
+BackedHashtable.classNotFoundError.useraction=Actualizare cale de clase astfel \u00eenc\u00e2t atributul deserializat s\u0103 fie \u00een calea de clas\u0103 a aplica\u0163iei.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.db2LongVarCharErr=SESN0055E: S-a f\u0103cut o \u00eencercare de a scrie mai mult dec\u00e2t 2M \u00eem coloana mare.
+DatabaseHashMap.db2LongVarCharErr.explanation=Datele sesiunii ar putea fi prea mari pentru coloana bazei de date.
+DatabaseHashMap.db2LongVarCharErr.useraction=Fie pune\u0163i mai pu\u0163ine date \u00een sesiune, fie considera\u0163i configurarea Session Manager pentru modul MultiRow al bazei de date.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.oracleGetValueError=SESN0056E: O excep\u0163ie a fost \u00eent\u00e2lnit\u0103 c\u00e2nd metoda getValue sau getAttribute a fost chemat\u0103 pentru a citi valoarea din baza de date.
+DatabaseHashMap.oracleGetValueError.explanation=O excep\u0163ie a fost \u00eent\u00e2lnit\u0103 c\u00e2nd metoda getValue sau getAttribute a fost chemat\u0103 pentru a citi valoarea din baza de date.
+DatabaseHashMap.oracleGetValueError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propHitErr=SESN0057E: A survenit o eroare la stocarea modific\u0103rilor datelor aplica\u0163iei \u00een baza de date.
+DatabaseHashMapMR.propHitErr.explanation=A survenit o eroare la stocarea modific\u0103rilor datelor aplica\u0163iei \u00een baza de date.
+DatabaseHashMapMR.propHitErr.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.handleAsyncError=SESN0062E: A fost detectat\u0103 o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de actualizare a bazei de date cu ultimii timpi de acces ai sesiunii.
+DatabaseHashMap.handleAsyncError.explanation=A fost detectat\u0103 o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de actualizare a bazei de date cu ultimii timpi de acces ai sesiunii.
+DatabaseHashMap.handleAsyncError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectNoUpdateError=SESN0063E: A fost detectat\u0103 o excep\u0163ie la \u00eencercarea de a accesa baza de date.
+DatabaseHashMap.selectNoUpdateError.explanation=A fost detectat\u0103 o excep\u0163ie la \u00eencercarea de a accesa baza de date.
+DatabaseHashMap.selectNoUpdateError.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: S-a f\u0103cut o \u00eencercare de a scrie mai mult dec\u00e2t 2M \u00eem coloana mare.
+DatabaseHashMapMR.db2LongVarCharErr.explanation=Datele sesiunii ar putea fi prea mari pentru coloana bazei de date.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduce\u0163i dimensiunea acestui atribut \u00eenainte de a \u00eencerca s\u0103 \u00eel depozita\u0163i \u00een sesiune.
+
+
+ControllerSession.Initialized=SESN0126I: serviciul {0} a fost initializat cu succes.
+ControllerSession.Initialized.explanation=Serviciul z/OS Controller pentru suport HttpSession \u00een DRS a fost ini\u0163ializat cu succes.
+ControllerSession.Initialized.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CaughtException=SESN0127E: excep\u0163ie prins\u0103:
+ControllerSession.CaughtException.explanation=O excep\u0163ie a fost prins\u0103 cu metoda specificat\u0103.
+ControllerSession.CaughtException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyException=SESN0128E: EROARE la crearea DRSControllerProxy: excep\u0163ie prins\u0103 
+ControllerSession.ProxyException.explanation=Metoda specificat\u0103 a prins o excep\u0163ie \u00een timpul cre\u0103rii DRSControllerProxy.
+ControllerSession.ProxyException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyRefException=SESN0129E: EROARE la crearea DRSControllerProxy reference: excep\u0163ie prins\u0103 
+ControllerSession.ProxyRefException.explanation=Metoda specificat\u0103 a prins o excep\u0163ie la crearea referin\u0163ei DRSControllerProxy.
+ControllerSession.ProxyRefException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullJoinHAGroup=SESN0130E: joinHAGroup a \u00eentors nul
+ControllerSession.NullJoinHAGroup.explanation=\u00cen metoda specificat\u0103 apelarea joinHAGroup a returnat null.
+ControllerSession.NullJoinHAGroup.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CallbackException=SESN0131E: excep\u0163ie prins\u0103n timpul cre\u0103rii unui callback: 
+ControllerSession.CallbackException.explanation=Metoda specificat\u0103 a prins o excep\u0163ie \u00een timpul cre\u0103rii unui callback.
+ControllerSession.CallbackException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryKey=SESN0132E: parametru transmis entryKey = null: S-a renun\u0163at la \u00eencercarea de a crea o intrare.
+ControllerSession.NullEntryKey.explanation=Metodei specificate i s-a transmis un parametru entryKey nul. Se renun\u0163\u0103 la \u00eencercarea de a crea o intrare.
+ControllerSession.NullEntryKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryValue=SESN0133E: parametru transmis value = null: S-a renun\u0163at la \u00eencercarea de a crea o intrare.
+ControllerSession.NullEntryValue.explanation=Metodei specificate i s-a transmis o valoare nul\u0103 pentru parametrul valoare. Se renun\u0163\u0103 la \u00eencercarea de a crea intrare.
+ControllerSession.NullEntryValue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceRemException=SESN0134E: Eroare la crearea Instan\u0163ei DRS \u00een regiunea de control: excep\u0163ie la distan\u0163\u0103 prins\u0103: 
+ControllerSession.DRSInstanceRemException.explanation=Metoda specificat\u0103 a prins o excep\u0163ie la distan\u0163\u0103 \u00een timpul cre\u0103rii intan\u0163ei DRS (DRS Instance) \u00een regiunea de constrol (Control Region).
+ControllerSession.DRSInstanceRemException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceException=SESN0135E: Eroare la crearea Instan\u0163ei DRS \u00een regiunea de control: excep\u0163ie prins\u0103: 
+ControllerSession.DRSInstanceException.explanation=Metoda specificat\u0103 a prins o excep\u0163ie \u00een timpul cre\u0103rii intan\u0163ei DRS (DRS Instance) \u00een regiunea de control (Control Region).
+ControllerSession.DRSInstanceException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.SessContextGroupException=SESN0136E: Eroare la crearea Instan\u0163ei grupului SessionContext \u00een regiunea de control: excep\u0163ie prins\u0103: 
+ControllerSession.SessContextGroupException.explanation=Metoda specificat\u0103 a prins o excep\u0163ie la crearea intan\u0163ei SessionContext Group Instance \u00een regiunea de control (Control Region).
+ControllerSession.SessContextGroupException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nulldbmParm=SESN0137E: parametrul DRSBootstrapMsg = null.
+ControllerSession.nulldbmParm.explanation=Metodei specificate i s-a transmis o valoare nul\u0103 pentru parametrul DRSBootstrapMsg. 
+ControllerSession.nulldbmParm.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.Nullevent=SESN0138E: parametrul event = null.
+ControllerSession.Nullevent.explanation=Metodei specificate i s-a transmis o valoare nul\u0103 pentru parametrul evenimentului. 
+ControllerSession.Nullevent.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoProxy=SESN0139E: nu poate ob\u0163ine proxy pentru tokenul {0}.
+ControllerSession.NoProxy.explanation=Metoda specificat\u0103 nu a putut ob\u0163ine un proxy pentru token-un specificat. 
+ControllerSession.NoProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.TokenToBytes=SESN0140E: tokenul nu poate fi convertit \u00eentr-o matrice de octe\u0163i: token = {0}. 
+ControllerSession.TokenToBytes.explanation=Metoda specificat\u0103 nu poate converti token-ul \u00eentr-o matrice de octe\u0163i. 
+ControllerSession.TokenToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventToBytes=SESN0141E: evenimentul {0}  nu poate fi convertit \u00eentr-o matrice de octe\u0163i. 
+ControllerSession.EventToBytes.explanation=Metoda specificat\u0103 nu poate converti evenimentul \u00eentr-o matrice de octe\u0163i. 
+ControllerSession.EventToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONUP=SESN0142I: Instan\u0163a DRS HttpSessDRSControllerVars {0} a primit evenimentul REPLICATION_UP. 
+ControllerSession.EventREPLICATIONUP.explanation=Instan\u0163a DRS HttpSessDRSControllerVars specificat\u0103 a primit eveniment REPLICATION_UP. 
+ControllerSession.EventREPLICATIONUP.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONDOWN=SESN0143I: Instan\u0163a DRS HttpSessDRSControllerVars {0} a primit evenimentul REPLICATION_DOWN. 
+ControllerSession.EventREPLICATIONDOWN.explanation=Instan\u0163a DRS HttpSessDRSControllerVars specificat\u0103 a primit eveniment REPLICATION_DOWN. 
+ControllerSession.EventREPLICATIONDOWN.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventISCONGESTED=SESN0144I: Instan\u0163a DRS HttpSessDRSControllerVars {0} a primit evenimentul IS_CONGESTED. 
+ControllerSession.EventISCONGESTED.explanation=Instan\u0163a DRS HttpSessDRSControllerVars specificat\u0103 a primit evenimentulIS_CONGESTED. 
+ControllerSession.EventISCONGESTED.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventNOTCONGESTED=SESN0145I: nstan\u0163a DRS HttpSessDRSControllerVars {0} a primit evenimentul NOT_CONGESTED. 
+ControllerSession.EventNOTCONGESTED.explanation=Instan\u0163a DRS HttpSessDRSControllerVars a primit eveniment NOT_CONGESTED. 
+ControllerSession.EventNOTCONGESTED.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullKey=SESN0146E: entryKey convertit\u0103 la o cheie \u015fir este nul\u0103. 
+ControllerSession.NullKey.explanation=\u00cen metoda specificat\u0103, cheia \u015fir convertit\u0103 din entryKey este nul\u0103.
+ControllerSession.NullKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regInUnregtable=SESN0147E: Eroare: Servantul cu token {0} este \u00eenregistrat, dar apare \u00een tabelul ne\u00eenregistrat. 
+ControllerSession.regInUnregtable.explanation=Servantul este \u00eenregistrat, dar tokenul apare \u00een tabela ne\u00e2nregistrat.
+ControllerSession.regInUnregtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regNotinRegtable=SESN0148E: Eroare: Servantul cu token {0} este \u00eenregistrat, dar nu apare \u00een tabelul \u00eenregistrat. 
+ControllerSession.regNotinRegtable.explanation=Servantul este \u00eenregistrat, dar tokenul nu apare \u00een tabela \u00eenregistrat.
+ControllerSession.regNotinRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.unregInRegtable=SESN0149E: Eroare: Servantul cu token {0} este ne\u00eenregistrat, dar apare \u00een tabelul \u00eenregistrat. 
+ControllerSession.unregInRegtable.explanation=Servanul nu este \u00eenregistrat, dar tokenul apare \u00een tabela \u00eenregistrat.
+ControllerSession.unregInRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullContext=SESN0150E: Eroare: context \u00eentors pentru instan\u0163a {0} este null. 
+ControllerSession.nullContext.explanation=Contextul returnat dup\u0103 c\u0103utarea pentru instan\u0163\u0103 este nul.
+ControllerSession.nullContext.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullToken=SESN0151E: parametrul token = null. 
+ControllerSession.nullToken.explanation=Metodei specificate i s-a transmis o valoare nul\u0103 pentru parametrul token.
+ControllerSession.nullToken.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenExists=SESN0152E: Eroare: \u00eencercare de a ad\u0103uga un token care exist\u0103 deja. 
+ControllerSession.tokenExists.explanation=Metodei specificate i s-a transmis un token de ad\u0103ugat care deja exist\u0103.
+ControllerSession.tokenExists.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNoMatch=SESN0153E: Eroare: tokenul a\u015fteptat {0} nu se potrive\u015fte cu tmp2 {1}. 
+ControllerSession.tokenNoMatch.explanation=Tokenul specificat nu se potrive\u015fte tokenului din tmp2. 
+ControllerSession.tokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.arrayToObject=SESN0154E: Eroare: Matricea de octe\u0163i returnat\u0103 nu aputut fi convertit\u0103 la un obiect. 
+ControllerSession.arrayToObject.explanation=Matricea de octe\u0163i nu a putut fi convertit\u0103 \u00eentr-un obiect. 
+ControllerSession.arrayToObject.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.byteArrayNull=SESN0155E: Eroare: Matricea de octe\u0163i returnat\u0103 este nul\u0103. 
+ControllerSession.byteArrayNull.explanation=Matricea de octe\u0163i returnat\u0103 este nul\u0103.  
+ControllerSession.byteArrayNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoCreateProxy=SESN0156E: nu poate crea proxy pentru tokenul {0}.
+ControllerSession.NoCreateProxy.explanation=Metoda specificat\u0103 nu a putut crea un proxy pentru token-ul specificat. 
+ControllerSession.NoCreateProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.environ=SESN0157E: Eroare: Metoda a fost apelat\u0103 \u00een mediul incorect.
+ControllerSession.environ.explanation=Metoda a fost chemat\u0103 \u00eentr-un mediu al regiunii care nu este de control. 
+ControllerSession.environ.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokencontextNull=SESN0158E: Eroare: Contextul este nul pentru stoken = {0} \u015fi id = {1}.
+ControllerSession.stokencontextNull.explanation=Contextul este nul pentru stoken-ul \u015fi id-ul specifica\u0163i. 
+ControllerSession.stokencontextNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.getUnregisteredErr=SESN0159E: Eroare: intrarea ne\u00eenregistrat\u0103 pentru stoken-ul {0} nu poate fi ob\u0163inut\u0103.
+ControllerSession.getUnregisteredErr.explanation=Nu se poate ob\u0163ine o intrare ne\u00e2nregistrat\u0103 pentru stoken. 
+ControllerSession.getUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.locateUnregisteredErr=SESN0160E: Eroare: intrarea ne\u00eenregistrat\u0103 pentru stoken-ul {0} nu poate fi loca\u015fizat\u0103.
+ControllerSession.locateUnregisteredErr.explanation=Nu se poate localiza o intrare ne\u00e2nregistrat\u0103 pentru stoken. 
+ControllerSession.locateUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullGroupName=SESN0161E: parametrul GroupName este nul. 
+ControllerSession.nullGroupName.explanation=Metodei specificate i s-a transmis o valoare nul pentru parametrul GroupName.
+ControllerSession.nullGroupName.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.instanceCreateFail=SESN0162E: token = null: nu a reu\u015fit s\u0103 creeze instan\u0163a regiunii de control. 
+ControllerSession.instanceCreateFail.explanation=Metoda specificat\u0103 a e\u015fuat s\u0103 creeze instan\u0163a regiunii de control.
+ControllerSession.instanceCreateFail.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.registerServantNullReturn=SESN0163E: Eroare: registerServant a returnat null. 
+ControllerSession.registerServantNullReturn.explanation=Apelul c\u0103tre registerServant a returnat nul.
+ControllerSession.registerServantNullReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokenNoMatch=SESN0164E: Eroare: stoken {0} nu se potrive\u015fte cu stokenTest {1}. 
+ControllerSession.stokenNoMatch.explanation=Stoken-ul specificat nu se potrive\u015fte cu token-ul stokenTest token. 
+ControllerSession.stokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNotinArray=SESN0165E: Eroare: token {0} nu este \u00een matricea de tokenuri. 
+ControllerSession.tokenNotinArray.explanation=Stoken-ul specificat nu este \u00een matricea token-ului.  
+ControllerSession.tokenNotinArray.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenInstanceOffset=SESN0166E: erare instanceOffset \u00een tabela de jetoane: token = {0}, instanceOffset nu este >= 0. 
+ControllerSession.tokenInstanceOffset.explanation=Metoda specificat\u0103 a \u00eent\u00e2lnit o eroare instanceOffset \u00een timpul proces\u0103rii token-ului. 
+ControllerSession.tokenInstanceOffset.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.confirmServantRegistration=SESN0167E: Eroare: confirmServantRegistration a returnat null. 
+ControllerSession.confirmServantRegistration.explanation=Apelul c\u0103tre confirmServantRegistration a returnat nul. 
+ControllerSession.confirmServantRegistration.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullSessvalue=SESN0168E: Eroare: parametrul valoare convertit la sesiune este nul. 
+ControllerSession.nullSessvalue.explanation=\u00cen metoda specificat\u0103, sesiunea convertit\u0103 din parametrul valoare este nul. 
+ControllerSession.nullSessvalue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.wrongTableDef=SESN0181E: Tabela exist\u0103, dar cu defini\u0163ia gre\u015fit\u0103.
+DatabaseHashMap.wrongTableDef.explanation=Tabela din baza de date a sesiunii a fost creat\u0103 incorect.
+DatabaseHashMap.wrongTableDef.useraction=Abandona\u0163i tabela manual.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cantstartLTC=SESN0182E: Local Transaction nu poate porni.
+DatabaseHashMap.cantstartLTC.explanation=La \u00eencercarea de a porni Local Transaction a survenit o eroare.
+DatabaseHashMap.cantstartLTC.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.localRollBack=SESN0183E: Local Transaction a derulat \u00eenapoi din cauza setRollbackOnly
+DatabaseHashMap.localRollBack.explanation=A survenit o eroare \u00een timpul cur\u0103\u0163\u0103rii unei Local Transaction din cauza c\u0103reia aceasta a fost dat\u0103 \u00eenapoi.
+DatabaseHashMap.localRollBack.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.deferWrite=SESN0184I: Am\u00e2na\u0163i scrierea p\u00e2n\u0103 data viitoare deoarece sesiunea este \u00een metoda de serviciu {0}
+DatabaseHashMap.deferWrite.explanation=Sesiunea nu poate fi persist-at\u0103 momentan deoarece acum este accesat\u0103 de un servelet.  Va fi persist-at\u0103 la urm\u0103toarea rulare a firului de execu\u0163ie Time Based Writer.
+DatabaseHashMap.deferWrite.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.nullConnection=SESN0185E: S-a ob\u0163inut o conexiune la baza de date nul\u0103.
+DatabaseHashMap.nullConnection.explanation=S-a ob\u0163inut o conexiune la baza de date nul\u0103.
+DatabaseHashMap.nullConnection.useraction=Dac\u0103 a survenit o eroare SQLException, duce\u0163i-v\u0103 la documenta\u0163ia bazei de date corespunz\u0103toare mediului dumneavoastr\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i configurat corespunz\u0103tor o surs\u0103 de date pentru Session Manager.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cmdaNull=SESN0186W: ComponentMetaDataAccessor este null.
+DatabaseHashMap.cmdaNull.explanation=ComponentMetaDataAccessor nu poate fi accesat.
+DatabaseHashMap.cmdaNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propertyTooBig=SESN0187I: Aceast\u0103 proprietate este prea mare {0}
+DatabaseHashMapMR.propertyTooBig.explanation=Proprietatea specificat\u0103 este prea mare pentru baza de date.
+DatabaseHashMapMR.propertyTooBig.useraction=Reduce\u0163i dimensiunea propriet\u0103\u0163ii sau nu o stoca\u0163i \u00een sesiune.
+# -------------------------------------------------------------------------------------------------
+MTMStore.drsContext=SESN0188I: Modul memorie la memorie pentru aplica\u0163ia {0} este {1}
+MTMStore.drsContext.explanation=Specific\u0103 modul pentru replicarea Memory To Memory pentru aceast\u0103 aplica\u0163ie (app.)
+MTMStore.drsContext.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.timeOut=SESN0189E: Timpul a expirat \u00een a\u015fteptarea acces\u0103rii sesiunii.  Caracteristica Serialize Session Access este configurat\u0103 s\u0103 nu permit\u0103 accesul.
+WsSessionContext.timeOut.explanation=Caracteristica Serialize Session Access este acctivat\u0103 \u015fi configurat\u0103 s\u0103 nu permit\u0103 accesul la timeout.
+WsSessionContext.timeOut.useraction=Verifica\u0163i pentru aplica\u0163ii hung, posibil prin abandonarea firelor de execu\u0163ie ale serverului de aplica\u0163ii.  Considera\u0163i fie cre\u015fterea timout-ului, fie permiterea accesului sesiunii \u00een timeout.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serviceNull=SESN0190E: serviciul CoreStack este nul, nu poate s\u0103 se uneasc\u0103 cu HAGroup pentru {0}
+WsSessionMgrComponentImpl.serviceNull.explanation=Nu poate accesa serviciul CoreStack \u015fi nu se poate al\u0103tura grupuluiHAGroup.
+WsSessionMgrComponentImpl.serviceNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerMTMCacheMsgListener.unableCreate=SESN0191E: Nu poate s\u0103 creeze stocarea de rezerv\u0103 a sesiunii \u00een zOS.  createEntry-ul pentru sesiunea {0} va fi abandonat
+ControllerMTMCacheMsgListener.unableCreate.explanation=A survenit o eroare al crearea magaziei de sus\u0163inere a sesiunii \u00eenzOS.
+ControllerMTMCacheMsgListener.unableCreate.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.registerSessionFailed=SESN0192E: Apelul la metoda registerSession pentru ID-ul {0} a e\u015fuat cu codul de returnare {1}
+SessionServantAffinityManager.registerSessionFailed.explanation=Nu s-a putut stabili \u00eenrudirea servantului zOS  pentru aceas\u0103 sesiune.
+SessionServantAffinityManager.registerSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.unregisterSessionFailed=SESN0193E: Apelul la metoda unregisterSession pentru ID-ul {0}  a e\u015fuat cu rc-ul {1}
+SessionServantAffinityManager.unregisterSessionFailed.explanation=Nu s-a putut stabili \u00eenrudirea servantului zOS pentru aceast\u0103 sesiune.
+SessionServantAffinityManager.unregisterSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdNotFound=SESN0197W: ID-ul server-lui zOS nu a putut fi stabilit, a\u015fa c\u0103 va reveni la valoarea implicit\u0103 -1.
+WsSessionMgrComponentImpl.serverIdNotFound.explanation=id-ul serverului nu a fost ob\u0163inut din server.xml.
+WsSessionMgrComponentImpl.serverIdNotFound.useraction=Corecta\u0163i configura\u0163ia dac\u0103 este necesar.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdException=SESN0198E: Excep\u0163ie prins\u0103 \u00een timp ce ob\u0163inea ID-ul server-lui zOS, a\u015fa c\u0103 va reveni la valoarea implicit\u0103 -1.
+WsSessionMgrComponentImpl.serverIdException.explanation=A survenit o eroare la ob\u0163inerea ID-ului de server zOS
+WsSessionMgrComponentImpl.serverIdException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled=SESN0199I: HttpSession Unmanaged Server Replication a fost activat.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.explanation=Acest server de baz\u0103 zOS va replica datele sesiuniipentru preluarea la eroare a servantului.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.useraction=Acest mesaj este pur informativ.
+# -------------------------------------------------------------------------------------------------
+MTMBuffWrapper.serializationException=SESN0200E: Excep\u0163ie prins\u0103 \u00een timp ce \u00eencerca s\u0103 serializeze.
+MTMBuffWrapper.serializationException.explanation=Obiectul nu a putut fi serializat
+MTMBuffWrapper.serializationException.useraction=Asigura\u0163i-v\u0103 c\u0103 obiectul este serializabil.
+# -------------------------------------------------------------------------------------------------
+MTMDataXfer.attributeConversionException=SESN0201E: A e\u015fuat s\u0103 converteasc\u0103 atributul {0}
+MTMDataXfer.attributeConversionException.explanation=Atributul nu a putut fi serializat.
+MTMDataXfer.attributeConversionException.useraction=Asigura\u0163i-v\u0103 c\u0103 obiectul este serializabil.
+# -------------------------------------------------------------------------------------------------
+MTMHashMap.attributeReplicationFailure=SESN0202E: A e\u015fuat s\u0103 copieze atributul {0}
+MTMHashMap.attributeReplicationFailure.explanation=Atributul nu a putut fi serializat
+MTMHashMap.attributeReplicationFailure.useraction=Asigura\u0163i-v\u0103 c\u0103 obiectul este serializabil.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning=SESN0203W: Nu poate stoca un atribut {0} cu acela\u015fi nume ca ID-ul de sesiune \u00eentr-o  baz\u0103 de date cu o configura\u0163ie multi-r\u00e2nd.  Atributul  nu va fi persistat.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.explanation=Un nume al atributului sesiunii nu poate corespunde ID-ului sesiunii \u00eentr-o configura\u0163ie multi-row a bazei de date.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.useraction=Modifica\u0163i numele atributului sesiunii pentru ca atributul s\u0103 fie perisistat.
+# -------------------------------------------------------------------------------------------------
+MTMVars.DRSNotStarted=SESN0204E: Server-ul de aplica\u0163ii nu poate porni managerul de sesiune folosind replicarea memorie la memorie deoareceexist\u0103 o problem\u0103 cu domeniul de replicare {0}.
+MTMVars.DRSNotStarted.explanation=Serverul de aplica\u0163ii nu poate localiza domeniul de replica\u0163ie definit.
+MTMVars.DRSNotStarted.useraction=Crea\u0163i domeniul de replica\u0163ie \u015fi reporni\u0163i serverul sau dezactiva\u0163i replicarea sesiunii memory-to-memory pentru toate aplica\u0163iile.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.IndexIncorrect=SESN0205W: Exist\u0103 un index incorect \u00een baza de date folosit\u0103 pentru sesiune.
+DatabaseHashMap.IndexIncorrect.explanation=Apare c\u0103 indexul sesiunii din tabela dumneavoastr\u0103 a fost creat \u00een afara Serverului de aplica\u0163ii.
+DatabaseHashMap.IndexIncorrect.useraction=Abandona\u0163i indexul \u015fi reporni\u0163i Serverul de aplica\u0163ii
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=Obiectul sesiune (Session Object) este: {0}
+CommonMessage.sessionid=Id-ul sesiunii este: {0}
+CommonMessage.miscData=Date diverse: {0}
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.propertyError=SESN8000W: A survenit o eroare \u00een timpul \u00eenc\u0103rc\u0103rii propriet\u0103\u0163ii personalizate a managerului de sesiune {0}
+WsSessionMgrComponentImpl.propertyError.explanation= Proprietatea personalizat\u0103 de sesiune nu a fost \u00eenc\u0103rcat\u0103.
+WsSessionMgrComponentImpl.propertyError.useraction= Asigura\u0163i-v\u0103 c\u0103 valoarea pentru proprietatea personalizat\u0103 a managerului de sesiune este corect\u0103 \u015fi nu refer\u0103 nicio variabil\u0103 nedefinit\u0103.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=Excep\u0163ia este: 
+#----------AdminTask messages----------
+AdminTask.sessiongroup.description=Grupul de taskuri administrative legate de sesiune.
+AdminTask.addDisabledSessionCookie.title=AddDisabledSessionCookie
+AdminTask.addDisabledSessionCookie.description=Adaug\u0103 o configura\u0163ie de cookie pe care aplica\u0163iile nu vor putea s\u0103 o modifice prin program.
+AdminTask.cookieDomain.parm.title=cookieDomain
+AdminTask.cookieDomain.parm.description=Domeniu, nume \u015fi cale trebuie s\u0103 potriveasc\u0103 pentru un cookie pentru a nu mai permite configurare suplimentar\u0103.  Acesta este parametrul pentru domeniu.
+AdminTask.cookieName.parm.title=cookieName
+AdminTask.cookieName.parm.description=Domeniu, nume \u015fi cale trebuie s\u0103 potriveasc\u0103 pentru un cookie pentru a nu mai permite configurare suplimentar\u0103.  Acesta este parametrul pentru nume.
+AdminTask.cookiePath.parm.title=cookiePath
+AdminTask.cookiePath.parm.description=Domeniu, nume \u015fi cale trebuie s\u0103 potriveasc\u0103 pentru un cookie pentru a nu mai permite configurare suplimentar\u0103.  Acesta este parametrul pentru cale.
+AdminTask.removeDisabledSessionCookie.title=removeDisabledSessionCookie
+AdminTask.removeDisabledSessionCookie.description=\u00cenl\u0103tur\u0103 o configura\u0163ie de cookie astfel \u00eenc\u00e2t aplica\u0163iile vor putea s\u0103 o modifice prin program.
+AdminTask.cookieId.parm.title=cookieId
+AdminTask.cookieId.parm.description=ID-ul pentru cookie
+AdminTask.listDisabledSessionCookie.title=listDisabledSessionCookie
+AdminTask.listDisabledSessionCookie.description=Listeaz\u0103 seturile de configura\u0163ii cookie care nu se vor putea modifica prin program
+AdminTask.modifyDisabledSessionCookie.title=modifyDisabledSessionCookie
+AdminTask.modifyDisabledSessionCookie.description=Modific\u0103 o configura\u0163ie de cookie existent\u0103
+
+AdminTask.targetObject.title=SessionSecurity
+AdminTask.targetObject.description=Destina\u0163ia nu este necesar\u0103.  SessionSecurity va fi modificat sub celul\u0103.
+
+AdminTask.element.already.exists=SESN0800E: Elementul exist\u0103 deja.
+AdminTask.element.already.exists.explanation=Elementul pe care-l ad\u0103uga\u0163i se potrive\u015fte cu un element care exist\u0103 deja.
+AdminTask.element.already.exists.useraction=
+
+AdminTask.element.id.not.found=SESN0801E: Elementul cu acel ID nu a fost g\u0103sit
+AdminTask.element.id.not.found.explanation=Elementul cu acel ID nu a fost g\u0103sit.
+AdminTask.element.id.not.found.useraction=
+#----------AdminTask messages----------

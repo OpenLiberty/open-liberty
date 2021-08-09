@@ -1,0 +1,4 @@
+com.ibm.websphere.security_fat.1
+com.ibm.ws.security.auth.data_fat
+com.ibm.ws.security.authentication.filter_fat
+com.ibm.ws.security.client_fat

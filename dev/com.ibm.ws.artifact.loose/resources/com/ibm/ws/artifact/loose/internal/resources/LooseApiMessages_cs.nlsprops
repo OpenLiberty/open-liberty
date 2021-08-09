@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: Soubor XML v {0} nebylo mo\u017en\u00e9 naj\u00edt.
+XML_NOT_FOUND.explanation=Uveden\u00fd XML soubor nebyl nalezen.
+XML_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee je soubor ve spr\u00e1vn\u00e9m um\u00edst\u011bn\u00ed a nebyl p\u0159esunut.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: Soubor XML v {0} nebylo mo\u017en\u00e9 p\u0159e\u010d\u00edst.
+XML_STREAM_ERROR.explanation=Ur\u010den\u00fd soubor XML nebylo mo\u017en\u00e9 p\u0159e\u010d\u00edst.
+XML_STREAM_ERROR.useraction=Ujist\u011bte se, \u017ee je soubor spr\u00e1vn\u011b form\u00e1tov\u00e1n jako XML.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: Soubor XML deklarovan\u00fd v aplikaci pracovn\u00edho prostoru odkazuje na soubor v {0} a zahrnuje atribut "excludes", kter\u00fd nen\u00ed platn\u00fd. 
+EXCLUDES_ON_FILE.explanation=Prvek souboru XML m\u00e1 atribut "excludes", kter\u00fd nen\u00ed platn\u00fd. Atribut byl ignorov\u00e1n.
+EXCLUDES_ON_FILE.useraction=Odeberte atribut "excludes" z prvku.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: Soubor XML deklarovan\u00fd v aplikace pracovn\u00edho prostoru odkazuje na archiv s n\u00e1zvem {0} a zahrnuje atribut "excludes", kter\u00fd nen\u00ed platn\u00fd. 
+EXCLUDES_ON_ARCHIVE.explanation=Prvek archivu XML m\u00e1 atribut "excludes", kter\u00fd nen\u00ed platn\u00fd. Atribut byl ignorov\u00e1n.
+EXCLUDES_ON_ARCHIVE.useraction=Odeberte atribut "excludes" z prvku.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: Soubor XML deklarovan\u00fd v aplikaci pracovn\u00edho prostoru zahrnuje atribut "excludes", kter\u00fd nen\u00ed platn\u00fd: {0}
+INVALID_EXCLUDE_PATTERN.explanation=Atribut "excludes" nen\u00ed platn\u00fd a nelze mu porozum\u011bt.
+INVALID_EXCLUDE_PATTERN.useraction=Zm\u011b\u0148te atribut, aby m\u011bl spr\u00e1vnou syntaxi, nebo jej odeberte, pokud nen\u00ed pot\u0159eba.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: Soubor XML deklarovan\u00fd v aplikaci pracovn\u00edho prostoru odkazuje na soubor {0}, kter\u00fd nelze naj\u00edt.
+DECLARED_FILE_NOT_FOUND.explanation=Soubor deklarovan\u00fd pro aplikaci pracovn\u00edho prostoru nelze naj\u00edt.
+DECLARED_FILE_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee je soubor v odkazovan\u00e9m um\u00edst\u011bn\u00ed, nebo \u017ee odkazovan\u00e9 um\u00edst\u011bn\u00ed odpov\u00edd\u00e1 um\u00edst\u011bn\u00ed souboru.

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   02/28/2013  syed           CXF Web service provider for sha2 tests
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>sha2sig</display-name>
+
+    <servlet>
+        <servlet-name>sha2sig</servlet-name>
+        <display-name>sha2sig</display-name>
+        <description>SHA2 Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>sha2sig2</servlet-name>
+        <display-name>sha2sig2</display-name>
+        <description>SHA2 Digest Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc2</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet> 
+    
+    <servlet>
+        <servlet-name>sha2sig3</servlet-name>
+        <display-name>sha2sig3</display-name>
+        <description>SHA384 Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc3</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+     <servlet>
+        <servlet-name>sha2sig4</servlet-name>
+        <display-name>sha2sig4</display-name>
+        <description>SHA512 Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc4</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>sha2sig5</servlet-name>
+        <display-name>sha2sig5</display-name>
+        <description>SHA1To2 Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc5</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>sha2sig6</servlet-name>
+        <display-name>sha2sig6</display-name>
+        <description>SHA2To1 Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc6</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet> 
+    
+    <servlet>
+        <servlet-name>sha2sig7</servlet-name>
+        <display-name>sha2sig7</display-name>
+        <description>SHA2048 Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc7</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>sha2sig8</servlet-name>
+        <display-name>sha2sig8</display-name>
+        <description>SHA2 SYM Signature Algorithm Endpoint </description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.sha2sig.Sha2SigWebSvc8</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>                                                                
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig</servlet-name>
+        <url-pattern>/Sha2SigService1</url-pattern>
+    </servlet-mapping>  
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig2</servlet-name>
+        <url-pattern>/Sha2SigService2</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig3</servlet-name>
+        <url-pattern>/Sha2SigService3</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig4</servlet-name>
+        <url-pattern>/Sha2SigService4</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig5</servlet-name>
+        <url-pattern>/Sha2SigService5</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig6</servlet-name>
+        <url-pattern>/Sha2SigService6</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig7</servlet-name>
+        <url-pattern>/Sha2SigService7</url-pattern>
+    </servlet-mapping>  
+    
+    <servlet-mapping>
+        <servlet-name>sha2sig8</servlet-name>
+        <url-pattern>/Sha2SigService8</url-pattern>
+    </servlet-mapping>         
+                     
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

@@ -1,0 +1,871 @@
+###############################################################################
+# Copyright (c) 2002, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  02-11-18  irobins               Initial creation from seriousMessages
+#  02-12-05  awilkins      1442    Server quiesce - tx marked rollback only
+#  02-12-16  awilkins  LIDB1673.17 Embedded RAR recovery
+#  03-01-13  irobins   156517      390-specific message range reserved
+#  20/01/03  gareth    LIDB1673.1  JTA2 new messages
+#  28/02/03  hursdlg   LIDB1673.19.1 Add full exception for sync msgs
+#  14/03/03  mallam    160995      New message for inactivity timeout
+#  03/04/03  hursdlg   LIDB1673.22 Update messages 63/64
+#  14/04/03  hursdlg   163015      Fix duplicate message WTRN0068
+#  14/04/03  hursdlg   163130      Add new messages WTRN0081      
+#  15/07/03  hursdlg   170422      Add new messages WTRN0082      
+#  18/07/03  hursdlg   172027      Add new messages WTRN0083
+#  25/07/03  hursdlg   172471      Add new messages WTRN0084
+#  19/08/03  johawkes  174593      Add new messages WTRN0085
+#  18/09/03  johawkes  169114      Add new messages WTRN0086-90
+#  23/09/03  johawkes  177208      Add new messages WTRN0091
+#  09/12/03  mallam    184693      New message for quiesce WTRN0092
+#  04/02/04  hursdlg   189567      New messages for heuristic completion
+#  18/02/04  hursdlg   191317      Add new message WTRN0102
+#  18/05/04  hursdlg   191317.1    Fix punctuation and merge z/OS msgs
+#                                  from pok defect MD19484
+#  16/06/04  mallam    209935      New message for clean shutdown
+#  25/06/04  johawkes  210807      Indicate JTA demarcation disabled in client
+#  02/02/05  hursdlg   252732      New msgs 107-113
+#  17/01/05  mallam    LIDB3645    Recovery-mode restart
+#  20/04/05  hursdlg   266988      WSAT CFW message
+#  25/07/05  kaczyns   LI3187      Add z/OS BBOT messages
+#  18/10/05  mezarin   314369      z/OS messages temp fix
+#  11/11/05  hursdlg   311071      Add msg WTRN0116/117
+#  03/02/06  hursdlg   342682      Add msg WTRN0118
+#  26/02/07  awilkins  422999      Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163      Message review: improve contact IBM support user action
+#  07-04-27  awilkins  416102      Move z/OS BBOT messages into separate file
+#  07-05-03  mallam    422072      Migrate PK38831 to WASX
+#  25-07-07  mallam    453651      New message for log low on space
+#  22/10/07  mallam    476740      Improvements to out of space message 
+#  21/11/07  awilkins  481738      Output stack of thread when tx times out 
+#  06/12/07  hursdlg   467618      Commit priority validation messages
+#  18/12/07  johawkes  LIDB2778-12.10 WS-TX WS-Policy
+#  11/01/08  hursdlg   491762.1    WSTX 1.1 validation messages
+#  11/02/08  mallam    496337      PII additions
+#  25/02/08  johawkes  499078      Fix WTRN0080 user action wording
+#  29-02-08  johawkes  501807      Style changes
+#  29/01/09  jstidder  PK76761     Clarify WTRN0027/WTRN0028
+#  11/11/09  hursdlg   F923-4347.2 Add WTRN0130/131
+#  17/03/10  hursdlg   PM07874     New msgs WTRN0132-151
+#  13/05/10  hursdlg   649934      Further PM07874 changes
+#  12/10/10  johawkes  672987      Fix validation errors
+#  19/01/11  jstidder  PM30478     Clarify/expand WTRN0122
+#  10/07/12  johawkes  628170.3    Users of HA manager need proper log/error when HA not working
+#-----------------------------------------------------------------------
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined. 
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided. 
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table. 
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.15,0,02/08/23,04:09:52
+#
+#CMVCPATHNAME SERV1/ws/code/transaction.impl/src/com/ibm/ws/Transaction/resources/TransactionMsgs.nlsprops
+#COMPONENTPREFIX WTRN
+#COMPONENTNAMEFOR WTRN WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+WTRN0000_ERR_INT_ERROR=WTRN0000E: O eroare intern\u0103 a ap\u0103rut \u00een metoda {0} din clasa {1}; urm\u0103rirea stivei de excep\u0163ii urmeaz\u0103: {2}.
+WTRN0000_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0000_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0001_ERR_INT_ERROR=WTRN0001E: O eroare intern\u0103 a ap\u0103rut \u00een metoda {0} din clasa {1};
+WTRN0001_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0001_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS=WTRN0002W: Serviciul de tranzac\u0163ie nu a putut s\u0103 g\u0103seasc\u0103 clasa de resurse {0}.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.explanation=Serviciul tranzac\u0163ie nu a putut g\u0103si clasa de resurse XA identificat\u0103 \u00een mesaj.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul de resurse XA asociat este configurat \u015fi reporni\u0163i serverul. Resursa poate apoi fi de-configurat\u0103 \u015fi serverul oprit din activitate.
+
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: \u00cen timpul recuper\u0103rii un fi\u015fier JAR necesar nu a putut fi g\u0103sit. Calea utilizat\u0103 pentru a-l g\u0103si a fost {0}.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=\u00cen timpul recuper\u0103rii ce a implicat un fi\u015fier RAR \u00eenglobat, un fi\u015fier JAR necesar nu a putu fi g\u0103sit. F\u0103r\u0103 acest fi\u015fier JAR, recuperarea tranzac\u0163iei nu poate fi completat\u0103.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=F\u0103r\u0103. Aceasta este o eroare de sistem intern\u0103.
+
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: Nu poate s\u0103 creeze XAResourceFactory. Numele clasei XAResourceFactory a fost {0}. Urma stiv\u0103 excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=\u00cen timpul recuper\u0103rii serverului, fabrica identificat\u0103 pentru crearea obiectelor XAResource nu a putut fi g\u0103sit\u0103. Aceasta este o eroare de sistem intern\u0103.
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
+
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: XAResource pentru un participant la tranzac\u0163ie nu a putut fi recreat \u015fi este posibil ca recuperarea tranzac\u0163iei s\u0103 nu poat\u0103 fi terminat\u0103 corespunz\u0103tor. Resursa a fost {0}. Urma stiv\u0103 excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE.explanation=\u00cen timpul recuper\u0103rii serverului, un obiect XAResource nu a putut fi recreat de c\u0103tre fabrica sa corespunz\u0103toare.
+WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
+
+WTRN0006_TRANSACTION_HAS_TIMED_OUT=WTRN0006W: Tranzac\u0163ia {0} a expirat dup\u0103 {1} secunde.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.explanation=Serviciul tranzac\u0163ie a timeout-at (rolled back) tranzac\u0163ia identificat\u0103 \u00een mesaj.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.useraction=Pentru a reduce viitoarele apari\u0163ii timeout, cre\u015fte\u0163i valorile de timeout ale tranzac\u0163iei.
+
+WTRN0007_CANT_IMPORT_NULL_CONTEXT=WTRN0007W: Serviciul tranzac\u0163ie nu poate s\u0103 fac\u0103 import pentru tranzac\u0163ia cu context nul sau nevalid.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.explanation=Un context a fost importat pe server fie f\u0103r\u0103 date de tranzac\u0163ie, fie cu date de tranzac\u0163ie care nu sunt valide, astfel o tranzac\u0163ie nu a putu fi ini\u0163iat\u0103.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.useraction=CMSG0002
+
+WTRN0008_CANT_IMPORT_NESTED_TRAN=WTRN0008W: Serviciul tranzac\u0163ie nu poate s\u0103 fac\u0103 import pentru tranzac\u0163ia imbricat\u0103 {0}
+WTRN0008_CANT_IMPORT_NESTED_TRAN.explanation=Un server la distan\u0163\u0103 a \u00eencercat s\u0103 importe o tranzac\u0163ie imbricat\u0103. Aceast\u0103 ac\u0163iune nu este suportat\u0103.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.useraction=CMSG0002
+
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT=WTRN0009E: Nu exist\u0103 globalTID pentru o resurs\u0103 coordonator.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.explanation=Niciun id tranzac\u0163ie global\u0103 nu a fost furnizat \u00een contextul de tranzac\u0163ie importat.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.useraction=CMSG0002
+
+WTRN0010_EXC_AT_COORD_REG=WTRN0010E: Repetare tranzac\u0163ie datorit\u0103 excep\u0163iei la \u00eenregistrarea coordonatorului cu superiorul {0}
+WTRN0010_EXC_AT_COORD_REG.explanation=A fost o problem\u0103 c\u00e2nd o tranzac\u0163ie la distan\u0163\u0103 a fost importat\u0103 pe server, astfel tranzac\u0163ia a fost derulat\u0103 \u00eenapoi.
+WTRN0010_EXC_AT_COORD_REG.useraction=CMSG0002
+
+WTRN0011_FACTORY_BIND_FAILURE=WTRN0011E: Nu poate s\u0103 \u00eenregistreze fabrica de tranzac\u0163ii \u00een spa\u0163iu nume JNDI.
+WTRN0011_FACTORY_BIND_FAILURE.explanation=O eroare nea\u015fteptat\u0103 a survenit \u00een timpul ini\u0163ializ\u0103rii serviciului de tranzac\u0163ie.
+WTRN0011_FACTORY_BIND_FAILURE.useraction=CMSG0002
+
+WTRN0012_UNEXP_FACTORY_REG_FAILURE=WTRN0012E: Eroare nea\u015fteptat\u0103 \u00een timpul \u00eenregistr\u0103rii fabricii de tranzac\u0163ii.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.explanation=O eroare nea\u015fteptat\u0103 a survenit \u00een timpul ini\u0163ializ\u0103rii serviciului de tranzac\u0163ie.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.useraction=CMSG0002
+
+WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: Nu este specificat nici un istoric de tranzac\u0163ii, \u00eenregistrare \u00een memorie
+WTRN0013_LOGGING_IN_MEMORY.explanation=Serviciul de tranzac\u0163ie este configurat astfel \u00eenc\u00e2t nu scrie un istoric \u00eentr-un spa\u0163iu de stocare permanent. Aceasta poate cauza probleme de integritate a datelor (de exemplu, tabele baz\u0103 de date) dac\u0103 exist\u0103 tranzac\u0163ii excep\u0163ionale commit \u00een dou\u0103 faze care ruleaz\u0103 atunci c\u00e2nd serverul este oprit.
+WTRN0013_LOGGING_IN_MEMORY.useraction=Dac\u0103 ave\u0163i nevoie de recuperarea tranzac\u0163iei, reconfigura\u0163i serviciul tranzac\u0163ie pentru a utiliza logarea \u015fi reporni\u0163i serverul.
+
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: Serviciul tranzac\u0163ie a detectat un \u015fir de configurare nevalid \u00een fi\u015fierul istoric. Serviciul tranzac\u0163ie va continua f\u0103r\u0103 recuperare istoric.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Numele directorului pentru fi\u015fierul istoric de tranzac\u0163ie, setat \u00een c\u00e2mpul director istoric tranzac\u0163ie, nu este valid. Formatul ar trebui s\u0103 fie un director al fi\u015fierului istoric complet calificat, op\u0163ional urmat de ';' \u015fi m\u0103rimea fi\u015fierului istoric, cu M dup\u0103 m\u0103rimea fi\u015fierului istoric pentur a indica megaocte\u0163i, sau K pentru a indica kiloocte\u0163i. Dimensiunea implicit\u0103 \u015fi minim\u0103 a dimensiunii fi\u015fierului istoric este 1M.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Corecta\u0163i configura\u0163ia directorului istoric tranzac\u0163ii. Asigura\u0163i-v\u0103 c\u0103 serverul este repornit pentru a activa recuperarea istoricului tranzac\u0163iei.
+
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: Dimensiune fi\u015fier istoric al tranzac\u0163iei nevalide specificat\u0103: {0}. Serviciul tranzac\u0163ie va utiliza dimensiunea implicit\u0103 a fi\u015fierului istoric de 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=Dimensiunea fi\u015fierului a fi\u015fierului istoric tranzac\u0163ie, setat\u0103 \u00een c\u00e2mpul director al istoricului tranzac\u0163ie, nu este valid\u0103. Formatul ar trebui s\u0103 fie un director al fi\u015fierului istoric complet calificat, op\u0163ional urmat de ';' \u015fi m\u0103rimea fi\u015fierului istoric, cu M dup\u0103 m\u0103rimea fi\u015fierului istoric pentur a indica megaocte\u0163i, sau K pentru a indica kiloocte\u0163i. Dimensiunea implicit\u0103 \u015fi minim\u0103 a dimensiunii fi\u015fierului istoric este 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Corecta\u0163i configura\u0163ia directorului istoric tranzac\u0163ii.
+
+WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: Excep\u0163ie aruncat\u0103 \u00een timpul recuper\u0103rii serviciului tranzac\u0163ie! {0}
+WTRN0016_EXC_DURING_RECOVERY.explanation=A fost detectat\u0103 o excep\u0163ie \u00een timpul \u00een care serviciul tranzac\u0163ie \u00eencerca s\u0103 se recupereta dup\u0103 o defectare server anterioar\u0103.
+WTRN0016_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION=WTRN0017W: Nu poate s\u0103 \u00eenceap\u0103 o tranzac\u0163ie imbricat\u0103. Tranzac\u0163iile imbricate nu sunt suportate.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.explanation=Aceast\u0103 eroare indic\u0103 o \u00eencercare de a \u00eencepe o tranzac\u0163ie imbricat\u0103, dar trenzac\u0163iile imbricate nu sunt suportate.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.useraction=Asigura\u0163i-v\u0103 c\u0103 nicio \u00eencercare de a \u00eencepe o tranzac\u0163ie cu alt\u0103 tranzac\u0163ie nu este activ\u0103 \u00een firul de execu\u0163ie.
+
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT=WTRN0018W: O resurs\u0103 \u00eentr-o singur\u0103 faz\u0103 nu suport\u0103 comitere
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.explanation=O resurs\u0103 care suport\u0103 doar o comitere (commit) optimizat\u0103 \u00eentr-o singur\u0103 faz\u0103 (one-phase) a fost listat\u0103 cu serviciu tranzac\u0163ie \u015fi chemat\u0103 s\u0103 proceseze o opera\u0163ie de comitere standard \u00een dou\u0103 faze (standard two-phase commit operation). Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.useraction=CMSG0002
+
+WTRN0019_LOGFILE_CORRUPTED=WTRN0019E: Fi\u015fierul istoric service tranzac\u0163ie {0} a devenit corupt.
+WTRN0019_LOGFILE_CORRUPTED.explanation=Fi\u015fierul istoric recuperare serviciu tranzac\u0163ie a devenit corupt ca urmare a faptului c\u0103 pornirea serverului a e\u015fuat.
+WTRN0019_LOGFILE_CORRUPTED.useraction=Pentru a porni la rece (cold start) serverul, \u015fterge\u0163i fi\u015fierele istoric tranzac\u0163ie \u015fi reporni\u0163i serverul. Trebuie s\u0103 completa\u0163i manual orice tranzac\u0163ie care a fost \u00een a\u015fteptare \u00een manageri de resurse asocia\u0163i.
+
+WTRN0020_RECOVERING_TRANSACTIONS=WTRN0020W: Recuperarea tranzac\u0163iilor pentru serverul {0} \u00een acest server.
+WTRN0020_RECOVERING_TRANSACTIONS.explanation=Acest server recupereaz\u0103 istoricele tranzac\u0163ie din alt server. Dac\u0103 resursele configurate \u00een acest server nu se potrivesc cu acelea configurate \u00een serverul pentru care istoricele au fost create, este posibil ca recuperarea s\u0103 nu se finalizeze.
+WTRN0020_RECOVERING_TRANSACTIONS.useraction=Verifica\u0163i dac\u0103 mesaje de eroare ies \u00een timpul recuper\u0103rii \u015fi corecta\u0163i orice ac\u0163iuni cerute.
+
+WTRN0021_TMRESUME_NOT_SUPPORTED=WTRN0021W: TMRESUME nu este suportat.
+WTRN0021_TMRESUME_NOT_SUPPORTED.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0021_TMRESUME_NOT_SUPPORTED.useraction=CMSG0002
+
+WTRN0022_UNKNOWN_XARESOURCE_STATE=WTRN0022W: Stare XAResource necunoscut\u0103.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.explanation=O XAResource a fost \u00eentr-o stare nea\u015fteptat\u0103. Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.useraction=CMSG0002
+
+WTRN0023_INVALID_XAEND_FLAG=WTRN0023W: Flag XA de oprire nevalid: {0}
+WTRN0023_INVALID_XAEND_FLAG.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0023_INVALID_XAEND_FLAG.useraction=CMSG0002
+
+WTRN0024_INCONSISTENT_LOGS=WTRN0024E: Istorice recuperare Tranzac\u0163ie inconsistent\u0103 \u015fi Resurs\u0103 XA.
+WTRN0024_INCONSISTENT_LOGS.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0024_INCONSISTENT_LOGS.useraction=CMSG0002
+
+WTRN0025_TRAN_RECOVERY_FAILED=WTRN0025E: Recuperarea tranzac\u0163iei {0} a e\u015fuat
+WTRN0025_TRAN_RECOVERY_FAILED.explanation=O excep\u0163ie a survenit la \u00eencercarea de a recupera o tranzac\u0163ie.
+WTRN0025_TRAN_RECOVERY_FAILED.useraction=CMSG0002
+
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY=WTRN0026E: Excep\u0163ie aruncat\u0103 \u00een timpul punctului cheie dup\u0103 recuperare! {0}
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.useraction=CMSG0002
+
+WTRN0027_RECOVERING_TXN=WTRN0027I: Serviciul tranzac\u0163ie recupereaz\u0103 1 tranzac\u0163ie.
+WTRN0027_RECOVERING_TXN.explanation=Serviciul tranzac\u0163ie a detectat c\u0103 o tranzac\u0163ie \u00eenc\u0103 rula c\u00e2nd serverul a fost oprit ultima dat\u0103 \u015fi c\u0103 serviciul tranzac\u0163ie recupereaz\u0103 acum aceast\u0103 tranzac\u0163ie.  Mesajele de auditare pot fi ie\u015firi indic\u00e2nd evolu\u0163ia proces\u0103rii recuper\u0103rii.
+WTRN0027_RECOVERING_TXN.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+WTRN0028_RECOVERING_TXNS=WTRN0028I: Serviciul tranzac\u0163ie recupereaz\u0103 {0} tranzac\u0163ii.
+WTRN0028_RECOVERING_TXNS.explanation=Serviciul tranzac\u0163ie a detectat c\u0103 tranzac\u0163iile \u00eenc\u0103 rulau c\u00e2nd serverul a fost oprit ultima dat\u0103 \u015fi c\u0103 serviciul tranzac\u0163ie recupereaz\u0103 acum aceste tranzac\u0163ii.  Mesajele de auditare pot fi ie\u015firi indic\u00e2nd evolu\u0163ia proces\u0103rii recuper\u0103rii.
+WTRN0028_RECOVERING_TXNS.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN=WTRN0029E: Eroare la \u00eenchiderea istoricului la oprirea activit\u0103\u0163ii!
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.explanation=Serviciul tranzac\u0163ie a \u00eent\u00e2lnit o eroare la \u00eenchiderea istoricului de recuperare \u00een timpul opririi activit\u0103\u0163ii serverului.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.useraction=CMSG0002
+
+WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Recuperarea datelor XAResource {0} a e\u015fuat
+WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
+
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: O opera\u0163ie xa_rollback pe o resurs\u0103 tranzac\u0163ional\u0103 a e\u015fuat. Tranzac\u0163ia global\u0103 a fost {0}. Urma stiv\u0103 excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0031_XA_ROLLBACK_FAILED.explanation=O excep\u0163ie a survenit c\u00e2nd serviciul tranzac\u0163ie a chemat opera\u0163ia xa_rollback pe o resurs\u0103 care a fost listat\u0103 cu tranzac\u0163ia global\u0103 identificat\u0103 \u00een mesaj.
+WTRN0031_XA_ROLLBACK_FAILED.useraction=Tranzac\u0163ia s-ar putea s\u0103 se fi finalizat cu un rezultat euristic. \u00cen cazul acesta, corecta\u0163i toate problemele datelor aplica\u0163iei care au fost generare de rezultatul euristic.
+
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND=WTRN0032E: Contextul tranzac\u0163iei specifice implement\u0103rii primit \u00een cererea de intrare.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.useraction=CMSG0002
+
+WTRN0033_TRANSACTION_FACTORY_CREATE=WTRN0033E: Fabrica de tranzac\u0163ie creeaz\u0103 excep\u0163ia aruncat\u0103 {0}
+WTRN0033_TRANSACTION_FACTORY_CREATE.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0033_TRANSACTION_FACTORY_CREATE.useraction=CMSG0002
+
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED=WTRN0034W: \u00cen timpul lini\u015ftirii serverului a fost g\u0103sit\u0103 tranzac\u0163ia {0}. \u00cencercarea de a derula \u00eenapot tranzac\u0163ia a e\u015fuat.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.explanation=\u00cen timpul fazei de dezactivare a opririi activit\u0103\u0163ii serverului, a fost g\u0103sit\u0103 o tranzac\u0163ie excep\u0163ional\u0103. Aceast\u0103 tranzac\u0163ie a fost derulat\u0103 \u00eenapoi cu succes.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED=WTRN0035W: \u00cen timpul lini\u015ftirii serverului a fost g\u0103sit\u0103 tranzac\u0163ia {0}. \u00cencercarea de a derula \u00eenapoi tranzac\u0163ia a e\u015fuat.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.explanation=\u00cen timpul fazei de dezactivare a opririi activit\u0103\u0163ii serverului, a fost g\u0103sit\u0103 o tranzac\u0163ie excep\u0163ional\u0103. Tranzac\u0163ia nu a fost derulat\u0103 \u00eenapoi cu succes.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Aceast\u0103 tranzac\u0163ie va fi recuperat\u0103 c\u00e2nd serverul va fi pornit urm\u0103toarea dat\u0103.
+
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: \u00cen timpul lini\u015ftirii serverului a fost g\u0103sit\u0103 tranzac\u0163ia {0}. Tranzac\u0163ia a fost marcat\u0103 doar derulare \u00eenapoi.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=\u00cen timpul fazei de dezactivare a opririi activit\u0103\u0163ii serverului, a fost g\u0103sit\u0103 o tranzac\u0163ie excep\u0163ional\u0103. Aceast\u0103 tranzac\u0163ie a fost marcat\u0103 doar derulare \u00eenapoi.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Tranzac\u0163ia va fi derulat\u0103 \u00eenapoi \u00een timpul opririi activit\u0103\u0163ii serverului, sau va fi recuperat\u0103 c\u00e2nd serverul este repornit.
+
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: Serviciul tranzac\u0163ie a \u00eent\u00e2lnit o eroare la o opera\u0163ie xa_recover. Resursa a fost {0}. Codul erorii a fost{1}. Urma stiv\u0103 a excep\u0163iei urm\u0103re\u015fte: {2}
+WTRN0037_XA_RECOVER_ERROR.explanation=Serviciul de tranzac\u0163ie a \u00eent\u00e2lnit o eroare la apelarea xa_recover \u00eentr-o resurs\u0103, pentru a determina tranzac\u0163iile preg\u0103tite re\u0163inute de c\u0103tre managerul de resurse corespunz\u0103tor. Opera\u0163ia va fi re\u00eenc\u0103rcat\u0103.
+WTRN0037_XA_RECOVER_ERROR.useraction=Determina\u0163i codul erorii pentru a determina cauza problemei.
+
+WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: O eroare a ap\u0103rut la distrugerea unei resurse XA. Urma stiv\u0103 excep\u0163ie urm\u0103re\u015fte: {0}
+WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=Serviciul tranzac\u0163ie nu a putut distruge o XAResource.
+WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=Nu este necesar\u0103 nicio ac\u0163iune, deoarece aceasta nu ar trebui s\u0103 afecteze serviciul de tranzac\u0163ie.
+
+WTRN0039_SERIALIZE_FAILED=WTRN0039E: Nu poate s\u0103 serializeze un obiect sub form\u0103 de octe\u0163i.
+WTRN0039_SERIALIZE_FAILED.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0039_SERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0040_OBJECT_DESERIALIZE_FAILED=WTRN0040W: Obiectul nu poate fi deserializat. Urma stiv\u0103 de excep\u0163ie urm\u0103re\u015fte: {0}
+WTRN0040_OBJECT_DESERIALIZE_FAILED.explanation=Aceasta este o eroare de sistem intern\u0103 \u015fi este probabil cauzat\u0103 de o defectare care a survenit mai devreme.
+WTRN0040_OBJECT_DESERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0041_TXN_ROLLED_BACK=WTRN0041I: Tranzac\u0163ia {0} a fost repetat\u0103. 
+WTRN0041_TXN_ROLLED_BACK.explanation=O tranzac\u0163ie a fost marcat\u0103 anterior rollbackOnly \u015fi acum a fost repetat\u0103. Aceasta ar putea fi din cauza unui timeout al tranzac\u0163iei, sau a unei decizii a aplica\u0163iei de a marca tranzac\u0163ia rollbackOnly (doar derulare \u00eenapoi).                             
+WTRN0041_TXN_ROLLED_BACK.useraction=Nu este necesar\u0103 nicio ac\u0163iune utilizator dec\u00e2t dac\u0103 derularea \u00eenapoi nu este dorit\u0103 \u015fi survine din cauza timeout-ului tranzac\u0163iei. Dac\u0103 acesta este cazul, investiga\u0163i de ce tranzac\u0163iei \u00eei ia mai mult timp dec\u00e2t perioada de timeout pentru a se finaliza, \u015fi considera\u0163i m\u0103rirea valorilor timeout ale tranzac\u0163iei pentru server.
+
+WTRN0042_GLOBAL_TRAN_ROLLBACK=WTRN0042I: GlobalTransaction a fost repetat\u0103 datorit\u0103 expir\u0103rii sau setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.explanation=O tranzac\u0163ie global\u0103 a fost derulat\u0103 \u00eenapoi deoarece fie a atins o valoare timeout, fie metoda setRollbackOnly a fost apelat\u0103.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.useraction=Dac\u0103 valoarea timeout este prea scurt\u0103 sau prea lung\u0103, utiliza\u0163i consola administrativ\u0103 pentru a o modifica.
+
+WTRN0043_LOCAL_TRAN_ROLLBACK=WTRN0043I: LocalTransaction a fost repetat\u0103 datorit\u0103 setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.explanation=O tranzac\u0163ie local\u0103 a fost derulat\u0103 \u00eenapoi pentru c\u0103 a fost apelat\u0103 metodasetRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: Este posibil s\u0103 fi ap\u0103rut o condi\u0163ie euristic\u0103 pentru tranzac\u0163ia {0}
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=Serviciul tranzac\u0163ie a detectat c\u0103 tranzac\u0163ia specificat\u0103 a implicat resurse capabile mixte \u00eentr-o faz\u0103 sau dou\u0103 faze. Serviciul tranzac\u0163ie a transmis o cerere de comitere \u00eentr-o faz\u0103 singurei resurse capabile \u00eentr-o faz\u0103, dar serverul a e\u015fuat \u00eenainte s\u0103 se finalizeze comiterea . Nu se \u015ftie dac\u0103 resursa s-a comis cu succes.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=Toate resursele capabile dou\u0103 faze vor fi derulate \u00eenapoi. Dac\u0103 resursa capabil\u0103 \u00eentr-o singur\u0103 faz\u0103 a procesat comiterea cu succes, a survenit deteriorarea euristic\u0103 \u015fi trebuie s\u0103 corecta\u0163i toate problemele datelor aplica\u0163iei cauzate de rezultatul euristic.
+
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: Serviciul tranzac\u0163ie nu poate recupera resursa {0}. Urma stiv\u0103 de excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=O eroarea intern\u0103 a sistemului a survenit c\u00e2nd serviciul tranzac\u0163ie a \u00eencercat s\u0103 reconstituie un participant tranzac\u0163ie \u00een timpul recuper\u0103rii. Aceasta este probabil cauzat\u0103 de o eroare survenit\u0103 mai devreme.
+WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
+
+WTRN0046_PREPARE_FAILED=WTRN0046E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a preg\u0103tirii unei resurse tranzac\u0163ionale a avut ca rezultat o eroare. Codul eroare a fost {0}. Urma stivei de excep\u0163ii urmeaz\u0103: {1}
+WTRN0046_PREPARE_FAILED.explanation=Resursa tranzac\u0163ional\u0103 a e\u015fuat la cererea de a procesa un apel de preg\u0103tire. Defectarea va fi tratat\u0103 ca un vot derulare \u00eenapoi.
+WTRN0046_PREPARE_FAILED.useraction=Examina\u0163i codul eroare pentru a determina cauza problemei.
+
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: XAER_RMERR a ap\u0103rut la comiterea lucrului \u00eentr-o filial\u0103 de tranzac\u0163ie. Resursa a fost: {0}
+WTRN0047_XAER_RMERR_ON_COMMIT.explanation=O defectare a fost detectat\u0103 \u00een timpul procesului de comitere pentru o tranzac\u0163ie.
+WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de aceast\u0103 defectare.
+
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: O \u00eencercare a managerului de tranzac\u0163ii de apelare a comiterii unei resurse tranzac\u0163ionale a avut ca rezultat o eroare XAER_RMFAIL. Resursa a fost {0}
+WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=Apelul de comitere pe o resurs\u0103 tranzac\u0163ional\u0103 nu a reu\u015fit deoarece managerul de resurs\u0103 nu a fost disponibil. Apelul de comitere va fi re\u00eenc\u0103rcat la intervale regulate.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Asigura\u0163i-v\u0103 c\u0103 managerul de resurse este disponibil.
+
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: O \u00eencercare a managerului de tranzac\u0163ii de apelare a repet\u0103rii unei resurse tranzac\u0163ionale a avut ca rezultat o eroare XAER_RMFAIL. Resursa a fost {0}
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=Apelul de derulare \u00eenapoi pe o resurs\u0103 tranzac\u0163ional\u0103 nu a avut succes deoarece managerul de resurse nu era disponibil. Apelul de derulare \u00eenapoi va fi re\u00eenc\u0103rcat la intervale regulate.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Asigura\u0163i-v\u0103 c\u0103 managerul de resurse este disponibil.
+
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a comiterii unei resurse tranzac\u0163ionale a avut ca rezultat o eroare nea\u015fteptat\u0103. Codul de eroare XA a fost {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=Apelul de comitere pe o resurs\u0103 tranzac\u0163ional\u0103 nu a reu\u015fit din cauza unei defect\u0103ri nea\u015fteptate. Apelul de comitere va fi re\u00eenc\u0103rcat la intervale regulate.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=Examina\u0163i codul eroare pentru a determina cauza problemei.
+
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a repet\u0103rii unei resurse tranzac\u0163ionale a avut ca rezultat o eroare nea\u015fteptat\u0103. Codul de eroare XA a fost {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=Apelul de derulare \u00eenapoi pe o resurs\u0103 tranzac\u0163ional\u0103 nu a reu\u015fit din cauza unei defect\u0103ri nea\u015fteptate. Apelul de derulare \u00eenapoi va fi re\u00eenc\u0103rcat la intervale regulate.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=Examina\u0163i codul eroare pentru a determina cauza problemei.
+
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a comiterii \u00eentr-o singur\u0103 faz\u0103 a unei resurse tranzac\u0163ionale a avut ca rezultat o eroare XAER_RMFAIL. Resursa a fost {0}
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=Apelul de comitere \u00eentr-o singur\u0103 faz\u0103 pe o resurs\u0103 tranzac\u0163ional\u0103 nu a reu\u015fit deoarece managerul de resurse nu era disponibil.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=Tranzac\u0163ia va fi derulat\u0103 \u00eenapoi.
+
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a comiterii \u00eentr-o singur\u0103 faz\u0103 a unei resurse tranzac\u0163ionale a avut ca rezultat o eroare nea\u015fteptat\u0103. Codul de eroare XA a fost {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=Apelul de comitere \u00eentr-o singur\u0103 faz\u0103 pe o resurs\u0103 tranzac\u0163ional\u0103 nu a reu\u015fit din cauza unei defect\u0103ri nea\u015fteptate.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=Managerul de tranzac\u0163ie va \u00eencerca s\u0103 deruleze \u00eenapoi tranzac\u0163ia.
+
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: O opera\u0163ie xa_forget asupra unei resurse tranzac\u0163ionale a \u00eent\u00e2lnit o excep\u0163ie. Codul eroare a fost {0}.  Urma stiv\u0103 de excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0054_XA_FORGET_ERROR.explanation=A survenit o excep\u0163ie c\u00e2nd serviciul de tranzac\u0163ie a apelat opera\u0163ia xa_forget pe o resurs\u0103.
+WTRN0054_XA_FORGET_ERROR.useraction=Examina\u0163i codul de eroare pentru a determina cauza problemei.
+
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY=WTRN0055W: Renun\u0163area la livrarea rezultatului pentru tranzac\u0163ia {0}.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.explanation=Serviciul tranzac\u0163ie nu a putut livra un rezultat al comiterii sau al derul\u0103rii \u00eenapoi c\u0103tre un participant la tranzac\u0163ie.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de aceast\u0103 defectare.
+
+WTRN0056_TRAN_RESYNC_FAILURE=WTRN0056I: Resincronizarea tranzac\u0163iei {0} din originator a e\u015fuat, re\u00eencercare....
+WTRN0056_TRAN_RESYNC_FAILURE.explanation=O tranzac\u0163ie a e\u015fuat s\u0103 se resincronizeze \u00een timpul recuper\u0103rii, iar rezultatul este necunoscut, astfel serverul va continua s\u0103 re\u00eencarce.
+WTRN0056_TRAN_RESYNC_FAILURE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+WTRN0057_HEURISTIC_ON_SUBORDINATE=WTRN0057E: Euristic ap\u0103rut la preg\u0103tire/comitere \u00eentr-o faz\u0103 \u00een subordonat.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.explanation=O tranzac\u0163ie subordonat\u0103 a \u00eencercat s\u0103 optimizeze\u0103  folosind o comitere \u00eentr-o singur\u0103 faz\u0103 \u00een timpul preg\u0103tirii \u015fi o eroare euristic\u0103 a survenit.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.useraction=CMSG0002
+
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT=WTRN0058E: Excep\u0163ie prins\u0103 din opera\u0163ia de comitere \u00een timpul recuper\u0103rii tranzac\u0163iei {0}: {1}
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.explanation=A fost detectat\u0103 o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de a recupera o tranzac\u0163ie.
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.useraction=CMSG0002
+
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK=WTRN0059E: Excep\u0163ie prins\u0103 din opera\u0163ia de repetare \u00een timpul recuper\u0103rii tranzac\u0163iei {0}: {1}
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.explanation=O excep\u0163ie a fost detectat\u0103 la \u00eencercarea de a recupera o tranzac\u0163ie.
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.useraction=CMSG0002
+
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET=WTRN0060E: Excep\u0163ie prins\u0103 din opera\u0163ia de uitare \u00een timpul recuper\u0103rii tranzac\u0163iei {0}: {1}
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.explanation=O excep\u0163ie a fost detectat\u0103 la \u00eencercarea de a recupera o tranzac\u0163ie.
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.useraction=CMSG0002
+
+WTRN0061_ERR_CREATING_JTAXARESOURCE=WTRN0061E: A \u00eent\u00e2lnit o eroare \u00een timpul construirii unui obiect JTAXAResource
+WTRN0061_ERR_CREATING_JTAXARESOURCE.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi este probabil cauzat\u0103 de o defectare anterioar\u0103.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.useraction=CMSG0002
+
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES=WTRN0062E: O \u00eencercare ilegal\u0103 de a utiliza resurse multiple care au o capabilitate cu o singur\u0103 faz\u0103 a ap\u0103rut \u00eentr-o tranzac\u0163ie global\u0103.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.explanation=Doar o singur\u0103 resurs\u0103 care este limitat\u0103 la capabilitatea \u00eentr-o singur\u0103 faz\u0103 poate fi listat\u0103 \u00eentr-o tranzac\u0163ie global\u0103. Aceast\u0103 eroare survine dac\u0103 manageri de resurse multiple care sunt doar capabili \u00eentr-o singur\u0103 faz\u0103 sunt utiliza\u0163i \u00eentr-o tranzac\u0163ie global\u0103, sau dac\u0103 mai multe conexiuni ne\u00e2mp\u0103rt\u0103\u015fite dintr-un singur astfel de manager de resurse sunt utilizate \u00eentr-o tranzac\u0163ie global\u0103  .
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.useraction=Modifica\u0163i aplica\u0163ia fie s\u0103 foloseasc\u0103 o singur\u0103 resurs\u0103 limitat\u0103 la capabilitate \u00eentr-o singur\u0103 faz\u0103, fie s\u0103 foloseasc\u0103 XAResources capabil \u00een dou\u0103 faze.
+
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE=WTRN0063E: A ap\u0103rut o \u00eencercare ilegal\u0103 de comitere a unei resurse capabile de o singur\u0103 faz\u0103 cu resurse existente capabile de dou\u0103 faze.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.explanation=Serviciul de tranzac\u0163ie a refuzat o \u00eencercare de a comite o resurs\u0103 capabil\u0103 dou\u0103 faze cu o tranzac\u0163ie care implic\u0103 deja alte resurse capabile dou\u0103 faze. Fie LPS (Last Participant Support) nu este disponibil, sau dac\u0103 LPS este disponibil, aplica\u0163ia nu accept\u0103 riskul euristic pe care acesta l-ar implica.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.useraction=Asigura\u0163i-v\u0103 c\u0103 resursele capabile o faz\u0103 \u015fi dou\u0103 faze nu sunt implicate \u00een aceea\u015fi tranzac\u0163ie, sau dac\u0103 LPS este disponibil, reconfigura\u0163i aplica\u0163ia s\u0103 accepte riscul euristic pe care aceasta l-ar implica.
+
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: A ap\u0103rut o \u00eencercare ilegal\u0103 de comitere a unei resurse capabil\u0103 de o singur\u0103 faz\u0103 \u00eentr-o filial\u0103 de tranzac\u0163ie secundar\u0103.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=Serviciul de tranzac\u0163ie a refuzat o \u00eencercare de a comite o resurs\u0103 capabil\u0103 o faz\u0103 \u00eentr-o ramur\u0103 distribuit\u0103 a tranzac\u0163iei subordonate. Tranzac\u0163ia va fi derulat\u0103 \u00eenapoi.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Asigura\u0163i-v\u0103 c\u0103 resursele capabile o singur\u0103 faz\u0103 nu sunt implicate \u00eentr-o ramur\u0103 subordonat\u0103 a tranzac\u0163iei distribuite.
+
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: XAResource nu este cunoscut\u0103 acestei tranzac\u0163ii. Resursa a fost: {0}
+WTRN0065_XARESOURCE_NOT_KNOWN.explanation=Managerul de tranzac\u0163ie nu a putut lua din list\u0103 XAResource deoarece nu a fost listat\u0103 anterior cu tranzac\u0163ia actual\u0103. Aceasta este o eroare intern\u0103 de sistem \u015fi este probabil cauzat\u0103 de o defectare anterioar\u0103.
+WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
+
+WTRN0066_LOG_WRITE_ERROR=WTRN0066W: A \u00eent\u00e2lnit o excep\u0163ie \u00een timpul opera\u0163iei de scriere \u00een fi\u015fierul istoric de tranzac\u0163ii. Urma stiv\u0103 de excep\u0163ie urm\u0103re\u015fte: {0}
+WTRN0066_LOG_WRITE_ERROR.explanation=O eroarea a survenit \u00een timul scrierii \u00een fi\u015fierul istoric al tranzac\u0163iei. Tranzac\u0163ia va fi derulat\u0103 \u00eenapoi.
+WTRN0066_LOG_WRITE_ERROR.useraction=Aceasta este cel mai probabil s\u0103 fie o defecate I/O. Examina\u0163i urma stiv\u0103 de excep\u0163ie pentru a determina cauza problemei.
+
+WTRN0067_PROG_MODEL_EXCEEDED=WTRN0067W: Serviciul tranzac\u0163ie a detectat o utilizare care dep\u0103\u015fe\u015fte modelul de programare WebSphere Application
+WTRN0067_PROG_MODEL_EXCEEDED.explanation=O aplica\u0163ie care ruleaz\u0103 \u00een acest server nu este parte a modelului de programare al aplica\u0163eie.
+WTRN0067_PROG_MODEL_EXCEEDED.useraction=Considera\u0163i dac\u0103 aplica\u0163ia poate fi modificat\u0103 s\u0103 utilizeze doar func\u0163ionalitatea tranzac\u0163iei care este suportat\u0103 \u00een modelul de programare al aplica\u0163iei.
+
+WTRN0068_COMMIT_FAILED=WTRN0068E: Comitere e\u015fuat\u0103 cu excep\u0163ia {0}
+WTRN0068_COMMIT_FAILED.explanation=O excep\u0163ie a survenit \u00een timp ce tranzac\u0163ia se comitea.
+WTRN0068_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0069_COMMIT_BAD_STATE=WTRN0069E: Comitere primit\u0103 \u00een stare de tranzac\u0163ie eronat\u0103 {0}
+WTRN0069_COMMIT_BAD_STATE.explanation=Tranzac\u0163ia nu erea \u00eentr-o stare valid\u0103 c\u00e2nd i s-a cerut s\u0103 execute procesul de comitere.
+WTRN0069_COMMIT_BAD_STATE.useraction=CMSG0002
+
+WTRN0070_ONE_PHASE_COMMIT_FAILED=WTRN0070E: Comiterea \u00eentr-o singur\u0103 faz\u0103 a e\u015fuat cu excep\u0163ia {0}
+WTRN0070_ONE_PHASE_COMMIT_FAILED.explanation=O excep\u0163ie a survenit \u00een timp ce tranzac\u0163ia se comitea folosind un protocol de comitere \u00eentr-o singur\u0103 faz\u0103.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0071_ROLLBACK_FAILED=WTRN0071E: Derularea \u00eenapoi a e\u015fuat cu excep\u0163ia {0}
+WTRN0071_ROLLBACK_FAILED.explanation=O excep\u0163ie a survenit \u00een timp ce tranzac\u0163ia era derulat\u0103 \u00eenapoi.
+WTRN0071_ROLLBACK_FAILED.useraction=CMSG0002
+
+WTRN0072_ROLLBACK_BAD_STATE=WTRN0072E: Derulare \u00eenapoi primit\u0103 \u00een stare de tranzac\u0163ie eronat\u0103 {0}
+WTRN0072_ROLLBACK_BAD_STATE.explanation=Tranzac\u0163ia nu a fost \u00eentr-o stare valid\u0103 c\u00e2nd i s-a cerut s\u0103 execute procesul de derulare \u00eenapoi.
+WTRN0072_ROLLBACK_BAD_STATE.useraction=CMSG0002
+
+WTRN0073_FORGET_BAD_STATE=WTRN0073E: Uitare primit\u0103 \u00een stare de tranzac\u0163ie eronat\u0103 {0}
+WTRN0073_FORGET_BAD_STATE.explanation=Tranzac\u0163ia nu a fost \u00eentr-o stare valid\u0103 c\u00e2nd i s-a cerut s\u0103 execute procesul de omitere.
+WTRN0073_FORGET_BAD_STATE.useraction=CMSG0002
+
+WTRN0074_SYNCHRONIZATION_EXCEPTION=WTRN0074E: Excep\u0163ie prins\u0103 din opera\u0163ia de sincronizare {0}: {1}
+WTRN0074_SYNCHRONIZATION_EXCEPTION.explanation=O excep\u0163ie a fost creat\u0103 de c\u0103tr un obiect sincronizare c\u00e2nd a fost informat de starea de completarea a tranzac\u0163iei.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.useraction=CMSG0002
+
+WTRN0075_HEURISTIC_ON_COMMIT=WTRN0075W: Tranzac\u0163ia {0} a primit o excep\u0163ie euristic\u0103 la comiterea unei resurse.
+WTRN0075_HEURISTIC_ON_COMMIT.explanation=Serviciul de tranzac\u0163ie a primit un r\u0103spuns euristic la trimiterea unui rezultat de comitere unui participant la tranzac\u0163ie.
+WTRN0075_HEURISTIC_ON_COMMIT.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de rezultatul euristic.
+
+WTRN0076_HEURISTIC_ON_ROLLBACK=WTRN0076W: Tranzac\u0163ia {0} a primit o excep\u0163ie euristic\u0103 la derularea \u00eenapoi a unei resurse.
+WTRN0076_HEURISTIC_ON_ROLLBACK.explanation=Serviciul de tranzac\u0163ie a primit un r\u0103spuns euristic la trimiterea unui rezultat de derulare \u00eenapoi unui participant la tranzac\u0163ie.
+WTRN0076_HEURISTIC_ON_ROLLBACK.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de rezultatul euristic.
+
+WTRN0077_OPERATOR_CANCELLED=WTRN0077W: Tranzac\u0163ia {0} a fost anulat\u0103 de operator.
+WTRN0077_OPERATOR_CANCELLED.explanation=Livrarea rezultatului pentru tranzac\u0163ia identificat\u0103 \u00een mesaj a fost abandonat\u0103 la cererea operatorului.
+WTRN0077_OPERATOR_CANCELLED.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de aceast\u0103 defectare.
+
+WTRN0078_START_FAILED=WTRN0078E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a pornirii unei resurse tranzac\u0163ionale a avut ca rezultat o eroare. Codul eroare a fost {0}. Urma stiv\u0103 de excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0078_START_FAILED.explanation=Resursa tranzac\u0163ional\u0103 a e\u015fuat la cererea de a procesa un apel de pronire. Tranzac\u0163ia va fi derulat\u0103 \u00eenapoi.
+WTRN0078_START_FAILED.useraction=Examina\u0163i codul de eroare pentru a determina cauza problemei.
+
+WTRN0079_END_FAILED=WTRN0079E: O \u00eencercare a managerului de tranzac\u0163ii de apelare a opririi unei resurse tranzac\u0163ionale a avut ca rezultat o eroare. Codul erorii a fost {0}. Urma stiv\u0103 de excep\u0163ie urm\u0103re\u015fte: {1}
+WTRN0079_END_FAILED.explanation=Resursa tranzac\u0163ional\u0103 a e\u015fuat la cererea de a procesa un apel de terminare. Tranzac\u0163ia va fi derulat\u0103 \u00eenapoi.
+WTRN0079_END_FAILED.useraction=Examina\u0163i codul de eroare pentru a determina cauza problemei.
+
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT=WTRN0080W: Tranzac\u0163ia {0} a expirat din cauza lipsei de activitate a clientului pentru mai mult de {1} secunde.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.explanation=Clientul a fost inactiv mai mult timp dec\u00e2t valoarea timeout-ului de inactivitate.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.useraction=Nu lua\u0163i \u00een considerare acest mesaj dac\u0103 clientul a plecat l\u0103s\u00e2nd o tranzac\u0163ie activ\u0103. Dac\u0103 clientul este \u00eenc\u0103 activ, decide\u0163i dac\u0103 s\u0103 modifica\u0163i valoare timeout inactivitate client (Client Inactivity Timeout).
+
+WTRN0081_NULL_JTSXARESOURCE=WTRN0081W: Obiectul JTAXAResource este null.
+WTRN0081_NULL_JTSXARESOURCE.explanation=Aceasta este o eroare intern\u0103 de sistem \u015fi este probabil cauzat\u0103 de o defectare ce a avut loc mai devreme.
+WTRN0081_NULL_JTSXARESOURCE.useraction=CMSG0002
+
+WTRN0082_OPERATOR_ROLLBACK=WTRN0082W: Tranzac\u0163ia {0} a fost derulat\u0103 \u00eenapoi de operator.
+WTRN0082_OPERATOR_ROLLBACK.explanation=Tranzac\u0163ia identificat\u0103 \u00een mesaj a fost derulat\u0103 \u00eenapoi la cererea operatorului.
+WTRN0082_OPERATOR_ROLLBACK.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de aceast\u0103 defectare.
+
+WTRN0083_LOG_FULL_ERROR=WTRN0083W: Istoricul de tranzac\u0163ii este plin. Tranzac\u0163ia {0} derulat\u0103 \u00eenapoi.
+WTRN0083_LOG_FULL_ERROR.explanation=Fi\u015fierele tranzac\u0163ie istoric sunt pline cu \u00eenregistr\u0103ri are tranzac\u0163iilor active. Oricare viitoare comiteri de tranzac\u0163ii \u00een dou\u0103 faze vor fi derulate \u00eenapoi.  Serverul trebuie repornit pentru ca urm\u0103toarele lucr\u0103ride comitere \u00een dou\u0103 faze s\u0103 continue.
+WTRN0083_LOG_FULL_ERROR.useraction=Dac\u0103 aceast\u0103 problem\u0103 survine frecvent, reporni\u0163i serverul cu o dimensiune fi\u015fier mai mare pentru istoricul de tranzac\u0163ii.
+
+WTRN0084_RESOURCE_ENDING=WTRN0084W: \u00cenregistrarea \u00een list\u0103 a e\u015fuat din cauza termin\u0103rii adaptorului de resurse.
+WTRN0084_RESOURCE_ENDING.explanation=O cerere de a lista o resurs\u0103 \u00eentr-o tranzac\u0163ie a fost respins\u0103 deoarece fie serverul, fie adaptorul de resurse, este \u00eenchis.
+WTRN0084_RESOURCE_ENDING.useraction=Rula\u0163i din nou tranzac\u0163ia dup\u0103 ce adaptorul de resurse devine diponibil.
+
+WTRN0085_BAD_DISSOCIATE=WTRN0085E: Nu a fost g\u0103sit\u0103 tranzac\u0163ia din care este disociat\u0103.
+WTRN0085_BAD_DISSOCIATE.explanation=Aceasta este o eroare de sistem intern\u0103.
+WTRN0085_BAD_DISSOCIATE.useraction=CMSG0002
+
+
+WTRN0086_PREPARE_DIAG=WTRN0086I: XAException \u00eent\u00e2lnit\u0103 \u00een timpul fazei de preg\u0103tire pentru tranzac\u0163ie {0}. Urmeaz\u0103 resursele locale.
+WTRN0086_PREPARE_DIAG.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+WTRN0086_PREPARE_DIAG.useraction=Administratorii de sistem pot utiliza aceast\u0103 informa\u0163ie pentru a recupera manual dup\u0103 erori de tranzac\u0163ie.
+
+WTRN0087_COMPLETION_DIAG=WTRN0087I: XAException \u00eent\u00e2lnit\u0103 \u00een timpul fazei de finalizare pentru tranzac\u0163ie {0}. Urmeaz\u0103 resursele locale.
+WTRN0087_COMPLETION_DIAG.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+WTRN0087_COMPLETION_DIAG.useraction=Administratorii de sistem pot utiliza aceast\u0103 informa\u0163ie pentru a recupera manual dup\u0103 erori de tranzac\u0163ie.
+
+WTRN0088_EXCEPTION_DIAG=WTRN0088I: {0} a \u00eent\u00e2lnit XAException cu codul de eroare {1}.
+WTRN0088_EXCEPTION_DIAG.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+WTRN0088_EXCEPTION_DIAG.useraction=Administratorii de sistem pot utiliza aceast\u0103 informa\u0163ie pentru a recupera manual dup\u0103 erori de tranzac\u0163ie.
+
+WTRN0089_PREPARED=WTRN0089I: {0}: Vota\u0163i: {1}.
+WTRN0089_PREPARED.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+WTRN0089_PREPARED.useraction=Administratorii de sistem pot utiliza aceast\u0103 informa\u0163ie pentru a recupera manual dup\u0103 erori de tranzac\u0163ie.
+
+WTRN0090_COMPLETED=WTRN0090I: {0}: Alege\u0163i: {1}. Rezultat: {2}.
+WTRN0090_COMPLETED.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+WTRN0090_COMPLETED.useraction=Administratorii de sistem pot utiliza aceast\u0103 informa\u0163ie pentru a recupera manual dup\u0103 erori de tranzac\u0163ie.
+
+WTRN0091_ASSOCIATE_FAILED=WTRN0091E: Asocierea Context de execu\u0163ie a e\u015fuat. Xid: {0}, timeout {1}.
+WTRN0091_ASSOCIATE_FAILED.explanation=Aceasta este o eroare de sistem intern\u0103.
+WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
+
+WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: Tranzac\u0163ie nefinalizat\u0103 (localid={0}) g\u0103sit\u0103 \u00een timpul dezactiv\u0103rii serverului; serviciul tranzac\u0163ie va a\u015ftepta.
+WTRN0092_QUIESCE_UNFINISHED.explanation=Lucrul tranzac\u0163ional de intrare nu s-a finalizat \u00eenc\u0103. Serviciul tranzac\u0163ional va \u00eent\u00e2rzia oprirea activit\u0103\u0163ii serverului astfel \u00eenc\u00e2t originatorul poate \u00eencerca s\u0103 finalizeze tranzac\u0163ia.
+WTRN0092_QUIESCE_UNFINISHED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: Rezultat indisponibil pentru tranzac\u0163ia subordonat\u0103 {0}. Tranzac\u0163ia este comis\u0103 euristic.
+WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=Serviciul tranzac\u0163ie nu a putut ob\u0163ine rezultatul tranzac\u0163iei de la superiorul s\u0103u \u00een periada de re\u00eenc\u0103rcare configurat\u0103. Tranzac\u0163ia va fi comis\u0103 euristic.
+WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de rezultatul euristic.
+
+WTRN0094_ROLLBACK_REPLAY_COMPLETION=WTRN0094W: Rezultat indisponibil pentru tranzac\u0163ia subordonat\u0103 {0}. Tranzac\u0163ia este euristic derulat\u0103 \u00eenapoi.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.explanation=Serviciul tranzac\u0163ie nu a putut ob\u0163ine rezultatul tranzac\u0163iei de la superiorul s\u0103u \u00een periada de re\u00eenc\u0103rcare configurat\u0103. Tranzac\u0163ia va fi euristic derulat\u0103 \u00eenapoi.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de rezultatul euristic.
+
+WTRN0095_MANUAL_REPLAY_COMPLETION=WTRN0095W: Rezultat indisponibil pentru tranzac\u0163ia subordonat\u0103 {0}. Tranzac\u0163ia a\u015fteapt\u0103 interven\u0163ia administratorului pentru a-i determina rezultatul.
+WTRN0095_MANUAL_REPLAY_COMPLETION.explanation=Serviciul tranzac\u0163ie nu a putut ob\u0163ine rezultatul tranzac\u0163iei de la superiorul s\u0103u \u00een periada de re\u00eenc\u0103rcare configurat\u0103. Tranzac\u0163ia a\u015fteapt\u0103 acum ca administratorul s\u0103 seteze manual rezultatul tranzac\u0163iei.
+WTRN0095_MANUAL_REPLAY_COMPLETION.useraction=Determina\u0163i succesul sau defectarea tranzac\u0163iei superioare, apoi seta\u0163i rezultatul tranzac\u0163iei manual. Aceasta asigur\u0103 ca deteriorarea euristic\u0103 nu survine \u015fi c\u0103 toate datele aplica\u0163iei r\u0103m\u00e2n corecte.
+
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED=WTRN0096W: Este posibil s\u0103 fi ap\u0103rut o condi\u0163ie euristic\u0103 pentru tranzac\u0163ia {0}. Tranzac\u0163ia este comis\u0103 euristic.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.explanation=Serviciul tranzac\u0163ie a detectat c\u0103 tranzac\u0163ia specificat\u0103 implic\u0103 resurse capabile mixte o faz\u0103 \u015fi dou\u0103 faze. Serviciul tranzac\u0163ie a transmis o cerere de comitere \u00eentr-o faz\u0103 c\u0103tre singura resurs\u0103 capabil\u0103 o faz\u0103, dar serverul a e\u015fuat \u00eenainte de a se complete comiterea. Nu se \u015ftie dac\u0103 resursa s-a comis cu succes.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.useraction=Toate resursele capabile dou\u0103 faze vor fi comise. Dac\u0103 resursa capabil\u0103 \u00eentr-o singur\u0103 faz\u0103 a e\u015fuat s\u0103 proceseze comiterea, a survenit deteriorarea euristic\u0103 \u015fi trebuie s\u0103 corecta\u0163i toate problemele datelor aplica\u0163iei cauzate de rezultatul euristic.
+
+WTRN0097_HEURISTIC_MANUAL_COMPLETION=WTRN0097W: A ap\u0103rut un rezultat necunoscut al tranzac\u0163iei pentru tranzac\u0163ia{0}. Tranzac\u0163ia a\u015fteapt\u0103 interven\u0163ia administratorului pentru a-i determina rezultatul.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.explanation=Serviciul de tranzac\u0163ie a detectat c\u0103 tranzac\u0163ia specificat\u0103 a implicat resurse capabile o faz\u0103 \u015fi dou\u0103 faze. Serviciul tranzac\u0163ie a transmis o cerere de comitere \u00eentr-o faz\u0103 c\u0103tre singura resurs\u0103 capabil\u0103 o faz\u0103, dar serverul a e\u015fuat \u00eenainte de a se complete comiterea. Nu se \u015ftie dac\u0103 resursa s-a comis cu succes.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.useraction=Determina\u0163i succesul sau e\u015fuarea cererii de comitere o faz\u0103, apoi seta\u0163i rezultatulnmanual. Aceasta asigur\u0103 ca deteriorarea euristic\u0103 nu survine \u015fi c\u0103 toate datele aplica\u0163iei r\u0103m\u00e2n corecte.
+
+WTRN0098_COMMIT_RA_UNINSTALLED=WTRN0098W: Rezultat indisponibil pentru tranzac\u0163ia {0} deoarece adaptorul de resurs\u0103 {1} a fost dezinstalat. Tranzac\u0163ia este comis\u0103 euristic.
+WTRN0098_COMMIT_RA_UNINSTALLED.explanation=Serviciul tranzac\u0163ie nu a putut ob\u0163ine rezultatul tranzac\u0163iei de la adaptorul resurs\u0103 deoarece adaptorul resurs\u0103 a fost dezinstalat. Tranzac\u0163ia va fi comis\u0103 euristic.
+WTRN0098_COMMIT_RA_UNINSTALLED.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de rezultatul euristic.
+
+WTRN0099_ROLLBACK_RA_UNINSTALLED=WTRN0099W: Rezultat indisponibil pentru tranzac\u0163ia {0} deoarece adaptorul de resurs\u0103 {1} a fost dezinstalat. Tranzac\u0163ia este euristic derulat\u0103 \u00eenapoi.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.explanation=Serviciul tranzac\u0163ie nu a putut ob\u0163ine rezultatul tranzac\u0163iei din adaptorul de resurs\u0103 deoarece adaptorul de resurs\u0103 a fost dezinstalat. Tranzac\u0163ia va fi euristic derulat\u0103 \u00eenapoi.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.useraction=Corecta\u0163i orice probleme ale datelor aplica\u0163iei care au fost cauzate de rezultatul euristic.
+
+WTRN0100_GENERIC_ERROR=WTRN0100E: {0}
+WTRN0100_GENERIC_ERROR.explanation=Acest cod de mesaj este folosit pentru a suporta mesaje c\u0103rora nu li s-a alocat \u00eenc\u0103 propriul cod de mesaj.
+WTRN0100_GENERIC_ERROR.useraction=Duce\u0163i-v\u0103 la textul mesajului pentru mai multe informa\u0163ii.
+
+WTRN0101_MANUAL_RA_UNINSTALLED=WTRN0101W: Rezultat indisponibil pentru tranzac\u0163ia {0} deoarece adaptorul de resurs\u0103 {1} a fost dezinstalat. Tranzac\u0163ia a\u015fteapta interven\u0163ia administratorului pentru a-i determina rezultatul.
+WTRN0101_MANUAL_RA_UNINSTALLED.explanation=Serviciul tranzac\u0163ie nu a putu ob\u0163ine rezultatul tranzac\u0163iei de la adaptorul de resurs\u0103 deoarece adaptorul de resurs\u0103 a fost dezinstalat.
+WTRN0101_MANUAL_RA_UNINSTALLED.useraction=Determina\u0163i succesul sau e\u015fecul tranzac\u0163iei din originatorul tranzac\u0163iei adaptorului de resurse, apoi seta\u0163i rezultatului de tranzac\u0163ie manual. Aceasta asigur\u0103 ca deteriorarea euristic\u0103 nu survine \u015fi c\u0103 toate datele aplica\u0163iei r\u0103m\u00e2n corecte.
+
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED=WTRN0102W: Este posibil s\u0103 fi ap\u0103rut o condi\u0163ie euristic\u0103 pentru tranzac\u0163ia {0}. Tranzac\u0163ia este euristic derulat\u0103 \u00eenapoi.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.explanation=Serviciul de tranzac\u0163ie a detectat c\u0103 tranzac\u0163ia specificat\u0103 a implicat resurse capabile o faz\u0103 \u015fi dou\u0103 faze. Serviciul tranzac\u0163ie a transmis o cerere de comitere \u00eentr-o faz\u0103 c\u0103tre singura resurs\u0103 capabil\u0103 o faz\u0103, dar serverul a e\u015fuat \u00eenainte de a se complete comiterea. Nu se \u015ftie dac\u0103 resursa s-a comis cu succes.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.useraction=Toate resursele capabile dou\u0103 faze vor fi derulate \u00eenapoi. Dac\u0103 resursa capabil\u0103 \u00eentr-o singur\u0103 faz\u0103 a procesat comiterea cu succes, a survenit deteriorarea euristic\u0103 \u015fi trebuie s\u0103 corecta\u0163i toate problemele datelor aplica\u0163iei cauzate de rezultatul euristic.
+
+# Msgs 103 and 104 added by pok defect MD19484 for V5.1
+
+WTRN0103_RECOVERY_LOG_FAILED=WTRN0103E: Istoricul de recuperare este marcat ca e\u015fuat. [ {0} {1} ]
+WTRN0103_RECOVERY_LOG_FAILED.explanation=Istoricul recuperare a e\u015fuat, \u015fi \u00een continuare nu se mai poate accesa istoricul recuperare. Componenta \u015fi excep\u0163ia sunt indicate \u00een mesaj.
+WTRN0103_RECOVERY_LOG_FAILED.useraction=Serverul trebuie repornit astfel \u00eenc\u00e2t istoricul s\u0103 poat\u0103 fi reparat. \u00cencerca\u0163i s\u0103 corecta\u0163i orice condi\u0163ii indicate de c\u0103tre excep\u0163ie \u00een mesaj.
+
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL=WTRN0104E: Detalii despre e\u015fuarea istoricului de recuperare: {0}
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.explanation=Acest mesaj este emis cu mesajul WTRN0103E pentru a indica detaliile e\u015fu\u0103rii istoricului recuperare.
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.useraction=Utiliza\u0163i informa\u0163ia din acest mesaj \u00eempreun\u0103 cu mesajul WTRN0103E pentru a corecta condi\u0163ia care a cauzat e\u015fuarea istoricului recuperare.
+
+WTRN0105_CLEAN_SHUTDOWN=WTRN0105I: Serviciul tranzac\u0163ie \u015fi-a oprit activitatea cu succes f\u0103r\u0103 tranzac\u0163ii care necesit\u0103 recuperare.
+WTRN0105_CLEAN_SHUTDOWN.explanation=Acesta este un eveniment normal. Acest mesaj este doar \u00een scop informa\u0163ional.
+WTRN0105_CLEAN_SHUTDOWN.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+WTRN0106_JTADEMARCATION_DISALLOWED=WTRN0106I: Demarcarea JTA a clientului este nepermis\u0103.
+WTRN0106_JTADEMARCATION_DISALLOWED.explanation=Demarcarea JTA a fost configurat\u0103 ca nepermis\u0103 pentru aceast\u0103 aplica\u0163ie client.
+WTRN0106_JTADEMARCATION_DISALLOWED.useraction=Pentru a permite demarcarea JTA, folosi\u0163i trusa de unelte a serverului de aplica\u0163ii pentru a seta proprietatea Allow JTA Demarcation \u00een descriptorul de implementare al clientului.
+
+WTRN0107_GENERIC_WARNING=WTRN0107W: {0}
+WTRN0107_GENERIC_WARNING.explanation=Acest cod de mesaj este folosit pentru a suporta mesaje c\u0103rora nu li s-a alocat \u00eenc\u0103 propriul cod de mesaj.
+WTRN0107_GENERIC_WARNING.useraction=Duce\u0163i-v\u0103 la textul mesajului pentru mai multe informa\u0163ii.
+
+WTRN0108_GENERIC_INFOMSG=WTRN0108I: {0}
+WTRN0108_GENERIC_INFOMSG.explanation=Acest cod de mesaj este folosit pentru a suporta mesaje c\u0103rora nu li s-a alocat \u00eenc\u0103 propriul cod de mesaj.
+WTRN0108_GENERIC_INFOMSG.useraction=Duce\u0163i-v\u0103 la textul mesajului pentru mai multe informa\u0163ii.
+
+WTRN0109_MBEAN_ACTIVATE=WTRN0109W: Excep\u0163ie \u00eent\u00e2lnit\u0103 la activarea Transaction JMX MBean: {0}
+WTRN0109_MBEAN_ACTIVATE.explanation=A survenit o eroarea la \u00eencercarea de a activa un JMX MBean pentru serviciul tranzac\u0163ie. De\u015fi aceasta nu opre\u015fte serviciul tranzac\u0163ie s\u0103 porneasc\u0103, orice func\u0163ii administrative care necesit\u0103 acces la serviciul tranzac\u0163ie vor e\u015fua.
+WTRN0109_MBEAN_ACTIVATE.useraction=CMSG0002
+
+
+WTRN0110_BAD_CUSTOM_PROPERTY=WTRN0110W: {0} nu este o proprietate personalizat\u0103 valid\u0103 a serviciului tranzac\u0163ie
+WTRN0110_BAD_CUSTOM_PROPERTY.explanation=O proprietate personalizat\u0103 care a fost specificat\u0103 \u00een configura\u0163ia serviciului de tranzac\u0163ie pentru acest server nu este valid\u0103 \u015fi a fost ignorat\u0103.
+WTRN0110_BAD_CUSTOM_PROPERTY.useraction=Corecta\u0163i configura\u0163ia propriet\u0103\u0163ilor personalizate ale serviciului tranzac\u0163ie.
+
+WTRN0111_LOG_ALLOCATION=WTRN0111E: Nu poate accesa sau crea istoricul de recuperare. Configura\u0163ia istoricului a fost {0}
+WTRN0111_LOG_ALLOCATION.explanation=Serviciul tranzac\u0163ie nu a putut accesa sau crea istoricele de recupere. Dac\u0103 istoricele de recuperare sunt pentru serverul local, serverul va fi oprit. Dac\u0103 istoricele de recuperare sunt pentru un server recuperat peer, recuperarea va fi oprit\u0103 \u015fi alocat\u0103 unui alt server, iar serverul care raporteaz\u0103 va continua normal .
+WTRN0111_LOG_ALLOCATION.useraction=Examina\u0163i orice mesaje \u00eenrudite pentru a determina cauza problemei. Asigura\u0163i-v\u0103 c\u0103 istoricele recuperare pot fi accesate de c\u0103tre server sau, dac\u0103 nu sunt \u00eenc\u0103 create, verifica\u0163i c\u0103 este destul spa\u0163iu pe disc disponibil \u015fi c\u0103 serverul are permisiunile corecte de acces c\u0103tre fi\u015fierele sau directoarele specificate \u00een mesaj.
+
+WTRN0112_LOG_OPEN_FAILURE=WTRN0112E: O eroare nea\u015fteptat\u0103 a ap\u0103rut la deschiderea istoricului de recuperare. Configura\u0163ia istoricului a fost {0}
+WTRN0112_LOG_OPEN_FAILURE.explanation=Serviciul tranzac\u0163ie nu a putut deschide istoricele recuperare. Dac\u0103 istoricele de recuperare sunt pentru serverul local, serverul va fi oprit. Dac\u0103 istoricele de recuperare sunt pentru un server recuperat peer, recuperarea va fi oprit\u0103 \u015fi alocat\u0103 unui alt server, iar serverul care raporteaz\u0103 va continua normal .
+WTRN0112_LOG_OPEN_FAILURE.useraction=Examina\u0163i orice mesaje \u00eenrudite pentru a determina cauza problemei. 
+
+WTRN0113_LOG_DOWNLEVEL=WTRN0113W: Procesarea de recuperare a unui server peer WebSphere de nivel inferior nu este posibil\u0103 \u015fi a fost \u00eentrerupt\u0103 ({0})
+WTRN0113_LOG_DOWNLEVEL.explanation=Serviciul tranzac\u0163ie nu a putut recupera peer serverul de aplica\u0163ii specificat deoarece istoricele au fost formatate de o eliberare precedent\u0103 a produsului, care nu este compatibil\u0103 cu acest server. Aceast\u0103 instan\u0163\u0103 a recuper\u0103rii peer va fi oprit\u0103 \u015fi alocat\u0103 unui alt server, iar serverul de raportare va continua normal. 
+WTRN0113_LOG_DOWNLEVEL.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului. \u00cen func\u0163ie de configura\u0163ia clusterului, dac\u0103 este un singur membru la un nivel edi\u0163ie particular, recuperarea peer pentru acel server ar putea s\u0103 nu fie posibil\u0103 dac\u0103 formatul istoricului a devenit incompatibil \u00eentre edi\u0163ii.
+
+WTRN0114_TRAN_RETRY_NEEDED=WTRN0114I: Tranzac\u0163ia {0} nu a putut notifica toate resursele de rezultatul s\u0103u.  Va re\u00eenc\u0103rca \u00een {1} secunde.
+WTRN0114_TRAN_RETRY_NEEDED.explanation=Un manager resurs\u0103 la distan\u0163\u0103 nu a putut fi contactat \u00een timpul repornirii recuper\u0103rii. Opera\u0163ia va fi re\u00eenc\u0103rcat\u0103 la intervale regulate.
+WTRN0114_TRAN_RETRY_NEEDED.useraction=Asigura\u0163i-v\u0103 c\u0103 managerul de resurse este disponibil.
+
+WTRN0115_NO_CFW_AVAILABLE=WTRN0115E: Configura\u0163ia Cadru de lucru canal nu este definit\u0103 sau este nevalid\u0103 pentru suportul WSAT (WebServices Atomic Transactions).
+WTRN0115_NO_CFW_AVAILABLE.explanation=Containerul web nu este definit s\u0103 foloseasc\u0103 cadrul de lucru al canalului, sau nu este definit corect. WS-AT necesit\u0103 utilizarea cadrului de lucru al canalului pentru a transfera contextul tranzac\u0163ional \u00eentre servicii web.
+WTRN0115_NO_CFW_AVAILABLE.useraction=Corecta\u0163i sau defini\u0163i configura\u0163ia cadrului de lucru al canalului pentru containerul web .
+
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: \u015eir nevalid de configurare a fi\u015fierului istoric de tranzac\u0163ii specificat: {0}. Serviciul tranzac\u0163ie va continua f\u0103r\u0103 istoricul de recuperare pentru serverul WebSphere ({1}).
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Numele directorului pentru fi\u015fierul istoric tranzac\u0163ie, setat \u00een c\u00e2mpul directorului istoric tranzac\u0163ie, nu este valid. Formatul ar trebui s\u0103 fie un director al fi\u015fierului istoric complet calificat, op\u0163ional urmat de ';' \u015fi m\u0103rimea fi\u015fierului istoric, cu M dup\u0103 m\u0103rimea fi\u015fierului istoric pentur a indica megaocte\u0163i, sau K pentru a indica kiloocte\u0163i. Dimensiunea implicit\u0103 \u015fi minim\u0103 a dimensiunii fi\u015fierului istoric este 1M.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Corecta\u0163i configura\u0163ia directorului istoric tranzac\u0163ii. Asigura\u0163i-v\u0103 c\u0103 serverul este repornit pentru a activa recuperarea istoricului tranzac\u0163iei.
+
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: Dimensiune fi\u015fier istoric al tranzac\u0163iei nevalide specificat\u0103: {0}. Serviciul tranzac\u0163ie va utiliza dimensiunea fi\u015fier implicit\u0103 de 1M pentru serverul WebSphere ({1}).
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=Dimensiunea fi\u015fier a fi\u015fierului istoric tranzac\u0163ie, setat\u0103 \u00een c\u00e2mpul director al istoricului tranzac\u0163ie, nu este valid\u0103. Formatul ar trebui s\u0103 fie un director al fi\u015fierului istoric complet calificat, op\u0163ional urmat de ';' \u015fi m\u0103rimea fi\u015fierului istoric, cu M dup\u0103 m\u0103rimea fi\u015fierului istoric pentur a indica megaocte\u0163i, sau K pentru a indica kiloocte\u0163i. Dimensiunea implicit\u0103 \u015fi minim\u0103 a dimensiunii fi\u015fierului istoric este 1M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Corecta\u0163i configura\u0163ia directorului istoric tranzac\u0163ii.
+
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: Proprietatea perimat\u0103 a clientului serviciului de tranzac\u0163ii  {0} a fost g\u0103sit\u0103 \u00een configura\u0163ia serviciului de tranzac\u0163ii.  
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.explanation=O proprietate personalizat\u0103 depreciat\u0103 a fost specificat\u0103 \u00een configura\u0163ia serviciului tranzac\u0163ie pentru acest server. Aceast\u0103 proprietate va suprascrie o proprietate general\u0103 a serviciului tranzac\u0163ie corespunz\u0103toare \u00een configura\u0163ie. Proprietatea personalizat\u0103 depreciat\u0103 va fi \u00eenl\u0103turat\u0103 \u00eentr-o viitoare edi\u0163ie a produsului.
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.useraction=\u00cenl\u0103tura\u0163i proprietatea personalizat\u0103 depreciat\u0103 a serviciului tranzac\u0163iedin configura\u0163ie \u015fi folosi\u0163i setarea corespunz\u0103toare general\u0103 proprietate, folosind consola administrativ\u0103.
+
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT=WTRN0119W: E\u015fuarea autoriza\u0163iei num\u0103rului de mesaje de protocol WS-TX : {0}
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.explanation=Num\u0103rul mesajelor protocol WS-AT (Web Services Atomic Transactions) \u015fi WS-BA (Web Service Business Activities) indicat (de exemplu, un mesaj preg\u0103tire) primite f\u0103r\u0103 acredit\u0103rile de securitate a\u015fteptate.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat corect pentru WS-AT \u015fi WS-BA \u00eentr-un mediu securizat.
+
+WTRN0120_INVALID_HA_LOGNAME=WTRN0120W: Specifica\u0163ia directorului istoricului de tranzac\u0163ii de ;0 pentru serverul {1} nu este valid\u0103 deoarece serverul este \u00eentr-un cluster {0} care este activat pentru HA (high availability).
+WTRN0120_INVALID_HA_LOGNAME.explanation=Trebuie s\u0103 specifica\u0163i o cale director istoric tranzac\u0163ie valid\u0103 pentru fiecare server dintr-un cluster atunci c\u00e2nd clusterul este activat pentru HA (high availability).
+WTRN0120_INVALID_HA_LOGNAME.useraction=Modifica\u0163i setarea fi\u015fierului istoric tranzac\u0163ie c\u0103tre o loca\u0163ie valid\u0103 \u00een sistemul de fi\u015fiere.
+
+WTRN0121_INVALID_HA_CONFIG=WTRN0121E: Configura\u0163ia HA (high availability) nu este valid\u0103. Serverul se va opri.
+WTRN0121_INVALID_HA_CONFIG.explanation=Unul sau mai multe servere \u00eentr-un cluster care este activ pentru HA (high availability) nu au definit un director istoric tranzac\u0163ii valid.
+WTRN0121_INVALID_HA_CONFIG.useraction=Examina\u0163i mesajele ce acompaniaz\u0103 pentru informa\u0163ii despre serverele afectate. Corecta\u0163i directoarele istoricelor tranzac\u0163ie pentru aceste servere, apoi reporni\u0163i clusterul.
+
+WTRN0122_LOG_FREE_SPACE=WTRN0122W: Fi\u015fierul istoricului de servicii tranzac\u0163ie {0} a utilizat {1} octe\u0163i din totalul de {2}. Ar putea fi necesar\u0103 o dimensiune mai mare a fi\u015fierului istoric.
+WTRN0122_LOG_FREE_SPACE.explanation=Dup\u0103 finalizarea cu succes a opera\u0163iei \u00een punctul final (\u00een timpul c\u0103reia intr\u0103rile \u015fterse \u015fi finalizate sunt \u00eenl\u0103turate dintr-un fi\u015fier de istoric care a atins capacitatea maxim\u0103), s-a detectat c\u0103 fi\u015fierul de istoric este \u00een continuare umplut peste 75%, din cauza \u00eenc\u0103rc\u0103rii de lucru tranzac\u0163ionale active curent. Dac\u0103 fi\u015fierul de istoric devine plin, serverul trebuie repornit. Re\u0163ine\u0163i c\u0103 acest mesaj este emis numai dup\u0103 o opera\u0163ie reu\u015fit\u0103 \u00een punctul final asupra unui fi\u015fier de istoric; numai atunci poate fi calculat\u0103 capacitatea istoricelor utilizate curent.
+WTRN0122_LOG_FREE_SPACE.useraction=Lua\u0163i \u00een considerare setarea unei dimensiuni de fi\u015fier mai mare pentru istoricele de tranzac\u0163ie.
+
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: Un prefix incorect WS-Transaction HTTP(S) URL extern a fost specificat: {0}
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.explanation=Prefixul WS-Transaction HTTP(S) URL extern trebuie s\u0103 fie unURI valid.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.useraction=Specifica\u0163i un prefix WS-Transaction HTTP(S) URL extern valid.
+
+WTRN0124_TIMED_OUT_TRANSACTION_STACK=WTRN0124I: La apari\u0163ia timeout-ului, firul de execu\u0163ie cu care tranzac\u0163ia este sau a fost recent asociat\u0103 a fost{0}. Urma stivei acestui fir de execu\u0163ie c\u00e2nd a survenit timeout-ul a fost: {1}
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.explanation=Stiva, capturat\u0103 c\u00e2nd a survenit timeout-ul, s-a dovedit de ajutor cu diagnoza \u015fi depanarea timeout-urilor tranzac\u0163iei.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.useraction=Examina\u0163i urma stivei pentru a determina ce procasare era \u00een curs c\u00e2nd a survenit timeout-ul tranzac\u0163iei.
+
+WTRN0125_COMMIT_PRIORITY=WTRN0125W: Nu poate s\u0103 vizeze modulul {0} din nodul {1} deoarece modulul specific\u0103 suport Comandare comitere resurs\u0103 care nu este suportat \u00een nodul
+WTRN0125_COMMIT_PRIORITY.explanation=Suportul pentru comandarea comiterii resursei este disponibil doar pe nodurilecare sunt la edi\u0163ia 7.0 sau mai t\u00e2rzie.
+WTRN0125_COMMIT_PRIORITY.useraction=Instala\u0163i modulul pe un server de aplica\u0163ii la edi\u0163ia 7.0 (sau mai t\u00e2rziu) sau utiliza\u0163i editorul descriptorului implementare aplica\u0163ie \u00een unealta de dezvoltare a aplica\u0163iei pentru a \u00eenl\u0103tura orice set\u0103ri Resource Commit Ordering \u00eenainte de a instala acest modul.  Aceasta ar putea fi realizat\u0103 prin navigarea la sec\u0163iunea de comandare a comiterii a WebSphere Extensions \u015fi a deset\u0103rii priorit\u0103\u0163ii comiterii pentru fiecare resurs\u0103 tranzac\u0163ional\u0103 .
+
+WTRN0126_COMMIT_PRIORITY_CLUSTER=WTRN0126W: Nu poate s\u0103 implementeze aplica\u0163ia {0} \u00een nodul {1} din clusterul {2} deoarece aplica\u0163ia specific\u0103 suport Comandare comitere resurs\u0103 care nu este suportat \u00een nod
+WTRN0126_COMMIT_PRIORITY_CLUSTER.explanation=Suportul pentru comandarea comiterii resursei este disponibil doar pe nodurile care sunt la edi\u0163ia 7.0 sau mai t\u00e2rzie.  Nodul nu va fi ad\u0103ugat clusterului.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.useraction=Crea\u0163i membri cluster pe noduri care a un server de aplica\u0163ii instalat la edi\u0163ia 7.0 (sau mai t\u00e2rzie) sau utiliza\u0163i descriptorul de implementare a aplica\u0163iei \u00een unealta de dezvoltare a aplica\u0163iei pentru a \u00eenl\u0103tura orice set\u0103ri Resource Commit Ordering \u00eenainte de a crea membrul cluster.   Aceasta ar putea fi realizat\u0103 prin navigarea la sec\u0163iunea de comandare a comiterii a WebSphere Extensions \u015fi a deset\u0103rii priorit\u0103\u0163ii comiterii pentru fiecare resurs\u0103 tranzac\u0163ional\u0103 .
+
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION=WTRN0127E: Opera\u0163ie blocat\u0103 de configura\u0163ia tipului de politic\u0103.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.explanation=Opera\u0163ia a fost blocat\u0103 \u00een concordan\u0163\u0103 cu configura\u0163ia tipului de politic\u0103 efectiv.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia tipului de politic\u0103 este corespunz\u0103toare pentru aceast\u0103 opera\u0163ie.
+
+WTRN0128_WSTX_APP_START_FAILURE=WTRN0128E: Nu poate s\u0103 porneasc\u0103 aplica\u0163ia {0} deoarece aplica\u0163ia necesit\u0103 specifica\u0163ii WS Transaction care nu sunt suportate \u00een toate serverele din cluster.
+WTRN0128_WSTX_APP_START_FAILURE.explanation=Aplica\u0163ia este configurat\u0103 cu o politic\u0103 WebService care arat\u0103 specifica\u0163iile WS Transaction care nu sunt suportate pe toate serverele din cluster.  Cererile aplica\u0163iei sau recuperarea lor pot fi direc\u0163ionate c\u0103tre orice server din cluster astfel \u00eenc\u00e2t toate aplica\u0163iile trebuie s\u0103 utilizeze tr\u0103s\u0103turi care sunt suportate pe toate serverele.
+WTRN0128_WSTX_APP_START_FAILURE.useraction=Dezinstala\u0163i aplica\u0163ia sau modifica\u0163i politica de configurare WS Transaction policy pentru ca aplica\u0163ia s\u0103 utilizeze tr\u0103s\u0103turile suportate.  Altfel, actualiza\u0163i toate nodurile din cluster pentru edi\u0163ia 7.0 sau mai t\u00e2rziu.
+
+WTRN0129_WSTX_APP_START_FAILURE=WTRN0129W: Setarea implicit\u0103 pentru nivelul specifica\u0163iei WS Transaction este necorespunz\u0103toare pentru un cluster cu o versiune amestecat\u0103
+WTRN0129_WSTX_APP_START_FAILURE.explanation=Setarea implicit\u0103 a nivelului de configura\u0163ie WS Transaction configurat pentru server ar putea cauza probleme de execu\u0163ie deoarece toate serverele din cluster nu sunt la aceea\u015fi edi\u0163ie a serverului de aplica\u0163ii.  Toate serverele din cluster trebuie s\u0103 suporte acela\u015fi nivel de specifica\u0163ie dat fiind c\u0103 cererile aplica\u0163iei sau recuper\u0103rile lor ar putea fi direc\u0163ionate c\u0103tre orice server.  Dac\u0103 serverele suport\u0103 diferite nivele de specifica\u0163ie, atunci comportamentul aplica\u0163iei s-ar putea modifica \u00een func\u0163ie de ce server \u00eel execut\u0103.
+WTRN0129_WSTX_APP_START_FAILURE.useraction=Vede\u0163i nivelul de specifica\u0163ie WS Transaction implicit la o valoare care este comun\u0103 pentru toate serverele din cluster.
+
+WTRN0130_BRANCH_COUPLING=WTRN0130W: Nu poate s\u0103 vizeze modulul {0} din nodul {1} deoarece modulul specific\u0103 suport Cuplaj filial\u0103 resurs\u0103 care nu este suportat \u00een nod
+WTRN0130_BRANCH_COUPLING.explanation=Suportul pentru cuplajul filialei resursei este disponibil doar \u00een noduri care sunt la edi\u0163ia 8.0 sau mai nou\u0103.
+WTRN0130_BRANCH_COUPLING.useraction=Instala\u0163i modulul \u00eentr-un server de aplica\u0163ii la edi\u0163ia 8.0 (sau mai nou\u0103) sau utiliza\u0163i editorul descriptorului de implementare al aplica\u0163iei din unealta de dezvoltare de aplica\u0163ii pentru a \u00eenl\u0103tura orice set\u0103ri ale Cuplaj filial\u0103 resurs\u0103 \u00eenainte de instalarea modulului.  Acesta poate fi realizat prin navigarea \u00een sec\u0163iunea de cuplaj a filialei a WebSphere Extensions \u015fi prin debifarea cuplajului la filial\u0103 pentru fiecare resurs\u0103 tranzac\u0163ional\u0103.
+
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: Nu poate s\u0103 implementeze aplica\u0163ia {0} \u00een nodul {1} din clusterul {2} deoarece aplica\u0163ia specific\u0103 suport Cuplaj la filiala resurs\u0103 care nu este suportat \u00een nod
+WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=Suportul pentru cuplajul la filiala resurs\u0103 este disponibil doar \u00een nodurile care sunt la edi\u0163ia 8.0 sau mai nou\u0103.  Nodul nu va fi ad\u0103ugat clusterului.
+WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Crea\u0163i membri cluster \u00een noduri care au un server de aplica\u0163ii instalat la edi\u0163ia 8.0 (sau mai nou\u0103) sau utiliza\u0163i editorul descriptorului de implementare a aplica\u0163iei din unealta de dezvoltare a aplica\u0163iei pentru a \u00eenl\u0103tura orice set\u0103ri Resource Branch Coupling \u00eenainte de a crea membrul cluster.   Acesta poate fi realizat prin navigarea \u00een sec\u0163iunea de cuplaj a filialei a WebSphere Extensions \u015fi prin debifarea cuplajului la filial\u0103 pentru fiecare resurs\u0103 tranzac\u0163ional\u0103.
+
+# 0 - servername
+# 1 - server uuid or server long name (zos)
+# 2 - server restart epoch value
+WTRN0132_RECOVERY_INITIATED=WTRN0132I: Recuperarea tranzac\u0163iei pentru {0} ini\u0163ializat\u0103 cu uuid server {1} \u015fi epoca de repornire {2}
+WTRN0132_RECOVERY_INITIATED.explanation=\u00cencepe procesul de recuperare al tranzac\u0163iei pentru server.  uuid-ul serverului \u015fi citirea epoch din istoricele tranzac\u0163ie existente este raportat\u0103.  Aceste valori sunt utilizate pentru a identifica orice xids \u00een manageril de resurse xa dubio\u015fi care ar putea fi provenit din instan\u0163e precedente ale acestui server.  Dac\u0103 istoricele tranzac\u0163ie nu existau la pornirea activit\u0103\u0163ii serverului, aceste valori ale uuid \u015fi ie\u015fire epoch sunt acelea care vor fi scrise \u00een istorice \u015fi utilizate \u00een viitor de c\u0103tre server.
+WTRN0132_RECOVERY_INITIATED.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+WTRN0133_RECOVERY_COMPLETE=WTRN0133I: Procesarea recuper\u0103rii tranzac\u0163iei pentru acest server este finalizat\u0103
+WTRN0133_RECOVERY_COMPLETE.explanation=Procesul de recuperare tranzac\u0163ie este complet pentru acest server.  Toate informa\u0163iile despre tranzac\u0163ii \u015fi manageri resurs\u0103 xa din instan\u0163e precedente ale serverului sunt \u00eenl\u0103turate din istorice.
+WTRN0133_RECOVERY_COMPLETE.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - number of resource managers
+WTRN0134_RECOVERING_XARMS=WTRN0134I: Recuperarea managerului de resurse XA {0} din istoricele partenerului de tranzac\u0163ie
+WTRN0134_RECOVERING_XARMS.explanation=Serviciul tranzac\u0163ie a detectat c\u0103 serverul ar putea s\u0103 fi terminat mai devreme cu tranzac\u0163ii \u00een \u00eendoial\u0103 \u015fi c\u0103 num\u0103rul specificat de manageri de resurse xa \u00eenregistra\u0163i vor fi contacta\u0163i ca parte a procesului de recuperare.
+WTRN0134_RECOVERING_XARMS.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+WTRN0135_RECOVERING_NOTXNS=WTRN0135I: Serviciul tranzac\u0163ie nu recupereaz\u0103 nici o tranzac\u0163ie.
+WTRN0135_RECOVERING_NOTXNS.explanation=Serviciul tranzac\u0163ie a procesat istoricele de recuperare tranzac\u0163ie \u015fi a determinat c\u0103 nu sunt tranzac\u0163ii care necestit\u0103 recuperare.  Orice resurse xa dubioase care provin de la acest server sunt derulate \u00eenapoi.
+WTRN0135_RECOVERING_NOTXNS.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction xid
+# 1 - transaction id
+# 2 - transaction status
+WTRN0136_RECOVERING_TRAN=WTRN0136I: Procesare tranzac\u0163ie recuperat\u0103 {0} (tid={1}) cu {2}
+WTRN0136_RECOVERING_TRAN.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103.  Mesajul indic\u0103 de asemenea statutul curent al tranzac\u0163iei \u00een timpul recuper\u0103rii.  Valoarea tid este utilizat\u0103 \u00een alt\u0103 recuperare care proceseaz\u0103 mesaje \u015fi \u00een consola administrativ\u0103 pentru a se referi la tranzac\u0163ie .
+WTRN0136_RECOVERING_TRAN.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name 
+WTRN0137_REC_TXN_COMMIT=WTRN0137I: Tranzac\u0163ie recuperat\u0103 (tid={0}) care comite xid {1} cu {2}
+WTRN0137_REC_TXN_COMMIT.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi emite o comitere c\u0103tre un manager de resurse.
+WTRN0137_REC_TXN_COMMIT.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0138_REC_TXN_ROLLBACK=WTRN0138I: Tranzac\u0163ie recuperat\u0103 (tid={0}) care deruleaz\u0103 \u00eenapoi xid {1} cu {2}
+WTRN0138_REC_TXN_ROLLBACK.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi emite o derulare \u00eenapoi c\u0103tre un manager de resurse.
+WTRN0138_REC_TXN_ROLLBACK.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0139_REC_TXN_FORGET=WTRN0139I: Tranzac\u0163ie recuperat\u0103 (tid={0}) care uit\u0103 xid {1} cu {2}
+WTRN0139_REC_TXN_FORGET.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi emite o uitare c\u0103tre un manager de resurse.
+WTRN0139_REC_TXN_FORGET.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0140_REC_TXN_COMMITED=WTRN0140I: Tranzac\u0163ie recuperat\u0103 (tid={0}) care comite xid cu succes {1} cu {2}
+WTRN0140_REC_TXN_COMMITED.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi a comis cu succes o resurs\u0103.
+WTRN0140_REC_TXN_COMMITED.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0141_REC_TXN_COMMITERR=WTRN0141I: Comitere tranzac\u0163ie recuperat\u0103 (tid={0}) de xid {1} cu {2} care a avut ca rezultat {3}
+WTRN0141_REC_TXN_COMMITERR.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi la comiterea unei resurse a primit codul r\u0103spuns dat \u00een mesaj.
+WTRN0141_REC_TXN_COMMITERR.useraction=Examina\u0163i codul r\u0103spuns pentru a determina dac\u0103 a e\u015fuat comiterea \u015fi lua\u0163i m\u0103surile corespunz\u0103toare.  Dac\u0103 indicarea codului este un rezultat euristic, corecta\u0163i orice probleme ale datelor care ar putea fi survenit.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0142_REC_TXN_ROLLED=WTRN0142I: Tranzac\u0163ia recuperat\u0103 (tid={0}) a derulat \u00eenapoi cu succes xid {1} cu {2}
+WTRN0142_REC_TXN_ROLLED.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi a derulat \u00eenapoi cu succes o resurs\u0103.
+WTRN0142_REC_TXN_ROLLED.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0143_REC_TXN_ROLLEDERR=WTRN0143I: Derulare \u00eenapoi tranzac\u0163ie recuperat\u0103 (tid={0}) de xid {1} cu {2} care a avut ca rezultat {3}
+WTRN0143_REC_TXN_ROLLEDERR.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi la derularea \u00eenapoi a unei resurse a primit codul r\u0103spuns dat \u00een mesaj.
+WTRN0143_REC_TXN_ROLLEDERR.useraction=Examina\u0163i codul r\u0103spuns pentru a determina dac\u0103 a e\u015fuat derularea \u00eenapoi \u015fi lua\u0163i m\u0103surile corespunz\u0103toare.  Dac\u0103 indicarea codului este un rezultat euristic, corecta\u0163i orice probleme ale datelor care ar putea fi survenit.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0144_REC_TXN_FORGOT=WTRN0144I: Tranzac\u0163ia recuperat\u0103 (tid={0}) a uitat xid cu succes {1} cu {2}
+WTRN0144_REC_TXN_FORGOT.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi a uitat cu succes o resurs\u0103.
+WTRN0144_REC_TXN_FORGOT.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0145_REC_TXN_FORGETERR=WTRN0145I: Uitare tranzac\u0163ie recuperat\u0103 (tid={0}) de xid {1} cu {2} care a avut ca rezultat {3}
+WTRN0145_REC_TXN_FORGETERR.explanation=Serviciul tranzac\u0163ie recupereaz\u0103 tranzac\u0163ia numit\u0103 \u015fi la uitarea unei resurse a primit codul r\u0103spuns dat \u00een mesaj.
+WTRN0145_REC_TXN_FORGETERR.useraction=Examina\u0163i codul r\u0103spuns pentru a determina dac\u0103 a e\u015fuat uitarea \u015fi lua\u0163i m\u0103surile corespunz\u0103toare.
+
+# 0 - number of xids
+# 1 - resource manager name
+# 2 - number of xids
+WTRN0146_REC_XA_RECOVERED=WTRN0146I: {0} xid ob\u0163inute din recuperarea xa \u00een {1} de care {2} va fi procesat de acest server
+WTRN0146_REC_XA_RECOVERED.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager resurs\u0103 \u00eenregistrat.
+WTRN0146_REC_XA_RECOVERED.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - restart epoch value
+WTRN0147_REC_XID_LATE=WTRN0147W: xid {0} recuperat din {1} este dintr-o instan\u0163\u0103 de server repornit mai devreme cu epoca {2}
+WTRN0147_REC_XID_LATE.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa  pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care ar fi trebuit s\u0103 fie recuperat la repornirea precedent\u0103 a serverului.  Valoarea epoch value indic\u0103 cum instan\u0163a server cu xid a fost ini\u0163ial asociat\u0103 cu o tranzac\u0163ie.
+WTRN0147_REC_XID_LATE.useraction=Examina\u0163i valoarea epoch din acest mesaj \u015fi compara\u0163i-o cu repornirea actual\u0103 a epoch serverului \u00een mesajul WTRN0132.  Dac\u0103 repornirile server intervenite au avut succes, verifica\u0163i istoricele instan\u0163elor server precedente \u00eempreun\u0103 cu istoricele actuale pentru a determina de ce acest xid nu a fost procesat \u00een timpul recuper\u0103rii.  De exemplu, managerul de resurse ar fi putut s\u0103 nu fie disponibil c\u00e2nd serverul a fost repornit ultima dat\u0103.
+
+# 0 - xid
+# 1 - resource manager name
+WTRN0148_REC_XA_ROLLBACK=WTRN0148I: xid {0} recuperat din {1} - xid nu are nici o tranzac\u0163ie asociat\u0103 \u015fi va fi derulat \u00eenapoi
+WTRN0148_REC_XA_ROLLBACK.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care nu corespunde unei tranzac\u0163ii \u00eenregistrate.  Serviciul tranzac\u0163ie va derula \u00eenapoi xid-ul ca parte a procesului de recuperare.
+WTRN0148_REC_XA_ROLLBACK.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - transaction id
+# 3 - transaction state
+WTRN0149_REC_XA_TRAN=WTRN0149I: xid {0} recuperat din {1} - xid are tranzac\u0163ia asociat\u0103 (tid={2}) cu starea \u00eenregistrat\u0103 {3}
+WTRN0149_REC_XA_TRAN.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care corespunde unei tranzac\u0163ii \u00eenregistrate.  Serviciul tranzac\u0163ie va completa tranzac\u0163ia ca parte a procesului de recuperare.
+WTRN0149_REC_XA_TRAN.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - error code
+WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: R\u0103spuns de la xid {0} recuperat de derulare \u00eenapoi din {1} - {2}
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care nu corespunde unei tranzac\u0163ii \u00eenregistrate.  Serviciul tranzac\u0163ie a \u00eencercat s\u0103 deruleze \u00eenapoi xid-ul ca parte a proces\u0103rii recuper\u0103rii.
+WTRN0150_REC_XA_ROLLEDBACK.useraction=Examina\u0163i codul de eroare pentru a determina dac\u0103 a e\u015fuat derularea \u00eenapoi.
+
+# 0 - resource manager name
+WTRN0151_REC_XA_RECOVER=WTRN0151I: Preg\u0103tire apelare recuperare xa din {0}
+WTRN0151_REC_XA_RECOVER.explanation=Serviciul tranzac\u0163ie se preg\u0103te\u015fte s\u0103 apeleze recuperarea xa pe un manager de resurse \u00eenregistrat prin deschiderea unei conexiunei \u015fi ob\u0163inerea unei resurse xa.  Dac\u0103 o resurs\u0103 xa este ob\u0163inut\u0103 cu succes, alt mesaj va urma indic\u00e2nd num\u0103rul xid-urilor returnate dintr-o recuperare xa.  Dac\u0103 survine o defectare la ob\u0163inerea unei  onexiuni sau a unei resurse xa, viitoarele mesaje vor ar\u0103ta cauza.
+WTRN0151_REC_XA_RECOVER.useraction=Dac\u0103 orice mesaj care urmeaz\u0103 indic\u0103 o e\u015fuare la ob\u0163inerea unei conexiuni sau a unei resurse xa, determina\u0163i cauza \u015fi lua\u0163i m\u0103suri corespunz\u0103toare.
+
+WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: A fost detectat\u0103 o configura\u0163ie HA neuzual\u0103.
+WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA este activat pentru acest cluster, dar managerul HA este dezactivat.
+WTRN0152_UNUSUAL_HA_CONFIG.useraction=Dac\u0103 aceasta este configura\u0163ia dorit\u0103, nu este necesar\u0103 nicio ac\u0163iune. Altfel, corecta\u0163i configura\u0163ia HA.
+
+# --------------------------------
+# WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

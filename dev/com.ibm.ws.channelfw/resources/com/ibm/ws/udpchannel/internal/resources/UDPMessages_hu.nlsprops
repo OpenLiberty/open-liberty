@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: A(z) {0} UDP csatorna a(z) {1} hoszt {2} portj\u00e1n figyel.
+CWUDP0001I.explanation=Az UDP csatorna sikeresen elindult.
+CWUDP0001I.useraction=Semmit sem kell tennie.
+CWUDP0002I=CWWKO0401I: A(z) {0} UDP csatorna m\u00e1r nem figyel a(z) {1} hoszt {2} portj\u00e1n.
+CWUDP0002I.explanation=Az UDP csatorna norm\u00e1lisan le\u00e1llt.
+CWUDP0002I.useraction=Semmit sem kell tennie.
+CWUDP0003W=CWWKO0402W: A(z) {0} UDP csatorna helytelen konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra. N\u00e9v: {1}  \u00c9rt\u00e9k: {2}.
+CWUDP0003W.explanation=Az UDP csatorna a konfigur\u00e1ci\u00f3s \u00e9rt\u00e9keket figyelmen k\u00edv\u00fcl hagyja.
+CWUDP0003W.useraction=Semmit sem kell tennie.
+CWUDP0004E=CWWKO0403E: A(z) {0} UDP csatorna inicializ\u00e1l\u00e1sa nem siker\u00fclt. A(z) {1} hoszt nem oldhat\u00f3 fel.
+CWUDP0004E.explanation=A rendszer nem tudja feloldani a konfigur\u00e1lt hosztnevet.
+CWUDP0004E.useraction=Ellen\u0151rizze a hosztn\u00e9v konfigur\u00e1ci\u00f3j\u00e1nak helyess\u00e9g\u00e9t.
+
+CWUDP0005E=CWWKO0404E: A(z) {0} UDP csatorna inicializ\u00e1l\u00e1sa nem siker\u00fclt. Az adatcsomag socket k\u00f6t\u00e9s nem siker\u00fclt a(z) {1} hoszton \u00e9s {2} porton.
+CWUDP0005E.explanation=Lehets\u00e9ges, hogy a konfigur\u00e1lt port m\u00e1r haszn\u00e1latban van.
+CWUDP0005E.useraction=Ellen\u0151rizze a port konfigur\u00e1ci\u00f3j\u00e1nak helyess\u00e9g\u00e9t.
+
+CWUDP0006I=CWWKO0405I: Az UDP csatorna nem tudta elv\u00e9gezni a(z) {0} hoszt Tartom\u00e1nyn\u00e9v szolg\u00e1ltat\u00e1s (DNS) kikeres\u00e9s\u00e9t. A sikertelen kikeres\u00e9s {1} alkalommal ism\u00e9tl\u0151d\u00f6tt.
+CWUDP0006I.explanation=Az UDP csatorna megpr\u00f3b\u00e1lt csomagot k\u00fcldeni egy hosztra, melynek hosztneve nem oldhat\u00f3 fel. Lehets\u00e9ges, hogy a DNS kiszolg\u00e1l\u00f3 nem fut, vagy helytelen\u00fcl van konfigur\u00e1lva.
+CWUDP0006I.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 DNS konfigur\u00e1ci\u00f3j\u00e1nak helyess\u00e9g\u00e9t.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s hi\u00e1nyzik.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

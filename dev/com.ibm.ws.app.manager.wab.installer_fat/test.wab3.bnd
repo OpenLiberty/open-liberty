@@ -1,0 +1,10 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+allow.bundle-version.override=true
+Bundle-Name: Simple test WAB
+Bundle-SymbolicName: test.wab3
+Bundle-Version: ${bVersion}
+Bundle-Description: Simple test WAB; version=${bVersion}
+Private-Package: test.wab3
+Web-ContextPath: @WAB3
+

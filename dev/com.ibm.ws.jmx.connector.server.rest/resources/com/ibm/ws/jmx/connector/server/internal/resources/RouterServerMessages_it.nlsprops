@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: Collective Controller non ha potuto creare il contesto SSL durante il tentativo di instradamento della connessione jmx a {0}.  L''eccezione \u00e8: {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=Non \u00e8 stato possibile creare un contesto SSL con il certificato SSL del server. 
+jmx.connector.server.rest.router.ssl.exception.useraction=Verificare la configurazione SSL del server e registrare di nuovo il server sul collective controller.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: Le informazioni di autenticazione JMX non sono disponibili nel repository di Collective Controller per il server di destinazione {0} sull''host {1} nella directory {2}. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=Le informazioni di autenticazione JMX sono obbligatorie per effettuare una connessione JMX al server di destinazione specificato.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=Verificare che il server di destinazione sia stato avviato correttamente su Collective Controller.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E: La propriet\u00e0 nome host delle informazioni di autenticazione JMX non \u00e8 disponibile nel repository di Collective Controller per il server di destinazione {0} sull''host {1} nella directory {2}.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=La propriet\u00e0 nome host delle informazioni di autenticazione JMX \u00e8 necessaria per stabilire una connessione JMX al server di destinazione specificato.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=Verificare che il server di destinazione sia stato avviato correttamente su Collective Controller.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: La propriet\u00e0 porta delle informazioni di autenticazione JMX non \u00e8 disponibile nel repository del Collective Controller per il server di destinazione {0} sull''host {1} nella directory {2}.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=Il numero di porta delle informazioni di autenticazione JMX \u00e8 necessario per eseguire una connessione JMX al server di destinazione specificato.
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=Verificare che il server di destinazione sia stato avviato correttamente su Collective Controller.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: Il keystore richiesto {0} non \u00e8 configurato.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=Il keystore richiesto per l'instradamento JMX non \u00e8 configurato.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Assicurarsi che il keystore sia specificato nel file server.xml.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: Il lettore del repository di Collective Controller non \u00e8 disponibile.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=Il lettore del repository di Collective Controller richiesto non si \u00e8 avviato.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=Controllare la configurazione del server per verificare che le funzioni richieste per l'instradamento JMX siano presenti.

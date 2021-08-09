@@ -1,0 +1,9 @@
+<client>
+	<include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>javaeeClient-8.0</feature>
+    </featureManager>
+    
+   <application location="JsonbAppClient.ear"/>
+
+</client>

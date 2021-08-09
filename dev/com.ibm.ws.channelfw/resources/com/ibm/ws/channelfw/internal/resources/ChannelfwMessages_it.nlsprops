@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} mancante o non \u00e8 una directory.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Impossibile aprire l''implementazione del canale {0}: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: L''implementazione del canale {0} non dispone di un descrittore del canale.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Sono stati generati alcuni errori durante l''analisi del descrittore del canale da {0}: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: L''implementazione del canale {0} non specifica una classe di runtime del factory.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: L''implementazione del canale {0} non specifica una classe di configurazione del canale.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: L''implementazione del canale {0} non specifica le interfacce lato unit\u00e0 o lato applicazione.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: L''implementazione del canale {0} specifica un peso predefinito {1}. Questo valore non \u00e8 un peso predefinito valido.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: La catena {0} non contiene canali di trasporto.
+chain.channels.empty.explanation=Per il corretto funzionamento, le catene devono contenere canali di trasporto.
+chain.channels.empty.useraction=Aggiungere dei canali di trasporto alla catena specificata.
+
+chain.flow.mismatch=CWWKO0010E: I canali di trasporto della catena {0} devono essere trasmessi tutti nella stessa direzione.
+chain.flow.mismatch.explanation=I canali di trasporto possono essere trasmessi in un server (canali in entrata) o da un server (canali in uscita). Tutti i canali di trasporto in una catena devono essere trasmessi nella stessa direzione.
+chain.flow.mismatch.useraction=Verificare che tutti i canali di trasporto nella catena siano trasmessi nella stessa direzione. Non utilizzare contemporaneamente canali in entrata ed in uscita nella stessa catena.
+
+chain.inbound.first.mismatch=CWWKO0011E: Il primo canale di trasporto nella catena {0} non \u00e8 un canale connettore.
+chain.inbound.first.mismatch.explanation=Il primo canale di trasporto in una catena in entrata deve essere un canale connettore.
+chain.inbound.first.mismatch.useraction=Verificare che il primo canale di trasporto nella catena in entrata sia un canale connettore.
+
+chain.inbound.last.mismatch=CWWKO0012E: L''ultimo canale di trasporto nella catena {0} non \u00e8 un canale acceptor.
+chain.inbound.last.mismatch.explanation=L'ultimo canale di trasporto in una catena in entrata deve essere un canale acceptor.
+chain.inbound.last.mismatch.useraction=Verificare che l'ultimo canale di trasporto nella catena in entrata sia un canale acceptor.
+
+chain.acceptor.determination.failure=CWWKO0013E: Il sistema non \u00e8 stato in grado di determinare l''ID acceptor per la catena {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: Il sistema non \u00e8 stato in grado di individuare un descrittore del canale per mettere in corrispondenza il tipo di configurazione del canale {0}.
+channel.descriptor.notfound.explanation=I canali devono fornire un descrittore per associare i tipi di configurazione ai tipi di runtime; non \u00e8 stato possibile trovare alcun descrittore corrispondente.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: Il sistema non \u00e8 stato in grado di acquisire il seguente contesto di denominazione iniziale: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: Il sistema non \u00e8 stato in grado di caricare il seguente factory del canale di trasporto: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: Il sistema non \u00e8 stato in grado di caricare il seguente canale di trasporto: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: Il sistema non \u00e8 stato in grado di caricare la seguente catena: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: Il servizio del canale di trasporto ha avviato la catena {0}.
+chain.started.explanation=Il servizio del canale di trasporto ha avviato la catena specificata.
+chain.started.useraction=Non \u00e8 necessaria alcuna azione.
+
+chain.stopped=CWWKO0020I: Il servizio del canale di trasporto ha arrestato la catena con etichetta {0}.
+chain.stopped.explanation=Il servizio del canale di trasporto ha arrestato la catena specificata.
+chain.stopped.useraction=Non \u00e8 necessaria alcuna azione.
+
+chain.disabled=CWWKO0021I: La catena in entrata {0} \u00e8 stata contrassegnata come disabilitata.
+chain.disabled.explanation=Per essere idonee per l'avvio automatico, le catene in entrata devono essere esplicitamente contrassegnate come abilitate. Le catene disabilitate possono comunque essere avviate, ma devono essere avviate in modo esplicito per nome.
+chain.disabled.useraction=Non \u00e8 necessaria alcuna azione.
+
+config.load.error=CWWKO0022E: Il servizio del canale di trasporto non \u00e8 stato in grado di individuare la propria configurazione a causa di un''eccezione: {0}
+config.load.error.explanation=Il servizio del canale di trasporto ha generato un'eccezione durante il tentativo di rilevare e caricare la propria configurazione. Verr\u00e0 avviato senza configurazione.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: Il servizio del canale di trasporto non \u00e8 stato in grado di individuare la propria configurazione ma verr\u00e0 avviato senza.
+boot.no.config.explanation=Il servizio del canale di trasporto non \u00e8 stato in grado di individuare la propria configurazione. I dettagli della configurazione predefinita per il servizio del canale di trasporto devono essere aggiunti al file di configurazione server.xml.
+boot.no.config.useraction=Utilizzare la console di gestione o wsadmin per aggiungere la configurazione predefinita per il servizio del canale di trasporto.
+
+framework.disabled=CWWKO0024I: Il servizio del canale di trasporto \u00e8 stato esplicitamente disabilitato.
+framework.disabled.explanation=Il servizio del canale di trasporto \u00e8 stato esplicitamente configurato in modo da essere disabilitato e non verr\u00e0 avviato.
+framework.disabled.useraction=Non \u00e8 necessaria alcuna azione.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: L''implementazione del canale {0} non specifica una classe di configurazione del factory.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: Il sistema non \u00e8 stato in grado di individuare un descrittore del factory canale per mettere in corrispondenza il tipo di configurazione del canale di trasporto {0}.
+factory.descriptor.notfound.explanation=I canali devono fornire un descrittore per associare i tipi di configurazione ai tipi di runtime. Non \u00e8 stato possibile trovare alcun descrittore corrispondente.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: Una o pi\u00f9 implementazioni del canale di trasporto non sono state caricate.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: L''ultimo canale di trasporto nella catena {0} non \u00e8 un canale connettore.
+chain.outbound.last.mismatch.explanation=L'ultimo canale di trasporto in una catena in uscita deve essere un canale connettore.
+chain.outbound.last.mismatch.useraction=Verificare che l'ultimo canale di trasporto nella catena in uscita sia un canale connettore.
+
+chain.initialization.error=CWWKO0029E: \u00c8 stata generata un''eccezione durante l''inizializzazione della catena {0} a causa dell''eccezione {1}
+chain.initialization.error.explanation=\u00c8 stata generata un'eccezione nella catena o nei canali sottostanti.
+chain.initialization.error.useraction=Verificare che nella catena siano utilizzati i canali corretti.
+
+chain.start.error=CWWKO0030E: \u00c8 stata generata un''eccezione durante l''avvio della catena {0} a causa dell''eccezione {1}
+chain.start.error.explanation=\u00c8 stata generata un'eccezione nella catena o nei canali sottostanti.
+chain.start.error.useraction=Verificare che nella catena siano utilizzati i canali corretti.
+
+chain.stop.error=CWWKO0031E: \u00c8 stata generata un''eccezione durante l''arresto della catena {0} a causa dell''eccezione {1}
+chain.stop.error.explanation=\u00c8 stata generata un'eccezione nella catena o nei canali sottostanti.
+chain.stop.error.useraction=Verificare che nella catena siano utilizzati i canali corretti.
+
+chain.destroy.error=CWWKO0032E: \u00c8 stata generata un''eccezione durante l''eliminazione della catena {0} a causa dell''eccezione {1}
+chain.destroy.error.explanation=\u00c8 stata generata un'eccezione nella catena o nei canali sottostanti.
+chain.destroy.error.useraction=Verificare che nella catena siano utilizzati i canali corretti.
+
+chain.retrystart.error=CWWKO0033E: Il servizio del canale di trasporto non ha avviato la catena di trasporto {0} dopo {1} tentativi di avvio.
+chain.retrystart.error.explanation=Il numero di tentativi configurato non \u00e8 sufficiente per l'avvio della catena o la porta utilizzata dalla catena \u00e8 gi\u00e0 utilizzata.
+chain.retrystart.error.useraction=Verificare che la porta utilizzata dalla catena non sia gi\u00e0 in uso.  Impostare correttamente le propriet\u00e0 personalizzate per il riavvio delle catene.
+
+chain.retrystart.warning=CWWKO0034W: Il servizio del canale di trasporto ha rilevato che la catena di trasporto {0} non \u00e8 stata avviata.  Il servizio prover\u00e0 ad avviare la catena {0} ogni {1} millisecondi, fino ad un massimo di {2} tentativi.
+chain.retrystart.warning.explanation=Il tentativo iniziale di avviare la catena ha avuto esito negativo. Verranno eseguiti ulteriori tentativi di avvio.
+chain.retrystart.warning.useraction=Ricercare un messaggio di verifica o di errore che indica il risultato dei tentativi di riavvio.
+
+framework.property.error=CWWKO0035E: Il servizio del canale di trasporto ha rilevato il valore {0} per la propriet\u00e0 {1}. Questo valore non \u00e8 valido.
+framework.property.error.explanation=Il valore della propriet\u00e0 non \u00e8 compreso nei limiti previsti.
+framework.property.error.useraction=Modificare la configurazione in modo da impostare la propriet\u00e0 su un valore valido.
+
+missing.factory=CWWKO0036W: La configurazione della catena contiene un tipo di factory mancante, {0}, e non \u00e8 stata in grado di avviare una o pi\u00f9 catene.
+missing.factory.explanation=L'ambiente di runtime non contiene un factory canale del tipo corrispondente, per cui non \u00e8 in grado di avviare le catene che lo utilizzano.
+missing.factory.useraction=Verificare se nell'elenco delle funzioni di runtime mancano uno o pi\u00f9 elementi richiesti.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Impossibile creare la configurazione del canale TCP predefinita. L''eccezione \u00e8 {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=\u00c8 stato rilevato un errore durante la creazione della configurazione predefinita per i canali TCP.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Consultare l'eccezione per informazioni relative al motivo per cui la creazione ha avuto esito negativo.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Impossibile creare la configurazione del canale UDP predefinita. L''eccezione \u00e8 {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=\u00c8 stato rilevato un errore durante la creazione della configurazione predefinita per i canali UDP.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Consultare l'eccezione per informazioni relative al motivo per cui la creazione ha avuto esito negativo.
+
+channel.shared.warning=CWWKO0039W: Il canale non condivisibile {0} \u00e8 condiviso tra pi\u00f9 region.
+channel.shared.warning.explanation=Il canale \u00e8 stato configurato in modo da essere non condivisibile. Tuttavia, il canale \u00e8 condiviso tra pi\u00f9 region.
+channel.shared.warning.useraction=Esaminare la configurazione del canale ed il relativo utilizzo.

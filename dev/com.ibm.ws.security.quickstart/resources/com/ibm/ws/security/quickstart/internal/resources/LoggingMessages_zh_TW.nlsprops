@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.quickstart/resources/com/ibm/ws/security/quickstart/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Quick Start Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0900 - CWWKS0999
+
+QUICK_START_SECURITY_MISSING_ATTIRBUTES=CWWKS0900E: <quickStartSecurity> \u5143\u7d20\u907a\u6f0f\u5fc5\u8981\u5c6c\u6027\uff1a{0}\u3002\u8acb\u5b9a\u7fa9\u907a\u6f0f\u7684\u5c6c\u6027\u3002
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.explanation=<quickStartSecurity> \u5143\u7d20\u907a\u6f0f\u5fc5\u8981\u5c6c\u6027\u3002
+QUICK_START_SECURITY_MISSING_ATTIRBUTES.useraction=\u8acb\u5b9a\u7fa9\u5fc5\u8981\u5c6c\u6027\u3002
+
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY=CWWKS0901E: \u7cfb\u7d71\u5c07\u5ffd\u7565 <quickStartSecurity> \u914d\u7f6e\uff0c\u56e0\u70ba\u5df2\u914d\u7f6e\u53e6\u4e00\u500b UserRegistry\u3002
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.explanation=\u53ea\u6709\u5728\u672a\u6307\u5b9a\u5176\u4ed6 UserRegistry \u914d\u7f6e\u6642\uff0c\u624d\u6703\u4f7f\u7528 <quickStartSecurity> \u914d\u7f6e\u3002
+QUICK_START_SECURITY_WITH_ANOTHER_REGISTRY.useraction=\u8acb\u53ea\u4f7f\u7528\u4e00\u500b\u4f7f\u7528\u8005\u767b\u9304\u914d\u7f6e\u3002
+
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION=CWWKS0902E: \u7cfb\u7d71\u5c07\u5ffd\u7565 <quickStartSecurity> \u914d\u7f6e\uff0c\u56e0\u70ba\u5df2\u660e\u78ba\u5b9a\u7fa9\u7ba1\u7406\u5b89\u5168\u6388\u6b0a\u9023\u7d50\u3002
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.explanation=\u53ea\u6709\u5728\u672a\u5b9a\u7fa9\u660e\u78ba\u7684\u7ba1\u7406\u5b89\u5168\u6388\u6b0a\u9023\u7d50\u914d\u7f6e\u6642\uff0c\u624d\u6703\u4f7f\u7528 <quickStartSecurity> \u914d\u7f6e\u3002
+QUICK_START_SECURITY_WITH_OTHER_MANAGEMENT_AUTHORIZATION.useraction=\u8acb\u4f7f\u7528 <quickStartSecurity> \u4e26\u79fb\u9664\u660e\u78ba\u7684\u7ba1\u7406\u5b89\u5168\u6388\u6b0a\u9023\u7d50\uff0c\u6216\u662f\u914d\u7f6e\u4e0d\u540c\u7684\u4f7f\u7528\u8005\u767b\u9304\u3002

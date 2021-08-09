@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+################### LIBRARY SERVICE EXPORT MESSAGES 0050-0058 ################### 
+#################################################################################
+
+# {0} - the name of the library
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the implementation class
+bell.service.name=CWWKL0050I: The {0} library registered the service that is declared in the {1} file, using the {2} implementation class.
+bell.service.name.explanation=The service was declared in the META-INF/services directory and the service was registered to the server.  
+bell.service.name.useraction=No user action is required.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.no.impl=CWWKL0051W: The system cannot locate the {0} implementation of the service that is declared in the {1} file and registered from the {2} library.
+bell.no.impl.explanation=The implementation of the service was not found.
+bell.no.impl.useraction=Make sure that the name that is specified in the service declaration is correct.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - message from the NoClassDefFoundError
+bell.no.inter=CWWKL0052W: The system cannot construct an instance of the {0} implementation class because of a missing class definition. This class is an implementation of the service that is declared in the {1} file and registered from the {2} library. The error is as follows: {3}.
+bell.no.inter.explanation=A class that is required for the initialization of the service was not found.
+bell.no.inter.useraction=Make sure that the name that is specified in the service declaration is correct. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.not.constructible=CWWKL0053W: The system cannot construct an instance of the {0} implementation class. This class is an implementation of the service that is declared in the {1} file and registered from the {2} library.
+bell.not.constructible.explanation=The system cannot create an instance of the service implementation because there is no access to the class definition, or the class is missing a no argument constructor.
+bell.not.constructible.useraction=Ensure that there is access to the class definition and the constructor.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.illegal.access=CWWKL0054W: The system cannot construct an instance of the {0} implementation class due to unauthorized access. This class is an implementation of the service that is declared the {1} file and registered from the {2} library.
+bell.illegal.access.explanation=The system cannot access the class declaration or the constructor.
+bell.illegal.access.useraction=Ensure that that the class and constructor are defined and accessible.
+
+# {0} - the name of the library
+bell.no.services.found=CWWKL0055W: The system cannot find any services in the following library: {0}.
+bell.no.services.found.explanation=There were no services declared in the META-INF/services folder.
+bell.no.services.found.useraction=Ensure that the Basic Extensions using Liberty Libraries (BELL) is configured with the correct library that has the expected META-INF/services folder
+
+# {0} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {1} - the name of the library
+# {2} - the exception thrown when trying to read the file
+bell.io.error=CWWKL0056W: An error occurred while reading the {0} file for exporting services from the {1} library. The error is: {2}
+bell.io.error.explanation=The service declaration file is not readable.
+bell.io.error.useraction=Ensure that the file is readable by the system.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - the exception thrown when instantiating the class
+bell.error.ctor=CWWKL0057W: The {0} instance was not created successfully. This class is an implementation of the service that is declared in the {1} file and registered from the {2} library. The following error occurred: {3}
+bell.error.ctor.explanation=The system received an unexpected exception error during the creation of the instance. This error can occur as a result of an exception from the constructor of the class.
+bell.error.ctor.useraction=If an exception occurred in the constructor, review and verify the behavior of the class constructor.
+
+bell.no.services.config=CWWKL0058W: Cannot find the {0} service in META-INF/services folder from the {1} library.
+bell.no.services.config.explanation=There is no matching service declared in the META-INF/services folder.
+bell.no.services.config.useraction= No user action is required.

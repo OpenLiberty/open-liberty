@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: A Java felk\u00e9sz\u00edt\u00e9s p\u00e9ld\u00e1ny nem \u00e9rhet\u0151 el, \u00edgy a megfigyel\u00e9si \u00e9s diagnosztikai k\u00e9pess\u00e9gek nem m\u0171k\u00f6dnek. Konfigur\u00e1lja a ws-javaagent.jar f\u00e1jlt a -javaagent JVM param\u00e9terrel.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=A felk\u00e9sz\u00edt\u00e9si p\u00e9ld\u00e1ny sz\u00fcks\u00e9ges az oszt\u00e1lyok byte-k\u00f3d besz\u00far\u00e1s\u00e1val t\u00f6rt\u00e9n\u0151 \u00e1talak\u00edt\u00e1s\u00e1hoz. A byte-k\u00f3d besz\u00far\u00e1st a Liberty megfigyel\u00e9si \u00e9s diagnosztikai inform\u00e1ci\u00f3k el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz haszn\u00e1lja.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=A Java felk\u00e9sz\u00edt\u00e9s enged\u00e9lyez\u00e9s\u00e9hez tov\u00e1bbi JVM be\u00e1ll\u00edt\u00e1sok sz\u00fcks\u00e9gesek. Konfigur\u00e1lja a ws-javaagent.jar f\u00e1jlt a -javaagent JVM param\u00e9terrel. A ws-javaagent.jar f\u00e1jl a Liberty profil telep\u00edt\u00e9s ${wlp.install.dir}/bin/tools k\u00f6nyvt\u00e1r\u00e1ban tal\u00e1lhat\u00f3.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Id\u0151tartam
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=M\u0171velet

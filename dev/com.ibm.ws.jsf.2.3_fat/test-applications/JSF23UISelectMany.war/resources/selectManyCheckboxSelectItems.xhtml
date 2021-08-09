@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title>JSF 2.3 SelectManyCheckbox SelectItems</title> 
+    </h:head>
+    <h:body>
+        <H2>JSF 2.3 SelectManyCheckbox: selectItems</H2>
+        <br/>
+        <h:form id="form1" prependId="false">
+            <h:selectManyCheckbox id="checkboxId" value="#{uISelectManyBean.selectedItems}">
+                <f:selectItems value="#{uISelectManyBean.items}"/>
+            </h:selectManyCheckbox>
+            <h:commandButton id="submitButton" value="Submit"/>
+        </h:form>
+        <br/>
+        Selected Items: #{uISelectManyBean.selectedItems}
+    </h:body>
+</html>

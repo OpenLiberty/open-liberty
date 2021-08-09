@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: FFDC \u65e0\u6cd5\u6253\u5f00\u6216\u521b\u5efa\u4e8b\u4ef6\u6d41\u6587\u4ef6 {0}\u3002\u5f02\u5e38\uff1a{1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=\u65e0\u6cd5\u6253\u5f00\u6216\u521b\u5efa\u4e8b\u4ef6\u6d41\u6587\u4ef6\u3002\u5305\u542b\u65e5\u5fd7\u6587\u4ef6\u7684\u6587\u4ef6\u7cfb\u7edf\u4e0d\u53ef\u7528\uff0c\u6216\u8fd0\u884c FFDC \u7684\u8fdb\u7a0b\u4e0d\u5141\u8bb8\u521b\u5efa\u548c\u8bbf\u95ee\u65e5\u5fd7\u76ee\u5f55\u4e2d\u7684\u6587\u4ef6\u3002
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=\u8bf7\u9a8c\u8bc1\u5305\u542b\u65e5\u5fd7\u76ee\u5f55\u7684\u6587\u4ef6\u7cfb\u7edf\u662f\u5426\u53ef\u7528\uff0c\u4ee5\u53ca\u662f\u5426\u5141\u8bb8\u8fd0\u884c FFDC \u7684\u8fdb\u7a0b\u521b\u5efa\u548c\u8bbf\u95ee\u65e5\u5fd7\u76ee\u5f55\u4e2d\u7684\u6587\u4ef6\u3002
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: \u5df2\u5728 {1} \u521b\u5efa FFDC \u4e8b\u4ef6\uff1a\u201c{0}\u201d
+lwas.FFDCIncidentEmitted.explanation=\u5df2\u5728\u914d\u7f6e\u7684\u65e5\u5fd7\u4f4d\u7f6e\u521b\u5efa FFDC \u4e8b\u4ef6\u3002
+lwas.FFDCIncidentEmitted.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002

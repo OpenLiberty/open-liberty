@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) OASIS Open 2006.  -->
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06" 
+        xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+        targetNamespace="http://docs.oasis-open.org/ws-tx/wsat/2006/06">   
+    <wsdl:types>
+        <xs:schema>            
+            <xs:import
+                namespace="http://docs.oasis-open.org/ws-tx/wsat/2006/06"
+                schemaLocation="wstx-wsat-1.1-schema-200701.xsd"/>
+        </xs:schema>
+    </wsdl:types>
+    <!-- Messages -->
+    <wsdl:message name="Prepare">
+        <wsdl:part name="parameters" element="wsat:Prepare"/>
+    </wsdl:message>
+    <wsdl:message name="Prepared">
+        <wsdl:part name="parameters" element="wsat:Prepared"/>
+    </wsdl:message>
+    <wsdl:message name="Aborted">
+        <wsdl:part name="parameters" element="wsat:Aborted"/>
+    </wsdl:message>
+    <wsdl:message name="ReadOnly">
+        <wsdl:part name="parameters" element="wsat:ReadOnly"/>
+    </wsdl:message>
+    <wsdl:message name="Commit">
+        <wsdl:part name="parameters" element="wsat:Commit"/>
+    </wsdl:message>
+    <wsdl:message name="Rollback">
+        <wsdl:part name="parameters" element="wsat:Rollback"/>
+    </wsdl:message>
+    <wsdl:message name="Committed">
+        <wsdl:part name="parameters" element="wsat:Committed"/>
+    </wsdl:message>
+    <!-- Port Types -->
+    <wsdl:portType name="CoordinatorPortType">
+        <wsdl:operation name="PreparedOperation">
+            <wsdl:input message="wsat:Prepared" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/Prepared"/>
+        </wsdl:operation>
+        <wsdl:operation name="AbortedOperation">
+            <wsdl:input message="wsat:Aborted" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/Aborted"/>
+        </wsdl:operation>
+        <wsdl:operation name="ReadOnlyOperation">
+            <wsdl:input message="wsat:ReadOnly" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/ReadOnly"/>
+        </wsdl:operation>
+        <wsdl:operation name="CommittedOperation">
+            <wsdl:input message="wsat:Committed" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/Committed"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="ParticipantPortType">
+        <wsdl:operation name="PrepareOperation">
+            <wsdl:input message="wsat:Prepare" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/Prepare"/>
+        </wsdl:operation>
+        <wsdl:operation name="CommitOperation">
+            <wsdl:input message="wsat:Commit" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/Commit"/>
+        </wsdl:operation>
+        <wsdl:operation name="RollbackOperation">
+            <wsdl:input message="wsat:Rollback" wsam:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06/Rollback"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

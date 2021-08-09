@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/FFDCMessages.nlsprops
+#COMPONENTPREFIX FFDC
+#COMPONENTNAMEFOR FFDC WebSphere First Failure Data Capture
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Shared/reused from tWAS
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE=FFDC0011I: FFDC n''a pas pu ouvrir ni cr\u00e9er un fichier de flux d''incident {0}. Exception : {1}
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.explanation=Un fichier de flux d'incident n'a pas pu \u00eatre ouvert ou cr\u00e9\u00e9. Soit le syst\u00e8me de fichiers contenant le fichier journal n'est pas disponible, soit le processus ex\u00e9cutant FFDC n'est pas autoris\u00e9 \u00e0 cr\u00e9er et \u00e0 ouvrir des fichiers dans le r\u00e9pertoire des journaux.
+INCIDENTSTREAMIMPL_FAILED_TO_OPEN_FILE.useraction=V\u00e9rifiez la disponibilit\u00e9 du syst\u00e8me de fichiers contenant le r\u00e9pertoire des journaux et assurez-vous que le processus ex\u00e9cutant FFDC dispose bien des autorisations lui permettant de cr\u00e9er des fichiers dans ce r\u00e9pertoire et d'y acc\u00e9der.
+
+# Provided to tWAS
+lwas.FFDCIncidentEmitted=FFDC1015I: Un incident FFDC a \u00e9t\u00e9 cr\u00e9\u00e9 : "{0}" dans {1}
+lwas.FFDCIncidentEmitted.explanation=Un incident FFDC a \u00e9t\u00e9 cr\u00e9\u00e9 \u00e0 l'emplacement de journalisation configur\u00e9.
+lwas.FFDCIncidentEmitted.useraction=Aucune action n'est n\u00e9cessaire.

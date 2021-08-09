@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN" "http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd">
+<ejb-jar id="ejb-jar_ID">
+	<description>Basic Calculator Stateless Session EJB</description>
+	<display-name>Basic Calculator EJB Module</display-name>
+	<enterprise-beans>
+		<session id="Session_1">
+			<description>Basic Calculator to add, subtract, multiply, divide</description>
+			<display-name>Basic Calculator Stateless Session</display-name>
+			<ejb-name>BasicCalculator</ejb-name>
+			<home>com.ibm.websphere.samples.technologysamples.ejb.stateless.basiccalculatorejb.BasicCalculatorHome</home>
+			<remote>com.ibm.websphere.samples.technologysamples.ejb.stateless.basiccalculatorejb.BasicCalculator</remote>
+			<ejb-class>com.ibm.websphere.samples.technologysamples.ejb.stateless.basiccalculatorejb.BasicCalculatorBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+		</session>
+	</enterprise-beans>
+	<assembly-descriptor id="AssemblyDescriptor_1">
+		<security-role id="SecurityRole_1">
+			<description>Manager in an enterprise</description>
+			<role-name>Manager</role-name>
+		</security-role>
+		<security-role id="SecurityRole_2">
+			<description>Employee in an enterprise</description>
+			<role-name>Employee</role-name>
+		</security-role>
+		<security-role id="SecurityRole_3">
+			<description>All authenticated users in an enterprise</description>
+			<role-name>AllAuthenticated</role-name>
+		</security-role>
+		<method-permission id="MethodPermission_1">
+			<description></description>
+			<role-name>Employee</role-name>
+			<method id="MethodElement_1">
+				<ejb-name>BasicCalculator</ejb-name>
+				<method-intf>Remote</method-intf>
+				<method-name>makeSum</method-name>
+				<method-params>
+					<method-param>double</method-param>
+					<method-param>double</method-param>
+				</method-params>
+			</method>
+		</method-permission>
+		<method-permission id="MethodPermission_2">
+			<description></description>
+			<role-name>Manager</role-name>
+			<method id="MethodElement_2">
+				<ejb-name>BasicCalculator</ejb-name>
+				<method-intf>Remote</method-intf>
+				<method-name>makeDifference</method-name>
+				<method-params>
+					<method-param>double</method-param>
+					<method-param>double</method-param>
+				</method-params>
+			</method>
+		</method-permission>
+		<method-permission id="MethodPermission_3">
+			<description>Allow AllAuthenticated users to create SecFVTS1EJB</description>
+			<role-name>AllAuthenticated</role-name>
+			<method id="MethodElement_3">
+				<ejb-name>BasicCalculator</ejb-name>
+				<method-intf>Home</method-intf>
+				<method-name>makeProduct</method-name>
+				<method-params>
+					<method-param>double</method-param>
+					<method-param>double</method-param>
+				</method-params>
+			</method>
+		</method-permission>
+	</assembly-descriptor>
+</ejb-jar>

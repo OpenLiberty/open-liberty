@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.1,ou=comparators,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.1.1
+m-fqcn: org.apache.directory.api.ldap.model.schema.comparators.ComparableCompara
+ tor
+objectclass: metaComparator
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: f4241ebc-6a71-45a4-9d8e-2df4e4f7952d
+entryCSN: 20130919081858.320000Z#000001#000#000000
+entryParentId: 069558cb-8f21-414f-b591-1780e00f2305
+createTimestamp: 20130919081909.055Z

@@ -1,0 +1,10 @@
+version: 1
+dn: ou=syntaxCheckers,cn=apachemeta,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: df2fb709-a856-49a2-91ca-d9d5bd7711d7
+entryCSN: 20130919065344.907000Z#000002#000#000000
+entryParentId: d7d63222-3d4d-4943-b827-5680b17a0299
+ou: syntaxcheckers
+createTimestamp: 20130919065351.952Z

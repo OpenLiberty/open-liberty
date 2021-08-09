@@ -1,0 +1,8 @@
+{
+    "book": {
+        "title": "Anna Karenina",
+        "author": "Leo Tolstoy",
+        "year": "1873",
+        "genre": "Realist literature"
+     }
+}

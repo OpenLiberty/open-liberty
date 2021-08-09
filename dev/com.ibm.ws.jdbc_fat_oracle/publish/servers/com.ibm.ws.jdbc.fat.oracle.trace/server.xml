@@ -1,0 +1,70 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.2</feature>
+      <feature>jndi-1.0</feature>
+      <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="oracletracefat.war" >
+        <classloader commonLibraryRef="DBLib"/>
+    </application>
+    
+    <library id="DBLib">
+    	<fileset dir="${shared.resource.dir}/oracle"/>
+    </library>
+    
+    <dataSource id="DefaultDataSource">
+    	<jdbcDriver libraryRef="DBLib"/>
+    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    </dataSource>
+    
+    <!-- This datasource is not intended to actually make an SSL connection to the oracle backend, 
+    instead we are just creating this datasource to ensure that the passwords in the connectionProperties are hidden in trace.-->
+    <dataSource id="conn-prop-ds" jndiName="jdbc/conn-prop-ds">
+    	<properties.oracle URL="${env.URL}" connectionProperties="
+	    	oracle.net.ssl_version=1.2;
+	    	oracle.net.authentication_services=(TCPS);
+	    	javax.net.ssl.keyStore=path-to-keystore/keystore.p12;
+	    	javax.net.ssl.keyStoreType=PKCS12;
+	    	javax.net.ssl.keyStorePassword=${env.SSL_PASSWORD};
+	    	javax.net.ssl.trustStore= path-to-keystore/keystore.p12;
+	    	javax.net.ssl.trustStoreType=PKCS12;
+	    	javax.net.ssl.trustStorePassword=${env.SSL_PASSWORD}"
+	    	/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    </dataSource>
+    
+    <dataSource id="conn-prop-ds-generic" jndiName="jdbc/conn-prop-ds-generic">
+    	<properties URL="${env.URL}" connectionProperties="
+	    	oracle.net.ssl_version=1.2;
+	    	oracle.net.authentication_services=(TCPS);
+	    	javax.net.ssl.keyStore=path-to-keystore/keystore.p12;
+	    	javax.net.ssl.keyStoreType=PKCS12;
+	    	javax.net.ssl.keyStorePassword=${env.SSL_PASSWORD};
+	    	javax.net.ssl.trustStore= path-to-keystore/keystore.p12;
+	    	javax.net.ssl.trustStoreType=PKCS12;
+	    	javax.net.ssl.trustStorePassword=${env.SSL_PASSWORD}"
+	    	/>
+    	<jdbcDriver libraryRef="DBLib"/>
+    </dataSource>
+    
+    <javaPermission codebase="${shared.resource.dir}/oracle/oracleunknown.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/apps/oracletracefat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+
+    <variable name="TEMP_TABLE_NAME" value="TEMP1"/>
+
+    <variable name="onError" value="FAIL"/>
+</server>

@@ -1,0 +1,27 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector.manager/resources/com/ibm/ws/collector/manager/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# New messages starting December 1, 2016 should use message block TRAS4001 - TRAS4100.
+
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING=TRAS0120W: The collector manager has detected that handler {0} has lost {1} events from source {2} since the handler started.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.explanation=Handler loses events when it is not able to consume the events at the rate at which they are being produced by a source. The collector manager has sufficient large internal buffers to accommodate the slow consumption of events by a handler. However, a source that produces a large volume of events ends up overwriting these buffers, which means events might be lost before the handler could consume them.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.useraction=No user action.
+
+HANDLER_LOST_EVENTS_WARNING=TRAS0121W: The collector manager has detected that handler {0} has lost {1} events from source {2} in the last {3} minutes, and has lost a total of {4} events from the source since the handler started.
+HANDLER_LOST_EVENTS_WARNING.explanation= Handler loses events when it is not able to consume the events at the rate at which they are being produced by a source. The collector manager has sufficient large internal buffers to accommodate the slow consumption of events by a handler. However, a source that produces a large volume of events ends up overwriting these buffers, which means events might be lost before the handler could consume them. 
+HANDLER_LOST_EVENTS_WARNING.useraction=No user action.

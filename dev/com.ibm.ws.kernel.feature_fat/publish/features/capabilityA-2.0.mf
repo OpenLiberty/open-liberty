@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: capabilityA-2.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.capabilityA-2.0; visibility:=public; singleton:=true
+Subsystem-Version: 2.0.0
+Subsystem-Content: bundle3;  version="[1.0,1.1)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

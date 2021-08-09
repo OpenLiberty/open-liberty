@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.140,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.140
+m-name: ads-journal
+m-description: The Journal
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-base
+m-must: ads-journalWorkingDir
+m-must: ads-journalRotation
+m-must: ads-journalId
+m-must: ads-journalFileName
+creatorsname: uid=admin,ou=system

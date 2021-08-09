@@ -1,0 +1,23 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.8,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.8
+m-name: dhcpClassData
+m-description: Encoded text string or list of bytes expressed in hexadecimal, se
+ parated by colons.  Clients match subclasses based on matching the class data w
+ ith the results of match or spawn with statements in the class name declaration
+ s.
+m-obsolete: FALSE
+entryUUID: 24c66238-2286-4507-8907-2a15f2e39f8f
+entryCSN: 20130919081858.846000Z#000001#000#000000
+entryParentId: e4750b4b-8dc1-4318-b657-bba5670b4f0b
+createTimestamp: 20130919081909.329Z

@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.344,ou=objectClasses,cn=core,ou=schema
+m-must: dc
+m-oid: 1.3.6.1.4.1.1466.344
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2247: domain component object
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: dcObject
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

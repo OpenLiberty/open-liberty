@@ -1,0 +1,6 @@
+Identity Provider Release Notes
+
+See https://wiki.shibboleth.net/confluence/display/IDP30/ReleaseNotes
+
+Changes for all versions may be found at
+https://issues.shibboleth.net/jira/secure/ReleaseNote.jspa?projectId=10010

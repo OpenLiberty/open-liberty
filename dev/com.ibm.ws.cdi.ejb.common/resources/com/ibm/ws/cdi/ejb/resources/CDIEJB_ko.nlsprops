@@ -1,0 +1,39 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+transactional.annotation.on.ejb.CWOWB2000E=CWOWB2000E: \uc5b4\ub178\ud14c\uc774\uc158 {0}\uc740(\ub294) EJB\uc5d0\uc11c \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4: {1}
+transactional.annotation.on.ejb.CWOWB2000E.explanation=\uc5b4\ub178\ud14c\uc774\uc158 Transactional\uc740 EJB\uc640 \ud568\uaed8 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+transactional.annotation.on.ejb.CWOWB2000E.useraction=EJB\uc5d0\ub294 Transactional \ub300\uc2e0 TransactionAttribute\ub97c \uc0ac\uc6a9\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: {0} \ub77c\uc774\ud504\uc0ac\uc774\ud074 \uc778\ud130\uc149\ud130\uc5d0\uc11c \uc608\uc678 \ubc1c\uc0dd: {1}
+lifecycle.interceptor.exception.CWOWB2001E.explanation=\ub77c\uc774\ud504\uc0ac\uc774\ud074 \uc778\ud130\uc149\ud130\uc5d0\uc11c \ud655\uc778\ub41c \uc608\uc678\ub294 \ubc1c\uc0dd\ud558\uc9c0 \uc54a\uc544\uc57c \ud569\ub2c8\ub2e4.
+lifecycle.interceptor.exception.CWOWB2001E.useraction=\ub85c\uadf8\ub97c \ud655\uc778\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+internal.server.error.CWOWB2002E=CWOWB2002E: WebSphere Application Server \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub370\uc774\ud130 {0} {1}\uacfc(\uc640) \ud568\uaed8 WebSphere Application Server \uc9c0\uc6d0\uc5d0 \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+

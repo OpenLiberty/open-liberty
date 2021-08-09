@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Todos os encadeamentos no executor padr\u00e3o do Liberty aparecem para serem interrompidos. O Liberty aumenta o n\u00famero de encadeamentos automaticamente de {0} para {1}. No entanto, todos os encadeamentos ainda aparecem para serem interrompidos.
+unbreakableExecutorHang.explanation=Ocorreu um erro que fez com que um executor fosse interrompido e o tempo de execu\u00e7\u00e3o do Liberty incluiu um n\u00famero significativo de encadeamentos em uma tentativa de terminar a condi\u00e7\u00e3o de interrup\u00e7\u00e3o. No entanto, o executor permanece em um estado sem resposta. 
+unbreakableExecutorHang.useraction=Determine se h\u00e1 um gargalo, como uma tabela de banco de dados bloqueada, que pode impedir os encadeamentos de serem resolvidos no servidor. Se n\u00e3o existir nenhum gargalo e o servidor requerer legitimamente encadeamentos adicionais, ajuste o atributo coreThreads do elemento de configura\u00e7\u00e3o do executor.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Uma tarefa n\u00e3o pode ser enviada ao executor {0} porque a fila de tarefas com maxQueueSize de {1} permanece em capacidade depois de aguardar {2} nanossegundos.
+CWWKE1201.queue.full.abort.explanation=O atributo maxQueueSize controla quantos envios de tarefa podem ser enfileirados. O atributo maxWaitForEnqueue controla quanto tempo deve-se esperar at\u00e9 que uma posi\u00e7\u00e3o de fila se torne dispon\u00edvel, mas esse intervalo pode ser abreviado pelo tempo limite restante se voc\u00ea usar os m\u00e9todos com tempo definido invokeAll ou invokeAny para enviar tarefas. O atributo queueFullAction determina qual a\u00e7\u00e3o a tomar ap\u00f3s o intervalo decorrer e nenhuma posi\u00e7\u00e3o na fila se tornar dispon\u00edvel. Para evitar que a simultaneidade m\u00e1xima seja excedida ou para respeitar o tempo limite especificado, os m\u00e9todos invokeAll e invokeAny podem substituir o queueFullAction e interromper o envio da tarefa quando ela n\u00e3o puder ser enfileirada.
+CWWKE1201.queue.full.abort.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria se o aplicativo manipular o RejectedExecutionException.  Caso contr\u00e1rio, execute qualquer combina\u00e7\u00e3o das seguintes a\u00e7\u00f5es: aumentar o maxQueueSize, aumentar o maxWaitForEnqueue, usar um queueFullAction diferente ou aumentar o tempo limite que \u00e9 fornecido para os m\u00e9todos invokeAll ou invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: Uma tarefa n\u00e3o pode ser enviada porque o executor {0} foi encerrado.
+CWWKE1202.submit.after.shutdown.explanation=Os envios de tarefas n\u00e3o s\u00e3o permitidos ap\u00f3s a solicita\u00e7\u00e3o de encerramento do servi\u00e7o do executor.
+CWWKE1202.submit.after.shutdown.useraction=Envie somente as tarefas em uma inst\u00e2ncia de servi\u00e7o de executor que n\u00e3o teve seu encerramento solicitado.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: A atualiza\u00e7\u00e3o de configura\u00e7\u00e3o para {0} n\u00e3o \u00e9 permitida porque o executor {1} foi encerrado.
+CWWKE1203.config.update.after.shutdown.explanation=N\u00e3o \u00e9 poss\u00edvel atualizar a configura\u00e7\u00e3o ap\u00f3s a solicita\u00e7\u00e3o de encerramento do servi\u00e7o do executor.
+CWWKE1203.config.update.after.shutdown.useraction=Atualize a configura\u00e7\u00e3o somente de uma inst\u00e2ncia de servi\u00e7o de executor que n\u00e3o teve seu encerramento solicitado.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: O executor {0} n\u00e3o foi capaz de enviar {1} das {2} tarefas dentro do intervalo atribu\u00eddo de {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=O executor rejeitou a opera\u00e7\u00e3o invokeAll ou invokeAny porque havia tempo insuficiente ou capacidade de fila dispon\u00edvel para enviar todas as tarefas solicitadas dentro do intervalo especificado.
+CWWKE1204.unable.to.invoke.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria se o aplicativo manipular a RejectedExecutionException. Caso contr\u00e1rio, execute qualquer combina\u00e7\u00e3o das a\u00e7\u00f5es a seguir: aumentar maxQueueSize, aumentar maxConcurrency ou aumentar o valor de tempo limite fornecido para os m\u00e9todos invokeAll ou invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: O executor {0} n\u00e3o conseguiu iniciar a tarefa {1} depois de {2} nanossegundos porque a tarefa excedeu seu startTimeout de {3} nanossegundos.
+CWWKE1205.start.timeout.explanation=Quando um startTimeout \u00e9 configurado em um executor ou solicitado programaticamente para uma tarefa, o executor rastreia o tempo decorrido entre quando a tarefa \u00e9 enviada e quando \u00e9 poss\u00edvel executar a tarefa. Se o tempo decorrido exceder o startTimeout, o executor interromper\u00e1 a tarefa em vez de inici\u00e1-la. 
+CWWKE1205.start.timeout.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria se o aplicativo esperar que algumas tarefas sejam interrompidas por excederem seu startTimeout. Caso contr\u00e1rio, execute qualquer combina\u00e7\u00e3o das a\u00e7\u00f5es a seguir: aumentar startTimeout, aumentar maxConcurrency.

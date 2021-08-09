@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.6,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-must: ipHostNumber
+m-oid: 1.3.6.1.1.1.2.6
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Abstraction of a host, an IP device
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: ipHost
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system
+m-may: l
+m-may: description
+m-may: manager

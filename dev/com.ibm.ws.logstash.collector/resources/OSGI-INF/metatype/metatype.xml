@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<Designate pid="com.ibm.ws.logstash.collector.internal.LogstashCollector">
+	<Object ocdref="com.ibm.ws.logstash.collector.config" />
+</Designate>  
+
+<OCD name="%logstashCollector" description="%logstashCollector.desc" 
+			id="com.ibm.ws.logstash.collector.config" ibm:alias="logstashCollector">
+	
+	<AD name="%source" description="%source.desc" id="source" required="true" type="String" default="message" cardinality="1024"/>			
+				
+	<AD name="%hostName" description="%hostName.desc" id="hostName" required="true" type="String"/>	
+				
+	<AD name="%port" description="%port.desc" id="port" required="true" type="Integer" min="1" max="65535"/>	
+	
+	<AD name="%maxFieldLength" description="%maxFieldLength.desc" id="maxFieldLength" min = "-1" default="2048" required="false" type="Integer"/>
+	
+	<AD name="%maxEvents" description="%maxEvents.desc" id="maxEvents" min = "0" max="2147483647" default="0" required="false" type="Integer"/>		
+	
+	<AD name="%sslRef" description="%sslRef.desc" id="sslRef" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+	
+	<AD name="%jsonAccessLogFields" description="%jsonAccessLogFields.desc" id="jsonAccessLogFields" required="false" type="String" default="default">
+			<Option label="%jsonAccessLogFields.default" value="default"/>
+            <Option label="%jsonAccessLogFields.logFormat" value="logFormat"/>
+	</AD>
+	
+	<AD name="%tag" description="%tag.desc" id="tag" required="false" type="String" cardinality="1024"/>
+	
+	<AD name="internal" description="internal use only" id="sourceHostName" required="false" type="String" default=""/>
+	
+	<AD name="internal" description="internal user only" id="sourceServerName" required="false" type="String" default=""/>
+	
+	<AD name="internal" id="sourceDefaultHostName" ibm:final="true" type="String" default="${defaultHostName}"/>
+
+</OCD>	
+
+</metatype:MetaData>

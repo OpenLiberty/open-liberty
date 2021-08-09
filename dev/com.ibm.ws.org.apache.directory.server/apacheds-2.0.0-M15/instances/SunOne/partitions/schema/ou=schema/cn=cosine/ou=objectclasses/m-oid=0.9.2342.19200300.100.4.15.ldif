@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.4.15,ou=objectClasses,cn=cosine,ou=schema
+m-oid: 0.9.2342.19200300.100.4.15
+m-supobjectclass: domain
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: dNSDomain
+creatorsname: uid=admin,ou=system
+m-may: aRecord
+m-may: mDRecord
+m-may: mXRecord
+m-may: nSRecord
+m-may: sOARecord
+m-may: cNAMERecord

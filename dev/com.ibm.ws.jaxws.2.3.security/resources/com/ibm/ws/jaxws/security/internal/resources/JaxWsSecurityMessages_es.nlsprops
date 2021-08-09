@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: El atributo sslRef={0} no puede obtener la configuraci\u00f3n SSL.
+err.when.get.ssl.config.explanation=El atributo sslRef especificado en el archivo ibm-ws-bnd.xml no puede hacer referencia al elemento ssl del archivo server.xml, o el contenido del elemento ssl referenciado no es v\u00e1lido.
+err.when.get.ssl.config.useraction=Aseg\u00farese de que el valor del atributo sslRef coincide con el ID del elemento ssl del archivo id.xml, o de que el contenido del elemento ssl referenciado sea correcto.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: El atributo sslRef={0} no puede obtener SSLSocketFactory para {1}.
+err.when.get.ssl.socket.factory.explanation=La configuraci\u00f3n no v\u00e1lida del elemento keystore o truststore en el archivo server.xml puede dar como resultado la excepci\u00f3n debido a que el atributo sslRef especificado en el archivo ibm-ws-bnd.xml hace referencia a las configuraciones SSL del archivo server.xml.
+err.when.get.ssl.socket.factory.useraction=Aseg\u00farese de que la ubicaci\u00f3n y la contrase\u00f1a del elemento keystore o truststore se han especificado correctamente en el archivo server.xml, y de que el alias de certificado sea v\u00e1lido en el archivo ibm-ws-bnd.xml.
+
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: El elemento login-config definido en el archivo ibm-ws-bnd.xml se ignora porque la aplicaci\u00f3n es una aplicaci\u00f3n web y debe estar definida en el archivo web.xml.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=El elemento login-config s\u00f3lo puede configurarse en el archivo web.xml de la aplicaci\u00f3n web, y el elemento login-config definido en el archivo ibm-ws-bnd.xml se ignora.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=Aseg\u00farese de que el elemento login-config s\u00f3lo est\u00e1 configurado en el archivo web.xml de la aplicaci\u00f3n web. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: El tipo de m\u00e9todo de autenticaci\u00f3n {0} no est\u00e1 soportado en el archivo ibm-ws-bnd.xml.
+ibm.ws.bnd.auth.method.not.support.explanation=El archivo ibm-ws-bnd.xml s\u00f3lo da soporte a BASIC y CLIENT_CERT como tipo de m\u00e9todo de autenticaci\u00f3n.
+ibm.ws.bnd.auth.method.not.support.useraction=Aseg\u00farese de que el valor de tipo de m\u00e9todo de autenticaci\u00f3n definido en el archivo ibm-ws-bnd.xml es BASIC o CLIENT_CERT. 

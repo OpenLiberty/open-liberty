@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=2.5.6.0,ou=objectClasses,cn=system,ou=schema
+m-must: objectClass
+m-oid: 2.5.6.0
+m-obsolete: FALSE
+m-description: top of the superclass chain
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: top
+m-typeobjectclass: ABSTRACT
+creatorsname: uid=admin,ou=system

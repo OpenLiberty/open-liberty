@@ -1,0 +1,85 @@
+<!--
+    Copyright (c) 2013, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.jca.fat.regr">
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jca-1.7</feature>
+        <feature>jndi-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jms-2.0</feature>
+        <feature>jmsMdb-3.2</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>jcaInboundSecurity-1.0</feature>
+        <feature>beanValidation-1.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <variable value="FAIL" name="onError"/>
+
+    <application type="ear" location="fvtapp.ear" id="fvtapp">
+      <classloader commonLibraryRef="derbyLib" />
+      <application-bnd>
+        <security-role name="administrator">
+          <user name="Joseph" />
+        </security-role>
+      </application-bnd> 
+      <resourceAdapter id="adapter_jca16_insec_AnnotatedInboundSecurity" autoStart="true"/>
+    </application>
+
+<!-- 
+    <application type="ear" location="gwcapp.ear" id="gwcapp">
+        <resourceAdapter id="adapter_jca16_gwc_GenericWorkContextTestRAR" autoStart="true"/>
+    </application>
+ -->
+
+    <basicRegistry id="basic" realm="customRealm">
+      <user name="Joseph" password="p@ssw0rd" />
+      <user name="Nitya" password="pa$$w0rd" />
+      <user name="Susan" password="bistro" />
+      <group name="students">
+        <member name="Joseph" />
+        <member name="Nitya" />
+      </group>
+    </basicRegistry>
+
+    <library id="derbyLib">
+        <fileset dir="${server.config.dir}/derby" includes="*.jar" scanInterval="5s" />
+    </library>
+    
+    <adminObject id="InsecAdminObject" jndiName="jms/InsecAdminObject">
+        <properties.fvtapp.adapter_jca16_insec_AnnotatedInboundSecurity/>
+    </adminObject>
+    
+    <jmsActivationSpec id="fvtapp/fvtweb/SampleMdb">
+         <properties.fvtapp.adapter_jca16_insec_AnnotatedInboundSecurity name="InsecEndPoint"/>
+    </jmsActivationSpec>
+
+    <connectionFactory id="InsecTestDataSource" jndiName="eis/InsecTestDataSource">
+        <properties.fvtapp.adapter_jca16_insec_AnnotatedInboundSecurity dataSourceClass="org.apache.derby.jdbc.EmbeddedXADataSource" databaseName="InsecTestDB" createDatabase="create"/>
+    </connectionFactory>
+    
+    <adminObject id="com.ibm.ws.jca.adminObject" jndiName="fvtProvider">
+        <properties.gwcapp.adapter_jca16_gwc_GenericWorkContextTestRAR.FVTMessageProvider/>
+    </adminObject>
+
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="getSubject"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="modifyPrincipals"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.DEFAULT"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="*" principalName="*" actions="read"/>
+
+</server>

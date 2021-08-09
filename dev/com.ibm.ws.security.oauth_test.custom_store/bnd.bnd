@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+test.project: true
+
+Bundle-Name:WebSphere Custom Store Test
+Bundle-SymbolicName: com.ibm.ws.security.oauth_test.custom_store
+Bundle-Description: CustomStore Sample Implementation using MongoDB, version ${bVersion}. 
+
+Export-Package: \
+  security.custom.store
+
+Bundle-ClassPath:\
+  .,\
+  lib/mongo.jar
+  
+# Update the metatype.xml for your component in the resources/OSGI-INF/metatype folder
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF,\
+    lib/mongo.jar=${repo;org.mongodb:mongo-java-driver;2.13.3},\
+    META-INF=resources/META-INF,
+
+Service-Component: \
+  OSGI-INF/security.custom.store.xml
+
+-buildpath: \
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.crypto.passwordutil;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.security.oauth.2.0;version=latest,\
+    org.mongodb:mongo-java-driver;version=2.13.3

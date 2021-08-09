@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/ErrorPage.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE FALSE
+#NLS_MESSAGEFORMAT_NONE
+#NLS_ENCODING=UNICODE
+
+original.exception=\uc6d0\ub798 \uc608\uc678
+error.page.exception=\uc624\ub958 \ud398\uc774\uc9c0 \uc608\uc678
+error.message=\uc624\ub958 \uba54\uc2dc\uc9c0
+error.code=\uc624\ub958 \ucf54\ub4dc
+error.stack=\uc624\ub958 \uc2a4\ud0dd
+target.servlet=\ub300\uc0c1 \uc11c\ube14\ub9bf
+

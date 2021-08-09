@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=\u5c1d\u8bd5\u4e3a\u4ee5\u4e0b\u76ee\u5f55\u88c5\u5165\u6301\u4e45\u6027\u5355\u5143\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30002=\u5c1d\u8bd5\u4e3a\u4ee5\u4e0b JAR \u6587\u4ef6\u88c5\u5165\u6301\u4e45\u6027\u5355\u5143\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30003=\u5904\u7406\u4ee5\u4e0b URL \u5904\u7684\u6301\u4e45\u6027\u5355\u5143\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30004=\u5904\u7406\u6765\u81ea\u4ee5\u4e0b URL \u7684 persistence.xml \u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30005=\u4f7f\u7528\u7c7b\u88c5\u5165\u5668 {0} \u641c\u7d22\u6301\u4e45\u6027\u5f52\u6863\u65f6\u629b\u51fa\u4e86\u5f02\u5e38
+
+30006=\u5728\u4ee5\u4e0b URL \u5904\u641c\u7d22\u5b9e\u4f53\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30007=\u88c5\u5165\u7c7b {0} \u4ee5\u68c0\u67e5\u5b83\u662f\u5426\u5b9e\u73b0 @Entity\u3001@Embeddable \u6216 @MappedSuperclass \u65f6\u629b\u51fa\u4e86\u5f02\u5e38\u3002
+
+30008=\u8fd4\u56de\u7684\u6587\u4ef6\u8def\u5f84\u4e3a\u7a7a\u6216 Null
+
+30009=\u5c1d\u8bd5\u88c5\u5165\u4ee5\u4e0b URL \u5904\u7684\u6301\u4e45\u6027\u5355\u5143\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30010=\u88c5\u5165\u4ee5\u4e0b ORM XML \u6587\u4ef6\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}
+
+30011=EclipseLink \u672a\u80fd\u4ece URL {0} \u83b7\u53d6\u7c7b\u3002EclipseLink \u5df2\u5c1d\u8bd5\u4ee5 JAR \u6587\u4ef6\u548c\u76ee\u5f55\u5f62\u5f0f\u8bfb\u53d6\u6b64 URL\uff0c\u65e0\u6cd5\u5bf9\u5176\u8fdb\u884c\u5904\u7406\u3002
+
+30012=EclipseLink \u672a\u80fd\u4ece URL {0} \u83b7\u53d6\u6301\u4e45\u6027\u5355\u5143\u4fe1\u606f
+
+30013=\u5c1d\u8bd5\u4ece URL {0} \u4e3a\u6301\u4e45\u6027\u5355\u5143 [{1}] \u6784\u5efa\u6301\u4e45\u6027\u5355\u5143\u540d\u79f0\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\u3002
+
+30014=\u6301\u4e45\u6027\u5355\u5143\u6307\u5b9a\u9a8c\u8bc1\u65b9\u5f0f\u4e3a\u201cCALLBACK\u201d\uff0c\u4f46 Bean \u9a8c\u8bc1 ValidatorFactory \u672a\u80fd\u521d\u59cb\u5316\u3002\u8bf7\u53c2\u9605\u5d4c\u5957\u5f02\u5e38\u4ee5\u83b7\u53d6\u8be6\u7ec6\u4fe1\u606f\u3002\u8bf7\u786e\u4fdd\u7c7b\u8def\u5f84\u4e2d\u63d0\u4f9b\u4e86 Bean \u9a8c\u8bc1 API \u4ee5\u53ca Bean \u9a8c\u8bc1\u63d0\u4f9b\u7a0b\u5e8f\u3002
+
+30015=\u88c5\u5165\u4ee5\u4e0b\u9a8c\u8bc1\u7ec4\u7c7b\u65f6\u629b\u51fa\u4e86\u5f02\u5e38\uff1a{0}\u3002
+
+30016=\u4f1a\u8bdd\u540d\u79f0 {0} \u65e0\u6cd5\u7531\u6301\u4e45\u6027\u5355\u5143 {1} \u4f7f\u7528\uff0c\u5b83\u5df2\u7531\u6301\u4e45\u6027\u5355\u5143 {2} \u4f7f\u7528
+
+30017=\u540c\u65f6\u5728\u4ee5\u4e0b\u4e24\u4e2a URL \u4e2d\u5b9a\u4e49\u4e86\u6301\u4e45\u6027\u5355\u5143 {0}\uff1a{1} \u548c {2}\u3002\u540c\u4e00\u7c7b\u88c5\u5165\u5668\u65e0\u6cd5\u88c5\u5165\u540c\u540d\u7684\u82e5\u5e72\u6301\u4e45\u6027\u5355\u5143\u3002
+
+30018=\u5c1d\u8bd5\u5b9e\u4f8b\u5316\u7528\u6237\u6307\u5b9a\u7684 ArchiveFactory {0} \u65f6\u53d1\u751f\u4e86\u5f02\u5e38 {1}\u3002
+
+30019=\u6b63\u5728 EntityManagerFactory \u4e0a\u4e3a\u6301\u4e45\u6027\u5355\u5143 {0} \u8c03\u7528 refreshMetadata\u3002\u5143\u6570\u636e\u65e0\u6cd5\u5237\u65b0\uff0c\u56e0\u4e3a\u5df2\u4ece\u4f1a\u8bdd\u5bf9\u8c61\u521b\u5efa\u800c\u4e0d\u662f\u4ece\u6301\u4e45\u6027\u5355\u5143\u6d3e\u751f\u6b64 EntityManagerFactory\u3002
+

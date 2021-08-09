@@ -1,0 +1,9 @@
+version: 1
+dn: cn=inetorgperson,ou=schema
+cn: inetorgperson
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+m-dependencies: cosine
+creatorsname: uid=admin,ou=system

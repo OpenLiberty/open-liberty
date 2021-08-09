@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E: Hiteles\u00edt\u00e9si hiba t\u00f6rt\u00e9nt a vissza\u00e1ll\u00edtott biztons\u00e1gi kontextus t\u00e1rgyainak \u00fajb\u00f3li el\u0151\u00e1ll\u00edt\u00e1sa k\u00f6zben. Kiv\u00e9tel: {0}. Ennek eredm\u00e9nyek\u00e9nt a nem hiteles\u00edtett t\u00e1rgy ker\u00fcl felhaszn\u00e1l\u00e1sra a biztons\u00e1gi kontextushoz. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation=Mik\u00f6zben a rendszer a biztons\u00e1gi kontextusban l\u00e9v\u0151 t\u00e1rgyak \u00fajb\u00f3li el\u0151\u00e1ll\u00edt\u00e1s\u00e1t v\u00e9gezte, egy hiteles\u00edt\u00e9si hiba t\u00f6rt\u00e9nt. Ez\u00e9rt helyett\u00fck a nem hiteles\u00edtett t\u00e1rgy ker\u00fcl felhaszn\u00e1l\u00e1sra.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction=Tekintse \u00e1t a kiv\u00e9telt \u00e9s a napl\u00f3kat, hogy meg\u00e1llap\u00edtsa a hiteles\u00edt\u00e9s meghi\u00fasul\u00e1s\u00e1nak ok\u00e1t.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E: A t\u00e1rgy azonos\u00edt\u00f3j\u00e1nak lek\u00e9r\u00e9se sor\u00e1n a rendszer \u00e9szlelte, hogy a t\u00e1rgy t\u00f6bb WSPrincipal t\u00edpus\u00fa azonos\u00edt\u00f3val rendelkezik. Csak egy WSPrincipal l\u00e9tezhet a t\u00e1rgyban. A WSPrincipal azonos\u00edt\u00f3k neve: {0}. Ennek eredm\u00e9nyek\u00e9nt a biztons\u00e1gi kontextus nem ker\u00fcl vissza\u00e1ll\u00edt\u00e1sra a sz\u00e1lon.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation=A biztons\u00e1gi kontextus vissza\u00e1ll\u00edt\u00e1sa nem siker\u00fclt, mert a t\u00e1rgy t\u00fal sok WSPrincipal t\u00edpus\u00fa azonos\u00edt\u00f3val rendelkezik. Csak egy ilyen t\u00edpus\u00fa azonos\u00edt\u00f3 t\u00e1mogatott.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Tekintse \u00e1t az alkalmaz\u00e1st \u00e9s \u00e1llap\u00edtsa meg, hogy mi\u00e9rt van t\u00f6bb WSPrincipal is a t\u00e1rgyban.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: A biztons\u00e1gi kontextus soros\u00edt\u00e1sa sor\u00e1n a(z) {0} egy\u00e9ni gyors\u00edt\u00f3t\u00e1r kulcsot nem siker\u00fclt soros\u00edtani a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}. Ennek eredm\u00e9nyek\u00e9nt a biztons\u00e1gi kontextus nem fogja tartalmazni az egy\u00e9ni gyors\u00edt\u00f3t\u00e1r kulcsot.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=A t\u00e1rgy egy\u00e9ni gyors\u00edt\u00f3t\u00e1r kulcs\u00e1t nem siker\u00fclt soros\u00edtani a biztons\u00e1gi kontextus soros\u00edt\u00e1sa sor\u00e1n. B\u00e1r a biztons\u00e1gi kontextus nem fogja tartalmazni az egy\u00e9ni gyors\u00edt\u00f3t\u00e1r kulcsot, ez nincs hat\u00e1ssal mag\u00e1nak a biztons\u00e1gi kontextusnak a soros\u00edt\u00e1s\u00e1ra.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Vizsg\u00e1lja meg a napl\u00f3kat annak kider\u00edt\u00e9s\u00e9hez, hogy mi\u00e9rt volt sikertelen az egy\u00e9ni gyors\u00edt\u00f3t\u00e1r kulcs soros\u00edt\u00e1sa.

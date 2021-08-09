@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=\u6b63\u5728\u6dfb\u52a0\u540d\u79f0\u7a7a\u95f4\u89e3\u6790\u5668
+
+create_descriptors=\u6b63\u5728\u521b\u5efa\u63cf\u8ff0\u7b26
+
+create_mappings=\u6b63\u5c06\u6620\u5c04\u6dfb\u52a0\u81f3\u63cf\u8ff0\u7b26 {0}
+
+error=\u9519\u8bef\uff1a
+
+generate_files=\u6b63\u5728\u5199\u5165\u90e8\u7f72 XML \u548c\u4f1a\u8bdd\u914d\u7f6e
+
+generate_source=\u6b63\u5728\u751f\u6210\u5b9e\u73b0\u7c7b
+
+impl_package_missing=\u7f3a\u5c11\u5b9e\u73b0\u7c7b\u5305\u540d
+
+io_exception_error=\u9519\u8bef\uff1a\u610f\u5916 IOException
+
+malformed_url_error=\u9519\u8bef\uff1a\u610f\u5916 MalformedURLException
+
+missing_customization=\u7f3a\u5c11\u8f93\u5165\u5b9a\u5236\u6587\u4ef6
+
+missing_output_dir=\u7f3a\u5c11 TopLink \u8f93\u51fa\u76ee\u5f55\u540d
+
+missing_project_dir=\u7f3a\u5c11 TopLink \u5de5\u4f5c\u53f0\u9879\u76ee\u76ee\u5f55\u540d
+
+missing_schema_file=\u7f3a\u5c11\u8f93\u5165\u6a21\u5f0f\u6587\u4ef6
+
+missing_src_dir=\u7f3a\u5c11\u6e90\u8f93\u51fa\u76ee\u5f55\u540d
+
+missing_target_package=\u7f3a\u5c11\u76ee\u6807\u5305\u540d
+
+read_customization=\u6b63\u5728\u8bfb\u53d6\u5b9a\u5236\u6587\u4ef6
+
+setup_inheritance=\u6b63\u5728\u8bbe\u7f6e\u7ee7\u627f
+
+start_mw_project=\u6b63\u5728\u521b\u5efa\u6620\u5c04\u5de5\u4f5c\u53f0\u9879\u76ee
+
+start_orajaxb=\u6b63\u5728\u8c03\u7528 orajaxb
+
+start_toplink=\u6b63\u5728\u8c03\u7528 TopLink \u751f\u6210
+
+version=\u7248\u672c\uff1a
+

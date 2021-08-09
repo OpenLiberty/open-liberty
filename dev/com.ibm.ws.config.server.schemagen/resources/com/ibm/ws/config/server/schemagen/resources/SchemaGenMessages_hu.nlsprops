@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.config.server.schemagen/resources/com/ibm/ws/config/server/schemagen/resources/SchemaGenMessages.nlsprops
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere Server Config Schema 
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+## Message prefix block: CWWKG3001 - CWWKG3050
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Haszn\u00e1lat: {0} kiszolg\u00e1l\u00f3
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Hi\u00e1nyz\u00f3 k\u00f6telez\u0151 argumentum: {0}.
+argument.unrecognized=Ismeretlen argumentum: {0}.
+argument.unrecognized.expected=Ismeretlen argumentum: {0}. Tal\u00e1n erre gondolt: {1}.
+argument.invalid.value=Elfogadhatatlan \u00e9rt\u00e9k az argumentumhoz: {0}={1}. Elfogadhat\u00f3 \u00e9rt\u00e9kek: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKG3001E: A(z) {0} nev\u0171 kiszolg\u00e1l\u00f3 nem tal\u00e1lhat\u00f3. A rendszer azt v\u00e1rta, hogy az al\u00e1bbi helyen tal\u00e1lhat\u00f3: {1}. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 az \u00fczenetben megadott helyen.
+server.not.found.explanation= A serverSchemaGen parancsban megadott kiszolg\u00e1l\u00f3 nem tal\u00e1lhat\u00f3. A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 k\u00f6nyvt\u00e1r\u00e1nak v\u00e1rt hely\u00e9t az \u00fczenetben tal\u00e1lja.
+server.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 megtal\u00e1lhat\u00f3 az \u00fczenetben megadott helyen.  Sz\u00fcks\u00e9g eset\u00e9n m\u00f3dos\u00edtsa a WLP_USER_DIR vagy WLP_INSTALL_DIR v\u00e1ltoz\u00f3t, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3s f\u00e1jlok keres\u00e9s\u00e9hez a helyes \u00fatvonal ker\u00fclj\u00f6n felhaszn\u00e1l\u00e1sra.
+
+local.connector.not.found=CWWKG3002E: A(z) {0} nev\u0171 kiszolg\u00e1l\u00f3 nincs konfigur\u00e1lva helyi JMX k\u00e9r\u00e9sek fogad\u00e1s\u00e1ra. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmazza a localConnector szolg\u00e1ltat\u00e1st, \u00e9s hogy a kiszolg\u00e1l\u00f3 el van ind\u00edtva.
+local.connector.not.found.explanation=A serverSchemaGen parancsban megadott kiszolg\u00e1l\u00f3 nincs be\u00e1ll\u00edtva a helyi JMX k\u00e9r\u00e9sek elfogad\u00e1s\u00e1ra.
+local.connector.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmazza a localConnector szolg\u00e1ltat\u00e1st, \u00e9s hogy a kiszolg\u00e1l\u00f3 el van ind\u00edtva. A kiszolg\u00e1l\u00f3hoz egy helyi JMX kapcsolat l\u00e9tes\u00edt\u00e9s\u00e9hez sz\u00fcks\u00e9ges URL a WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address f\u00e1jlban tal\u00e1lhat\u00f3.
+
+local.connector.url.empty=CWWKG3003E: A(z) {0} nev\u0171 kiszolg\u00e1l\u00f3 probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt a localConnector szolg\u00e1ltat\u00e1s\u00e1nak konfigur\u00e1ci\u00f3j\u00e1val kapcsolatban.
+local.connector.url.empty.explanation=A serverSchemaGen parancsban megadott kiszolg\u00e1l\u00f3 nincs be\u00e1ll\u00edtva a helyi JMX k\u00e9r\u00e9sek elfogad\u00e1s\u00e1ra. A kiszolg\u00e1l\u00f3val a JMX kapcsolat l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt URL c\u00edmet tartalmaz\u00f3 f\u00e1jl \u00fcres.
+local.connector.url.empty.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmazza a localConnector szolg\u00e1ltat\u00e1st, \u00e9s hogy a kiszolg\u00e1l\u00f3 el van ind\u00edtva. A kiszolg\u00e1l\u00f3hoz egy helyi JMX kapcsolat l\u00e9tes\u00edt\u00e9s\u00e9hez sz\u00fcks\u00e9ges URL a WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address f\u00e1jlban tal\u00e1lhat\u00f3.
+
+mbean.null.result=CWWKG3004E: A kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa parancs nem adott vissza eredm\u00e9nyt.
+mbean.null.result.explanation=A kiszolg\u00e1l\u00f3s\u00e9m\u00e1tt el\u0151\u00e1ll\u00edt\u00f3 MBean megh\u00edv\u00e1sra ker\u00fclt, azonban nem lettek visszaadva eredm\u00e9nyek. Lehets\u00e9ges, hogy a k\u00e9rt s\u00e9ma nem lett el\u0151\u00e1ll\u00edtva.
+mbean.null.result.useraction=Keressen a kiszolg\u00e1l\u00f3napl\u00f3kban \u00e9s az FFDC k\u00f6nyvt\u00e1rban egy lehets\u00e9ges hiba\u00fczenetet vagy kiv\u00e9telt. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKG3005E: A kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa parancs jelezte, hogy probl\u00e9ma lett jelentve a s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa k\u00f6zben.
+mbean.bad.result.explanation=A kiszolg\u00e1l\u00f3s\u00e9m\u00e1t el\u0151\u00e1ll\u00edt\u00f3 MBean megh\u00edv\u00e1sra ker\u00fclt, azonban egy hiba \u00e9rkezett a s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa k\u00f6zben. Lehets\u00e9ges, hogy a k\u00e9rt s\u00e9ma nem lett el\u0151\u00e1ll\u00edtva.
+mbean.bad.result.useraction=Keressen a kiszolg\u00e1l\u00f3napl\u00f3kban \u00e9s az FFDC k\u00f6nyvt\u00e1rban egy hiba\u00fczenetet vagy kiv\u00e9telt. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKG3006E: A kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa parancs nem jelentette, hogy sikeresen fejez\u0151d\u00f6tt-e be.
+mbean.missing.result.explanation=A kiszolg\u00e1l\u00f3s\u00e9m\u00e1t el\u0151\u00e1ll\u00edt\u00f3 MBean megh\u00edv\u00e1sra ker\u00fclt, azonban a visszaadott eredm\u00e9ny nem tartalmazott v\u00e1laszk\u00f3dot. Lehets\u00e9ges, hogy a k\u00e9rt s\u00e9ma nem lett el\u0151\u00e1ll\u00edtva.
+mbean.missing.result.useraction=Keressen a kiszolg\u00e1l\u00f3napl\u00f3kban \u00e9s az FFDC k\u00f6nyvt\u00e1rban egy lehets\u00e9ges hiba\u00fczenetet vagy kiv\u00e9telt. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKG3007E: A kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa parancs nem adott vissza kimeneti k\u00f6nyvt\u00e1rnevet.
+mbean.missing.output.dir.explanation=A kiszolg\u00e1l\u00f3s\u00e9m\u00e1t el\u0151\u00e1ll\u00edt\u00f3 MBean megh\u00edv\u00e1sra ker\u00fclt, azonban a s\u00e9ma \u00edr\u00e1s\u00e1hoz haszn\u00e1lt kimeneti k\u00f6nyvt\u00e1r nem volt megadva a v\u00e1laszban. Lehets\u00e9ges, hogy a k\u00e9rt s\u00e9ma nem lett el\u0151\u00e1ll\u00edtva.
+mbean.missing.output.dir.useraction=Ellen\u0151rizze a c\u00e9lkiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban az el\u0151\u00e1ll\u00edtott s\u00e9m\u00e1t. A kimeneti k\u00f6nyvt\u00e1r a kiszolg\u00e1l\u00f3folyamatban van megadva, a WLP_OUTPUT_DIR v\u00e1ltoz\u00f3val. A s\u00e9ma a kimeneti k\u00f6nyvt\u00e1rban a schemagen k\u00f6nyvt\u00e1rba lett el\u0151\u00e1ll\u00edtva. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKG3008I: A k\u00e9rt kiszolg\u00e1l\u00f3s\u00e9ma a k\u00f6vetkez\u0151 k\u00f6nyvt\u00e1rban lett el\u0151\u00e1ll\u00edtva: {0}
+mbean.output.dir.explanation=A k\u00e9rt kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fclt, \u00e9s az \u00fczenetben megjel\u00f6lt k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3.
+mbean.output.dir.useraction=Semmit sem kell tennie.
+
+mbean.not.found=CWWKG3009W: A kiszolg\u00e1l\u00f3s\u00e9m\u00e1t el\u0151\u00e1ll\u00edt\u00f3 MBean nem akt\u00edv a(z) {0} kiszolg\u00e1l\u00f3n.
+mbean.not.found.explanation=A c\u00e9lkiszolg\u00e1l\u00f3val l\u00e9trej\u00f6tt egy JMX kapcsolat, azonban a kiszolg\u00e1l\u00f3s\u00e9m\u00e1t el\u0151\u00e1ll\u00edt\u00f3 MBean nem tal\u00e1lhat\u00f3. 
+mbean.not.found.useraction=Keressen a kiszolg\u00e1l\u00f3napl\u00f3kban \u00e9s az FFDC k\u00f6nyvt\u00e1rban egy lehets\u00e9ges hiba\u00fczenetet vagy kiv\u00e9telt. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKG3010E: A kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa parancs kiv\u00e9telt dobott: {0}
+exception.catch.explanation=A kiszolg\u00e1l\u00f3s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa parancs v\u00e1ratlan kiv\u00e9telt dobott. A kiv\u00e9tel verem nyomk\u00f6vet\u00e9s az stderr napl\u00f3f\u00e1jlba lett \u00edrva. A seg\u00e9dprogram le fogja \u00e1ll\u00edtani a feldolgoz\u00e1st.
+exception.catch.useraction=Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKG3011E: A(z) {0} nev\u0171 kiszolg\u00e1l\u00f3 napl\u00f3k\u00f6nyvt\u00e1ra nem tal\u00e1lhat\u00f3. A rendszer azt v\u00e1rta, hogy az al\u00e1bbi helyen tal\u00e1lhat\u00f3: {1}. A napl\u00f3k\u00f6nyvt\u00e1r \u00e9rt\u00e9ke a WLP_OUTPUT_DIR v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val ker\u00fcl kisz\u00e1m\u00edt\u00e1sra. 
+server.output.logs.dir.not.found.explanation=A napl\u00f3k\u00f6nyvt\u00e1rnak el\u00e9rhet\u0151nek kell lennie ahhoz, hogy a parancs k\u00e9pes legyen megtal\u00e1lni a kiszolg\u00e1l\u00f3 JMX csatlakoz\u00e1si inform\u00e1ci\u00f3it. Ez a hiba olyankor fordulhat el\u0151, ha a WLP_OUTPUT_DIR v\u00e1ltoz\u00f3 \u00e9rt\u00e9ke az aktu\u00e1lis k\u00f6rnyezetben nem egyezik meg a kiszolg\u00e1l\u00f3 \u00e1ltal haszn\u00e1lt \u00e9rt\u00e9kkel. 
+server.output.logs.dir.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a WLP_OUTPUT_DIR v\u00e1ltoz\u00f3 \u00e9rt\u00e9ke azonos a kiszolg\u00e1l\u00f3 \u00e1ltal haszn\u00e1lt \u00e9rt\u00e9kkel, tov\u00e1bb\u00e1 Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a napl\u00f3k\u00f6nyvt\u00e1r l\u00e9tezik. 
+

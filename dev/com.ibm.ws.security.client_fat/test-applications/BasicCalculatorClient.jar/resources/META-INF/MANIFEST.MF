@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.ibm.websphere.samples.technologysamples.basiccalcclient.BasicCalculatorClientJ2EEMain
+Class-Path: 

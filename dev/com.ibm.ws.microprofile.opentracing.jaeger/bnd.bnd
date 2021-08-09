@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props,\
+          ~../cnf/resources/bnd/app-resources.bnd
+
+bSymbolicName=com.ibm.ws.microprofile.opentracing.jaeger
+bVersion=1.0
+
+
+Bundle-Name: com.ibm.ws.microprofile.opentracing.jaeger
+Bundle-SymbolicName: com.ibm.ws.microprofile.opentracing.jaeger
+
+Bundle-Description:MicroProfile OpenTracing Jaeger Adapter, version ${bVersion}
+
+WS-TraceGroup: OPENTRACING
+
+Export-Package: \
+  com.ibm.ws.microprofile.opentracing.jaeger;version=1.0
+
+Import-Package: \
+  *
+
+Private-Package: com.ibm.ws.microprofile.opentracing.jaeger.resources
+
+
+src: src, resources
+
+-buildpath: \
+  com.ibm.ws.logging;version=latest, \
+  com.ibm.ws.logging.core;version=latest, \
+  org.eclipse.osgi;version=latest, \
+  com.ibm.websphere.org.osgi.core;version=latest, \
+  com.ibm.websphere.org.osgi.service.component;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
+  com.ibm.ws.microprofile.opentracing.jaeger.adapter;version=latest, \
+  com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl;version=latest, \
+  com.ibm.ws.crypto.passwordutil;version=latest, \
+  com.ibm.ws.kernel.boot.core;version=latest
+  

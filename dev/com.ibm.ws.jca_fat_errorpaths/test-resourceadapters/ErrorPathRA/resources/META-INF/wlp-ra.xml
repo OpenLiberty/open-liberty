@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<connector xmlns="http://websphere.ibm.com/xml/ns/javaee">
+  <resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener messagelistener-type="javax.resource.cci.MessageListener">
+          <activationspec>
+            <config-property config-property-name="requiredProp1" required="true"/>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
+    <adminobject adminobject-interface="java.util.Date" adminobject-class="java.util.Date">
+      <config-property config-property-name="month">
+        <option value="0" label="January"/>
+        <option value="1" label="February"/>
+        <option value="2" label="March"/>
+        <option value="3" label="April"/>
+        <option value="4" label="May"/>
+        <option value="5" label="June"/>
+        <option value="6" label="July"/>
+        <option value="7" label="August"/>
+        <option value="8" label="September"/>
+        <option value="9" label="October"/>
+        <option value="10" label="November"/>
+        <option value="11" label="December"/>
+      </config-property>
+      <config-property config-property-name="year" required="true"/>
+    </adminobject>
+    <adminobject adminobject-interface="java.util.SortedMap" adminobject-class="com.ibm.test.errorpathadapter.SortedMap">
+      <config-property config-property-name="ByteProp1" min="32" max="125"/>
+      <config-property config-property-name="CharProp1" min="A" max="z"/>
+      <config-property config-property-name="DoubleProp1" min="10.0" max="100.0"/>
+      <config-property config-property-name="FloatProp1" min="1.0e-7" max="1.0e-5"/>
+      <config-property config-property-name="IntProp1" min="-2147422222" max="-1"/>
+      <config-property config-property-name="LongProp1" min="0" max="9223372036854775807"/>
+      <config-property config-property-name="ShortProp1" min="-32768" max="1000"/>
+      <config-property config-property-name="StringProp1" min="6" max="8"/>
+    </adminobject>
+  </resourceadapter>
+</connector>

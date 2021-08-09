@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://docs.oasis-open.org/ws-tx/wsat/2006/06"
+	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:impl="http://docs.oasis-open.org/ws-tx/wsat/2006/06" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<wsdl:types>
+		<xs:schema>
+			<xs:import namespace="http://schemas.xmlsoap.org/ws/2004/08/addressing" schemaLocation="addressing.xsd" />
+			<xs:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="soap11_envelope.xsd" />
+		</xs:schema>
+	</wsdl:types>
+
+	<wsdl:message name="Fault">
+		<wsdl:part name="fault" element="soapenv:Fault" />
+	</wsdl:message>
+
+	<wsdl:portType name="WSAT0606FaultPort">
+		<wsdl:operation name="Fault">
+			<wsdl:input message="impl:Fault"
+				wsa:Action="http://docs.oasis-open.org/ws-tx/wsat/2006/06" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="WSAT0606FaultPortSoapBinding" type="impl:WSAT0606FaultPort">
+		<wsdlsoap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="Fault">
+			<wsdlsoap:operation soapAction="" />
+			<wsdl:input>
+				<wsdlsoap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="WSAT0606FaultService">
+		<wsdl:port binding="impl:WSAT0606FaultPortSoapBinding" name="WSAT0606FaultPort">
+			<wsdlsoap:address
+				location="https://localhost:9443/_IBMSYSAPP/wsat0606fault/services/WSAT0606FaultPort" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

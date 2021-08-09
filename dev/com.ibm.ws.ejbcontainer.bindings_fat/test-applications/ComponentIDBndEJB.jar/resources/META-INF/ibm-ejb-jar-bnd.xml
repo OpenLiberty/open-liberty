@@ -1,0 +1,28 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+       
+       
+       <!-- replaced 2 with 8 -->
+  <session name="ComponentIDBnd1" 
+  	component-id="ejb/MyEJB1"/>
+  <session name="ComponentIDBnd2" 
+  	component-id="MyEJB2"/>
+  <session name="ComponentIDBnd3" 
+  	component-id="ejb/MyEJB3"/>
+  <session name="ComponentIDBnd4" 
+  	component-id="MyEJB4"/>
+  <session name="ComponentIDBnd5" 
+  	component-id="ejb/MyEJB5"/>
+  <session name="ComponentIDBnd6" 
+  	component-id="MyEJB6"/>
+  <session name="ComponentIDBnd7" 
+  	component-id="ejb/MyEJB7"/>
+  <session name="ComponentIDBnd8" 
+  	component-id="MyEJB8"/>
+  <session name="ComponentIDBnd9" simple-binding-name="SimpleBindingNameForComponentIDBean"
+  	component-id="MyEJB9"/>
+ 
+</ejb-jar-bnd>

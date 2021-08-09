@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.12,ou=objectClasses,cn=nis,ou=schema
+m-oid: 1.3.6.1.1.1.2.12
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: A device with boot parameters
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: bootableDevice
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system
+m-may: bootFile
+m-may: bootParameter

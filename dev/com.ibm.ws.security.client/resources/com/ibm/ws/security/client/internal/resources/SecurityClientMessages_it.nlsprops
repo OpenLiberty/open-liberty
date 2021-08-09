@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.client/resources/com/ibm/ws/security/client/internal/resources/SecurityClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service for Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1167 - CWWKS1199
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1167E: jaasLoginContextEntry {0} non ha specificato i moduli di login in loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=jassLoginContextEntry non ha specificato i moduli di login in loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Accertarsi che venga specificato almeno un modulo di login in loginModuleRef.  
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1168W: Per l''elemento loginModuleRef {0} non \u00e8 definito alcun loginModule personalizzato JAAS.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=L'autenticazione non \u00e8 riuscita perch\u00e9 per il riferimento del modulo di login non \u00e8 definito alcun modulo di login.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Verificare che per l'elemento loginModuleRef sia configurata una propriet\u00e0 loginModule.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1169W: A causa del nome duplicato, il nome jaasLoginContextEntry {0}, che \u00e8 definito dall''id {1}, viene sovrascritto dal valore dell''id {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=Lo stesso nome \u00e8 definito da pi\u00f9 di una jassLoginContextEntry. Di conseguenza, il valore originale viene sovrascritto da un altro valore.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Assicurarsi che ogni jaasLoginContextEntry abbia un id e un nome univoci.
+
+JAAS_LOGIN_NO_CALLBACK_HANDLER=CWWKS1170E: Il login all'applicazione client non \u00e8 riuscito perch\u00e9 l'implementazione CallbackHandler \u00e8 null. Assicurarsi che una implementazione CallbackHandler valida sia specificata nel costruttore LoginContext o nel descrittore di distribuzione dell'applicazione client. 
+JAAS_LOGIN_NO_CALLBACK_HANDLER.explanation=Il login all'applicazione client non \u00e8 riuscito perch\u00e9 la classe che implementa l'interfaccia CallbackHandler \u00e8 null. Poich\u00e9 non esiste alcun CallbackHandler, non c'\u00e8 modo di raccogliere le credenziali per un utente che vuole collegarsi. Assicurarsi che una implementazione CallbackHandler valida sia specificata nel costruttore LoginContext o nel descrittore di distribuzione dell'applicazione client.
+JAAS_LOGIN_NO_CALLBACK_HANDLER.useraction=Assicurarsi che una implementazione CallbackHandler valida sia specificata come un argomento nel costruttore LoginContext o nel descrittore di distribuzione dell'applicazione client. 
+
+JAAS_LOGIN_MISSING_CREDENTIALS=CWWKS1171E: Il login all'applicazione client non \u00e8 riuscito perch\u00e9 il nome utente o la password sono null. Assicurarsi che l'implementazione CallbackHandler stia raccogliendo le credenziali necessarie. 
+JAAS_LOGIN_MISSING_CREDENTIALS.explanation=Il login all'applicazione client non \u00e8 riuscito perch\u00e9 il nome utente o la password sono null. Assicurarsi che l'implementazione CallbackHandler stia raccogliendo le credenziali necessarie. CallbackHandler pu\u00f2 essere specificato nel costruttore LoginContext o nel descrittore di distribuzione dell'applicazione client.
+JAAS_LOGIN_MISSING_CREDENTIALS.useraction=Assicurarsi che l'implementazione CallbackHandler stia raccogliendo il nome utente e la password.
+
+JAAS_LOGIN_UNEXPECTED_EXCEPTION=CWWKS1172E: Il login all''applicazione client non \u00e8 riuscito a causa di un''eccezione imprevista. Controllare i log per determinare la causa dell''eccezione. L''eccezione \u00e8:  {0}. 
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.explanation=Il login all'applicazione client non \u00e8 riuscito a causa di un'eccezione imprevista. Esaminare i log e le voci FFDC per comprendere e correggere la causa dell'eccezione.
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.useraction=Esaminare i log e le voci FFDC per comprendere e correggere la causa dell'eccezione.

@@ -1,0 +1,6 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.yoko.core.1.5
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

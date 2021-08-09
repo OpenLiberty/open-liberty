@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: Le service d'audit est en cours de d\u00e9marrage.
+AUDIT_SERVICE_STARTING.explanation=Le service d'audit est en cours de d\u00e9marrage. Cela peut prendre plusieurs minutes si son initialisation doit avoir lieu une fois pour toutes.
+AUDIT_SERVICE_STARTING.useraction=Aucune action n'est requise.
+
+AUDIT_SERVICE_READY=CWWKS5851I: Le service d'audit est pr\u00eat.
+AUDIT_SERVICE_READY.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+AUDIT_SERVICE_READY.useraction=Aucune action n'est requise.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: Le service audit s'est arr\u00eat\u00e9.
+AUDIT_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+AUDIT_SERVICE_STOPPED.useraction=Aucune action n'est requise.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: Le nom d''\u00e9v\u00e9nement d''audit {0} sp\u00e9cifi\u00e9 dans la configuration des \u00e9v\u00e9nements du gestionnaire d''audit n''est pas pris en charge. Le service d''audit a donc \u00e9t\u00e9 arr\u00eat\u00e9. Corrigez le nom d''\u00e9v\u00e9nement dans la configuration du gestionnaire d''audit {2} et sp\u00e9cifiez l''un des noms suivants \u00e0 la place : {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=Le nom d'\u00e9v\u00e9nement d'audit indiqu\u00e9 dans la configuration d'\u00e9v\u00e9nement est incorrect et le serveur d'audit va \u00eatre arr\u00eat\u00e9. Analysez l'exception mentionn\u00e9e dans le message et sp\u00e9cifiez un nom d'\u00e9v\u00e9nement d'audit valide.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Assurez-vous que le nom d'\u00e9v\u00e9nement d'audit fourni dans le cadre de la configuration d'\u00e9v\u00e9nement est correct.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: Le nom de r\u00e9sultat d''audit {0} sp\u00e9cifi\u00e9 dans la configuration des \u00e9v\u00e9nements du gestionnaire d''audit n''est pas pris en charge. Le service d''audit a donc \u00e9t\u00e9 arr\u00eat\u00e9. Corrigez le nom de r\u00e9sultat dans la configuration du gestionnaire d''audit {2} et sp\u00e9cifiez l''un des noms suivants \u00e0 la place : {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=Le nom de r\u00e9sultat d'audit indiqu\u00e9 dans la configuration d'\u00e9v\u00e9nement est incorrect et le serveur d'audit va \u00eatre arr\u00eat\u00e9. Analysez l'exception mentionn\u00e9e dans le message et sp\u00e9cifiez un nom de r\u00e9sultat d'audit valide.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Assurez-vous que le nom de r\u00e9sultat d'audit fourni dans le cadre de la configuration d'\u00e9v\u00e9nement est correct.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: La configuration des \u00e9v\u00e9nements du gestionnaire d''audit n''\u00e9tant pas compl\u00e8te, le service d''audit a \u00e9t\u00e9 arr\u00eat\u00e9. La configuration doit sp\u00e9cifier un nom d''\u00e9v\u00e9nement pour le r\u00e9sultat {0}. Corrigez la configuration du gestionnaire d''audit {1} et sp\u00e9cifiez l''un des noms d''\u00e9v\u00e9nement suivants \u00e0 la place : {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=Le nom d'\u00e9v\u00e9nement d'audit sp\u00e9cifi\u00e9 dans la configuration des \u00e9v\u00e9nements est incorrect ou manquant. Le service d'audit va \u00eatre arr\u00eat\u00e9. Analysez l'exception mentionn\u00e9e dans le message et sp\u00e9cifiez un nom d'\u00e9v\u00e9nement d'audit valide.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Assurez-vous qu'un nom d'\u00e9v\u00e9nement valide est sp\u00e9cifi\u00e9 avec le type de r\u00e9sultat appropri\u00e9.

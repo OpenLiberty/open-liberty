@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} hi\u00e1nyzik, vagy nem egy k\u00f6nyvt\u00e1r.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s nem nyithat\u00f3 meg: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s nem rendelkezik csatornale\u00edr\u00f3val.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Hib\u00e1k t\u00f6rt\u00e9ntek a csatornale\u00edr\u00f3 \u00e9rtelmez\u00e9sekor a(z) {0} helyr\u0151l: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s nem ad meg gy\u00e1rt\u00f3 futtat\u00f3 oszt\u00e1lyt.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s nem ad meg csatornakonfigur\u00e1ci\u00f3 oszt\u00e1lyt.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s nem ad meg eszk\u00f6zoldali vagy alkalmaz\u00e1soldali fel\u00fcleteket.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s egy alap\u00e9rtelmezett {1} s\u00falyoz\u00e1st ad meg. Ez nem egy \u00e9rv\u00e9nyes alap\u00e9rtelmezett s\u00falyoz\u00e1s.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: A(z) {0} l\u00e1nc nem tartalmaz sz\u00e1ll\u00edt\u00e1si csatorn\u00e1kat.
+chain.channels.empty.explanation=A l\u00e1ncoknak a m\u0171k\u00f6d\u00e9shez tartalmazniuk kell sz\u00e1ll\u00edt\u00e1si csatorn\u00e1kat.
+chain.channels.empty.useraction=Adjon hozz\u00e1 sz\u00e1ll\u00edt\u00e1si csatorn\u00e1kat a megadott l\u00e1nchoz.
+
+chain.flow.mismatch=CWWKO0010E: A(z) {0} l\u00e1nc sz\u00e1ll\u00edt\u00e1si csatorn\u00e1i eset\u00e9n a sz\u00e1ll\u00edt\u00e1s ir\u00e1ny\u00e1nak meg kell egyezni.
+chain.flow.mismatch.explanation=A sz\u00e1ll\u00edt\u00e1si csatorn\u00e1k ir\u00e1nya lehet kiszolg\u00e1l\u00f3ra ir\u00e1nyul\u00f3 (bej\u00f6v\u0151 csatorn\u00e1k) vagy kiszolg\u00e1l\u00f3r\u00f3l indul\u00f3 (kimen\u0151 csatorn\u00e1k). Egy l\u00e1ncban minden csatorn\u00e1nak azonos ir\u00e1ny\u00fanak kell lennie.
+chain.flow.mismatch.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a l\u00e1ncban l\u00e9v\u0151 \u00f6sszes csatorna azonos ir\u00e1nyban sz\u00e1ll\u00edtja az adatokat. Ne haszn\u00e1ljon vegyesen bej\u00f6v\u0151 \u00e9s kimen\u0151 csatorn\u00e1kat egyazon l\u00e1ncon bel\u00fcl.
+
+chain.inbound.first.mismatch=CWWKO0011E: A(z) {0} l\u00e1ncban l\u00e9v\u0151 els\u0151 sz\u00e1ll\u00edt\u00e1si csatorna nem egy csatol\u00f3 csatorna.
+chain.inbound.first.mismatch.explanation=Egy bej\u00f6v\u0151 l\u00e1ncban az els\u0151 sz\u00e1ll\u00edt\u00e1si csatorna csak csatol\u00f3 csatorna lehet.
+chain.inbound.first.mismatch.useraction=Biztos\u00edtsa, hogy a bej\u00f6v\u0151 l\u00e1ncban l\u00e9v\u0151 els\u0151 sz\u00e1ll\u00edt\u00e1si csatorna egy csatol\u00f3 csatorna legyen.
+
+chain.inbound.last.mismatch=CWWKO0012E: A(z) {0} l\u00e1ncban l\u00e9v\u0151 utols\u00f3 sz\u00e1ll\u00edt\u00e1si csatorna nem egy fogad\u00f3 csatorna.
+chain.inbound.last.mismatch.explanation=Egy bej\u00f6v\u0151 l\u00e1ncban az utols\u00f3 sz\u00e1ll\u00edt\u00e1si csatorna csak fogad\u00f3 csatorna lehet.
+chain.inbound.last.mismatch.useraction=Biztos\u00edtsa, hogy a bej\u00f6v\u0151 l\u00e1ncban l\u00e9v\u0151 utols\u00f3 sz\u00e1ll\u00edt\u00e1si csatorna egy fogad\u00f3 csatorna legyen.
+
+chain.acceptor.determination.failure=CWWKO0013E: A rendszer nem tudta meg\u00e1llap\u00edtani a(z) {0} l\u00e1nc fogad\u00f3azonos\u00edt\u00f3j\u00e1t.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: A rendszer nem tal\u00e1lt olyan csatornale\u00edr\u00f3t, amely megfelelne a(z) {0} csatornakonfigur\u00e1ci\u00f3-t\u00edpusnak.
+channel.descriptor.notfound.explanation=A csatorn\u00e1knak meg kell adniuk egy le\u00edr\u00f3t a konfigur\u00e1ci\u00f3t\u00edpusok lek\u00e9pez\u00e9s\u00e9hez fut\u00e1si t\u00edpusokra; nem tal\u00e1lhat\u00f3 megfelel\u0151 le\u00edr\u00f3.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: A rendszer nem tudta lek\u00e9rdezni a k\u00f6vetkez\u0151 kezdeti elnevez\u00e9si kontextust: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: A rendszer nem tudta bet\u00f6lteni a k\u00f6vetkez\u0151 sz\u00e1ll\u00edt\u00e1si csatorna gy\u00e1rt\u00f3t: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: A rendszer nem tudta bet\u00f6lteni a k\u00f6vetkez\u0151 sz\u00e1ll\u00edt\u00e1si csatorn\u00e1t: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: A rendszer nem tudta bet\u00f6lteni a k\u00f6vetkez\u0151 l\u00e1ncot: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s elind\u00edtotta a(z) {0} l\u00e1ncot.
+chain.started.explanation=A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s elind\u00edtotta a megadott l\u00e1ncot.
+chain.started.useraction=Nincs teend\u0151.
+
+chain.stopped=CWWKO0020I: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s le\u00e1ll\u00edtotta a(z) {0} c\u00edmk\u00e9j\u0171 l\u00e1ncot.
+chain.stopped.explanation=A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s le\u00e1ll\u00edtotta a megadott l\u00e1ncot.
+chain.stopped.useraction=Nincs teend\u0151.
+
+chain.disabled=CWWKO0021I: A(z) {0} bej\u00f6v\u0151 csatorna letiltottk\u00e9nt van megjel\u00f6lve.
+chain.disabled.explanation=A bej\u00f6v\u0151 csatorn\u00e1t kifejezetten meg kell jel\u00f6lni enged\u00e9lyezettk\u00e9nt, hogy automatikusan elind\u00edthat\u00f3 legyen. A letiltott l\u00e1ncok is elind\u00edthat\u00f3k, de ezeket kifejezetten n\u00e9v alapj\u00e1n kell elind\u00edtani.
+chain.disabled.useraction=Nincs teend\u0151.
+
+config.load.error=CWWKO0022E: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s nem tal\u00e1lta a konfigur\u00e1ci\u00f3j\u00e1t egy kiv\u00e9tel miatt: {0}
+config.load.error.explanation=A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s kiv\u00e9telt \u00e1ll\u00edtott el\u0151, amikor megk\u00eds\u00e9relte felt\u00e9rk\u00e9pezni \u00e9s bet\u00f6lteni a konfigur\u00e1ci\u00f3j\u00e1t. Konfigur\u00e1ci\u00f3 n\u00e9lk\u00fcl lesz elind\u00edtva.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s nem tal\u00e1lta a konfigur\u00e1ci\u00f3j\u00e1t, de en\u00e9lk\u00fcl el lesz ind\u00edtva.
+boot.no.config.explanation=A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s nem tal\u00e1lta a konfigur\u00e1ci\u00f3j\u00e1t. A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s alap\u00e9rtelmezett konfigur\u00e1ci\u00f3j\u00e1nak r\u00e9szleteit hozz\u00e1 kell adni a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlhoz.
+boot.no.config.useraction=Az adminisztr\u00e1ci\u00f3s konzol vagy a wsadmin seg\u00e9dprogram haszn\u00e1lat\u00e1val adja hozz\u00e1 a sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s alap\u00e9rtelmezett konfigur\u00e1ci\u00f3j\u00e1t.
+
+framework.disabled=CWWKO0024I: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s kifejezetten le van tiltva.
+framework.disabled.explanation=A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s kifejezetten letiltottk\u00e9nt lett be\u00e1ll\u00edtva, \u00e9s nem lesz elind\u00edtva.
+framework.disabled.useraction=Nincs teend\u0151.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: A(z) {0} csatornamegval\u00f3s\u00edt\u00e1s nem ad meg gy\u00e1rt\u00f3 konfigur\u00e1ci\u00f3s oszt\u00e1lyt.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: A rendszer nem tal\u00e1lt olyan csatornagy\u00e1rt\u00f3 le\u00edr\u00f3t, amely megfelelne a(z) {0} sz\u00e1ll\u00edt\u00e1si csatorna konfigur\u00e1ci\u00f3 t\u00edpusnak.
+factory.descriptor.notfound.explanation=A csatorn\u00e1knak meg kell adniuk egy le\u00edr\u00f3t a konfigur\u00e1ci\u00f3t\u00edpusok lek\u00e9pez\u00e9s\u00e9hez fut\u00e1si t\u00edpusokra. Nem tal\u00e1lhat\u00f3 megfelel\u0151 le\u00edr\u00f3.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: A sz\u00e1ll\u00edt\u00e1si csatorna megval\u00f3s\u00edt\u00e1sok n\u00e9melyike nem volt bet\u00f6lthet\u0151.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: A(z) {0} l\u00e1ncban l\u00e9v\u0151 utols\u00f3 sz\u00e1ll\u00edt\u00e1si csatorna nem egy csatol\u00f3 csatorna.
+chain.outbound.last.mismatch.explanation=Egy kimen\u0151 l\u00e1ncban az utols\u00f3 sz\u00e1ll\u00edt\u00e1si csatorna csak csatol\u00f3 csatorna lehet.
+chain.outbound.last.mismatch.useraction=Biztos\u00edtsa, hogy a kimen\u0151 l\u00e1ncban l\u00e9v\u0151 utols\u00f3 sz\u00e1ll\u00edt\u00e1si csatorna egy csatol\u00f3 csatorna legyen.
+
+chain.initialization.error=CWWKO0029E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} l\u00e1nc inicializ\u00e1l\u00e1sakor a(z) {1} kiv\u00e9tel miatt.
+chain.initialization.error.explanation=A l\u00e1ncban vagy az alapul szolg\u00e1l\u00f3 csatorn\u00e1ban kiv\u00e9tel t\u00f6rt\u00e9nt.
+chain.initialization.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes csatorn\u00e1kat haszn\u00e1lja a l\u00e1ncban.
+
+chain.start.error=CWWKO0030E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} l\u00e1nc ind\u00edt\u00e1sakor a(z) {1} kiv\u00e9tel miatt.
+chain.start.error.explanation=A l\u00e1ncban vagy az alapul szolg\u00e1l\u00f3 csatorn\u00e1ban kiv\u00e9tel t\u00f6rt\u00e9nt.
+chain.start.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes csatorn\u00e1kat haszn\u00e1lja a l\u00e1ncban.
+
+chain.stop.error=CWWKO0031E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} l\u00e1nc le\u00e1ll\u00edt\u00e1sakor a(z) {1} kiv\u00e9tel miatt.
+chain.stop.error.explanation=A l\u00e1ncban vagy az alapul szolg\u00e1l\u00f3 csatorn\u00e1ban kiv\u00e9tel t\u00f6rt\u00e9nt.
+chain.stop.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes csatorn\u00e1kat haszn\u00e1lja a l\u00e1ncban.
+
+chain.destroy.error=CWWKO0032E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} l\u00e1nc megsemmis\u00edt\u00e9sekor a(z) {1} kiv\u00e9tel miatt.
+chain.destroy.error.explanation=A l\u00e1ncban vagy az alapul szolg\u00e1l\u00f3 csatorn\u00e1ban kiv\u00e9tel t\u00f6rt\u00e9nt.
+chain.destroy.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes csatorn\u00e1kat haszn\u00e1lja a l\u00e1ncban.
+
+chain.retrystart.error=CWWKO0033E: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s nem ind\u00edtotta el a(z) {0} l\u00e1ncot {1} ind\u00edt\u00e1si k\u00eds\u00e9rlet ut\u00e1n.
+chain.retrystart.error.explanation=A be\u00e1ll\u00edtott sz\u00e1m\u00fa \u00fajrapr\u00f3b\u00e1lkoz\u00e1s nem volt elegend\u0151 a l\u00e1nc elind\u00edt\u00e1s\u00e1hoz, vagy a l\u00e1nc \u00e1ltal haszn\u00e1lt m\u00e1r haszn\u00e1latban van.
+chain.retrystart.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a l\u00e1nc \u00e1ltal haszn\u00e1lt port m\u00e9g nincs haszn\u00e1latban. \u00c1ll\u00edtsa be megfelel\u0151en a l\u00e1nc \u00fajraind\u00edt\u00e1s\u00e1nak egy\u00e9ni tulajdons\u00e1gait.
+
+chain.retrystart.warning=CWWKO0034W: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s \u00e9szlelte, hogy a(z) {0} sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem indult el. A szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lja elind\u00edtani a(z) {0} l\u00e1ncot {1} ezredm\u00e1sodpercenk\u00e9nt, \u00e9s legfeljebb {2} k\u00eds\u00e9rletet tesz.
+chain.retrystart.warning.explanation=A l\u00e1nc ind\u00edt\u00e1s\u00e1ra tett els\u0151 k\u00eds\u00e9rlet nem siker\u00fclt. Tov\u00e1bbi k\u00eds\u00e9rletek t\u00f6rt\u00e9nnek az elind\u00edt\u00e1s\u00e1ra.
+chain.retrystart.warning.useraction=Keressen hiba- vagy fel\u00fclvizsg\u00e1lati \u00fczenetet, amely az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si k\u00eds\u00e9rletek eredm\u00e9ny\u00e9t jelzi.
+
+framework.property.error=CWWKO0035E: A sz\u00e1ll\u00edt\u00e1si csatorna szolg\u00e1ltat\u00e1s egy {0} \u00e9rt\u00e9ket tal\u00e1lt a(z) {1} tulajdons\u00e1ghoz. Ez egy \u00e9rv\u00e9nytelen \u00e9rt\u00e9k.
+framework.property.error.explanation=A tulajdons\u00e1g \u00e9rt\u00e9ke k\u00edv\u00fcl esik az elv\u00e1rt hat\u00e1rokon.
+framework.property.error.useraction=Szab\u00e1lyozza a konfigur\u00e1ci\u00f3t, hogy a tulajdons\u00e1g egy \u00e9rv\u00e9nyes \u00e9rt\u00e9kre legyen be\u00e1ll\u00edtva.
+
+missing.factory=CWWKO0036W: A l\u00e1nckonfigur\u00e1ci\u00f3 hi\u00e1nyz\u00f3 gy\u00e1rt\u00f3t\u00edpust ({0}) tartalmaz, \u00e9s n\u00e9h\u00e1ny l\u00e1nc nem ind\u00edthat\u00f3 el.
+missing.factory.explanation=A fut\u00e1si k\u00f6rnyezet nem tartalmazza a megfelel\u0151 t\u00edpus\u00fa csatorna gy\u00e1rt\u00f3t, \u00e9s \u00edgy nem tudja elind\u00edtani a l\u00e1ncokat, amelyek ezt haszn\u00e1lj\u00e1k.
+missing.factory.useraction=Ellen\u0151rizze, hogy a fut\u00e1si k\u00f6rnyezet szolg\u00e1ltat\u00e1sk\u00e9szlet list\u00e1j\u00e1b\u00f3l hi\u00e1nyoznak-e k\u00f6telez\u0151 elemek.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Nem hozhat\u00f3 l\u00e9tre alap\u00e9rtelmezett TCP csatorna konfigur\u00e1ci\u00f3. Kiv\u00e9tel: {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=Hiba t\u00f6rt\u00e9nt TPC csatorn\u00e1k alap\u00e9rtelmezett konfigur\u00e1ci\u00f3j\u00e1nak l\u00e9trehoz\u00e1sa sor\u00e1n.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Tekintse \u00e1t a kiv\u00e9telt \u00e9s keressen a l\u00e9trehoz\u00e1s meghi\u00fasul\u00e1s\u00e1nak m\u00f3dj\u00e1ra vonatkoz\u00f3 inform\u00e1ci\u00f3kat.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Nem siker\u00fclt l\u00e9trehozni az alap\u00e9rtelmezett UDP csatorna konfigur\u00e1ci\u00f3t. Kiv\u00e9tel: {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=Hiba t\u00f6rt\u00e9nt az UDP csatorn\u00e1k alap\u00e9rtelmezett konfigur\u00e1ci\u00f3j\u00e1nak l\u00e9trehoz\u00e1sa sor\u00e1n.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Tekintse \u00e1t a kiv\u00e9telt \u00e9s keressen a l\u00e9trehoz\u00e1s meghi\u00fasul\u00e1s\u00e1nak m\u00f3dj\u00e1ra vonatkoz\u00f3 inform\u00e1ci\u00f3kat.
+
+channel.shared.warning=CWWKO0039W: Nem megoszthat\u00f3 {0} csatorna van megosztva t\u00f6bb tartom\u00e1ny k\u00f6z\u00f6tt.
+channel.shared.warning.explanation=A csatorna nem megoszthat\u00f3 csatornak\u00e9nt lett be\u00e1ll\u00edtva. A csatorna azonban meg van osztva t\u00f6bb tartom\u00e1ny k\u00f6z\u00f6tt.
+channel.shared.warning.useraction=Tekintse \u00e1t a csatorna konfigur\u00e1ci\u00f3j\u00e1t \u00e9s haszn\u00e1lat\u00e1t.

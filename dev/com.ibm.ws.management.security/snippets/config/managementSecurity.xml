@@ -1,0 +1,44 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Management security sample configuration">
+
+    <!-- NOTE: This file is for reference only. -->
+
+    <!-- Enable restConnector-1.0 feature -->
+    <featureManager>
+        <feature>restConnector-1.0</feature>
+    </featureManager>
+
+    <!-- Sample configuration assigning users and groups to the management
+         security "Administrator" role. The users and groups are defined in
+         the basicRegistry configuration. -->
+<!--
+    <administrator-role>
+        <user>admin</user>
+        <user>alice</user>
+        <group>admins</group>
+    </administrator-role>
+
+    <basicRegistry id="basic" realm="SampleBasicRealm">
+        <user name="admin" password="password123" />
+        <user name="alice" password="alice123" />
+        <user name="bob" password="bob123" />
+        <group name="admins">
+            <member name="admin" />
+            <member name="bob" />
+        </group>
+    </basicRegistry>
+-->
+
+    <!-- zOS: For SAF registry and authorizaton, the management security
+         element is not required. -->
+
+</server>

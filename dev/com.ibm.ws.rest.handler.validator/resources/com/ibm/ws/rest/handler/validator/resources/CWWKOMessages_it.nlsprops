@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: La convalida non \u00e8 fornita per gli elementi di configurazione di tipo {0}.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=Il tipo di elemento di configurazione specificato non ha la capacit\u00e0 di convalidare la sua configurazione.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=Non tentare di convalidare questo tipo di elemento di configurazione.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Una o pi\u00f9 dipendenze non sono soddisfatte o la funzione che abilita la risorsa non \u00e8 abilitata, oppure non \u00e8 possibile convalidare questo tipo di risorsa.
+CWWKO1551_CANNOT_VALIDATE.explanation=La richiesta di convalida per la configurazione specificata non pu\u00f2 essere completata. Ci\u00f2 potrebbe essere dovuto a una dipendenza non soddisfatta, una funzione mancante che abilita un elemento di configurazione, oppure l'elemento di configurazione potrebbe non supportare la convalida.
+CWWKO1551_CANNOT_VALIDATE.useraction=Verificare che la funzione che fornisce l'elemento di configurazione sia abilitata, non ci sono dipendenze mancanti e che l'elemento di configurazione supporti la convalida.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: L'intestazione X-Login-Config-Props richiede un segno uguale (=) come delimitatore tra il nome e il valore della propriet\u00e0 di configurazione del login.
+CWWKO1552_MISSING_DELIMITER.explanation=\u00c8 necessario il segno uguale come delimitatore per determinare quale parte dell'intestazione X-Login-Config-Props \u00e8 il nome della propriet\u00e0 di configurazione del login e quale parte \u00e8 il valore.
+CWWKO1552_MISSING_DELIMITER.useraction=Aggiornare l'intestazione X-Login-Config-Props per includere un segno uguale (=) tra il nome e il valore della propriet\u00e0 di configurazione del login.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Non vi sono gestori registrati che corrispondono all''URL richiesto {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Si \u00e8 tentato di accedere a un URL che non corrisponde ad alcuno dei gestori registrati.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Correggere l'URL in modo che corrisponda a un gestore registrato.

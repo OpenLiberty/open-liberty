@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-init-method="initialize">
+
+    <bean id="DecodeMessage"
+          class="org.opensaml.profile.action.impl.DecodeMessage"
+          scope="prototype"
+          c:messageDecoder-ref="SoapDecoder" />
+
+    <bean id="SoapDecoder"
+          class="org.opensaml.saml.saml1.binding.decoding.impl.HTTPSOAP11Decoder"
+          scope="prototype"
+          p:httpServletRequest-ref="shibboleth.HttpServletRequest" />
+
+    <bean id="ProcessSamlMessage"
+          class="net.shibboleth.idp.cas.flow.impl.ProcessSamlMessageAction" />
+
+    <bean id="BuildSamlValidationSuccessMessage"
+          class="net.shibboleth.idp.cas.flow.impl.BuildSamlValidationSuccessMessageAction"
+          c:strategy-ref="shibboleth.DefaultIdentifierGenerationStrategy"
+          c:id="%{idp.entityID}" />
+
+    <bean id="BuildSamlValidationFailureMessage"
+          class="net.shibboleth.idp.cas.flow.impl.BuildSamlValidationFailureMessageAction" />
+
+    <bean id="MessageEncoderFactory"
+          class="net.shibboleth.idp.saml.profile.impl.SpringAwareMessageEncoderFactory"
+          p:bindings-ref="shibboleth.OutgoingSOAPBindings" />
+
+    <bean id="EncodeMessage"
+          class="org.opensaml.profile.action.impl.EncodeMessage"
+          scope="prototype"
+          p:messageEncoderFactory-ref="MessageEncoderFactory"
+          p:messageHandler="#{getObject('shibboleth.BindingSpecificMessageHandler')}" />
+
+   <bean id="RecordResponseComplete"
+          class="net.shibboleth.idp.profile.impl.RecordResponseComplete"
+          scope="prototype" />
+</beans>

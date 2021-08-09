@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+
+DUPLICATE_PROPERTY_EXTENDED=CWIML1996W: La propri\u00e9t\u00e9 \u00e9tendue ''{0}'' est ignor\u00e9e car elle a d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9finie pour l''entit\u00e9 ''{1}''.
+DUPLICATE_PROPERTY_EXTENDED.explanation=La propri\u00e9t\u00e9 \u00e9tendue est d\u00e9j\u00e0 d\u00e9finie et la d\u00e9finition en double est ignor\u00e9e car les deux propri\u00e9t\u00e9s ne peuvent pas avoir le m\u00eame nom.
+DUPLICATE_PROPERTY_EXTENDED.useraction=D\u00e9terminez s'il existe plusieurs d\u00e9finitions pour la propri\u00e9t\u00e9 \u00e9tendue dans la configuration de serveur. Supprimez ou renommez les d\u00e9finitions en double.
+
+DUPLICATE_PROPERTY_ENTITY=CWIML1997W: La propri\u00e9t\u00e9 \u00e9tendue ''{0}'' est ignor\u00e9e car elle ne peut pas remplacer la propri\u00e9t\u00e9 du m\u00eame nom pour l''entit\u00e9 ''{1}''.
+DUPLICATE_PROPERTY_ENTITY.explanation=Etant donn\u00e9 que la propri\u00e9t\u00e9 est d\u00e9j\u00e0 d\u00e9finie dans le sch\u00e9ma de l'entit\u00e9, elle est ignor\u00e9e car elle ne peut pas \u00eatre red\u00e9finie en tant que propri\u00e9t\u00e9 \u00e9tendue.
+DUPLICATE_PROPERTY_ENTITY.useraction=V\u00e9rifiez le sch\u00e9ma de l'entit\u00e9 pour d\u00e9terminer si la propri\u00e9t\u00e9 peut \u00eatre utilis\u00e9e. Renommez ou supprimez la propri\u00e9t\u00e9 \u00e9tendue conflictuelle dans la configuration de serveur.
+
+GENERIC=CWIML1999E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Une erreur d''ex\u00e9cution s''est produite lors du traitement : {0}
+GENERIC.explanation=Le programme a d\u00e9tect\u00e9 l'erreur sp\u00e9cifi\u00e9e lors de l'op\u00e9ration.
+GENERIC.useraction= Recherchez la cause de cette erreur dans les journaux et ex\u00e9cutez les actions appropri\u00e9es.

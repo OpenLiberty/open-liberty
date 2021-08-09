@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/oauth20/internal/resources/OAuthTaiMessages.nlsprops
+#COMPONENTPREFIX CWTAI
+#COMPONENTNAMEFOR WebSphere Application Server OAUTH Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Legacy TAI Message prefix block: CWTAI0001 - CWTAI0050
+# Legacy TAI Messages still in use in Liberty
+security.tai.malformed.filter.operator=CWTAI0019E: Oper\u00e1tor filtru by m\u011bl b\u00fdt jeden z oper\u00e1tor\u016f ''=='', ''!='', ''%='', ''^='', ''>'' nebo ''<''. Pou\u017eit\u00fd oper\u00e1tor: {0}.
+security.tai.malformed.filter.operator.explanation=CMSG0001
+security.tai.malformed.filter.operator.useraction=CMSG0002
+
+security.tai.ipstring.convert.error=CWTAI0045E: \u0158et\u011bzec IP {0} nelze p\u0159ev\u00e9st na adresu IP.
+security.tai.ipstring.convert.error.explanation=P\u0159i p\u0159ev\u00e1d\u011bn\u00ed \u0159et\u011bzce adresy IP na adresu IP do\u0161lo k chyb\u011b p\u0159evodu.
+security.tai.ipstring.convert.error.useraction=Ov\u011b\u0159te platnost poskytnut\u00e9ho \u0159et\u011bzce adresy IP.
+
+security.tai.malformed.iprange=CWTAI0046E: Byl zad\u00e1n chybn\u011b vytvo\u0159en\u00fd rozsah adres IP. M\u00edsto z\u00e1stupn\u00e9ho znaku byla nalezena polo\u017eka {0}.
+security.tai.malformed.iprange.explanation=Byl zad\u00e1n chybn\u00fd rozsah adres IP. Po prvn\u00edm rozsahu mohou b\u00fdt obsa\u017eeny pouze z\u00e1stupn\u00e9 znaky.
+security.tai.malformed.iprange.useraction=Zajist\u011bte, aby po prvn\u00edm zadan\u00e9m rozsahu n\u00e1sledovaly pouze z\u00e1stupn\u00e9 znaky.
+
+security.tai.unknown.host=CWTAI0047E: Pro adresu IP {0} byla vyvol\u00e1na v\u00fdjimka z p\u0159\u00ed\u010diny nezn\u00e1m\u00e9ho hostitele.
+security.tai.unknown.host.explanation=Nelze z\u00edskat adresu IP.
+security.tai.unknown.host.useraction=Ov\u011b\u0159te zadan\u00fd rozsah adres IP.

@@ -1,0 +1,80 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc/resources/com/ibm/ws/security/authorization/jacc/internal/resources/JaccAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2850 - CWWKS2879
+
+JACC_SERVICE_STARTING=CWWKS2850I: Le service JACC est en cours de d\u00e9marrage. Le nom de classe du fournisseur de r\u00e8gle est {0}. Le nom de la classe PolicyConfigurationFactory est {1}.
+JACC_SERVICE_STARTING.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+JACC_SERVICE_STARTING.useraction=Aucune action n'est requise.
+
+JACC_SERVICE_STARTED=CWWKS2851I: Le service JACC a d\u00e9marr\u00e9. Le nom de classe du fournisseur de r\u00e8gle est {0}. Le nom de la classe PolicyConfigurationFactory est {1}.
+JACC_SERVICE_STARTED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+JACC_SERVICE_STARTED.useraction=Aucune action n'est requise.
+
+JACC_SERVICE_STOPPED=CWWKS2852I: Le service JACC s''est arr\u00eat\u00e9. Le nom de classe du fournisseur de r\u00e8gle est {0}. Le service d''autorisation int\u00e9gr\u00e9 est activ\u00e9.
+JACC_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+JACC_SERVICE_STOPPED.useraction=Aucune action n'est requise.
+
+JACC_SERVICE_START_FAILURE=CWWKS2853E: Le service JACC n''a pas pu d\u00e9marrer. Le nom de classe du fournisseur de r\u00e8gle est {0}. Le nom de la classe PolicyConfigurationFactory est {1}.
+JACC_SERVICE_START_FAILURE.explanation=Le service JACC n'a pas pu d\u00e9marrer.
+JACC_SERVICE_START_FAILURE.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_POLICY_IS_NOT_SET=CWWKS2854E: Le fournisseur JACC ne peut pas \u00eatre initialis\u00e9 car le nom de la classe de r\u00e8gle n'est pas d\u00e9fini par la propri\u00e9t\u00e9 (javax.security.jacc.policy.provider).
+JACC_POLICY_IS_NOT_SET.explanation=Le fournisseur JACC ne peut pas \u00eatre initialis\u00e9 car le nom de la classe de r\u00e8gle n'est pas d\u00e9fini.
+JACC_POLICY_IS_NOT_SET.useraction=Assurez-vous que la propri\u00e9t\u00e9(javax.security.jacc.policy.provider) de la fonction utilisateur JACC d\u00e9finit le nom de classe appropri\u00e9.
+
+JACC_FACTORY_IS_NOT_SET=CWWKS2855E: Le fournisseur JACC ne peut pas \u00eatre initialis\u00e9 car le nom de la classe PolicyConfigurationFactory n'est pas d\u00e9fini par la propri\u00e9t\u00e9 (javax.security.jacc.PolicyConfigurationFactory.provider).
+JACC_FACTORY_IS_NOT_SET.explanation=Le fournisseur JACC ne peut pas \u00eatre initialis\u00e9 car le nom de la classe PolicyConfigurationFactory n'est pas d\u00e9fini.
+JACC_FACTORY_IS_NOT_SET.useraction=Assurez-vous que la propri\u00e9t\u00e9 (javax.security.jacc.PolicyConfigurationFactory.provider) de la fonction utilisateur JACC d\u00e9finit le nom de classe appropri\u00e9.
+
+JACC_INCONSISTENT_POLICY_CLASS=CWWKS2856W: Le nom de classe de r\u00e8gle {0} qui est sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me JVM (javax.security.jacc.policy.provider) n''est pas identique au nom de classe {1} qui est sp\u00e9cifi\u00e9 par le fournisseur JACC. {1} sera utilis\u00e9.
+JACC_INCONSISTENT_POLICY_CLASS.explanation=Le nom de classe de la r\u00e8gle qui est sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me JVM n'est pas identique au nom de classe de r\u00e8gle qui est sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 bundle de la classe de fournisseur JACC. La valeur de la propri\u00e9t\u00e9 syst\u00e8me est ignor\u00e9e et la valeur de la propri\u00e9t\u00e9 bundle est utilis\u00e9e.
+JACC_INCONSISTENT_POLICY_CLASS.useraction=La propri\u00e9t\u00e9 syst\u00e8me JVM n'est pas requise. Retirez la propri\u00e9t\u00e9 syst\u00e8me JVM et red\u00e9marrez le serveur.
+
+JACC_INCONSISTENT_FACTORY_CLASS=CWWKS2857W: Le nom de classe PolicyConfigurationFactory {0} qui est sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me JVM (javax.security.jacc.PolicyConfigurationFactory.provider) n''est pas coh\u00e9rente avec le nom de classe {1} qui est sp\u00e9cifi\u00e9 par le fournisseur JACC. {1} sera utilis\u00e9.
+JACC_INCONSISTENT_FACTORY_CLASS.explanation=Le nom de classe PolicyConfigurationFactory qui est sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me JVM n'est pas identique au nom de classe PolicyConfigurationFactory qui est sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 bundle de la classe de fournisseur JACC. La valeur de la propri\u00e9t\u00e9 syst\u00e8me est ignor\u00e9e et la valeur de la propri\u00e9t\u00e9 bundle est utilis\u00e9e.
+JACC_INCONSISTENT_FACTORY_CLASS.useraction=La propri\u00e9t\u00e9 syst\u00e8me JVM n'est pas requise. Retirez la propri\u00e9t\u00e9 syst\u00e8me JVM et red\u00e9marrez le serveur.
+
+JACC_FACTORY_INSTANTIATION_FAILURE=CWWKS2858E: Le service JACC ne peut pas charger la classe PolicyConfigurationFactory {0}.
+JACC_FACTORY_INSTANTIATION_FAILURE.explanation=Le servicd JACC ne peut pas charger la classe PolicyConfigurationFactory sp\u00e9cifi\u00e9e.
+JACC_FACTORY_INSTANTIATION_FAILURE.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_POLICY_INSTANTIATION_FAILURE=CWWKS2859E: Le service JACC ne peut pas d\u00e9finir la classe de fournisseur de r\u00e8gle {0} en raison de l''exception {1}.
+JACC_POLICY_INSTANTIATION_FAILURE.explanation=Le service JACC ne peut pas d\u00e9finir la classe de fournisseur de r\u00e8gle en raison de l'exception.
+JACC_POLICY_INSTANTIATION_FAILURE.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_GET_POLICYCONFIGURATION_FAILURE=CWWKS2860E: Le service JACC ne peut pas obtenir l''objet PolicyConfiguration avec l''ID contexte {0}. L''exception est {1}.
+JACC_GET_POLICYCONFIGURATION_FAILURE.explanation=Le service JACC ne peut pas obtenir l'objet PolicyConfiguration du fournisseur JACC. Il peut s'agir d'une erreur grave dans le fournisseur JACC.
+JACC_GET_POLICYCONFIGURATION_FAILURE.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2861E: Le service JACC ne peut pas propager les contraintes de s\u00e9curit\u00e9 Web avec l''ID contexte {0} au fournisseur JACC en raison de l''exception {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=Le service JACC ne peut pas propager les contraintes de s\u00e9curit\u00e9 Web au fournisseur JACC en raison d'une exception inattendue.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_IMPLIES_FAILURE=CWWKS2862E: L''autorisation pour la ressource avec l''ID contexte {0} a \u00e9chou\u00e9 en raison de l''exception {1}.
+JACC_IMPLIES_FAILURE.explanation=L'autorisation pour la ressource sp\u00e9cifi\u00e9e a \u00e9chou\u00e9.
+JACC_IMPLIES_FAILURE.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_NO_EJB_PLUGIN=CWWKS2863E: Le module de traitement des r\u00f4les de s\u00e9curit\u00e9 EJB n'est pas disponible.
+JACC_NO_EJB_PLUGIN.explanation=Le service JACC ne peut pas traiter les r\u00f4les de s\u00e9curit\u00e9 EJB car le module requis n'est pas disponible.
+JACC_NO_EJB_PLUGIN.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+
+JACC_NO_WEB_PLUGIN=CWWKS2864E: Le module de traitement des r\u00f4les de s\u00e9curit\u00e9 Web n'est pas disponible.
+JACC_NO_WEB_PLUGIN.explanation=Le service JACC ne peut pas traiter les r\u00f4les de s\u00e9curit\u00e9 Web car le module requis n'est pas disponible.
+JACC_NO_WEB_PLUGIN.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
+

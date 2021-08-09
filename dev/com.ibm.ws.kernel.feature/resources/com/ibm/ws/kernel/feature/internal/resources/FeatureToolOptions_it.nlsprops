@@ -1,0 +1,155 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Utilizzo:  {0}
+
+global.description=Descrizione:
+global.actions=Azioni:
+global.options=Opzioni:
+global.options.lower=opzioni
+global.usage=Uso:
+global.options.statement=\tUtilizzare il comando help [nomeAzione] per informazioni dettagliate sulle opzioni di ciascuna azione.
+task.unknown=Azione sconosciuta: {0}
+
+# -------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tStampare le informazioni della guida per l'azione specificata.
+install.desc=\tInstallare un funzione fornita come un archivio del sottosistema (esa) nel runtime.
+uninstall.desc=\tDisinstallare una funzione dal runtime.
+featureList.desc=\tGenerare un report XML su tutte le funzioni installate nel runtime.
+classpath.desc=\tGenera un JAR che pu\u00f2 essere aggiunto ad un percorso classe del compilatore per poter\n \tutilizzare le API da un elenco di funzioni.
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\tSpecificare dove installare la funzione. La funzione pu\u00f2 essere installata in\n\
+\tuna qualsiasi ubicazione dell'estensione del prodotto configurata o come funzione utente. Se  \n\
+\tquesta opzione non \u00e8 specificata, la funzione verr\u00e0 installata come funzione \n\
+\tutente.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--user=\ \ \ \ --user
+install.option-desc.--user=\tSpecificare l'ID utente valido per WebSphere Liberty Repository.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--password=\ \ \ \ --password
+install.option-desc.--password=\tSpecificare la password per l'ID utente indicato nell'opzione --user.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--passwordFile=\ \ \ \ --passwordFile
+install.option-desc.--passwordFile=\tFornire un file contenente la password per l'ID utente specificato \n\
+\tnell'opzione --user.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name=\ \ \ \ name
+install.option-desc.name=\tSpecificare l'ubicazione dell'archivio del sottosistema da utilizzare.  Pu\u00f2 \n\
+\tessere un file esa, un nome breve IBM o il nome simbolico del sottosistema\n\
+\tdell'archivio del sottosistema.  Il valore pu\u00f2 essere un nome file o un URL per \n\
+\til file esa. Se si specifica un nome breve IBM o il nome simbolico del sottosistema, \n\
+\til file esa verr\u00e0 installato da un repository in linea\n\
+\tpresente su IBM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tUtilizzare questa opzione per visualizzare eventuali informazioni aggiuntive disponibili\n\
+\tmentre l'azione \u00e8 in esecuzione.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name=\ \ \ \ name
+uninstall.option-desc.name=\tSpecificare la funzione da installare.                                    \n\
+\tPu\u00f2 essere un nome breve IBM o il nome simbolico del sottosistema \n\
+\tdell'archivio del sottosistema.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tSopprime i messaggi di conferma per rimuovere le funzioni e disinstalla\n \tle funzioni senza interazione dell'utente.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tDisinstallare la funzione indipendentemente dal fatto che altre funzioni abbiano\n\
+\tdipendenze su di essa.  La disinstallazione di una funzione richiesta da altre\n \tfunzioni installate potrebbe causare l'arresto di tali funzioni ed\n \timpedire il corretto funzionamento dei server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tUtilizzare questa opzione per visualizzare eventuali informazioni aggiuntive disponibili\n\
+\tmentre l'azione \u00e8 in esecuzione.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--when-file-exists=\ \ \ \ --when-file-exists=[fail|ignore|replace]
+install.option-desc.--when-file-exists=\tSe un file che fa parte dell'ESA gi\u00e0 esiste sul sistema, \u00e8 \n\
+\tnecessario specificare quali azioni eseguire. Le opzioni valide sono: fail - interrompere   \n\
+\tl'installazione; ignore - continuare l'installazione e ignorare  \n\
+\til file esistente; replace - sovrascrivere il file esistente. Non utilizzare  \n\
+\tl'opzione replace per reinstallare le funzioni.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadOnly=\ \ \ \ --downloadOnly=[all|required*|none]
+install.option-desc.--downloadOnly=\tScaricare una funzione in una directory locale senza installarla. \u00c8 \n\
+\tpossibile configurare questa opzione per scaricare tutte le funzioni dipendenti, solo \
+\n \tle funzioni dipendenti richieste o nessuna delle funzioni dipendenti. \n\
+\tL'impostazione predefinita consiste nello scaricare tutte le funzioni dipendenti\n\
+\trichieste. La directory viene specificata con l'opzione --location.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--location=\ \ \ \ --location=directoryPath
+install.option-desc.--location=\tSe si sta installando una funzione da una directory locale, utilizzare questa\n\
+\topzione per specificare l'ubicazione della directory locale. Se si sta scaricando\n\
+\tuna funzione utilizzando l'opzione --downloadOnly, utilizzare questa\n\
+\topzione per specificare la directory di destinazione per la funzione\n\
+\tscaricata. Questa opzione \u00e8 obbligatoria quando si utilizzano --downloadOnly e\n\
+\t--offlineOnly.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--offlineOnly=\ \ \ \ --offlineOnly
+install.option-desc.--offlineOnly=\tSpecificare questa opzione se non si desidera connettersi al repository IBM         \n\
+\tWebSphere Liberty e si stanno installando le funzioni solo dalla\n\
+\tdirectory locale. La directory locale viene specificata con l'opzione\n\
+\t--location.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+
+featureList.option-key.--encoding=\ \ \ \ --encoding=charset
+featureList.option-desc.--encoding=\tSpecificare la serie di caratteri da utilizzare quando si scrive il file xml   \n\
+\tdell'elenco di funzioni.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--locale=\ \ \ \ --locale=language
+featureList.option-desc.--locale=\tSpecificare la lingua da utilizzare durante la scrittura dell'elenco di funzioni. Si      \n\
+\ttratta di un codice lingua di due lettere minuscole ISO-639,          \n\
+\tfacoltativamente seguito da un carattere di sottolineatura e dal codice paese di due lettere      \n\
+\tmaiuscole ISO-3166.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.fileName=\ \ \ \ fileName
+featureList.option-desc.fileName=\tIl nome del file in cui scrivere l'xml dell'elenco di funzioni.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--productextension=\ \ \ \ --productExtension=name
+featureList.option-desc.--productextension=\tSpecificare il nome dell'estensione del prodotto le cui funzioni devono essere elencate.  \n\
+\tSe l'estensione del prodotto \u00e8 installata nell'ubicazione utente predefinita,  \n\
+\tutilizzare la parola chiave: usr.                                                  \n\
+\t \
+Se questa opzione non \u00e8 specificata, l'azione viene eseguita sul componente principale Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.desc=\tTrovare le funzioni applicabili dal repository IBM WebSphere Liberty.
+# -------- OPTIONS ----------------------------------------------------#
+find.option-key.searchString=\ \ \ \ searchString
+find.option-desc.searchString=\tUtilizzare la stringa di ricerca per trovare le funzioni applicabili nel         \n\
+\trepository IBM WebSphere Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--viewInfo=\ \ \ \ --viewInfo
+find.option-desc.--viewInfo=\tVisualizzare delle informazioni dettagliate.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tUtilizzare questa opzione per visualizzare eventuali informazioni aggiuntive disponibili\n\
+\tmentre l'azione \u00e8 in esecuzione.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.--features=\ \ \ \ --features=value,value,...
+classpath.option-desc.--features=\tL'elenco di funzioni da cui ottenere l'elenco di JAR API.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.fileName=\ \ \ \ fileName
+classpath.option-desc.fileName=\tIl nome del file JAR in cui scrivere i percorsi classe.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#

@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed slu\u017eby auditu.
+AUDIT_SERVICE_STARTING.explanation=Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed slu\u017eby auditu. Toto m\u016f\u017ee trvat n\u011bkolik minut, pokud mus\u00ed b\u00fdt provedena jednor\u00e1zov\u00e1 inicializace.
+AUDIT_SERVICE_STARTING.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+AUDIT_SERVICE_READY=CWWKS5851I: Slu\u017eba auditu je p\u0159ipravena.
+AUDIT_SERVICE_READY.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+AUDIT_SERVICE_READY.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: Byla zastavena slu\u017eba auditu.
+AUDIT_SERVICE_STOPPED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+AUDIT_SERVICE_STOPPED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: N\u00e1zev ud\u00e1losti auditu {0} uveden\u00fd v konfiguraci ud\u00e1lost\u00ed obslu\u017en\u00e9 rutiny auditu nen\u00ed podporov\u00e1n, tak\u017ee byla slu\u017eba auditu zastavena. Opravte n\u00e1zev ud\u00e1losti v konfiguraci obslu\u017en\u00e9 rutiny auditu {2} tak, aby ud\u00e1val jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f ud\u00e1lost\u00ed: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=N\u00e1zev ud\u00e1losti auditu poskytnut\u00fd v konfiguraci ud\u00e1losti je nespr\u00e1vn\u00fd a slu\u017eba auditu bude zastavena. Analyzujte v\u00fdjimku uvedenou ve zpr\u00e1v\u011b a zadejte platn\u00fd n\u00e1zev ud\u00e1losti auditu.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Zkontrolujte, zda je n\u00e1zev ud\u00e1losti auditu poskytnut\u00fd jako \u010d\u00e1st konfigurace ud\u00e1losti spr\u00e1vn\u00fd.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: N\u00e1zev v\u00fdsledku auditu {0} uveden\u00fd v konfiguraci ud\u00e1lost\u00ed obslu\u017en\u00e9 rutiny auditu nen\u00ed podporov\u00e1n, tak\u017ee byla slu\u017eba auditu zastavena.  Opravte n\u00e1zev v\u00fdsledku v konfiguraci obslu\u017en\u00e9 rutiny auditu {2} tak, aby ud\u00e1val jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f v\u00fdsledk\u016f: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=N\u00e1zev v\u00fdsledku auditu poskytnut\u00fd v konfiguraci ud\u00e1losti je nespr\u00e1vn\u00fd a slu\u017eba auditu bude zastavena. Analyzujte v\u00fdjimku uvedenou ve zpr\u00e1v\u011b a zadejte platn\u00fd n\u00e1zev v\u00fdsledku auditu.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Zkontrolujte, zda je n\u00e1zev v\u00fdsledku auditu poskytnut\u00fd jako \u010d\u00e1st konfigurace ud\u00e1losti spr\u00e1vn\u00fd.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: Konfigurace ud\u00e1lost\u00ed obslu\u017en\u00e9 rutiny auditu nen\u00ed \u00fapln\u00e1, tak\u017ee byla slu\u017eba auditu zastavena. V konfiguraci mus\u00ed b\u00fdt ur\u010den n\u00e1zev ud\u00e1losti pro v\u00fdsledek {0}. Opravte konfiguraci obslu\u017en\u00e9 rutiny auditu {1} tak, aby ud\u00e1val jeden z n\u00e1sleduj\u00edc\u00edch n\u00e1zv\u016f ud\u00e1lost\u00ed: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=N\u00e1zev ud\u00e1losti auditu ur\u010den\u00fd v konfiguraci ud\u00e1losti je neplatn\u00fd, p\u0159\u00edpadn\u011b zcela chyb\u00ed a slu\u017eba auditu bude zastavena. Analyzujte v\u00fdjimku uvedenou ve zpr\u00e1v\u011b a zadejte platn\u00fd n\u00e1zev ud\u00e1losti auditu.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Zkontrolujte, zda jsou zad\u00e1ny platn\u00fd n\u00e1zev ud\u00e1losti a platn\u00fd typ v\u00fdsledku.

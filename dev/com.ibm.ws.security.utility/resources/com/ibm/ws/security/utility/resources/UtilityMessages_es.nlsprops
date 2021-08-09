@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Error: {0}
+error.inputConsoleNotAvailable=La consola de entrada no est\u00e1 disponible.
+error.missingIO=Error; falta el dispositivo E/S: {0}.
+
+usage=Uso: {0}
+task.unknown=Tarea desconocida: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Demasiados argumentos.
+insufficientArgs=Argumentos insuficientes.
+invalidArg=Argumento no v\u00e1lido {0}.
+missingArg=Falta el argumento {0}.
+missingValue=Falta el valor del argumento {0}.
+missingArg2=Debe proporcionarse el argumento {0} o el argumento {1}.
+exclusiveArg=Debe especificarse el argumento {0} o el argumento {1}, pero no ambos.
+serverNotFound=El servidor especificado {0} no se ha podido encontrar en la ubicaci\u00f3n {1}
+
+
+encode.enterText=Especifique el texto:
+encode.reenterText=Vuelva a especificar el texto:
+encode.readError=Error al leer el texto.
+encode.entriesDidNotMatch=Las entradas no coinciden.
+
+
+password.enterText=Especifique la contrase\u00f1a:
+password.reenterText=Volver a especificar la contrase\u00f1a:
+password.readError=Error al leer la contrase\u00f1a.
+password.entriesDidNotMatch=Las contrase\u00f1as no han coincidido.
+
+name=nombre
+days=d\u00edas
+
+sslCert.abort=Terminando anormalmente la creaci\u00f3n del certificado:
+sslCert.createFailed=No se puede crear el certificado SSL por omisi\u00f3n:\n {0}
+sslCert.errorEncodePassword=Error al codificar la contrase\u00f1a (no se ha creado el certificado):\n\
+{0}
+sslCert.createKeyStore=Creando almac\u00e9n de claves {0}\n
+sslCert.oneType=Los argumentos {0} y {1} no pueden especificarse al mismo tiempo.
+sslCert.clientNotFound=El cliente especificado {0} no se ha podido encontrar en la ubicaci\u00f3n {1}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=Se ha creado el certificado SSL para el servidor {0}. El certificado se ha creado con {1} como SubjectDN.\n\
+\n\
+A\u00f1ada las l\u00edneas siguientes a server.xml para habilitar SSL:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=Se ha creado el certificado SSL para el cliente {0}. El certificado se ha creado con {1} como SubjectDN.\n\
+\n\
+A\u00f1ada las l\u00edneas siguientes a client.xml para habilitar SSL:
+
+fileUtility.failedDirCreate=No se ha podido crear el directorio {0}
+file.exists=El archivo de almac\u00e9n de claves {0} ya existe.  No se ha podido crear un archivo de almac\u00e9n de claves en dicha ubicaci\u00f3n.
+file.requiredDirNotCreated=No se ha podido crear la estructura de directorios necesaria para {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tEl cifrado de contrase\u00f1a personalizado tambi\u00e9n est\u00e1 disponible.
+encode.option-desc.custom.feature=\n\
+\tEl nombre de caracter\u00edstica de {0} es el siguiente:\n\
+\t
+encode.option-desc.custom.description=\n\
+\tLa descripci\u00f3n de {0} es la siguiente:\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=No se detecta el cifrado de contrase\u00f1a personalizado.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=Terminando anormalmente la creaci\u00f3n del archivo de claves LTPA:
+createLTPAKeys.fileExists=El archivo {0} ya existe.  No se puede crear un archivo de claves LTPA en dicha ubicaci\u00f3n.
+createLTPAKeys.createdFile=Se ha creado el archivo de claves LTPA: {0}\n\
+Incluya la siguiente configuraci\u00f3n en server.xml\n\
+{1}\n

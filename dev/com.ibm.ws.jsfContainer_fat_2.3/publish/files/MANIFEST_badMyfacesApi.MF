@@ -1,0 +1,95 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven Bundle Plugin
+Built-By: hwibell
+Build-Jdk: 1.8.0_151
+Specification-Title: Apache MyFaces JSF-2.3 Core API
+Specification-Version: 2.2
+Specification-Vendor: The Apache Software Foundation
+Implementation-Title: Apache MyFaces JSF-2.3 Core API
+Implementation-Version: 2.3.0-SNAPSHOT
+Implementation-Vendor-Id: org.apache.myfaces.core
+Implementation-Vendor: The Apache Software Foundation
+Bnd-LastModified: 1515000112423
+Bundle-Classpath: .
+Bundle-Description: The public API classes of the Apache MyFaces CORE 
+ JSF-2.3 project
+Bundle-DocURL: http://www.apache.org/
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache MyFaces JSF-2.3 Core API
+Bundle-SymbolicName: org.apache.myfaces.core.api
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.3.0.SNAPSHOT
+Export-Package: javax.faces;version="2.3.0.SNAPSHOT",javax.faces.annot
+ ation;version="2.3.0.SNAPSHOT",javax.faces.application;version="2.3.0
+ .SNAPSHOT";uses:="javax.el,javax.faces,javax.faces.component,javax.fa
+ ces.component.behavior,javax.faces.component.search,javax.faces.conte
+ xt,javax.faces.convert,javax.faces.el,javax.faces.event,javax.faces.f
+ low,javax.faces.validator,javax.faces.view",javax.faces.bean;version=
+ "2.3.0.SNAPSHOT",javax.faces.component;version="2.3.0.SNAPSHOT";uses:
+ ="javax.el,javax.faces,javax.faces.application,javax.faces.component.
+ behavior,javax.faces.component.visit,javax.faces.context,javax.faces.
+ convert,javax.faces.el,javax.faces.event,javax.faces.model,javax.face
+ s.render,javax.faces.validator",javax.faces.component.behavior;versio
+ n="2.3.0.SNAPSHOT";uses:="javax.el,javax.faces.component,javax.faces.
+ context,javax.faces.event,javax.faces.render",javax.faces.component.h
+ tml;version="2.3.0.SNAPSHOT";uses:="javax.el,javax.faces.component,ja
+ vax.faces.component.behavior,javax.faces.context,javax.faces.el",java
+ x.faces.component.search;version="2.3.0.SNAPSHOT";uses:="javax.faces,
+ javax.faces.component,javax.faces.component.visit,javax.faces.context
+ ",javax.faces.component.visit;version="2.3.0.SNAPSHOT";uses:="javax.f
+ aces,javax.faces.component,javax.faces.context",javax.faces.context;v
+ ersion="2.3.0.SNAPSHOT";uses:="javax.el,javax.faces,javax.faces.appli
+ cation,javax.faces.component,javax.faces.event,javax.faces.lifecycle,
+ javax.faces.render",javax.faces.convert;version="2.3.0.SNAPSHOT";uses
+ :="javax.faces,javax.faces.application,javax.faces.component,javax.fa
+ ces.context",javax.faces.el;version="2.3.0.SNAPSHOT";uses:="javax.el,
+ javax.faces,javax.faces.context",javax.faces.event;version="2.3.0.SNA
+ PSHOT";uses:="javax.el,javax.faces,javax.faces.application,javax.face
+ s.component,javax.faces.component.behavior,javax.faces.context,javax.
+ faces.lifecycle",javax.faces.flow;version="2.3.0.SNAPSHOT";uses:="jav
+ ax.el,javax.faces,javax.faces.application,javax.faces.context,javax.f
+ aces.lifecycle",javax.faces.flow.builder;version="2.3.0.SNAPSHOT";use
+ s:="javax.el,javax.faces.flow",javax.faces.lifecycle;version="2.3.0.S
+ NAPSHOT";uses:="javax.faces,javax.faces.context,javax.faces.event",ja
+ vax.faces.model;version="2.3.0.SNAPSHOT";uses:="javax.servlet.jsp.jst
+ l.sql",javax.faces.push;version="2.3.0.SNAPSHOT",javax.faces.render;v
+ ersion="2.3.0.SNAPSHOT";uses:="javax.faces,javax.faces.application,ja
+ vax.faces.component,javax.faces.component.behavior,javax.faces.contex
+ t,javax.faces.convert",javax.faces.validator;version="2.3.0.SNAPSHOT"
+ ;uses:="javax.el,javax.faces,javax.faces.application,javax.faces.comp
+ onent,javax.faces.context",javax.faces.view;version="2.3.0.SNAPSHOT";
+ uses:="javax.faces,javax.faces.application,javax.faces.component,java
+ x.faces.context",javax.faces.view.facelets;version="2.3.0.SNAPSHOT";u
+ ses:="javax.el,javax.faces,javax.faces.component,javax.faces.context,
+ javax.faces.view",javax.faces.webapp;version="2.3.0.SNAPSHOT";uses:="
+ javax.el,javax.faces.component,javax.faces.context,javax.faces.conver
+ t,javax.faces.validator,javax.servlet,javax.servlet.jsp,javax.servlet
+ .jsp.tagext"
+Import-Package: javax.el;version="[1.0.0,3.1.0)",javax.validation;vers
+ ion="[1.0.0,2.0.0)";resolution:=optional,javax.validation.groups;vers
+ ion="[1.0.0,2.0.0)";resolution:=optional,javax.validation.metadata;ve
+ rsion="[1.0.0,2.0.0)";resolution:=optional,javax.servlet;version="[2.
+ 5.0,4.0)",javax.servlet.http;version="[2.5.0,4.0)",javax.servlet.jsp;
+ version="[2.1.0,3.1)",javax.servlet.jsp.jstl.core;version="[1.1.2,2.0
+ .0)",javax.servlet.jsp.jstl.sql;version="[1.1.2,2.0.0)",javax.servlet
+ .jsp.tagext;version="[2.1.0,3.2)",javax.faces;version="2.3.0.SNAPSHOT
+ ",javax.faces.application;version="2.3.0.SNAPSHOT",javax.faces.compon
+ ent;version="2.3.0.SNAPSHOT",javax.faces.component.behavior;version="
+ 2.3.0.SNAPSHOT",javax.faces.component.search;version="2.3.0.SNAPSHOT"
+ ,javax.faces.component.visit;version="2.3.0.SNAPSHOT",javax.faces.con
+ text;version="2.3.0.SNAPSHOT",javax.faces.convert;version="2.3.0.SNAP
+ SHOT",javax.faces.el;version="2.3.0.SNAPSHOT",javax.faces.event;versi
+ on="2.3.0.SNAPSHOT",javax.faces.flow;version="2.3.0.SNAPSHOT",javax.f
+ aces.lifecycle;version="2.3.0.SNAPSHOT",javax.faces.model;version="2.
+ 3.0.SNAPSHOT",javax.faces.render;version="2.3.0.SNAPSHOT",javax.faces
+ .validator;version="2.3.0.SNAPSHOT",javax.faces.view;version="2.3.0.S
+ NAPSHOT",javax.faces.view.facelets;version="2.3.0.SNAPSHOT",javax.fac
+ es.webapp;version="2.3.0.SNAPSHOT",org.apache.commons.logging;version
+ ="[1.1.1,2.0.0)"
+Require-Bundle: org.apache.myfaces.core.impl;bundle-version="2.3.0.SNA
+ PSHOT"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-3.0.0.201509101326
+

@@ -1,0 +1,193 @@
+###############################################################################
+# Copyright (c) 2002, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: Il numero massimo di richieste ({0}) consentite per socket non \u00e8 valido. I valori validi includono {1} per un numero illimitato o qualsiasi numero positivo.
+config.maxpersist.explanation=Il valore configurato per il numero massimo di richieste consentito per socket non \u00e8 valido.
+config.maxpersist.useraction=Configurare un valore valido per il numero massimo di richieste consentito per socket.
+
+config.incomingbody=CWWKT0002E: La dimensione del buffer in entrata {0} non \u00e8 valida. Le dimensioni devono essere comprese tra {1} e {2}.
+config.incomingbody.explanation=Il valore configurato per la dimensione del buffer in entrata non \u00e8 valido.
+config.incomingbody.useraction=Configurare un valore valido per la dimensione del buffer in entrata.
+
+config.incomingheader=CWWKT0003E: La dimensione del buffer dell''intestazione {0} non \u00e8 valida. Le dimensioni devono essere comprese tra {1} e {2}.
+config.incomingheader.explanation=Il valore configurato per la dimensione del buffer dell'intestazione non \u00e8 valido.
+config.incomingheader.useraction=Configurare un valore valido per la dimensione del buffer dell'intestazione.
+
+config.outgoingbuffer=CWWKT0004E: La dimensione del buffer in uscita {0} non \u00e8 valida. Le dimensioni devono essere comprese tra {1} e {2}.
+config.outgoingbuffer.explanation=Il valore configurato per la dimensione del buffer in uscita non \u00e8 valido.
+config.outgoingbuffer.useraction=Configurare un valore valido per la dimensione del buffer in uscita.
+
+config.persisttimeout=CWWKT0005E: Il timeout persistente {0} non \u00e8 valido. I timeout devono essere maggiori di {1}.
+config.persisttimeout.explanation=Il valore configurato per il parametro di timeout persistente non \u00e8 valido.
+config.persisttimeout.useraction=Configurare un valore valido per il parametro di timeout persistente.
+
+config.readtimeout=CWWKT0006E: Il timeout di lettura {0} non \u00e8 valido. I timeout devono essere maggiori di {1}.
+config.readtimeout.explanation=Il valore configurato per il parametro di timeout di lettura non \u00e8 valido.
+config.readtimeout.useraction=Configurare un valore valido per il parametro di timeout di lettura.
+
+config.writetimeout=CWWKT0007E: Il timeout di scrittura {0} non \u00e8 valido. I timeout devono essere maggiori di {1}.
+config.writetimeout.explanation=Il valore configurato per il parametro di timeout di scrittura non \u00e8 valido.
+config.writetimeout.useraction=Configurare un valore valido per il parametro di timeout di scrittura.
+
+config.fieldsize=CWWKT0008E: Il limite della dimensione del campo {0} non \u00e8 valido. Tale dimensione deve essere compresa tra {1} e {2}.
+config.fieldsize.explanation=Il valore configurato per il limite della dimensione del campo non \u00e8 valido.
+config.fieldsize.useraction=Configurare un valore valido per il limite della dimensione del campo.
+
+config.numheaders=CWWKT0009E: Il limite del numero di intestazioni {0} non \u00e8 valido. Tale dimensione deve essere compresa tra {1} e {2}.
+config.numheaders.explanation=Il valore configurato per il limite del numero di intestazioni non \u00e8 valido.
+config.numheaders.useraction=Configurare un valore valido per il limite del numero di intestazioni.
+
+config.incomingbodymaxsize=CWWKT0010E: Il numero massimo di byte per il corpo di un messaggio in entrata {0} non \u00e8 valido. Tale dimensione deve essere maggiore o uguale a {1}.
+config.incomingbodymaxsize.explanation=Il valore configurato per il numero massimo di byte per un corpo di un messaggio in entrata non \u00e8 valido.
+config.incomingbodymaxsize.useraction=Configurare un valore valido per il numero massimo di byte per un corpo di un messaggio in entrata.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Impossibile trovare una configurazione predefinita per {0} utilizzando l''ID {1}
+NO_DEFAULT_CONFIGURATION.explanation=Non \u00e8 stato possibile trovare la configurazione predefinita specificata per l'ID specificato.
+NO_DEFAULT_CONFIGURATION.useraction=Verificare la configurazione del server ed eseguire quindi un riavvio pulito.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: Si \u00e8 verificato un errore interno. Impossibile creare la configurazione predefinita. Eccezione {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: Si \u00e8 verificato un errore interno. Impossibile creare l''endpoint predefinito. Eccezione {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: Si \u00e8 verificato un errore interno. Impossibile creare l''host virtuale predefinito.  Eccezione {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: Non \u00e8 stata configurata alcuna porta per l''endpoint {0}. L''endpoint \u00e8 stato disabilitato.
+missingPorts.endpointDisabled.explanation=Un endpoint HTTP richiede che sia configurata almeno una porta.
+missingPorts.endpointDisabled.useraction=Assegnare un valore di porta valido a httpPort, httpsPort o entrambe.
+
+context.root.added=CWWKT0016I: Applicazione Web disponibile ({0}): {1}
+context.root.added.explanation=Messaggio a solo scopo informativo.
+context.root.added.useraction=Non sono richieste azioni.
+
+context.root.removed=CWWKT0017I: Applicazione Web rimossa ({0}): {1}
+context.root.removed.explanation=Messaggio a solo scopo informativo.
+context.root.removed.useraction=Non sono richieste azioni.
+
+Missing.App.Or.Context.Root=CWWKT0018E: Il root di contesto o dell''applicazione per questa richiesta non \u00e8 stato trovato: {0}
+Missing.App.Or.Context.Root.explanation=La richiesta non pu\u00f2 essere gestita da un'applicazione sul server.
+Missing.App.Or.Context.Root.useraction=Assicurarsi che l'applicazione sia definita e distribuita e che sia stata indicata correttamente dal client.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=Il root di contesto o dell''applicazione per questa richiesta non \u00e8 stato trovato: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=La richiesta non pu\u00f2 essere gestita da un'applicazione sul server.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Assicurarsi che l'applicazione sia definita e distribuita e che sia stata indicata correttamente dal client.
+
+config.httpChain.error=CWWKT0019E: Si \u00e8 verificato un problema durante la configurazione dell''endpoint {0}: {1}.
+config.httpChain.error.explanation=Impossibile avviare l'endpoint HTTP a causa di un problema di configurazione.
+config.httpChain.error.useraction=Esaminare i log di eccezione ed i messaggi e ricercare errori correlati. 
+
+start.httpChain.error=CWWKT0020E: Si \u00e8 verificato un problema durante l''avvio dell''endpoint {0}: {1}.
+start.httpChain.error.explanation=Impossibile avviare l'endpoint HTTP a causa di un problema imprevisto. 
+start.httpChain.error.useraction=Esaminare i log di eccezione ed i messaggi e ricercare errori correlati. 
+
+httpChain.error.shutdown=CWWKT0021I: Il server \u00e8 in fase di arresto a causa di un probabile errore di configurazione. \
+L''endpoint {0} non pu\u00f2 essere avviato, ci\u00f2 pu\u00f2 accadere se la porta configurata \u00e8 gi\u00e0 in uso.
+httpChain.error.shutdown.explanation=L'endpoint HTTP \u00e8 stato configurato con onError=FAIL, ci\u00f2 provoca l'arresto del server se si verifica un problema durante l'avvio dell'endpoint. 
+httpChain.error.shutdown.useraction=Esaminare i log di eccezione ed i messaggi e ricercare errori correlati. \
+Per impedire al server di arrestarsi a causa di problemi durante l'avvio dell'endpoint, assicurarsi che onError sia impostato su WARN o IGNORE.
+
+unresolveableHost=CWWKT0022E: Impossibile risolvere l''host configurato {0} per l''endpoint HTTP {1}. L''endpoint \u00e8 stato disabilitato.
+unresolveableHost.explanation=Un endpoint HTTP richiede un valore host che possa essere risolto in un'interfaccia di rete attiva.
+unresolveableHost.useraction=Assicurarsi che il valore host faccia riferimento a un'interfaccia di rete attiva o utilizzare * per collegare tutte le interfacce.
+
+unresolveableDefaultHost=CWWKT0023W: Impossibile risolvere il defaultHostName {0} configurato, viene utilizzato localhost.
+unresolveableDefaultHost.explanation=La variabile defaultHostName specifica un valore host che non pu\u00f2 essere risolto in un'interfaccia di rete attiva.
+unresolveableDefaultHost.useraction=Assicurarsi che il valore defaultHostName configurato faccia riferimento a un'interfaccia di rete attiva.
+
+defaultHostDisabled=CWWKT0024W: Impossibile disabilitare l'host virtuale predefinito (host_predefinito).
+defaultHostDisabled.explanation=L'host virtuale predefinito \u00e8 richiesto dall'ambiente di runtime. 
+defaultHostDisabled.useraction=Non \u00e8 richiesta alcuna azione.
+
+noHostAliases=CWWKT0025W: L''host virtuale {0} non dispone di alias host configurati, non ricever\u00e0 richieste in entrata.
+noHostAliases.explanation=Tutti gli host virtuali non predefiniti devono definire almeno un alias host (host:porta) per identificare le richieste in entrata che devono essere indirizzate a tale host virtuale. \
+L'host virtuale specificato non dispone di alias host definiti, ci\u00f2 impedir\u00e0 l'indirizzamento delle richieste ad esso.
+noHostAliases.useraction=Aggiornare l'elemento virtualHost nel file server.xml per definire almeno un attributo hostAlias.
+
+invalidAlias=CWWKT0026W: Un alias host  configurato per l''host virtuale {0} non \u00e8 valido e verr\u00e0 ignorato. {1}
+invalidAlias.explanation=L'alias host configurato contiene caratteri non validi o la sintassi non \u00e8 corretta.
+invalidAlias.useraction=Aggiornare l'elemento virtualHost nel file server.xml per correggere o eliminare l'alias host non valido. Notare che gli indirizzi IPv6 devono essere racchiusi tra [].
+
+wildcardReason=Il carattere jolly * non pu\u00f2 essere combinato con altri caratteri nell'alias host.
+badHostPortReason=L'host specificato non \u00e8 un nome host o indirizzo IP valido oppure il valore specificato per la porta non \u00e8 un numero intero.
+
+duplicateAlias=CWWKT0027W: L''alias host {0} per l''host virtuale {1} \u00e8 in conflitto con un alias host esistente e verr\u00e0 ignorato.
+duplicateAlias.explanation=L'alias host specificato \u00e8 in conflitto con un alias host esistente.
+duplicateAlias.useraction=Assicurarsi che tutti gli alias host definiti come elementi host virtuale nel file server.xml siano univoci.
+
+context.root.changed=CWWKT0028I: Applicazione Web spostata ({0}): {1}
+context.root.changed.explanation=Messaggio a solo scopo informativo.
+context.root.changed.useraction=Non \u00e8 richiesta alcuna azione.
+
+compression.duplicateType=CWWKT0029W: \u00c8 stata tentata un''aggiunta duplicata del tipo {0}. Viene utilizzata la configurazione predefinita {1}. 
+compression.duplicateType.explanation=Il valore specificato \u00e8 gi\u00e0 registrato come tipo di contenuto accettabile per la compressione.
+compression.duplicateType.useraction=Quando si definisce il valore delle codifiche accettabili, assicurarsi che ciascun valore sia univoco. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: \u00c8 stata tentata una rimozione duplicata della codifica {0}. Viene utilizzata la configurazione predefinita {1}.
+compression.duplicateTypeRemoval.explanation=Il valore specificato \u00e8 gi\u00e0 registrato come tipo di contenuto escluso per la compressione.
+compression.duplicateTypeRemoval.useraction=Quando si utilizza l'opzione di rimozione (-), assicurarsi che il valore specificato non sia gi\u00e0 registrato come tipo di contenuto escluso.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: \u00c8 stato effettuato un tentativo sia di aggiungere che di rimuovere lo stesso tipo di contenuto {0}. Viene utilizzata la configurazione predefinita {1}.
+compression.duplicateTypeAddRemove.explanation=Il valore specificato \u00e8 contemporaneamente in fase di aggiunta e rimozione dalle opzioni di configurazione '+/-'.
+compression.duplicateTypeAddRemove.useraction=Non aggiungere (+) e rimuovere (-) lo stesso tipo di contenuto.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: \u00c8 stato effettuato un tentativo di sovrascrivere la configurazione predefinita di compressione, ma \u00e8 stata anche utilizzata l''opzione di aggiunta (+) su altri tipi di contenuto. Viene utilizzata la configurazione predefinita {0}.
+compression.duplicateOverwriteAndAdd.explanation=La configurazione sta tentando di sovrascrivere il valore predefinito in concomitanza con l'utilizzo dell'opzione di aggiunta (+). L'opzione di aggiunta non pu\u00f2 essere utilizzata mentre si sovrascrivono i valori predefiniti.
+compression.duplicateOverwriteAndAdd.useraction=Se \u00e8 necessario sovrascrivere la configurazione predefinita, non utilizzare l'opzione di aggiunta (+). Se non \u00e8 necessario sovrascrivere i valori predefiniti, includere gli altri tipi di contenuto desiderati utilizzando l'opzione di aggiunta (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: \u00c8 stato effettuato un tentativo di configurare {0} come algoritmo preferito del server. I valori supportati sono gzip, x-gzip, zlib, deflate, identity e none. Viene utilizzata la configurazione predefinita {1}.
+compression.unsupportedAlgorithm.explanation=La configurazione sta tentando di impostare un algoritmo non supportato come algoritmo preferito del server da utilizzare per la compressione. 
+compression.unsupportedAlgorithm.useraction= Quando si definisce il valore, assicurarsi che sia impostato su gzip, x-gzip, deflate, zlib, identity o none.
+
+decompression.tolerance.reached=CWWKT0034E: Il canale HTTP ha tentato di decomprimere un corpo con un rapporto pi\u00f9 grande del tollerato.
+decompression.tolerance.reached.explanation=\u00c8 stato raggiunto il numero massimo di cicli di decompressione, con un conseguente rapporto di decompressione pi\u00f9 grande rispetto al limite configurato. Il limite di decompressione \u00e8 definito dall'attributo decompressionRatioLimit httpOption.
+decompression.tolerance.reached.useraction=Quando questa eccezione si verifica su un corpo di richiesta valido, riconfigurare gli attributi decompressionTolerance e decompressionRatioLimit httpOption per ottenere i risultati di decompressione appropriati.
+
+cookies.samesite.duplicateName=CWWKT0035W: Un nome cookie o pattern duplicato [{0}] \u00e8 stato trovato nella configurazione SameSite [{1}]. Il nome cookie o pattern [{0}] viene ignorato per tutti gli elenchi di configurazione. Qualsiasi nome cookie o pattern definito dalle configurazioni lax, none e strict pu\u00f2 essere definito in una sola delle tre configurazioni.
+cookies.samesite.duplicateName.explanation=Il valore specificato \u00e8 stato gi\u00e0 rilevato dalla configurazione e associato ad un valore SameSite.
+cookies.samesite.duplicateName.useraction=Assicurarsi che i nomi cookie e i pattern siano univoci tra gli elenchi di configurazione lax, none e strict.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: Un utilizzo non supportato del carattere jolly \u00e8 stato tentato tramite il valore [{0}]. La configurazione SameSite non \u00e8 impostata per questo valore.
+cookies.samesite.unsupportedWildcard.explanation=Il carattere jolly (*) \u00e8 stato utilizzato in modo non supportato. Il modo supportato consiste in un carattere jolly unico (*) utilizzato come valore autonomo o dopo qualsiasi numero di prefissi di nomi cookie.
+cookies.samesite.unsupportedWildcard.useraction=Assicurarsi che venga utilizzato un singolo carattere jolly (*) per pattern negli elenchi lax, none e strict. Inoltre, l'utilizzo di questo carattere \u00e8 supportato solo nelle seguenti due condizioni: come valore autonomo o dopo i prefissi dei nomi cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Un nome cookie o uno schema [{0}], contrassegnato come un duplicato, \u00e8 stato trovato nella configurazione SameSite [{1}]. Il nome cookie o pattern [{0}] viene ignorato. Qualsiasi nome cookie o pattern definito dalle configurazioni lax, none e strict pu\u00f2 essere definito in una sola delle tre configurazioni.
+cookies.samesite.knownDuplicateName.explanation=Il valore specificato \u00e8 stato gi\u00e0 rilevato dalla configurazione e associato ad un valore SameSite.
+cookies.samesite.knownDuplicateName.useraction=Assicurarsi che i nomi cookie e i pattern siano univoci tra gli elenchi di configurazione lax, none e strict.
+
+trusted.header.origin.invalid.value=CWWKT0038W: Il valore di trustedHeaderOrigin configurato [{0}] non \u00e8 valido e non \u00e8 possibile utilizzarlo.
+trusted.header.origin.invalid.value.explanation=Il valore specificato deve essere un indirizzo IP completo o un nome host con formato corretto.
+trusted.header.origin.invalid.value.useraction=Assicurarsi che gli indirizzi IP configurati contengano un valore per ciascun segmento e che i nomi host non contengano caratteri non validi.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Il valore di trustedSensitiveHeaderOrigin configurato [{0}] non \u00e8 valido e non \u00e8 possibile utilizzarlo.
+trusted.sensitive.header.origin.invalid.value.explanation=Il valore specificato deve essere un indirizzo IP completo o un nome host con formato corretto.
+trusted.sensitive.header.origin.invalid.value.useraction=Assicurarsi che gli indirizzi IP configurati contengano un valore per ciascun segmento e che i nomi host non contengano caratteri non validi.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: Il valore [{0}] configurato per la direttiva max-age non \u00e8 valido e non pu\u00f2 essere utilizzato. Il valore per la direttiva max-age deve essere un numero intero non negativo.
+config.hsts.invalid.max.age.value.explanation=Il valore per la direttiva max-age non pu\u00f2 essere un numero intero negativo.
+config.hsts.invalid.max.age.value.useraction=Assicurarsi che la direttiva max-age configurata contenga un valore intero non negativo.
+
+config.hsts.missing.max.age=CWWKT0041W: \u00c8 stato effettuato un tentativo di configurare [{0}] come intestazione Strict-Transport-Security. Questa configurazione non contiene la direttiva max-age obbligatoria. Una configurazione che non contiene una direttiva max-age non \u00e8 valida e non pu\u00f2 essere utilizzata.
+config.hsts.missing.max.age.explanation=La configurazione specificata deve contenere una direttiva max-age con un valore intero non negativo.
+config.hsts.missing.max.age.useraction=Assicurarsi che la configurazione contenga una direttiva max-age con un valore intero non negativo.

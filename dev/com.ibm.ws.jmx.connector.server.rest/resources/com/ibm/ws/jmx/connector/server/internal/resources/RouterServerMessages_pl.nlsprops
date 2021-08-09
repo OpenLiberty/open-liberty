@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: Kontroler kolektywu nie m\u00f3g\u0142 utworzy\u0107 kontekstu SSL podczas pr\u00f3by skierowania po\u0142\u0105czenia JMX do {0}. Wyj\u0105tek: {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=Nie mo\u017cna utworzy\u0107 kontekstu SSL przy u\u017cyciu certyfikatu SSL serwera. 
+jmx.connector.server.rest.router.ssl.exception.useraction=Sprawd\u017a konfiguracj\u0119 serwera SSL i zarejestruj ponownie serwer na kontrolerze kolektywu.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: Informacje dotycz\u0105ce uwierzytelniania JMX nie s\u0105 dost\u0119pne w repozytorium kontrolera kolektywu dla serwera docelowego {0} na ho\u015bcie {1} w katalogu {2}. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=Informacje dotycz\u0105ce uwierzytelniania JMX s\u0105 wymagane w celu nawi\u0105zania po\u0142\u0105czenia JMX z okre\u015blonym serwerem docelowym.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=Sprawd\u017a, czy serwer docelowy zosta\u0142 pomy\u015blnie za\u0142adowany podczas startu w kontrolerze kolektywu.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E:  W\u0142a\u015bciwo\u015b\u0107 nazwy hosta w informacjach uwierzytelniania JMX jest niedost\u0119pna w repozytorium kontrolera kolektywu dla serwera docelowego {0} na ho\u015bcie {1} w katalogu {2}.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=W\u0142a\u015bciwo\u015b\u0107 nazwy hosta w informacjach dotycz\u0105cych uwierzytelniania JMX jest wymagana do nawi\u0105zania po\u0142\u0105czenia JMX z okre\u015blonym serwerem docelowym.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=Sprawd\u017a, czy serwer docelowy zosta\u0142 pomy\u015blnie za\u0142adowany podczas startu w kontrolerze kolektywu.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: W\u0142a\u015bciwo\u015b\u0107 portu w informacjach dotycz\u0105cych uwierzytelniania JMX jest niedost\u0119pna w repozytorium kontrolera kolektywu dla serwera docelowego {0} na ho\u015bcie {1} w katalogu {2}.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=Numer portu w informacjach dotycz\u0105cych uwierzytelniania JMX jest wymagany do nawi\u0105zania po\u0142\u0105czenia JMX z okre\u015blonym serwerem docelowym.
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=Sprawd\u017a, czy serwer docelowy zosta\u0142 pomy\u015blnie za\u0142adowany podczas startu w kontrolerze kolektywu.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: Wymagany magazyn kluczy {0} nie zosta\u0142 skonfigurowany.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=Wymagany magazyn kluczy dla routingu JMX nie zosta\u0142 skonfigurowany.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Upewnij si\u0119, \u017ce magazyn kluczy zosta\u0142 okre\u015blony w pliku server.xml.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: Czytnik repozytorium kontrolera kolektywu jest niedost\u0119pny.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=Wymagany czytnik repozytorium kontrolera kolektywu nie zosta\u0142 uruchomiony.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=Sprawd\u017a konfiguracj\u0119 serwera, aby upewni\u0107 si\u0119, \u017ce wymagane sk\u0142adniki dla routingu JMX s\u0105 obecne.

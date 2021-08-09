@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <usr_parent id="dflt">
+  	<usr_child id="dfltConfig">
+  		<usr_grandchild value="x"/>
+  	</usr_child>
+  	<usr_child id="usrConfig">
+  		<usr_grandchild value="error_usr_config_should_override"/>
+  	</usr_child>
+  	<usr_child id="mergedConfig" name="error_usr_config_should_override" option="dfltOption">
+  		<usr_grandchild id="one" value="error_usr_config_should_override"/>
+  		<usr_grandchild id="three" value="y"/>
+  		<usr_grandchild id="four" value="z"/>
+  	</usr_child>
+  </usr_parent>
+</server>

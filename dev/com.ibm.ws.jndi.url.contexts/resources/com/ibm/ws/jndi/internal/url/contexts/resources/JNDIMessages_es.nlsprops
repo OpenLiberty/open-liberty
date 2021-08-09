@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jndi.url.contexts/resources/com/ibm/ws/jndi/internal/url/contexts/resources/JNDIMessages.nlsprops
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Description
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Message numbers CWWKN1nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn:	com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn:	com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages 
+# -------------------------------------------------------------------------------------------------
+#
+JNDI_NON_JEE_THREAD_CWWKN0100E=CWWKN0100E: No se puede completar una operaci\u00f3n en el nombre JNDI {0} porque la hebra actual no est\u00e1 asociada a un componente de aplicaci\u00f3n Java Enterprise Edition. Aseg\u00farese de que la operaci\u00f3n JNDI no se produce en hebras no gestionadas por el servidor o dentro de bloques de c\u00f3digo est\u00e1tico.
+JNDI_NON_JEE_THREAD_CWWKN0100E.explanation=Las operaciones JNDI en el espacio de nombres java: s\u00f3lo se admiten en el contexto de un componente de aplicaciones Java EE.
+JNDI_NON_JEE_THREAD_CWWKN0100E.useraction=Modifique la aplicaci\u00f3n de modo que la operaci\u00f3n JNDI se produce en el contexto de un componente de aplicaciones Java EE.

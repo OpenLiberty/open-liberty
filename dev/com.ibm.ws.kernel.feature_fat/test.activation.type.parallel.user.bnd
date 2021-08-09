@@ -1,0 +1,9 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-SymbolicName: test.activation.type.parallel.user
+Bundle-Description: test feature bundle that checks if it is marked for parallel activation
+
+Private-Package: test.activation.type
+
+Bundle-Activator: test.activation.type.Activator

@@ -1,0 +1,467 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session.db/resources/com/ibm/ws/session/db/resources/WASSession.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.invalidateError=SESN0015E: Une erreur a \u00e9t\u00e9 d\u00e9tect\u00e9e dans l'invalidation de la base de donn\u00e9es des sessions ayant expir\u00e9.
+DatabaseHashMap.invalidateError.explanation=Une erreur s'est produite lors de l'invalidation d'une session de base de donn\u00e9es dont le d\u00e9lai d'attente a expir\u00e9.
+DatabaseHashMap.invalidateError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.performInvalidationError=SESN0016E: Une erreur a \u00e9t\u00e9 d\u00e9tect\u00e9e dans l'invalidation de la base de donn\u00e9es des sessions ayant expir\u00e9.
+DatabaseHashMap.performInvalidationError.explanation=Une erreur s'est produite lors de l'invalidation d'une session de base de donn\u00e9es dont le d\u00e9lai d'attente a expir\u00e9.
+DatabaseHashMap.performInvalidationError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.checkMinimumInvalidationError=SESN0019E: Le d\u00e9lai d'attente de session n'est pas \u00e9gal \u00e0 trois fois au moins l'intervalle d'\u00e9criture p\u00e9riodique.
+WsSessionContext.checkMinimumInvalidationError.explanation=Lorsque des \u00e9critures p\u00e9riodiques sont utilis\u00e9es, le d\u00e9lai de session doit \u00eatre \u00e9gal \u00e0 au moins trois fois l'intervalle d'\u00e9criture. Le d\u00e9lai d'attente de session a \u00e9t\u00e9 corrig\u00e9 temporairement.
+WsSessionContext.checkMinimumInvalidationError.useraction=Mettez \u00e0 jour les valeurs de configuration du gestionnaire de session pour que le d\u00e9lai d'attente de session soit \u00e9gale \u00e0 trois fois l'intervalle d'\u00e9criture p\u00e9riodique.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.checkListErr=SESN0026E: Un incident s'est produit lors du traitement des \u00e9l\u00e9ments HttpSessionBindingListeners stock\u00e9s dans la base de donn\u00e9es.
+DatabaseHashMapMR.checkListErr.explanation=Une erreur s'est produite lors du traitement des \u00e9l\u00e9ments HttpSessionBindingListeners stock\u00e9s dans la base de donn\u00e9es.
+DatabaseHashMapMR.checkListErr.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHandleErr=SESN0028E: Une exception s'est produite lors de l'extraction d'un objet EJB \u00e0 l'aide du descripteur EJB. L'objet EJB a \u00e9t\u00e9 pr\u00e9c\u00e9demment ajout\u00e9 \u00e0 la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getEJBObject \u00e0 partir du descripteur.
+BackedSession.convertObjectHandleErr.explanation=Une erreur s'est produite lors de l'obtention d'un objet bean enterprise (EJB) en utilisant le descripteur EJB. L'objet EJB a \u00e9t\u00e9 pr\u00e9c\u00e9demment ajout\u00e9 \u00e0 la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getEJBObject \u00e0 partir du descripteur.
+BackedSession.convertObjectHandleErr.useraction=Reportez-vous \u00e0 la documentation EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHomeErr=SESN0029E: Une exception s'est produite lors de l'extraction de l'interface home de l'EJB \u00e0 l'aide du descripteur EJB Home. L'interface EJBHome a \u00e9t\u00e9 pr\u00e9c\u00e9demment ajout\u00e9e \u00e0 la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getEJBHome \u00e0 partir du descripteur.
+BackedSession.convertObjectHomeErr.explanation=Une erreur s'est produite lors de l'obtention d'un objet bean d'enterprise (EJB) en utilisant le descripteur EJB. L'interface EJBHome a \u00e9t\u00e9 pr\u00e9c\u00e9demment ajout\u00e9e \u00e0 la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getEJBHome \u00e0 partir du descripteur.
+BackedSession.convertObjectHomeErr.useraction=Reportez-vous \u00e0 la documentation EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectContextErr=SESN0030E: Erreur d'obtention du contexte initial. Un contexte initial a \u00e9t\u00e9 pr\u00e9c\u00e9demment ajout\u00e9 \u00e0 la session. Une exception NamingException s'est produite lors de la reconstruction de la m\u00e9thode javax.naming.InitialContext
+BackedSession.convertObjectContextErr.explanation=Une erreur s'est produite lors de l'acc\u00e8s au contexte initial. Un contexte initial a \u00e9t\u00e9 pr\u00e9c\u00e9demment ajout\u00e9 \u00e0 la session. Une exception NamingException s'est produite lors de la reconstruction de la m\u00e9thode javax.naming.InitialContext
+BackedSession.convertObjectContextErr.useraction=Reportez-vous \u00e0 la documentation relative \u00e0 l'attribution de nom au serveur pour le message d'erreur.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHandleErr=SESN0031E: Une exception s'est produite lors de l'extraction de l'interface EJB Home. Une interface EJBHome a \u00e9t\u00e9 ajout\u00e9e \u00e0 la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getHomeHandle.
+BackedSession.putValueGutsHandleErr.explanation=Une erreur s'est produite lors de l'extraction de l'interface EJB Home. Une interface EJBHome a \u00e9t\u00e9 ajout\u00e9e \u00e0 la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getHomeHandle.
+BackedSession.putValueGutsHandleErr.useraction=Reportez-vous \u00e0 la documentation EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHomeErr=SESN0032E: Une exception s'est produite lors de l'extraction de l'interface EJB Handle. Un objet EJB a \u00e9t\u00e9 plac\u00e9 dans la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getHandle.
+BackedSession.putValueGutsHomeErr.explanation=Une erreur s'est produite lors de l'extraction de l'interface EJB Handle. Un objet EJB a \u00e9t\u00e9 plac\u00e9 dans la session. Une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getHandle.
+BackedSession.putValueGutsHomeErr.useraction=Reportez-vous \u00e0 la documentation EJB.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsContextErr=SESN0033E: Un contexte javax.naming.Context a \u00e9t\u00e9 plac\u00e9 dans la session et une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getEnvironment() au niveau de javax.naming.Context.
+BackedSession.putValueGutsContextErr.explanation=Un contexte javax.naming.Context a \u00e9t\u00e9 plac\u00e9 dans la session et une exception RemoteException s'est produite lors de l'\u00e9mission de la m\u00e9thode getEnvironment() au niveau de javax.naming.Context.
+BackedSession.putValueGutsContextErr.useraction=Reportez-vous \u00e0 la documentation relative \u00e0 l'attribution de nom au serveur pour le message d'erreur.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.getSwappableListenersErr=SESN0034E: Une tentative a \u00e9t\u00e9 effectu\u00e9e de d\u00e9s\u00e9rialiser un objet de session de la base de donn\u00e9es, ce qui a provoqu\u00e9 une exception ClassNotFoundException. L'objet \u00e0 d\u00e9s\u00e9rialiser doit se trouver dans le chemin d'acc\u00e8s aux classes de toutes les JVM qui peuvent acc\u00e9der \u00e0 la session.
+DatabaseHashMapMR.getSwappableListenersErr.explanation=Une tentative a \u00e9t\u00e9 effectu\u00e9e de d\u00e9s\u00e9rialiser un objet de session de la base de donn\u00e9es, ce qui a provoqu\u00e9 une exception ClassNotFoundException. L'objet \u00e0 d\u00e9s\u00e9rialiser doit se trouver dans le chemin d'acc\u00e8s aux classes de toutes les JVM qui peuvent acc\u00e9der \u00e0 la session.
+DatabaseHashMapMR.getSwappableListenersErr.useraction=Mettez \u00e0 jour le chemin d'acc\u00e8s aux classes en ins\u00e9rant l'attribut d\u00e9s\u00e9rialis\u00e9 dans le chemin d'acc\u00e8s aux classes de l'application.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.removeSessionsError=SESN0035E: Une erreur interne s'est produite lors de la tentative de suppression d'une session de la base de donn\u00e9es.
+DatabaseHashMap.removeSessionsError.explanation=Une erreur interne s'est produite lors de la tentative de suppression d'une session de la base de donn\u00e9es.
+DatabaseHashMap.removeSessionsError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.doInvalidationsError=SESN0036E: Une erreur interne s'est produite lors de la tentative d'invalidation d'une session dans la base de donn\u00e9es.
+DatabaseHashMap.doInvalidationsError.explanation=Une erreur interne s'est produite lors de la tentative d'invalidation d'une session dans la base de donn\u00e9es.
+DatabaseHashMap.doInvalidationsError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.pollForInvalidsError=SESN0037E: Une erreur s'est produite lors de la tentative de recherche des sessions non valides dans la base de donn\u00e9es en interrogeant cette derni\u00e8re.
+DatabaseHashMap.pollForInvalidsError.explanation=Une erreur s'est produite lors de la tentative de recherche des sessions non valides dans la base de donn\u00e9es en interrogeant cette derni\u00e8re.
+DatabaseHashMap.pollForInvalidsError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getConnectionError=SESN0038E: Une erreur interne s'est produite lors de la tentative de connexion \u00e0 la base de donn\u00e9es.
+DatabaseHashMap.getConnectionError.explanation=Une erreur interne s'est produite lors de la tentative de connexion \u00e0 la base de donn\u00e9es.
+DatabaseHashMap.getConnectionError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectAndLockError=SESN0039E: Une erreur de base de donn\u00e9es s'est produite.
+DatabaseHashMap.selectAndLockError.explanation=Une erreur de base de donn\u00e9es s'est produite.
+DatabaseHashMap.selectAndLockError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.commonSetupError=SESN0040E: Une exception a \u00e9t\u00e9 intercept\u00e9e lors de la tentative de s\u00e9rialisation des donn\u00e9es de session pour les \u00e9critures de base de donn\u00e9es suivantes.
+DatabaseHashMap.commonSetupError.explanation=La taille des donn\u00e9es de session peut \u00eatre trop importante pour la s\u00e9rialisation.
+DatabaseHashMap.commonSetupError.useraction=Placez moins de donn\u00e9es dans la session ou envisagez de configurer le gestionnaire de sessions en mode de base de donn\u00e9es multiligne.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbStoreError=SESN0041E: Une erreur interne s'est produite lors de la tentative de stockage d'une session dans la base de donn\u00e9es.
+DatabaseHashMap.ejbStoreError.explanation=Une erreur interne s'est produite lors de la tentative de stockage d'une session dans la base de donn\u00e9es.
+DatabaseHashMap.ejbStoreError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbCreateError=SESN0042E: Une erreur interne s'est produite lors de la tentative d'insertion d'une session dans la base de donn\u00e9es.
+DatabaseHashMap.ejbCreateError.explanation=Une erreur interne s'est produite lors de la tentative d'insertion d'une session dans la base de donn\u00e9es.
+DatabaseHashMap.ejbCreateError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.dataSrcErr=SESN0043E: Une erreur s'est produite lors de la tentative d'obtention de la source de donn\u00e9es configur\u00e9e.
+DatabaseHashMap.dataSrcErr.explanation=Une erreur s'est produite lors de la tentative d'obtention de la source de donn\u00e9es configur\u00e9e.
+DatabaseHashMap.dataSrcErr.useraction=Assurez-vous que vous avez configur\u00e9 correctement une source de donn\u00e9es. Lorsque la persistance du gestionnaire de sessions est activ\u00e9e, la configuration du gestionnaire de sessions doit contenir une source de donn\u00e9es valide.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getValueErrBH=SESN0044E: Une erreur interne s'est produite lors de la tentative de lecture d'un objet des donn\u00e9es d'application d'une session depuis la base de donn\u00e9es. 
+DatabaseHashMap.getValueErrBH.explanation=Une erreur interne s'est produite lors de la tentative de lecture d'un objet des donn\u00e9es d'application d'une session depuis la base de donn\u00e9es. 
+DatabaseHashMap.getValueErrBH.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.createTableError=SESN0047E: Une erreur s'est produite lors de la tentative d'initialisation de la base de donn\u00e9es.
+DatabaseHashMap.createTableError.explanation=Une erreur s'est produite lors de la tentative d'initialisation de la base de donn\u00e9es.
+DatabaseHashMap.createTableError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+BackedHashtable.classNotFoundError=SESN0051E: La tentative de d\u00e9s\u00e9rialisation d'un objet de session de la base depuis le syst\u00e8me dorsal a provoqu\u00e9 une exception ClassNotFoundException.
+BackedHashtable.classNotFoundError.explanation=La tentative de d\u00e9s\u00e9rialisation d'un objet de session de la base depuis le syst\u00e8me dorsal a provoqu\u00e9 une exception ClassNotFoundException. L'objet \u00e0 d\u00e9s\u00e9rialiser doit se trouver dans le chemin d'acc\u00e8s aux classes de toutes les JVM qui peuvent acc\u00e9der \u00e0 la session.
+BackedHashtable.classNotFoundError.useraction=Mettez \u00e0 jour le chemin d'acc\u00e8s aux classes en ins\u00e9rant l'attribut d\u00e9s\u00e9rialis\u00e9 dans le chemin d'acc\u00e8s aux classes de l'application.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.db2LongVarCharErr=SESN0055E: Une tentative d'\u00e9criture de plus de 2 Mo dans une grande colonne a \u00e9t\u00e9 effectu\u00e9e.
+DatabaseHashMap.db2LongVarCharErr.explanation=La taille des donn\u00e9es de session peut \u00eatre trop importante pour la colonne de la base de donn\u00e9es.
+DatabaseHashMap.db2LongVarCharErr.useraction=Placez moins de donn\u00e9es dans la session ou envisagez de configurez le gestionnaire de sessions en mode de base de donn\u00e9es comportant plusieurs lignes.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.oracleGetValueError=SESN0056E: Une exception s'est produite lorsque la m\u00e9thode getValue ou getAttribute a \u00e9t\u00e9 appel\u00e9e pour lire la valeur dans la base de donn\u00e9es.
+DatabaseHashMap.oracleGetValueError.explanation=Une exception s'est produite lorsque la m\u00e9thode getValue ou getAttribute a \u00e9t\u00e9 appel\u00e9e pour lire la valeur dans la base de donn\u00e9es.
+DatabaseHashMap.oracleGetValueError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propHitErr=SESN0057E: Une erreur s'est produite lors du stockage des modifications des donn\u00e9es d'application dans la base de donn\u00e9es.
+DatabaseHashMapMR.propHitErr.explanation=Une erreur s'est produite lors du stockage des modifications des donn\u00e9es d'application dans la base de donn\u00e9es.
+DatabaseHashMapMR.propHitErr.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.handleAsyncError=SESN0062E: Une exception a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la tentative de mise \u00e0 jour de la base de donn\u00e9es avec les derniers acc\u00e8s \u00e0 la session.
+DatabaseHashMap.handleAsyncError.explanation=Une exception a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la tentative de mise \u00e0 jour de la base de donn\u00e9es avec les derniers acc\u00e8s \u00e0 la session.
+DatabaseHashMap.handleAsyncError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectNoUpdateError=SESN0063E: Une exception a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la tentative d'acc\u00e8s \u00e0 la base de donn\u00e9es.
+DatabaseHashMap.selectNoUpdateError.explanation=Une exception a \u00e9t\u00e9 d\u00e9tect\u00e9e lors de la tentative d'acc\u00e8s \u00e0 la base de donn\u00e9es.
+DatabaseHashMap.selectNoUpdateError.useraction=Si une exception SQL s'est produite, reportez-vous \u00e0 la documentation relative \u00e0 la base de donn\u00e9es appropri\u00e9e de votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: Une tentative d'\u00e9criture de plus de 2 Mo dans une grande colonne a \u00e9t\u00e9 effectu\u00e9e.
+DatabaseHashMapMR.db2LongVarCharErr.explanation=La taille des donn\u00e9es de session peut \u00eatre trop importante pour la colonne de la base de donn\u00e9es.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=R\u00e9duisez la taille de cet attribut avant d'essayer de le stocker dans la session.
+
+
+ControllerSession.Initialized=SESN0126I: Le service {0} a \u00e9t\u00e9 initialis\u00e9.
+ControllerSession.Initialized.explanation=Le service du contr\u00f4leur z/OS pour les sessions Http dans DRS a \u00e9t\u00e9 initialis\u00e9.
+ControllerSession.Initialized.useraction=Ce message est fourni \u00e0 titre  d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CaughtException=SESN0127E: Exception intercept\u00e9e :
+ControllerSession.CaughtException.explanation=Une exception a \u00e9t\u00e9 intercept\u00e9e dans la m\u00e9thode sp\u00e9cifi\u00e9e.
+ControllerSession.CaughtException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyException=SESN0128E: ERREUR lors de la cr\u00e9ation de DRSControllerProxy : exception intercept\u00e9e 
+ControllerSession.ProxyException.explanation=La m\u00e9thode indiqu\u00e9e a intercept\u00e9 une exception lors de la cr\u00e9ation de DRSControllerProxy.
+ControllerSession.ProxyException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyRefException=SESN0129E: ERREUR lors de la cr\u00e9ation de la r\u00e9f\u00e9rence DRSControllerProxy : exception intercept\u00e9e 
+ControllerSession.ProxyRefException.explanation=La m\u00e9thode indiqu\u00e9e a intercept\u00e9 une exception lors de la cr\u00e9ation de la r\u00e9f\u00e9rence de DRSControllerProxy.
+ControllerSession.ProxyRefException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullJoinHAGroup=SESN0130E: joinHAGroup a renvoy\u00e9 la valeur null
+ControllerSession.NullJoinHAGroup.explanation=Dans la m\u00e9thode sp\u00e9cifi\u00e9e, l'appel \u00e0 joinHAGroup a renvoy\u00e9 la valeur null.
+ControllerSession.NullJoinHAGroup.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CallbackException=SESN0131E: exception intercept\u00e9e lors de la cr\u00e9ation du rappel (callback) : 
+ControllerSession.CallbackException.explanation=La m\u00e9thode indiqu\u00e9e a intercept\u00e9 une exception lors de la cr\u00e9ation du rappel.
+ControllerSession.CallbackException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryKey=SESN0132E: param\u00e8tre entryKey = null transmis : abandon de la tentative de cr\u00e9ation d'une entr\u00e9e.
+ControllerSession.NullEntryKey.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u un param\u00e8tre entryKey 'null'. La tentative de cr\u00e9ation d'une entr\u00e9e a \u00e9t\u00e9 abandonn\u00e9e.
+ControllerSession.NullEntryKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryValue=SESN0133E: param\u00e8tre value = null transmis : abandon de la tentative de cr\u00e9ation d'une entr\u00e9e.
+ControllerSession.NullEntryValue.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u un param\u00e8tre value dont la valeur \u00e9tait null. La tentative de cr\u00e9ation d'une entr\u00e9e a \u00e9t\u00e9 abandonn\u00e9e.
+ControllerSession.NullEntryValue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceRemException=SESN0134E: Erreur lors de la cr\u00e9ation de l'instance DRS dans la r\u00e9gion de contr\u00f4le : exception distante intercept\u00e9e : 
+ControllerSession.DRSInstanceRemException.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a intercept\u00e9 une exception distante lors de la cr\u00e9ation de l'instance DRS dans la r\u00e9gion de contr\u00f4le.
+ControllerSession.DRSInstanceRemException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceException=SESN0135E: Erreur lors de la cr\u00e9ation de l'instance DRS dans la r\u00e9gion de contr\u00f4le : exception distante intercept\u00e9e : 
+ControllerSession.DRSInstanceException.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a intercept\u00e9 une exception lors de la cr\u00e9ation de l'instance DRS dans la r\u00e9gion de contr\u00f4le.
+ControllerSession.DRSInstanceException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.SessContextGroupException=SESN0136E: Erreur lors de la cr\u00e9ation de l'instance SessionContext dans la r\u00e9gion de contr\u00f4le : exception distante intercept\u00e9e : 
+ControllerSession.SessContextGroupException.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a intercept\u00e9 une exception lors de la cr\u00e9ation de l'instance de groupeSessionContext dans la r\u00e9gion de contr\u00f4le.
+ControllerSession.SessContextGroupException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nulldbmParm=SESN0137E: Param\u00e8tre DRSBootstrapMsg = null.
+ControllerSession.nulldbmParm.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u un param\u00e8tre DRSBootstrapMsg dont la valeur \u00e9tait null. 
+ControllerSession.nulldbmParm.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.Nullevent=SESN0138E: Param\u00e8tre event = null.
+ControllerSession.Nullevent.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u un param\u00e8tre event dont la valeur \u00e9tait null. 
+ControllerSession.Nullevent.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoProxy=SESN0139E: ne peut pas obtenir un proxy pour le jeton {0}.
+ControllerSession.NoProxy.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e n'a pas pu obtenir un proxy pour le jeton sp\u00e9cifi\u00e9. 
+ControllerSession.NoProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.TokenToBytes=SESN0140E: ne peut pas convertir le jeton en tableau d''octets : jeton = {0}. 
+ControllerSession.TokenToBytes.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e ne peut pas convertir le jeton sp\u00e9cifi\u00e9 en tableau d'octets. 
+ControllerSession.TokenToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventToBytes=SESN0141E: ne peut pas convertir l''\u00e9v\u00e9nement {0} en tableau d''octets. 
+ControllerSession.EventToBytes.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e ne peut pas convertir l'\u00e9v\u00e9nement sp\u00e9cifi\u00e9 en tableau d'octets. 
+ControllerSession.EventToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONUP=SESN0142I: L''instance DRS HttpSessDRSControllerVars {0} a re\u00e7u l''\u00e9v\u00e9nement REPLICATION_UP. 
+ControllerSession.EventREPLICATIONUP.explanation=L'instance DRS HttpSessDRSControllerVars indiqu\u00e9e a re\u00e7u l'\u00e9v\u00e9nement REPLICATION_UP. 
+ControllerSession.EventREPLICATIONUP.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONDOWN=SESN0143I: L''instance DRS HttpSessDRSControllerVars {0} a re\u00e7u l''\u00e9v\u00e9nement REPLICATION_DOWN. 
+ControllerSession.EventREPLICATIONDOWN.explanation=L'instance DRS HttpSessDRSControllerVars indiqu\u00e9e a re\u00e7u l'\u00e9v\u00e9nement REPLICATION_DOWN. 
+ControllerSession.EventREPLICATIONDOWN.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventISCONGESTED=SESN0144I: L''instance DRS HttpSessDRSControllerVars {0} a re\u00e7u l''\u00e9v\u00e9nement IS_CONGESTED. 
+ControllerSession.EventISCONGESTED.explanation=L'instance DRS HttpSessDRSControllerVars indiqu\u00e9e a re\u00e7u l'\u00e9v\u00e9nement IS_CONGESTED. 
+ControllerSession.EventISCONGESTED.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventNOTCONGESTED=SESN0145I: L''instance DRS HttpSessDRSControllerVars {0} a re\u00e7u l''\u00e9v\u00e9nement NOT_CONGESTED. 
+ControllerSession.EventNOTCONGESTED.explanation=L'instance DRS HttpSessDRSControllerVars a re\u00e7u l'\u00e9v\u00e9nement NOT_CONGESTED. 
+ControllerSession.EventNOTCONGESTED.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullKey=SESN0146E: entryKey converti en cl\u00e9 de cha\u00eene est null. 
+ControllerSession.NullKey.explanation=Dans la m\u00e9thode sp\u00e9cifi\u00e9e, la cha\u00eene de caract\u00e8res convertie depuis entryKey a la valeur null.
+ControllerSession.NullKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regInUnregtable=SESN0147E: Erreur : Le serviteur dont le jeton est {0} est enregistr\u00e9, mais il appara\u00eet dans la table des \u00e9l\u00e9ments non enregistr\u00e9s. 
+ControllerSession.regInUnregtable.explanation=Le serviteur est enregistr\u00e9, mais le jeton appara\u00eet dans la table des \u00e9l\u00e9ments non enregistr\u00e9s (unregistered).
+ControllerSession.regInUnregtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regNotinRegtable=SESN0148E: Erreur : Le serviteur dont le jeton est {0} est enregistr\u00e9, mais il n''appara\u00eet dans la table des \u00e9l\u00e9ments enregistr\u00e9s (registered). 
+ControllerSession.regNotinRegtable.explanation=Le serviteur est enregistr\u00e9, mais le jeton n'appara\u00eet dans la table des \u00e9l\u00e9ments enregistr\u00e9s (registered).
+ControllerSession.regNotinRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.unregInRegtable=SESN0149E: Erreur : Le serviteur dont le jeton  est {0} n''est pas enregistr\u00e9, mais il appara\u00eet dans la table des \u00e9l\u00e9ments enregistr\u00e9s. 
+ControllerSession.unregInRegtable.explanation=Le serviteur n'est pas enregistr\u00e9, mais le jeton appara\u00eet dans la table des \u00e9l\u00e9ments enregistr\u00e9s (registered).
+ControllerSession.unregInRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullContext=SESN0150E: Erreur : le contexte renvoy\u00e9 pour l''instance {0} est null. 
+ControllerSession.nullContext.explanation=Le contexte renvoy\u00e9 \u00e0 la recherche de l'instance a la valeur null.
+ControllerSession.nullContext.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullToken=SESN0151E: Param\u00e8tre token = null. 
+ControllerSession.nullToken.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u une valeur null pour le param\u00e8tre de jeton.
+ControllerSession.nullToken.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenExists=SESN0152E: Erreur : Tentative d'ajout d'un jeton existant. 
+ControllerSession.tokenExists.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u un jeton \u00e0 ajouter existant.
+ControllerSession.tokenExists.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNoMatch=SESN0153E: Erreur : Le jeton {0} attendu ne correspond pas \u00e0 tmp2 {1}. 
+ControllerSession.tokenNoMatch.explanation=Le jeton sp\u00e9cifi\u00e9 ne correspond pas au jeton dans tmp2. 
+ControllerSession.tokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.arrayToObject=SESN0154E: Erreur : Le tableau d'octets renvoy\u00e9 n'a pas pu \u00eatre converti en objet. 
+ControllerSession.arrayToObject.explanation=Le tableau d'octets renvoy\u00e9 n'a pas pu \u00eatre converti en objet. 
+ControllerSession.arrayToObject.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.byteArrayNull=SESN0155E: Erreur : Le tableau d'octets renvoy\u00e9 est null. 
+ControllerSession.byteArrayNull.explanation=Le tableau d'octets renvoy\u00e9 a la valeur null.  
+ControllerSession.byteArrayNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoCreateProxy=SESN0156E: ne peut pas cr\u00e9er un proxy pour le jeton {0}.
+ControllerSession.NoCreateProxy.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e n'a pas pu cr\u00e9er de proxy pour le jeton sp\u00e9cifi\u00e9. 
+ControllerSession.NoCreateProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.environ=SESN0157E: Erreur : La m\u00e9thode a \u00e9t\u00e9 appel\u00e9e dans un environnement incorrect.
+ControllerSession.environ.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a \u00e9t\u00e9 appel\u00e9e dans un environnement autre que celui de la r\u00e9gion de contr\u00f4le. 
+ControllerSession.environ.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokencontextNull=SESN0158E: Erreur dans la m\u00e9thode  : Le contexte est null pour le jeton = {0} et l''ID = {1}.
+ControllerSession.stokencontextNull.explanation=Le contexte a la valeur null pour le jeton et l'id sp\u00e9cifi\u00e9s. 
+ControllerSession.stokencontextNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.getUnregisteredErr=SESN0159E: Erreur : Impossible d''obtenir l''entr\u00e9e non enregistr\u00e9e pour le jeton {0}.
+ControllerSession.getUnregisteredErr.explanation=Impossible d'obtenir une entr\u00e9e non enregistr\u00e9e pour le jeton serviteur. 
+ControllerSession.getUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.locateUnregisteredErr=SESN0160E: Erreur : Impossible d''obtenir l''entr\u00e9e non enregistr\u00e9e pour le jeton {0}.
+ControllerSession.locateUnregisteredErr.explanation=Impossible de localiser une entr\u00e9e non enregistr\u00e9e pour le jeton de serviteur. 
+ControllerSession.locateUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullGroupName=SESN0161E: Le param\u00e8tre GroupName est null. 
+ControllerSession.nullGroupName.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a re\u00e7u un param\u00e8tre GroupName dont la valeur \u00e9tait null.
+ControllerSession.nullGroupName.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.instanceCreateFail=SESN0162E: jeton = null : Impossible de cr\u00e9er une instance de r\u00e9gion de contr\u00f4le. 
+ControllerSession.instanceCreateFail.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e n'a pas pu cr\u00e9er l'instance de r\u00e9gion de contr\u00f4le.
+ControllerSession.instanceCreateFail.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.registerServantNullReturn=SESN0163E: Erreur : registerServant a renvoy\u00e9 null. 
+ControllerSession.registerServantNullReturn.explanation=L'appel \u00e0 registerServant a renvoy\u00e9 'null'.
+ControllerSession.registerServantNullReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokenNoMatch=SESN0164E: Erreur : Le jeton {0} ne correspond pas \u00e0 stokenTest {1}. 
+ControllerSession.stokenNoMatch.explanation=Le jeton servant sp\u00e9cifi\u00e9 ne correspond pas au jeton stokenTest. 
+ControllerSession.stokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNotinArray=SESN0165E: Erreur : Le jeton {0} n''est pas dans le tableau des jetons. 
+ControllerSession.tokenNotinArray.explanation=Le jeton servant sp\u00e9cifi\u00e9 n'est pas dans le tableau de jetons.  
+ControllerSession.tokenNotinArray.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenInstanceOffset=SESN0166E: Erreur instanceOffset dans le tableau des jetons : jeton = {0}, instanceOffset n''est pas >= 0. 
+ControllerSession.tokenInstanceOffset.explanation=La m\u00e9thode sp\u00e9cifi\u00e9e a rencontr\u00e9 une erreur instanceOffset lors du traitement du jeton. 
+ControllerSession.tokenInstanceOffset.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.confirmServantRegistration=SESN0167E: Erreur : confirmServantRegistration a renvoy\u00e9 null. 
+ControllerSession.confirmServantRegistration.explanation=L'appel \u00e0 confirmServantRegistration a renvoy\u00e9 'null'. 
+ControllerSession.confirmServantRegistration.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullSessvalue=SESN0168E: Erreur : le param\u00e8tre value converti en session est null. 
+ControllerSession.nullSessvalue.explanation=Dans la m\u00e9thode sp\u00e9cifi\u00e9e, la session convertie depuis le param\u00e8tre value a la valeur null. 
+ControllerSession.nullSessvalue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.wrongTableDef=SESN0181E: La table existe, mais avec la d\u00e9finition incorrecte.
+DatabaseHashMap.wrongTableDef.explanation=La table de la base de donn\u00e9es des sessions a \u00e9t\u00e9 cr\u00e9\u00e9e de mani\u00e8re incorrecte.
+DatabaseHashMap.wrongTableDef.useraction=Supprimez manuellement la table.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cantstartLTC=SESN0182E: Impossible de d\u00e9marrer la transaction locale.
+DatabaseHashMap.cantstartLTC.explanation=Une erreur s'est produite lors de la tentative de d\u00e9marrage de la transaction locale.
+DatabaseHashMap.cantstartLTC.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.localRollBack=SESN0183E: La transaction locale a \u00e9t\u00e9 annul\u00e9e en raison de setRollbackOnly
+DatabaseHashMap.localRollBack.explanation=Une erreur s'est produite lors du nettoyage d'une transaction locale et cette derni\u00e8re a \u00e9t\u00e9 annul\u00e9e.
+DatabaseHashMap.localRollBack.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.deferWrite=SESN0184I: Diff\u00e9rez l''\u00e9criture \u00e9tant donn\u00e9 que la session se trouve dans la m\u00e9thode {0}
+DatabaseHashMap.deferWrite.explanation=La session ne peut pas persister maintenant, car un servlet y acc\u00e8de actuellement.  Elle deviendra persistante lors de la prochaine ex\u00e9cution de l'unit\u00e9 d'ex\u00e9cution Time Based Writer.
+DatabaseHashMap.deferWrite.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.nullConnection=SESN0185E: Connexion de base de donn\u00e9es null obtenue.
+DatabaseHashMap.nullConnection.explanation=Connexion de base de donn\u00e9es null obtenue.
+DatabaseHashMap.nullConnection.useraction=Si une exception SQLException s'est produite, reportez-vous \u00e0 la documentation de base de donn\u00e9es appropri\u00e9e pour votre environnement. Assurez-vous \u00e9galement que vous avez configur\u00e9 correctement une source de donn\u00e9es pour le gestionnaire de session.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cmdaNull=SESN0186W: ComponentMetaDataAccessor est null.
+DatabaseHashMap.cmdaNull.explanation=Impossible d'acc\u00e9der \u00e0 ComponentMetaDataAccessor.
+DatabaseHashMap.cmdaNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propertyTooBig=SESN0187I: Cette propri\u00e9t\u00e9 est trop grande {0}
+DatabaseHashMapMR.propertyTooBig.explanation=La propri\u00e9t\u00e9 d\u00e9finie est trop grande pour la base de donn\u00e9es.
+DatabaseHashMapMR.propertyTooBig.useraction=R\u00e9duisez la taille de la propri\u00e9t\u00e9 ou ne la stockez pas dans la session.
+# -------------------------------------------------------------------------------------------------
+MTMStore.drsContext=SESN0188I: Le mode M\u00e9moire vers m\u00e9moire de l''application {0} est {1}
+MTMStore.drsContext.explanation=D\u00e9finit le mode de r\u00e9plication M\u00e9moire vers m\u00e9moire de cette application.
+MTMStore.drsContext.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.timeOut=SESN0189E: D\u00e9lai d'attente atteint lors de la tentative d'acc\u00e8s \u00e0 la session.  La fonction S\u00e9rialiser l'acc\u00e8s aux sessions est configur\u00e9e pour ne pas autoriser l'acc\u00e8s.
+WsSessionContext.timeOut.explanation=La fonction S\u00e9rialiser l'acc\u00e8s aux sessions est activ\u00e9e et configur\u00e9e pour ne pas autoriser l'acc\u00e8s en cas de d\u00e9passement de d\u00e9lai d'attente.
+WsSessionContext.timeOut.useraction=Recherchez les applications bloqu\u00e9es en vidant les unit\u00e9s d'ex\u00e9cution du serveur d'applications.  Augmentez le d\u00e9lai d'attente ou autorisez l'acc\u00e8s en cas de d\u00e9passement du d\u00e9lai d'attente.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serviceNull=SESN0190E: Le service CoreStack est null ; impossible de joindre HAGroup pour {0}
+WsSessionMgrComponentImpl.serviceNull.explanation=Impossible d'acc\u00e9der au service CoreStack et de joindre le HAGroup.
+WsSessionMgrComponentImpl.serviceNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerMTMCacheMsgListener.unableCreate=SESN0191E: Impossible de cr\u00e9er un session backing store sur zOS.  createEntry pour la session {0} va \u00eatre abandonn\u00e9
+ControllerMTMCacheMsgListener.unableCreate.explanation=Une erreur s'est produite lors de la cr\u00e9ation d'un session backing store sur zOS.
+ControllerMTMCacheMsgListener.unableCreate.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.registerSessionFailed=SESN0192E: L''appel \u00e0 la m\u00e9thode registerSession pour l''ID {0} a \u00e9chou\u00e9 avec le code retour {1}
+SessionServantAffinityManager.registerSessionFailed.explanation=Impossible d'\u00e9tablir l'affinit\u00e9 du serviteur zOS de cette session.
+SessionServantAffinityManager.registerSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.unregisterSessionFailed=SESN0193E: L''appel \u00e0 la m\u00e9thode unregisterSession pour l''ID {0} a \u00e9chou\u00e9 avec le code retour {1}
+SessionServantAffinityManager.unregisterSessionFailed.explanation=Impossible de publier l'affinit\u00e9 de serviteur zOS de cette session.
+SessionServantAffinityManager.unregisterSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdNotFound=SESN0197W: L'ID de serveur zOS n'a pas pu \u00eatre d\u00e9termin\u00e9 : -1 sera donc utilis\u00e9 par d\u00e9faut.
+WsSessionMgrComponentImpl.serverIdNotFound.explanation=L'ID de serveur n'a pas \u00e9t\u00e9 obtenu de server.xml.
+WsSessionMgrComponentImpl.serverIdNotFound.useraction=Corrigez la configuration, si n\u00e9cessaire.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdException=SESN0198E: Exception intercept\u00e9e lors de l'obtention de l'ID de serveur zOS ; -1 sera donc utilis\u00e9 par d\u00e9faut.
+WsSessionMgrComponentImpl.serverIdException.explanation=Une erreur s'est produite lors de l'obtention de l'ID de serveur zOS
+WsSessionMgrComponentImpl.serverIdException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled=SESN0199I: La r\u00e9plication sur le serveur non g\u00e9r\u00e9 HttpSession a \u00e9t\u00e9 activ\u00e9e.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.explanation=Ce serveur de base zOS r\u00e9pliquera les donn\u00e9es de session pour le basculement de serviteur.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.useraction=Ce message est fourni \u00e0 titre d'information uniquement.
+# -------------------------------------------------------------------------------------------------
+MTMBuffWrapper.serializationException=SESN0200E: Exception intercept\u00e9e lors de la tentative de s\u00e9rialisation.
+MTMBuffWrapper.serializationException.explanation=L'objet n'a pas pu \u00eatre s\u00e9rialis\u00e9
+MTMBuffWrapper.serializationException.useraction=V\u00e9rifiez que l'objet peut \u00eatre s\u00e9rialis\u00e9.
+# -------------------------------------------------------------------------------------------------
+MTMDataXfer.attributeConversionException=SESN0201E: Echec de la conversion de l''attribut {0}
+MTMDataXfer.attributeConversionException.explanation=L'attribut n'a pas pu \u00eatre s\u00e9rialis\u00e9.
+MTMDataXfer.attributeConversionException.useraction=V\u00e9rifiez que l'objet peut \u00eatre s\u00e9rialis\u00e9.
+# -------------------------------------------------------------------------------------------------
+MTMHashMap.attributeReplicationFailure=SESN0202E: Echec de la r\u00e9plication de l''attribut {0}
+MTMHashMap.attributeReplicationFailure.explanation=L'attribut n'a pas pu \u00eatre s\u00e9rialis\u00e9
+MTMHashMap.attributeReplicationFailure.useraction=V\u00e9rifiez que l'objet peut \u00eatre s\u00e9rialis\u00e9.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning=SESN0203W: Impossible de stocker l''attribut {0} en lui attribuant l''ID de session comme nom dans une configuration multiligne de base de donn\u00e9es.  L''attribut ne sera pas conserv\u00e9.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.explanation=Un attribut de session ne peut pas avoir l'ID de session comme nom dans une configuration multiligne de base de donn\u00e9es.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.useraction=Changez le nom de l'attribut pour pouvoir conserver l'attribut.
+# -------------------------------------------------------------------------------------------------
+MTMVars.DRSNotStarted=SESN0204E: Le serveur d''applications ne peut pas d\u00e9marrer le gestionnaire de session en utilisant la r\u00e9plication m\u00e9moire vers m\u00e9moire, car il existe un incident avec le domaine de r\u00e9plication {0}.
+MTMVars.DRSNotStarted.explanation=Le serveur d'applications ne trouve pas le domaine de r\u00e9plication d\u00e9fini.
+MTMVars.DRSNotStarted.useraction=Cr\u00e9ez le domaine de r\u00e9plication et red\u00e9marrez le serveur ou d\u00e9sactivez la session m\u00e9moire vers m\u00e9moire pour toutes les applications.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.IndexIncorrect=SESN0205W: Il existe un index incorrect dans la base de donn\u00e9es utilis\u00e9e pour la session.
+DatabaseHashMap.IndexIncorrect.explanation=L'index de session dans votre table a \u00e9t\u00e9 cr\u00e9\u00e9 en dehors de Application Server.
+DatabaseHashMap.IndexIncorrect.useraction=Supprimez l'index et red\u00e9marrez Application Server.
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=L''objet Session est : {0}
+CommonMessage.sessionid=L''ID session est : {0}
+CommonMessage.miscData=Donn\u00e9es diverses : {0}
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.propertyError=SESN8000W: Une erreur s''est produite lors du chargement de la propri\u00e9t\u00e9 personnalis\u00e9e du gestionnaire de session, {0}
+WsSessionMgrComponentImpl.propertyError.explanation= La propri\u00e9t\u00e9 personnalis\u00e9e de session n'a pas \u00e9t\u00e9 charg\u00e9e.
+WsSessionMgrComponentImpl.propertyError.useraction= V\u00e9rifiez que la valeur de la propri\u00e9t\u00e9 personnalis\u00e9e du gestionnaire de session est correcte et qu'elle ne r\u00e9f\u00e9rence pas une variable non d\u00e9finie.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=L'exception est : 
+#----------AdminTask messages----------
+AdminTask.sessiongroup.description=Groupe de t\u00e2ches d'administration associ\u00e9es aux session.
+AdminTask.addDisabledSessionCookie.title=AddDisabledSessionCookie
+AdminTask.addDisabledSessionCookie.description=Ajoute une configuration de cookie que les applications ne pourront pas modifier avec un programme
+AdminTask.cookieDomain.parm.title=cookieDomain
+AdminTask.cookieDomain.parm.description=Le domaine, le nom et le correctif doivent correspondre \u00e0 un cookie pour d\u00e9sactiver une configuration additionnelle.  Il s'agit du param\u00e8tre de domaine.
+AdminTask.cookieName.parm.title=cookieName
+AdminTask.cookieName.parm.description=Le domaine, le nom et le correctif doivent correspondre \u00e0 un cookie pour d\u00e9sactiver une configuration additionnelle.  Il s'agit du param\u00e8tre de nom.
+AdminTask.cookiePath.parm.title=cookiePath
+AdminTask.cookiePath.parm.description=Le domaine, le nom et le correctif doivent correspondre \u00e0 un cookie pour d\u00e9sactiver une configuration additionnelle.  Il s'agit du param\u00e8tre de correctif.
+AdminTask.removeDisabledSessionCookie.title=removeDisabledSessionCookie
+AdminTask.removeDisabledSessionCookie.description=Supprime une configuration de cookie que les applications pourront modifier avec un programme
+AdminTask.cookieId.parm.title=cookieId
+AdminTask.cookieId.parm.description=ID du cookie
+AdminTask.listDisabledSessionCookie.title=listDisabledSessionCookie
+AdminTask.listDisabledSessionCookie.description=Liste les configurations de cookie qui ne pourront pas \u00eatre modifi\u00e9es par un programme
+AdminTask.modifyDisabledSessionCookie.title=modifyDisabledSessionCookie
+AdminTask.modifyDisabledSessionCookie.description=Modifie une configuration de cookie existante
+
+AdminTask.targetObject.title=SessionSecurity
+AdminTask.targetObject.description=Cible inutile.  La s\u00e9curit\u00e9 de session sera modifi\u00e9e sous la cellule.
+
+AdminTask.element.already.exists=SESN0800E: L'\u00e9l\u00e9ment existe d\u00e9j\u00e0.
+AdminTask.element.already.exists.explanation=L'\u00e9l\u00e9ment que vous voulez ajouter correspond \u00e0 un \u00e9l\u00e9ment qui existe d\u00e9j\u00e0.
+AdminTask.element.already.exists.useraction=
+
+AdminTask.element.id.not.found=SESN0801E: L'\u00e9l\u00e9ment avec cet ID est introuvable
+AdminTask.element.id.not.found.explanation=L'\u00e9l\u00e9ment avec cet ID est introuvable.
+AdminTask.element.id.not.found.useraction=
+#----------AdminTask messages----------

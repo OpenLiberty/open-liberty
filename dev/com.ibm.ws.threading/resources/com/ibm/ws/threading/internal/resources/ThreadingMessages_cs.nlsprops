@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Zd\u00e1 se, \u017ee v\u0161echny podprocesy ve v\u00fdchoz\u00edm prov\u00e1d\u011bc\u00edm modulu Liberty p\u0159estaly reagovat. Prost\u0159ed\u00ed Liberty automaticky zv\u00fd\u0161ilo po\u010det podproces\u016f z {0} na {1}. I nad\u00e1le se v\u0161ak zd\u00e1, \u017ee v\u0161echny podprocesy p\u0159estaly reagovat.
+unbreakableExecutorHang.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 zp\u016fsobila, \u017ee prov\u00e1d\u011bc\u00ed modul p\u0159estal reagovat, a b\u011bhov\u00e9 prost\u0159ed\u00ed Liberty p\u0159idalo zna\u010dn\u00fd po\u010det podproces\u016f, aby tento stav vy\u0159e\u0161ilo. Prov\u00e1d\u011bc\u00ed modul v\u0161ak st\u00e1le neodpov\u00edd\u00e1. 
+unbreakableExecutorHang.useraction=Zjist\u011bte, zda neexistuje n\u011bjak\u00e9 kritick\u00e9 m\u00edsto, jako nap\u0159. zam\u010den\u00e1 datab\u00e1zov\u00e1 tabulka, kter\u00e9 by mohlo br\u00e1nit vy\u0159e\u0161en\u00ed podproces\u016f na serveru. Pokud \u017e\u00e1dn\u00e9 kritick\u00e9 m\u00edsto neexistuje a server skute\u010dn\u011b pot\u0159ebuje dal\u0161\u00ed podprocesy, upravte atribut coreThreads p\u0159\u00edslu\u0161n\u00e9ho prvku konfigurace prov\u00e1d\u011bc\u00edho modulu.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: \u00dalohu nelze odeslat prov\u00e1d\u011bc\u00edmu modulu {0}, proto\u017ee fronta \u00faloh s maxQueueSize {1} je po \u010dek\u00e1n\u00ed {2} nanosekund na pln\u00e9 kapacit\u011b.
+CWWKE1201.queue.full.abort.explanation=Atribut maxQueueSize \u0159\u00edd\u00ed, kolik odesl\u00e1n\u00ed \u00faloh fronta pojme. Atribut maxWaitForEnqueue \u0159\u00edd\u00ed, jak dlouho lze \u010dekat na dostupnou pozici ve front\u011b, ale tento interval lze zkr\u00e1tit zb\u00fdvaj\u00edc\u00edm \u010dasov\u00fdm limitem, pokud k odesl\u00e1n\u00ed \u00falohy pou\u017e\u00edv\u00e1te \u010dasovan\u00e9 metody invokeAll nebo invokeAny. Atribut queueFullAction ur\u010duje, jak\u00e1 akce se provede, kdy\u017e uplyne interval \u010dek\u00e1n\u00ed a st\u00e1le nen\u00ed dostupn\u00e1 pozice ve front\u011b. Chcete-li se vyhnout probl\u00e9mu s p\u0159ekro\u010den\u00edm maxim\u00e1ln\u00ed soub\u011b\u017enosti nebo dodr\u017een\u00edm zadan\u00e9ho \u010dasov\u00e9ho limitu, mohou metody invokeAll a invokeAny potla\u010dit akci queueFullAction a p\u0159ed\u010dasn\u011b ukon\u010dit odesl\u00e1n\u00ed \u00falohy, kdy\u017e ji nelze za\u0159adit do fronty.
+CWWKE1201.queue.full.abort.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce, jestli\u017ee aplikace zpracov\u00e1v\u00e1 v\u00fdjimku RejectedExecutionException. Jinak prove\u010fte libovolnou kombinaci n\u00e1sleduj\u00edc\u00edch akc\u00ed: zvy\u0161te maxQueueSize, zvy\u0161te maxWaitForEnqueue, pou\u017eijte jinou akci queueFullAction, nebo zvy\u0161te \u010dasov\u00fd limit, kter\u00fd je dod\u00e1n metod\u00e1m invokeAll nebo invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: \u00dalohu nelze odeslat, proto\u017ee prov\u00e1d\u011bc\u00ed modul {0} byl vypnut.
+CWWKE1202.submit.after.shutdown.explanation=Odes\u00edl\u00e1n\u00ed \u00faloh po po\u017eadavku na vypnut\u00ed slu\u017eby prov\u00e1d\u011bc\u00edho modulu nen\u00ed povoleno.
+CWWKE1202.submit.after.shutdown.useraction=\u00dalohy odes\u00edlejte pouze na instanci slu\u017eby prov\u00e1d\u011bc\u00edho modulu, kde nebylo vy\u017eadov\u00e1no vypnut\u00ed.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: Aktualizace konfigurace na {0} nen\u00ed povolena, proto\u017ee prov\u00e1d\u011bc\u00ed modul {1} byl vypnut.
+CWWKE1203.config.update.after.shutdown.explanation=Aktualizovat konfiguraci po po\u017eadavku na vypnut\u00ed slu\u017eby prov\u00e1d\u011bc\u00edho modulu nen\u00ed mo\u017en\u00e9.
+CWWKE1203.config.update.after.shutdown.useraction=Aktualizujte konfiguraci pouze u instance slu\u017eby prov\u00e1d\u011bc\u00edho modulu, kde nebylo vy\u017eadov\u00e1no vypnut\u00ed.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: Prov\u00e1d\u011bc\u00ed modul {0} nebyl schopen odeslat {1} z {2} \u00faloh v r\u00e1mci p\u0159id\u011blen\u00e9ho intervalu {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=Prov\u00e1d\u011bc\u00ed modul odm\u00edtnul operaci invokeAll nebo invokeAny kv\u016fli nedostatku \u010dasu nebo kapacity fronty k odesl\u00e1n\u00ed v\u0161ech \u00faloh po\u017eadovan\u00fdch v ur\u010den\u00e9m intervalu.
+CWWKE1204.unable.to.invoke.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce, jestli\u017ee aplikace zpracov\u00e1v\u00e1 v\u00fdjimku RejectedExecutionException. Jinak prove\u010fte libovolnou kombinaci n\u00e1sleduj\u00edc\u00edch akc\u00ed: zvy\u0161te maxQueueSize, zvy\u0161te maxConcurrency nebo zvy\u0161te hodnotu \u010dasov\u00e9ho limitu, kter\u00e1 je dod\u00e1na metod\u00e1m invokeAll nebo invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: Prov\u00e1d\u011bc\u00ed modul {0} nemohl spustit \u00falohu {1} po {2} ns, proto\u017ee \u00faloha p\u0159ekro\u010dila hodnotu startTimeout {3} ns.
+CWWKE1205.start.timeout.explanation=Jestli\u017ee je startTimeout nakonfigurov\u00e1n v prov\u00e1d\u011bc\u00edm modulu nebo je pro \u00falohu programov\u011b po\u017eadov\u00e1n, prov\u00e1d\u011bc\u00ed modul sleduje \u010das uplynul\u00fd mezi odesl\u00e1n\u00edm \u00falohy a okam\u017eikem, kdy je mo\u017en\u00e9 \u00falohu spustit. Jestli\u017ee uplynul\u00e1 doba p\u0159ekra\u010duje hodnotu startTimeout, prov\u00e1d\u011bc\u00ed modul p\u0159ed\u010dasn\u011b \u00falohu ukon\u010d\u00ed, nam\u00edsto jej\u00edho spu\u0161t\u011bn\u00ed. 
+CWWKE1205.start.timeout.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce, jestli\u017ee aplikace o\u010dek\u00e1v\u00e1, \u017ee se n\u011bjak\u00e9 \u00falohy p\u0159ed\u010dasn\u011b ukon\u010d\u00ed kv\u016fli p\u0159ekro\u010den\u00ed hodnoty startTimeout. Jinak prove\u010fte libovolnou kombinaci n\u00e1sleduj\u00edc\u00edch akc\u00ed: zvy\u0161te startTimeout, zvy\u0161te maxConcurrency.

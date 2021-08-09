@@ -1,0 +1,44 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="jshint">
+
+  <!-- Ant Task: https://github.com/philmander/ant-jshint
+       jshint: http://www.jshint.com
+       Ant task is deprecated, so we must move to a supported platform.
+       Rhino would probably be easier/safer since it's Java based so it will run everywhere.
+       However, since node.js is javascript based, it tends to perform better than Rhino,
+       but since the ant (java) version of jshint ran in 2-10 seconds, I don't think that's an issue. -->
+  <target name="jshint" description="Run jshint on all of the JavaScript files in the project">
+    <!-- Define the task -->
+    <taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask"
+             classpath="${basedir}/../ant_build.js/lib/jshint/ant-jshint-0.3.6-deps.jar" />
+
+    <!-- Lint the code -->
+    <!-- Default to running jshint unless the build definition overrides this property with false. -->
+    <property name="run.jshint" value="true" />
+    <if iff="run.jshint">
+        <jshint dir="${basedir}/resources/WEB-CONTENT/"
+          options="dojo=true, jquery=true, browser=true, devel=true"
+          globals="BIDI_PREFS_STRING:true"
+          globalsFile="${basedir}/resources/WEB-CONTENT/dev/jshintglobals.json" >
+          <include name="**/*.js" />
+          <exclude name="**/dev/*.js" />
+          <exclude name="**/*.min.js" />
+          <exclude name="unittest/**" />
+          <report type="xml" destFile="${basedir}/build/reports/jshint/results.xml" />
+        </jshint>
+    	<else>
+            <echo>Skipping jshint because run.jshint was set to false</echo>
+        </else>
+    </if>
+  </target>
+
+</project>

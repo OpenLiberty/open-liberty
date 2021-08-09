@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: Le m\u00eame type de contexte d''unit\u00e9 d''ex\u00e9cution, {0}, est fourni par plusieurs fournisseurs de contexte d''unit\u00e9 d''ex\u00e9cution disponibles pour l''application. Les fournisseurs de contexte d''unit\u00e9 d''ex\u00e9cution sont : {1}, {2}.
+CWWKC1150.duplicate.context.explanation=La sp\u00e9cification MicroProfile Context Propagation n'admet pas plus d'un fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution pour chaque type de contexte.
+CWWKC1150.duplicate.context.useraction=Mettez \u00e0 jour l'application ou les biblioth\u00e8ques disponibles, ou les deux, pour qu'il n'existe qu'un seul fournisseur de contexte d'ex\u00e9cution du type sp\u00e9cifi\u00e9.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: La configuration du programme d''ex\u00e9cution g\u00e9r\u00e9 inclut les types de contexte d''unit\u00e9 d''ex\u00e9cution suivants, qui sont configur\u00e9s pour \u00eatre effac\u00e9s et propag\u00e9s : {0}
+CWWKC1151.context.lists.overlap.explanation=Un type de contexte d'unit\u00e9 d'ex\u00e9cution ne peut pas \u00eatre configur\u00e9 dans plusieurs cat\u00e9gories lors de la g\u00e9n\u00e9ration ou de l'injection d'un programme d'ex\u00e9cution g\u00e9r\u00e9.
+CWWKC1151.context.lists.overlap.useraction=R\u00e9visez et corrigez la cat\u00e9gorisation des types de contexte d'unit\u00e9 d'ex\u00e9cution dans votre g\u00e9n\u00e9rateur de programme d'ex\u00e9cution g\u00e9r\u00e9 ou dans votre annotation de configuration de programme d'ex\u00e9cution g\u00e9r\u00e9.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: Les types de contexte d''unit\u00e9 d''ex\u00e9cution suivants sont configur\u00e9s dans plusieurs des cat\u00e9gories (effac\u00e9, propag\u00e9, inchang\u00e9) : {0}.
+CWWKC1152.context.lists.overlap.explanation=Un type de contexte d'unit\u00e9 d'ex\u00e9cution ne peut pas \u00eatre configur\u00e9 dans plusieurs cat\u00e9gories lors de la g\u00e9n\u00e9ration ou de l'injection d'une instance de contexte d'unit\u00e9 d'ex\u00e9cution.
+CWWKC1152.context.lists.overlap.useraction=R\u00e9visez et corrigez la cat\u00e9gorisation des types de contexte d'unit\u00e9 d'ex\u00e9cution dans votre g\u00e9n\u00e9rateur de contexte d'unit\u00e9 d'ex\u00e9cution ou dans votre annotation de configuration de contexte d'unit\u00e9 d'ex\u00e9cution.
+
+CWWKC1155.unknown.context=CWWKC1155E: Les types de contexte d''unit\u00e9 d''ex\u00e9cution {0} sont configur\u00e9s pour \u00eatre effac\u00e9s ou propag\u00e9s, mais aucun fournisseur de contexte d''unit\u00e9 d''ex\u00e9cution pour ces types n''est disponible pour l''application. Les types de contexte d''unit\u00e9 d''ex\u00e9cution disponibles sont : {1}.
+CWWKC1155.unknown.context.explanation=Pour chaque type de contexte d'unit\u00e9 d'ex\u00e9cution configur\u00e9 qui n'est pas fourni par le serveur, un fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution doit \u00eatre disponible dans le chargeur de classe du contexte d'unit\u00e9 d'ex\u00e9cution de l'application. Les types de contexte d'unit\u00e9 d'ex\u00e9cution fournis par le serveur incluent : Application, CDI, S\u00e9curit\u00e9, Transaction.
+CWWKC1155.unknown.context.useraction=Mettez \u00e0 jour l'application ou les biblioth\u00e8ques, ou les deux, afin d'inclure un fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution pour chaque type de contexte d'unit\u00e9 d'ex\u00e9cution configur\u00e9 qui n'est pas fourni par le serveur. Vous pouvez aussi mettre \u00e0 jour l'application pour n'utiliser que les types de contexte qui sont disponibles.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: La propagation des transactions vers des t\u00e2ches et des actions contextuelles n'est pas prise en charge.
+CWWKC1157.cannot.propagate.tx.explanation=Un programme d'ex\u00e9cution g\u00e9r\u00e9 ou un contexte d'unit\u00e9 d'ex\u00e9cution qui est configur\u00e9 pour propager des contextes de transaction ne peut propager que des contextes de transaction vides. Par cons\u00e9quent, vous ne pouvez pas cr\u00e9er de t\u00e2che ni d'action contextuelle dans une transaction.
+CWWKC1157.cannot.propagate.tx.useraction=Cr\u00e9ez la t\u00e2che ou l'action contextuelle en dehors d'une transaction. Vous pouvez aussi configurer le programme d'ex\u00e9cution g\u00e9r\u00e9 ou le contexte d'unit\u00e9 d'ex\u00e9cution de sorte qu'il ne propage pas les contextes de transaction.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

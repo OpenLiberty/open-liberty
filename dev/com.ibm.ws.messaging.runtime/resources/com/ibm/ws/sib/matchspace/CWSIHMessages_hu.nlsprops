@@ -1,0 +1,110 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: A(z) {0} t\u00e9mak\u00f6r szintaxisa helytelen. V\u00e1ratlan ''*'' karakter tal\u00e1lhat\u00f3 a(z) {1}. helyen.
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=A t\u00e9mak\u00f6r form\u00e1tuma helytelen. A '*' egyed\u00fcl\u00e1ll\u00f3 szint\u0171 helyettes\u00edt\u0151 karakter csak egyed\u00fcl\u00e1ll\u00f3 karakterk\u00e9nt jelenhet meg egy t\u00e9mak\u00f6r szintj\u00e9ben, p\u00e9ld\u00e1ul: */a vagy a/*/b vagy a/* .
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=Jav\u00edtsa ki a helytelen t\u00e9mak\u00f6r-meghat\u00e1roz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: A(z) {0} t\u00e9mak\u00f6r szintaxisa helytelen. V\u00e1ratlan ''.'' karakter tal\u00e1lhat\u00f3 a(z) {1}. helyen.
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=A t\u00e9mak\u00f6r form\u00e1tuma helytelen. A '.' karakter csak egyed\u00fcl\u00e1ll\u00f3 karakterk\u00e9nt jelenhet meg egy t\u00e9mak\u00f6r szintj\u00e9ben, vagy egy t\u00e9mak\u00f6r-kifejez\u00e9s v\u00e9g\u00e9n, p\u00e9ld\u00e1ul: /./a vagy a//. .
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=Jav\u00edtsa ki a helytelen t\u00e9mak\u00f6r-meghat\u00e1roz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: A(z) {0} t\u00e9mak\u00f6r szintaxisa helytelen. V\u00e1ratlan ''/'' karakter tal\u00e1lhat\u00f3 a(z) {1}. helyen.
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=A t\u00e9mak\u00f6r form\u00e1tuma helytelen. Nem lehetnek '/' karakterek egym\u00e1s mellett.
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=Jav\u00edtsa ki a helytelen t\u00e9mak\u00f6r-meghat\u00e1roz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: A(z) {0} t\u00e9mak\u00f6r szintaxisa helytelen. V\u00e1ratlan karakter tal\u00e1lhat\u00f3 egy ''/'' karakter ut\u00e1n a(z) {1}. helyen.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=A t\u00e9mak\u00f6r form\u00e1tuma helytelen. A helyettes\u00edt\u0151 karaktereket csak '/' karakter k\u00f6vetheti.  P\u00e9ld\u00e1k a helytelen t\u00e9mak\u00f6r\u00f6kre: a//.a vagy a/*b . 
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=Jav\u00edtsa ki a helytelen t\u00e9mak\u00f6r-meghat\u00e1roz\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: A t\u00e9mak\u00f6r \u00e9rv\u00e9nytelen.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=A megadott t\u00e9mak\u00f6r \u00e9rv\u00e9nytelen, mert null\u00e9rt\u00e9k\u0171, ami nem megengedett.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e9mak\u00f6r egy \u00e9rv\u00e9nyes karaktersorozatos objektum.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: Egy k\u00f6zz\u00e9tett \u00fczenet t\u00e9mak\u00f6rszintaxisa helytelen: {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=A megadott t\u00e9mak\u00f6r nem tartalmazhat helyettes\u00edt\u0151 karaktereket, mert ez egy k\u00f6zz\u00e9t\u00e9tel.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=T\u00e1vol\u00edtsa el a helyettes\u00edt\u0151 karaktereket a k\u00f6zz\u00e9t\u00e9teli \u00fczenetekb\u0151l.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: A megfelel\u0151 p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. Kiv\u00e9tel: {0}.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=Nem hozhat\u00f3 l\u00e9tre megfelel\u0151 p\u00e9ld\u00e1ny, mert az sib.matchspaceImpl.jar hi\u00e1nyzik vagy s\u00e9r\u00fclt.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a kor\u00e1bbi \u00fczeneteket a tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_CWSIH9999.useraction=Tekintse meg a kor\u00e1bbi \u00fczeneteket tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.

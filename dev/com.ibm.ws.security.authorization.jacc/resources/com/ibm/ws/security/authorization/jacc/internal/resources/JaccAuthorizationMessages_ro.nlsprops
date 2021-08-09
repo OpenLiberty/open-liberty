@@ -1,0 +1,80 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc/resources/com/ibm/ws/security/authorization/jacc/internal/resources/JaccAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2850 - CWWKS2879
+
+JACC_SERVICE_STARTING=CWWKS2850I: Serviciul JACC porne\u015fte. Numele clasei Policy Provider este {0}. Numele clasei PolicyConfigurationFactory este {1}.
+JACC_SERVICE_STARTING.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+JACC_SERVICE_STARTING.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+JACC_SERVICE_STARTED=CWWKS2851I: Serviciul de JACC a pornit. Numele clasei Policy Provider este {0}. Numele clasei PolicyConfigurationFactory este {1}.
+JACC_SERVICE_STARTED.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+JACC_SERVICE_STARTED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+JACC_SERVICE_STOPPED=CWWKS2852I: Serviciul de JACC s-a oprit. Numele clasei Policy Provider este {0}. Serviciul de autorizare \u00eencorporat este activat.
+JACC_SERVICE_STOPPED.explanation=Acest mesaj este doar \u00een scop informa\u0163ional.
+JACC_SERVICE_STOPPED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+JACC_SERVICE_START_FAILURE=CWWKS2853E: Serviciul de JACC a e\u015fuat la pornire. Numele clasei Policy Provider este {0}. Numele clasei PolicyConfigurationFactory este {1}.
+JACC_SERVICE_START_FAILURE.explanation=Serviciul de JACC a e\u015fuat la pornire.
+JACC_SERVICE_START_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_POLICY_IS_NOT_SET=CWWKS2854E: Furnizorul de JACC nu poate fi ini\u0163ializat deoarece numele clasei Politic\u0103 nu este setat de proprietatea (javax.security.jacc.policy.provider).
+JACC_POLICY_IS_NOT_SET.explanation=Furnizorul de JACC nu poate fi ini\u0163ializat deoarece numele clasei Politic\u0103 nu este setat.
+JACC_POLICY_IS_NOT_SET.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea (javax.security.jacc.policy.provider) a caracteristicii de utilizator JACC seteaz\u0103 numele corespunz\u0103tor de clas\u0103.
+
+JACC_FACTORY_IS_NOT_SET=CWWKS2855E: Furnizorul de JACC nu poate fi ini\u0163ializat deoarece numele clasei PolicyConfigurationFactory nu este setat de proprietatea (javax.security.jacc.PolicyConfigurationFactory.provider).
+JACC_FACTORY_IS_NOT_SET.explanation=Furnizorul de JACC nu poate fi ini\u0163ializat deoarece numele clasei PolicyConfigurationFactory nu este setat.
+JACC_FACTORY_IS_NOT_SET.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea (javax.security.jacc.PolicyConfigurationFactory.provider) a caracteristicii de utilizator JACC seteaz\u0103 numele corespunz\u0103tor de clas\u0103.
+
+JACC_INCONSISTENT_POLICY_CLASS=CWWKS2856W: Numele clasei Politic\u0103 {0} care este specificat de c\u0103tre proprietatea de sistem JVM (javax.security.jacc.policy.provider) nu este identic cu numele clasei {1}care este specificat de c\u0103tre furnizorul JACC. {1} va fi utilizat.
+JACC_INCONSISTENT_POLICY_CLASS.explanation=Numele clasei Politic\u0103 care este specificat de c\u0103tre proprietatea de sistem JVM nu este identic cu numele clasei Politic\u0103 specificat de proprietatea de bundle a clasei furnizorului de JACC. Valoarea propriet\u0103\u0163ii de sistem este ignorat\u0103 \u015fi este utilizat\u0103 valoarea propriet\u0103\u0163ii de bundle.
+JACC_INCONSISTENT_POLICY_CLASS.useraction=Proprietatea de sistem JVM nu este necesar\u0103. \u00cenl\u0103tura\u0163i proprietatea de sistem JVM \u015fi reporni\u0163i serverul.
+
+JACC_INCONSISTENT_FACTORY_CLASS=CWWKS2857W: Numele clasei PolicyConfigurationFactory {0} care este specificat de c\u0103tre proprietatea de sistem JVM (javax.security.jacc.PolicyConfigurationFactory.provider) nu este compatibil\u0103 cu numele clasei {1} care este specificat de c\u0103tre furnizorul JACC. {1} va fi utilizat.
+JACC_INCONSISTENT_FACTORY_CLASS.explanation=Numele clasei PolicyConfigurationFactory care este specificat de c\u0103tre proprietatea de sistem JVM nu este identic cu numele clasei PolicyConfigurationFactory specificat de proprietatea de bundle a clasei furnizorului de JACC. Valoarea propriet\u0103\u0163ii de sistem este ignorat\u0103 \u015fi este utilizat\u0103 valoarea propriet\u0103\u0163ii de bundle.
+JACC_INCONSISTENT_FACTORY_CLASS.useraction=Proprietatea de sistem JVM nu este necesar\u0103. \u00cenl\u0103tura\u0163i proprietatea de sistem JVM \u015fi reporni\u0163i serverul.
+
+JACC_FACTORY_INSTANTIATION_FAILURE=CWWKS2858E: Serviciul JACC nu poate \u00eenc\u0103rca clasa PolicyConfigurationFactory {0}.
+JACC_FACTORY_INSTANTIATION_FAILURE.explanation=Serviciul JACC nu poate \u00eenc\u0103rca clasa specificat\u0103 PolicyConfigurationFactory.
+JACC_FACTORY_INSTANTIATION_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_POLICY_INSTANTIATION_FAILURE=CWWKS2859E: Serviciul JACC nu poate seta clasei furnizorului Policy {0} din cauza excep\u0163iei {1}.
+JACC_POLICY_INSTANTIATION_FAILURE.explanation=Serviciul JACC nu poate seta clasei furnizorului Policy din cauza excep\u0163iei.
+JACC_POLICY_INSTANTIATION_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_GET_POLICYCONFIGURATION_FAILURE=CWWKS2860E: Serviciul JACC nu poate primi obiectul PolicyConfiguration cu contextID {0}. Excep\u0163ia este {1}.
+JACC_GET_POLICYCONFIGURATION_FAILURE.explanation=Serviciul JACC nu poate primi obiectul PolicyConfiguration. Aceasta ar putea fi o eroare sever\u0103 \u00een furnizorul JACC.
+JACC_GET_POLICYCONFIGURATION_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2861E: Serviciul JACC nu poate propaga constr\u00e2ngerile de securitate web cu contextID {0} la furnizorul JACC din cauza excep\u0163iei {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=Serviciul JACC nu poate propaga constr\u00e2ngerile de securitate web la furnizorul JACC din cauza unei excep\u0163ii nea\u015fteptate.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_IMPLIES_FAILURE=CWWKS2862E: Autorizarea pentru resursa cu contextID {0} a e\u015fuat din cauza excep\u0163iei {1}.
+JACC_IMPLIES_FAILURE.explanation=Autorizarea pentru resursa specificat\u0103 a e\u015fuat.
+JACC_IMPLIES_FAILURE.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_NO_EJB_PLUGIN=CWWKS2863E: Modulul pentru procesarea rolurilor de securitate EJB nu este disponibil.
+JACC_NO_EJB_PLUGIN.explanation=Serviciul JACC nu poate procesa rolurile de securitate EJB deoarece modulul necesar nu este disponibil.
+JACC_NO_EJB_PLUGIN.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+JACC_NO_WEB_PLUGIN=CWWKS2864E: Modulul pentru procesarea rolurilor de securitate Web nu este disponibil.
+JACC_NO_WEB_PLUGIN.explanation=Serviciul JACC nu poate procesa rolurile de securitate Web deoarece modulul necesar nu este disponibil.
+JACC_NO_WEB_PLUGIN.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
+

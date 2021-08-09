@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.47,ou=attributeTypes,cn=apache,ou=schema
+m-singlevalue: TRUE
+m-obsolete: FALSE
+m-description: the unique sequential id for the event (a.k.a revision number)
+m-usage: DSA_OPERATION
+creatorsname: uid=admin,ou=system
+m-ordering: integerOrderingMatch
+m-collective: FALSE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.47
+m-nousermodification: TRUE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-name: rev
+m-name: eventId
+m-equality: integerMatch

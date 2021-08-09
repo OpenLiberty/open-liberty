@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ossc>
+   <project project="Swagger UI" 
+            projectURL="http://swagger.io/swagger-ui/" 
+            version="3.14.1" revision="" 
+            license-type="Apachev2" 
+            contact="dzmitry@ca.ibm.com" 
+            encryption="no">
+   </project>
+   <notes>
+      The OpenAPI UI source files were downloaded from https://github.com/swagger-api/swagger-ui
+   </notes>
+   <clearencehistory/>
+</ossc>

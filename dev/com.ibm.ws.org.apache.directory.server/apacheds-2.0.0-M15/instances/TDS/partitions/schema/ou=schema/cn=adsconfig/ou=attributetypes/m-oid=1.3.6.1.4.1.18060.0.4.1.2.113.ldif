@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.113,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: caseExactMatch
+m-ordering: caseExactOrderingMatch
+m-substr: caseExactSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.113
+m-name: ads-dsTestEntries
+m-description: The set of entries to inject at startup (may be obsolete)
+entryUUID: 7d23272f-8428-4151-af30-b477d1279c9f
+entryCSN: 20130919065344.589000Z#000000#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065352.821Z

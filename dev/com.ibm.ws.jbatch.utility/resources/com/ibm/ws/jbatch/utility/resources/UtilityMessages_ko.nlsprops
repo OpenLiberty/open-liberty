@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=\uc624\ub958:  {0}
+error.inputConsoleNotAvailable=\uc785\ub825 \ucf58\uc194\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+error.missingIO=\uc624\ub958, I/O \ub514\ubc14\uc774\uc2a4 \ub204\ub77d: {0}.
+
+usage=\uc0ac\uc6a9\ubc95: {0}
+task.unknown=\uc54c \uc218 \uc5c6\ub294 \ud0dc\uc2a4\ud06c: {0}
+for.task.usage=\ud0dc\uc2a4\ud06c \uc124\uba85 \ubc0f \uc0ac\uc6a9\ubc95\uc6a9: {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=\ud544\uc218 \uc778\uc218\uac00 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4({0}).
+argument.unrecognized=\uc778\uc2dd\ub418\uc9c0 \uc54a\uc740 \uc778\uc218\uc785\ub2c8\ub2e4({0}).
+argument.unrecognized.expected=\uc778\uc2dd\ub418\uc9c0 \uc54a\uc740 \uc778\uc218\uc785\ub2c8\ub2e4({0}). {1}\uc774(\uac00) \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+argument.invalid.value=\uc778\uc218\uc5d0 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\ub294 \uac12: {0}={1}. \ud5c8\uc6a9 \uac00\ub2a5\ud55c \uac12: {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 \uc791\uc5c5 {0}\uc774(\uac00) \uc81c\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+job.submitted.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.submitted.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.restarted=CWWKY0102I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 \uc791\uc5c5 {0}\uc5d0 \ub2e4\uc2dc \uc2dc\uc791 \uc694\uccad\uc774 \uc81c\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+job.restarted.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.restarted.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.stopped=CWWKY0103I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 \uc791\uc5c5 {0}\uc774(\uac00) \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc77c\uad04\ucc98\ub9ac \uc0c1\ud0dc: {2} \uc885\ub8cc \uc0c1\ud0dc: {3}
+job.stopped.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.stopped.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.stop.submitted=CWWKY0104I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 \uc791\uc5c5 {0}\uc5d0 \uc911\uc9c0 \uc694\uccad\uc774 \uc81c\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+job.stop.submitted.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.stop.submitted.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.finished=CWWKY0105I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 \uc791\uc5c5 {0}\uc774(\uac00) \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc77c\uad04\ucc98\ub9ac \uc0c1\ud0dc: {2} \uc885\ub8cc \uc0c1\ud0dc: {3}
+job.finished.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.finished.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.instance.record.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.execution.record.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+waiting.for.termination=CWWKY0108I: JobExecution \uc885\ub8cc \ub300\uae30 \uc911:{0}
+waiting.for.termination.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+waiting.for.termination.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+waiting.for.latest.job.execution=CWWKY0109I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {0}\uc778 \uc791\uc5c5\uc5d0 \ub300\ud574 \ucd5c\uadfc \uc791\uc5c5 \uc2e4\ud589 \ub300\uae30 \uc911
+waiting.for.latest.job.execution.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+waiting.for.latest.job.execution.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+waiting.for.next.job.execution=CWWKY0110I: JobExecution:{0} \uc774\ud6c4 \uadf8 \ub2e4\uc74c \uc791\uc5c5 \uc2e4\ud589 \ub300\uae30 \uc911
+waiting.for.next.job.execution.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+waiting.for.next.job.execution.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+joblog.to.file=CWWKY0111I: \uc791\uc5c5 \ub85c\uadf8\uac00 {0} \ud30c\uc77c\uc5d0 \uae30\ub85d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+joblog.to.file.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+joblog.to.file.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+failover.to.next.target=CWWKY0112I: {0}\uc5d0\uc11c \uc77c\uad04\ucc98\ub9ac \uad00\ub9ac\uc790\uc5d0 \ub300\ud55c \uc694\uccad\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {1}\uc5d0\uc11c \ubc30\uce58 \uad00\ub9ac\uc790\uc5d0 \ub300\ud55c \uc694\uccad\uc744 \uc804\ub2ec\ud569\ub2c8\ub2e4. \uc2e4\ud328: {2}
+failover.to.next.target.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+failover.to.next.target.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+joblog.location=CWWKY0113I: \uc791\uc5c5\uc774 \uc644\ub8cc\ub418\uba74 \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 {0} \uc791\uc5c5\uc758 \uc791\uc5c5 \ub85c\uadf8\uac00 \ub2e4\uc6b4\ub85c\ub4dc\ub429\ub2c8\ub2e4. \
+\ud55c\ud3b8 {2} \ub9c1\ud06c\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc791\uc5c5 \ub85c\uadf8\ub97c \ubcfc \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+joblog.location.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+joblog.location.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+joblog.download=CWWKY0114I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 {0} \uc791\uc5c5\uc758 \uc791\uc5c5 \ub85c\uadf8\uac00 {2}\uc744(\ub97c) \ud1b5\ud574 \ub2e4\uc6b4\ub85c\ub4dc\ub429\ub2c8\ub2e4.
+joblog.download.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+joblog.download.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.purged=CWWKY0115I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {1}\uc778 \uc791\uc5c5 {0}\uc774(\uac00) \uc81c\uac70\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+job.purged.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.purged.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+shutdown.hook=CWWKY0116I: \uc778\uc2a4\ud134\uc2a4 ID {1}(\uc73c)\ub85c {0} \uc791\uc5c5\uc744 \uc644\ub8cc\ud558\uae30 \uc704\ud574 \ub300\uae30\ud558\ub294 \ub3d9\uc548 \ud074\ub77c\uc774\uc5b8\ud2b8 \uc720\ud2f8\ub9ac\ud2f0\uac00 \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+shutdown.hook.explanation=\uba85\ub839\ud589 \uc720\ud2f8\ub9ac\ud2f0\uac00 \uc791\uc5c5\uc744 \uc644\ub8cc\ud558\uae30 \uc704\ud574 \ub300\uae30\ud558\ub294 \ub3d9\uc548 \uac15\uc81c \uc885\ub8cc\ub418\uba74 \uc774 \uba54\uc2dc\uc9c0\uac00 \ubc1c\ud589\ub429\ub2c8\ub2e4.\
+\uc774\uc5d0 \ub530\ub77c \uc774 \uc720\ud2f8\ub9ac\ud2f0\ub294 \uc911\uc9c0 \uc694\uccad\uc744 \uc81c\ucd9c\ud558\uc5ec \uc791\uc5c5\uc744 \uc911\uc9c0\ud558\ub824\uace0 \uc2dc\ub3c4\ud569\ub2c8\ub2e4.
+shutdown.hook.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.purged.multi=CWWKY0117I: \uc778\uc2a4\ud134\uc2a4 ID\uac00 {0}\uc778 \uc791\uc5c5\uc744 \uc81c\uac70\ud558\ub294 \uc2dc\ub3c4\uc5d0\uc11c \ub2e4\uc74c \uc0c1\ud0dc\ub97c \ub9ac\ud134\ud568: {1}. \uba54\uc2dc\uc9c0: {2} \uacbd\ub85c\uc7ac\uc9c0\uc815URL: {3}
+job.purged.multi.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.purged.multi.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+job.parms.vals=CWWKY0118I: \ucd5c\uc885 \uc791\uc5c5 \ub9e4\uac1c\ubcc0\uc218 \uc138\ud2b8\ub294 {0}\uc785\ub2c8\ub2e4.
+job.parms.vals.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+job.parms.vals.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+control.props.vals=CWWKY0119I: \ucd5c\uc885 \uc81c\uc5b4 \ud2b9\uc131 \uc138\ud2b8\ub294 {0}\uc785\ub2c8\ub2e4.
+control.props.vals.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+control.props.vals.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+control.props.file.warning=CWWKY0120W: {0} \ud2b9\uc131\uc740 \uc81c\uc5b4 \ud2b9\uc131 \ud30c\uc77c\uc5d0\uc11c \uc0ac\uc6a9\ub420 \uc218 \uc5c6\uc73c\uba70 \ubb34\uc2dc\ub429\ub2c8\ub2e4. {0} \ud2b9\uc131\uc740 \uba85\ub839\ud589\uc5d0\uc11c\ub9cc \uc0ac\uc6a9\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+control.props.file.warning.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+control.props.file.warning.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+

@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.101.120.16,ou=attributeTypes,cn=system,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 1.3.6.1.4.1.1466.101.120.16
+m-obsolete: FALSE
+m-description: RFC2252: LDAP syntaxes
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.54
+m-usage: DIRECTORY_OPERATION
+m-name: ldapSyntaxes
+creatorsname: uid=admin,ou=system
+m-equality: objectIdentifierFirstComponentMatch

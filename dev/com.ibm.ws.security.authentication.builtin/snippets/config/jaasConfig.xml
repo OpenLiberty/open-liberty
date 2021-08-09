@@ -1,0 +1,56 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="JAAS custom login module sample configuration">
+
+    <!-- NOTE: This file is for reference only. -->
+
+    <!-- Enable appSecurity-2.0 and servlet-3.0  -->
+    <featureManager>
+         <feature>appSecurity-2.0</feature>
+         <feature>servlet-3.0</feature>
+    </featureManager>
+
+    <!-- Sample JAAS custom login module configuration. This sample shows
+        1. A JAAS custom login module (myCustom) configured in the system.WEB_INBOUND JAAS login configuration
+        2. The custom login module is called first and is required to succeed authentication ( controlFlag="REQUIRED" )
+        3. The com.ibm.ws.security.authentication.CustomLoginModule class implements the loginModule and is
+           packaged in CustomLoginModule.jar.
+        4. The CustomLoginModule is configured under the server directory.
+    -->
+
+    <jaasLoginContextEntry id="system.WEB_INBOUND" name="system.WEB_INBOUND" loginModuleRef="myCustom, hashtable, userNameAndPassword, certificate, token" />
+
+    <jaasLoginModule id="myCustom" className="com.ibm.ws.security.authentication.CustomLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+
+	<library id="customLoginLib">
+		<fileset dir="${server.config.dir}" includes="CustomLoginModule.jar"/>
+	</library>
+    
+    
+     <!-- Sample JAAS custom login module configuration. This sample shows
+        1. A Custom JAAS configuration (customJAASConfig) using a custom login module (myCustom) 
+           and system provider login modules (hashtable, userNameAndPassword, certificate, token)
+        2. The custom login module is called first and is required to succeed authentication ( controlFlag="REQUIRED" )
+        3. The com.ibm.ws.security.authentication.CustomLoginModule class implements the loginModule and is
+           packaged in CustomLoginModule.jar.
+        4. The CustomLoginModule is configured under the server directory.
+        5. This login module configuration is an example on how one can create a separate login configuration that applications can use 
+           for porgrammatic login without impacting the system logins.
+    -->
+
+    <jaasLoginContextEntry id="customJAASConfig" name="customJAASConfig" loginModuleRef="myCustom, hashtable, userNameAndPassword, certificate, token" />
+
+    <jaasLoginModule id="myCustom" className="com.ibm.ws.security.authentication.CustomLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+
+	<library id="customLoginLib">
+		<fileset dir="${server.config.dir}" includes="CustomLoginModule.jar"/>
+	</library>
+</server>

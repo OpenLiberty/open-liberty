@@ -1,0 +1,107 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.transactions.CWSJSMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIG0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/transactions/CWSJSMessages.nlsprops
+#COMPONENTPREFIX CWSJS
+#COMPONENTNAMEFOR CWSJS transactions
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0001=CWSJS0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+INTERNAL_ERROR_CWSJS0001.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+LOCALTX_FAIL_CWSJS0002=CWSJS0002E: Egy {0} kiv\u00e9tel ker\u00fclt l\u00e9trehoz\u00e1sra egy tranzakci\u00f3s m\u0171velet feldolgoz\u00e1sa k\u00f6zben a m\u0171velet meghi\u00fasul\u00e1s\u00e1t okozva.
+LOCALTX_FAIL_CWSJS0002.explanation=A megadott kiv\u00e9tel egy tranzakci\u00f3s m\u0171velet feldolgoz\u00e1sa k\u00f6zben ker\u00fclt l\u00e9trehoz\u00e1sra.  Ez a kiv\u00e9tel a tranzakci\u00f3s m\u0171velet meghi\u00fasul\u00e1s\u00e1t okozta.
+LOCALTX_FAIL_CWSJS0002.useraction=Der\u00edtse ki a kiv\u00e9tel ok\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+DUPLICATE_COMPLETE_CWSJS0003=CWSJS0003E: Egy m\u00e1r befejez\u0151d\u00f6tt helyi tranzakci\u00f3 befejez\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt.
+DUPLICATE_COMPLETE_CWSJS0003.explanation=Egy helyi tranzakci\u00f3 v\u00e9gleges\u00edt\u00e9si vagy visszag\u00f6rget\u00e9si met\u00f3dusa a tranzakci\u00f3 befejez\u00e9se ut\u00e1n ker\u00fcl megh\u00edv\u00e1sra.
+DUPLICATE_COMPLETE_CWSJS0003.useraction=Ker\u00fclje a t\u00f6bbsz\u00f6r\u00f6s k\u00eds\u00e9rletek v\u00e9grehajt\u00e1s\u00e1t egy tranzakci\u00f3 befejez\u00e9s\u00e9re.
+
+# -------------------------------------------------------------------------------------------------
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004=CWSJS0004E: Egy munka v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy befejez\u0151d\u00f6tt helyi tranzakci\u00f3 hat\u00f3k\u00f6r\u00e9ben.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.explanation=Egy helyre\u00e1ll\u00edthat\u00f3 m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy olyan helyi tranzakci\u00f3 haszn\u00e1lat\u00e1val, ami m\u00e1r v\u00e9gleges\u00edt\u00e9sre vagy visszag\u00f6rget\u00e9sre ker\u00fclt.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.useraction=Ne k\u00eds\u00e9reljen meg \u00faj v\u00e9grehajtott munk\u00e1t elv\u00e9gezni egy befejez\u0151d\u00f6tt tranzakci\u00f3 hat\u00f3k\u00f6r\u00e9ben.
+
+# -------------------------------------------------------------------------------------------------
+GLOBAL_ENLIST_NO_TX_CWSJS0005=CWSJS0005E: Egy munka v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy ig\u00e9nybe nem vett XAResource haszn\u00e1lat\u00e1val. 
+GLOBAL_ENLIST_NO_TX_CWSJS0005.explanation=Egy v\u00e9grehajtott munka elv\u00e9gz\u00e9s\u00e9re tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy olyan XAResource haszn\u00e1lat\u00e1val, ami nincs ig\u00e9nybe v\u00e9ve egy glob\u00e1lis tranzakci\u00f3ban.
+GLOBAL_ENLIST_NO_TX_CWSJS0005.useraction=Ne k\u00eds\u00e9reljen meg \u00faj v\u00e9grehajtott munk\u00e1t elv\u00e9gezni egy ig\u00e9nybe nem vett XAResource hat\u00f3k\u00f6r\u00e9ben.
+# -------------------------------------------------------------------------------------------------
+NO_CLASSPATH_CWSJS0006=CWSJS0006E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A jelenlegi oszt\u00e1ly\u00fatvonal nem hat\u00e1rozhat\u00f3 meg.
+NO_CLASSPATH_CWSJS0006.explanation=CMSG0001
+NO_CLASSPATH_CWSJS0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNRECOVERABLE_ERROR_CWSJS0007=CWSJS0007E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  Egy XID karaktersorozat-\u00e1br\u00e1zol\u00e1sa megs\u00e9r\u00fclt.
+UNRECOVERABLE_ERROR_CWSJS0007.explanation=CMSG0001
+UNRECOVERABLE_ERROR_CWSJS0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0008=CWSJS0008E: Egy egyed\u00fcl\u00e1ll\u00f3 tranzakci\u00f3 sz\u00e1m\u00e1ra enged\u00e9lyezhet\u0151 m\u0171veletek sz\u00e1ma meghaladta a(z) {0} maxim\u00e1lis sz\u00e1mot.
+TX_SIZE_EXCEEDED_CWSJS0008.explanation=Az egyetlen tranzakci\u00f3ban maxim\u00e1lisan megengedett sz\u00e1m\u00fan\u00e1l t\u00f6bb m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet.
+TX_SIZE_EXCEEDED_CWSJS0008.useraction=Cs\u00f6kkentse egy tranzakci\u00f3 hat\u00f3k\u00f6r\u00e9ben v\u00e9grehajtand\u00f3 m\u0171veletek sz\u00e1m\u00e1t a megadott korl\u00e1tn\u00e1l alacsonyabbra.
+
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0009=CWSJS0009E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+INTERNAL_ERROR_CWSJS0009.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0009.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations that is permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0010=CWSJS0010E: Egy egyed\u00fcl\u00e1ll\u00f3 tranzakci\u00f3 sz\u00e1m\u00e1ra enged\u00e9lyezhet\u0151 m\u0171veletek sz\u00e1ma meghaladta a(z) {0} maxim\u00e1lis sz\u00e1mot.
+TX_SIZE_EXCEEDED_CWSJS0010.explanation=Az egyetlen tranzakci\u00f3ban maxim\u00e1lisan megengedett sz\u00e1m\u00fan\u00e1l t\u00f6bb m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet.
+TX_SIZE_EXCEEDED_CWSJS0010.useraction=Cs\u00f6kkentse egy tranzakci\u00f3 hat\u00f3k\u00f6r\u00e9ben v\u00e9grehajtand\u00f3 m\u0171veletek sz\u00e1m\u00e1t a megadott korl\u00e1tn\u00e1l alacsonyabbra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJS9999=CWSJS9999E: {0}
+TEMPORARY_CWSJS9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a kor\u00e1bbi \u00fczeneteket a tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_CWSJS9999.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.

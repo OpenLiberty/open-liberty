@@ -1,0 +1,14 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Log Service Tester Bundle
+Bundle-SymbolicName: logservice.tester
+Bundle-Description: Bundle that is a WAB to take requests to log ; version=${bVersion}
+  
+                
+Private-Package: logservice.tester.*
+
+Web-ContextPath: logServiceTester
+ 

@@ -1,0 +1,47 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.8.xsd">
+        
+    <!--  <diskStore path="${user.dir}/workarea"/> 
+
+    <defaultCache
+            maxEntriesLocalHeap="5000"
+            eternal="false"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="3600"
+            overflowToDisk="true"
+            maxElementsOnDisk="10000000"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU"
+            /> -->
+            
+     <!--  
+         Security Tokens are not writable to Disk so use a memory only
+         cache with a bit larger maxEntriesLocalHeap.  However, this
+         cache is per-endpoint so not "too large" to not consume the
+         entire heap.      
+     -->
+     <cache-template name="org.apache.cxf.ws.security.tokenstore.TokenStore">
+      
+          <key-type>java.lang.String</key-type>
+        <value-type>org.apache.cxf.ws.security.tokenstore.SecurityToken</value-type>
+        <expiry>
+            <ttl unit="seconds">3600</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">10000</heap>
+        </resources>
+      </cache-template> 
+</config>

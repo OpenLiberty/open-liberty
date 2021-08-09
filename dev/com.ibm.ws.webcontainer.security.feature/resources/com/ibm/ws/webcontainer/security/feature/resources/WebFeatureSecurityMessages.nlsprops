@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security.feature/resources/com/ibm/ws/webcontainer/security/feature/resources/WebFeatureSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Feature Web Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9200 - CWWKS9249
+
+FEATURE_ROLE_CONFIG_PROCESSED=CWWKS9120I: Authorization roles with id="{0}" have been successfully processed.
+FEATURE_ROLE_CONFIG_PROCESSED.explanation=The authorization role mapping has been successfully processed.
+FEATURE_ROLE_CONFIG_PROCESSED.useraction=No action is required.
+AUTHZ_ROLE_ID_IS_NULL=CWWKS9121E: The id attribute is missing in the <authorization-roles> element.
+AUTHZ_ROLE_ID_IS_NULL.explanation=The id attribute is required in order to process the <authorization-roles> element.
+AUTHZ_ROLE_ID_IS_NULL.useraction=Define the appropriate value to the id attribute of the <authorization-roles> element.
+
+

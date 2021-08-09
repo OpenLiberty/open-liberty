@@ -1,0 +1,872 @@
+###############################################################################
+# Copyright (c) 2002, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  02-11-18  irobins               Initial creation from seriousMessages
+#  02-12-05  awilkins      1442    Server quiesce - tx marked rollback only
+#  02-12-16  awilkins  LIDB1673.17 Embedded RAR recovery
+#  03-01-13  irobins   156517      390-specific message range reserved
+#  20/01/03  gareth    LIDB1673.1  JTA2 new messages
+#  28/02/03  hursdlg   LIDB1673.19.1 Add full exception for sync msgs
+#  14/03/03  mallam    160995      New message for inactivity timeout
+#  03/04/03  hursdlg   LIDB1673.22 Update messages 63/64
+#  14/04/03  hursdlg   163015      Fix duplicate message WTRN0068
+#  14/04/03  hursdlg   163130      Add new messages WTRN0081      
+#  15/07/03  hursdlg   170422      Add new messages WTRN0082      
+#  18/07/03  hursdlg   172027      Add new messages WTRN0083
+#  25/07/03  hursdlg   172471      Add new messages WTRN0084
+#  19/08/03  johawkes  174593      Add new messages WTRN0085
+#  18/09/03  johawkes  169114      Add new messages WTRN0086-90
+#  23/09/03  johawkes  177208      Add new messages WTRN0091
+#  09/12/03  mallam    184693      New message for quiesce WTRN0092
+#  04/02/04  hursdlg   189567      New messages for heuristic completion
+#  18/02/04  hursdlg   191317      Add new message WTRN0102
+#  18/05/04  hursdlg   191317.1    Fix punctuation and merge z/OS msgs
+#                                  from pok defect MD19484
+#  16/06/04  mallam    209935      New message for clean shutdown
+#  25/06/04  johawkes  210807      Indicate JTA demarcation disabled in client
+#  02/02/05  hursdlg   252732      New msgs 107-113
+#  17/01/05  mallam    LIDB3645    Recovery-mode restart
+#  20/04/05  hursdlg   266988      WSAT CFW message
+#  25/07/05  kaczyns   LI3187      Add z/OS BBOT messages
+#  18/10/05  mezarin   314369      z/OS messages temp fix
+#  11/11/05  hursdlg   311071      Add msg WTRN0116/117
+#  03/02/06  hursdlg   342682      Add msg WTRN0118
+#  26/02/07  awilkins  422999      Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163      Message review: improve contact IBM support user action
+#  07-04-27  awilkins  416102      Move z/OS BBOT messages into separate file
+#  07-05-03  mallam    422072      Migrate PK38831 to WASX
+#  25-07-07  mallam    453651      New message for log low on space
+#  22/10/07  mallam    476740      Improvements to out of space message 
+#  21/11/07  awilkins  481738      Output stack of thread when tx times out 
+#  06/12/07  hursdlg   467618      Commit priority validation messages
+#  18/12/07  johawkes  LIDB2778-12.10 WS-TX WS-Policy
+#  11/01/08  hursdlg   491762.1    WSTX 1.1 validation messages
+#  11/02/08  mallam    496337      PII additions
+#  25/02/08  johawkes  499078      Fix WTRN0080 user action wording
+#  29-02-08  johawkes  501807      Style changes
+#  29/01/09  jstidder  PK76761     Clarify WTRN0027/WTRN0028
+#  11/11/09  hursdlg   F923-4347.2 Add WTRN0130/131
+#  17/03/10  hursdlg   PM07874     New msgs WTRN0132-151
+#  13/05/10  hursdlg   649934      Further PM07874 changes
+#  12/10/10  johawkes  672987      Fix validation errors
+#  19/01/11  jstidder  PM30478     Clarify/expand WTRN0122
+#  10/07/12  johawkes  628170.3    Users of HA manager need proper log/error when HA not working
+#-----------------------------------------------------------------------
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined. 
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided. 
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table. 
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.15,0,02/08/23,04:09:52
+#
+#CMVCPATHNAME SERV1/ws/code/transaction.impl/src/com/ibm/ws/Transaction/resources/TransactionMsgs.nlsprops
+#COMPONENTPREFIX WTRN
+#COMPONENTNAMEFOR WTRN WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+WTRN0000_ERR_INT_ERROR=WTRN0000E: An internal error occurred in method {0} in class {1}; \
+the exception stack trace follows: {2}.
+WTRN0000_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0000_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0001_ERR_INT_ERROR=WTRN0001E: An internal error occurred in method {0} in class {1};
+WTRN0001_ERR_INT_ERROR.explanation=CMSG0001
+WTRN0001_ERR_INT_ERROR.useraction=CMSG0002
+
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS=WTRN0002W: The transaction service was unable to find resource class {0}.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.explanation=The transaction service could not find the XA resource class identified in the message.
+WTRN0002_UNABLE_TO_FIND_RESOURCE_CLASS.useraction=Ensure that the associated XA resource provider is configured and restart the server. The resource can then be unconfigured and the server shut down.
+
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: During recovery a required JAR file could not be found. The path use to locate it was {0}.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=During recovery involving an embedded RAR file, a required JAR file could not be found. Without this JAR file, transaction recovery cannot be completed.
+WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=None. This is an internal system error.
+
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: Unable to create XAResourceFactory. The XAResourceFactory class name was {0}. The exception stack trace follows: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=During server recovery, the identified factory for creating XAResource objects could not be found. This is an internal system error.
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
+
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: The XAResource for a transaction participant could not be recreated and transaction recovery may not be able to complete properly. The resource was {0}. The exception stack trace follows: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE.explanation=During server recovery, an XAResource object could not be recreated by its corresponding factory.
+WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
+
+WTRN0006_TRANSACTION_HAS_TIMED_OUT=WTRN0006W: Transaction {0} has timed out after {1} seconds.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.explanation=The transaction service has timed out (rolled back) the transaction identified in the message.
+WTRN0006_TRANSACTION_HAS_TIMED_OUT.useraction=To reduce future timeout occurrences, increase the transaction timeout values.
+
+WTRN0007_CANT_IMPORT_NULL_CONTEXT=WTRN0007W: Transaction service unable to import transaction with null or invalid context.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.explanation=A context was imported into the server with either no transaction data, or transaction data that is not valid, so a transaction could not be initiated.
+WTRN0007_CANT_IMPORT_NULL_CONTEXT.useraction=CMSG0002
+
+WTRN0008_CANT_IMPORT_NESTED_TRAN=WTRN0008W: Transaction service unable to import nested transaction {0}
+WTRN0008_CANT_IMPORT_NESTED_TRAN.explanation=A remote server attempted to import a nested transaction. This action is not supported.
+WTRN0008_CANT_IMPORT_NESTED_TRAN.useraction=CMSG0002
+
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT=WTRN0009E: No globalTID for coordinator resource.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.explanation=No global transaction id was supplied in the imported transaction context.
+WTRN0009_NO_GLOBAL_TID_ON_IMPORT.useraction=CMSG0002
+
+WTRN0010_EXC_AT_COORD_REG=WTRN0010E: Transaction rolledback due to exception on registering coordinator with superior {0}
+WTRN0010_EXC_AT_COORD_REG.explanation=There was a problem when a remote transaction was imported into the server, so the transaction was rolled back.
+WTRN0010_EXC_AT_COORD_REG.useraction=CMSG0002
+
+WTRN0011_FACTORY_BIND_FAILURE=WTRN0011E: Unable to register transaction factory in JNDI namespace.
+WTRN0011_FACTORY_BIND_FAILURE.explanation=An unexpected error occurred during initialization of the transaction service.
+WTRN0011_FACTORY_BIND_FAILURE.useraction=CMSG0002
+
+WTRN0012_UNEXP_FACTORY_REG_FAILURE=WTRN0012E: Unexpected failure during transaction factory registration.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.explanation=An unexpected error occurred during initialization of the transaction service.
+WTRN0012_UNEXP_FACTORY_REG_FAILURE.useraction=CMSG0002
+
+WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: No transaction log specified, logging in-memory
+WTRN0013_LOGGING_IN_MEMORY.explanation=The transaction service is configured so that it does not write a log to permanent storage. This might cause data integrity problems or locked resources (for example, database tables) if there are outstanding two-phase commit transactions running when the server is stopped.
+WTRN0013_LOGGING_IN_MEMORY.useraction=If you require transaction recovery, reconfigure the transaction service to use logging, and restart the server.
+
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: The transaction service detected an invalid log file configuration string. The transaction service will continue without recovery logging.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=The directory name for the transaction log file, set in the Transaction log directory field, is not valid. The format should be a fully qualified log file directory, optionally followed by a ';' and the log file size, with M after the log file size to indicate megabytes, or K to indicate kilobytes. The default and minimum log file size is 1M.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Correct the Transaction log directory configuration. Ensure that the server is restarted to enable transaction recovery logging.
+
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: Invalid transaction log file size specified: {0}. The transaction service will use default log file size of 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=The file size of the transaction log file, set in the Transaction log directory field, is not valid. The format should be a fully qualified log file directory, optionally followed by a ';' and the log file size, with M after the log file size to indicate megabytes, or K to indicate kilobytes. The default and minimum log file size is 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Correct the Transaction log directory configuration.
+
+WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: Exception caught during transaction service recovery! {0}
+WTRN0016_EXC_DURING_RECOVERY.explanation=An exception was detected while the transaction service was attempting to recover from a previous server failure.
+WTRN0016_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION=WTRN0017W: Unable to begin a nested transaction. Nested transactions are not supported.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.explanation=This error indicates an attempt to begin a nested transaction, but nested transactions are not supported.
+WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION.useraction=Ensure that there is not an attempt to begin a transaction when another transaction is already active on the thread.
+
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT=WTRN0018W: One-phase resource does not support commit
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.explanation=A resource that supports only one-phase optimized commit has been enlisted with the transaction service and called to process a standard two-phase commit operation. This is an internal system error and is probably caused by an earlier failure.
+WTRN0018_1PC_RESOURCE_DOES_NOT_SUPPORT_COMMIT.useraction=CMSG0002
+
+WTRN0019_LOGFILE_CORRUPTED=WTRN0019E: The transaction service log file {0} has become corrupted.
+WTRN0019_LOGFILE_CORRUPTED.explanation=The transaction service recovery log file has become corrupted and as a result server startup has failed.
+WTRN0019_LOGFILE_CORRUPTED.useraction=To cold start the server, delete the transaction log files and restart the server. You must manually complete any transactions that were pending in associated resource managers.
+
+WTRN0020_RECOVERING_TRANSACTIONS=WTRN0020W: Recovering transactions for server {0} on this server.
+WTRN0020_RECOVERING_TRANSACTIONS.explanation=This server is recovering transaction logs from another server. If the resources configured on this server do not match those configured on the server for which the logs were created, recovery might not complete.
+WTRN0020_RECOVERING_TRANSACTIONS.useraction=Check whether any error messages are output during recovery and correct any actions requested.
+
+WTRN0021_TMRESUME_NOT_SUPPORTED=WTRN0021W: TMRESUME is not supported.
+WTRN0021_TMRESUME_NOT_SUPPORTED.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0021_TMRESUME_NOT_SUPPORTED.useraction=CMSG0002
+
+WTRN0022_UNKNOWN_XARESOURCE_STATE=WTRN0022W: Unknown XAResource state.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.explanation=An XAResource was in an unexpected state. This is an internal system error and is probably caused by an earlier failure.
+WTRN0022_UNKNOWN_XARESOURCE_STATE.useraction=CMSG0002
+
+WTRN0023_INVALID_XAEND_FLAG=WTRN0023W: Invalid XA end flag: {0}
+WTRN0023_INVALID_XAEND_FLAG.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0023_INVALID_XAEND_FLAG.useraction=CMSG0002
+
+WTRN0024_INCONSISTENT_LOGS=WTRN0024E: Inconsistent Transaction and XA Resource recovery logs.
+WTRN0024_INCONSISTENT_LOGS.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0024_INCONSISTENT_LOGS.useraction=CMSG0002
+
+WTRN0025_TRAN_RECOVERY_FAILED=WTRN0025E: Recovery of Transaction failed {0}
+WTRN0025_TRAN_RECOVERY_FAILED.explanation=An exception occurred while attempting to recover a transaction.
+WTRN0025_TRAN_RECOVERY_FAILED.useraction=CMSG0002
+
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY=WTRN0026E: Exception caught during keypoint after recovery! {0}
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0026_KEYPOINT_EXC_IN_RECOVERY.useraction=CMSG0002
+
+WTRN0027_RECOVERING_TXN=WTRN0027I: Transaction service recovering 1 transaction.
+WTRN0027_RECOVERING_TXN.explanation=The transaction service has detected that a transaction was still running when the server was last stopped and the transaction service is now recovering this transaction.  Further audit messages may be output indicating the progress of recovery processing.
+WTRN0027_RECOVERING_TXN.useraction=No user action is required.
+
+WTRN0028_RECOVERING_TXNS=WTRN0028I: Transaction service recovering {0} transactions.
+WTRN0028_RECOVERING_TXNS.explanation=The transaction service has detected that transactions were still running when the server was last stopped and the transaction service is now recovering these transactions.  Further audit messages may be output indicating the progress of recovery processing.
+WTRN0028_RECOVERING_TXNS.useraction=No user action is required.
+
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN=WTRN0029E: Error closing the log in shutdown!
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.explanation=The transaction service encountered an error while closing its recovery log during server shutdown.
+WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN.useraction=CMSG0002
+
+WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Recovery of XAResource data failed {0}
+WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
+
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: An xa_rollback operation on a transactional resource failed. The global transaction was {0}. The exception stack trace follows: {1}
+WTRN0031_XA_ROLLBACK_FAILED.explanation=An exception occurred when the transaction service called the xa_rollback operation on a resource that was enlisted with the global transaction identified in the message.
+WTRN0031_XA_ROLLBACK_FAILED.useraction=The transaction might have completed with a heuristic outcome. If this is the case, correct all application data problems that were caused by the heuristic outcome.
+
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND=WTRN0032E: Implementation specific transaction context received on inbound request.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0032_IMPLEMENTATION_SPECIFIC_ON_INBOUND.useraction=CMSG0002
+
+WTRN0033_TRANSACTION_FACTORY_CREATE=WTRN0033E: Transaction factory create caught exception {0}
+WTRN0033_TRANSACTION_FACTORY_CREATE.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0033_TRANSACTION_FACTORY_CREATE.useraction=CMSG0002
+
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED=WTRN0034W: During server quiesce transaction {0} was found. The attempt to rollback the transaction succeeded.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.explanation=During the quiesce phase of server shutdown, an outstanding transaction was found. This transaction was rolled back successfully.
+WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED.useraction=No user action is required.
+
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED=WTRN0035W: During server quiesce transaction {0} was found. The attempt to rollback the transaction failed.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.explanation=During the quiesce phase of server shutdown, an outstanding transaction was found. The transaction was not rolled back successfully.
+WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED.useraction=No action is required. This transaction will be recovered when the server is next started.
+
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: During server quiesce transaction {0} was found. The transaction has been marked rollback only.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=During the quiesce phase of server shutdown, an outstanding transaction was found. This transaction was marked rollback only.
+WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=No action is required. The transaction will be rolled back during server shutdown, or will be recovered when the server is restarted.
+
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: The transaction service encountered an error on an xa_recover operation. The resource was {0}. The error code was {1}. The exception stack trace follows: {2}
+WTRN0037_XA_RECOVER_ERROR.explanation=The transaction service encountered an error when calling xa_recover on a resource, to determine the prepared transactions held by the corresponding resource manager. The operation will be retried.
+WTRN0037_XA_RECOVER_ERROR.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: An exception occured when destroying an XA resource. The exception stack trace follows: {0}
+WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=The transaction service could not destroy an XAResource.
+WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=No action is required, because this should not affect the transaction service.
+
+WTRN0039_SERIALIZE_FAILED=WTRN0039E: Unable to serialize an object to byte form.
+WTRN0039_SERIALIZE_FAILED.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0039_SERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0040_OBJECT_DESERIALIZE_FAILED=WTRN0040W: Object cannot be deserialized. The exception stack trace follows: {0}
+WTRN0040_OBJECT_DESERIALIZE_FAILED.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0040_OBJECT_DESERIALIZE_FAILED.useraction=CMSG0002
+
+WTRN0041_TXN_ROLLED_BACK=WTRN0041I: Transaction {0} has been rolled back. 
+WTRN0041_TXN_ROLLED_BACK.explanation=A transaction was previously marked rollbackOnly and has now been rolled back. This might be because of a transaction timeout, or an application decision to mark the transaction rollbackOnly.                             
+WTRN0041_TXN_ROLLED_BACK.useraction=No user action is required unless the rollback is undesirable and occurs because of a transaction timeout. If this is the case, investigate why the transaction takes longer to complete than the timeout period, and consider increasing the transaction timeout values for the server.
+
+WTRN0042_GLOBAL_TRAN_ROLLBACK=WTRN0042I: GlobalTransaction rolled-back due to timeout or setRollbackOnly.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.explanation=A global transaction has been rolled back because either it has reached a timeout value, or the setRollbackOnly method has been called.
+WTRN0042_GLOBAL_TRAN_ROLLBACK.useraction=If the timeout value is too short or long, use the Administrative console to modify it.
+
+WTRN0043_LOCAL_TRAN_ROLLBACK=WTRN0043I: LocalTransaction rolled-back due to setRollbackOnly.
+WTRN0043_LOCAL_TRAN_ROLLBACK.explanation=A local transaction has been rolled back because the setRollbackOnly method has been called.
+WTRN0043_LOCAL_TRAN_ROLLBACK.useraction=No action is required.
+
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: A heuristic condition may have occurred for transaction {0}
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=The transaction service has detected that the specified transaction involved mixed one-phase and two-phase capable resources. The transaction service passed a one-phase commit request to the single one-phase capable resource, but the server failed before the commit could complete. It is not known whether the resource committed successfully.
+WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=All two-phase capable resources will be rolled back. If the one-phase capable resource successfully processed commit, heuristic damage has occurred and you must correct all application data problems that are caused by the heuristic outcome.
+
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: The transaction service cannot recover resource {0}. The exception stack trace follows: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=An internal system error occurred when the transaction service attempted to reconstruct a transaction participant during recovery. This is probably caused by an earlier failure.
+WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
+
+WTRN0046_PREPARE_FAILED=WTRN0046E: An attempt by the transaction manager to call prepare on a transactional resource has resulted in an error. The error code was {0}. The exception stack trace follows: {1}
+WTRN0046_PREPARE_FAILED.explanation=The transactional resource failed when being asked to process a prepare call. The failure will be treated as a rollback vote.
+WTRN0046_PREPARE_FAILED.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: An XAER_RMERR occured when committing the work on a transaction branch. The resource was: {0}
+WTRN0047_XAER_RMERR_ON_COMMIT.explanation=A failure has been detected during the commit process for a transaction.
+WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Correct any application data problems that were caused by this failure.
+
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: An attempt by the transaction manager to call commit on a transactional resource has resulted in an XAER_RMFAIL error. The resource was {0}
+WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=The commit call on a transactional resource did not succeed because the resource manager was unavailable. The commit call will be retried at regular intervals.
+WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Ensure that the resource manager is available.
+
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: An attempt by the transaction manager to call rollback on a transactional resource has resulted in an XAER_RMFAIL error. The resource was {0}
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=The rollback call on a transactional resource did not succeed because the resource manager was unavailable. The rollback call will be retried at regular intervals.
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Ensure that the resource manager is available.
+
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: An attempt by the transaction manager to call commit on a transactional resource has resulted in an unexpected error. The XA error code was {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=The commit call on a transactional resource did not succeed because of an unexpected failure. The commit call will be retried at regular intervals.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: An attempt by the transaction manager to call rollback on a transactional resource has resulted in an unexpected error. The XA error code was {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=The rollback call on a transactional resource did not succeed because of an unexpected failure. The rollback call will be retried at regular intervals.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: An attempt by the transaction manager to call one phase commit on a transactional resource has resulted in an XAER_RMFAIL error. The resource was {0}
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=The one-phase commit call on a transactional resource did not succeed because the resource manager was unavailable.
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=The transaction will be rolled back.
+
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: An attempt by the transaction manager to call one phase commit on a transactional resource has resulted in an unexpected error. The XA error code was {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=The one-phase commit call on a transactional resource did not succeed because of an unexpected failure.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=The transaction manager will attempt to roll back the transaction.
+
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: An xa_forget operation on a transactional resource encountered an exception. The error code was {0}.  The exception stack trace follows: {1}
+WTRN0054_XA_FORGET_ERROR.explanation=An exception occurred when the transaction service called the xa_forget operation on a resource.
+WTRN0054_XA_FORGET_ERROR.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY=WTRN0055W: Giving up on outcome delivery for transaction {0}.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.explanation=The transaction service could not deliver a commit or rollback outcome to a transaction participant.
+WTRN0055_GIVING_UP_OUTCOME_DELIVERY.useraction=Correct any application data problems that were caused by this failure.
+
+WTRN0056_TRAN_RESYNC_FAILURE=WTRN0056I: Transaction {0} resynchronization from originator failed, retrying....
+WTRN0056_TRAN_RESYNC_FAILURE.explanation=A transaction has failed to resynchronize during recovery, and the outcome is unknown, so the server will continue to retry.
+WTRN0056_TRAN_RESYNC_FAILURE.useraction=No action is required.
+
+WTRN0057_HEURISTIC_ON_SUBORDINATE=WTRN0057E: Heuristic raised on prepare/commit_one_phase on subordinate.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.explanation=A subordinate transaction attempted to optimize using one-phase commit during prepare, and a heuristic error occurred.
+WTRN0057_HEURISTIC_ON_SUBORDINATE.useraction=CMSG0002
+
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT=WTRN0058E: Exception caught from commit operation during recovery of transaction {0}: {1}
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.explanation=An exception was detected while attempting to recover a transaction.
+WTRN0058_RECOVERY_EXCEPTION_IN_COMMIT.useraction=CMSG0002
+
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK=WTRN0059E: Exception caught from rollback operation during recovery of transaction {0}: {1}
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.explanation=An exception was detected while attempting to recover a transaction.
+WTRN0059_RECOVERY_EXCEPTION_IN_ROLLBACK.useraction=CMSG0002
+
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET=WTRN0060E: Exception caught from forget operation during recovery of transaction {0}: {1}
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.explanation=An exception was detected while attempting to recover a transaction.
+WTRN0060_RECOVERY_EXCEPTION_IN_FORGET.useraction=CMSG0002
+
+WTRN0061_ERR_CREATING_JTAXARESOURCE=WTRN0061E: Encountered an error while building a JTAXAResource object
+WTRN0061_ERR_CREATING_JTAXARESOURCE.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0061_ERR_CREATING_JTAXARESOURCE.useraction=CMSG0002
+
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES=WTRN0062E: An illegal attempt to use multiple resources that have only one-phase capability has occurred within a global transaction.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.explanation=Only a single resource that is limited to one-phase capability can be enlisted in a global transaction. This error occurs if multiple resource managers that are only one-phase capable are used in a global transaction, or if multiple unshared connections from a single such resource manager are used in a global transaction.
+WTRN0062_ILLEGAL_ENLIST_FOR_MULTIPLE_1PC_RESOURCES.useraction=Modify the application either to use a single resource that is limited to one-phase capability, or to use two-phase capable XAResources.
+
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE=WTRN0063E: An illegal attempt to commit a one phase capable resource with existing two phase capable resources has occurred.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.explanation=The transaction service has refused an attempt to commit a one-phase capable resource with a transaction that already involves other two-phase capable resources. Either Last Participant Support (LPS) is not available, or if LPS is available, the application does not accept the heuristic risk that this would involve.
+WTRN0063_ILLEGAL_COMMIT_OF_1PC_RESOURCE.useraction=Ensure that one- and two-phase capable resources are not involved in the same transaction, or if LPS is available, reconfigure the application to accept the heuristic risk that this would involve.
+
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: An illegal attempt to commit a one phase capable resource in a subordinate transaction branch has occurred.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=The transaction service has refused an attempt to commit a one-phase capable resource in a distributed subordinate transaction branch. The transaction will be rolled back.
+WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Ensure that one-phase capable resources are not involved in a subordinate branch of a distributed transaction.
+
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: XAResource is not known to this transaction. The resource was: {0}
+WTRN0065_XARESOURCE_NOT_KNOWN.explanation=The transaction manager could not delist an XAResource because it was not previously enlisted with the current transaction. This is an internal system error and is probably caused by an earlier failure.
+WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
+
+WTRN0066_LOG_WRITE_ERROR=WTRN0066W: Encountered exception during transaction logfile write operation. The exception stack trace follows: {0}
+WTRN0066_LOG_WRITE_ERROR.explanation=An error occurred while writing to the transaction log file. The transaction will be rolled back.
+WTRN0066_LOG_WRITE_ERROR.useraction=This is most likely to be an I/O failure. Examine the exception stack trace to determine the cause of the problem.
+
+WTRN0067_PROG_MODEL_EXCEEDED=WTRN0067W: The transaction service has detected usage that exceeds the WebSphere Application programming model
+WTRN0067_PROG_MODEL_EXCEEDED.explanation=An application running in this server is using transaction service functionality that is not part of the application programming model.
+WTRN0067_PROG_MODEL_EXCEEDED.useraction=Consider whether the application can be modified to use only transaction functionality that is supported in the application programming model.
+
+WTRN0068_COMMIT_FAILED=WTRN0068E: Commit failed with exception {0}
+WTRN0068_COMMIT_FAILED.explanation=An exception occurred while the transaction was committing.
+WTRN0068_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0069_COMMIT_BAD_STATE=WTRN0069E: Commit received in bad transaction state {0}
+WTRN0069_COMMIT_BAD_STATE.explanation=The transaction was not in a valid state when it was asked to carry out commit processing.
+WTRN0069_COMMIT_BAD_STATE.useraction=CMSG0002
+
+WTRN0070_ONE_PHASE_COMMIT_FAILED=WTRN0070E: One-phase commit failed with exception {0}
+WTRN0070_ONE_PHASE_COMMIT_FAILED.explanation=An exception occurred while the transaction was committing using the one-phase commit protocol.
+WTRN0070_ONE_PHASE_COMMIT_FAILED.useraction=CMSG0002
+
+WTRN0071_ROLLBACK_FAILED=WTRN0071E: Rollback failed with exception {0}
+WTRN0071_ROLLBACK_FAILED.explanation=An exception occurred while the transaction was rolling back.
+WTRN0071_ROLLBACK_FAILED.useraction=CMSG0002
+
+WTRN0072_ROLLBACK_BAD_STATE=WTRN0072E: Rollback received in bad transaction state {0}
+WTRN0072_ROLLBACK_BAD_STATE.explanation=The transaction was not in a valid state when asked to carry out rollback processing.
+WTRN0072_ROLLBACK_BAD_STATE.useraction=CMSG0002
+
+WTRN0073_FORGET_BAD_STATE=WTRN0073E: Forget received in bad transaction state {0}
+WTRN0073_FORGET_BAD_STATE.explanation=The transaction was not in a valid state when asked to carry out forget processing.
+WTRN0073_FORGET_BAD_STATE.useraction=CMSG0002
+
+WTRN0074_SYNCHRONIZATION_EXCEPTION=WTRN0074E: Exception caught from {0} synchronization operation: {1}
+WTRN0074_SYNCHRONIZATION_EXCEPTION.explanation=An exception was created by a Synchronization object when it was informed of the current completion state of the transaction.
+WTRN0074_SYNCHRONIZATION_EXCEPTION.useraction=CMSG0002
+
+WTRN0075_HEURISTIC_ON_COMMIT=WTRN0075W: Transaction {0} received a heuristic exception when committing a resource.
+WTRN0075_HEURISTIC_ON_COMMIT.explanation=The transaction service received a heuristic response when delivering a commit outcome to a transaction participant.
+WTRN0075_HEURISTIC_ON_COMMIT.useraction=Correct any application data problems that were caused by the heuristic outcome.
+
+WTRN0076_HEURISTIC_ON_ROLLBACK=WTRN0076W: Transaction {0} received a heuristic exception when rolling back a resource.
+WTRN0076_HEURISTIC_ON_ROLLBACK.explanation=The transaction service received a heuristic response when delivering a rollback outcome to a transaction participant.
+WTRN0076_HEURISTIC_ON_ROLLBACK.useraction=Correct any application data problems that were caused by the heuristic outcome.
+
+WTRN0077_OPERATOR_CANCELLED=WTRN0077W: Transaction {0} was cancelled by the operator.
+WTRN0077_OPERATOR_CANCELLED.explanation=The outcome delivery for the transaction identified in the message was abandoned at the request of the operator.
+WTRN0077_OPERATOR_CANCELLED.useraction=Correct any application data problems that were caused by this failure.
+
+WTRN0078_START_FAILED=WTRN0078E: An attempt by the transaction manager to call start on a transactional resource has resulted in an error. The error code was {0}. The exception stack trace follows: {1}
+WTRN0078_START_FAILED.explanation=The transactional resource failed when being asked to process a start call. The transaction will be rolled back.
+WTRN0078_START_FAILED.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0079_END_FAILED=WTRN0079E: An attempt by the transaction manager to call end on a transactional resource has resulted in an error. The error code was {0}. The exception stack trace follows: {1}
+WTRN0079_END_FAILED.explanation=The transactional resource failed when being asked to process an end call. The transaction will be rolled back.
+WTRN0079_END_FAILED.useraction=Examine the error code to determine the cause of the problem.
+
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT=WTRN0080W: Transaction {0} has timed out due to no client activity for greater than {1} seconds.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.explanation=The client has been inactive for longer than the inactivity timeout value.
+WTRN0080_CLIENT_INACTIVITY_TIMEOUT.useraction=Disregard this message if the client went away leaving a transaction active. If the client is still active, determine whether to change the Client Inactivity Timeout value.
+
+WTRN0081_NULL_JTSXARESOURCE=WTRN0081W: The JTAXAResource object is null.
+WTRN0081_NULL_JTSXARESOURCE.explanation=This is an internal system error and is probably caused by an earlier failure.
+WTRN0081_NULL_JTSXARESOURCE.useraction=CMSG0002
+
+WTRN0082_OPERATOR_ROLLBACK=WTRN0082W: Transaction {0} was rolled back by the operator.
+WTRN0082_OPERATOR_ROLLBACK.explanation=The transaction identified in the message was rolled back by operator request.
+WTRN0082_OPERATOR_ROLLBACK.useraction=Correct any application data problems that were caused by this failure.
+
+WTRN0083_LOG_FULL_ERROR=WTRN0083W: The transaction log is full. Transaction {0} rolled back.
+WTRN0083_LOG_FULL_ERROR.explanation=The transaction log files are full with records from active transactions. Any further two-phase commit transactions will be rolled back.  The server must be restarted for further two-phase commit work to proceed.
+WTRN0083_LOG_FULL_ERROR.useraction=If this problem occurs frequently, restart the server with a larger file size for the transaction log.
+
+WTRN0084_RESOURCE_ENDING=WTRN0084W: Enlist failed due to resource adapter terminating.
+WTRN0084_RESOURCE_ENDING.explanation=A request to enlist a resource in a transaction was rejected because either the server, or the resource adapter, is being closed down.
+WTRN0084_RESOURCE_ENDING.useraction=Rerun the transaction after the resource adapter becomes available.
+
+WTRN0085_BAD_DISSOCIATE=WTRN0085E: No transaction found to dissociate from.
+WTRN0085_BAD_DISSOCIATE.explanation=This is an internal system error.
+WTRN0085_BAD_DISSOCIATE.useraction=CMSG0002
+
+
+WTRN0086_PREPARE_DIAG=WTRN0086I: XAException encountered during prepare phase for transaction {0}. Local resources follow.
+WTRN0086_PREPARE_DIAG.explanation=This message is for informational purposes only.
+WTRN0086_PREPARE_DIAG.useraction=System administrators can use this information to recover manually after transaction errors.
+
+WTRN0087_COMPLETION_DIAG=WTRN0087I: XAException encountered during completion phase for transaction {0}. Local resources follow.
+WTRN0087_COMPLETION_DIAG.explanation=This message is for informational purposes only.
+WTRN0087_COMPLETION_DIAG.useraction=System administrators can use this information to recover manually after transaction errors.
+
+WTRN0088_EXCEPTION_DIAG=WTRN0088I: {0} encountered XAException with error code {1}.
+WTRN0088_EXCEPTION_DIAG.explanation=This message is for informational purposes only.
+WTRN0088_EXCEPTION_DIAG.useraction=System administrators can use this information to recover manually after transaction errors.
+
+WTRN0089_PREPARED=WTRN0089I: {0}: Vote: {1}.
+WTRN0089_PREPARED.explanation=This message is for informational purposes only.
+WTRN0089_PREPARED.useraction=System administrators can use this information to recover manually after transaction errors.
+
+WTRN0090_COMPLETED=WTRN0090I: {0}: Vote: {1}. Result: {2}.
+WTRN0090_COMPLETED.explanation=This message is for informational purposes only.
+WTRN0090_COMPLETED.useraction=System administrators can use this information to recover manually after transaction errors.
+
+WTRN0091_ASSOCIATE_FAILED=WTRN0091E: Failed to associate Execution Context. Xid: {0}, timeout {1}.
+WTRN0091_ASSOCIATE_FAILED.explanation=This is an internal system error.
+WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
+
+WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: Incomplete transaction (localid={0}) found during server quiesce; transaction service will wait.
+WTRN0092_QUIESCE_UNFINISHED.explanation=Inbound transactional work has not yet completed. The transaction service will delay server shutdown so that the originator can try to complete the transaction.
+WTRN0092_QUIESCE_UNFINISHED.useraction=No action is required.
+
+WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: Outcome not available for subordinate transaction {0}. Transaction is heuristically committed.
+WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=The transaction service could not obtain the outcome of the transaction from its superior in the configured retry period. The transaction will be heuristically committed.
+WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Correct any application data problems that were caused by the heuristic outcome.
+
+WTRN0094_ROLLBACK_REPLAY_COMPLETION=WTRN0094W: Outcome not available for subordinate transaction {0}. Transaction is heuristically rolled back.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.explanation=The transaction service could not obtain the outcome of the transaction from its superior in the configured retry period. The transaction will be heuristically rolled back.
+WTRN0094_ROLLBACK_REPLAY_COMPLETION.useraction=Correct any application data problems that were caused by the heuristic outcome.
+
+WTRN0095_MANUAL_REPLAY_COMPLETION=WTRN0095W: Outcome not available for subordinate transaction {0}. Transaction is awaiting administrator intervention to determine its outcome.
+WTRN0095_MANUAL_REPLAY_COMPLETION.explanation=The transaction service could not obtain the outcome of the transaction from its superior in the configured retry period. The transaction is now waiting for administrator to manually set the transaction outcome.
+WTRN0095_MANUAL_REPLAY_COMPLETION.useraction=Determine the success or failure of the superior transaction, then set the transaction outcome manually. This ensures that heuristic damage does not occur and that all application data remains correct.
+
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED=WTRN0096W: A heuristic condition may have occurred for transaction {0}. Transaction is heuristically committed.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.explanation=The transaction service detected that the specified transaction involved mixed one-phase and two-phase capable resources. The transaction service passed a one-phase commit request to the single one-phase capable resource, but the server failed before the commit could complete. It is not known whether the resource committed successfully.
+WTRN0096_HEURISTIC_MAY_HAVE_OCCURED.useraction=All two-phase capable resources will be committed. If the one-phase capable resource failed to process commit, heuristic damage has occurred and you must correct all application data problems that were caused by the heuristic outcome.
+
+WTRN0097_HEURISTIC_MANUAL_COMPLETION=WTRN0097W: Unknown transaction outcome occurred for transaction {0}. Transaction is awaiting administrator intervention to determine its outcome.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.explanation=The transaction service detected that the specified transaction involved mixed one-phase and two-phase capable resources. The transaction service passed a one-phase commit request to the single one-phase capable resource, but the server failed before the commit could complete. It is not known whether the resource committed successfully.
+WTRN0097_HEURISTIC_MANUAL_COMPLETION.useraction=Determine the success or failure of the one-phase commit request, then set the transaction outcome manually. This ensures that heuristic damage does not occur and that all application data remains correct.
+
+WTRN0098_COMMIT_RA_UNINSTALLED=WTRN0098W: Outcome not available for transaction {0} as resource adapter {1} has been uninstalled. Transaction is heuristically committed.
+WTRN0098_COMMIT_RA_UNINSTALLED.explanation=The transaction service could not obtain the outcome of the transaction from the resource adapter because the resource adapter has been uninstalled. The transaction will be heuristically committed.
+WTRN0098_COMMIT_RA_UNINSTALLED.useraction=Correct any application data problems that were caused by the heuristic outcome.
+
+WTRN0099_ROLLBACK_RA_UNINSTALLED=WTRN0099W: Outcome not available for transaction {0} as resource adapter {1} has been uninstalled. Transaction is heuristically rolled back.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.explanation=The transaction service could not obtain the outcome of the transaction from the resource adapter because the resource adapter has been uninstalled. The transaction will be heuristically rolled back.
+WTRN0099_ROLLBACK_RA_UNINSTALLED.useraction=Correct any application data problems that were caused by the heuristic outcome.
+
+WTRN0100_GENERIC_ERROR=WTRN0100E: {0}
+WTRN0100_GENERIC_ERROR.explanation=This message code is used to support messages that have not yet been allocated their own message code.
+WTRN0100_GENERIC_ERROR.useraction=Refer to the message text for more information.
+
+WTRN0101_MANUAL_RA_UNINSTALLED=WTRN0101W: Outcome not available for transaction {0} as resource adapter {1} has been uninstalled. Transaction is awaiting administrator intervention to determine its outcome.
+WTRN0101_MANUAL_RA_UNINSTALLED.explanation=The transaction service could not obtain the outcome of the transaction from the resource adapter because the resource adapter has been uninstalled.
+WTRN0101_MANUAL_RA_UNINSTALLED.useraction=Determine the success or failure of the transaction from the originator of the resource adapter transaction, then set the transaction outcome manually. This ensures that heuristic damage does not occur and that all application data remains correct.
+
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED=WTRN0102W: A heuristic condition may have occurred for transaction {0}. Transaction is heuristically rolled back.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.explanation=The transaction service detected that the specified transaction involved mixed one-phase and two-phase capable resources. The transaction service passed a one-phase commit request to the single one-phase capable resource, but the server failed before the commit could complete. It is not known whether the resource committed successfully.
+WTRN0102_HEURISTIC_MAY_HAVE_OCCURED.useraction=All two-phase capable resources will be rolled back. If the one-phase capable resource successfully processed commit, heuristic damage has occurred and you must correct all application data problems that were caused by the heuristic outcome.
+
+# Msgs 103 and 104 added by pok defect MD19484 for V5.1
+
+WTRN0103_RECOVERY_LOG_FAILED=WTRN0103E: Recovery log is being marked as failed. [ {0} {1} ]
+WTRN0103_RECOVERY_LOG_FAILED.explanation=The recovery log has failed, and no further access to the recovery log can occur. The component and the exception are indicated in the message.
+WTRN0103_RECOVERY_LOG_FAILED.useraction=The server must be restarted so that the log can be repaired. Try to correct any conditions indicated by the exception in the message.
+
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL=WTRN0104E: Details of recovery log failure: {0}
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.explanation=This message is issued with message WTRN0103E to indicate the details of the recovery log failure.
+WTRN0104_RECOVERY_LOG_FAILED_DETAIL.useraction=Use the information in this message along with message WTRN0103E to correct the condition that caused the recovery log to fail.
+
+WTRN0105_CLEAN_SHUTDOWN=WTRN0105I: The transaction service has shutdown successfully with no transactions requiring recovery.
+WTRN0105_CLEAN_SHUTDOWN.explanation=This is a normal event. This message is for informational purposes only.
+WTRN0105_CLEAN_SHUTDOWN.useraction=No action is required.
+
+WTRN0106_JTADEMARCATION_DISALLOWED=WTRN0106I: Client JTA demarcation is disallowed.
+WTRN0106_JTADEMARCATION_DISALLOWED.explanation=JTA demarcation has been configured as disallowed for this client application.
+WTRN0106_JTADEMARCATION_DISALLOWED.useraction=To allow JTA demarcation, use the application server toolkit to set the Allow JTA Demarcation property in the client deployment descriptor.
+
+WTRN0107_GENERIC_WARNING=WTRN0107W: {0}
+WTRN0107_GENERIC_WARNING.explanation=This message code is used to support messages that are not yet allocated their own message code.
+WTRN0107_GENERIC_WARNING.useraction=Refer to the message text for more information.
+
+WTRN0108_GENERIC_INFOMSG=WTRN0108I: {0}
+WTRN0108_GENERIC_INFOMSG.explanation=This message code is used to support messages that are not yet allocated their own message code.
+WTRN0108_GENERIC_INFOMSG.useraction=Refer to the message text for more information.
+
+WTRN0109_MBEAN_ACTIVATE=WTRN0109W: Exception encountered when activating Transaction JMX MBean: {0}
+WTRN0109_MBEAN_ACTIVATE.explanation=An error occurred when attempting to activate a JMX MBean for the transaction service. Although this does not stop the transaction service from starting, any administrative functions that require access to the transaction service will fail.
+WTRN0109_MBEAN_ACTIVATE.useraction=CMSG0002
+
+
+WTRN0110_BAD_CUSTOM_PROPERTY=WTRN0110W: {0} is not a valid transaction service custom property
+WTRN0110_BAD_CUSTOM_PROPERTY.explanation=A custom property that was specified in the transaction service configuration for this server is not valid and has been ignored.
+WTRN0110_BAD_CUSTOM_PROPERTY.useraction=Correct the transaction service custom properties configuration.
+
+WTRN0111_LOG_ALLOCATION=WTRN0111E: Unable to access or create the recovery log. The log configuration was {0}
+WTRN0111_LOG_ALLOCATION.explanation=The transaction service could not access or create recovery logs. If the recovery logs are for the local server, the server will be stopped. If the recovery logs are for a peer recovered server, recovery will be stopped and assigned to another server, and the reporting server will continue normally.
+WTRN0111_LOG_ALLOCATION.useraction=Examine any related messages to determine the cause of the problem. Ensure that the recovery logs can be access by the server or, if they are not yet created, check that there is sufficient disk space available and that the server has correct access permissions to the files or directories specified in the messages.
+
+WTRN0112_LOG_OPEN_FAILURE=WTRN0112E: An unexpected error occured whilst opening the recovery log. The log configuration was {0}
+WTRN0112_LOG_OPEN_FAILURE.explanation=The transaction service could not open the recovery logs. If the recovery logs are for the local server, the server will be stopped. If the recovery logs are for a peer recovered server, recovery will be stopped and assigned to another server, and the reporting server will continue normally.
+WTRN0112_LOG_OPEN_FAILURE.useraction=Examine any related messages to determine the cause of the problem. 
+
+WTRN0113_LOG_DOWNLEVEL=WTRN0113W: Recovery processing of a downlevel peer WebSphere server is not possible and has been halted ({0})
+WTRN0113_LOG_DOWNLEVEL.explanation=The transaction service could not peer recover the specified application server because the logs were formatted by an earlier release of the product, which is incompatible with this server. This instance of peer recovery will be stopped and assigned to another server, and the reporting server will continue normally. 
+WTRN0113_LOG_DOWNLEVEL.useraction=No user action is required. Depending on the cluster configuration, if there is only a single member at a particular release level, peer recovery for that server release might not be possible if the log format has become incompatible across releases.
+
+WTRN0114_TRAN_RETRY_NEEDED=WTRN0114I: Transaction {0} could not notify all resources of its outcome.  Will retry in {1} seconds.
+WTRN0114_TRAN_RETRY_NEEDED.explanation=A remote resource manager could not be contacted during recovery restart. The operation will be retried at regular intervals.
+WTRN0114_TRAN_RETRY_NEEDED.useraction=Ensure that the resource manager is available.
+
+WTRN0115_NO_CFW_AVAILABLE=WTRN0115E: Channel Framework configuration is not defined or is invalid for WebServices Atomic Transactions (WSAT) support.
+WTRN0115_NO_CFW_AVAILABLE.explanation=The Web container is not defined to use the channel framework, or is defined incorrectly. WS-AT requires the use of channel framework to transfer transactional context between Web services.
+WTRN0115_NO_CFW_AVAILABLE.useraction=Correct or define the channel framework configuration for the Web container.
+
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: Invalid transaction log file configuration string specified: {0}. The transaction service will continue without recovery logging for WebSphere server ({1}).
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=The directory name for the transaction log file, set in the Transaction log directory field, is not valid. The format should be a fully qualified log file directory, optionally followed by a ';' and the log file size, with M after the log file size to indicate megabytes, or K to indicate kilobytes. The default and minimum log file size is 1M.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Correct the Transaction log directory configuration. Ensure that the server is restarted to enable transaction recovery logging.
+
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: Invalid transaction log file size specified: {0}. The transaction service will use default log file size of 1M for WebSphere server ({1}).
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=The file size of the transaction log file, set in the Transaction log directory field, is not valid. The format should be a fully qualified log file directory, optionally followed by a ';' and the log file size, with M after the log file size to indicate megabytes, or K to indicate kilobytes. The default and minimum log file size is 1M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Correct the Transaction log directory configuration.
+
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: The deprecated transaction service customer property {0} was found in the transaction service configuration.  
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.explanation=A deprecated custom property was specified in the transaction service configuration for this server. The property will override a corresponding general transaction service property in the configuration. The deprecated custom property will be removed in a future release of the product.
+WTRN0118_DEPRECATED_CUSTOM_PROPERTY.useraction=Remove the deprecated transaction service custom property from the configuration and use the corresponding general property setting, using the administrative console.
+
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT=WTRN0119W: Number of WS-TX protocol messages failing authorization: {0}
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.explanation=The number of Web Services Atomic Transactions (WS-AT) and Web Service Business Activities (WS-BA) protocol messages indicated (for example, a prepare message) have been received without the expected security credentials.
+WTRN0119_UNAUTHORIZED_PROTOCOL_MSG_COUNT.useraction=Ensure that the server is correctly configured for WS-AT and WS-BA in a secure environment.
+
+WTRN0120_INVALID_HA_LOGNAME=WTRN0120W: The transaction log directory specification of ;0 for server {1} is not valid because the server is in a cluster {0} that is enabled for high availability (HA).
+WTRN0120_INVALID_HA_LOGNAME.explanation=You must specify a valid transaction log directory path for each server in a cluster when the cluster is enabled for high availability.
+WTRN0120_INVALID_HA_LOGNAME.useraction=Change the setting of the transaction log file to a valid location in the file system.
+
+WTRN0121_INVALID_HA_CONFIG=WTRN0121E: The high availability (HA) configuration is not valid. The server will stop.
+WTRN0121_INVALID_HA_CONFIG.explanation=One or more servers in a cluster that is enabled for high availability do not have a valid transaction log directory defined.
+WTRN0121_INVALID_HA_CONFIG.useraction=Examine accompanying messages for information about the affected servers. Correct the transaction log directories for these servers, then restart the cluster.
+
+WTRN0122_LOG_FREE_SPACE=WTRN0122W: Transaction service log file {0} has used {1} bytes of a total of {2}. The size of the log file might need to be greater.
+WTRN0122_LOG_FREE_SPACE.explanation=After a successfully completed keypoint operation (during which deleted and completed entries are removed from a log file which has reached maximum capacity), it has been detected that the log file is still greater than 75% full because of the current active transactional workload. If the log file becomes full, the server must be restarted. Note that this message is only output after a successful keypoint operation on a log file; only then can the capacity of the logs currently in use be calculated.
+WTRN0122_LOG_FREE_SPACE.useraction=Consider setting a larger file size for the transaction logs.
+
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: An incorrect external WS-Transaction HTTP(S) URL prefix was specified: {0}
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.explanation=The external WS-Transaction HTTP(S) URL prefix must be a valid URI.
+WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX.useraction=Specify a valid external WS-Transaction HTTP(S) URL prefix.
+
+WTRN0124_TIMED_OUT_TRANSACTION_STACK=WTRN0124I: When the timeout occurred the thread with which the transaction is, or was most recently, associated was {0}. The stack trace of this thread when the timeout occurred was: {1}
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.explanation=The stack, captured when the timeout occurred, is provided to help with diagnosis and debugging of transaction timeouts.
+WTRN0124_TIMED_OUT_TRANSACTION_STACK.useraction=Examine the stack trace to determine what processing was in progress when the transaction timeout occurred.
+
+WTRN0125_COMMIT_PRIORITY=WTRN0125W: Unable to target module {0} on node {1} because the module specifies Resource Commit Ordering support which is not supported on the node
+WTRN0125_COMMIT_PRIORITY.explanation=The support for resource commit ordering is only available on nodes which are at release 7.0 or later.
+WTRN0125_COMMIT_PRIORITY.useraction=Install the module on an Application Server at release 7.0 (or later) or use the application's deployment descriptor editor in the application development tooling to remove any Resource Commit Ordering settings before installing the module.  This may be performed by navigating to the commit ordering section of the WebSphere Extensions and unseting the commit priority for each transactional resource.
+
+WTRN0126_COMMIT_PRIORITY_CLUSTER=WTRN0126W: Unable to deploy application {0} on node {1} in cluster {2} because the application specifies Resource Commit Ordering support which is not supported on the node
+WTRN0126_COMMIT_PRIORITY_CLUSTER.explanation=The support for resource commit ordering is only available on nodes which are at release 7.0 or later.  The node will not be added to the cluster.
+WTRN0126_COMMIT_PRIORITY_CLUSTER.useraction=Create cluster members on nodes which have an Application Server installed at release 7.0 (or later) or use the application's deployment descriptor editor in the application development tooling to remove any Resource Commit Ordering settings before creating the cluster memeber.   This may be performed by navigating to the commit ordering section of the WebSphere Extensions and unseting the commit priority for each transactional resource.
+
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION=WTRN0127E: Operation blocked by policy type configuration.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.explanation=The operation was blocked in accordance with the effective policy type configuration.
+WTRN0127_BLOCKED_BY_POLICY_ASSERTION.useraction=Ensure the policy type configuration is appropriate for this operation.
+
+WTRN0128_WSTX_APP_START_FAILURE=WTRN0128E: Unable to start application {0} because the application requires WS Transaction specifications which are not supported on all servers in the cluster.
+WTRN0128_WSTX_APP_START_FAILURE.explanation=The application is configured with a WebService policy specifying WS Transaction specifications which are not supported on all servers in the cluster.  Application requests or their recovery may be directed to any server in the cluster so all applications must use features which are supported on all servers.
+WTRN0128_WSTX_APP_START_FAILURE.useraction=Uninstall the application or modify the WS Transaction policy configuration for the application to use supported features.  Alternatively, upgrade all the nodes in the cluster to release 7.0 or later.
+
+WTRN0129_WSTX_APP_START_FAILURE=WTRN0129W: The default setting for WS Transaction specification level is inappropriate for a mixed version cluster
+WTRN0129_WSTX_APP_START_FAILURE.explanation=The configured WS Transaction specification level default setting for the server may cause execution problems as all servers in the cluster are not at the same release of the Application Server.  All servers in the cluster need to support the same specification level since application requests or their recovery may be directed to any server.  If servers support different specification levels, then the application behaviour may change depending on which server it executes.
+WTRN0129_WSTX_APP_START_FAILURE.useraction=Set the default WS Transaction specification level to a value which is common to all servers in the cluster.
+
+WTRN0130_BRANCH_COUPLING=WTRN0130W: Unable to target module {0} on node {1} because the module specifies Resource Branch Coupling support which is not supported on the node
+WTRN0130_BRANCH_COUPLING.explanation=The support for resource branch coupling is only available on nodes which are at release 8.0 or later.
+WTRN0130_BRANCH_COUPLING.useraction=Install the module on an Application Server at release 8.0 (or later) or use the application's deployment descriptor editor in the application development tooling to remove any Resource Branch Coupling settings before installing the module.  This may be performed by navigating to the branch coupling section of the WebSphere Extensions and unseting the branch coupling for each transactional resource.
+
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: Unable to deploy application {0} on node {1} in cluster {2} because the application specifies Resource Branch Coupling support which is not supported on the node
+WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=The support for resource branch coupling is only available on nodes which are at release 8.0 or later.  The node will not be added to the cluster.
+WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Create cluster members on nodes which have an Application Server installed at release 8.0 (or later) or use the application's deployment descriptor editor in the application development tooling to remove any Resource Branch Coupling settings before creating the cluster memeber.   This may be performed by navigating to the branch coupling section of the WebSphere Extensions and unseting the branch coupling for each transactional resource.
+
+# 0 - servername
+# 1 - server uuid or server long name (zos)
+# 2 - server restart epoch value
+WTRN0132_RECOVERY_INITIATED=WTRN0132I: Transaction recovery for {0} initiated with server uuid {1} and restart epoch {2}
+WTRN0132_RECOVERY_INITIATED.explanation=The transaction recovery process is starting for the server.  The server uuid and epoch read from the existing transaction logs is reported.  These values are used to identify any indoubt xids in xa resource managers which may have originated from previous instances of this server.  If the transaction logs did not exist at server startup, the values of uuid and epoch output are those which will be written to the logs and used in future by the server.
+WTRN0132_RECOVERY_INITIATED.useraction=No user action is required.
+
+WTRN0133_RECOVERY_COMPLETE=WTRN0133I: Transaction recovery processing for this server is complete
+WTRN0133_RECOVERY_COMPLETE.explanation=The transaction recovery process is complete for this server.  All information of transactions and xa resource managers from previous instances of the server is removed from the logs.
+WTRN0133_RECOVERY_COMPLETE.useraction=No user action is required.
+
+# 0 - number of resource managers
+WTRN0134_RECOVERING_XARMS=WTRN0134I: Recovering {0} XA resource manager(s) from the transaction partner logs
+WTRN0134_RECOVERING_XARMS.explanation=The transaction service has detected that the server may have terminated previously with in doubt transactions and the specified number of logged xa resource managers will be contacted as part of recovery processing.
+WTRN0134_RECOVERING_XARMS.useraction=No user action is required.
+
+WTRN0135_RECOVERING_NOTXNS=WTRN0135I: Transaction service recovering no transactions.
+WTRN0135_RECOVERING_NOTXNS.explanation=The transaction service has processed the transaction recovery logs and determined that there are no transactions that require recovery.  Any indoubt xa resources originating from this server are rolled back.
+WTRN0135_RECOVERING_NOTXNS.useraction=No user action is required.
+
+# 0 - transaction xid
+# 1 - transaction id
+# 2 - transaction status
+WTRN0136_RECOVERING_TRAN=WTRN0136I: Processing recovered transaction {0} (tid={1}) with {2}
+WTRN0136_RECOVERING_TRAN.explanation=The transaction service is recovering the named transaction.  The message also indicates the current status of the transaction during recovery.  The tid value is used in other recovery processing messages and the administration console to refer to the transaction.
+WTRN0136_RECOVERING_TRAN.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name 
+WTRN0137_REC_TXN_COMMIT=WTRN0137I: Recovered transaction (tid={0}) committing xid {1} with {2}
+WTRN0137_REC_TXN_COMMIT.explanation=The transaction service is recovering the named transaction and it is issuing a commit to a resource manager.
+WTRN0137_REC_TXN_COMMIT.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0138_REC_TXN_ROLLBACK=WTRN0138I: Recovered transaction (tid={0}) rolling back xid {1} with {2}
+WTRN0138_REC_TXN_ROLLBACK.explanation=The transaction service is recovering the named transaction and it is issuing a rollback to a resource manager.
+WTRN0138_REC_TXN_ROLLBACK.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0139_REC_TXN_FORGET=WTRN0139I: Recovered transaction (tid={0}) forgetting xid {1} with {2}
+WTRN0139_REC_TXN_FORGET.explanation=The transaction service is recovering the named transaction and it is issuing a forget to a resource manager.
+WTRN0139_REC_TXN_FORGET.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0140_REC_TXN_COMMITED=WTRN0140I: Recovered transaction (tid={0}) committed xid {1} successfully with {2}
+WTRN0140_REC_TXN_COMMITED.explanation=The transaction service is recovering the named transaction and it has successfully committed a resource.
+WTRN0140_REC_TXN_COMMITED.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0141_REC_TXN_COMMITERR=WTRN0141I: Recovered transaction (tid={0}) commit of xid {1} with {2} resulted in {3}
+WTRN0141_REC_TXN_COMMITERR.explanation=The transaction service is recovering the named transaction and on committing a resource received the response code as given in the message.
+WTRN0141_REC_TXN_COMMITERR.useraction=Examine the response code to determine if the commit failed and take appropriate action.  If the code indicates an heuristic outcome, correct any data problems that may have occurred.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0142_REC_TXN_ROLLED=WTRN0142I: Recovered transaction (tid={0}) rolled back xid {1} successfully with {2}
+WTRN0142_REC_TXN_ROLLED.explanation=The transaction service is recovering the named transaction and it has successfully rolled back a resource.
+WTRN0142_REC_TXN_ROLLED.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0143_REC_TXN_ROLLEDERR=WTRN0143I: Recovered transaction (tid={0}) rollback of xid {1} with {2} resulted in {3}
+WTRN0143_REC_TXN_ROLLEDERR.explanation=The transaction service is recovering the named transaction and on rolling back a resource received the response code as given in the message.
+WTRN0143_REC_TXN_ROLLEDERR.useraction=Examine the response code to determine if the rollback failed and take appropriate action.  If the code indicates an heuristic outcome, correct any data problems that may have occurred.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+WTRN0144_REC_TXN_FORGOT=WTRN0144I: Recovered transaction (tid={0}) forgot xid {1} successfully with {2}
+WTRN0144_REC_TXN_FORGOT.explanation=The transaction service is recovering the named transaction and it has successfully forgotten a resource.
+WTRN0144_REC_TXN_FORGOT.useraction=No user action is required.
+
+# 0 - transaction id
+# 1 - xid
+# 2 - resource manager name
+# 3 - response code
+WTRN0145_REC_TXN_FORGETERR=WTRN0145I: Recovered transaction (tid={0}) forget of xid {1} with {2} resulted in {3}
+WTRN0145_REC_TXN_FORGETERR.explanation=The transaction service is recovering the named transaction and on forgeting a resource received the response code as given in the message.
+WTRN0145_REC_TXN_FORGETERR.useraction=Examine the response code to determine if the forget failed and take appropriate action.
+
+# 0 - number of xids
+# 1 - resource manager name
+# 2 - number of xids
+WTRN0146_REC_XA_RECOVERED=WTRN0146I: Obtained {0} xid(s) from xa recover on {1} of which {2} will be processed by this server
+WTRN0146_REC_XA_RECOVERED.explanation=The transaction service successfully issued xa recover on a logged resource manager.
+WTRN0146_REC_XA_RECOVERED.useraction=No user action is required.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - restart epoch value
+WTRN0147_REC_XID_LATE=WTRN0147W: Recovered xid {0} from {1} is from a earlier restarted server instance with epoch {2}
+WTRN0147_REC_XID_LATE.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which should have been recovered on the previous server restart.  The epoch value indicates the server instance when the xid was originally associated with a transaction.
+WTRN0147_REC_XID_LATE.useraction=Examine the epoch value from this message and compare it with the current server restart epoch in message WTRN0132.  If intervening server restarts have been successful, check the logs from previous server instances together with the current logs to determine why this xid was not processed during recovery.  For example, the resource manager may have been unavailable when the server was restarted previously.
+
+# 0 - xid
+# 1 - resource manager name
+WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Recovered xid {0} from {1} - xid has no associated transaction and will be rolled back
+WTRN0148_REC_XA_ROLLBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not corrrespond to a logged transaction.  The transaction service will rollback the xid as part of recovery processing.
+WTRN0148_REC_XA_ROLLBACK.useraction=No user action is required.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - transaction id
+# 3 - transaction state
+WTRN0149_REC_XA_TRAN=WTRN0149I: Recovered xid {0} from {1} - xid has associated transaction (tid={2}) with logged state {3}
+WTRN0149_REC_XA_TRAN.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which corrresponds to a logged transaction.  The transaction service will complete the transaction as part of recovery processing.
+WTRN0149_REC_XA_TRAN.useraction=No user action is required.
+
+# 0 - xid
+# 1 - resource manager name
+# 2 - error code
+WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Response from rolling back recovered xid {0} from {1} - {2}
+WTRN0150_REC_XA_ROLLEDBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not corrrespond to a logged transaction.  The transaction service hass attempted to rollback the xid as part of recovery processing.
+WTRN0150_REC_XA_ROLLEDBACK.useraction=Examine the error code to determine if the rollback failed.
+
+# 0 - resource manager name
+WTRN0151_REC_XA_RECOVER=WTRN0151I: Preparing to call xa recover on {0}
+WTRN0151_REC_XA_RECOVER.explanation=The transaction service is preparing to call xa recover on a logged resource manager by opening a connection and obtaining an xa resource.  If an xa resource is sucessfully obtained, another message will follow indicating the number of xids returned from xa recover.  If a failure occurs obtaining a connection or xa resource, further messages will indicate the cause.
+WTRN0151_REC_XA_RECOVER.useraction=If any messages following indicate a failure obtaining a connection or xa resource, determine the cause and take appropriate action.
+
+WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Unusual HA configuration detected.
+WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA is enabled for this cluster but the HA manager is disabled.
+WTRN0152_UNUSUAL_HA_CONFIG.useraction=If this is the desired configuration, no action is required. Otherwise, correct the HA configuration.
+
+# --------------------------------
+# WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

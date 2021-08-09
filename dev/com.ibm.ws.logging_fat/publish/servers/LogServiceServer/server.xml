@@ -1,0 +1,9 @@
+<server description="new server">
+    <include location="../fatTestPorts.xml" />
+
+	<!-- Enable features -->
+	<featureManager>
+		<feature>logServiceTest-1.0</feature>
+	</featureManager>
+
+</server>

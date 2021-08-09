@@ -1,0 +1,10 @@
+<server description="default server">
+
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <applicationMonitor enabled="true" dropins="${server.config.dir}/OtherDir"/>
+    
+    <include location="../fatTestPorts.xml"/>
+</server>

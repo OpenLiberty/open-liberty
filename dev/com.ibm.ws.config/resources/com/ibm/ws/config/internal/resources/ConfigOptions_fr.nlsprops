@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=Syntaxe : java [options JVM] -jar {0} [options] fichierSortie  
+
+use.options=Options :
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.ignorePids=--ignorePidsFile
+option-desc.ignorePids=Nom d'un fichier contenant la liste des PID \u00e0 ignorer
+option-key.encoding=--encoding
+option-desc.encoding=L'encodage de caract\u00e8res \u00e0 utiliser pour la sortie
+option-key.locale=--locale
+option-desc.locale=L'environnement local (param\u00e8tres r\u00e9gionaux) \u00e0 utiliser pour la sortie
+option-key.compactoutput=--compactOutput
+option-desc.compactoutput=Le sch\u00e9ma de sortie ne contiendra pas d'espaces d'indentation, de nouveaux sauts de ligne ou des commentaires XML
+option-key.productExtension=--productExtension
+option-desc.productExtension=Nom d'extension de produit \u00e0 traiter.                            \n Si \
+l'extension de produit est install\u00e9e dans l'emplacement utilisateur par d\u00e9faut,    \n\
+utilisez le mot cl\u00e9 : usr.                                                  \n\
+Si cette option n'est pas indiqu\u00e9e, l'action est effectu\u00e9e sur la fonction Liberty centrale.

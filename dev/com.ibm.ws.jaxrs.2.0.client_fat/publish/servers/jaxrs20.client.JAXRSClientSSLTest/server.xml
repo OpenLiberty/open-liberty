@@ -1,0 +1,29 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+        <feature>ssl-1.0</feature>
+        <!-- Add this here so that the JAX-RS 2.1 tests pass -->
+        <feature>appSecurity-2.0</feature>        
+    </featureManager>
+   
+     <!-- Server SSL configuration -->
+     <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+       
+     <!-- customize SSL configuration -->
+     <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+     
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+  	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+  	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+  	<javaPermission className="com.ibm.websphere.security.WebSphereRuntimePermission" name="getSSLConfig"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getenv.SERVER_CONFIG_DIR"/>
+</server>

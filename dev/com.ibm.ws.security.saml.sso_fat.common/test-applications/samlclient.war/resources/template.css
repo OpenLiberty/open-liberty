@@ -1,0 +1,61 @@
+#bannertop {
+  width:100%;
+  background: #555577;
+  text-align: center;
+  color: white;
+  padding:2px 0px 2px 0px;
+  border-bottom: #000000 1px solid;
+  border-top: #000000 1px solid;
+}
+.header {
+  color: #FFFFFF;
+}
+#bannertop A {
+  text-decoration: none
+}
+
+
+
+H1 {
+  font-size:18pt;
+  font-family:arial, verdana, sans-serif;;
+}
+
+table {
+  border: #a9a9a9 1px solid;
+  background: #DDDDEE;
+  position:relative;
+  margin-left: 40px;
+}
+
+TD, TH {
+  border: 0px;
+  padding: 2px;
+  vertical-align: top
+}
+
+input
+{
+  border: #a9a9a9 1px solid;
+  space: 2px;
+  background: #FFFFFF;
+  margin: 2px;
+  padding: 2px;
+}
+
+textarea 
+{
+  border: #a9a9a9 1px solid;
+  space: 2px;
+  background: #CCCCCC;
+  margin: 2px;
+  padding: 2px;
+}
+
+
+button
+{
+  border: #999999 1px solid;
+  background: #CCCCCC;
+}
+

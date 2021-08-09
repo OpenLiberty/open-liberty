@@ -1,0 +1,21 @@
+<server description="jaegerServer">
+
+    <featureManager>
+        <feature>mpOpenTracing-1.3</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <application location="mpOpenTracing.war">
+        <classloader apiTypeVisibility="+third-party"
+            commonLibraryRef="jaeger" />
+    </application>
+
+    <library id="jaeger" apiTypeVisibility="+third-party">
+        <fileset dir="${server.config.dir}/jaegerLib"/>
+    </library>
+
+    <javaPermission
+        codebase="${server.config.dir}/jaegerLib/slf4j-api-1.7.30.jar"
+        className="java.security.AllPermission" />
+</server>

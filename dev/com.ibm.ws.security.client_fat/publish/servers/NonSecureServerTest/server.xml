@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<featureManager>
+		<feature>ejbRemote-3.2</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+
+
+
+	<application type="ear" id="basicCalc" name="BasicCalculator" location="${server.config.dir}/apps/BasicCalculator.ear" />
+
+	<include location="../fatTestPorts.xml" />
+
+	<iiopEndpoint id="myIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+		<iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="supportedClientAuthenticationSSLConfig" />
+	</iiopEndpoint>
+
+	<orb id="defaultOrb" iiopEndpointRef="myIiopEndpoint">
+		<serverPolicy.csiv2>
+			<layers>
+				<transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+			</layers>
+		</serverPolicy.csiv2>
+	</orb>
+
+</server>

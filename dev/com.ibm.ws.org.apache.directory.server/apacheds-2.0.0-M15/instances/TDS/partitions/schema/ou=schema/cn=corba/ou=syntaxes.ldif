@@ -1,0 +1,10 @@
+version: 1
+dn: ou=syntaxes,cn=corba,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 05d43042-0b1e-4db6-8231-2903c274424b
+entryCSN: 20130919065345.016000Z#000000#000#000000
+entryParentId: 279976bd-d621-4acf-bf11-c812da7ba7f2
+ou: syntaxes
+createTimestamp: 20130919065352.268Z

@@ -1,0 +1,23 @@
+version: 1
+dn: m-oid=2.5.4.10,ou=attributeTypes,cn=core,ou=schema
+m-supattributetype: name
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.10
+m-name: o
+m-name: organizationName
+m-description: RFC2256: organization this object belongs to
+m-obsolete: FALSE
+entryUUID: e0cd868c-a53e-4a37-b09c-ef2ecd3d7fd0
+entryCSN: 20130919065345.036000Z#000001#000#000000
+entryParentId: 3738e923-39ad-428e-8f85-8e5ec1c49c21
+createTimestamp: 20130919065352.747Z

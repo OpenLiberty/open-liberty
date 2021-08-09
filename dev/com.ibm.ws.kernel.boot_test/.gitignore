@@ -1,0 +1,5 @@
+*.log*
+/TestBundleDeactivate.txt
+/coverage.ec
+/lib
+/reports

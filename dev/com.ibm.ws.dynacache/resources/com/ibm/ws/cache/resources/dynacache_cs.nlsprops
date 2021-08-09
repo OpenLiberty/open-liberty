@@ -1,0 +1,831 @@
+###############################################################################
+# Copyright (c) 1997, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.21.6.11
+#CMVCPATHNAME SERV1/ws/code/dynacache/src/com/ibm/ws/cache/resources/dynacache.nlsprops
+#COMPONENTPREFIX DYNA
+#COMPONENTNAMEFOR DYNA WebSphere Dynacache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# No Comment Provided
+dynacache.priority=DYNA0001E: Hodnota priority nen\u00ed platnou hodnotou pro polo\u017eku {0}. M\u00edsto hodnoty {1} pou\u017eijte cel\u00e9 \u010d\u00edslo.
+dynacache.priority.explanation=Jako prioritu zadal u\u017eivatel desetinn\u00e9 nebo z\u00e1porn\u00e9 \u010d\u00edslo.
+dynacache.priority.useraction=Zm\u011b\u0148te prioritu na cel\u00e9 kladn\u00e9 \u010d\u00edslo.
+
+# No Comment Provided
+dynacache.timeout=DYNA0002E: Hodnota \u010dasov\u00e9ho limitu nen\u00ed platn\u00fdm \u010d\u00edslem pro polo\u017eku {0}. M\u00edsto hodnoty {1} pou\u017eijte cel\u00e9 \u010d\u00edslo.
+dynacache.timeout.explanation=Jako \u010dasov\u00fd limit zadal u\u017eivatel desetinn\u00e9 \u010d\u00edslo.
+dynacache.timeout.useraction=Zm\u011b\u0148te \u010dasov\u00fd limit na cel\u00e9 \u010d\u00edslo.
+
+# No Comment Provided
+dynacache.badconfig=DYNA0003E: Ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti {0} nen\u00ed pou\u017e\u00edv\u00e1no kv\u016fli chybn\u00e9 konfiguraci.
+dynacache.badconfig.explanation=Ur\u010den\u00fd servlet byl chybn\u011b konfigurov\u00e1n.
+dynacache.badconfig.useraction=Ov\u011b\u0159te, zda byly zad\u00e1ny platn\u00e9, nekonfliktn\u00ed hodnoty a jsou vypln\u011bna v\u0161echna vy\u017eadovan\u00e1 pole.
+
+# No Comment Provided
+dynacache.questionconfig=DYNA0004E: Byl vytvo\u0159en\u00fd gener\u00e1tor v\u00fdchoz\u00edch polo\u017eek mezipam\u011bti, ale nebyly mu p\u0159id\u011bleny \u017e\u00e1dn\u00e9 konfigura\u010dn\u00ed informace. Tento gener\u00e1tor bude generovat ID mezipam\u011bti pou\u017eit\u00edm adresy URI bez parametr\u016f. Tyto informace by m\u011bly b\u00fdt nastaveny v souboru servletcache.xml.
+dynacache.questionconfig.explanation=Servlet byl nakonfigurov\u00e1n s trivi\u00e1ln\u00edmi konfigura\u010dn\u00edmi informacemi. S v\u00fdjimkou nejjednodu\u0161\u0161\u00edch p\u0159\u00edpad\u016f je takov\u00e9 nastaven\u00ed sice platn\u00e9, ale v\u011bt\u0161inou nespr\u00e1vn\u00e9.
+dynacache.questionconfig.useraction=Ov\u011b\u0159te, \u017ee servlet ukl\u00e1dan\u00fd do mezipam\u011bti pot\u0159ebuje pro ur\u010den\u00ed jedine\u010dnosti pouze adresu URI vol\u00e1n\u00ed.
+
+# No Comment Provided
+dynacache.externaldup=DYNA0005E: Byla nalezena duplicitn\u00ed polo\u017eka ExternalCacheGroup pro adresu {0}.
+dynacache.externaldup.explanation=V konfiguraci byla zad\u00e1na duplicitn\u00ed polo\u017eka ExternalCacheGroup.
+dynacache.externaldup.useraction=Odeberte duplicitn\u00ed skupinu.
+
+# No Comment Provided
+dynacache.externalnotfound=DYNA0006E: Skupina ExternalCacheGroup {0} nebyla nalezena.
+dynacache.externalnotfound.explanation=V konfiguraci glob\u00e1ln\u00ed mezipam\u011bti nebyla registrov\u00e1na skupina extern\u00ed mezipam\u011bti, do kter\u00e9 m\u00e1 b\u00fdt postoupen v\u00fdstup tohoto servletu.
+dynacache.externalnotfound.useraction=Zkontrolujte zad\u00e1n\u00ed t\u00e9to skupiny extern\u00ed pam\u011bti. Je-li spr\u00e1vn\u00e9, definujte tuto skupinu ve vlastnostech glob\u00e1ln\u00ed mezipam\u011bti.
+
+# No Comment Provided
+dynacache.externaladaptererror=DYNA0007E: Chyba p\u0159i inicializaci adapt\u00e9ru extern\u00ed mezipam\u011bti: {0}
+dynacache.externaladaptererror.explanation=K uveden\u00e9 chyb\u011b do\u0161lo p\u0159i inicializaci adapt\u00e9ru extern\u00ed mezipam\u011bti.
+dynacache.externaladaptererror.useraction=Z podkladov\u00fdch informac\u00ed o chyb\u011b uveden\u00fdch ve zpr\u00e1v\u011b identifikujte p\u0159\u00ed\u010dinu chyby.
+
+# No Comment Provided
+dynacache.notexist=DYNA0008E: Jednotka CacheUnit ji\u017e neexistuje.
+dynacache.notexist.explanation=Zpr\u00e1va byla odesl\u00e1na nebo p\u0159ijata z jednotky mezipam\u011bti, kter\u00e1 ji\u017e nen\u00ed registrov\u00e1na ve skupin\u011b replikace mezipam\u011bti.
+dynacache.notexist.useraction=Ov\u011b\u0159te, zda m\u00e1 b\u00fdt ur\u010den\u00e1 jednotka mezipam\u011bti aktivn\u00ed. Je-li tomu tak, restartujte server.
+
+# No Comment Provided
+dynacache.xmlnodoc=DYNA0009E: Prvek s n\u00e1zvem {0} nebyl nalezen v dokumentu {1}.
+dynacache.xmlnodoc.explanation=P\u0159i anal\u00fdze ur\u010den\u00e9ho dokumentu nebyl nalezen o\u010dek\u00e1van\u00fd prvek XML.
+dynacache.xmlnodoc.useraction=Porovnejte form\u00e1t souboru XML s dokumentac\u00ed k produktu a ov\u011b\u0159te spr\u00e1vnost konfigurace.
+
+# No Comment Provided
+dynacache.xmlnoelem=DYNA0010E: Prvek s n\u00e1zvem {0} nebyl nalezen v souboru {1}.
+dynacache.xmlnoelem.explanation=P\u0159i anal\u00fdze ur\u010den\u00fdch konfigura\u010dn\u00edch soubor\u016f XML nebyl nalezen o\u010dek\u00e1van\u00fd prvek XML.
+dynacache.xmlnoelem.useraction=Porovnejte form\u00e1t souboru XML s dokumentac\u00ed k produktu a ov\u011b\u0159te spr\u00e1vnost konfigurace.
+
+# No Comment Provided
+dynacache.fileNotFound=DYNA0011E: Nebyl nalezen soubor mezipam\u011bti servletu {0}. Ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti je zak\u00e1z\u00e1no.
+dynacache.fileNotFound.explanation=Pro dan\u00fd aplika\u010dn\u00ed server nejsou uvedeny ur\u010den\u00e9 vlastnosti ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti. Ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti je zak\u00e1z\u00e1no.
+dynacache.fileNotFound.useraction=Sestavte konfigura\u010dn\u00ed soubor XML mezipam\u011bti s ur\u010den\u00fdm n\u00e1zvem. Pokyny t\u00fdkaj\u00edc\u00ed se sestaven\u00ed souboru XML s konfigurac\u00ed mezipam\u011bti naleznete v dokumentaci k produktu.
+
+# No Comment Provided
+dynacache.cachingEnabled=DYNA0012I: Dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti je povoleno.
+dynacache.cachingEnabled.explanation=Dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti je povoleno.
+dynacache.cachingEnabled.useraction=Nen\u00ed.
+
+# No Comment Provided
+dynacache.cachingDisabled=DYNA0013I: Dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti je zak\u00e1z\u00e1no.
+dynacache.cachingDisabled.explanation=Dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti je zak\u00e1z\u00e1no.
+dynacache.cachingDisabled.useraction=Nen\u00ed.
+
+# No Comment Provided
+dynacache.uriMatched=DYNA0014I: {0} p\u0159edstavuje identifik\u00e1tor URI, kter\u00fd lze ulo\u017eit do mezipam\u011bti.
+dynacache.uriMatched.explanation=Byl inicializov\u00e1n servlet nebo soubor JSP, kter\u00e9 maj\u00ed konfigurovanou platnou z\u00e1sadu ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti.
+dynacache.uriMatched.useraction=Nen\u00ed.
+
+# No Comment Provided
+dynacache.error=DYNA0015I: P\u0159i dynamick\u00e9m ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti do\u0161lo k chyb\u011b: {0}
+dynacache.error.explanation=Obecn\u00e1 chybov\u00e1 zpr\u00e1va.
+dynacache.error.useraction=Prove\u010fte lad\u011bn\u00ed uveden\u00e9 chyby.
+
+# No Comment Provided
+dynacache.stats.dump=DYNA0016I: V\u00fdpis statistiky dynamick\u00e9ho ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti: {0}
+dynacache.stats.dump.explanation=Statistika mezipam\u011bti byla zaps\u00e1na do ur\u010den\u00e9ho souboru.
+dynacache.stats.dump.useraction=Nen\u00ed.
+
+# No Comment Provided
+dynacache.joingroup=DYNA0017I: Spojen\u00e1 skupina {0}
+dynacache.joingroup.explanation=Tato jednotka mezipam\u011bti se \u00fasp\u011b\u0161n\u011b spojila se skupinou spolupracuj\u00edc\u00edch mezipam\u011bt\u00ed.
+dynacache.joingroup.useraction=Nen\u00ed.
+
+# No Comment Provided
+dynacache.idgeneratorerror=DYNA0018E: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed gener\u00e1toru ID {0}.
+dynacache.idgeneratorerror.explanation=Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed gener\u00e1toru ID.
+dynacache.idgeneratorerror.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm p\u0159edan\u00e9 chybov\u00e9 zpr\u00e1vy.
+
+# No Comment Provided
+dynacache.metadatageneratorerror=DYNA0019E: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed gener\u00e1toru metadat {0}
+dynacache.metadatageneratorerror.explanation=Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed gener\u00e1toru metadat.
+dynacache.metadatageneratorerror.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm p\u0159edan\u00e9 chybov\u00e9 zpr\u00e1vy.
+
+# No Comment Provided
+dynacache.notSerializable=DYNA0020E: {0} nelze ulo\u017eit do mezipam\u011bti. Po\u017eadovan\u00e9 atributy nelze serializovat.
+dynacache.notSerializable.explanation=V\u00fdstup servletu byl ozna\u010den pro replikaci mezi jednotliv\u00fdmi mezipam\u011btmi. Takov\u00e1 operace vy\u017eaduje, aby v\u0161echny atributy vy\u017e\u00e1d\u00e1n\u00ed bylo mo\u017en\u00e9 serializovat.
+dynacache.notSerializable.useraction=Upravte z\u00e1sadu mezipam\u011bti pro dan\u00fd servlet tak, aby dan\u00fd v\u00fdstup nebyl replikov\u00e1n. P\u0159\u00edpadn\u011b m\u016f\u017eete upravit aplikaci, aby v\u0161echny atributy vy\u017e\u00e1d\u00e1n\u00ed podporovaly serializaci.
+
+# No Comment Provided
+dynacache.cacheInitFailed=DYNA0021E: Nelze inicializovat jednotku mezipam\u011bti {0}: {1}
+dynacache.cacheInitFailed.explanation=P\u0159i inicializaci mezipam\u011bti do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+dynacache.cacheInitFailed.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm p\u0159edan\u00e9 chybov\u00e9 zpr\u00e1vy.
+
+# No Comment Provided
+dynacache.configerror=DYNA0022E: Chyba p\u0159i zpracov\u00e1n\u00ed konfigurace dynamick\u00e9 mezipam\u011bti: {0}
+dynacache.configerror.explanation=P\u0159i zpracov\u00e1n\u00ed konfigurace mezipam\u011bti do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+dynacache.configerror.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm p\u0159edan\u00e9 chybov\u00e9 zpr\u00e1vy.
+
+# No Comment Provided
+dynacache.nullServletMapping=DYNA0023E: P\u0159i sestaven\u00ed z\u00e1sady mezipam\u011bti {0} do\u0161lo k chyb\u011b. Pro servlet {1} nejsou definov\u00e1na \u017e\u00e1dn\u00e1 mapov\u00e1n\u00ed servletu.
+dynacache.nullServletMapping.explanation=Nebylo nalezeno mapov\u00e1n\u00ed servletu pro servlet mezipam\u011bti nebo soubor JSP.
+dynacache.nullServletMapping.useraction=Opravte chybu konfigurace pomoc\u00ed n\u00e1stroje Application Assembly Tool.
+
+# No Comment Provided
+dynacache.excludeerror=DYNA0024E: P\u0159i sestaven\u00ed z\u00e1sady mezipam\u011bti {0} do\u0161lo k chyb\u011b. Prom\u011bnn\u00e9 vylou\u010den\u00ed byly duplicitn\u00ed nebo nebyly spr\u00e1vn\u011b definov\u00e1ny pro prom\u011bnnou mezipam\u011bti {1}.
+dynacache.excludeerror.explanation=Byly nalezeny duplicitn\u00ed prom\u011bnn\u00e9 vylou\u010den\u00ed.
+dynacache.excludeerror.useraction=Odeberte duplicitn\u00ed prom\u011bnnou nebo nespr\u00e1vn\u011b definovan\u00e9 prom\u011bnn\u00e9 vylou\u010den\u00ed, kter\u00e9 byly ur\u010deny.
+
+# No Comment Provided
+dynacache.badexternalconfig=DYNA0025E: Servlet s extern\u00edm ukl\u00e1d\u00e1n\u00edm do mezipam\u011bti automaticky pou\u017eije p\u0159i sestaven\u00ed ID mezipam\u011bti v\u0161echny parametry \u017e\u00e1dosti a nic jin\u00e9ho. Parametry \u017e\u00e1dosti lze definovat pro extern\u00ed ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti POUZE pro pou\u017eit\u00ed s funkcemi exclude, invalidate a dataid.
+dynacache.badexternalconfig.explanation=Polo\u017eka byla ozna\u010dena jako extern\u011b ulo\u017eiteln\u00e1 do mezipam\u011bti a obsahuje dal\u0161\u00ed pravidla pro generov\u00e1n\u00ed identifik\u00e1tor\u016f.
+dynacache.badexternalconfig.useraction=Odeberte nadbyte\u010dn\u00e1 pravidla.
+
+# No Comment Provided
+DYNA0026E=DYNA0026E: Chyba p\u0159i \u010dten\u00ed prvku {0}. P\u0159i zpracov\u00e1n\u00ed hodnoty {1} do\u0161lo k v\u00fdjimce {2}.
+DYNA0026E.explanation=P\u0159i \u010dten\u00ed konfigura\u010dn\u00edho souboru mezipam\u011bti do\u0161lo k chyb\u011b.
+DYNA0026E.useraction=Odstra\u0148te chybu s pou\u017eit\u00edm informac\u00ed uveden\u00fdch v chybov\u00e9 zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0027E=DYNA0027E: Nerozpoznan\u00e1 z\u00e1sada replikace: {0}
+DYNA0027E.explanation=Byla ur\u010dena nerozpoznan\u00e1 z\u00e1sada replikace.
+DYNA0027E.useraction=Mezi platn\u00e9 z\u00e1sady replikace pat\u0159\u00ed typy not-shared, shared-push, shared-pull a shared-push-pull.
+
+# No Comment Provided
+DYNA0028E=DYNA0028E: Pou\u017eit\u00ed komponenty {0} je neplatn\u00e9, pokud je gener\u00e1tor ID {1} ji\u017e definov\u00e1n.
+DYNA0028E.explanation=Z\u00e1sada mezipam\u011bti ur\u010dila komponentu a gener\u00e1tor ID pro stejn\u00e9 pravidlo ID mezipam\u011bti.
+DYNA0028E.useraction=Pou\u017eijte zna\u010dky komponent nebo gener\u00e1tor ID. Nelze je v\u0161ak pou\u017e\u00edt sou\u010dasn\u011b.
+
+# No Comment Provided
+DYNA0029E=DYNA0029E: Pou\u017eit\u00ed gener\u00e1toru ID {0} je neplatn\u00e9, pokud je komponenta {1} ji\u017e definov\u00e1na.
+DYNA0029E.explanation=Z\u00e1sada mezipam\u011bti ur\u010dila komponentu a gener\u00e1tor ID pro stejn\u00e9 pravidlo ID mezipam\u011bti.
+DYNA0029E.useraction=Pou\u017eijte zna\u010dky komponent nebo gener\u00e1tor ID. Nelze je v\u0161ak pou\u017e\u00edt sou\u010dasn\u011b.
+
+# No Comment Provided
+DYNA0030E=DYNA0030E: V prvku {0} nebyl nalezen vy\u017eadovan\u00fd atribut {1}.
+DYNA0030E.explanation=V konfiguraci mezipam\u011bti nebyl nalezen vy\u017eadovan\u00fd atribut.
+DYNA0030E.useraction=P\u0159idejte vy\u017eadovan\u00fd atribut do konfigura\u010dn\u00edho souboru mezipam\u011bti.
+
+# No Comment Provided
+DYNA0031E=DYNA0031E: Pou\u017eit\u00ed prvku {0} s ID {1} je neplatn\u00e9. Pole nebo prvek metody je ji\u017e uveden\u00fd.
+DYNA0031E.explanation=Konfigura\u010dn\u00ed soubor ur\u010duje pro jednu komponentu n\u011bkolik metod nebo zna\u010dek pole.
+DYNA0031E.useraction=Z konfigura\u010dn\u00edho souboru odstra\u0148te prvek duplicitn\u00ed metody, pole nebo oba prvky komponenty.
+
+# No Comment Provided
+DYNA0032E=DYNA0032E: Prvek nebo atribut {0} mus\u00ed b\u00fdt nastaven\u00fd bu\u010f na hodnotu true, nebo na hodnotu false. Hodnota: {0}.
+DYNA0032E.explanation=P\u0159esto\u017ee ur\u010den\u00fd prvek mus\u00ed m\u00edt hodnotu true nebo false, byla mu p\u0159i\u0159azena jin\u00e1 hodnota.
+DYNA0032E.useraction=Opravte prvek tak, aby m\u011bl hodnotu true nebo false.
+
+# No Comment Provided
+DYNA0033E=DYNA0033E: Nelze analyzovat metodu {0} ze t\u0159\u00eddy {1}. V\u00fdjimka: {2}
+DYNA0033E.explanation=P\u0159i pokusu o zji\u0161t\u011bn\u00ed metody ur\u010den\u00e9 v konfigura\u010dn\u00edm souboru mezipam\u011bti do\u0161lo k chyb\u011b.
+DYNA0033E.useraction=Ov\u011b\u0159te, zda ur\u010den\u00e1 metoda v konfigura\u010dn\u00edm souboru mezipam\u011bti existuje ve vyvolan\u00e9m objektu a zda je metoda ve\u0159ejn\u00e1.
+
+# No Comment Provided
+DYNA0034E=DYNA0034E: P\u0159i vyvol\u00e1n\u00ed metody {0} na t\u0159\u00edd\u011b {1} do\u0161lo k v\u00fdjimce. V\u00fdjimka: {2}
+DYNA0034E.explanation=P\u0159i vyvol\u00e1n\u00ed ur\u010den\u00e9 metody pro generov\u00e1n\u00ed ID mezipam\u011bti do\u0161lo k chyb\u011b.
+DYNA0034E.useraction=Prove\u010fte lad\u011bn\u00ed s pou\u017eit\u00edm informac\u00ed uveden\u00fdch v chybov\u00e9 zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0035E=DYNA0035E: Nelze analyzovat pole {0} ze t\u0159\u00eddy {1}. V\u00fdjimka: {2}
+DYNA0035E.explanation=P\u0159i pokusu o vyhled\u00e1n\u00ed pole ur\u010den\u00e9ho v konfigura\u010dn\u00edm souboru mezipam\u011bti do\u0161lo k chyb\u011b.
+DYNA0035E.useraction=Ov\u011b\u0159te, \u017ee pole ur\u010den\u00e9 v konfigura\u010dn\u00edm souboru mezipam\u011bti existuje ve vyvolan\u00e9m objektu a \u017ee toto pole je ve\u0159ejn\u00e9.
+
+# No Comment Provided
+DYNA0036E=DYNA0036E: P\u0159i na\u010dten\u00ed pole {0} ze t\u0159\u00eddy {1} do\u0161lo k chyb\u011b. V\u00fdjimka: {2}
+DYNA0036E.explanation=P\u0159i na\u010dten\u00ed ur\u010den\u00e9ho pole pro generov\u00e1n\u00ed ID mezipam\u011bti do\u0161lo k chyb\u011b.
+DYNA0036E.useraction=Prove\u010fte lad\u011bn\u00ed s pou\u017eit\u00edm informac\u00ed uveden\u00fdch v chybov\u00e9 zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0037E=DYNA0037E: Byl zji\u0161t\u011bn nerozpoznan\u00fd prvek {0} p\u0159i zpracov\u00e1n\u00ed prvku {1}.
+DYNA0037E.explanation=P\u0159i anal\u00fdze konfigura\u010dn\u00edho souboru mezipam\u011bti byl zji\u0161t\u011bn nerozpoznan\u00fd prvek.
+DYNA0037E.useraction=Opravte dokument tak, aby odpov\u00eddal souboru cachespec.dtd.
+
+# No Comment Provided
+DYNA0038E=DYNA0038E: Nerozpoznan\u00fd typ komponenty {0} pro p\u0159\u00edkaz {1}.
+DYNA0038E.explanation=Ur\u010den\u00fd typ komponenty nen\u00ed platn\u00fd pro ukl\u00e1d\u00e1n\u00ed p\u0159\u00edkazu do mezipam\u011bti.
+DYNA0038E.useraction=Mezi platn\u00e9 typy komponenty pro p\u0159\u00edkazy pat\u0159\u00ed metody a pole.
+
+# No Comment Provided
+DYNA0039E=DYNA0039E: P\u0159\u00edkazy nepodporuj\u00ed t\u0159\u00eddy generovan\u00e9 vlastn\u00edmi metadaty. Je nutn\u00e9 p\u0159epsat metodu prepareMetaData().
+DYNA0039E.explanation=Konfigura\u010dn\u00ed soubor mezipam\u011bti ur\u010dil pro p\u0159\u00edkaz vlastn\u00ed gener\u00e1tor metadat, kter\u00fd v\u0161ak nen\u00ed podporov\u00e1n.
+DYNA0039E.useraction=Informace t\u00fdkaj\u00edc\u00ed se implementace metody CacheableCommand.prepareMetaData naleznete v dokumentaci k produktu.
+
+# No Comment Provided
+DYNA0040E=DYNA0040E: Nepovolen\u00fd typ komponenty {0} s obsluhou {1}.
+DYNA0040E.explanation=P\u0159i zpracov\u00e1n\u00ed ur\u010den\u00e9ho objektu byl zji\u0161t\u011bn nepodporovan\u00fd typ komponenty.
+DYNA0040E.useraction=Opravte konfigura\u010dn\u00ed z\u00e1sadu mezipam\u011bti tak, aby pro ur\u010den\u00fd objekt obsahovala pouze platn\u00e9 typy komponent.
+
+# No Comment Provided
+DYNA0041E=DYNA0041E: Neplatn\u00fd typ komponenty {0} pro hrani\u010dn\u00ed fragment {1}.
+DYNA0041E.explanation=Servlet nebo str\u00e1nka JSP byly ozna\u010deny jako hrani\u010dn\u00ed, ale z\u00e1sada mezipam\u011bti obsahuje pravidla komponent, kter\u00e1 nejsou platn\u00e1 pro produkt IBM Edge Server.
+DYNA0041E.useraction=Opravte z\u00e1sadu mezipam\u011bti a odstra\u0148te pravidla, kter\u00e1 nejsou spu\u0161t\u011bna na serveru IBM Edge Server. Pro servlet nebo soubor JSP m\u016f\u017eete tak\u00e9 zru\u0161it ozna\u010den\u00ed hrani\u010dn\u00edm p\u0159\u00edznakem.
+
+# No Comment Provided
+DYNA0042E=DYNA0042E: Neplatn\u00fd typ komponenty {0} pro fragment servletu nebo skriptu JSP {1}.
+DYNA0042E.explanation=P\u0159i zpracov\u00e1n\u00ed ur\u010den\u00e9ho servletu nebo souboru JSP byl zji\u0161t\u011bn nepodporovan\u00fd typ komponenty.
+DYNA0042E.useraction=Opravte konfigura\u010dn\u00ed z\u00e1sadu mezipam\u011bti tak, aby pro ur\u010den\u00fd objekt obsahovala pouze platn\u00e9 typy komponent.
+
+# No Comment Provided
+DYNA0043E=DYNA0043E: Konfigura\u010dn\u00ed soubor {0} obsahuje chyby a nebude odesl\u00e1n.
+DYNA0043E.explanation=Ur\u010den\u00fd konfigura\u010dn\u00ed soubor obsahuje kritick\u00e9 chyby a nelze jej pou\u017e\u00edt.
+DYNA0043E.useraction=Opravte ur\u010den\u00e9 chyby v konfigura\u010dn\u00edm souboru.
+
+# No Comment Provided
+DYNA0044E=DYNA0044E: Varov\u00e1n\u00ed anal\u00fdzy XML: {0} p\u0159i anal\u00fdze souboru {1} na \u0159\u00e1dku {2} a ve sloupci {3}.
+DYNA0044E.explanation=P\u0159i zpracov\u00e1n\u00ed konfigura\u010dn\u00edho souboru mezipam\u011bti do\u0161lo k varov\u00e1n\u00ed anal\u00fdzy XML.
+DYNA0044E.useraction=Opravte probl\u00e9m popsan\u00fd ve zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0045E=DYNA0045E: Chyba anal\u00fdzy XML: {0} p\u0159i anal\u00fdze souboru {1} na \u0159\u00e1dku {2} a ve sloupci {3}.
+DYNA0045E.explanation=P\u0159i zpracov\u00e1n\u00ed konfigura\u010dn\u00edho souboru mezipam\u011bti do\u0161lo k varov\u00e1n\u00ed anal\u00fdzy XML.
+DYNA0045E.useraction=Opravte probl\u00e9m popsan\u00fd ve zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0046E=DYNA0046E: Byla zji\u0161t\u011bna v\u00fdjimka vstupu/v\u00fdstupu {0} p\u0159i zpracov\u00e1n\u00ed konfigura\u010dn\u00edho souboru {1}.
+DYNA0046E.explanation=P\u0159i \u010dten\u00ed konfigura\u010dn\u00edho souboru mezipam\u011bti do\u0161lo k chyb\u011b.
+DYNA0046E.useraction=Opravte probl\u00e9m popsan\u00fd ve zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0047I=DYNA0047I: Polo\u017eky mezipam\u011bti byly \u00fasp\u011b\u0161n\u011b na\u010dteny z konfigura\u010dn\u00edho souboru mezipam\u011bti {0}.
+DYNA0047I.explanation=Polo\u017eky mezipam\u011bti z konfigura\u010dn\u00edho souboru mezipam\u011bti z ur\u010den\u00e9ho um\u00edst\u011bn\u00ed byly \u00fasp\u011b\u0161n\u011b zpracov\u00e1ny.
+DYNA0047I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA0048I=DYNA0048I: Dynamick\u00e1 mezipam\u011b\u0165 WebSphere byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA0048I.explanation=Slu\u017eby dynamick\u00e9 mezipam\u011bti byly \u00fasp\u011b\u0161n\u011b inicializov\u00e1ny.
+DYNA0048I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA0049E=DYNA0049E: Nerozpoznan\u00fd typ komponenty {0}.
+DYNA0049E.explanation=Ur\u010den\u00fd typ komponenty byl uveden v konfigura\u010dn\u00edm souboru mezipam\u011bti, ale mezipam\u011bt\u00ed nen\u00ed podporov\u00e1n.
+DYNA0049E.useraction=Odeberte nerozpoznan\u00fd typ komponenty z konfigura\u010dn\u00edho souboru mezipam\u011bti.
+
+# No Comment Provided
+DYNA0050E=DYNA0050E: Nerozpoznan\u00e1 hodnota {0} pro prvek {1}.
+DYNA0050E.explanation=Ur\u010den\u00fd prvek v konfigura\u010dn\u00edm souboru mezipam\u011bti obsahuje nerozpoznanou hodnotu.
+DYNA0050E.useraction=Informace o platn\u00fdch hodnot\u00e1ch pro ur\u010den\u00fd prvek naleznete v dokumentaci k produktu.
+
+# No Comment Provided
+DYNA0051E=DYNA0051E: P\u0159\u00edkaz CacheableCommand nelze ulo\u017eit do mezipam\u011bti, proto\u017ee je zak\u00e1z\u00e1no dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti WebSphere.
+DYNA0051E.explanation=Do\u0161lo k pokusu o pou\u017eit\u00ed p\u0159\u00edkazu CacheableCommand, dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti servletu je v\u0161ak v nastaven\u00edch webov\u00e9ho kontejneru zak\u00e1z\u00e1no.
+DYNA0051E.useraction=Povolte z administrativn\u00ed konzoly ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti servletu v nastaven\u00edch webov\u00e9ho kontejneru.
+
+# No Comment Provided
+DYNA0052E=DYNA0052E: Objekt ulo\u017een\u00fd v mezipam\u011bti nelze replikovat ani ulo\u017eit na disk. CacheID: {0}, ClassName: {1}, Type: {2}, Exception: {3}
+DYNA0052E.explanation=Objekt byl ozna\u010den pro replikaci mezi jednotliv\u00fdmi mezipam\u011btmi nebo pro ulo\u017een\u00ed na disk. To vy\u017eaduje, aby bylo mo\u017en\u00e9 serializovat dan\u00fd objekt a v\u0161echny odkazovan\u00e9 objekty v r\u00e1mci tohoto objektu. Parametr ClassID p\u0159edstavuje ID polo\u017eky mezipam\u011bti, kterou nelze synchronizovat. Parametr ClassName zastupuje n\u00e1zev pro t\u0159\u00eddu objektu ulo\u017een\u00e9ho v mezipam\u011bti, kter\u00fd nelze serializovat. Parametr Type p\u0159edstavuje datov\u00fd typ, kter\u00fd indikuje, jak\u00e1 data jsou ur\u010dena k serializaci. Parametrem Exception se rozum\u00ed v\u00fdjimka p\u0159ijat\u00e1 p\u0159i pokusu o serializaci.
+DYNA0052E.useraction=Upravte z\u00e1sadu mezipam\u011bti pro tento objekt tak, aby se objekt nereplikoval ani neukl\u00e1dal na disk, p\u0159\u00edpadn\u011b upravte aplikaci takov\u00fdm zp\u016fsobem, aby bylo mo\u017en\u00e9 objekt a v\u0161echny odkazovan\u00e9 objekty serializovat.
+
+# No Comment Provided
+DYNA0053I=DYNA0053I: Diskov\u00e9 odleh\u010dov\u00e1n\u00ed je povoleno pro mezipam\u011b\u0165 s n\u00e1zvem {0} v adres\u00e1\u0159i {1}.
+DYNA0053I.explanation=Funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed je pro ur\u010den\u00fd n\u00e1zev mezipam\u011bti povolena. Mezipam\u011b\u0165 disku je ulo\u017een\u00e1 do ur\u010den\u00e9ho adres\u00e1\u0159e.
+DYNA0053I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA0054W=DYNA0054W: Diskov\u00e9 odleh\u010dov\u00e1n\u00ed je povoleno pro mezipam\u011b\u0165 s n\u00e1zvem {0}. Um\u00edst\u011bn\u00ed {1} nelze vytvo\u0159it. M\u00edsto n\u011bj se pou\u017eije v\u00fdchoz\u00ed alternativn\u00ed um\u00edst\u011bn\u00ed {2}.
+DYNA0054W.explanation=Funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed je pro ur\u010den\u00fd n\u00e1zev mezipam\u011bti povolena. Mezipam\u011b\u0165 disku je ulo\u017een\u00e1 do alternativn\u00edho um\u00edst\u011bn\u00ed, proto\u017ee zadan\u00fd adres\u00e1\u0159 nelze vytvo\u0159it.
+DYNA0054W.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA0055E=DYNA0055E: Diskov\u00e9 odleh\u010dov\u00e1n\u00ed je zak\u00e1z\u00e1no pro mezipam\u011b\u0165 s n\u00e1zvem {0}, proto\u017ee um\u00edst\u011bn\u00ed  {1} nebo {2} nelze vytvo\u0159it. 
+DYNA0055E.explanation=Pro ur\u010den\u00fd n\u00e1zev mezipam\u011bti je zak\u00e1z\u00e1na funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed, proto\u017ee um\u00edst\u011bn\u00ed pro diskov\u00e9 odleh\u010den\u00ed a v\u00fdchoz\u00ed alternativn\u00ed um\u00edst\u011bn\u00ed nelze vytvo\u0159it.
+DYNA0055E.useraction=Ov\u011b\u0159te, \u017ee k um\u00edst\u011bn\u00ed diskov\u00e9ho odleh\u010dov\u00e1n\u00ed jsou k dispozici dostate\u010dn\u00e1 p\u0159\u00edstupov\u00e1 opr\u00e1vn\u011bn\u00ed.
+
+# No Comment Provided
+DYNA0056W=DYNA0056W: Soubory mezipam\u011bti pro disk byly znovu inicializov\u00e1ny kv\u016fli po\u0161kozen\u00fdm dat\u016fm. 
+DYNA0056W.explanation=Soubory mezipam\u011bti pro disk byly znovu inicializov\u00e1ny po restartu serveru kv\u016fli po\u0161kozen\u00fdm dat\u016fm. Tato situace mohla b\u00fdt zp\u016fsobena neo\u010dek\u00e1van\u00fdm ukon\u010den\u00edm prost\u0159ed\u00ed JVM (Java Virtual Machine) nebo v\u00fdskytem v\u00fdjimky disku. Ve\u0161ker\u00fd star\u00fd obsah mezipam\u011bti pro disk je ztracen\u00fd.
+DYNA0056W.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA0057I=DYNA0057I: Bylo zah\u00e1jeno vy\u010di\u0161t\u011bn\u00ed mezipam\u011bti pro disk s n\u00e1zvem {0}. Statistika: {1} 
+DYNA0057I.explanation=Bylo zah\u00e1jeno vy\u010di\u0161t\u011bn\u00ed mezipam\u011bti pro disk. V\u00fdsledkem bude odebr\u00e1n\u00ed polo\u017eek s vypr\u0161enou platnost\u00ed z mezipam\u011bti.
+DYNA0057I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# No Comment Provided
+DYNA0058I=DYNA0058I: Vy\u010di\u0161t\u011bn\u00ed mezipam\u011bti pro disk byl dokon\u010den pro n\u00e1zev mezipam\u011bti {0}. Statistika: {1}
+DYNA0058I.explanation=Vy\u010di\u0161t\u011bn\u00ed mezipam\u011bti pro disk byl dokon\u010den.
+DYNA0058I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# No Comment Provided
+DYNA0059I=DYNA0059I: Konfigurace mezipam\u011bti pro disk s n\u00e1zvem {0}. Konfigurace: {1}
+DYNA0059I.explanation=Je zobrazena konfigurace mezipam\u011bti pro disk.
+DYNA0059I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# No Comment Provided
+DYNA0060I=DYNA0060I: Vypr\u00e1zdn\u011bn\u00ed na disk p\u0159i zastaven\u00ed je povoleno pro mezipam\u011b\u0165 s n\u00e1zvem {0}.
+DYNA0060I.explanation=Funkce vypr\u00e1zdn\u011bn\u00ed na disk p\u0159i zastaven\u00ed je pro ur\u010den\u00fd n\u00e1zev mezipam\u011bti povolena.
+DYNA0060I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# No Comment Provided
+DYNA0061I=DYNA0061I: Vypr\u00e1zdn\u011bn\u00ed na disk p\u0159i zastaven\u00ed je zak\u00e1z\u00e1no pro mezipam\u011b\u0165 s n\u00e1zvem {0}.
+DYNA0061I.explanation=Funkce vypr\u00e1zdn\u011bn\u00ed na disk p\u0159i zastaven\u00ed je pro ur\u010den\u00fd n\u00e1zev mezipam\u011bti zak\u00e1z\u00e1na.
+DYNA0061I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# No Comment Provided
+DYNA0062I=DYNA0062I: Instance mezipam\u011bti z konfigura\u010dn\u00edho souboru {0} byly \u00fasp\u011b\u0161n\u011b na\u010dteny.
+DYNA0062I.explanation=Instance mezipam\u011bti z konfigura\u010dn\u00edho souboru mezipam\u011bti z ur\u010den\u00e9ho um\u00edst\u011bn\u00ed byly \u00fasp\u011b\u0161n\u011b zpracov\u00e1ny.
+DYNA0062I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA0063W=DYNA0063W: Bylo dosa\u017eeno mezn\u00ed velikosti diskov\u00e9 mezipam\u011bti {0} GB pro mezipam\u011b\u0165 s n\u00e1zvem {1}. {2} polo\u017eek mezipam\u011bti bylo n\u00e1siln\u011b odstran\u011bno z pam\u011bti, nebyly v\u0161ak odlo\u017eeny na disk.
+DYNA0063W.explanation=Objekt ulo\u017een\u00fd v mezipam\u011bti nebude odlo\u017een na disk, proto\u017ee byla p\u0159ekro\u010dena mezn\u00ed velikost mezipam\u011bti (diskCacheSizeInGB).
+DYNA0063W.useraction=Upravte p\u0159izp\u016fsobenou vlastnost diskCacheSizeInGB tak, aby pro ni byla nastavena vy\u0161\u0161\u00ed hodnota. T\u00edm umo\u017en\u00edte ukl\u00e1d\u00e1n\u00ed v\u011bt\u0161\u00edho mno\u017estv\u00ed mezipam\u011bt\u00ed na disku.
+
+# No Comment Provided
+DYNA0064W=DYNA0064W: Velikost polo\u017eky mezipam\u011bti p\u0159ekra\u010duje mezn\u00ed hodnotu {0} MB pro mezipam\u011b\u0165 s n\u00e1zvem {1}. {2} polo\u017eek mezipam\u011bti bylo n\u00e1siln\u011b odstran\u011bno z pam\u011bti, nebyly v\u0161ak odlo\u017eeny na disk.
+DYNA0064W.explanation=Objekt ulo\u017een\u00fd v mezipam\u011bti nebude odlo\u017een na disk, proto\u017ee byla p\u0159ekro\u010dena mezn\u00ed velikost mezipam\u011bti (diskCacheSizeInMB).
+DYNA0064W.useraction=Upravte p\u0159izp\u016fsobenou vlastnost diskCacheEntrySizeInMB tak, aby pro ni byla nastavena vy\u0161\u0161\u00ed hodnota. T\u00edm umo\u017en\u00edte ukl\u00e1d\u00e1n\u00ed v\u011bt\u0161\u00edho mno\u017estv\u00ed mezipam\u011bt\u00ed na disku.
+
+# No Comment Provided
+DYNA0065W=DYNA0065W: Velikost mezipam\u011bti pro disk p\u0159ekra\u010duje mezn\u00ed hodnotu {0} pro mezipam\u011b\u0165 s n\u00e1zvem {1}. {2} polo\u017eek mezipam\u011bti bylo n\u00e1siln\u011b odstran\u011bno z pam\u011bti, nebyly v\u0161ak odlo\u017eeny na disk.
+DYNA0065W.explanation=Vzhledem k p\u0159ekro\u010den\u00ed mezn\u00ed hodnoty velikosti mezipam\u011bti pro disk nebude objekt v mezipam\u011bti odlo\u017een na disk.
+DYNA0065W.useraction=Upravte p\u0159izp\u016fsobenou vlastnost diskCacheSize tak, aby pro ni byla nastavena vy\u0161\u0161\u00ed hodnota. T\u00edm umo\u017en\u00edte ukl\u00e1d\u00e1n\u00ed v\u011bt\u0161\u00edho mno\u017estv\u00ed mezipam\u011bt\u00ed na disku.
+
+# No Comment Provided
+DYNA0066W=DYNA0066W: Funkce omezen\u00ed velikosti mezipam\u011bti pro disk v GB je pro mezipam\u011b\u0165 s n\u00e1zvem {0}zak\u00e1z\u00e1na. P\u0159izp\u016fsoben\u00e1 vlastnost diskCacheSizeInGB je nastavena na hodnotu 0. P\u0159ed povolen\u00edm t\u00e9to funkce odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk ve struktu\u0159e adres\u00e1\u0159e {1}.
+DYNA0066W.explanation=Soubory na disku v syst\u00e9mu jsou ve star\u00e9m form\u00e1tu a funkce pro omezen\u00ed velikost mezipam\u011bti pro disk v GB pou\u017e\u00edv\u00e1 nov\u00fd diskov\u00fd form\u00e1t. P\u0159ed povolen\u00edm t\u00e9to funkce odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk v syst\u00e9mu.
+DYNA0066W.useraction=Odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk a pot\u00e9 restartujte server.
+
+# No Comment Provided
+DYNA0067W=DYNA0067W: Pro mezipam\u011b\u0165 s n\u00e1zvem {0} je vypnut\u00fd program pro uvoln\u011bn\u00ed mezipam\u011bti disku a z\u00e1sada vymaz\u00e1v\u00e1n\u00ed je nastavena na hodnotu NONE. P\u0159ed povolen\u00edm t\u00e9to funkce odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk ve struktu\u0159e adres\u00e1\u0159e {1}.
+DYNA0067W.explanation=Soubory na disku v syst\u00e9mu jsou ve star\u00e9m form\u00e1tu a funkce uvol\u0148ov\u00e1n\u00ed pam\u011bti pro disk pou\u017e\u00edv\u00e1 nov\u00fd diskov\u00fd form\u00e1t. P\u0159ed povolen\u00edm t\u00e9to funkce odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk v syst\u00e9mu.
+DYNA0067W.useraction=Odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk a pot\u00e9 restartujte server.
+
+# No Comment Provided
+DYNA0068W=DYNA0068W: Pro mezipam\u011b\u0165 s n\u00e1zvem {0}byla nastavena neplatn\u00e1 diskov\u00e1 prahov\u00e1 hodnota. Budou pou\u017eity v\u00fdchoz\u00ed hodnoty 80 % a 70 % pro horn\u00ed, respektive doln\u00ed prahovou hodnotu.
+DYNA0068W.explanation=Bu\u010f byla prahov\u00e1 hodnota mezipam\u011bti pro disk nastavena na hodnotu < 0, nebo je horn\u00ed prahov\u00e1 hodnota ni\u017e\u0161\u00ed ne\u017e doln\u00ed prahov\u00e1 hodnota.
+DYNA0068W.useraction=Prahov\u00e1 hodnota mezipam\u011bti pro disk by m\u011bla b\u00fdt vy\u0161\u0161\u00ed ne\u017e 0 a horn\u00ed prahov\u00e1 hodnota by m\u011bla b\u00fdt vy\u0161\u0161\u00ed ne\u017e doln\u00ed prahov\u00e1 hodnota.
+
+# No Comment Provided
+DYNA0069W=DYNA0069W: Neplatn\u00e1 hodnota {0} pro p\u0159izp\u016fsobenou vlastnost {1} v mezipam\u011bti s n\u00e1zvem {2}. Platn\u00fd rozsah - doln\u00ed mez: {3} a horn\u00ed mez: {4}. Tato p\u0159izp\u016fsoben\u00e1 vlastnost je nastavena na hodnotu {5}.
+DYNA0069W.explanation=Hodnota p\u0159izp\u016fsoben\u00e9 vlastnosti je neplatn\u00e1. Opravte hodnotu na z\u00e1klad\u011b rozsahu ur\u010duj\u00edc\u00edho nejni\u017e\u0161\u00ed a nejvy\u0161\u0161\u00ed hodnoty ve varovn\u00e9 zpr\u00e1v\u011b.
+DYNA0069W.useraction=Opravte hodnotu na z\u00e1klad\u011b rozsahu ur\u010duj\u00edc\u00edho nejni\u017e\u0161\u00ed a nejvy\u0161\u0161\u00ed hodnoty ve varovn\u00e9 zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA0070W=DYNA0070W: Pro mezipam\u011b\u0165 s n\u00e1zvem {0} je vypnut\u00fd program pro uvoln\u011bn\u00ed mezipam\u011bti disku a z\u00e1sada vymaz\u00e1v\u00e1n\u00ed je nastavena na hodnotu NONE. P\u0159\u00ed\u010dinou je to, \u017ee nen\u00ed nastavena velikost diskov\u00e9 mezipam\u011bti (diskCacheSize) nebo mezn\u00ed velikost mezipam\u011bti (diskCacheSizeInGB).
+DYNA0070W.explanation=Chcete-li pou\u017e\u00edvat funkci pro uvoln\u011bn\u00ed mezipam\u011bti disku, mus\u00ed b\u00fdt nastavena p\u0159izp\u016fsoben\u00e1 vlastnost diskCacheSize nebo diskCacheSizeInGB.
+DYNA0070W.useraction=Nastavte p\u0159izp\u016fsobenou vlastnost diskCacheSize nebo diskCacheSizeInGB a restartujte server.
+
+# No Comment Provided
+DYNA0071W=DYNA0071W: P\u0159izp\u016fsoben\u00e1 vlastnost diskCacheSizeInGB pro mezipam\u011b\u0165 s n\u00e1zvem {0} je nastavena na vy\u0161\u0161\u00ed hodnotu {1}, proto\u017ee celkov\u00e1 velikost soubor\u016f diskov\u00e9 mezipam\u011bti je vy\u0161\u0161\u00ed. Chcete-li pro vlastnost diskCacheSizeInGB nastavit ni\u017e\u0161\u00ed hodnotu, odstra\u0148te v\u0161echny soubory diskov\u00e9 mezipam\u011bti v adres\u00e1\u0159i {2}.
+DYNA0071W.explanation=Soubory diskov\u00e9 mezipam\u011bti se nemohou zmen\u0161ovat. 
+DYNA0071W.useraction=Chcete-li pro p\u0159izp\u016fsobenou vlastnost diskCacheSizeInGB nastavit ni\u017e\u0161\u00ed hodnotu, odstra\u0148te v\u0161echny soubory mezipam\u011bti pro disk a restartujte server.
+
+# No Comment Provided
+DYNA0072E=DYNA0072E: Diskov\u00e9 odleh\u010dov\u00e1n\u00ed pro mezipam\u011b\u0165 s n\u00e1zvem {0} je zak\u00e1z\u00e1no, proto\u017ee do\u0161lo k v\u00fdjimce disku. Um\u00edst\u011bn\u00ed diskov\u00e9ho odleh\u010dov\u00e1n\u00ed: {1}. V\u00fdjimka: {2}. 
+DYNA0072E.explanation=Pro ur\u010den\u00fd n\u00e1zev mezipam\u011bti je zak\u00e1z\u00e1na funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed, proto\u017ee se vyskytla v\u00fdjimka disku.
+DYNA0072E.useraction=Soubory diskov\u00e9 mezipam\u011bti pro tuto instanci mezipam\u011bti budou p\u0159i restartu serveru odstran\u011bny.
+
+# No Comment Provided
+DYNA0073I=DYNA0073I: Vypr\u00e1zdn\u011bn\u00ed na disk p\u0159i zastaven\u00ed pro mezipam\u011b\u0165 s n\u00e1zvem {0} bylo dokon\u010deno. Statistika: {1}
+DYNA0073I.explanation=Operace vypr\u00e1zdn\u011bn\u00ed na disk p\u0159i zastaven\u00ed byla dokon\u010dena a jsou k dispozici statistick\u00e9 \u00fadaje. 
+DYNA0073I.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# No Comment Provided
+DYNA1001I=DYNA1001I: Instance dynamick\u00e9 mezipam\u011bti WebSphere s n\u00e1zvem {0} byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1001I.explanation=Uveden\u00e1 instance dynamick\u00e9 mezipam\u011bti byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1001I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1002E=DYNA1002E: Instance dynamick\u00e9 mezipam\u011bti WebSphere nelze inicializovat kv\u016fli chyb\u011b {0}.
+DYNA1002E.explanation=Instance dynamick\u00e9 mezipam\u011bti nelze inicializovat. K dispozici nejsou \u017e\u00e1dn\u00e9 instance mezipam\u011bti.
+DYNA1002E.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm chybov\u00e9 zpr\u00e1vy. Protokoly aplika\u010dn\u00edho serveru obsahuj\u00ed dal\u0161\u00ed informace.
+
+# No Comment Provided
+DYNA1003E=DYNA1003E: Instanci dynamick\u00e9 mezipam\u011bti WebSphere s n\u00e1zvem {0} nelze inicializovat, proto\u017ee do\u0161lo k chyb\u011b {1}.
+DYNA1003E.explanation=Uvedenou instanci dynamick\u00e9 mezipam\u011bti nelze inicializovat. Pojmenovan\u00e1 instance nen\u00ed k dispozici.
+DYNA1003E.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm chybov\u00e9 zpr\u00e1vy. Protokoly aplika\u010dn\u00edho serveru obsahuj\u00ed dal\u0161\u00ed informace.
+
+# No Comment Provided
+DYNA1004E=DYNA1004E: Instanci dynamick\u00e9 mezipam\u011bti WebSphere s n\u00e1zvem {0} nelze inicializovat, proto\u017ee nen\u00ed konfigurov\u00e1na.
+DYNA1004E.explanation=Uvedenou instanci dynamick\u00e9 mezipam\u011bti nelze inicializovat. Dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti je zak\u00e1z\u00e1no pro pojmenovanou instanci.
+DYNA1004E.useraction=Prove\u010fte konfiguraci prost\u0159edku instance mezipam\u011bti prost\u0159ednictv\u00edm administrativn\u00ed konzoly.
+
+# No Comment Provided
+DYNA1005E=DYNA1005E: K instanci dynamick\u00e9 mezipam\u011bti WebSphere s n\u00e1zvem {0} nelze p\u0159istupovat, proto\u017ee je nespr\u00e1vn\u00e9ho typu.
+DYNA1005E.explanation=Uvedenou instanci dynamick\u00e9 mezipam\u011bti nelze pou\u017e\u00edt. Dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti je zak\u00e1z\u00e1no pro pojmenovanou instanci.
+DYNA1005E.useraction=Prost\u0159ednictv\u00edm administrativn\u00ed konzoly prove\u010fte konfiguraci prost\u0159edku instance mezipam\u011bti s pou\u017eit\u00edm spr\u00e1vn\u00e9ho typu.
+
+# No Comment Provided
+DYNA1006E=DYNA1006E: Metoda {0} zachytila v\u00fdjimku: {1}
+DYNA1006E.explanation=V ur\u010den\u00e9 metod\u011b byla zachycena v\u00fdjimka.
+DYNA1006E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1007I=DYNA1007I:  Slu\u017eba {0} byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na. 
+DYNA1007I.explanation=Slu\u017eba \u0159adi\u010de z/OS pro slu\u017ebu dynamick\u00e9 mezipam\u011bti byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1007I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1008E=DYNA1008E: Metoda {0}: Objekt proxy m\u00e1 hodnotu Null.
+DYNA1008E.explanation=Ur\u010den\u00e1 metoda nemohla z\u00edskat objekt proxy obsluhy pro DRS.
+DYNA1008E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1009E=DYNA1009E: Metoda {0}: Token m\u00e1 hodnotu Null.
+DYNA1009E.explanation=Zadan\u00e9 metod\u011b byl p\u0159ed\u00e1n nulov\u00fd token obsluhy. 
+DYNA1009E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1010E=DYNA1010E: Metoda {0}: Chyba parametru: Parametr entryKey m\u00e1 hodnotu Null.
+DYNA1010E.explanation=Ur\u010den\u00e9 metod\u011b byl p\u0159ed\u00e1n parametr entryKey s hodnotou Null. 
+DYNA1010E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1011E=DYNA1011E: Metoda {0}: Parametr tokenBytes m\u00e1 hodnotu Null: token = {1}, tokenBytes = {2}
+DYNA1011E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee vyvolat objekt proxy, proto\u017ee parametr tokenBytes m\u00e1 hodnotu Null. 
+DYNA1011E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1012E=DYNA1012E: Metoda {0}: Parametr eventBytes m\u00e1 hodnotu Null: event = {1}, eventBytes = {2}
+DYNA1012E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee vyvolat objekt proxy, proto\u017ee parametr eventBytes m\u00e1 hodnotu Null.
+DYNA1012E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1013E=DYNA1013E: Metoda {0}: Parametr entryKeyBytes m\u00e1 hodnotu Null: entryKey = {1}  entryKeyBytes = {2}
+DYNA1013E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee vyvolat objekt proxy, proto\u017ee parametr entryKeyBytes m\u00e1 hodnotu Null.
+DYNA1013E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1014E=DYNA1014E: Metoda {0}: Polo\u017eka by m\u011bla b\u00fdt obsa\u017eena v p\u0159\u00edslu\u0161n\u00e9 tabulce typu push/pull, ale token obsluhy m\u00e1 hodnotu Null. entryKey = {1}
+DYNA1014E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee na\u010d\u00edst polo\u017eku cacheEntry z tabulky typu push/pull, proto\u017ee token vlastn\u00edka obsluhy m\u00e1 hodnotu Null.
+DYNA1014E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1015E=DYNA1015E: Metoda {0}: Parametr propKeyBytes m\u00e1 hodnotu Null: propKey = {1}, propKeyBytes = {2}
+DYNA1015E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee vyvolat objekt proxy, proto\u017ee parametr propKeyBytes m\u00e1 hodnotu Null.
+DYNA1015E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1016E=DYNA1016E: Metoda {0}: Parametr dbmBytes m\u00e1 hodnotu Null: dbm = {1}, dbmBytes = {2}
+DYNA1016E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee vyvolat objekt proxy, proto\u017ee parametr DRSBootstrapMsg p\u0159eveden\u00fd na bajty m\u00e1 hodnotu Null.
+DYNA1016E.useraction=Nen\u00ed.
+                                         
+# No Comment Provided
+DYNA1017E=DYNA1017E: Metoda {0}: Chyba parametru: dbm je Null.
+DYNA1017E.explanation=Ur\u010den\u00e9 metod\u011b byl p\u0159ed\u00e1n parametr dbm s hodnotou Null. 
+DYNA1017E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1018E=DYNA1018E: Metoda {0}: Hodnota tmp vr\u00e1cen\u00e1 funkc\u00ed proxy.handleBootstrapRequest je Null: tmp = {1}, token = {2} 
+DYNA1018E.explanation=Pro ur\u010denou metodu je z funkce proxy.handleBootstrapRequest vr\u00e1cen\u00e1 hodnota Null.
+DYNA1018E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1019E=DYNA1019E: Metoda {0}: Chyba parametru: Parametr propKey je Null.
+DYNA1019E.explanation=Ur\u010den\u00e9 metod\u011b byl p\u0159ed\u00e1n parametr propKey s hodnotou Null. 
+DYNA1019E.useraction=Nen\u00ed. 
+
+# No Comment Provided
+DYNA1020E=DYNA1020E: Metoda {0}: Chyba parametru: Hodnota je Null.
+DYNA1020E.explanation=Ur\u010den\u00e9 metod\u011b byla jako parametr hodnoty p\u0159ed\u00e1na hodnota Null. 
+DYNA1020E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1021E=DYNA1021E: Metoda {0}: Nelze p\u0159ev\u00e9st parametr hodnoty na bajty.
+DYNA1021E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee p\u0159ev\u00e9st parametr hodnoty na bajty. 
+DYNA1021E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1022E=DYNA1022E: Metoda {0}: Chyba parametru: Informace o sm\u011brov\u00e1n\u00ed DRSJvmId m\u00e1 hodnotu Null.
+DYNA1022E.explanation=Ur\u010den\u00e9 metod\u011b byla jako sm\u011brovac\u00ed parametr DRSJvmId p\u0159ed\u00e1na hodnota Null. 
+DYNA1022E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1023E=DYNA1023E: Metoda {0}: Chyba parametru: entryKeyList je Null.
+DYNA1023E.explanation=Ur\u010den\u00e9 metod\u011b byla jako parametr entryKeyList p\u0159ed\u00e1na hodnota Null. 
+DYNA1023E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1024E=DYNA1024E: Metoda {0}: Parametr entryKeyList nelze p\u0159ev\u00e9st na bajty - entryKeyList = {1}  entryKeyListBytes = {2}
+DYNA1024E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee p\u0159ev\u00e9st parametr entryKeyList na bajtov\u00e9 pole.
+DYNA1024E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1025E=DYNA1025E: Metoda {0}: Nelze p\u0159ev\u00e9st parametr DRSJvmId na bajty - jvmId  = {1}, jvmIdBytes = {2}
+DYNA1025E.explanation=Ur\u010den\u00e1 metoda nem\u016f\u017ee p\u0159ev\u00e9st parametr DRSJvmID na bajtov\u00e9 pole.
+DYNA1025E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1026I=DYNA1026I: Instance DynacacheDRSController DRS {0} p\u0159ijala ud\u00e1lost REPLICATION_UP.
+DYNA1026I.explanation=Ur\u010den\u00e1 instance DynacacheDRSController DRS p\u0159ijala ud\u00e1lost REPLICATION_UP.
+DYNA1026I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1027I=DYNA1027I: Instance DynacacheDRSController DRS {0} p\u0159ijala ud\u00e1lost REPLICATION_DOWN.
+DYNA1027I.explanation=Ur\u010den\u00e1 instance DynacacheDRSController DRS p\u0159ijala ud\u00e1lost REPLICATION_DOWN.
+DYNA1027I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1028I=DYNA1028I: Instance DynacacheDRSController DRS {0} p\u0159ijala ud\u00e1lost IS_CONGESTED.
+DYNA1028I.explanation=Ur\u010den\u00e1 instance DynacacheDRSController DRS p\u0159ijala ud\u00e1lost IS_CONGESTED.
+DYNA1028I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1029I=DYNA1029I: Instance DynacacheDRSController DRS {0} p\u0159ijala ud\u00e1lost NOT_CONGESTED.
+DYNA1029I.explanation=Ur\u010den\u00e1 instance DynacacheDRSController DRS p\u0159ijala ud\u00e1lost NOT_CONGESTED.
+DYNA1029I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1030E=DYNA1030E: Neplatn\u00e9 hodnoty rozsahu - atributy p\u0159edstavuj\u00edc\u00ed doln\u00ed mez ({0}) a horn\u00ed mez ({1}) musej\u00ed b\u00fdt cel\u00e1 \u010d\u00edsla.
+DYNA1030E.explanation=V konfiguraci mezipam\u011bti nebyl nalezen vy\u017eadovan\u00fd atribut.
+DYNA1030E.useraction=P\u0159idejte vy\u017eadovan\u00fd atribut do konfigura\u010dn\u00edho souboru mezipam\u011bti.
+
+# No Comment Provided
+DYNA1031E=DYNA1031E: Neplatn\u00fd rozsah - atribut p\u0159edstavuj\u00edc\u00ed doln\u00ed mez ({0}) je vy\u0161\u0161\u00ed ne\u017e atribut p\u0159edstavuj\u00edc\u00ed horn\u00ed mez ({1}).
+DYNA1031E.explanation=Hodnoty atribut\u016f p\u0159edstavuj\u00edc\u00edch horn\u00ed a doln\u00ed mez zadan\u00e9 pro rozsah jsou neplatn\u00e9.
+DYNA1031E.useraction=Opravte hodnoty atribut\u016f p\u0159edstavuj\u00edc\u00edch horn\u00ed a doln\u00ed mez tak, aby hodnota doln\u00ed meze byla ni\u017e\u0161\u00ed ne\u017e hodnota horn\u00ed meze.
+
+# No Comment Provided
+DYNA1032E=DYNA1032E: Vlastnost s n\u00e1zvem primary-storage mus\u00ed b\u00fdt nastavena na hodnotu memory nebo disk. Hodnota: {0}.
+DYNA1032E.explanation=Ur\u010den\u00fd prvek mus\u00ed m\u00edt hodnotu memory nebo disk, byla mu v\u0161ak p\u0159i\u0159azena jin\u00e1 hodnota.
+DYNA1032E.useraction=Opravte prvek tak, aby m\u011bl hodnotu memory nebo disk.
+
+
+# No Comment Provided
+DYNA1033W=DYNA1033W: P\u0159izp\u016fsoben\u00e1 vlastnost disableDependencyId je nastavena na hodnotu {0}, kter\u00e1 neodpov\u00edd\u00e1 aktu\u00e1ln\u00edmu stavu soubor\u016f disku pro mezipam\u011b\u0165 s n\u00e1zvem {1}. P\u0159izp\u016fsoben\u00e1 vlastnost disableDependencyId je nastavena na hodnotu {2}. 
+DYNA1033W.explanation=Nastaven\u00ed p\u0159izp\u016fsoben\u00e9 vlastnosti disableDependencyId neodpov\u00edd\u00e1 aktu\u00e1ln\u00edmu stavu diskov\u00fdch soubor\u016f.
+DYNA1033W.useraction=Chcete-li pro p\u0159izp\u016fsobenou vlastnost disableDependencyId zadat po\u017eadovanou hodnotu, odstra\u0148te v\u0161echny soubory diskov\u00e9 mezipam\u011bti a restartujte server.
+
+# No Comment Provided
+DYNA1034W=DYNA1034W: P\u0159izp\u016fsoben\u00e1 vlastnost disableTemplatesSupport je nastavena na hodnotu {0}, kter\u00e1 neodpov\u00edd\u00e1 aktu\u00e1ln\u00edmu stavu soubor\u016f disku pro mezipam\u011b\u0165 s n\u00e1zvem {1}. P\u0159izp\u016fsoben\u00e1 vlastnost disableTemplatesSupport je nastavena na hodnotu {2}. 
+DYNA1034W.explanation=Nastaven\u00ed p\u0159izp\u016fsoben\u00e9 vlastnosti disableTemplatesSupport neodpov\u00edd\u00e1 aktu\u00e1ln\u00edmu stavu soubor\u016f na disku.
+DYNA1034W.useraction=Chcete-li pro p\u0159izp\u016fsobenou vlastnost disableTemplatesSupport zadat po\u017eadovanou hodnotu, odstra\u0148te v\u0161echny soubory diskov\u00e9 mezipam\u011bti a restartujte server.
+
+# No Comment Provided
+DYNA1035I=DYNA1035I: Seznam kl\u00ed\u010d\u016f mezipam\u011bti {0} a p\u0159\u00edslu\u0161n\u00fdch k\u00f3d\u016f hash v mezipam\u011bti pro pam\u011b\u0165 s n\u00e1zvem {1}: {2} 
+DYNA1035I.explanation=Zobrazuje v\u0161echny kl\u00ed\u010de mezipam\u011bti a p\u0159\u00edslu\u0161n\u00fd k\u00f3d hash v mezipam\u011bti pro pam\u011b\u0165.
+DYNA1035I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1036I=DYNA1036I: Seznam kl\u00ed\u010d\u016f mezipam\u011bti {0} a p\u0159\u00edslu\u0161n\u00fdch k\u00f3d\u016f hash v mezipam\u011bti pro disk s n\u00e1zvem {1}: {2} 
+DYNA1036I.explanation=Zobrazuje v\u0161echny kl\u00ed\u010de mezipam\u011bti a p\u0159\u00edslu\u0161n\u00fd k\u00f3d hash v mezipam\u011bti pro disk.
+DYNA1036I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1037I=DYNA1037I: Seznam kl\u00ed\u010d\u016f mezipam\u011bti {0} a p\u0159\u00edslu\u0161n\u00fdch k\u00f3d\u016f hash v tabulce PushPullTable s n\u00e1zvem {1}: {2} 
+DYNA1037I.explanation=Zobrazuje v\u0161echny kl\u00ed\u010de mezipam\u011bti a p\u0159\u00edslu\u0161n\u00fd k\u00f3d hash v tabulce PushPullTable.
+DYNA1037I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1038I=DYNA1038I: Celkov\u00fd po\u010det polo\u017eek mezipam\u011bti v mezipam\u011bti pro pam\u011b\u0165 je {0} pro mezipam\u011b\u0165 s n\u00e1zvem {1}.
+DYNA1038I.explanation=Zobrazuje celkov\u00fd po\u010det polo\u017eek v mezipam\u011bti pro pam\u011b\u0165.
+DYNA1038I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1039I=DYNA1039I: Celkov\u00fd po\u010det polo\u017eek mezipam\u011bti v mezipam\u011bti pro disk je {0} pro mezipam\u011b\u0165 s n\u00e1zvem {1}.
+DYNA1039I.explanation=Zobrazuje celkov\u00fd po\u010det polo\u017eek v mezipam\u011bti pro disk.
+DYNA1039I.useraction=Nen\u00ed.
+
+
+# No Comment Provided
+DYNA1040I=DYNA1040I: Celkov\u00fd po\u010det ID mezipam\u011bti v tabulce PushPullTable je {0} pro mezipam\u011b\u0165 s n\u00e1zvem {1}.
+DYNA1040I.explanation=Zobrazuje celkov\u00fd po\u010det ID mezipam\u011bti v tabulce PushPullTable.
+DYNA1040I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1041W=DYNA1041W: Porovn\u00e1n\u00ed mezipam\u011bt\u00ed mezi serverem 1 {0} a serverem 2 {1} pro mezipam\u011b\u0165 s n\u00e1zvem {2} se nezda\u0159ilo.
+DYNA1041W.explanation=P\u0159\u00ed\u010diny selh\u00e1n\u00ed porovn\u00e1n\u00ed mezipam\u011bt\u00ed mohly b\u00fdt n\u00e1sleduj\u00edc\u00ed: (1) Odlo\u017een\u00ed na disk je povoleno. Pokud instance mezipam\u011bti prov\u00e1d\u011bj\u00ed p\u0159i spou\u0161t\u011bn\u00ed serveru vz\u00e1jemn\u00e9 samozaveden\u00ed, nejsou polo\u017eky mezipam\u011bti pro disk mezi sebou replikov\u00e1ny. (2) P\u0159et\u00ed\u017een\u00ed slu\u017eby DRS m\u016f\u017ee m\u00edt za n\u00e1sledek zru\u0161en\u00ed n\u011bkter\u00fdch aktualizac\u00ed mezipam\u011bti. (3) N\u011bkter\u00e9 polo\u017eky mezipam\u011bti nelze sd\u00edlet v r\u00e1mci dom\u00e9ny replikace. (4) P\u0159\u00edkaz compareCaches() nebude pracovat se z\u00e1sadou sd\u00edlen\u00ed Push-Pull. Pou\u017eijte p\u0159\u00edkaz compareCacheKeys.
+DYNA1041W.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1042E=DYNA1042E: Instance vstupn\u00ed mezipam\u011bti {0} je neplatn\u00e1 nebo nen\u00ed konfigurov\u00e1na.
+DYNA1042E.explanation=Instance vstupn\u00ed mezipam\u011bti je neplatn\u00e1. Konfigurujte instanci mezipam\u011bti prost\u0159ednictv\u00edm administrativn\u00ed konzoly nebo souboru cacheinstances.properties. 
+DYNA1042E.useraction=Ov\u011b\u0159te, \u017ee je instance mezipam\u011bti konfigurov\u00e1na spr\u00e1vn\u011b a n\u00e1zev instance mezipam\u011bti je spr\u00e1vn\u00fd.
+
+# No Comment Provided
+DYNA1043E=DYNA1043E: Vstupn\u00ed vzor {0} nen\u00ed platn\u00fdm regul\u00e1rn\u00edm v\u00fdrazem. V\u00fdjimka: {1}
+DYNA1043E.explanation=Vstupn\u00ed vzor nen\u00ed platn\u00fdm regul\u00e1rn\u00edm v\u00fdrazem.
+DYNA1043E.useraction=Zkontrolujte t\u0159\u00eddu java.util.regex.Pattern.
+
+# No Comment Provided
+DYNA1044E=DYNA1044E: Intern\u00ed chyba: Do\u0161lo k selh\u00e1n\u00ed p\u0159i vytv\u00e1\u0159en\u00ed k\u00f3du MessageDigest pro algoritmus MD5. V\u00fdjimka: {0}
+DYNA1044E.explanation=Intern\u00ed chyba: Do\u0161lo k selh\u00e1n\u00ed p\u0159i vytv\u00e1\u0159en\u00ed k\u00f3du MessageDigest pro algoritmus MD5.
+DYNA1044E.useraction=Obra\u0165te se na servis spole\u010dnosti IBM se \u017e\u00e1dost\u00ed o lad\u011bn\u00ed probl\u00e9mu.
+
+# No Comment Provided
+DYNA1045E=DYNA1045E: Vstupn\u00ed uzel {0} nen\u00ed platn\u00fdm n\u00e1zvem uzlu.
+DYNA1045E.explanation=N\u00e1zev vstupn\u00edho uzlu je neplatn\u00fd.
+DYNA1045E.useraction=Ov\u011b\u0159te, \u017ee uzel existuje a jeho n\u00e1zev je spr\u00e1vn\u00fd.
+
+# No Comment Provided
+DYNA1046E=DYNA1046E: Vstupn\u00ed server {0} nen\u00ed platn\u00fdm n\u00e1zvem serveru.
+DYNA1046E.explanation=N\u00e1zev vstupn\u00edho serveru je neplatn\u00fd.
+DYNA1046E.useraction=Ov\u011b\u0159te, \u017ee server existuje a jeho n\u00e1zev je spr\u00e1vn\u00fd.
+
+# No Comment Provided
+DYNA1047E=DYNA1047E: Intern\u00ed chyba: Do\u0161lo k selh\u00e1n\u00ed p\u0159i vytv\u00e1\u0159en\u00ed objektu AdminService. V\u00fdjimka: {0}
+DYNA1047E.explanation=Intern\u00ed chyba: Do\u0161lo k selh\u00e1n\u00ed p\u0159i vytv\u00e1\u0159en\u00ed objektu AdminService.
+DYNA1047E.useraction=Obra\u0165te se na servis spole\u010dnosti IBM se \u017e\u00e1dost\u00ed o lad\u011bn\u00ed probl\u00e9mu.
+
+# No Comment Provided
+DYNA1048E=DYNA1048E: P\u0159\u00edkaz pro objekt MBean {0} lze spustit pouze v r\u00e1mci spr\u00e1vce implementace.
+DYNA1048E.explanation=P\u0159\u00edkaz pro objekt MBean CompareCaches lze spustit pouze v r\u00e1mci spr\u00e1vce implementace.
+DYNA1048E.useraction=P\u0159\u00edkaz CompareCaches spus\u0165te z objektu MBean dynamick\u00e9 mezipam\u011bti spr\u00e1vce implementace.
+
+# No Comment Provided
+DYNA1049E=DYNA1049E: Objekt MBean dynamick\u00e9 mezipam\u011bti nebyl nalezen v uzlu {0}, v n\u011bm\u017e je um\u00edst\u011bn server {1}.
+DYNA1049E.explanation=Objekt MBean dynamick\u00e9 mezipam\u011bti nebyl nalezen v uzlu, v n\u011bm\u017e je um\u00edst\u011bn server.
+DYNA1049E.useraction=Zkontrolujte v\u00fdraz dotazu pro objekt MBean. Ov\u011b\u0159te existenci zadan\u00e9ho n\u00e1zvu uzlu a serveru.
+
+# No Comment Provided
+DYNA1050E=DYNA1050E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vyvol\u00e1n\u00ed p\u0159\u00edkazu pro objekt MBean {0} na serveru {1}. V\u00fdjimka: {2}
+DYNA1050E.explanation=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vyvol\u00e1n\u00ed p\u0159\u00edkazu pro objekt MBean.
+DYNA1050E.useraction=Vyhledejte vysv\u011btlen\u00ed v\u00fdjimky v souboru SystemOut.log protokolu.
+
+# No Comment Provided
+DYNA1051E=DYNA1051E: P\u0159\u00edkaz pro objekt MBean {0} nelze prov\u00e9st, proto\u017ee funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed nen\u00ed povolena pro uvedenou instanci mezipam\u011bti {1}. 
+DYNA1051E.explanation=P\u0159\u00edkaz pro objekt MBean nelze vyvolat, proto\u017ee funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed nen\u00ed povolena pro uvedenou instanci mezipam\u011bti. 
+DYNA1051E.useraction=Ov\u011b\u0159te, \u017ee je funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed povolena pro uvedenou instanci mezipam\u011bti. Vyhledejte \u010dl\u00e1nek t\u00fdkaj\u00edc\u00ed se konfigurov\u00e1n\u00ed diskov\u00e9ho odleh\u010dov\u00e1n\u00ed pro dynamickou mezipam\u011b\u0165 v dokumentaci k produktu.
+
+# No Comment Provided
+DYNA1052E=DYNA1052E: Vstupn\u00ed n\u00e1zev {0} nen\u00ed platn\u00fdm n\u00e1zvem statistiky mezipam\u011bti.
+DYNA1052E.explanation=Vstupn\u00ed n\u00e1zev statistiky mezipam\u011bti je neplatn\u00fd.
+DYNA1052E.useraction=Ov\u011b\u0159te, \u017ee je n\u00e1zev statistiky mezipam\u011bti platn\u00fd.
+
+# No Comment Provided
+DYNA1053E=DYNA1053E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vyvol\u00e1n\u00ed p\u0159\u00edkazu pro objekt MBean {0}. V\u00fdjimka: {1}
+DYNA1053E.explanation=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vyvol\u00e1n\u00ed p\u0159\u00edkazu pro objekt MBean.
+DYNA1053E.useraction=P\u0159e\u010dt\u011bte si popis v\u00fdjimky uveden\u00fd v chybov\u00e9 zpr\u00e1v\u011b.
+
+# No Comment Provided
+DYNA1054I=DYNA1054I: Dynamick\u00e1 mezipam\u011b\u0165 (mezipam\u011b\u0165 j\u00e1dra) byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1054I.explanation=Dynamick\u00e1 mezipam\u011b\u0165 (mezipam\u011b\u0165 j\u00e1dra) byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1054I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1055I=DYNA1055I: Dynamick\u00e1 mezipam\u011b\u0165 (mezipam\u011b\u0165 servlet\u016f) byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1055I.explanation=Dynamick\u00e1 mezipam\u011b\u0165 (mezipam\u011b\u0165 servlet\u016f) byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1055I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1056I=DYNA1056I: Dynamick\u00e1 mezipam\u011b\u0165 (mezipam\u011b\u0165 objekt\u016f) byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1056I.explanation=Dynamick\u00e1 mezipam\u011b\u0165 (mezipam\u011b\u0165 objekt\u016f) byla \u00fasp\u011b\u0161n\u011b inicializov\u00e1na.
+DYNA1056I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1057W=DYNA1057W: Instance mezipam\u011bti {0} definovan\u00e1 v souboru {1} nebyla p\u0159id\u00e1na, proto\u017ee mezipam\u011b\u0165 s t\u00edmto n\u00e1zvem ji\u017e existuje. 
+DYNA1057W.explanation=Instance mezipam\u011bti nebyla p\u0159id\u00e1na, proto\u017ee mezipam\u011b\u0165 s t\u00edmto n\u00e1zvem ji\u017e existuje.
+DYNA1057W.useraction=Ov\u011b\u0159te, \u017ee instance mezipam\u011bti nen\u00ed v souboru vlastnost\u00ed definov\u00e1na v\u00edcekr\u00e1t ne\u017e jednou.
+
+# No Comment Provided
+DYNA1058W=DYNA1058W: Replikace mezipam\u011bti je pro instanci mezipam\u011bti {0} zak\u00e1z\u00e1na, proto\u017ee slu\u017eba dynamick\u00e9 mezipam\u011bti je spu\u0161t\u011bna na samostatn\u00e9m serveru.
+DYNA1058W.explanation=Replikace mezipam\u011bti je pro instanci mezipam\u011bti zak\u00e1z\u00e1na, proto\u017ee slu\u017eba dynamick\u00e9 mezipam\u011bti je spu\u0161t\u011bna na samostatn\u00e9m serveru.
+DYNA1058W.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1059W=DYNA1059W: Instanci dynamick\u00e9 mezipam\u011bti s n\u00e1zvem {0} nelze pou\u017e\u00edt, proto\u017ee slu\u017eba dynamick\u00e9 mezipam\u011bti servlet\u016f nebyla spu\u0161t\u011bna.
+DYNA1059W.explanation=Uveden\u00e1 slu\u017eba dynamick\u00e9 mezipam\u011bti servlet\u016f nebyla spu\u0161t\u011bna. Instance mezipam\u011bti servlet\u016f nelze pou\u017e\u00edt.
+DYNA1059W.useraction=Ov\u011b\u0159te, \u017ee je v administrativn\u00ed konzole povoleno dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti.
+
+# No Comment Provided
+DYNA1060W=DYNA1060W: Instanci dynamick\u00e9 mezipam\u011bti s n\u00e1zvem {0} nelze pou\u017e\u00edt, proto\u017ee slu\u017eba dynamick\u00e9 mezipam\u011bti objekt\u016f nebyla spu\u0161t\u011bna.
+DYNA1060W.explanation=Uveden\u00e1 slu\u017eba dynamick\u00e9 mezipam\u011bti objekt\u016f nebyla spu\u0161t\u011bna. Instance mezipam\u011bti objekt\u016f nelze pou\u017e\u00edt.
+DYNA1060W.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1061E=DYNA1061E: Nen\u00ed povolena mezipam\u011b\u0165 servlet\u016f ani ukl\u00e1d\u00e1n\u00ed objekt\u016f do mezipam\u011bti.
+DYNA1061E.explanation=Nen\u00ed povolena mezipam\u011b\u0165 servlet\u016f ani ukl\u00e1d\u00e1n\u00ed objekt\u016f do mezipam\u011bti.
+DYNA1061E.useraction=Ov\u011b\u0159te, \u017ee je v administrativn\u00ed konzole povoleno dynamick\u00e9 ukl\u00e1d\u00e1n\u00ed servletu do mezipam\u011bti.
+
+# No Comment Provided
+DYNA1062E=DYNA1062E: Dynamickou mezipam\u011b\u0165 (mezipam\u011b\u0165 j\u00e1dra) nelze inicializovat. V\u00fdjimka: {0}
+DYNA1062E.explanation=Dynamickou mezipam\u011b\u0165 (mezipam\u011b\u0165 j\u00e1dra) nelze inicializovat.
+DYNA1062E.useraction=Prove\u010fte lad\u011bn\u00ed t\u00fdkaj\u00edc\u00ed se probl\u00e9mu s pou\u017eit\u00edm p\u0159edan\u00e9 chybov\u00e9 zpr\u00e1vy.
+
+# No Comment Provided
+DYNA1063E=DYNA1063E: Operaci {0} pro objekt cacheName {1} nelze prov\u00e9st, proto\u017ee poskytovatel mezipam\u011bti {2} nepodporuje funkci aliasu.
+DYNA1063E.explanation=Konkr\u00e9tn\u00ed operaci nelze prov\u00e9st, proto\u017ee poskytovatel mezipam\u011bti nepodporuje funkci aliasu.
+DYNA1063E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1064E=DYNA1064E: Operaci {0} pro objekt cacheName {1} nelze prov\u00e9st, proto\u017ee poskytovatel mezipam\u011bti {2} nepodporuje funkci diskov\u00e9ho odleh\u010dov\u00e1n\u00ed mezipam\u011bti.
+DYNA1064E.explanation=Konkr\u00e9tn\u00ed operaci nelze prov\u00e9st, proto\u017ee poskytovatel mezipam\u011bti nepodporuje funkci diskov\u00e9ho odleh\u010dov\u00e1n\u00ed mezipam\u011bti.
+DYNA1064E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1065E=DYNA1065E: Operaci {0} pro objekt cacheName {1} nelze prov\u00e9st, proto\u017ee poskytovatel mezipam\u011bti {2} nepodporuje funkci replikace slu\u017eby DRS.
+DYNA1065E.explanation=Konkr\u00e9tn\u00ed operaci nelze prov\u00e9st, proto\u017ee poskytovatel mezipam\u011bti nepodporuje funkci replikace slu\u017eby DRS (Date Replication Service).
+DYNA1065E.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1066E=DYNA1066E: Poskytovatele mezipam\u011bti {0} nelze inicializovat. K vytvo\u0159en\u00ed instance mezipam\u011bti {1} bude m\u00edsto konfigurovan\u00e9ho poskytovatele mezipam\u011bti pou\u017eita dynamick\u00e1 mezipam\u011b\u0165.
+DYNA1066E.explanation=B\u011bhem inicializace konfigurovan\u00e9ho poskytovatele mezipam\u011bti do\u0161lo k nep\u0159edv\u00eddan\u00e9 chyb\u011b. K vytvo\u0159en\u00ed instance mezipam\u011bti bude jako poskytovatel mezipam\u011bti m\u00edsto konfigurovan\u00e9ho poskytovatele mezipam\u011bti pou\u017eita dynamick\u00e1 mezipam\u011b\u0165. 
+DYNA1066E.useraction=Ov\u011b\u0159te, \u017ee je poskytovatel mezipam\u011bti poskytov\u00e1n jako b\u011bhov\u00fd bal\u00edk aplika\u010dn\u00edho serveru nebo jako knihovna v adres\u00e1\u0159i lib aplika\u010dn\u00edho serveru. 
+
+# No Comment Provided
+DYNA1067E=DYNA1067E: Funkce velikosti mezipam\u011bti v MB je zak\u00e1z\u00e1na, proto\u017ee velikost objektu ulo\u017een\u00e9ho v mezipam\u011bti nelze m\u011bnit. ClassName: {0}, Typ: {1}
+DYNA1067E.explanation=Funkce velikosti mezipam\u011bti v MB je zak\u00e1z\u00e1na, proto\u017ee objekt ulo\u017een\u00fd v mezipam\u011bti nen\u00ed implementov\u00e1na tak, aby bylo mo\u017en\u00e9 m\u011bnit jeho velikost. 
+DYNA1067E.useraction=Ov\u011b\u0159te, \u017ee t\u0159\u00edda objektu ulo\u017een\u00e9ho v mezipam\u011bti implementuje rozhran\u00ed com.ibm.websphere.cache.Sizable.
+
+# No Comment Provided
+DYNA1068E=DYNA1068E: Funkce velikosti mezipam\u011bti v MB je zak\u00e1z\u00e1na, proto\u017ee konfigurovan\u00fd poskytovatel mezipam\u011bti {0} nepodporuje tuto funkci pro instanci mezipam\u011bti {1}.
+DYNA1068E.explanation=Funkce velikosti mezipam\u011bti v MB je zak\u00e1z\u00e1na, proto\u017ee konfigurovan\u00fd poskytovatel mezipam\u011bti nepodporuje tuto funkci.
+DYNA1068E.useraction=Nen\u00ed
+
+# No Comment Provided
+DYNA1069I=DYNA1069I: P\u0159izp\u016fsoben\u00e1 vlastnost lruToDiskTriggerTime bude nastavena na hodnotu {0} s c\u00edlem dos\u00e1hnout vy\u0161\u0161\u00edho v\u00fdkonu.
+DYNA1069I.explanation=Jeliko\u017e je povolena funkce procent spou\u0161t\u011bn\u00ed pro velikost mezipam\u011bti v MB nebo LRU, bude p\u0159izp\u016fsoben\u00e1 vlastnost lruToDiskTriggerTime zm\u011bn\u011bna na vhodn\u011bj\u0161\u00ed hodnotu, aby bylo mo\u017en\u00e9 dos\u00e1hnout vy\u0161\u0161\u00edho v\u00fdkonu.
+DYNA1069I.useraction=Nen\u00ed
+
+DYNA1070I=DYNA1070I: Instance mezipam\u011bti {0} je pln\u00e1 a bylo dosa\u017eeno maxim\u00e1ln\u00ed konfigurovan\u00e9 velikosti {1} polo\u017eek. Halda prost\u0159ed\u00ed JVM pro nov\u00e9 polo\u017eky bude nyn\u00ed vytvo\u0159en vy\u0159azen\u00edm existuj\u00edc\u00edch polo\u017eek mezipam\u011bti s pou\u017eit\u00edm algoritmu LRU. Zva\u017ete mo\u017enost povolen\u00ed funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed pro p\u0159\u00edslu\u0161nou instanci mezipam\u011bti s c\u00edlem zabr\u00e1nit vy\u0159azen\u00ed polo\u017eek z mezipam\u011bti.
+DYNA1070I.explanation=Jeliko\u017e je funkce diskov\u00e9ho odleh\u010dov\u00e1n\u00ed zak\u00e1z\u00e1na a instance mezipam\u011bti je pln\u00e1, bude prostor haldy prost\u0159ed\u00ed JVM pro nov\u00e9 polo\u017eky vytvo\u0159en vy\u0159azen\u00edm polo\u017eek mezipam\u011bti s pou\u017eit\u00edm algoritmu LRU.
+DYNA1070I.useraction=Povolte funkci diskov\u00e9ho odleh\u010dov\u00e1n\u00ed pro p\u0159\u00edslu\u0161nou instanci mezipam\u011bti s c\u00edlem zabr\u00e1nit vy\u0159azen\u00ed polo\u017eek z mezipam\u011bti.
+
+# No Comment Provided
+DYNA1071I=DYNA1071I: Poskytovatel mezipam\u011bti {0} je pou\u017e\u00edv\u00e1n.
+DYNA1071I.explanation=Tato zpr\u00e1va informuje o tom, \u017ee n\u00e1zev poskytovatele mezipam\u011bti je pou\u017e\u00edv\u00e1n.
+DYNA1071I.useraction=Nen\u00ed.
+
+# No Comment Provided
+DYNA1072W=DYNA1072W: ID mezipam\u011bti {0} nebude replikov\u00e1no na jin\u00e9 servery, proto\u017ee volba skipMemoryWriteToDisk je nastavena na hodnotu true. Z\u00e1sada sd\u00edlen\u00ed bude nastavena na hodnotu not-shared (nesd\u00edleno).
+DYNA1072W.explanation=Ur\u010den\u00e9 ID mezipam\u011bti nebude replikov\u00e1no na jin\u00e9 servery, proto\u017ee volba skipMemoryWriteToDisk je nastavena na hodnotu true. 
+DYNA1072W.useraction=Nen\u00ed.
+
+# RemoteJMSInvalidator external cache group is configured incorrectly
+DYNA1073E=DYNA1073E: Skupina extern\u00ed mezipam\u011bti RemoteJMSInvalidator nen\u00ed spr\u00e1vn\u011b nakonfigurov\u00e1na. Pro \u010dlena skupiny extern\u00ed mezipam\u011bti byla zad\u00e1na n\u00e1sleduj\u00edc\u00ed adresa: {0}
+DYNA1073E.explanation=Ur\u010den\u00e1 skupina extern\u00ed mezipam\u011bti bude spr\u00e1vn\u011b fungovat a\u017e pot\u00e9, co bude chyba konfigurace vy\u0159e\u0161ena.
+DYNA1073E.useraction=Nen\u00ed.
+
+# RemoteInvalidator is no longer connected to SIB servers in the remote cell or core group
+DYNA1074W=DYNA1074W: Skupina extern\u00ed mezipam\u011bti RemoteJMSInvalidator ji\u017e nen\u00ed p\u0159ipojena. Konfigurovan\u00fd n\u00e1zev rozhran\u00ed JNDI tov\u00e1rny p\u0159ipojen\u00ed fronty je {0} a n\u00e1zev rozhran\u00ed JNDI c\u00edlov\u00e9ho m\u00edsta ur\u010den\u00ed je {1}.
+DYNA1074W.explanation=Servery sb\u011brnice SIBus v ur\u010den\u00e9 tov\u00e1rn\u011b p\u0159ipojen\u00ed fronty nejsou nad\u00e1le k dispozici.
+DYNA1074W.useraction=Nen\u00ed.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1075I=DYNA1075I: Skupina extern\u00ed mezipam\u011bti RemoteJMSInvalidator je p\u0159ipojena. Konfigurovan\u00fd n\u00e1zev rozhran\u00ed JNDI tov\u00e1rny p\u0159ipojen\u00ed fronty je {0} a n\u00e1zev rozhran\u00ed JNDI c\u00edlov\u00e9ho m\u00edsta ur\u010den\u00ed je {1}.
+DYNA1075I.explanation=Skupina extern\u00ed mezipam\u011bti je nyn\u00ed p\u0159ipojena k server\u016fm sb\u011brnice SIBus, kter\u00e9 jsou definov\u00e1ny v tov\u00e1rn\u011b p\u0159ipojen\u00ed fronty.
+DYNA1075I.useraction=Nen\u00ed.
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1076W=DYNA1076W: P\u0159ipojen\u00ed skupiny extern\u00ed mezipam\u011bti RemoteJMSInvalidator se nezda\u0159ilo. Konfigurovan\u00fd n\u00e1zev rozhran\u00ed JNDI tov\u00e1rny p\u0159ipojen\u00ed fronty je {0} a n\u00e1zev rozhran\u00ed JNDI c\u00edlov\u00e9ho m\u00edsta ur\u010den\u00ed je {1}.
+DYNA1076W.explanation=Skupin\u011b extern\u00ed mezipam\u011bti se nepoda\u0159ilo p\u0159ipojit k server\u016fm sb\u011brnice SIBus, kter\u00e9 jsou definov\u00e1ny v tov\u00e1rn\u011b p\u0159ipojen\u00ed fronty.
+DYNA1076W.useraction=Je mo\u017en\u00e9, \u017ee bude t\u0159eba c\u00edlov\u00e9 servery sb\u011brnice SIBus znovu spustit.
+
+# displays defined custom property
+DYNA1077I=DYNA1077I: Byla zji\u0161t\u011bna p\u0159izp\u016fsoben\u00e1 vlastnost s n\u00e1zvem {0} a hodnotou {1}.
+DYNA1077I.explanation=N\u00e1zev a hodnota definovan\u00e9 p\u0159izp\u016fsoben\u00e9 vlastnosti.
+DYNA1077I.useraction=Nen\u00ed.
+
+# Dynacache openjpa messages
+
+queryCache-instance-created=DYNA1080I: Pro trvalou jednotku {1} byla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena nebo na\u010dtena instance dynamick\u00e9 mezipam\u011bti L2 QueryCache {0}.
+queryCache-instance-created.explanation=Instance dynamick\u00e9 mezipam\u011bti OpenJPA L2 QueryCache byla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena.
+queryCache-instance-created.useraction=Nen\u00ed.
+
+dataCache-instance-created=DYNA1081I: Pro trvalou jednotku {1} byla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena nebo na\u010dtena instance dynamick\u00e9 mezipam\u011bti L2 DataCache {0}.
+dataCache-instance-created.explanation=Instance dynamick\u00e9 mezipam\u011bti OpenJPA L2 DataCache byla \u00fasp\u011b\u0161n\u011b vytvo\u0159ena.
+dataCache-instance-created.useraction=Nen\u00ed.
+
+specify-replication-domain=DYNA1082W: Replika\u010dn\u00ed dom\u00e9na nebyla ur\u010dena.
+specify-replication-domain.explanation=Bude vynuceno nastaven\u00ed polo\u017eky enableCacheReplication na hodnotu false.
+specify-replication-domain.useraction=Konfigurujte replika\u010dn\u00ed dom\u00e9nu platformy WebSphere tak, aby byla p\u0159idru\u017eena k instanci mezipam\u011bti.
+
+no-cache-name=DYNA1083W: Pro instanci mezipam\u011bti open-jpa L2 nen\u00ed ur\u010dena \u017e\u00e1dn\u00e1 pojmenovan\u00e1 mezipam\u011b\u0165. Jako n\u00e1zev instance mezipam\u011bti bude pou\u017eit n\u00e1zev trval\u00e9 jednotky {0}.
+no-cache-name.explanation=Nen\u00ed.
+no-cache-name.useraction=Nastavte n\u00e1zev pro instanci mezipam\u011bti open-jpa L2.
+
+no-cache-size=DYNA1084W: Pro instanci mezipam\u011bti open-jpa L2 {0} nen\u00ed ur\u010dena velikost mezipam\u011bti. Velikost mezipam\u011bti v pam\u011bti bude nastavena na hodnotu {1}.
+no-cache-size.explanation=Nen\u00ed.
+no-cache-size.useraction=Nastavte velikost pro instanci mezipam\u011bti open-jpa L2.
+
+incompatible-configuration=DYNA1085W: Pro vlastnost {0} byla nastavena nekompatibiln\u00ed hodnota {1}. Pro tuto vlastnost bude vynucena hodnota {2}.
+incompatible-configuration.explanation=Nen\u00ed.
+incompatible-configuration.useraction=Ur\u010dete konzistentn\u00ed konfiguraci pro instanci mezipam\u011bti open-jpa L2.
+incompatible-configuration1=DYNA1086I: Jeliko\u017e je vlastnost openjpa.DataCacheManager nastavena na hodnotu dynacache, poskytovatel dynamick\u00e9 mezipam\u011bti OpenJPA L2 VYNUT\u00cd nastaven\u00ed vlastnosti openjpa.DataCache na hodnotu dynacache.
+incompatible-configuration1.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+incompatible-configuration1.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+incompatible-configuration2=DYNA1087I: Jeliko\u017e je vlastnost openjpa.DataCacheManager nastavena na hodnotu dynacache, poskytovatel dynamick\u00e9 mezipam\u011bti OpenJPA L2 VYNUT\u00cd nastaven\u00ed vlastnosti openjpa.RemoteCommitProvider na hodnotu none.
+incompatible-configuration2.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+incompatible-configuration2.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+incompatible-configuration3=DYNA1088I: Jeliko\u017e je vlastnost openjpa.Datacache nastavena na hodnotu dynacache, poskytovatel dynamick\u00e9 mezipam\u011bti OpenJPA L2 VYNUT\u00cd nastaven\u00ed vlastnosti openjpa.RemoteCommitProvider na hodnotu none.
+incompatible-configuration3.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+incompatible-configuration3.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+incompatible-configuration4=DYNA1089I: Jeliko\u017e je vlastnost openjpa.Querycache nastavena na hodnotu dynacache, poskytovatel dynamick\u00e9 mezipam\u011bti OpenJPA L2 VYNUT\u00cd nastaven\u00ed vlastnosti openjpa.DataCache na hodnotu dynacache.
+incompatible-configuration4.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+incompatible-configuration4.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+DYNA1090I=DYNA1090I: Slu\u017eba dynamick\u00e9 mezipam\u011bti je zak\u00e1z\u00e1na.
+DYNA1090I.explanation=Slu\u017eby dynamick\u00e9 mezipam\u011bti, mezipam\u011bti objekt\u016f a ukl\u00e1d\u00e1n\u00ed servlet\u016f do mezipam\u011bti byly zak\u00e1z\u00e1ny prost\u0159ednictv\u00edm administrativn\u00ed konzoly nebo skript\u016f. 
+DYNA1090I.useraction=Povolte slu\u017ebu dynamick\u00e9 mezipam\u011bti nastaven\u00edm atributu enable objektu AdminConfig DynamicCache s oborem serveru nebo prost\u0159ednictv\u00edm panelu administrativn\u00ed konzoly Aplika\u010dn\u00ed servery > <n\u00e1zev_serveru> > Slu\u017eba dynamick\u00e9 mezipam\u011bti.
+
+DYNA1091E=DYNA1091E: Konfigurace pro instanci mezipam\u011bti {0} nebyla rozpozn\u00e1na vzhledem k v\u00fdjimce {0}.
+DYNA1091E.explanation=Konfigurace dynamick\u00e9 mezipam\u011bti pro instanci mezipam\u011bti je neplatn\u00e1 kv\u016fli vyvolan\u00e9 v\u00fdjimce.
+DYNA1091E.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu v\u00fdjimky a zajist\u011bte, \u017ee konfiguraci mezipam\u011bti bude mo\u017en\u00e9 \u00fasp\u011b\u0161n\u011b p\u0159idat do b\u011bhov\u00e9ho prost\u0159ed\u00ed dynamick\u00e9 mezipam\u011bti.
+                     
+no-jpa-cache-exists-with-this-name=DYNA1092E: Neexistuje \u017e\u00e1dn\u00e1 polo\u017eka DataCache s n\u00e1zvem {0}.
+no-jpa-cache-exists-with-this-name.explanation=Ov\u011b\u0159te \u00fasp\u011b\u0161n\u00e9 vytvo\u0159en\u00ed polo\u017eky DataCache L2.
+no-jpa-cache-exists-with-this-name.useraction=Ov\u011b\u0159te spr\u00e1vnost mezipam\u011bti dat L2.
+
+no-dynacache-manager-configured=DYNA1093E: Polo\u017eka DataCache {0} nen\u00ed konfigurov\u00e1na s pou\u017eit\u00edm spr\u00e1vn\u00e9 polo\u017eky DataCacheManager v r\u00e1mci jednotky perzistence {1}. 
+no-dynacache-manager-configured.explanation=Vlastnost openjpa.DataCacheManager by m\u011bla b\u00fdt nastavena na hodnotu dynacache. 
+no-dynacache-manager-configured.useraction=Opravte tuto vlastnost v souboru persistence.xml.
+
+incorrect-class-name=DYNA1094E: T\u0159\u00edda entity {0} nemohla b\u00fdt na\u010dtena zavad\u011b\u010dem t\u0159\u00edd {1}. 
+incorrect-class-name.explanation=Ov\u011b\u0159te, \u017ee t\u0159\u00edda v aplikaci existuje a \u017ee je viditeln\u00e1 pro zavad\u011b\u010d t\u0159\u00edd aplika\u010dn\u00edho serveru.
+incorrect-class-name.useraction=Zadejte spr\u00e1vn\u00fd n\u00e1zev t\u0159\u00eddy entity a konfigurujte sd\u00edlenou knihovnu s oborem serveru obsahuj\u00edc\u00ed t\u0159\u00eddy p\u0159idru\u017een\u00e9 k p\u0159\u00edslu\u0161n\u00e9mu serveru.
+
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance=DYNA1095E: Jednotka perzistence {0} nebyla nalezena v modulu {2} aplikace {1}.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.explanation= K\u00f3d XML jednotky perzistence nebyl nalezen v ur\u010den\u00e9m um\u00edst\u011bn\u00ed.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.useraction= Ov\u011b\u0159te, \u017ee je jednotka perzistence skute\u010dn\u011b um\u00edst\u011bna v souladu s ur\u010den\u00edm pomoc\u00ed parametr\u016f objektu mbean.
+                   

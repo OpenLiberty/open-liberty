@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.parameter.target.missed=CWWKW0700E: La d\u00e9finition de la cible du param\u00e8tre requis n'a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9e.
+error.parameter.target.missed.explanation=Si le param\u00e8tre cible est sp\u00e9cifi\u00e9, les applications existantes peuvent \u00eatre reg\u00e9n\u00e9r\u00e9es sans modification de leur comportement lorsque le niveau de sp\u00e9cification JAXB pris en charge par le profil Liberty est mis \u00e0 jour.
+error.parameter.target.missed.useraction=Indiquez le niveau de sp\u00e9cification JAXB auquel le code g\u00e9n\u00e9r\u00e9 doit se conformer. La valeur valide est 2.0, 2.1 ou 2.2.

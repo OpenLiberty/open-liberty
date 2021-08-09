@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  Parece que todas las hebras del ejecutor predeterminado de Liberty est\u00e1n colgadas. Liberty ha aumentado autom\u00e1ticamente el n\u00famero de hebras de {0} a {1}. No obstante, parece que todas las hebras siguen estando colgadas.
+unbreakableExecutorHang.explanation=Se ha producido un error que ha provocado el cuelgue de un ejecutor y el tiempo de ejecuci\u00f3n de Liberty ha a\u00f1adido un n\u00famero significativo de hebras en un intento de finalizar la condici\u00f3n de cuelgue.  No obstante, el ejecutor continua sin dar respuesta. 
+unbreakableExecutorHang.useraction=Determine si hay alg\u00fan cuello de botella, como una tabla de base de datos bloqueada, que impida la resoluci\u00f3n de las hebras en el servidor. Si no hay ning\u00fan cuello de botella y el servidor requiere l\u00edcitamente de m\u00e1s hebras, ajuste el atributo coreThreads del elemento de configuraci\u00f3n del ejecutor.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: Una tarea no se puede enviar al ejecutor {0} porque la cola de tareas con maxQueueSize de {1} contin\u00faa en su capacidad m\u00e1xima despu\u00e9s de esperar {2} nanosegundos.
+CWWKE1201.queue.full.abort.explanation=El atributo maxQueueSize controla cu\u00e1ntos env\u00edos de tarea se pueden poner en cola. El atributo maxWaitForEnqueue controla cu\u00e1nto se debe esperar a que una posici\u00f3n de cola pase a estar disponible, pero este intervalo se puede acortar mediante el tiempo de espera restante si utiliza los m\u00e9todos invokeAll o invokeAny temporizados para enviar tareas. El atributo queueFullAction determina qu\u00e9 acci\u00f3n se realizar\u00e1 cuando haya transcurrido el intervalo y no haya ninguna posici\u00f3n de cola disponible. Para evitar sobrepasar la simultaneidad m\u00e1xima o cumplir el tiempo de espera especificado, los m\u00e9todos invokeAll e invokeAny pueden alterar temporalmente el m\u00e9todo queueFullAction y terminar anormalmente el env\u00edo de tareas cuando no se pueda poner en cola.
+CWWKE1201.queue.full.abort.useraction=No es necesaria ninguna acci\u00f3n si la aplicaci\u00f3n maneja RejectedExecutionException. De lo contrario, realice una combinaci\u00f3n de las acciones siguientes: aumente maxQueueSize, aumente maxWaitForEnqueue, utilice otro queueFullAction distinto o aumente el tiempo de espera que se proporciona en los m\u00e9todos invokeAll o invokeAny.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: No se puede enviar una tarea porque el ejecutor {0} ha concluido.
+CWWKE1202.submit.after.shutdown.explanation=Los env\u00edos de tarea no est\u00e1n permitidos despu\u00e9s de que se haya solicitado al servicio de ejecutor que concluya.
+CWWKE1202.submit.after.shutdown.useraction=Solo env\u00ede tareas en una instancia de servicio de ejecutor que no se haya solicitado que concluya.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: No se permite la actualizaci\u00f3n de configuraci\u00f3n a {0} porque el ejecutor {1} ha concluido.
+CWWKE1203.config.update.after.shutdown.explanation=No es posible actualizar la configuraci\u00f3n despu\u00e9s de que se haya solicitado que concluya el servicio de ejecutor.
+CWWKE1203.config.update.after.shutdown.useraction=Solo actualice la configuraci\u00f3n de una instancia de servicio de ejecutor que no se haya solicitado que concluya.
+
+# {4} is the value of the time unit enum constant that was supplied to invokeAll/invokeAny. For example, MINUTES
+CWWKE1204.unable.to.invoke=CWWKE1204E: El ejecutor {0} no ha podido enviar {1} de las {2} tareas en el intervalo asignado de {3} {4}.
+CWWKE1204.unable.to.invoke.explanation=El ejecutor ha rechazado la operaci\u00f3n invokeAll o invokeAny por falta de tiempo suficiente o de capacidad de cola para enviar todas las tareas solicitadas en el intervalo especificado.
+CWWKE1204.unable.to.invoke.useraction=No es necesaria ninguna acci\u00f3n si la aplicaci\u00f3n maneja la excepci\u00f3n RejectedExecutionException. De lo contrario, realice una combinaci\u00f3n de las acciones siguientes: aumente maxQueueSize, aumente maxConcurrency o aumente el valor de tiempo de espera que se proporciona en los m\u00e9todos invokeAll o invokeAny.
+
+CWWKE1205.start.timeout=CWWKE1205E: El ejecutor {0} no ha podido iniciar la tarea {1} transcurridos {2} nanosegundos porque la tarea ha excedido el valor startTimeout de {3} nanosegundos.
+CWWKE1205.start.timeout.explanation=Cuando se configura un valor startTimeout en un ejecutor o se solicita mediante programaci\u00f3n para una tarea, el ejecutor realiza un seguimiento del tiempo transcurrido entre el momento en que se env\u00eda la tarea y el momento en que es posible ejecutar la tarea. Si el tiempo transcurrido supera el valor startTimeout, el ejecutor termina anormalmente la tarea en lugar de iniciarla.
+CWWKE1205.start.timeout.useraction=No se requiere ninguna acci\u00f3n si la aplicaci\u00f3n espera que algunas tareas se terminen anormalmente por haber excedido el valor startTimeout. De lo contrario, realice una combinaci\u00f3n de las acciones siguientes: aumente startTimeout, aumente maxConcurrency.

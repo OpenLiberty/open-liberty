@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c)  2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>PI67525</title>
+</h:head>
+<h:body>
+	<h1>Upload check</h1>
+	<h:form id="form" enctype="multipart/form-data">
+		<h:messages />
+		<h:inputFile value="#{uploadBean.uploadFile}" required="true" />
+		<h:commandButton id="execute" value="TEST" action="#{uploadBean.execute()}" />
+	</h:form>
+</h:body>
+</html>

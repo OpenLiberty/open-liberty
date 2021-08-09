@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mejb/resources/com/ibm/ws/management/j2ee/mejb/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSR77
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+MANAGEMENT_EJB_SERVICE_ACTIVATED=CWWKJ0200I: ManagementEJB \uc11c\ube44\uc2a4\uac00 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.explanation=ManagementEJB \uc11c\ube44\uc2a4\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.useraction=\uc774\ub294 \uc815\ubcf4 \uc81c\uacf5\ub9cc\uc744 \uc704\ud55c \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4. \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+MANAGEMENT_EJB_SERVICE_DEACTIVATED=CWWKJ0201I: ManagementEJB \uc11c\ube44\uc2a4\uac00 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.explanation=ManagementEJB \uc11c\ube44\uc2a4\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.useraction=\uc774\ub294 \uc815\ubcf4 \uc81c\uacf5\ub9cc\uc744 \uc704\ud55c \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4. \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+MANAGEMENT_EJB_START_ERROR=CWWKJ0202E: \uc2dc\uc2a4\ud15c EJB \ubaa8\ub4c8\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc624\ub958:  {0}
+
+MANAGEMENT_EJB_START_ERROR.explanation=\uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uc5ec \uc81c\ud488\uc774 \uc2dc\uc2a4\ud15c EJB \ubaa8\ub4c8\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MANAGEMENT_EJB_START_ERROR.useraction=EJB \ubaa8\ub4c8\uc774 \uc62c\ubc14\ub974\uac8c \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 
+

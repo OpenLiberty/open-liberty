@@ -1,0 +1,15 @@
+<server description="Server for testing variable Config">
+
+	<include location="../fatTestPorts.xml" />
+	<include location="variableServerXMLApp.xml"/>
+
+	<featureManager>
+		<feature>osgiconsole-1.0</feature>
+		<feature>cdi-2.0</feature>
+		<feature>servlet-4.0</feature>
+		<feature>componentTest-1.0</feature>
+		<feature>mpConfig-1.4</feature>
+	</featureManager>
+    
+    <logging trace.specification="*=info:APPCONFIG=all" />    
+</server>

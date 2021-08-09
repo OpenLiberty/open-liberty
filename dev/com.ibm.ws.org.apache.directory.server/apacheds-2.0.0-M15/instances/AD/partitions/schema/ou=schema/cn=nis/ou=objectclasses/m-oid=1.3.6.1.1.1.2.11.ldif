@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.11,ou=objectClasses,cn=nis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.11
+m-name: ieee802Device
+m-description: A device with a MAC address
+m-obsolete: FALSE
+m-supobjectclass: top
+entryUUID: d307acf9-c1d9-4682-aaae-98636c0f0fdd
+m-may: macAddress
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919081859.021000Z#000000#000#000000
+entryParentId: 8df15f8c-2157-419e-9521-c39c3dedaac8
+createTimestamp: 20130919081910.587Z

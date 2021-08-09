@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator.jca/resources/com/ibm/ws/rest/handler/validator/jca/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1560 to CWWKO1569
+
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: Nu este furnizat\u0103 validarea pentru fabrica de conexiuni {0}, care implementeaz\u0103 {1}.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.explanation=Validarea este posibil\u0103 doar pentru fabricile de conexiuni adaptor de resurse care sunt fabrici de conexiuni JMS sau care implementeaz\u0103 javax.resource.cci.ConnectionFactory sau javax.sql.DataSource.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.useraction=Nu \u00eencerca\u0163i s\u0103 valida\u0163i acest tip de fabric\u0103 de conexiuni.
+
+CWWKO1561_JMS_NOT_ENABLED=CWWKO1561E: Adaptorul de resurse necesit\u0103 JMS, dar nu este prezent\u0103 \u00een configura\u0163ia serverului o caracteristic\u0103 care activeaz\u0103 JMS.
+CWWKO1561_JMS_NOT_ENABLED.explanation=O caracteristic\u0103 ce activeaz\u0103 JMS este necesar\u0103 pentru acest element de configura\u0163ie.
+CWWKO1561_JMS_NOT_ENABLED.useraction=Include\u0163i o caracteristic\u0103 care activeaz\u0103 JMS \u00een configura\u0163ia serverului.
+
+CWWKO1562_NO_CONSPEC=CWWKO1562E: Validarea nu poate fi realizat\u0103 cu utilizatorul \u015fi parola specificate pentru c\u0103 nu exist\u0103 nici o modalitate standard de a localiza implementarea ConnectionSpec corespunz\u0103toare.
+CWWKO1562_NO_CONSPEC.explanation=Validarea punctului final REST nu a putut determina numele implement\u0103rii ConnectionSpec.
+CWWKO1562_NO_CONSPEC.useraction=Omite\u0163i parametrii de utilizator \u015fi parol\u0103 c\u00e2nd cere\u0163i validarea acestei fabrici de conexiuni.

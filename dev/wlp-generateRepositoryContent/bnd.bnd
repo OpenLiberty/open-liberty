@@ -1,0 +1,44 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: Generate ESA Build task
+Bundle-SymbolicName: wlp-generateRepositoryContent; singleton:=true
+Bundle-Description: Bundle to generate ESAs
+
+# Grab everything we need from the kernel and package it along with the ANT task
+Private-Package: \
+ com.ibm.ws.wlp.repository, \
+ com.ibm.ws.wlp.repository.esa, \
+ com.ibm.ws.wlp.repository.treehandler, \
+ com.ibm.ws.wlp.repository.xml, \
+ com.ibm.ws.kernel.boot.cmdline, \
+ com.ibm.ws.kernel.feature, \
+ com.ibm.ws.kernel.feature.internal.subsystem, \
+ com.ibm.ws.kernel.feature.provisioning, \
+ com.ibm.ws.kernel.provisioning, \
+ com.ibm.wsspi.kernel.feature, \
+ org.osgi.framework
+
+Include-Resource: \
+ com/ibm/ws/wlp/repository/default.properties=${basedir}/src/com/ibm/ws/wlp/repository/default.properties, \
+ resources/=${basedir}/resources
+
+globalize: false
+
+instrument.disabled: true
+
+publish.wlp.jar.disabled: true
+
+tool.project: true
+
+generate.replacement: false
+
+-buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.json4j;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	com.ibm.ws.org.apache.ant;version=latest,\
+	org.jsoup:jsoup;version=1.7.2,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	wlp-generateChecksums;version=latest

@@ -1,0 +1,24 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/Java2SecurityUtilMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Java 2 Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+INCORRECT_PERMISSION_CONFIGURATION=CWWKS1800W: La configurazione dell''autorizzazione java in {2} non \u00e8 corretta. Un tentativo di creazione dell''autorizzazione {0} ha generato un''eccezione a causa di {1}.
+INCORRECT_PERMISSION_CONFIGURATION.explanation=Uno o pi\u00f9 parametri forniti nella configurazione dell'autorizzazione non sono corretti e l'autorizzazione \u00e8 stata eliminata. Analizzare l'eccezione menzionata nel messaggio per determinare quale parametro \u00e8 stato il motivo dell'errore.
+INCORRECT_PERMISSION_CONFIGURATION.useraction=Assicurarsi che i vari parametri forniti come parte della configurazione dell'autorizzazione siano corretti.
+PERMISSION_CLASSNOTFOUND=CWWKS1801W: La configurazione dell''autorizzazione Java in {2} non \u00e8 corretta. Un tentativo di creazione dell''autorizzazione {0} ha generato un''eccezione a causa di {1}. Ci\u00f2 pu\u00f2 verificarsi se l''applicazione contiene una classe di autorizzazione personalizzata. In tal caso, la classe di autorizzazione sar\u00e0 trovata successivamente nell''elaborazione ed \u00e8 possibile ignorare questo errore.
+PERMISSION_CLASSNOTFOUND.explanation= Il caricamento di una classe di autorizzazione non \u00e8 riuscito. Se si tratta di una classe di autorizzazione personalizzata compressa nell'applicazione, verr\u00e0 trovata successivamente nell'elaborazione ed \u00e8 possibile ignorare questo errore.
+PERMISSION_CLASSNOTFOUND.useraction= Assicurarsi che la classe di autorizzazione sia una classe personalizzata e sia memorizzata nei file binari dell'applicazione. Altrimenti, questo errore necessita di ulteriore analisi.

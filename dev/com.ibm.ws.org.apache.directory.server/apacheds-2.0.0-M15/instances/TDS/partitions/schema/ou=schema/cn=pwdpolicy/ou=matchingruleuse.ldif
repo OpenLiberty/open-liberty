@@ -1,0 +1,10 @@
+version: 1
+dn: ou=matchingRuleUse,cn=pwdpolicy,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 0f6ea15c-2c49-4662-883c-8efb6e4a546b
+entryCSN: 20130919065345.494000Z#000001#000#000000
+entryParentId: 64825709-9b70-4170-8617-f13ddfe8a990
+ou: matchingruleuse
+createTimestamp: 20130919065352.304Z

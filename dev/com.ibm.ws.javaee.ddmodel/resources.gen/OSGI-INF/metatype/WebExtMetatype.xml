@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- NOTE: This is a generated file. Do not edit it directly. -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+localization="OSGI-INF/l10n/metatype">
+
+<OCD id="com.ibm.ws.javaee.dd.webext.WebExt" name="%webextmetatype.name" description="%webextmetatype.desc" ibm:parentPid="com.ibm.ws.app.manager" ibm:childAlias="web-ext">
+<AD id="moduleName" name="%moduleNameAttr.name" description="%moduleNameAttr.desc" type="String" required="false" cardinality="0" />
+    <AD id="file-serving-attribute" description="%WebExtMetatype.file-serving-attribute.desc" name="%WebExtMetatype.file-serving-attribute.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.webext.Attribute"/>
+    <AD id="invoker-attribute" description="%WebExtMetatype.invoker-attribute.desc" name="%WebExtMetatype.invoker-attribute.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.webext.Attribute"/>
+    <AD id="jsp-attribute" description="%WebExtMetatype.jsp-attribute.desc" name="%WebExtMetatype.jsp-attribute.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.webext.Attribute"/>
+    <AD id="mime-filter" description="%WebExtMetatype.mime-filter.desc" name="%WebExtMetatype.mime-filter.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.webext.MimeFilter"/>
+    <AD id="resource-ref" description="%WebExtMetatype.resource-ref.desc" name="%WebExtMetatype.resource-ref.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.commonext.ResourceRef"/>
+    <AD id="default-error-page" description="%WebExtMetatype.default-error-page.desc" name="%WebExtMetatype.default-error-page.name" type="String" required="false" cardinality="0"/>
+    <AD id="context-root" description="%WebExtMetatype.context-root.desc" name="%WebExtMetatype.context-root.name" type="String" required="false" cardinality="0"/>
+    <AD id="autoload-filters" description="%WebExtMetatype.autoload-filters.desc" name="%WebExtMetatype.autoload-filters.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="auto-encode-requests" description="%WebExtMetatype.auto-encode-requests.desc" name="%WebExtMetatype.auto-encode-requests.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="auto-encode-responses" description="%WebExtMetatype.auto-encode-responses.desc" name="%WebExtMetatype.auto-encode-responses.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="enable-directory-browsing" description="%WebExtMetatype.enable-directory-browsing.desc" name="%WebExtMetatype.enable-directory-browsing.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="enable-file-serving" description="%WebExtMetatype.enable-file-serving.desc" name="%WebExtMetatype.enable-file-serving.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="pre-compile-jsps" description="%WebExtMetatype.pre-compile-jsps.desc" name="%WebExtMetatype.pre-compile-jsps.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="enable-serving-servlets-by-class-name" description="%WebExtMetatype.enable-serving-servlets-by-class-name.desc" name="%WebExtMetatype.enable-serving-servlets-by-class-name.name" type="Boolean" required="false" cardinality="0"/>
+    <AD id="file-serving-attribute.target" default="${servicePidOrFilter(file-serving-attribute)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="invoker-attribute.target" default="${servicePidOrFilter(invoker-attribute)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="jsp-attribute.target" default="${servicePidOrFilter(jsp-attribute)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="mime-filter.target" default="${servicePidOrFilter(mime-filter)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="resource-ref.target" default="${servicePidOrFilter(resource-ref)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="default-error-page.target" default="${servicePidOrFilter(default-error-page)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="context-root.target" default="${servicePidOrFilter(context-root)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="autoload-filters.target" default="${servicePidOrFilter(autoload-filters)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="auto-encode-requests.target" default="${servicePidOrFilter(auto-encode-requests)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="auto-encode-responses.target" default="${servicePidOrFilter(auto-encode-responses)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="enable-directory-browsing.target" default="${servicePidOrFilter(enable-directory-browsing)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="enable-file-serving.target" default="${servicePidOrFilter(enable-file-serving)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="pre-compile-jsps.target" default="${servicePidOrFilter(pre-compile-jsps)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+    <AD id="enable-serving-servlets-by-class-name.target" default="${servicePidOrFilter(enable-serving-servlets-by-class-name)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.javaee.dd.webext.WebExt">
+     <Object ocdref="com.ibm.ws.javaee.dd.webext.WebExt"/>
+</Designate>
+
+</metatype:MetaData>

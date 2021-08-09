@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: Nu se poate configura proprietatea {0} pe serviciul {1} cu id {2} \u015fi valoare {3}.
+CWKKD0010.prop.error.explanation=O proprietate configurat\u0103 fie nu este recunoscut\u0103, fie nu a putut fi configurat\u0103 din cauza unei erori.
+CWKKD0010.prop.error.useraction=Corecta\u0163i sau \u00eenl\u0103tura\u0163i proprietatea configurat\u0103.
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: Serviciul {0} cu id {1} este definit cu un num\u0103r inegal de hostNames ({2}) \u015fi porturi {3}).
+CWKKD0011.hosts.ports.mismatch.explanation=Listele nume gazd\u0103 \u015fi num\u0103r port trebuie s\u0103 aib\u0103 acela\u015fi num\u0103r de elemente. 
+CWKKD0011.hosts.ports.mismatch.useraction=Actualiza\u0163i configura\u0163ia serverului, astfel \u00eenc\u00e2t atributele hostNames \u015fi ports s\u0103  con\u0163in\u0103 acela\u015fi num\u0103r de elemente.
+
+CWKKD0012.authentication.error=CWKKD0012E: Serviciul {0} cu id {1} nu se poate autentifica pe baza de date {2}.
+CWKKD0012.authentication.error.explanation=Baza de date a respins tentativa de autentificare.
+CWKKD0012.authentication.error.useraction=Actualiza\u0163i configurarea serverului cu numele utilizator \u015fi parola corecte.
+
+CWKKD0013.unsupported.driver=CWKKD0013E: Serviciul {0} a \u00eent\u00e2lnit o versiune nesuportat\u0103 a driver-ului MongoDB pe biblioteca partajat\u0103 {1}. Se a\u015ftepta un minim de {2}, dar s-au g\u0103sit {3}.
+CWKKD0013.unsupported.driver.explanation=Serviciul MongoDB a fost furnizat cu o bibliotec\u0103 driver invalid\u0103.
+CWKKD0013.unsupported.driver.useraction=Actualiza\u0163i biblioteca partajat\u0103 cu un nivel suportat.
+
+CWKKD0014.missing.driver=CWKKD0014E: Serviciul {0} nu a putut localiza clasele driver MongoDB necesare pe biblioteca partajat\u0103 {1}.
+CWKKD0014.missing.driver.explanation=Serviciul MongoDB nu poate localiza clasele necesare \u00een biblioteca partajat\u0103 configurat\u0103.
+CWKKD0014.missing.driver.useraction=Actualiza\u0163i biblioteca partajat\u0103 cu un nivel suportat.
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: Un serviciu {0} cu ID-ul {1} \u00eencearc\u0103 s\u0103 foloseasc\u0103 SSL f\u0103r\u0103 s\u0103 fie activat\u0103 caracteristica ssl-1.0 \u00een fi\u015fierul server.xml.
+CWKKD0015.ssl.feature.missing.explanation=Nu poate fi utilizat\u0103 configurarea SSL f\u0103r\u0103 caracteristica ssl-1.0 activat\u0103.
+CWKKD0015.ssl.feature.missing.useraction=Ad\u0103uga\u0163i caracteristica ssl-1.0 la fi\u015fierul server.xml.
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: Serviciul {0} cu ID-ul {1} a \u00eent\u00e2lnit o versiune incompatibil\u0103 a driver-ului MongoDB \u00een biblioteca partajat\u0103 {2}. Pentru SSL este necesar un nivel minim de {3}, dar serverul a g\u0103sit {4}.
+CWKKD0017.ssl.incompatible.driver.explanation=Serviciul MongoDB a fost furnizat cu o bibliotec\u0103 invalid\u0103 de driver pentru utilizarea cu SSL.
+CWKKD0017.ssl.incompatible.driver.useraction=Actualiza\u0163i biblioteca partajat\u0103 cu un nivel suportat.
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: Serviciul {0} cu ID-ul {1} a \u00eent\u00e2lnit o combina\u0163ie incompatibil\u0103 de op\u0163iuni de autentificare. useCertificateAuthentication este incompatibil cu utilizator \u015fi parol\u0103.
+CWKKD0018.ssl.user.pswd.certificate.explanation=Serviciul MongoDB a fost furnizat cu op\u0163iuni incompatibile de autentificare pentru utilizarea cu SSL.
+CWKKD0018.ssl.user.pswd.certificate.useraction=Actualiza\u0163i elementul mongo din server.xml pentru a specifica fie utilizatorul \u015fi parola, fie useCertificateAuthentication, dar nu ambele.
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: Serviciul {0} cu ID-ul {1} a fost configurat s\u0103 foloseasc\u0103 autentificarea cu certificat f\u0103r\u0103 s\u0103 fie activat SSL.
+CWKKD0019.ssl.certificate.no.ssl.explanation=Serviciul MongoDB a fost configurat pentru autentificarea bazat\u0103 pe certificate f\u0103r\u0103 SSL.
+CWKKD0019.ssl.certificate.no.ssl.useraction=Actualiza\u0163i elementul mongo din server.xml pentru a include sslEnabled=true sau \u00eenl\u0103tura\u0163i useCertificateAuthentication.
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: Serviciul {0} cu ID-ul {1} a primit o excep\u0163ie la citirea certificatului \u015fi cheii client din depozitul de chei furnizat. Excep\u0163ia imbricat\u0103 este {2}
+CWKKD0020.ssl.get.certificate.user.explanation=Serviciul MongoDB a \u00eencercat s\u0103 citeasc\u0103 certificatul \u015fi cheia client din depozitul de chei, dar a \u00eent\u00e2lnit o problem\u0103 cu depozitul de chei sau cu certificatul din el. 
+CWKKD0020.ssl.get.certificate.user.useraction=Excep\u0163ia imbricat\u0103 v\u0103 va furniza detalii suplimentare.
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: Serviciul {0} cu ID-ul {1} a \u00eent\u00e2lnit o versiune incompatibil\u0103 a driver-ului MongoDB \u00een biblioteca partajat\u0103 {2}. Pentru autentificarea cu certificat este necesar un nivel minim de {3}, daa serverul a g\u0103sit {4}.
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=Serviciul MongoDB a fost furnizat cu o bibliotec\u0103 invalid\u0103 de driver pentru utilizarea cu autentificarea pe certificate.
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=Actualiza\u0163i biblioteca partajat\u0103 cu un nivel care este suportat.
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: Serviciul {0} cu ID-ul {1} are proprietatea sslRef setat\u0103 \u00een fi\u015fierul server.xml, dar sslEnabled nu este setat la true.
+CWKKD0024.ssl.sslref.no.ssl.explanation=sslRef setat f\u0103r\u0103 ssl este invalid.
+CWKKD0024.ssl.sslref.no.ssl.useraction=Seta\u0163i sslEnabled=true sau \u00eenl\u0103tura\u0163i sslRef.
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: Serviciul {0} cu ID-ul {1} nu a putut extrage certificatul \u015fi cheia client din depozitul de chei. Fie nu sunt chei \u00een depozitul de chei, fie sunt mai multe chei \u015fi nu a fost specificat clientKeyAlias pe elementul ssl.
+CWKKD0026.ssl.certificate.exception.explanation=Depozitul de chei la acre se face referire trebuie s\u0103 con\u0163in\u0103 cel pu\u0163in o pereche de certificat \u015fi cheie client \u015fi dac\u0103 con\u0163ine mai multe de una, trebuie folosit parametrul clientKeyAlias pentru a identifica care va fi folosit\u0103.
+CWKKD0026.ssl.certificate.exception.useraction=Examina\u0163i depozitul de chei care este folosit cu keytool din Java. De exemplu, "keytool -list -keystore keystorename.jks" arat\u0103 intr\u0103rile din depozitul de chei \u015fi aliasurile lor. Specifica\u0163i unul dintre aceste aliasuri folosind clientKeyAlias pe elementul ssl.
+

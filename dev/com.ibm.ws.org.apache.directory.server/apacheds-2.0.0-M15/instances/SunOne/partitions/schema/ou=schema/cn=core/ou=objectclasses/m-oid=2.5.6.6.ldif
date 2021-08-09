@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=2.5.6.6,ou=objectClasses,cn=core,ou=schema
+m-must: sn
+m-must: cn
+m-oid: 2.5.6.6
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2256: a person
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: person
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: userPassword
+m-may: telephoneNumber
+m-may: seeAlso
+m-may: description

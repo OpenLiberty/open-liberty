@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.cmdline/resources/com/ibm/ws/kernel/boot/cmdline/resources/CommandLineMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# -------------------------------------------------------------------------------------------------
+
+error.sdkRequired=CWWKE0600E: To narz\u0119dzie wymaga pakietu Java SDK, lecz zosta\u0142o uruchomione za pomoc\u0105 \u015brodowiska JRE: {0}
+error.sdkRequired.explanation=To narz\u0119dzie wymaga pakietu Java SDK, lecz zosta\u0142o uruchomione za pomoc\u0105 zwyk\u0142ego \u015brodowiska wykonawczego program\u00f3w Java.
+error.sdkRequired.useraction=Ustaw zmienn\u0105 \u015brodowiskow\u0105 JAVA_HOME na \u015bcie\u017ck\u0119 do pakietu Java SDK i pon\u00f3w komend\u0119.
+
+error.compilerMissing=CWWKE0601E: To narz\u0119dzie wymaga dost\u0119pnego kompilatora j\u0119zyka Java. Upewnij si\u0119, \u017ce dost\u0119pny jest modu\u0142 java.compiler.
+error.compilerMissing.explanation=Narz\u0119dzie wymaga kompilatora j\u0119zyka Java. Jednak narz\u0119dzie zosta\u0142o uruchomione bez niego.
+error.compilerMissing.useraction=Sprawd\u017a, czy modu\u0142 java.compiler jest dost\u0119pny w obrazie Java. Nast\u0119pnie sprawd\u017a, czy jest dost\u0119pny w czasie wykonywania, okre\u015blaj\u0105c nast\u0119puj\u0105c\u0105 opcj\u0119 wiersza komend: --add-modules java.compiler

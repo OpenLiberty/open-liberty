@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=\u914d\u7f6e\u932f\u8aa4\u3002\u627e\u4e0d\u5230\u985e\u5225 [{0}]\u3002
+
+4005=\u672a\u9023\u63a5 DatabaseAccessor\u3002
+
+4006=\u5f9e getObject() \u4e2d\u7684\u4e32\u6d41\u8b80\u53d6 BLOB \u8cc7\u6599\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+
+4007=\u56e0\u5167\u90e8\u932f\u8aa4\uff0c\u7121\u6cd5\u8f49\u63db\u7269\u4ef6\u985e\u578b\u3002{0}java.sql.TYPES\uff1a[{1}]
+
+4008=\u4ea4\u6613\u5728\u9032\u884c\u4e2d\u6642\uff0c\u60a8\u7121\u6cd5\u767b\u51fa\u3002
+
+4009=\u9806\u5e8f\u8868\u683c\u8cc7\u8a0a\u4e0d\u5b8c\u6574\u3002
+
+4011=\u9810\u5148\u914d\u7f6e\u5e8f\u865f\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u9806\u5e8f\u8868\u683c\u8cc7\u8a0a\u4e0d\u5b8c\u6574\u3002
+
+4014=\u7121\u6cd5\u767b\u9304 SynchronizationListener\u3002
+
+4015=\u5df2\u540c\u6b65\u7684 UnitOfWork \u4e0d\u652f\u63f4 commitAndResume() \u4f5c\u696d\u3002
+
+4016=\u914d\u7f6e\u932f\u8aa4\u3002\u7121\u6cd5\u5c07\u9a45\u52d5\u7a0b\u5f0f [{0}] \u5be6\u4f8b\u5316\u3002
+
+4017=\u914d\u7f6e\u932f\u8aa4\u3002\u7121\u6cd5\u5b58\u53d6\u9a45\u52d5\u7a0b\u5f0f [{0}]\u3002
+
+4018=\u6c92\u6709\u70ba JTS \u9a45\u52d5\u7a0b\u5f0f\u8a2d\u5b9a TransactionManager\u3002
+
+4019=\u53d6\u5f97\u8cc7\u6599\u5eab\u7684\u76f8\u95dc\u8cc7\u8a0a\u6642\u767c\u751f\u932f\u8aa4\u3002\u5982\u9700\u8a73\u7d30\u8cc7\u6599\uff0c\u8acb\u53c3\u95b1\u5de2\u72c0\u7570\u5e38\u3002
+
+4020=\u7121\u6cd5\u70ba\u6240\u6307\u5b9a\u7684\u6a02\u89c0\u9396\u5b9a\u6b04\u4f4d [{0}] \u627e\u5230\u7b26\u5408\u7684\u8cc7\u6599\u5eab\u6b04\u4f4d\u3002\u8acb\u6ce8\u610f\uff0c\u6bd4\u5c0d\u4f5c\u696d\u6703\u5340\u5206\u5927\u5c0f\u5beb\uff0c\u56e0\u6b64\uff0c\u5982\u679c\u60a8\u5141\u8a31\u5728 getter \u65b9\u6cd5\u4e0a\u4f7f\u7528\u9810\u8a2d\u76f4\u6b04\u540d\u7a31\uff0c\u8a72\u540d\u7a31\u5c07\u6703\u662f\u5927\u5beb\u3002
+
+4021=\u7121\u6cd5\u5f9e\u9a45\u52d5\u7a0b\u5f0f [{0}]\u3001\u4f7f\u7528\u8005 [{1}] \u548c URL [{2}] \u53d6\u5f97\u9023\u7dda\u3002\u8acb\u9a57\u8b49\u60a8\u5df2\u8a2d\u5b9a\u6240\u9810\u671f\u7684\u9a45\u52d5\u7a0b\u5f0f\u985e\u5225\u548c URL\u3002\u6aa2\u67e5\u60a8\u7684\u767b\u5165\u3001persistence.xml \u6216 sessions.xml \u8cc7\u6e90\u3002jdbc.driver \u5167\u5bb9\u61c9\u8a2d\u70ba\u8207\u8cc7\u6599\u5eab\u5e73\u53f0\u76f8\u5bb9\u7684\u985e\u5225
+
+4022=\u5b58\u53d6\u5143\u6216\u5176\u9023\u7dda\u5df2\u8a2d\u70ba\u7a7a\u503c\u3002\u5982\u679c ClientSession \u6216 UnitOfWork \u91cb\u653e\u5728\u4e0d\u540c\u7684\u57f7\u884c\u7dd2\u4e2d\uff08\u4f8b\u5982\uff0c\u5982\u679c\u767c\u751f\u300c\u903e\u6642\u300d\uff09\uff0c\u5c31\u6703\u767c\u751f\u9019\u7a2e\u60c5\u6cc1\u3002
+

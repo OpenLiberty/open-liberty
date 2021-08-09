@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Der SSL-Kanal kann wegen der folgenden ung\u00fcltigen Einstellungen nicht gestartet werden:\n {0}
+invalid.security.properties.explanation=Mindestens eine Einstellung im SSL-Kanal ist nicht g\u00fcltig.
+invalid.security.properties.useraction=Die Sicherheitseinstellungen des SSL-Kanals m\u00fcssen in die korrekten Werte ge\u00e4ndert werden.
+
+handshake.failure=CWWKO0801E: Die SSL-Verbindung kann nicht initialisiert werden. Der unbefugte Zugriff wurde verweigert, oder die Sicherheitseinstellungen sind abgelaufen. Ausnahme: {0}
+handshake.failure.explanation=Eine neue Verbindung konnte keinen sicheren Handshake durchf\u00fchren.
+handshake.failure.useraction=\u00dcberpr\u00fcfen Sie die Sicherheitseinstellungen. Das Zertifikat ist m\u00f6glicherweise abgelaufen oder nicht vorhanden. Es ist auch m\u00f6glich, dass die nicht befugte Clientverbindung verweigert wurde. Zum Inaktivieren dieser Nachrichten setzen Sie den Parameter suppressHandshakeErrors der sslOptions-Konfiguration auf true.
+
+init.failure=CWWKO0802E: Das SSL-Bundle kann nicht initialisiert werden. Ausnahme: {0}
+init.failure.explanation=Beim Initialisieren des SSL-Bundles ist ein Fehler aufgetreten. Dies ist wahrscheinlich auf einen Abh\u00e4ngigkeitsfehler zur\u00fcckzuf\u00fchren.
+init.failure.useraction=Suchen Sie in den Prozessprotokollen nach Informationen zum Grund f\u00fcr den fehlgeschlagenen Start.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Es kann keine SSL-Standardkanalkonfiguration erstellt werden. Ausnahme: {0}
+DEFAULT_OPTIONS_ERROR.explanation=Beim Erstellen der Standardkonfiguration f\u00fcr SSL-Kan\u00e4le ist ein Fehler aufgetreten.
+DEFAULT_OPTIONS_ERROR.useraction=Suchen Sie in der Ausnahme nach Informationen zum Grund der fehlgeschlagenen Erstellung.
+
+handshake.failure.stop.logging=CWWKO0804I: Die maximale Anzahl der SSL-Handshakefehler im Protokoll ist erreicht. Diese Nachrichten werden nicht mehr protokolliert.
+handshake.failure.stop.logging.explanation=Die Anzahl der protokollierten SSL-Handshakefehler ist beschr\u00e4nkt, um zu viele Protokolleintr\u00e4ge zu vermeiden.
+handshake.failure.stop.logging.useraction=Es ist keine Aktion erforderlich.

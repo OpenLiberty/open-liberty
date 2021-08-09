@@ -1,0 +1,8 @@
+com.ibm.ws.microprofile.faulttolerance.1.1_fat_tck
+com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck
+com.ibm.ws.microprofile.faulttolerance.2.1_fat_tck
+com.ibm.ws.microprofile.faulttolerance.cdi_fat
+com.ibm.ws.microprofile.faulttolerance.cdi_fat_metrics
+com.ibm.ws.microprofile.faulttolerance_fat_tck
+com.ibm.ws.microprofile.faulttolerance_git_fat_tck
+io.openliberty.microprofile.faulttolerance.3.0.internal_fat_tck

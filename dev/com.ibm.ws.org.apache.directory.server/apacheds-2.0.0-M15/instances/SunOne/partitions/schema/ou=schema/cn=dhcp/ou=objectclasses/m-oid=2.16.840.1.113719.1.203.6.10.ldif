@@ -1,0 +1,26 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.6.10,ou=objectClasses,cn=dhcp,ou=schema
+m-must: cn
+m-must: dhcpAddressState
+m-oid: 2.16.840.1.113719.1.203.6.10
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: This class represents an IP Address, which may or may not have been leased.
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: dhcpLeases
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: dhcpExpirationTime
+m-may: dhcpStartTimeOfState
+m-may: dhcpLastTransactionTime
+m-may: dhcpBootpFlag
+m-may: dhcpDomainName
+m-may: dhcpDnsStatus
+m-may: dhcpRequestedHostName
+m-may: dhcpAssignedHostName
+m-may: dhcpReservedForClient
+m-may: dhcpAssignedToClient
+m-may: dhcpRelayAgentInfo
+m-may: dhcpHWAddress

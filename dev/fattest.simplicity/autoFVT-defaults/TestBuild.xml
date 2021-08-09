@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="Test.Build" default="execute" basedir=".">
+		
+	<!-- The directory where the test bucket is unzipped -->
+	<dirname property="dir.component.root" file="${ant.file.Test.Build}" />
+
+	<property name="dir.suitedef" value="${dir.component.root}/src/suitedef" />
+
+	<!-- Import standard launch tasks into this project -->
+	<import file="${basedir}/src/ant/properties.xml" />
+	<import file="${basedir}/src/ant/launch.xml" />
+
+	<!-- Executable targets -->
+	<target name="execute" description="Executes FAT Tests.  If no command line options are specified, a full regression is run." depends="initProperties, translateProperties, runTests, generateReports, archiveReports" />
+	<!-- Usage Info -->
+	<target name="help" description="Displays additional usage information for the 'execute' target">
+		<echo>EXAMPLE USAGE: (only these combinations are valid)</echo>
+		<echo>    ant -f TestBuild.xml [execute]</echo>
+		<echo>    ant -f TestBuild.xml -Dsuite=(TestSuite class)</echo>
+		<echo>    ant -f TestBuild.xml -Dsetup=(TestSetup class)</echo>
+		<echo>    ant -f TestBuild.xml -Dsetup=(TestSetup class) -Dphase=(Test phase)</echo>
+		<echo>    ant -f TestBuild.xml -Dtest=(TestCase class)</echo>
+		<echo>    ant -f TestBuild.xml -Dtest=(TestCase class) -Dmethod=(Test method)</echo>
+		<echo>    ant -f TestBuild.xml -Dtest=(TestCase class) -Dmethod=(Test method) -Dphase=(Test phase)</echo>
+		<echo>DEFINITIONS:</echo>
+		<echo>    (TestSuite class) = The full package and class name of a Class that</echo>
+		<echo>                        features a public, static, no-argument suite() method</echo>
+		<echo>                        that returns a "junit.framework.Test".</echo>
+		<echo>                        If the class name is supplied without the package name,</echo>
+		<echo>                        "com.ibm.ws.fat.suites" is assumed.</echo>
+		<echo>                        If no suite is defined, the suite defined in</echo>
+		<echo>                        configuration.properties is used.</echo>
+		<echo>    (TestSetup class) = The full package and class name of a Class that</echo>
+		<echo>                        extends commons.utils.junit.PhasedTestSetup.</echo>
+		<echo>                        If the class name is supplied without the package name,</echo>
+		<echo>                        "com.ibm.ws.fat.setup" is assumed.</echo>
+		<echo>    (TestCase class)  = The full package and class name of a Class that</echo>
+		<echo>                        extends commons.utils.junit.PhasedTestCase.</echo>
+		<echo>                        If the class name is supplied without the package name,</echo>
+		<echo>                        "com.ibm.ws.fat.tests" is assumed.</echo>
+		<echo>    (Test phase)      = The specific test phase you want to run.</echo>
+		<echo>                        If no phase is supplied, then all phases are run.</echo>
+		<echo>                        Valid phases include: "SetUp", "TearDown", and "RunTests"</echo>
+		<echo>                        (not case sensitive).</echo>
+		<echo>    (Test method)     = The specific test method you want to run.</echo>
+		<echo>                        If no method is supplied, then all public no-argument methods</echo>
+		<echo>                        starting with "test" that have a void return type are run.</echo>
+		<echo>NOTES:</echo>
+		<echo>    1.  If no command line arguments are supplied, a full regression is performed</echo>
+		<echo>    2.  The "execute" target can be specified in addition to any of the other command</echo>
+		<echo>        line options, but since "execute" is the default target, it has no effect.</echo>
+		<echo>    3.  The supplied TestCase is evaluated first, followed by the TestSetup,</echo>
+		<echo>        followed by the TestSuite.  In other words, if you define both a TestCase and</echo>
+		<echo>        a TestSetup, the TestCase will be run.</echo>
+		<echo>    4.  If a test phase is supplied with no test method for a TestCase,</echo>
+		<echo>        that specific phase is run for each "test" method (you probably don't want to do this)</echo>
+		<echo>ASSUMPTIONS:</echo>
+		<echo>    1.  A standard WebSphere topology must already be installed on the system under test</echo>
+		<echo>        (For details, see: http://wasautomation.austin.ibm.com/xwiki/bin/view/TestingCollab/functionalAcceptanceTests)</echo>
+	</target>
+</project>

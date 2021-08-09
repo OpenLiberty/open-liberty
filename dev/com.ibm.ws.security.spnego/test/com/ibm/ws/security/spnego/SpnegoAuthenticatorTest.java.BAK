@@ -1,0 +1,438 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.spnego;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.AuthenticationResult;
+
+import test.common.SharedOutputManager;
+
+/**
+ *
+ */
+public class SpnegoAuthenticatorTest {
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    @Rule
+    public TestRule managerRule = outputMgr;
+
+    private final Mockery mock = new JUnit4Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+    private final HttpServletRequest req = mock.mock(HttpServletRequest.class, "req");
+    private final HttpServletResponse resp = mock.mock(HttpServletResponse.class, "resp");
+    private final SpnegoConfig spnegoConfig = mock.mock(SpnegoConfig.class);
+    private final ErrorPageConfig errorPageConfig = mock.mock(ErrorPageConfig.class);
+    private final static String spnegoTokenStr = "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";
+    private final static String kerberosTokenStr = "YIIEpAYJKoZIhvcSAQICAQBuggSTMIIEj6ADAgEFoQMCAQ6iBwMFACAAAACjggEbYYIBFzCCAROgAwIBBaEYGxZUSVZMQUIxLkFVU1RJTi5JQk0uQ09NoiQwIqADAgEBoRswGRsESFRUUBsRa3MuYXVzdGluLmlibS5jb22jgcswgcigAwIBF6EDAgEDooG7BIG4tvVZL6XyV6I5+fHLCz0zGmHRiQ3724RmJwcEMwdtOcsuTPLDB48dr2rmj15IGNTFXLX3zQGt++LQbOMP+OFOXT2cShbh3fd4Ufk3Kc+fAHlx/D3tkHCbTXzW5W1Hjqptbl1POV/xmdjLxcOaGLAIaXJZLUc708yClKyYzkn0ptjJku9tc63MmdN+J0w6fv1q7g75anzPhZqJYx2SuGYg0jfNiYKjHdr1mUpnYMBtCRfuQOpLYZ+SgqSCA1kwggNVoAMCAReiggNMBIIDSETG72i0FhIxMwhnzjddUGf8I04Mi6lbuH9wkes945tARqVqZ351Bpn64sgILi+YgZnu8up+AGRF7IuQQiuYPH1r6LWl7FnNUQFwIYqvLtP7M+4U8KAKKs3z5lLVx6KJOv2KNMpODop9wIu8F0+i0n0OPU+Hq4mRtNnlRpVXrGYFva8za86Pk6U24D0MXNcYl9eFINe467VC5W/2+7iRgWiSwWg5hQryrL6KWVY07iAnSnwY91yiRX7ax+mRsLhTQV0Qc3JE2p8OYMwN4V6yoRhb05nZHyFY2+Ha4UbwPN9k1Y6WWrZZ6OZkMilJbx/Xo8Rfyzu+TLDwCtv5+6//IAhcPmI+ot6HoslRaTfTyrchJTuHEfhnwtiHIJ7NoTnuimt9L3orB0Ne5f5VxCsW9BNqZJdQWJUgMK+7GJjyLpi04tmNfZAwB8IVtdacvFX5UM5LIYm1S+09NvDPo0+NImjxgDskU9nZzT/n46mWn/rjX/hnU9e3/sNL5PoZlaOgAsEKAFjCqoYMgOPxRNnyjD2g7wwwKujjkFapIX66I5YWJe2YPxEBJkAX3z0C0bSNBSSv/V4jABrOA6abOU+1jXJyD9BWeVsDtzYhqGEOoCWlH9e+hHZQ+bugDgjB2wUkoprpHNvBxyd+DVqy40VGgIQagMWoW/jwcrhl30fXXYywRuiQnKj+JijJSUFSrnZl0QTGMBxZVpHecqTKGBQViv/Ur/VCKSTTfS0zPWpIHGkSohsV5ov142CEqZtTrZBmoNlYoJU+/XawIk0rXnWQ1ZLGWWhF6JgTYw8NkCphDYuFhZ0+ryiu8oDG2HNWBkcDMnRt9p7JGdARlCmtt8GSf/uSslq0ZDrNJ6+2GXVEnsId/m7/HcbwyHFBIg9PWJoVL6drCZ3U02sGA07yx3TYbwoavwb7Gfj4aGgrWjonwFGaY8F8B3VO6E3O4OJBFixZ+jIxOtJ2IdOXqhVKwG6lPmIFxOzbNwUpRbqVNVHpnA4U3IFwEptx33uvMBDNsD6KlALf2MEW1MFlgohQFMtRUeqV58+lXncnh8LgXpSghGGxUcnTtyIkBWaYlMwI0YmGDefhz3oMaJ4lQSkzLV9mHeKqQomPaJUH1w==";
+    private final static String authzHeader = "Negotiate " + spnegoTokenStr;
+    private final static String ntlmTokenStr = "TlRMTVNTUAABAAAAl7II4gcABwAwAAAACAAIACgAAAAGAHIXAAAAD05DMTM1MDE4VElWTEFCMQ==";
+    final byte[] ntlmTokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(ntlmTokenStr));
+    private final static String authzHeaderNtlm = "Negotiate " + ntlmTokenStr;
+
+    private final static byte[] spnegoTokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(spnegoTokenStr));
+    private final static byte[] kerberosTokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(kerberosTokenStr));
+
+    @After
+    public void tearDown() {
+        mock.assertIsSatisfied();
+        outputMgr.resetStreams();
+    }
+
+    @Test
+    public void testConstructor() {
+        final String methodName = "testConstructor";
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            assertNotNull("There must be a spnegoAuthenticator", spnegoAuth);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testAuthenticate_ntlmToken() {
+        final String methodName = "testAuthenticate_ntlmToken";
+        final String HOST = "host.austin.ibm.com";
+        try {
+            mockErroPageConfig();
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getServerName();
+                    will(returnValue(HOST));
+
+                    allowing(spnegoConfig).getSpnGSSCredential(HOST);
+                    will(returnValue(null));
+
+                    allowing(spnegoConfig).getDisableFailOverToAppAuthType();
+                    will(returnValue(true));
+
+                    allowing(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+                    allowing(spnegoConfig).getAllowLocalHost();
+                    will(returnValue(true));
+
+                    allowing(spnegoConfig).isCanonicalHostName();
+                    will(returnValue(false));
+                }
+            });
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            AuthenticationResult authResult = spnegoAuth.authenticate(req, resp, authzHeaderNtlm, spnegoConfig);
+            assertEquals("AuthenticationResult status code should be " + AuthResult.SEND_401, AuthResult.SEND_401, authResult.getStatus());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testAuthenticate_spnegoToken() {
+        final String methodName = "testAuthenticate_spnegoToken";
+        final String HOST = "host.austin.ibm.com";
+        final String ALIAS = "alias.austin.ibm.com";
+        try {
+            mockErroPageConfig();
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getServerName();
+                    will(returnValue(HOST));
+
+                    allowing(spnegoConfig).getSpnGSSCredential(HOST);
+                    will(returnValue(null));
+
+                    allowing(spnegoConfig).getDisableFailOverToAppAuthType();
+                    will(returnValue(false));
+
+                    will(returnValue(HOST));
+                    allowing(spnegoConfig).getAllowLocalHost();
+                    will(returnValue(true));
+                    allowing(spnegoConfig).isCanonicalHostName();
+                    will(returnValue(true));
+
+                }
+            });
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            AuthenticationResult authResult = spnegoAuth.authenticate(req, resp, authzHeader, spnegoConfig);
+            assertEquals("AuthenticationResult status code should be " + AuthResult.SEND_401, AuthResult.SEND_401, authResult.getStatus());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testCacheHostName() {
+        final String methodName = "testCacheHostName";
+        final String HOST = "host.austin.ibm.com";
+        final String ALIAS = "alias.austin.ibm.com";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(spnegoConfig).getDisableFailOverToAppAuthType();
+                    will(returnValue(false));
+                }
+            });
+            SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            String result = spnegoAuth.cacheHostName(ALIAS, HOST);
+            assertEquals("host name should  " + HOST, HOST, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testNotSpnegoAndKerberosTokenError_getDoNotfailOverToAppAuthType_false() {
+        final String methodName = "testNotSpnegoAndKerberosTokenError_getDoNotfailOverToAppAuthType_false";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(spnegoConfig).getDisableFailOverToAppAuthType();
+                    will(returnValue(false));
+                }
+            });
+            SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            AuthenticationResult authResult = spnegoAuth.notSpnegoAndKerberosTokenError(resp, spnegoConfig);
+            assertEquals("AuthenticationResult status code should be " + AuthResult.CONTINUE, AuthResult.CONTINUE, authResult.getStatus());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testNotSpnegoAndKerberosTokenError_getDoNotfailOverToAppAuthType_true() {
+        final String methodName = "testNotSpnegoAndKerberosTokenError_getDoNotfailOverToAppAuthType_true";
+        try {
+            mockErroPageConfig();
+            mock.checking(new Expectations() {
+                {
+                    allowing(spnegoConfig).getDisableFailOverToAppAuthType();
+                    will(returnValue(true));
+                    allowing(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+            });
+            SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            AuthenticationResult authResult = spnegoAuth.notSpnegoAndKerberosTokenError(resp, spnegoConfig);
+            assertEquals("AuthenticationResult status code should be " + AuthResult.SEND_401, AuthResult.SEND_401, authResult.getStatus());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testExtractSpnegoTokenString_null() {
+        final String methodName = "testExtractSpnegoTokenString_null";
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            String token = spnegoAuth.extractAuthzTokenString(null);
+            assertNull("token should be null", token);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testExtractSpnegoTokenString() {
+        final String methodName = "testExtractSpnegoTokenString";
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            String token = spnegoAuth.extractAuthzTokenString(authzHeader);
+            assertEquals("We should get the spnego token", spnegoTokenStr, token);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testIsSpnegoOrKerberosToken_spnegoTokenTrue() {
+        final String methodName = "testIsSpnegoOrKerberosToken_spnegoTokenTrue";
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            boolean result = spnegoAuth.isSpnegoOrKerberosToken(spnegoTokenByte);
+            assertTrue("should be spnego token", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testIsSpnegoOrKerberosToken_kerberosTokenTrue() {
+        final String methodName = "testIsSpnegoOrKerberosToken_kerberosTokenTrue";
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            boolean result = spnegoAuth.isSpnegoOrKerberosToken(kerberosTokenByte);
+            assertTrue("should be Kerberos token", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testIsSpnegoOrKerberoToken_null() {
+        final String methodName = "testIsSpnegoOrKerberoToken_null";
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            boolean result = spnegoAuth.isSpnegoOrKerberosToken(null);
+            assertFalse("not a spnego/Kerberos token", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testIsSpnegoOrKerberosToken_ntlmToken() {
+        final String methodName = "testNotSpnegoToken";
+        final String ntlmTokenStr = "TlRMTVNTUAABAAAAl7II4gcABwAwAAAACAAIACgAAAAGAHIXAAAAD05DMTM1MDE4VElWTEFCMQ==";
+        final byte[] ntlmTokenByte = Base64Coder.base64Decode(Base64Coder.getBytes(ntlmTokenStr));
+        final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+        try {
+            boolean result = spnegoAuth.isSpnegoOrKerberosToken(ntlmTokenByte);
+            assertFalse("not spnego token", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void tesGetReqHostName_localhost_allowLocalhost() {
+        final String methodName = "tesGetReqHostName_localhost_allowLocalhost";
+        final String HOST = "localhost";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getServerName();
+                    will(returnValue(HOST));
+                    allowing(spnegoConfig).getAllowLocalHost();
+                    will(returnValue(true));
+                }
+            });
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            String hostName = spnegoAuth.getReqHostName(req, spnegoConfig);
+            assertEquals("host name should be " + HOST, HOST, hostName);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void tesGetReqHostName_localhost_notAllowLocalHost_notCanonicalHostName() {
+        final String methodName = "tesGetReqHostName_localhost_notAllowLocalHost_notCanonicalHostName";
+        final String HOST = "localhost";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getServerName();
+                    will(returnValue(HOST));
+                    allowing(spnegoConfig).getAllowLocalHost();
+                    will(returnValue(false));
+                    allowing(spnegoConfig).isCanonicalHostName();
+                    will(returnValue(false));
+                }
+            });
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            String hostName = spnegoAuth.getReqHostName(req, spnegoConfig);
+            assertEquals("host name should be " + HOST, HOST, hostName);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void tesGetReqHostName_canonicalHostName() {
+        final String methodName = "tesGetReqHostName_canonicalHostName";
+        final HashMap<String, String> hostMap = new HashMap<String, String>();
+        String HOST = "host.austin.ibm.com";
+        final String ALIAS = "alias.austin.ibm.com";
+        hostMap.put(ALIAS, HOST);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getServerName();
+                    will(returnValue(ALIAS));
+                    allowing(spnegoConfig).getAllowLocalHost();
+                    will(returnValue(true));
+                    allowing(spnegoConfig).isCanonicalHostName();
+                    will(returnValue(true));
+                }
+            });
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            spnegoAuth.setHostMap(hostMap);
+            String hostName = spnegoAuth.getReqHostName(req, spnegoConfig);
+            assertEquals("host name should be " + HOST, HOST, hostName);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void tesGetReqHostName() {
+        final String methodName = "tesGetReqHostName";
+        final String HOST = "host.austin.ibm.com";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getServerName();
+                    will(returnValue(HOST));
+                }
+            });
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            String hostName = spnegoAuth.getCanonicalHostname(spnegoConfig, HOST);
+            assertEquals("host name should be " + HOST, HOST, hostName);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetCanonicalHostname_hostMap_empty() {
+        final String methodName = "testGetCanonicalHostname_hostMap_empty";
+        String HOST = "host.austin.ibm.com";
+        try {
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            String hostName = spnegoAuth.getCanonicalHostname(spnegoConfig, HOST);
+            assertEquals("host name should be " + HOST, HOST, hostName);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetCanonicalHostname_hostMap_found() {
+        final String methodName = "testGetCanonicalHostname_hostMap_found";
+        final HashMap<String, String> hostMap = new HashMap<String, String>();
+        String HOST = "host.austin.ibm.com";
+        String ALIAS = "alias.austin.ibm.com";
+        hostMap.put(ALIAS, HOST);
+        try {
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            spnegoAuth.setHostMap(hostMap);
+            String hostName = spnegoAuth.getCanonicalHostname(spnegoConfig, ALIAS);
+            assertEquals("host name should be " + HOST, HOST, hostName);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetCanonicalHostname_hostMap_notFound() {
+        final HashMap<String, String> hostMap = new HashMap<String, String>();
+        String HOST = "host.austin.ibm.com";
+        String ALIAS1 = "alias1.austin.ibm.com";
+        String ALIAS2 = "alias2.austin.ibm.com";
+        hostMap.put(ALIAS1, HOST);
+        try {
+            final SpnegoAuthenticator spnegoAuth = new SpnegoAuthenticator();
+            spnegoAuth.setHostMap(hostMap);
+            spnegoAuth.getCanonicalHostname(spnegoConfig, ALIAS2);
+        } catch (Throwable t) {
+            assertEquals("host name should be " + ALIAS2, ALIAS2, ALIAS2);
+        }
+    }
+
+    public void mockErroPageConfig() throws IOException {
+        mock.checking(new Expectations() {
+            {
+                allowing(spnegoConfig).getErrorPageConfig();
+                will(returnValue(errorPageConfig));
+                allowing(errorPageConfig).getNTLMTokenReceivedPage();
+                will(returnValue("myErrorPage"));
+                allowing(errorPageConfig).getNtlmTokenReceivedPageContentType();
+                will(returnValue("text/html"));
+                allowing(errorPageConfig).getNtlmTokenReceivedPageCharset();
+                will(returnValue("UTF-8"));
+                allowing(resp).setContentType("text/html");
+                allowing(resp).setCharacterEncoding("UTF-8");
+                allowing(resp).getWriter();
+            }
+        });
+    }
+}

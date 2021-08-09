@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%remoteFileAccess.desc" name="%remoteFileAccess.name" id="com.ibm.ws.filetransfer.metatype" ibm:alias="remoteFileAccess">   
+        <AD id="readDir" name="%readDir.name" description="%readDir.desc" required="false" type="String" cardinality="2147483647" ibm:type="location(dir)"/>
+        <AD id="writeDir" name="%writeDir.name" description="%writeDir.desc" required="false" type="String" cardinality="2147483647" ibm:type="location(dir)"/>
+    </OCD>
+
+    <Designate pid="com.ibm.ws.management.filetransfer">
+        <Object ocdref="com.ibm.ws.filetransfer.metatype" />
+    </Designate>
+  
+</metatype:MetaData>

@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.restfulWS30.jsonb20provider
+
+app-resources= \
+  META-INF/services/javax.ws.rs.ext.Providers
+
+Service-Component: \
+  io.openliberty.restfulWS30.jsonb20provider.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Export-Package: \
+	io.openliberty.restfulWS30.jsonb20provider;thread-context=true
+
+Include-Resource:\
+  io/openliberty=${bin}/io/openliberty, \
+  META-INF=resources/META-INF
+
+-buildpath: \
+  com.ibm.websphere.javaee.jaxrs.2.1, \
+  com.ibm.websphere.javaee.jsonb.1.0, \
+  com.ibm.websphere.org.osgi.core;version=latest, \
+  com.ibm.websphere.org.osgi.service.component;version=latest, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+
+jakartaeeMe: true

@@ -1,0 +1,61 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Filter service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4350 - CWWKS4399
+AUTH_FILTER_INIT_NULL_STRING=CWWKS4350E: A null karaktersorozat nem \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si sz\u0171r\u0151 szab\u00e1ly.
+AUTH_FILTER_INIT_NULL_STRING.explanation=A server.xml f\u00e1jlban a hiteles\u00edt\u00e9si sz\u0171r\u0151h\u00f6z null karaktersorozat van megadva.
+AUTH_FILTER_INIT_NULL_STRING.useraction=Jav\u00edtsa a hiteles\u00edt\u00e9si sz\u0171r\u0151szab\u00e1lyt.
+
+AUTH_FILTER_MALFORMED_CONDITION=CWWKS4351E: A sz\u0171r\u00e9si felt\u00e9tel helytelen\u00fcl van form\u00e1zva. s1 = {0};  s2 = {1}; s3 = {2}.
+AUTH_FILTER_MALFORMED_CONDITION.explanation=A sz\u0171r\u00e9si felt\u00e9tel helytelen\u00fcl form\u00e1zott, nem lehet egyn\u00e9l t\u00f6bb \u00e9rt\u00e9k megadva.
+AUTH_FILTER_MALFORMED_CONDITION.useraction=Ellen\u0151rizze a sz\u0171r\u00e9si \u00e9rt\u00e9ket a server.xml f\u00e1jlban.
+
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE=CWWKS4352E: A sz\u0171r\u00e9s egyez\u00e9si t\u00edpus\u00e1nak a k\u00f6vetkez\u0151k egyik\u00e9nek kell lennie: ==, !=, %=, > vagy <. A haszn\u00e1lt egyez\u00e9si t\u00edpus a k\u00f6vetkez\u0151 volt: {0}.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.explanation=A sz\u0171r\u00e9s egyez\u00e9si t\u00edpus\u00e1nak a k\u00f6vetkez\u0151k egyik\u00e9nek kell lennie: ==, !=, %=, > vagy <.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.useraction=Ellen\u0151rizze a sz\u0171r\u00e9s egyez\u00e9si t\u00edpus\u00e1t a server.xml f\u00e1jlban.
+
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE=CWWKS4353E: A sz\u0171r\u0151 egyez\u00e9si t\u00edpus\u00e1nak a k\u00f6vetkez\u0151k valamelyik\u00e9nek kell lennie: equals, notContain, contains, greaterThan vagy lessThan. A haszn\u00e1lt egyez\u00e9si t\u00edpus a k\u00f6vetkez\u0151 volt: {0}.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.explanation=A sz\u0171r\u0151 egyez\u00e9si t\u00edpus\u00e1nak a k\u00f6vetkez\u0151k valamelyik\u00e9nek kell lennie: equals, notContain, contains, greaterThan vagy lessThan.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.useraction=Ellen\u0151rizze a sz\u0171r\u00e9s egyez\u00e9si t\u00edpus\u00e1t a server.xml f\u00e1jlban.
+
+AUTH_FILTER_MALFORMED_IP_RANGE=CWWKS4354E: Helytelen\u00fcl form\u00e1zott IP c\u00edmtartom\u00e1ny volt megadva. A rendszer a(z) {0} \u00e9rt\u00e9ket tal\u00e1lta helyettes\u00edt\u0151 karakter helyett.
+AUTH_FILTER_MALFORMED_IP_RANGE.explanation=Rossz IP c\u00edmtartom\u00e1ny volt megadva. Az IP c\u00edmtartom\u00e1ny az els\u0151 tartom\u00e1ny ut\u00e1n csak helyettes\u00edt\u0151 karakteret tartalmazhat.
+AUTH_FILTER_MALFORMED_IP_RANGE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az els\u0151 tartom\u00e1ny ut\u00e1n minden helyettes\u00edt\u0151 karakterk\u00e9nt van megadva.
+
+AUTH_FILTER_UNKNOWN_HOST=CWWKS4355E: Ismeretlen hoszt kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} IP-c\u00edmn\u00e9l.
+AUTH_FILTER_UNKNOWN_HOST.explanation=A megadott IP c\u00edmhez nem k\u00e9rhet\u0151 le hosztn\u00e9v.
+AUTH_FILTER_UNKNOWN_HOST.useraction=Ellen\u0151rizze a megadott IP c\u00edm tartom\u00e1nyt.
+
+AUTH_FILTER_IP_STRING_CONVERT_ERROR=CWWKS4356E: A(z) {0} IP attrib\u00fatum\u00e9rt\u00e9k nem alak\u00edthat\u00f3 IP c\u00edmm\u00e9.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.explanation=\u00c1talak\u00edt\u00e1si hiba t\u00f6rt\u00e9nt az IP attrib\u00fatum\u00e9rt\u00e9k IP c\u00edmm\u00e9 alak\u00edt\u00e1sa sor\u00e1n.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.useraction=\u00c9rv\u00e9nyes\u00edtse a server.xml f\u00e1jlban megadott IP attrib\u00fatumot.
+
+AUTH_FILTER_NOT_CONFIG=CWWKS4357I: Az authFilter elem nincs megadva a server.xml f\u00e1jlban.
+AUTH_FILTER_NOT_CONFIG.explanation=Az authFilter elem nincs megadva a server.xml f\u00e1jlban.
+AUTH_FILTER_NOT_CONFIG.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az authFilter elem meg van-e adva a server.xml f\u00e1jlban.
+
+AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: A(z) {0} hiteles\u00edt\u00e9si sz\u0171r\u0151 be\u00e1ll\u00edt\u00e1s sikeresen feldolgozva.
+AUTH_FILTER_CONFIG_PROCESSED.explanation=A hiteles\u00edt\u00e9si sz\u0171r\u0151 be\u00e1ll\u00edt\u00e1s sikeresen feldolgoz\u00e1sra ker\u00fclt.
+AUTH_FILTER_CONFIG_PROCESSED.useraction=Semmit sem kell tennie.
+
+AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: A(z) {0} hiteles\u00edt\u00e9si sz\u0171r\u0151 be\u00e1ll\u00edt\u00e1s sikeresen m\u00f3dos\u00edtva.
+AUTH_FILTER_CONFIG_MODIFIED.explanation=A hiteles\u00edt\u00e9si sz\u0171r\u0151 be\u00e1ll\u00edt\u00e1s sikeresen m\u00f3dos\u00edt\u00e1sra ker\u00fclt.
+AUTH_FILTER_CONFIG_MODIFIED.useraction=Semmit sem kell tennie.
+
+AUTH_FILTER_MISSING_ID=CWWKS4360E: A server.xml f\u00e1jlban megadott authFilter elemb\u0151l hi\u00e1nyzik a k\u00f6telez\u0151 {0} azonos\u00edt\u00f3 attrib\u00fatum.
+AUTH_FILTER_MISSING_ID.explanation=A server.xml f\u00e1jlban megadott authFilter elemb\u0151l hi\u00e1nyzik a k\u00f6telez\u0151 id attrib\u00fatum, \u00edgy az authFilter elem nem ker\u00fcl felhaszn\u00e1l\u00e1sra.
+AUTH_FILTER_MISSING_ID.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a server.xml f\u00e1jlban megadott authFilter elem rendelkezzen az id attrib\u00fatummal.

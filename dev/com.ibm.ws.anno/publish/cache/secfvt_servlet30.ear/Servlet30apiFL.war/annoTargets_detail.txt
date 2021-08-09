@@ -1,0 +1,82 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: Servlet30apiFL.war.unpacked
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secure
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30unsecureAuthRedirectToUnsecure
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secureAuth
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secureAuthRedirectToSecureWithRole
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30unsecureSimple
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30login
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secureWithRole
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30unsecure
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secureAuthRedirectToSecure
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secureAuthRedirectToUnsecure
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30unsecureAuth
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30unsecureAuthRedirectToSecure
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30secureSimple
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30logout
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30unsecureAuthRedirectToSecureWithRole
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Excluded: java.io.Serializable
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: Servlet30apiFL.war.unpacked
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: Servlet30apiFL.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+# ============================================================

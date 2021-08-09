@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/sso/common/internal/resources/SAMLPropagationMessages.nlsprops
+#COMPONENTPREFIX CWWKS CWTAI
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML PROPAGATION
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5251 - CWWKS5299
+
+no_saml_found_in_subject=CWWKS5251W: V p\u0159edm\u011btu chyb\u00ed nezbytn\u00fd token SAML. K tomuto probl\u00e9mu m\u016f\u017ee doj\u00edt, pokud u\u017eivatel nebyl \u00fasp\u011b\u0161n\u011b ov\u011b\u0159en pomoc\u00ed SAML, d\u0159\u00edve odhl\u00e1\u0161en\u00fd u\u017eivatel nebo atribut konfigurace SAML includeTokenInSubject je nastaven na false.
+no_saml_found_in_subject.explanation=P\u0159i extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo chyb\u011b, nebo nebyl v aktu\u00e1ln\u00edm p\u0159edm\u011btu nalezen prvek SAML.
+no_saml_found_in_subject.useraction=Vytv\u00e1\u0159\u00edte-li p\u0159edm\u011bt run-as, zajist\u011bte, aby byl do n\u011bj p\u0159id\u00e1n token SAML. Jinak se kontrolou atributu includeTokenInSubject v konfiguraci SAML ujist\u011bte, \u017ee konfigurace serveru podporuje p\u0159id\u00e1v\u00e1n\u00ed tokenu SAML do p\u0159edm\u011btu.
+
+failed_to_extract_saml_token_from_subject=CWWKS5252W: P\u0159i pokusu o extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo k v\u00fdjimce. V\u00fdjimka: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=P\u0159i extrakci tokenu SAML z p\u0159edm\u011btu do\u0161lo k v\u00fdjimce.
+failed_to_extract_saml_token_from_subject.useraction=Dal\u0161\u00ed informace o chyb\u011b naleznete v protokolech serveru.

@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: A(z) {0} \u00fczenetkezel\u00e9si alrendszer inicializ\u00e1l\u00e1s alatt \u00e1ll.
+ME_INITIALIZING_SIAS0001.explanation=A megadott \u00fczenetkezel\u00e9si alrendszer elkezdte az inicializ\u00e1l\u00e1st.
+ME_INITIALIZING_SIAS0001.useraction=Semmit sem kell tennie.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Ok: {0}
+INTERNAL_ERROR_SIAS0003.explanation=V\u00e1ratlan bels\u0151 hiba t\u00f6rt\u00e9nt egy rendszerm\u0171velet sor\u00e1n.
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: A(z) {0} c\u00e9l nem hozhat\u00f3 l\u00e9tre.
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=A megadott c\u00e9l l\u00e9trehoz\u00e1sa nem siker\u00fclt. Ha a JACL parancsf\u00e1jlok vagy az egy\u00e9ni JMX programok ker\u00fcltek felhaszn\u00e1l\u00e1sra a be\u00e1ll\u00edt\u00e1s l\u00e9trehoz\u00e1s\u00e1hoz, akkor ellen\u0151rizze azok hib\u00e1it.
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: Nem lehet aktiv\u00e1lni a(z) {0} nev\u0171 JMX {1} MBean komponenst.
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=A megadott t\u00edpus\u00fa \u00e9s nev\u0171 JMX MBean aktiv\u00e1l\u00e1sa sikertelen volt. B\u00e1r ez nem akad\u00e1lyozza meg az \u00fczenetkezel\u00e9si kiszolg\u00e1l\u00f3 indul\u00e1s\u00e1t, de azt jelenti, hogy lehets\u00e9ges, hogy az ezen MBean komponens megl\u00e9t\u00e9t ig\u00e9nyl\u0151 adminisztr\u00e1ci\u00f3s funkci\u00f3k nem az elv\u00e1rt m\u00f3don fognak m\u0171k\u00f6dni.
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: Nem lehet le\u00e1ll\u00edtani a(z) {0} nev\u0171 JMX {1} MBean komponenst.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=A megadott JMX MBean komponens le\u00e1ll\u00edt\u00e1sa nem siker\u00fclt.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: A(z) {0} oszt\u00e1ly nem t\u00f6lthet\u0151 be.
+CLASS_LOAD_FAILURE_SIAS0013.explanation=A megadott oszt\u00e1ly nem t\u00f6lthet\u0151 be.
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer nem ind\u00edthat\u00f3 el, mert komoly hiba t\u00f6rt\u00e9nt.
+ME_RESTART_CHECK_SIAS0027.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a megadott \u00fczenetkezel\u00e9si alrendszer elind\u00edt\u00e1s\u00e1ra, de kor\u00e1bban komoly hib\u00e1t jelentett a rendszer, ez\u00e9rt az \u00fczenetkezel\u00e9si alrendszer nem ker\u00fcl \u00fajraind\u00edt\u00e1sra.
+ME_RESTART_CHECK_SIAS0027.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy helyezze \u00e1t az \u00fczenetkezel\u00e9si alrendszert egy m\u00e1sodlagos f\u00fcrtkiszolg\u00e1l\u00f3ra.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: A(z) {0} \u00fczenetkezel\u00e9si alrendszer nem \u00e1ll\u00edthat\u00f3 le a jelenlegi {1} \u00e1llapotb\u00f3l.
+ME_STATE_CHECK_SIAS0028.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a megadott \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1s\u00e1ra, de a le\u00e1ll\u00edt\u00e1s egy \u00e9rv\u00e9nytelen m\u0171velet, amikor az \u00fczenetkezel\u00e9si alrendszer a jelenlegi \u00e1llapotban van.
+ME_STATE_CHECK_SIAS0028.useraction=Ellen\u0151rizze az \u00fczenetkezel\u00e9si alrendszer \u00e1llapot\u00e1t, majd adja ki \u00fajra a m\u0171veletet, ha az \u00e9rv\u00e9nyes.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer \u00e1ltal\u00e1nos m\u00f3d\u00fa hib\u00e1t tal\u00e1lt.
+ME_ERROR_REPORTED_SIAS0029.explanation=Az \u00fczenetkezel\u00e9si alrendszer egy olyan hib\u00e1t tal\u00e1lt, amely val\u00f3sz\u00edn\u0171leg meg fog ism\u00e9tl\u0151dni egy m\u00e1sodlagos kiszolg\u00e1l\u00f3n, \u00edgy a rendszer nem pr\u00f3b\u00e1lja meg az \u00e1t\u00e1ll\u00e1st.
+ME_ERROR_REPORTED_SIAS0029.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer \u00e1ltal\u00e1nos m\u00f3d\u00fa hib\u00e1t tal\u00e1lt \u00e9s le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+ME_ERROR_STOPPED_SIAS0031.explanation=Az \u00fczenetkezel\u00e9si alrendszer egy \u00e1ltal\u00e1nos m\u00f3d\u00fa hib\u00e1t tal\u00e1lt \u00e9s automatikusan le\u00e1ll\u00edt\u00e1sra ker\u00fclt. A rendszer nem pr\u00f3b\u00e1lkozik \u00e1t\u00e1ll\u00e1ssal.
+ME_ERROR_STOPPED_SIAS0031.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer nem inicializ\u00e1lhat\u00f3. A kiv\u00e9telt a(z) {1} {2} elem dobta.
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt az alrendszer inicializ\u00e1l\u00e1sa sor\u00e1n.
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer nem ind\u00edthat\u00f3 el. A kiv\u00e9telt a(z) {1} {2} elem dobta.
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=V\u00e1ratlan hiba t\u00f6rt\u00e9nt az alrendszer inicializ\u00e1l\u00e1sa sor\u00e1n. Az ind\u00edt\u00e1si f\u00e1zis lez\u00e1r\u00f3dott \u00e9s az alrendszer m\u00e1r elind\u00edtott \u00f6sszetev\u0151i le vannak \u00e1ll\u00edtva.
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer nem ind\u00edthat\u00f3 el. A hiba a(z) {1} {2} sor\u00e1n ker\u00fclt jelent\u00e9sre.
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=Egy \u00fczenetkezel\u00e9si alrendszer \u00f6sszetev\u0151 elind\u00edt\u00e1sa nem siker\u00fclt. Az alrendszer t\u00f6bbi \u00f6sszetev\u0151je nem ker\u00fcl elind\u00edt\u00e1sra.
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer a(z) {1} {2} met\u00f3dus \u00e1ltal dobott kiv\u00e9telt fogott el a meghi\u00fasult ind\u00edt\u00e1s takar\u00edt\u00e1sa sor\u00e1n.
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=A megadott \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1sa nem siker\u00fclt.
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer a(z) {1} {2} met\u00f3dus \u00e1ltal dobott kiv\u00e9telt fogott el.
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=Hiba t\u00f6rt\u00e9nt az alrendszer egy \u00f6sszetev\u0151j\u00e9ben.
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba meghat\u00e1roz\u00e1s\u00e1hoz, jav\u00edtsa ki a hiba ok\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: Nem lehet esem\u00e9ny\u00e9rtes\u00edt\u00e9st k\u00fcldeni a(z) {0} nev\u0171 JMX {1} MBean komponensb\u0151l.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=Esem\u00e9ny\u00e9rtes\u00edt\u00e9s k\u00fcld\u00e9se sikertelen volt a megadott t\u00edpus\u00fa \u00e9s nev\u0171 JMX MBean komponensb\u0151l. B\u00e1r ez nem akad\u00e1lyozza meg az \u00fczemeltet\u00e9si kiszolg\u00e1l\u00f3 m\u0171k\u00f6d\u00e9s\u00e9nek folytat\u00e1s\u00e1t, de azt jelenti, hogy ez az MBean komponens nem tudja \u00e9rtes\u00edteni a fontos \u00fczenetkezel\u00e9si rendszeresem\u00e9nyek figyel\u0151it.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: A(z) {1} UUID azonost\u00f3val rendelkez\u0151 {0} \u00fczenetkezel\u00e9si alrendszer elind\u00edt\u00e1sra ker\u00fclt.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=Az \u00fczenetkezel\u00e9si alrendszer haszn\u00e1lhat\u00f3.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=Semmit sem kell tennie.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: A(z) {1} UUID azonost\u00f3val rendelkez\u0151 {0} \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=Az \u00fczenetkezel\u00e9si alrendszer m\u00e1r nem haszn\u00e1lhat\u00f3.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=Semmit sem kell tennie.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: A(z) {0} \u00fczenetkezel\u00e9si alrendszer egy hib\u00e1t \u00e9szlelt \u00e9s nem tudja folytatni a fut\u00e1st ezen a kiszolg\u00e1l\u00f3n.
+ME_ERROR_LOCAL_SIAS0046.explanation=Az \u00fczenetkezel\u00e9si alrendszer egy hib\u00e1t jelentett a HAManager kezel\u0151nek, ami le\u00e1ll\u00edtja a kiszolg\u00e1l\u00f3t. Az Application Server Network Deployment term\u00e9kkel a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1sra fog ker\u00fclni, ha a csom\u00f3pont\u00fcgyn\u00f6k megfigyeli azt. Egy h\u00e1l\u00f3zati telep\u00edt\u00e9s\u0171 f\u00fcrttel az \u00fczenetkezel\u00e9si alrendszer \u00e1t fog \u00e1llni egy m\u00e1sodlagos f\u00fcrtkiszolg\u00e1l\u00f3ra, ha a be\u00e1ll\u00edtott h\u00e1zirend ezt enged\u00e9lyezi.
+ME_ERROR_LOCAL_SIAS0046.useraction=Ellen\u0151rizze a napl\u00f3kat a hiba ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1hoz, majd jav\u00edtsa ki azt, hogy ne forduljon el\u0151 \u00fajra. Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, vagy (ha h\u00e1l\u00f3zati telep\u00edt\u00e9st haszn\u00e1l) ellen\u0151rizze, hogy az automatikus \u00fajraind\u00edt\u00e1s vagy \u00e1t\u00e1ll\u00e1s siker\u00fclt-e \u00e9s az \u00fczenetkezel\u00e9si alrendszer fut-e.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: A receiveExclusive attrib\u00fatum \u00e9rt\u00e9ke fel\u00fcl lett b\u00edr\u00e1lva "true" \u00e9rt\u00e9kkel a(z) {0} c\u00e9l eset\u00e9n.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=A c\u00e9l \u00fczenetrendez\u00e9s fenntart\u00e1s\u00e1ra van be\u00e1ll\u00edtva. Emiatt a receiveExclusive attrib\u00fatum \u00e9rt\u00e9ke fel\u00fcl lett b\u00edr\u00e1lva true \u00e9rt\u00e9kkel.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=Ha nincs sz\u00fcks\u00e9g rendez\u00e9sre, akkor sz\u00fcntesse meg a maintainMessageOrder attrib\u00fatum be\u00e1ll\u00edt\u00e1s\u00e1t, hogy letiltsa a receiveExclusive attrib\u00fatum fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1t.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: A(z) {1} UUID azonost\u00f3val rendelkez\u0151 {0} \u00fczenetkezel\u00e9si alrendszer indul.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=Az \u00fczenetkezel\u00e9si alrendszer indul.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=Semmit sem kell tennie.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: A(z) {1} UUID azonost\u00f3val rendelkez\u0151 {0} \u00fczenetkezel\u00e9si alrendszer le\u00e1ll.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=Az \u00fczenetkezel\u00e9si alrendszer le\u00e1ll.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: A(z) {1} UUID azonost\u00f3val rendelkez\u0151 {0} \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00e1sa meghi\u00fasult.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=Az \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00e1sa meghi\u00fasult.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: {0}
+TEMPORARY_SIAS9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a kor\u00e1bbi \u00fczeneteket a tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_SIAS9999.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: Nincs megadva azonos\u00edt\u00f3 a messagingEngine c\u00edmk\u00e9hez a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban. Az alap\u00e9rtelmezett {0} lesz figyelembe v\u00e9ve.
+NO_ID_PROVIDED_SIAS0100.explanation=Nem lett megadva azonos\u00edt\u00f3 a messagingEngine c\u00edmk\u00e9hez.
+NO_ID_PROVIDED_SIAS0100.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban nincs megadva azonos\u00edt\u00f3 a(z) {0} t\u00edpus c\u00e9lja sz\u00e1m\u00e1ra. 
+NO_ID_PROVIDED_SIAS0102.explanation=Nincs megadva azonos\u00edt\u00f3 a c\u00e9l sz\u00e1m\u00e1ra, ez\u00e9rt a c\u00e9l nem ker\u00fclt l\u00e9trehoz\u00e1sra.  
+NO_ID_PROVIDED_SIAS0102.useraction=Adja meg a c\u00e9l azonos\u00edt\u00f3j\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  Nem lett meghat\u00e1rozva fileStore c\u00edmke a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban, ez\u00e9rt az alap\u00e9rtelmezett \u00e9rt\u00e9keket haszn\u00e1lja a rendszer.
+NO_FILESTOR_DEFINED_SIAS0104.explanation=A fileStore nem lett megadva, \u00edgy a f\u00e1jlt\u00e1rol\u00f3 az alap\u00e9rtelmezett \u00e9rt\u00e9kek felhaszn\u00e1l\u00e1s\u00e1val ker\u00fcl l\u00e9trehoz\u00e1sa.   
+NO_FILESTOR_DEFINED_SIAS0104.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: Az \u00fczenetkezel\u00e9si alrendszer azonos\u00edt\u00f3ja nem m\u00f3dos\u00edthat\u00f3, miut\u00e1n a kiszolg\u00e1l\u00f3 elindult.
+ME_ID_CHANGE_SIAS0105.explanation=Egy \u00fczenetkezel\u00e9si alrendszer azonos\u00edt\u00f3ja egyedi \u00e9s nem m\u00f3dos\u00edthat\u00f3, am\u00edg a kiszolg\u00e1l\u00f3 akt\u00edv.
+ME_ID_CHANGE_SIAS0105.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: K\u00eds\u00e9rlet az \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1s\u00e1ra. 
+RESTART_ME_SIAS0106.explanation=\u00dczenetkezel\u00e9si alrendszer nem indult el az activate() h\u00edv\u00e1s sor\u00e1n. Miut\u00e1n a felhaszn\u00e1l\u00f3 m\u00f3dos\u00edtotta a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt, a rendszer k\u00eds\u00e9rletet tesz az \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1s\u00e1ra.  
+RESTART_ME_SIAS0106.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: A JMS kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa. 
+START_ME_SIAS0107.explanation=A JMS kiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1nak kezdem\u00e9nyez\u00e9se.  
+START_ME_SIAS0107.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: A JMS kiszolg\u00e1l\u00f3 elindult  
+ME_STARTED_SIAS0108.explanation=A JMS kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa sikeresen befejez\u0151d\u00f6tt.  
+ME_STARTED_SIAS0108.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: Bels\u0151 \u00fczenetkezel\u00e9si hiba t\u00f6rt\u00e9nt. A JMS kiszolg\u00e1l\u00f3 nem ind\u00edthat\u00f3 el.
+ME_STOPPED_SIAS0109.explanation=A JMS kiszolg\u00e1l\u00f3 nem ind\u00edthat\u00f3 el.  
+ME_STOPPED_SIAS0109.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1sa sor\u00e1n kapott kor\u00e1bbi hiba\u00fczeneteket.
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: Nincs c\u00e9l megadva a(z) {0} \u00e1ln\u00e9v c\u00e9lhoz.
+INVALID_TARGET_DEST_SIAS0110.explanation=Nincs megadva c\u00e9l az \u00e1ln\u00e9v c\u00e9lhoz.
+INVALID_TARGET_DEST_SIAS0110.useraction= Adjon meg \u00e9rv\u00e9nyes c\u00e9lt a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban.
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} c\u00e9l honos\u00edt\u00e1sa sor\u00e1n.
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a c\u00e9l honos\u00edt\u00e1sa sor\u00e1n.
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=Tekintse meg a kor\u00e1bbi \u00fczeneteket \u00e9s az \u00fczenetkezel\u00e9si alrendszer \u00e1llapot\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: A(z) {0} c\u00e9l nem t\u00f6lthet\u0151 fel a gyors\u00edt\u00f3t\u00e1rban.
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=A megadott c\u00e9l nem t\u00f6lthet\u0151 fel a gyors\u00edt\u00f3t\u00e1rban.
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=Tekintse meg a kor\u00e1bbi \u00fczeneteket tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: Bels\u0151 hiba t\u00f6rt\u00e9nt, mert az \u00fczenetkezel\u00e9si alrendszer konfigur\u00e1ci\u00f3s tulajdons\u00e1gait nem kapta meg a rendszer. Ez\u00e9rt az \u00fczenetkezel\u00e9si alrendszer nem ind\u00edthat\u00f3.
+NULL_SERVICE_PID_SIAS0115.explanation=A konfigur\u00e1ci\u00f3 nem kaphat\u00f3 meg a server.xml f\u00e1jlb\u00f3l, mivel a Fel\u00fcgyelt szolg\u00e1ltat\u00e1st vagy Fel\u00fcgyelt szolg\u00e1ltat\u00e1sgy\u00e1rat a Konfigur\u00e1ci\u00f3 adminisztr\u00e1ci\u00f3s szolg\u00e1ltat\u00e1sn\u00e1l azonos\u00edt\u00f3 regisztr\u00e1ci\u00f3s tulajdons\u00e1g (service.pid) nem be\u00e1ll\u00edtott \u00e9rt\u00e9k, ami azt jelenti, hogy a k\u00f6teg nem haszn\u00e1lhat deklar\u00e1lt szolg\u00e1ltat\u00e1st
+NULL_SERVICE_PID_SIAS0115.useraction=Tekintse meg a kapcsol\u00f3d\u00f3 hiba\u00fczeneteket tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt arr\u00f3l, hogy mi\u00e9rt nem ind\u00edthat\u00f3 az \u00fczenetkezel\u00e9si alrendszer. 
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: Bels\u0151 hiba t\u00f6rt\u00e9nt, mert az \u00fczenetkezel\u00e9si alrendszer konfigur\u00e1ci\u00f3s tulajdons\u00e1gait nem kapta meg a rendszer. Ez\u00e9rt nem lesz m\u00f3dos\u00edtva az \u00fczenetkezel\u00e9si alrendszer.
+NULL_SERVICE_PID_SIAS0116.explanation=Az \u00fczenetkezel\u00e9si alrendszer elindult, de annak m\u00f3dos\u00edt\u00e1sai nem lesznek elfogadva, mert service.pid \u00e9rt\u00e9ke null. Ez\u00e9rt a szolg\u00e1ltat\u00e1sok megh\u00edv\u00e1s\u00e1ra nem ker\u00fcl sor.
+NULL_SERVICE_PID_SIAS0116.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1s\u00e1hoz kapcsol\u00f3d\u00f3 k\u00eds\u00e9r\u0151 hiba\u00fczeneteket. 
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: A rendszer bels\u0151 hib\u00e1t \u00e9szlelt, miut\u00e1n az \u00fczenetkezel\u00e9si alrendszer konfigur\u00e1ci\u00f3j\u00e1nak egy m\u00f3dos\u00edt\u00e1sa nem fejez\u0151d\u00f6tt be sikeresen
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=Az \u00fczenetkezel\u00e9si alrendszer konfigur\u00e1ci\u00f3j\u00e1nak friss\u00edt\u00e9se nem fejez\u0151d\u00f6tt be sikeresen, \u00e9s bels\u0151 rendszerhib\u00e1t okozott.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket. 
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: A defaultReliability sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nagyobb, mint a maxReliability sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k.
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=A defaultReliability (alap\u00e9rtelmezett megb\u00edzhat\u00f3s\u00e1g) param\u00e9ter sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nem lehet nagyobb a maxReliability (maxim\u00e1lis megb\u00edzhat\u00f3s\u00e1g) param\u00e9ter sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9kn\u00e9l.
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=Futtassa \u00fajra a parancsot a defaultReliability param\u00e9ter sz\u00e1m\u00e1ra a maxReliability \u00e9rt\u00e9k\u00e9n\u00e9l kisebb vagy egyenl\u0151 \u00e9rt\u00e9ket megadva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: A f\u00e1jlt\u00e1rol\u00f3 el\u00e9r\u00e9si \u00fatja: {0}
+FILESTORE_PATH_SIAS0119.explanation=A megadott f\u00e1jlt\u00e1rol\u00f3 el\u00e9r\u00e9si \u00fat.
+FILESTORE_PATH_SIAS0119.useraction=Ez az \u00fczenet csak t\u00e1j\u00e9koztat\u00e1s c\u00e9lj\u00e1ra szolg\u00e1l. Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: Az \u00fczenetkezel\u00e9si alrendszer nem ind\u00edthat\u00f3, mert a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban \u00e9rv\u00e9nytelen el\u00e9r\u00e9si \u00fat ({0}) lett megadva.
+INVALID_FS_PATH_SIAS0120.explanation=Az \u00fczenetkezel\u00e9si alrendszer ind\u00edt\u00e1sa el\u0151tt \u00e9rv\u00e9nyes el\u00e9r\u00e9si \u00fat sz\u00fcks\u00e9ges a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban.
+INVALID_FS_PATH_SIAS0120.useraction=Jav\u00edtsa a f\u00e1jl el\u00e9r\u00e9si utat a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: JMS kiszolg\u00e1l\u00f3 le\u00e1llt.  
+ME_STOPPED_SIAS0121.explanation=A JMS kiszolg\u00e1l\u00f3 le\u00e1llt.  
+ME_STOPPED_SIAS0121.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: Nincs megadva \u00fczenetkezel\u00e9si alrendszer azonos\u00edt\u00f3 a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban.  
+NULL_ME_ID_SIAS0122.explanation=Az \u00fczenetkezel\u00e9si alrendszer azonos\u00edt\u00f3ja a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl m\u00f3dos\u00edt\u00e1sa sor\u00e1n elt\u00e1vol\u00edt\u00e1sra ker\u00fclt. Az \u00fczenetkezel\u00e9si alrendszer azonos\u00edt\u00f3 m\u00f3dos\u00edt\u00e1s figyelmen k\u00edv\u00fcl marad, am\u00edg az \u00fczenetkezel\u00e9si alrendszer akt\u00edv.   
+NULL_ME_ID_SIAS0122.useraction= Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: {0} ker\u00fcl felhaszn\u00e1l\u00e1sra t\u00f6bb c\u00e9l eset\u00e9ben.
+SAME_DEST_ID_SIAS0123.explanation=Ugyanaz az azonos\u00edt\u00f3 nem haszn\u00e1lhat\u00f3 t\u00f6bb c\u00e9lhoz, a t\u00f6bbsz\u00f6r szerepl\u0151 c\u00e9lok nem ker\u00fclnek l\u00e9trehoz\u00e1sra. 
+SAME_DEST_ID_SIAS0123.useraction= Adhon meg egyedi c\u00e9lazonos\u00edt\u00f3kat.
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: A napl\u00f3f\u00e1jl {0} megabyte-os m\u00e9ret\u00e9nek kisebbnek kell lennie, mint a f\u00e1jlt\u00e1rol\u00f3 {1} megabyte-os m\u00e9ret\u00e9nek a fele. N\u00f6velje a f\u00e1jlt\u00e1rol\u00f3 m\u00e9ret\u00e9t, vagy cs\u00f6kkentse a napl\u00f3f\u00e1jl m\u00e9ret\u00e9t.
+INVALID_FILE_SIZE_SIAS0124.explanation=A napl\u00f3f\u00e1jl m\u00e9rete nagyobb, mint az \u00e1lland\u00f3 f\u00e1jlt\u00e1rol\u00f3 m\u00e9rete. A f\u00e1jlt\u00e1rol\u00f3 m\u00e9rete az \u00e1lland\u00f3 \u00e9s az ideiglenes t\u00e1rol\u00f3 \u00f6sszes\u00edtett m\u00e9rete, megabyte-ban. A f\u00e1jlt\u00e1rol\u00f3 m\u00e9rete egyenl\u0151 ar\u00e1nyban van felosztva az \u00e1lland\u00f3 \u00e9s az ideiglenes t\u00e1rol\u00f3 k\u00f6z\u00f6tt, \u00edgy a napl\u00f3f\u00e1jl m\u00e9ret\u00e9nek kisebbnek kell lennie, mint a f\u00e1jlt\u00e1rol\u00f3 m\u00e9ret\u00e9nek a fele.
+INVALID_FILE_SIZE_SIAS0124.useraction=N\u00f6velje a f\u00e1jlt\u00e1rol\u00f3 m\u00e9ret\u00e9t, vagy cs\u00f6kkentse a napl\u00f3f\u00e1jl m\u00e9ret\u00e9t.
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: A(z) {0} \u00e1ln\u00e9v c\u00e9l azonos\u00edt\u00f3 m\u00e1r meg lett hat\u00e1rozva egy Queue vagy TopicSpace eset\u00e9n, \u00edgy az \u00e1ln\u00e9v c\u00e9l nem ker\u00fcl l\u00e9trehoz\u00e1sra.
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=Az \u00e1ln\u00e9v c\u00e9l azonos\u00edt\u00f3j\u00e1nak egyedinek kell lennie. 
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1ln\u00e9v c\u00e9l sz\u00e1m\u00e1ra egyedi azonos\u00edt\u00f3t ad meg.  

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+  <head>
+    <title>Open Liberty</title>
+    <style>
+		* {
+			box-sizing: border-box;
+		}
+
+		@font-face {
+			font-family: IBMPlexSans;
+			src: url('fonts/IBMPlexSans-Regular.woff');
+		}
+
+		@font-face {
+			font-family: BunueloLight;
+			src: url("/fonts/BunueloCleanPro-Light.woff");
+		}
+
+		@font-face {
+			font-family: BunueloBold;
+			src: url("/fonts/BunueloCleanPro-SemiBold.woff");
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: IBMPlexSans, 'Helvetica', 'Arial', sans-serif;
+			font-size: 16px;
+			overflow-x: hidden;
+		}
+
+		h1 {
+			color: white;
+			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			font-size: 1.75rem;
+			line-height: 1.5;
+			margin: 0px;
+			text-align: left;
+		}
+
+		h2 {
+			color: #3F4664;
+			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			font-size: 1.5rem;
+			line-height: 1.5;
+			margin: 0px;
+			text-align: center;
+		}
+
+		h3 {
+			color: white;
+			font-family: BunueloLight;
+			font-size: 1.25rem;
+			line-height: 1.5;
+			margin: 0px;
+			text-align: left;
+			font-weight: 300;
+		}
+
+		@media (min-width: 767px) {
+			h1 {
+				font-size: 2rem;
+			}
+
+			h2 {
+				font-size: 1.75rem;
+			}
+
+			h3 {
+				font-size: 1.5rem;
+			}
+		}
+
+		@media (min-width: 1165px) {
+			h3 {
+				font-size: 1.75rem;
+			}
+		}
+
+		a {
+			color: #546FB5;
+			font-size: 20px;
+			line-height: 23px;
+			text-decoration: none;
+			font-weight: 300;
+		}
+
+		a:hover {
+			color: #6787D9;
+		}
+
+		p {
+			font-size: 14px;
+			color: #3F4664;
+			line-height: 21px;
+			font-weight: 300;
+		}
+
+		.bolded {
+			font-weight: 700;
+		}
+
+		.row {
+			padding: 0px 40px;
+			width: 100%;
+			max-width: 1150px;
+			margin: 0 auto;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -webkit-flex;
+			display: -ms-flexbox;
+			display: flex;
+  			-webkit-flex-wrap: wrap;
+			-ms-flex-wrap: wrap;
+  			flex-wrap: wrap;
+		}
+
+		.column {
+			flex: 100%;
+		}
+
+		@media (min-width: 767px) {
+			.row {
+  				-webkit-flex-wrap: nowrap;
+				-ms-flex-wrap: none;
+				flex-wrap: nowrap;
+			}
+			
+			.column {
+				flex: 50%;
+				max-width: 50%;
+			}
+		}
+
+
+
+		.hero {
+			background-image: radial-gradient(circle at top right, #5E6B8D, #2C2E50);
+		}
+
+		.inner-hero {
+			position: relative;
+		}
+
+		.star {
+			width: 4px;
+			height: 4px;
+			background-color: #C8D2D2;
+			border-radius: 50%;
+			position: absolute;
+		}
+
+		#star1 {
+			top: 430px;
+			right: calc(50% - 650px);
+			animation: blink 3s infinite;
+		}
+
+		#star2 {
+			top: 240px;
+			right: calc(50% - 150px);
+			animation: blink 4s infinite;
+		}
+
+		#star3 {
+			top: 110px;
+			right: calc(50% + 420px);
+			animation: blink 5s infinite;
+		}
+
+		#star4 {
+			top: 520px;
+			right: calc(50% + 385px);
+			animation: blink 6s infinite;
+		}
+
+		#star5 {
+			top: 330px;
+			right: calc(50% + 630px);
+			animation: blink 7s infinite;
+		}
+
+		@keyframes blink {
+			0% {
+				opacity: 0;
+			}
+			10% {
+				opacity: 1;
+			}
+			40% {
+				opacity: 1;
+			}
+			100% {
+				opacity: 0;
+			}
+		}
+
+		.inner-hero__message {
+			padding-top: 125px;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		@media (min-width: 600px) {
+			.inner-hero__message {
+				padding-top: 80px;
+			}
+		}
+
+		.inner-hero__message h3 {
+			padding-top: 0px;
+		}
+
+		@media (min-width: 767px) {
+			.inner-hero__message {
+				padding-left: 80px;
+				padding-right: 80px;
+			}
+
+			.inner-hero__message h3 {
+				padding-top: 60px;
+			}
+		}
+
+		@media (min-width: 1165px) {
+			.inner-hero__message {
+				padding-left: 40px;
+				padding-right: 40px;
+			}
+		}
+
+		#inner-hero__title {
+			display: block;
+			margin: 0 auto;
+			max-width: 80%;
+			padding: 15px 0px;
+		}
+
+		@media (min-width: 767px) {
+			#inner-hero__title {
+				max-width: 100%;
+			}
+		}
+
+		#inner-hero__open_source {
+			color: #ffffff;
+			float: right;
+			position: relative;
+			top: -39px;
+			right: 18%;
+			margin-bottom: -20px;
+			font-size: 11px;
+		}
+
+		@media (min-width: 460px) {
+			#inner-hero__open_source {
+				top: -44px;
+				font-size: 13px;
+			}
+		}
+
+		@media (min-width: 630px) {
+			#inner-hero__open_source {
+				top: -46px;
+				font-size: 14px;
+			}
+		}
+
+		@media (min-width: 767px) {
+			#inner-hero__open_source {
+				top: -42px;
+				right: 9%;
+				font-size: 12px;
+			}
+		}
+
+		@media (min-width: 850px) {
+			#inner-hero__open_source {
+				top: -44px;
+				font-size: 13px;
+			}
+		}
+
+		@media (min-width: 1000px) {
+			#inner-hero__open_source {
+				top: -45px;
+				font-size: 14px;
+			}
+		}
+
+		#inner-hero__subtitle {
+			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			font-size: 20px;
+			color: #ffffff;
+			line-height: 1.2;
+			margin-top: 15px;
+			text-align: center;
+		}
+
+		@media (min-width: 767px) {
+			#inner-hero__subtitle {
+				text-align: left;
+			}
+		}
+		@media (min-width: 1165px) {
+			#inner-hero__subtitle {
+				font-size: 22px;
+			}
+		}
+
+		#inner-hero__img_container {
+			position: relative;
+		}
+
+		#inner-hero__beam {
+			position: relative;
+			max-width: 100%;
+			top: 25px;
+		}
+
+		@media (min-width: 767px) {
+			#inner-hero__beam {
+				max-width: 150%;
+				top: auto;
+				left: -35%;
+			}
+		}
+
+		#inner-hero__clouds {
+			width: 100%;
+			position: absolute;
+			bottom: -20px;
+		}
+		
+		@media (min-width: 767px) {
+			#inner-hero__clouds {
+				left: 0;
+				bottom: 0;
+			}
+		}
+
+
+
+		.resources {
+			padding: 25px 20px 15px 20px;
+		}
+
+		.resources .row {
+			-webkit-box-direction: normal;
+			-webkit-box-orient: vertical;
+			-moz-box-direction: normal;
+			-moz-box-orient: vertical;
+			-webkit-flex-direction: column;
+  			-ms-flex-direction: column;
+			flex-direction: column;
+			padding: 0px 20px;
+		}
+
+		.resource {
+			width: 90px;
+			text-align: center;
+			padding-top: 15px;
+			padding-bottom: 0px;
+			cursor: pointer;
+			margin: 0 auto;
+		}
+
+		.resource:hover {
+			background-color: #F1F4FE;
+		}
+
+		.resource p {
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		.resource__logo {
+			height: 40px;
+		}
+
+		.circle {
+			border-radius: 50%;
+			border: 1px solid #C8D2D2;
+			padding: 6px;
+			background-color: #ffffff;
+		}
+
+		#gitter_logo {
+			border-radius: 50%;
+		}
+
+		#first_row {
+			padding-top: 20px;
+		}
+
+		@media (min-width: 320px) {
+			.resources .row {
+				-webkit-box-direction: normal;
+				-webkit-box-orient: horizontal;
+				-moz-box-direction: normal;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;
+				padding: 0px;
+			}
+		}
+
+		@media (min-width: 400px) {
+			.resource {
+				width: 100px;
+			}
+
+			.resource__logo {
+				height: 50px;
+			}
+		}
+
+		@media (min-width: 500px) {
+			.resource {
+				width: 120px;
+			}
+
+			.resource__logo {
+				height: 70px;
+			}
+
+			.resource p {
+				margin-top: 15px;
+				margin-bottom: 15px;
+			}
+		}
+
+		@media (min-width: 767px) {
+			.resources {
+				padding-left: 40px;
+				padding-right: 40px;
+			}
+
+			.resource {
+				width: 140px;
+			}
+
+			.resource__logo {
+				height: 80px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			#first_row {
+				float: left;
+				width: 50%;
+				padding-top: 0px;
+			}
+
+			#second_row {
+				float: right;
+				width: 50%;
+			}
+
+			.resources {
+				height: 250px;
+			}
+
+			.resource {
+				padding-top: 30px;
+				padding-bottom: 10px;
+			}
+		}
+
+
+
+		.logos {
+			padding: 40px;
+			margin-top: 30px;
+		}
+
+		.logos .row {
+			justify-content: center;
+			-webkit-box-direction: normal;
+			-webkit-box-orient: vertical;
+			-moz-box-direction: normal;
+			-moz-box-orient: vertical;
+			-webkit-flex-direction: column;
+  			-ms-flex-direction: column;
+			flex-direction: column;
+			padding: 0px 20px;
+		}
+
+		@media (min-width: 992px) {
+			.logos .row {
+				-webkit-box-direction: normal;
+				-webkit-box-orient: horizontal;
+				-moz-box-direction: normal;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;			
+			}
+		}
+
+		#logos__title {
+			padding-bottom: 30px;
+		}
+
+		#microprofile_logo, #jakarta_ee_logo {
+			align-self: center;
+		}
+
+		@media (max-width: 767.98px) {
+			#microprofile_logo, #jakarta_ee_logo {
+				width: 100%;
+				text-align: center;
+			}
+
+			#microprofile_logo img {
+				max-width: 100%;
+				min-width: 205px;
+			}
+
+			#jakarta_ee_logo img {
+				max-width: 60%;
+				min-width: 150px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			#microprofile_logo {
+				margin-right: 50px;
+			}
+
+			#jakarta_ee_logo {
+				margin-left: 50px;
+			}
+		}
+
+
+		.logos, .resources {
+			margin: 0 auto;
+			box-shadow: 0 2px 4px 1px rgba(63,70,89,0.31);
+			border-radius: 3px;
+			margin-bottom: 30px;
+			margin-top: 30px;
+		}
+
+		@media (min-width: 576px) {
+			.logos, .resources {
+				max-width: 640px;
+			}
+		}
+
+		@media (min-width: 767px) {
+			.logos, .resources {
+				max-width: 720px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			.logos, .resources {
+				max-width: 960px;
+			}
+		}
+
+		@media (min-width: 1165px) {
+			.logos, .resources {
+				max-width: 1070px;
+			}
+		}
+
+
+
+		.footer {
+			background-color: #1d1e3c;
+			padding: 70px 0;
+		}
+
+		.footer p {
+			color: #c8d2d2;
+		}
+
+		.footer__content {
+			text-align: center;
+			justify-content: center;
+		}
+
+		@media (min-width: 600px) {
+			.footer__content {
+				display: -webkit-box;
+				display: -moz-box;
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+  				align-items: center;
+				text-align: left;
+			}
+		}
+
+		.footer__img {
+			margin-bottom: 35px;
+			max-width: auto;
+		}
+
+		@media (min-width: 600px) {
+			.footer__img {
+				margin-bottom: 0;
+				margin-right: 35px;
+			}
+		}
+
+		.footer__copy {
+			padding: 0 16px;
+		}
+
+		@media (min-width: 600px) {
+			.footer__copy {
+				max-width: 60%;
+			}
+		}
+
+
+		#update-banner {
+			background-color: #E6EDA8;
+			display: block;
+			float: left;
+			margin: 0px auto;
+			opacity: 0.98;
+			position: fixed;
+			width: 100vw;
+			z-index: 50;
+		}
+
+		@media (min-width: 600px) {
+			#update-banner {
+				height: 50px;
+				-webkit-box-direction: reverse;
+				-webkit-box-orient: horizontal;
+				-moz-box-direction: reverse;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row-reverse;
+  				-ms-flex-direction: row-reverse;
+				flex-direction: row-reverse;
+			}
+		}
+
+		#banner-container {
+			margin: 0;
+			position: relative;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -webkit-flex;
+			display: -ms-flexbox;
+			display: flex;
+  			align-items: center;
+			padding: 56px 40px 16px;
+		}
+
+		@media (min-width: 600px) {
+			#banner-container {
+				padding: 14px 0px;
+				left: 80px;
+			}
+		}
+
+		@media (min-width: 1165px) {
+			#banner-container {
+				left: calc(50% - 540px);
+			}
+		}
+
+		.banner-text{
+			color: #1A304C;
+			display: inline-block;
+			font-weight: 300;
+			position: relative;
+			text-align: center;
+			margin-left: 0;
+			width: 100%;
+			font-size: 14px;
+		}
+
+		.banner-text a {
+			color: #110f16;
+			font-size: 14px;
+			letter-spacing: .5px;
+			text-decoration: underline;
+		}
+
+		@media (min-width: 600px) {
+			.banner-text {
+				text-align: left;
+				font-size: 16px;
+				padding-right: 16px;
+			}
+
+			.banner-text a {
+				font-size: 1rem;
+			}
+		}
+
+		.x-close {
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
+			width: 30px;
+			height: 30px;
+			z-index: 60;
+			position: absolute;
+			top: 5px;
+			right: 50%;
+			margin-right: -15px;
+		}
+
+		@media (min-width: 600px) {
+			.x-close {
+				position: absolute;
+				right: 80px;
+				margin-right: 0;
+			}
+		}
+
+		@media (min-width: 1165px) {
+			.x-close {
+				right: calc(50% - 540px);
+			}
+		}
+
+		.x-close:hover {
+			cursor: pointer;
+			opacity: 0.8;
+		}
+
+		.x-close:active{
+			opacity: 0.6;
+		}
+
+		.x-close-right-tilt,
+		.x-close-left-tilt {
+			background-color: #1A304C;
+			height: 25px;
+			position: absolute;
+			right: 49%;
+			top: 7px;
+			width: 2px;
+			z-index: 40;
+			-ms-transform: rotate(45deg);
+			-webkit-transform: rotate(45deg);
+			transform: rotate(45deg);
+		}
+
+		.x-close-left-tilt{
+			-ms-transform: rotate(-45deg);
+			-webkit-transform: rotate(-45deg);
+			transform: rotate(-45deg);
+		}
+    </style>
+  </head>
+
+  <body>
+	<main>
+		<section class="hero" data-externalizedAriaLabel="WELCOME_SECTION">
+			<div class="inner-hero">
+				<span id="star1" class="star"></span>
+				<span id="star2" class="star"></span>
+				<span id="star3" class="star"></span>
+				<span id="star4" class="star"></span>
+				<span id="star5" class="star"></span>
+				<div class="inner-hero__message row" data-externalizedAriaLabel="WELCOME_SECTION_CONTENT">
+					<div class="column">
+						<h3 data-externalizedString="WELCOME_MESSAGE"></h3>
+						<img id="inner-hero__title" src="/img/open_liberty_title.png" alt="Open Liberty">
+						<p id="inner-hero__open_source" data-externalizedString="WELCOME_IBM_OPEN_SOURCE"></p>
+						<h2 id="inner-hero__subtitle" data-externalizedString="WELCOME_LIGHTWEIGHT"></h2>
+					</div>
+					<div id="inner-hero__img_container" class="column">
+						<img id="inner-hero__beam" src="/img/beam.png" data-externalizedAlt="UFO">
+					</div>
+				</div>
+				<img id="inner-hero__clouds" src="/img/clouds.png" data-externalizedAlt="CLOUDS">
+			</div>
+		</section>
+
+		<section class="resources" data-externalizedAriaLabel="RESOURCES_SECTION">
+			<h2 data-externalizedString="RESOURCES"></h2>
+			<div id="first_row" class="row">
+				<div class="resource">
+					<a href="https://openliberty.io/docs/" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/img/open_liberty_logo.png" data-externalizedAlt="OL_SUPPORT">
+						<p data-externalizedString="DOCS"></p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/img/github_logo.png" data-externalizedAlt="GITHUB">
+						<p>GitHub</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://stackoverflow.com/questions/tagged/open-liberty" target="_blank" rel="noopener">
+						<img class="resource__logo circle" src="/img/stack_overflow_logo.png" data-externalizedAlt="STACK_OVERFLOW">
+						<p>Stack Overflow</p>
+					</a>
+				</div>
+			</div>
+			<div id="second_row" class="row">
+				<div class="resource">
+					<a href="https://groups.io/g/openliberty" target="_blank" rel="noopener">
+						<img class="resource__logo circle" src="/img/groups_io_logo.jpeg" data-externalizedAlt="GROUPS_IO">
+						<p>Groups.io</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/img/twitter_logo.png" data-externalizedAlt="TWITTER">
+						<p>Twitter</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://gitter.im/OpenLiberty/" target="_blank" rel="noopener">
+						<img id="gitter_logo" class="resource__logo" src="/img/gitter_logo.png" data-externalizedAlt="GITTER">
+						<p>Gitter</p>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="logos" data-externalizedAriaLabel="LOGOS_SECTION">
+			<h2 id="logos__title" data-externalizedString="COMPATIBLE"></h2>
+			<div class="row">
+				<a id="microprofile_logo" href="https://microprofile.io/" target="_blank" rel="noopener">
+					<img src="/img/microprofile_logo.png" data-externalizedAlt="MICROPROFILE">
+				</a>
+				<a id="jakarta_ee_logo" href="https://jakarta.ee/" target="_blank" rel="noopener">
+					<img src="/img/jakarta_ee_logo.png" data-externalizedAlt="JAKARTA_EE">
+				</a>
+			</div>
+		</section>
+
+	</main>
+	
+	<footer class="footer">
+		<div class="footer__content row" data-externalizedAriaLabel="COPYRIGHT">
+			<img class="footer__img" src="/img/footer-img.png" data-externalizedAlt="OPEN_LIBERTY_FOOTER">
+			<p class="footer__copy" data-externalizedString="COPYRIGHT_OPEN_LIBERTY"></p>
+		</div>
+	</footer>
+
+
+	<script type="text/javascript" src="js/externalize-string.js"></script>
+	<script type="text/javascript" src="js/banner.js"></script>
+	<!-- The call below attempts to get a latest release marker file from a specific location. -->
+	<!-- It's expected that the returned object will be a piece of JavaScript defining a       -->
+	<!-- variable called latestReleasedVersion that contains the following fields:             -->
+	<!-- version: The version number of the latest released product                            -->
+	<!-- availableAt: The URL where you can get the latest version (from a Web Browser)        -->
+	<!-- availableAtLabel: The label to show on the anchor tag                                 -->
+	<script type="text/javascript" src="https://openliberty.io/latestVersion.js"></script>
+	<script type="text/javascript" src="version.js"></script>
+
+	<script type="text/javascript">
+		var urlForCssEnhancements = "banner-welcome.css";
+		var isLibertyUpdateAvailable = false;
+		function doVersionCheck(latestVersion) {
+			// Check that the remote file was located
+			// and contains the required version details
+			if (latestVersion != null && latestVersion.productName != null
+					&& latestVersion.availableFrom != null
+					&& latestVersion.version != null) {
+
+				// Check if the online version differs from this current version
+				if (latestVersion.version != current.version) {
+					isLibertyUpdateAvailable = true;
+				}
+			}
+		}
+
+        try {
+			if (latestReleasedVersion) {
+			    doVersionCheck(latestReleasedVersion);
+            }
+        } catch (ex) {
+            console.error("Failed to to load https://openliberty.io/latestVersion.js");
+        }
+
+		var url = getUrl();
+		externalizedStrings(url).then(function(response) {
+			buildUpdateBanner(response);
+        }).catch(function(error) {
+			// get english message
+			externalizedStrings("/nls/messages.js").then(function(response2) {
+				buildUpdateBanner(response2);
+        }, function(error2) {
+			    console.error("Failed to externalize strings!", error2);
+			});
+		});
+	</script>
+  </body>
+</html>

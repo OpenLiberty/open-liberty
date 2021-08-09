@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CallHeader=\ud638\ucd9c: 
+
+DescriptionHeader=\uc608\uc678 \uc124\uba85: 
+
+DescriptorExceptionsHeader=\ub514\uc2a4\ud06c\ub9bd\ud130 \uc608\uc678: 
+
+DescriptorHeader=\ub514\uc2a4\ud06c\ub9bd\ud130: 
+
+ErrorCodeHeader=\uc624\ub958 \ucf54\ub4dc: 
+
+ErrorFormattingMessage=\uc608\uc678 \uba54\uc2dc\uc9c0\ub97c \ud615\uc2dd\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958 \ubc1c\uc0dd: {0}  \uc778\uc218: {1}
+
+ExceptionHeader=\uc608\uc678 [EclipseLink-
+
+InternalExceptionHeader=\ub0b4\ubd80 \uc608\uc678: 
+
+InternalExceptionStackHeader=\ub0b4\ubd80 \uc608\uc678 \uc2a4\ud0dd: 
+
+LocalExceptionStackHeader=\ub85c\uceec \uc608\uc678 \uc2a4\ud0dd: 
+
+MappingHeader=\ub9f5\ud551: 
+
+NoExceptionTranslationForThisLocale=(\uc774 \uc608\uc678\uc758 \ubcc0\ud658\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.) {0}
+
+QueryHeader=\uc870\ud68c: 
+
+RuntimeExceptionsHeader=\ub7f0\ud0c0\uc784 \uc608\uc678: 
+
+TargetInvocationExceptionHeader=\ub300\uc0c1 \ud638\ucd9c \uc608\uc678: 
+
+TargetInvocationExceptionStackHeader=\ub300\uc0c1 \ud638\ucd9c \uc608\uc678 \uc2a4\ud0dd: 
+

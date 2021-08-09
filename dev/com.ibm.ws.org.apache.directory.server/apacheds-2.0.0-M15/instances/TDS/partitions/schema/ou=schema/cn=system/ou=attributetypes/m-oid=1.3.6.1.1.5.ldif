@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.1.5,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseExactMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DSA_OPERATION
+m-oid: 1.3.6.1.1.5
+m-name: vendorVersion
+m-description: RFC3045: version of implementation
+m-obsolete: FALSE
+entryUUID: 5a888d94-d20a-4f51-b6fd-e014da08d0cf
+entryCSN: 20130919065345.641000Z#000000#000#000000
+entryParentId: 8d7781fa-8bd8-4ab1-8c8c-ae6a13d0b74a
+createTimestamp: 20130919065352.208Z

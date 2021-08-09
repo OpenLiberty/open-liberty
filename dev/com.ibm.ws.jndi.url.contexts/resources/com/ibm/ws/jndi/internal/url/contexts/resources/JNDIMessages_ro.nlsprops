@@ -1,0 +1,38 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jndi.url.contexts/resources/com/ibm/ws/jndi/internal/url/contexts/resources/JNDIMessages.nlsprops
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Description
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Message numbers CWWKN1nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn:	com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn:	com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages 
+# -------------------------------------------------------------------------------------------------
+#
+JNDI_NON_JEE_THREAD_CWWKN0100E=CWWKN0100E: O opera\u0163ie pe numele JNDI {0} nu poate fi finalizat\u0103 pentru c\u0103 firul de execu\u0163ie curent nu este asociat cu o component\u0103 de aplica\u0163ie Java Enterprise Edition. Asigura\u0163i-v\u0103 c\u0103 opera\u0163ia JNDI nu are loc \u00een fire de execu\u0163ie care nu sunt gestionate de server sau \u00een blocuri de cod statice.
+JNDI_NON_JEE_THREAD_CWWKN0100E.explanation=Opera\u0163iile JNDI pe java: namespace sunt suportate numai \u00een contextul unei componente de aplica\u0163ie Java EE.
+JNDI_NON_JEE_THREAD_CWWKN0100E.useraction=Modifica\u0163i aplica\u0163ia pentru ca opera\u0163ia JNDI s\u0103 aib\u0103 loc \u00een contextul unei componente de aplica\u0163ie Java EE.

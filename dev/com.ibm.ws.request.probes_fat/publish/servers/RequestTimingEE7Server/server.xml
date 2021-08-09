@@ -1,0 +1,14 @@
+<server description="new server">
+
+  <!-- Enable features -->
+    <featureManager> 
+    	<feature>jsp-2.2</feature>
+    </featureManager>
+
+    <httpEndpoint id="defaultHttpEndpoint" host="*" />
+   
+ 	<include location="../fatTestPorts.xml"/>
+  	<logging traceSpecification="com.ibm.ws.request.timing.*=all:com.ibm.ws.request.probe.*=all"/>
+  
+  
+</server>

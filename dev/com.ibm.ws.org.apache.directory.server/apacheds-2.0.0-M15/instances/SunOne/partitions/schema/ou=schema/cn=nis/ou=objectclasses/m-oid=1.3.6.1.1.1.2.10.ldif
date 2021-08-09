@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.10,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-must: nisMapEntry
+m-must: nisMapName
+m-oid: 1.3.6.1.1.1.2.10
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: An entry in a NIS map
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: nisObject
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: description

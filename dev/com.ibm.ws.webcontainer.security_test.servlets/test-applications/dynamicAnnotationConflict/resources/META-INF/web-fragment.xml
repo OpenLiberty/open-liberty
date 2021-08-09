@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="..."
+      version="3.0">
+      
+	<!-- DynamicAnnotationConflict1 security constraint has conflict with web.xml - security constraint in web.xml (unprotected) will take precedent -->
+    <servlet id="Servlet_1">
+    	<description></description>
+		<display-name>DynamicAnnotationConflict1</display-name>
+		<servlet-name>DynamicAnnotationConflict1</servlet-name>
+		<servlet-class>web.dynamicannotationconflict.DynamicAnnotationConflict1</servlet-class>
+    </servlet>
+    <servlet-mapping id="ServletMapping_1">
+         <servlet-name>DynamicAnnotationConflict1</servlet-name>
+         <url-pattern>/DynamicAnnotationConflict1</url-pattern>
+    </servlet-mapping>      
+	<security-constraint>
+    	<display-name>SecurityConstraint_01</display-name>
+        <web-resource-collection>
+        	<web-resource-name>WebResourceCollection_01</web-resource-name>
+           	<url-pattern>/DynamicAnnotationConflict1</url-pattern>
+        </web-resource-collection>
+     	<auth-constraint id="AuthConstraint_1">
+        	<role-name>Employee</role-name>        
+     	</auth-constraint>         
+	</security-constraint>      
+      
+    <!-- DynamicAnnotationConflict3 run-as role has conflict with web.xml - run-as role in web.xml (Manager) will take precedent -->  
+	<servlet id="Servlet_3">
+      	<description></description>
+		    <display-name>DynamicAnnotationConflict3</display-name>
+		    <servlet-name>DynamicAnnotationConflict3</servlet-name>
+		    <servlet-class>web.dynamicannotationconflict.DynamicAnnotationConflict3</servlet-class>
+        <run-as>
+            <role-name>Employee</role-name>
+        </run-as>         
+	</servlet>      
+
+	<!-- DynamicAnnotationConflict6 run-as role not defined web.xml - run-as role here (Manager) will take precedent for /DynamicAnnotationConflict6/a -->
+	<servlet id="Servlet_6a">
+      	<description></description>
+		    <display-name>DynamicAnnotationConflict6a</display-name>
+		    <servlet-name>DynamicAnnotationConflict6a</servlet-name>
+		    <servlet-class>web.dynamicannotationconflict.DynamicAnnotationConflict6</servlet-class>
+        <run-as>
+        	<role-name>Manager</role-name>
+        </run-as>         
+ 	</servlet>
+ 	<servlet-mapping id="ServletMapping_6a">
+         <servlet-name>DynamicAnnotationConflict6a</servlet-name>
+         <url-pattern>/DynamicAnnotationConflict6/a</url-pattern>
+	</servlet-mapping>
+
+	<security-role id="SecurityRole_1">
+         <description>Employee users in an enterprise</description>
+         <role-name>Employee</role-name>
+	</security-role>
+                 
+</web-fragment>

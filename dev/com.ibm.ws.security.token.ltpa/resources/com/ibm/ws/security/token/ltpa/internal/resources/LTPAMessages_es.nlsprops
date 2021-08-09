@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: No hay ninguna f\u00e1brica de se\u00f1ales inicializada.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=La f\u00e1brica de se\u00f1ales no se ha inicializado.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Valide la configuraci\u00f3n del gestor de se\u00f1ales en el archivo server.xml o cualquier otro recurso especificado por la configuraci\u00f3n.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: No hay ning\u00fan ID exclusivo con el que crear la se\u00f1al.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=El par\u00e1metro unique_id es nulo o no se ha especificado en los datos de se\u00f1al.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Compruebe que el usuario tenga un ID exclusivo. Si se utiliza un registro de usuarios personalizado, compruebe que los datos de se\u00f1al contienen un valor para el par\u00e1metro unique_id.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: El sistema no puede crear la se\u00f1al LTPA porque falta la propiedad necesaria {0}.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=Falta la clave especificada, por lo que la se\u00f1al LTPA no se puede crear.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Explore el archivo de propiedades en el que se almacena la informaci\u00f3n de claves LTPA y compruebe que la informaci\u00f3n de claves incluye una clave secreta, una clave privada y una clave p\u00fablica.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Creando las claves LTPA. Esto puede tardar unos segundos.
+LTPA_CREATE_KEYS_START.explanation=Las claves LTPA no existen y se generan autom\u00e1ticamente. Los servicios que necesiten LTPA no se iniciar\u00e1n hasta que se hayan generado las claves LTPA y est\u00e9 lista la configuraci\u00f3n.
+LTPA_CREATE_KEYS_START.useraction=No se requiere ninguna acci\u00f3n.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Las claves LTPA se han creado en {0} segundos. Archivo de claves LTPA: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Este mensaje es s\u00f3lo informativo.
+LTPA_CREATE_KEYS_COMPLETE.useraction=No se requiere ninguna acci\u00f3n.
+
+LTPA_CONFIG_READY=CWWKS4105I: La configuraci\u00f3n de LTPA estar\u00e1 lista despu\u00e9s de {0} segundos.
+LTPA_CONFIG_READY.explanation=Este mensaje es s\u00f3lo informativo.
+LTPA_CONFIG_READY.useraction=No se requiere ninguna acci\u00f3n.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: Error de configuraci\u00f3n de LTPA. No se puede crear ni leer el archivo de claves LTPA: {0}
+LTPA_CONFIG_ERROR.explanation=No se pueden leer ni crear las claves LTPA en la ubicaci\u00f3n especificada.
+LTPA_CONFIG_ERROR.useraction=Compruebe que el proceso de servidor puede acceder a la ubicaci\u00f3n. Los FFDC podr\u00edan indicar un error muy grave al generar o cargar las claves.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: La configuraci\u00f3n o el archivo de claves LTPA se han modificado. Las claves LTPA se cargar\u00e1n de nuevo desde el archivo: {0}
+LTPA_KEYS_TO_LOAD.explanation=Las claves LTPA deben volver a cargarse porque se ha producido un cambio en el archivo de claves LTPA o la configuraci\u00f3n.
+LTPA_KEYS_TO_LOAD.useraction=Aseg\u00farese de que todos los servidores que participan en el inicio de sesi\u00f3n \u00fanico utilizan las mismas claves y contrase\u00f1a LTPA.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: El sistema no puede crear la clave LTPA.
+LTPA_KEY_CREATE_ERROR.explanation=La clave LTPA no se puede crear.
+LTPA_KEY_CREATE_ERROR.useraction=Los FFDC podr\u00edan indicar un error muy grave al generar las claves.
+
+

@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: Nessun factory token inizializzato.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=Il factory token non \u00e8 stato inizializzato.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Convalidare la configurazione del gestore token nel file server.xml o qualsiasi altra risorsa specificata dalla configurazione.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: Nessun ID univoco con cui creare il token.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=Il parametro unique_id \u00e8 null o non \u00e8 stato specificato nei dati del token.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Confermare che l'utente disponga di un ID univoco. Se viene utilizzato un registro utente personalizzato, confermare che i dati del token contengano un valore per il parametro unique_id.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: Il sistema non \u00e8 in grado di creare il token LTPA perch\u00e9 la propriet\u00e0 {0} richiesta non \u00e8 presente.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=La chiave specificata non \u00e8 presente, per cui non \u00e8 possibile creare il token LTPA.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Esaminare il file di propriet\u00e0 in cui sono memorizzate le informazioni relative alla chiave LTPA e verificare che tali informazioni includano una chiave segreta, una chiave privata ed una chiave pubblica.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Creazione delle chiavi LTPA. Questa operazione potrebbe richiedere alcuni secondi.
+LTPA_CREATE_KEYS_START.explanation=Le chiavi LTPA non esistono e vengono generate automaticamente. I servizi che richiedono LTPA non verranno avviati finch\u00e9 non vengono generate le chiavi LTPA e la configurazione non \u00e8 pronta.
+LTPA_CREATE_KEYS_START.useraction=Non sono richieste azioni.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Chiavi LTPA create in {0} secondi. File della chiave LTPA: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Messaggio a solo scopo informativo.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Non sono richieste azioni.
+
+LTPA_CONFIG_READY=CWWKS4105I: La configurazione LTPA \u00e8 pronta dopo {0} secondi.
+LTPA_CONFIG_READY.explanation=Messaggio a solo scopo informativo.
+LTPA_CONFIG_READY.useraction=Non sono richieste azioni.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: Errore di configurazione LTPA. Impossibile creare o leggere il file della chiave LTPA: {0}
+LTPA_CONFIG_ERROR.explanation=Non \u00e8 stato possibile leggere o creare le chiavi LTPA nell'ubicazione specificata.
+LTPA_CONFIG_ERROR.useraction=Verificare che l'ubicazione sia accessibile da parte del processo del server. La presenza di FFDC potrebbe indicare un errore irreversibile durante la creazione o il caricamento delle chiavi.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: La configurazione o il file di chiavi LTPA sono stati modificati. Le chiavi LTPA verranno ricaricate dal file: {0}
+LTPA_KEYS_TO_LOAD.explanation=Le chiavi LTPA devono essere ricaricate perch\u00e9 c'\u00e8 stata una modifica al file delle chiavi LTPA o alla configurazione.
+LTPA_KEYS_TO_LOAD.useraction=Accertarsi che tutti i server che partecipano a SSO (Single-Sign-On) utilizzino le stesse chiavi LTPA e password.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: Il sistema non pu\u00f2 creare la chiave LTPA.
+LTPA_KEY_CREATE_ERROR.explanation=Non \u00e8 stato possibile creare la chiave LTPA.
+LTPA_KEY_CREATE_ERROR.useraction=La presenza di FFDC potrebbe indicare un errore irreversibile durante la creazione delle chiavi.
+
+

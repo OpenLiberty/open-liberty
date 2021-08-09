@@ -1,0 +1,1144 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_CWSIT0000.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy null\u00e9rt\u00e9k\u0171 {0} ker\u00fclt felhaszn\u00e1l\u00e1sra egy {1} p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra.
+NULL_USED_TO_CREATE_CWSIT0001.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy null\u00e9rt\u00e9k\u0171 {0} ker\u00fclt \u00e1tad\u00e1sra egy {1} met\u00f3dush\u00edv\u00e1s sz\u00e1m\u00e1ra.
+NULL_USED_ON_CWSIT0002.explanation=CMSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: Nem tal\u00e1lhat\u00f3 {0} tulajdons\u00e1g a kapcsolati tulajdons\u00e1gokban.
+NULL_PROPERTY_CWSIT0003.explanation=Egy sz\u00fcks\u00e9ges tulajdons\u00e1g nem tal\u00e1lhat\u00f3 a kapcsolati tulajdons\u00e1gokban egy klienskapcsolat l\u00e9trehoz\u00e1sakor.
+NULL_PROPERTY_CWSIT0003.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00fcks\u00e9ges tulajdons\u00e1g helyesen van megadva egy kapcsolat l\u00e9trehoz\u00e1sakor.
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy ClientConnectionFactory oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_CCF_CWSIT0004.explanation=CMSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy ClientConnection oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_CC_CWSIT0005.explanation=CMSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: Nem lehets\u00e9ges egyik megadott el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3val sem kapcsolatba l\u00e9pni. Tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt. A megk\u00eds\u00e9relt el\u0151bet\u00f6lt\u00e9si kapcsolatok: {0}.
+NO_BOOTSTRAP_CWSIT0006.explanation=A kliens nem tud csatlakozni a buszhoz. Ez a helyzet be\u00e1ll\u00edt\u00e1si vagy h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy pillanatnyilag a sz\u00fcks\u00e9ges el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3k egyike sem \u00e9rhet\u0151 el.
+NO_BOOTSTRAP_CWSIT0006.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3k el\u00e9rhet\u0151k. Egy el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3hoz kapcsolat be\u00e1ll\u00edt\u00e1s\u00e1nak r\u00e9szletei\u00e9rt tekintse meg az inform\u00e1ci\u00f3s k\u00f6zpontot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: Nem lehet csatlakozni az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3hoz a(z) {0} v\u00e9gponton a(z) {1} kiv\u00e9tel miatt.
+BOOTSTRAP_FAILED_CWSIT0007.explanation=A kliens nem tud l\u00e9trehozni kapcsolatot a megadott el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3val. Ez a helyzet be\u00e1ll\u00edt\u00e1si vagy h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3 nem \u00e9rhet\u0151 el pillanatnyilag. A kliens el\u0151bet\u00f6lt\u00e9si folyamata a szolg\u00e1ltat\u00f3i v\u00e9gpontok list\u00e1j\u00e1ban l\u00e9v\u0151 k\u00f6vetkez\u0151 szolg\u00e1ltat\u00f3i v\u00e9gpontponttal fogja folytatni.
+BOOTSTRAP_FAILED_CWSIT0007.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3 el\u00e9rhet\u0151. Az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3t a JMS kapcsolatgy\u00e1r Szolg\u00e1ltat\u00f3 v\u00e9gpont tulajdons\u00e1ga adta meg. A v\u00e9gpontc\u00edm a k\u00f6vetkez\u0151 form\u00e1tum\u00fa: hosztn\u00e9v:portsz\u00e1m:l\u00e1ncn\u00e9v (p\u00e9ld\u00e1ul helyihoszt:7276:Alap\u00dczenetkezel\u00e9sEl\u0151bet\u00f6lt\u00e9s). A kapcsolatgy\u00e1rnak meg kell adnia a Szolg\u00e1ltat\u00f3 v\u00e9gpont tulajdons\u00e1got, ha egy nem alap\u00e9rtelmezett el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3 ker\u00fcl felhaszn\u00e1l\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: Egy sikeres kapcsolat l\u00e9tes\u00fclt az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3hoz a(z) {0} v\u00e9gponton, de a kiszolg\u00e1l\u00f3 a(z) {1} hibafelt\u00e9telt adta vissza.
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=A kliens egy buszhoz csatlakozott, de a szolg\u00e1ltat\u00e1s haszn\u00e1latakor egy probl\u00e9m\u00e1t tapasztalt. Ez a helyzet h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el pillanatnyilag.
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1s el\u00e9rhet\u0151. Egy el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3hoz kapcsolat be\u00e1ll\u00edt\u00e1s\u00e1nak r\u00e9szletei\u00e9rt tekintse meg az inform\u00e1ci\u00f3s k\u00f6zpontot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: A(z) {1} buszhoz egy klienscsatlakoz\u00e1s meghi\u00fasult az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3ban a(z) {0} v\u00e9gponton a k\u00f6vetkez\u0151 ok miatt: {2}.
+MIRRORED_FAILURE_CWSIT0009.explanation=Egy kliens el\u0151bet\u00f6lt\u00e9si k\u00e9r\u00e9s meghi\u00fasult egy el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3n jelentkez\u0151 probl\u00e9ma miatt. Az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3ban t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s oka visszaad\u00e1sra ker\u00fclt. A kliens el\u0151bet\u00f6lt\u00e9si folyamata a szolg\u00e1ltat\u00f3i v\u00e9gpontok list\u00e1j\u00e1ban l\u00e9v\u0151 k\u00f6vetkez\u0151 szolg\u00e1ltat\u00f3i v\u00e9gpontponttal fogja folytatni.
+MIRRORED_FAILURE_CWSIT0009.useraction=Der\u00edtse ki \u00e9s oldja meg a hiba\u00fczenetben le\u00edrt hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. 
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer egy kliensk\u00e9r\u00e9se meghi\u00fasult a k\u00f6vetkez\u0151 ok miatt: {2}.
+MIRRORED_FAILURE_CWSIT0010.explanation=Egy kliensnek nem siker\u00fclt csatlakoznia egy buszhoz egy kiszolg\u00e1l\u00f3n t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s miatt. A kiszolg\u00e1l\u00f3ban t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s oka visszaad\u00e1sra ker\u00fclt.
+MIRRORED_FAILURE_CWSIT0010.useraction=Der\u00edtse ki \u00e9s oldja meg a hiba\u00fczenetben le\u00edrt hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: Nem lehetett csatlakozni a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerhez. A kapcsolat elveszett.
+ATTACH_FAILED_CWSIT0011.explanation=A kliens nem tud l\u00e9trehozni kapcsolatot a megnevezett \u00fczenetkezel\u00e9si alrendszerrel. Ez a helyzet h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem \u00e9rhet\u0151 el pillanatnyilag.
+ATTACH_FAILED_CWSIT0011.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy null\u00e9rt\u00e9k\u0171 {0} ker\u00fclt felhaszn\u00e1l\u00e1sra egy {1} p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra.
+NULL_USED_TO_CREATE_CWSIT0012.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy null\u00e9rt\u00e9k\u0171 {0} ker\u00fclt felhaszn\u00e1l\u00e1sra egy {1} p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra.
+NULL_USED_TO_CREATE_CWSIT0013.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: Egy k\u00e9rt \u00fczenetkezel\u00e9si alrendszer meghi\u00fasult a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszeren, a(z) {2} v\u00e9gponton a k\u00f6vetkez\u0151 ok miatt: {3}.
+MIRRORED_FAILURE_CWSIT0014.explanation=Egy k\u00e9rt \u00fczenetkezel\u00e9si alrendszer meghi\u00fasult a t\u00e1voli \u00fczenetkezel\u00e9si alrendszeren t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s miatt.
+MIRRORED_FAILURE_CWSIT0014.useraction=Der\u00edtse ki \u00e9s oldja meg a hiba\u00fczenetben le\u00edrt hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: Nem lehetett csatlakozni a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerhez.
+CONNECT_FAILED_CWSIT0015.explanation=Az \u00fczenetkezel\u00e9si alrendszer nem tud l\u00e9trehozni kapcsolatot egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel. Ez a helyzet h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem \u00e9rhet\u0151 el pillanatnyilag.
+CONNECT_FAILED_CWSIT0015.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} buszon.
+FAILED_AUTHENTICATION_CWSIT0016.explanation=Egy \u00fcgyf\u00e9lkapcsolat \u00fczenetkezel\u00e9si alrendszerrel l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHENTICATION_CWSIT0016.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: Nem lehet l\u00e9trehozni egy buszok k\u00f6zti kapcsolatot a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerhez a(z) {2} hoszton \u00e9s {3} porton kereszt\u00fcl a(z) {4} sz\u00e1ll\u00edt\u00e1si l\u00e1nc haszn\u00e1lat\u00e1val.
+LINK_FAILED_CWSIT0017.explanation=Az \u00fczenetkezel\u00e9si alrendszer nem tud l\u00e9trehozni kapcsolatot egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel. Ez a helyzet h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem \u00e9rhet\u0151 el pillanatnyilag.
+LINK_FAILED_CWSIT0017.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: Nem lehet l\u00e9trehozni a(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszerhez a(z) {3} hoszton \u00e9s {4} porton kereszt\u00fcl a(z) {5} sz\u00e1ll\u00edt\u00e1si l\u00e1nc haszn\u00e1lat\u00e1val.
+BRIDGE_FAILED_CWSIT0018.explanation=Az \u00fczenetkezel\u00e9si alrendszer nem tud l\u00e9trehozni kapcsolatot egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel. Ez a helyzet h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem \u00e9rhet\u0151 el pillanatnyilag.
+BRIDGE_FAILED_CWSIT0018.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: Nem \u00e9rhet\u0151 el megfelel\u0151 \u00fczenetkezel\u00e9si alrendszer a(z) {0} buszon, ami megfelelt a megadott {1} csatlakoz\u00e1si tulajdons\u00e1goknak. A hiba oka: {2}.
+NO_SUITABLE_ME_CWSIT0019.explanation=Egy kliens nem tudott csatlakozni egy buszhoz, mert nem volt olyan megfelel\u0151 \u00fczenetkezel\u00e9s alrendszer, amely megfelelt volna a kapcsolat tulajdons\u00e1gai \u00e1ltal megadott csatlakoz\u00e1si felt\u00e9teleknek.
+NO_SUITABLE_ME_CWSIT0019.useraction=Ism\u00e9telje meg a m\u0171veletet. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor k\u00e9rje meg a rendszeradminisztr\u00e1tort, hogy ellen\u0151rizze, hogy el\u00e9rhet\u0151-e egy megfelel\u0151 \u00fczenetkezel\u00e9si alrendszer. Vagy cs\u00f6kkentse a kapcsolat tulajdons\u00e1gai \u00e1ltal megadott csatlakoz\u00e1si felt\u00e9teleket, majd ism\u00e9telje meg a m\u0171veletet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerben egy kapcsolat l\u00e9trehoz\u00e1sa sor\u00e1n. Kiv\u00e9tel: {2}.
+EXCEPTION_CWSIT0020.explanation=CMSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: A(z) {1} buszon l\u00e9v\u0151 {0} sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem tal\u00e1lhat\u00f3 ebben a folyamatban.
+NOT_FOUND_CWSIT0021.explanation=Egy kliens nem tudott csatlakozni egy buszhoz, mert a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem tal\u00e1lhat\u00f3 abban a folyamatban, amelyhez a kliens csatlakozott.
+NOT_FOUND_CWSIT0021.useraction=Ezt a hib\u00e1t \u00e1ltal\u00e1ban egy \u00e1tmeneti felt\u00e9tel okozza, mint p\u00e9ld\u00e1ul egy kiszolg\u00e1l\u00f3 meghib\u00e1sod\u00e1sa egy \u00fcgyf\u00e9l \u00e1tir\u00e1ny\u00edt\u00e1sa k\u00f6zben. A m\u0171velet ism\u00e9telt megpr\u00f3b\u00e1l\u00e1s\u00e1nak meg kell oldania a hib\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} buszon.
+FAILED_AUTHENTICATION_CWSIT0022.explanation=Egy buszok k\u00f6zti \u00fczenetkezel\u00e9si alrendszer kapcsolat\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHENTICATION_CWSIT0022.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: A topol\u00f3giaszab\u00e1lyok nem enged\u00e9lyezik az azonos n\u00e9vvel rendelkez\u0151 \u00fczenetkezel\u00e9si alrendszerek k\u00f6zti kapcsolatot.
+NOT_ALLOWED_CWSIT0023.explanation=Egy azonos nev\u0171 \u00fczenetkezel\u00e9si alrendszer pr\u00f3b\u00e1lt meg csatlakozni ehhez az \u00fczenetkezel\u00e9si alrendszerhez. Azonos n\u00e9vvel rendelkez\u0151 k\u00e9t \u00fczenetkezel\u00e9si alrendszer nem lehet ugyanazon a buszon.
+NOT_ALLOWED_CWSIT0023.useraction=Ellen\u0151rizze a busztopol\u00f3gi\u00e1t \u00e9s az \u00fczenetkezel\u00e9si alrendszerek neveit.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_CWSIT0024.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st k\u00eds\u00e9relt meg l\u00e9trehozni a(z) {2} \u00fczenetkezel\u00e9si alrendszerrel.
+NOT_ALLOWED_CWSIT0026.explanation=Az ugyanezen a buszon l\u00e9v\u0151 egyik \u00fczenetkezel\u00e9si alrendszer megpr\u00f3b\u00e1lt l\u00e9trehozni egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st ezzel az \u00fczenetkezel\u00e9si alrendszerrel. A topol\u00f3giaszab\u00e1lyok nem enged\u00e9lyezik az azonos buszon l\u00e9v\u0151 \u00fczenetkezel\u00e9si alrendszerek szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9seit.
+NOT_ALLOWED_CWSIT0026.useraction=Ellen\u0151rizze a busztopol\u00f3gi\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer {2} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolata elind\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0028.explanation=Egy \u00fczenetkezel\u00e9si alrendszer \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1sa elind\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0028.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer {2} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 kapcsolata le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0029.explanation=Egy \u00fczenetkezel\u00e9si alrendszer \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1sa le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0029.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: A(z) {2} buszon \u00e9s {1} alh\u00e1l\u00f3zaton l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer {4} alh\u00e1l\u00f3zaton l\u00e9v\u0151 {3} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 buszon bel\u00fcli kapcsolata elind\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0030.explanation=Egy \u00fczenetkezel\u00e9si alrendszer \u00fczenetkezel\u00e9si alrendszerhez buszon bel\u00fcli csatlakoz\u00e1sa elind\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0030.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: A(z) {2} buszon \u00e9s {1} alh\u00e1l\u00f3zaton l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer {4} alh\u00e1l\u00f3zaton l\u00e9v\u0151 {3} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 buszon bel\u00fcli kapcsolata le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0031.explanation=Egy \u00fczenetkezel\u00e9si alrendszer \u00fczenetkezel\u00e9si alrendszerhez buszon bel\u00fcli csatlakoz\u00e1sa le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0031.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: A(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer {4} buszon l\u00e9v\u0151 {3} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9se elind\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0032.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9t \u00fczenetkezel\u00e9si alrendszer k\u00f6z\u00f6tt elind\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0032.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: A(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer {4} buszon l\u00e9v\u0151 {3} \u00fczenetkezel\u00e9si alrendszer fel\u00e9 ir\u00e1nyul\u00f3 {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9se le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0033.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9t \u00fczenetkezel\u00e9si alrendszer k\u00f6z\u00f6tt le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INFO_CWSIT0033.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: Egy k\u00e9rt \u00fczenetkezel\u00e9si alrendszer meghi\u00fasult a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszeren a k\u00f6vetkez\u0151 ok miatt: {2}.
+MIRRORED_FAILURE_CWSIT0034.explanation=Egy k\u00e9rt \u00fczenetkezel\u00e9si alrendszer meghi\u00fasult a t\u00e1voli \u00fczenetkezel\u00e9si alrendszeren t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s miatt. A t\u00e1voli \u00fczenetkezel\u00e9si alrendszerben t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s oka visszaad\u00e1sra ker\u00fclt.
+MIRRORED_FAILURE_CWSIT0034.useraction=K\u00e9rje meg a rendszeradminisztr\u00e1tort, hogy vizsg\u00e1lja meg a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer napl\u00f3j\u00e1t a probl\u00e9ma ok\u00e1nak kider\u00edt\u00e9se \u00e9rdek\u00e9ben.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} buszon.
+FAILED_AUTHENTICATION_CWSIT0035.explanation=Egy buszok k\u00f6zti \u00fczenetkezel\u00e9si alrendszer kapcsolat\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHENTICATION_CWSIT0035.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Kliensprotokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0036.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Kliens rendszerbet\u00f6lt\u00e9si protokoll hiba t\u00f6rt\u00e9nt a(z) {0} buszon l\u00e9v\u0151 egyik \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {1} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {2}.
+PROTOCOL_ERROR_CWSIT0038.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Kapcsolati protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0039.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Buszon bel\u00fcli kapcsolati protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0040.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0041.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Csatlakoz\u00e1si protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0042.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Buszon bel\u00fcli kapcsolati protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0043.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy MEConnectionFactory oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_MCF_CWSIT0044.explanation=CMSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy MEConnectionFactory oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_MCF_CWSIT0045.explanation=CMSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy MEConnectionFactory oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_MCF_CWSIT0046.explanation=CMSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy MEConnection oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_MC_CWSIT0047.explanation=CMSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy MEConnection oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_MC_CWSIT0048.explanation=CMSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy MEConnection oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre.
+NO_MC_CWSIT0049.explanation=CMSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A v\u00e1rt {0} byte-\u00e9rt\u00e9k nem tal\u00e1lhat\u00f3, ehelyett a(z) {1} byte-\u00e9rt\u00e9k tal\u00e1lhat\u00f3.
+INVALID_BYTE_VALUE_CWSIT0053.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A v\u00e1rt {0} byte-\u00e9rt\u00e9k nem tal\u00e1lhat\u00f3, ehelyett a(z) {1} byte-\u00e9rt\u00e9k tal\u00e1lhat\u00f3.
+INVALID_BYTE_VALUE_CWSIT0054.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: A(z) {0} helytelen \u00e9rt\u00e9k ker\u00fclt \u00e1tad\u00e1sra a(z) {1} kapcsolati tulajdons\u00e1g sz\u00e1m\u00e1ra. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek a k\u00f6vetkez\u0151k: {2}.
+INVALID_TARGET_TYPE_CWSIT0055.explanation=Az alkalmaz\u00e1s helytelen kapcsolati tulajdons\u00e1g\u00e9rt\u00e9ket biztos\u00edtott, ez\u00e9rt a kapcsolat nem ker\u00fclt l\u00e9trehoz\u00e1sra.
+INVALID_TARGET_TYPE_CWSIT0055.useraction=\u00c9rv\u00e9nyes \u00e9rt\u00e9ket haszn\u00e1ljon a csatlakoz\u00e1si tulajdons\u00e1g sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} buszon.
+FAILED_AUTHENTICATION_CWSIT0056.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHENTICATION_CWSIT0056.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: A(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s meghi\u00fasult a(z) {1} hoszton l\u00e9v\u0151 t\u00e1voli \u00fczenetkezel\u00e9si alrendszeren a k\u00f6vetkez\u0151 ok miatt: {2}.
+MIRRORED_FAILURE_CWSIT0057.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9s meghi\u00fasult a t\u00e1voli \u00fczenetkezel\u00e9si alrendszeren t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s miatt.
+MIRRORED_FAILURE_CWSIT0057.useraction=Der\u00edtse ki \u00e9s oldja meg a hiba\u00fczenetben le\u00edrt hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: Nem lehet l\u00e9trehozni a(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st, mert a(z) {2} t\u00e1voli busz a(z) {3} nem v\u00e1rt \u00fczenetkezel\u00e9si alrendszert adta vissza. A v\u00e1rt \u00fczenetkezel\u00e9si alrendszer neve {1} volt.
+BRIDGE_FAILED_CWSIT0058.explanation=A szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9sek eset\u00e9n sz\u00fcks\u00e9ges, hogy a t\u00e1voli buszon l\u00e9v\u0151 \u00fczenetkezel\u00e9si alrendszer neve megegyezzen a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s sz\u00e1m\u00e1ra be\u00e1ll\u00edtott \u00fczenetkezel\u00e9si alrendszer nev\u00e9vel.
+BRIDGE_FAILED_CWSIT0058.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1s\u00e1t annak biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben, hogy mindk\u00e9t busz a helyes \u00fczenetkezel\u00e9si alrendszer n\u00e9vvel ker\u00fclj\u00f6n be\u00e1ll\u00edt\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: Nem lehet kialak\u00edtani a(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszerrel.
+BRIDGE_FAILED_CWSIT0059.explanation=Nem hozhat\u00f3 l\u00e9tre kapcsolat a megnevezett \u00fczenetkezel\u00e9si alrendszerrel. Ez a helyzet h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt lehets\u00e9ges, illetve amiatt, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem \u00e9rhet\u0151 el pillanatnyilag.
+BRIDGE_FAILED_CWSIT0059.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik \u00e9s a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 nem jogosult l\u00e9trehozni egy buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer kapcsolatot a(z) {1} buszban.
+FAILED_AUTHORISATION_CWSIT0060.explanation=Egy buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer kapcsolat\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 nem egyezik meg azzal, amelyet a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer hatalmazott fel a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer kapcsolatok l\u00e9trehoz\u00e1s\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez.
+FAILED_AUTHORISATION_CWSIT0060.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindk\u00e9t \u00fczenetkezel\u00e9si alrendszer sz\u00e1m\u00e1ra ugyanaz a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 van be\u00e1ll\u00edtva a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer kapcsolatokhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0061.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s protokoll hiba t\u00f6rt\u00e9nt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerrel kommunik\u00e1ci\u00f3 sor\u00e1n. A fogadott \u00fczenet t\u00edpusa {2} volt, de az elv\u00e1rt \u00fczenett\u00edpus a(z) {3}.
+PROTOCOL_ERROR_CWSIT0062.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: A(z) {1} buszon l\u00e9v\u0151 {0} sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem tal\u00e1lhat\u00f3 ebben a folyamatban.
+NOT_FOUND_CWSIT0063.explanation=Az \u00fczenetkezel\u00e9si alrendszer nem tud kommunik\u00e1lni egy szomsz\u00e9dos \u00fczenetkezel\u00e9si alrendszerrel, mert az nem tal\u00e1lhat\u00f3 abban a folyamatban, amelyhez ez az \u00fczenetkezel\u00e9si alrendszer csatlakozik.
+NOT_FOUND_CWSIT0063.useraction=Ism\u00e9telje meg a m\u0171veletet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151 a megfelel\u0151 helyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: A(z) {1} buszon l\u00e9v\u0151 {0} sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem tal\u00e1lhat\u00f3 ebben a folyamatban.
+NOT_FOUND_CWSIT0064.explanation=Az \u00fczenetkezel\u00e9si alrendszer nem tud kommunik\u00e1lni egy szomsz\u00e9dos \u00fczenetkezel\u00e9si alrendszerrel, mert az nem tal\u00e1lhat\u00f3 abban a folyamatban, amelyhez ez az \u00fczenetkezel\u00e9si alrendszer csatlakozik.
+NOT_FOUND_CWSIT0064.useraction=Ism\u00e9telje meg a m\u0171veletet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151 a megfelel\u0151 helyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: A(z) {1} buszon l\u00e9v\u0151 {0} sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer nem tal\u00e1lhat\u00f3 ebben a folyamatban.
+NOT_FOUND_CWSIT0065.explanation=Az \u00fczenetkezel\u00e9si alrendszer nem tud kommunik\u00e1lni egy szomsz\u00e9dos \u00fczenetkezel\u00e9si alrendszerrel, mert az nem tal\u00e1lhat\u00f3 abban a folyamatban, amelyhez ez az \u00fczenetkezel\u00e9si alrendszer csatlakozik.
+NOT_FOUND_CWSIT0065.useraction=Ism\u00e9telje meg a m\u0171veletet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00fcks\u00e9ges \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151 a megfelel\u0151 helyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: Nem lehet l\u00e9trehozni a(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st, mert a(z) {1} buszon l\u00e9v\u0151 \u00fczenetkezel\u00e9si alrendszer az ugyanazon buszon l\u00e9v\u0151 egyik \u00fczenetkezel\u00e9si alrendszerhez pr\u00f3b\u00e1l csatlakozni.
+INVALID_REQUEST_CWSIT0066.explanation=Egy \u00fczenetkezel\u00e9si alrendszer megpr\u00f3b\u00e1lt l\u00e9trehozni egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st az ugyanezen buszon l\u00e9v\u0151 egyik \u00fczenetkezel\u00e9si alrendszerrel. Az azonos buszon l\u00e9v\u0151 \u00fczenetkezel\u00e9si alrendszerek szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9sei nem megengedettek.
+INVALID_REQUEST_CWSIT0066.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1s\u00e1t annak biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben, hogy az el\u0151bet\u00f6lt\u00e9si v\u00e9gpontok helyesen c\u00edmezzenek meg egy t\u00e1voli buszt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: A(z) {1} buszon l\u00e9v\u0151 {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s el\u00e9rhetetlen.
+UNABLE_TO_FIND_CWSIT0067.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9si k\u00e9r\u00e9s \u00e9rkezett egy m\u00e1sik buszr\u00f3l, de nincs el\u00e9rhet\u0151 \u00fczenetkezel\u00e9si alrendszer, amely a k\u00e9r\u00e9st fogadhatn\u00e1 a c\u00e9lbuszban.
+UNABLE_TO_FIND_CWSIT0067.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kezel\u00e9s\u00e9re be\u00e1ll\u00edtott \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9s \u00e9rkezett a(z) {0} sz\u00e1m\u00e1ra a(z) {1} buszr\u00f3l, a(z) {2} \u00fczenetkezel\u00e9si alrendszerb\u0151l, de nem tal\u00e1lhat\u00f3 megfelel\u0151 be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s.
+UNABLE_TO_FIND_CWSIT0068.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9s \u00e9rkezett egy m\u00e1sik buszr\u00f3l, de nem tal\u00e1lhat\u00f3 olyan be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s, amely megfelel ennek a k\u00e9r\u00e9snek, ez\u00e9rt a k\u00e9r\u00e9s visszautas\u00edt\u00e1sra ker\u00fclt.
+UNABLE_TO_FIND_CWSIT0068.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1sai mindk\u00e9t buszon helyesek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: Nem tal\u00e1lhat\u00f3 megfelel\u0151 be\u00e1ll\u00edt\u00e1s a(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kapcsolat sz\u00e1m\u00e1ra a(z) {1} buszon.
+UNABLE_TO_FIND_CWSIT0069.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9st visszautas\u00edtott egy m\u00e1sik busz, mert nem tal\u00e1lhat\u00f3 olyan be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s, amely megfelel ennek a k\u00e9r\u00e9snek.
+UNABLE_TO_FIND_CWSIT0069.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1sai mindk\u00e9t buszon helyesek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9s \u00e9rkezett a(z) {0} sz\u00e1m\u00e1ra a(z) {1} buszr\u00f3l, a(z) {2} \u00fczenetkezel\u00e9si alrendszerb\u0151l, de a be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s a(z) {3} \u00fczenetkezel\u00e9si alrendszert v\u00e1rja.
+NOT_ALLOWED_CWSIT0070.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9s \u00e9rkezett egy  m\u00e1sik buszon l\u00e9v\u0151 \u00fczenetkezel\u00e9si alrendszerb\u0151l, amely nem ennek a busznak a be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s\u00e1ban megnevezett \u00fczenetkezel\u00e9si alrendszer, ez\u00e9rt a k\u00e9r\u00e9s visszautas\u00edt\u00e1sra ker\u00fclt.
+NOT_ALLOWED_CWSIT0070.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1sai mindk\u00e9t buszon helyesek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: A(z) {0} \u00f6sszek\u00f6ttet\u00e9s szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9s\u00e9t visszautas\u00edtotta a(z) {1} busz, mert a(z) {2} k\u00e9r\u0151 \u00fczenetkezel\u00e9si alrendszer nem egyezett meg a v\u00e1rt {3} \u00fczenetkezel\u00e9si alrendszerrel.
+NOT_ALLOWED_CWSIT0071.explanation=A t\u00e1voli busz \u00f6sszef\u00e9rhetetlens\u00e9get \u00e9szlelt az ezen busz \u00e1ltal k\u00fcld\u00f6tt szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s k\u00e9r\u00e9sben \u00e9s a saj\u00e1t szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s\u00e1ban megnevezett \u00fczenetkezel\u00e9si alrendszer eset\u00e9n.
+NOT_ALLOWED_CWSIT0071.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s be\u00e1ll\u00edt\u00e1sai mindk\u00e9t buszon helyesek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: Nem szerezhet\u0151k meg a hiteles\u00edt\u00e9si adatok a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer {0} hiteles\u00edt\u00e9si \u00e1lnev\u00e9b\u0151l.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=Ha a hiteles\u00edt\u00e9si \u00e1ln\u00e9v nem l\u00e9tezik vagy helytelen\u00fcl ker\u00fclt be\u00e1ll\u00edt\u00e1sra, akkor a hiteles\u00edt\u00e9si adatok nem lesznek lek\u00e9rhet\u0151k. Az alap\u00e9rtelmezett \u00fcres karaktersorozatos \u00e9rt\u00e9kek fognak felhaszn\u00e1l\u00e1sra ker\u00fclni a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszerek kapcsolataihoz sz\u00fcks\u00e9ges hiteles\u00edt\u00e9si eset\u00e9n. Ha a biztons\u00e1g enged\u00e9lyezett, akkor ez a probl\u00e9ma megakad\u00e1lyozza az \u00fczenetkezel\u00e9si alrendszerek csatlakoz\u00e1s\u00e1t.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9si \u00e1lneve helyesen van be\u00e1ll\u00edtva.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: Nincs buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9si \u00e1ln\u00e9v be\u00e1ll\u00edtva.
+NO_AUTHALIAS_CWSIT0073.explanation=Amikor nincs buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9si \u00e1ln\u00e9v be\u00e1ll\u00edtva, akkor nem ker\u00fcl v\u00e9grehajt\u00e1sra hiteles\u00edt\u00e9si ellen\u0151rz\u00e9s a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer kapcsolatok eset\u00e9n. A buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer kapcsolatok hiteles\u00edt\u00e9s\u00e9hez \u00e1ll\u00edtson be egy buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9si \u00e1lnevet.
+NO_AUTHALIAS_CWSIT0073.useraction=\u00c1ll\u00edtsa be a buszon bel\u00fcli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9si \u00e1lnev\u00e9t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} \u00f6sszek\u00f6ttet\u00e9si UUID azonos\u00edt\u00f3 m\u00e1r meg van hat\u00e1rozva.
+ALREADY_DEFINED_CWSIT0074.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} \u00f6sszek\u00f6ttet\u00e9si UUID azonos\u00edt\u00f3 m\u00e1r meg van hat\u00e1rozva.
+ALREADY_DEFINED_CWSIT0075.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} \u00f6sszek\u00f6ttet\u00e9si UUID azonos\u00edt\u00f3 nincs meghat\u00e1rozva.
+UNDEFINED_CWSIT0076.explanation=CMSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} \u00f6sszek\u00f6ttet\u00e9si UUID azonos\u00edt\u00f3 nincs meghat\u00e1rozva.
+UNDEFINED_CWSIT0077.explanation=CMSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} UUID \u00f6sszek\u00f6ttet\u00e9si azonos\u00edt\u00f3 nem jegyezhet\u0151 be, mert az \u00f6sszek\u00f6ttet\u00e9s nincs elind\u00edtva.
+NOT_STARTED_CWSIT0078.explanation=CMSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} UUID \u00f6sszek\u00f6ttet\u00e9si azonos\u00edt\u00f3 nem jegyezhet\u0151 be, mert az \u00f6sszek\u00f6ttet\u00e9s nem akt\u00edv.
+NOT_ACTIVE_CWSIT0079.explanation=CMSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: Nem hozhat\u00f3 l\u00e9tre a(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s a(z) {1} buszb\u00f3l a(z) {2} buszba, mert a(z) {3} buszban l\u00e9v\u0151 \u00f6sszek\u00f6ttet\u00e9s nincs elind\u00edtva.
+NOT_STARTED_CWSIT0080.explanation=A szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s pillanatnyilag csak egy buszon van elind\u00edtva, a m\u00e1sikon nincs. Az \u00f6sszek\u00f6ttet\u00e9st mindk\u00e9t buszon el kell ind\u00edtani, miel\u0151tt a csatlakoz\u00e1s lehet\u0151v\u00e9 v\u00e1lna.
+NOT_STARTED_CWSIT0080.useraction=\u00c1ll\u00edtsa le a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st az eredeti buszon, vagy ind\u00edtsa el a fogad\u00f3 buszon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} UUID azonos\u00edt\u00f3val rendelkez\u0151 szomsz\u00e9dos h\u00edd nem tal\u00e1lhat\u00f3 a szomsz\u00e9ds\u00e1gban.
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {0} UUID azonos\u00edt\u00f3val rendelkez\u0151 szomsz\u00e9d nem tal\u00e1lhat\u00f3 a szomsz\u00e9ds\u00e1gban.
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 nem jogosult l\u00e9trehozni a(z) {1} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kapcsolatot a(z) {2} \u00e9s {3} buszok k\u00f6z\u00f6tt.
+FAILED_AUTHORISATION_CWSIT0085.explanation=Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kapcsolat\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 nem egyezett meg azzal, amelyet a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer hatalmazott fel a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kapcsolatok l\u00e9trehoz\u00e1s\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez.
+FAILED_AUTHORISATION_CWSIT0085.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindk\u00e9t \u00fczenetkezel\u00e9si alrendszer sz\u00e1m\u00e1ra ugyanaz a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 van be\u00e1ll\u00edtva ezen szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kapcsolathoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: A(z) {0} busz nem tal\u00e1lhat\u00f3.
+BUS_NOT_FOUND_CWSIT0086.explanation=A sz\u00fcks\u00e9ges busz nincs be\u00e1ll\u00edtva a kiszolg\u00e1l\u00f3n, \u00edgy nem lehet haszn\u00e1lni ezt a kiszolg\u00e1l\u00f3t a k\u00e9rt buszhoz csatlakoz\u00e1sra.
+BUS_NOT_FOUND_CWSIT0086.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a buszn\u00e9v helyes \u00e9s olyan kiszolg\u00e1l\u00f3t haszn\u00e1ljon, amelyen be van \u00e1ll\u00edtva a sz\u00fcks\u00e9ges busz.
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: Egy buszon bel\u00fcli kapcsolati k\u00e9r\u00e9s \u00e9rkezett a(z) {1} \u00fczenetkezel\u00e9si alrendszerb\u0151l, de nem tal\u00e1lhat\u00f3 megfelel\u0151 be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s.
+UNABLE_TO_FIND_CWSIT0087.explanation=Egy buszon bel\u00fcli kapcsolati k\u00e9r\u00e9s \u00e9rkezett egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszerb\u0151l, de nem tal\u00e1lhat\u00f3 olyan be\u00e1ll\u00edt\u00e1si meghat\u00e1roz\u00e1s, amely megfelel ennek a k\u00e9r\u00e9snek, ez\u00e9rt a k\u00e9r\u00e9s visszautas\u00edt\u00e1sra ker\u00fclt.
+UNABLE_TO_FIND_CWSIT0087.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a buszon bel\u00fcli kapcsolat be\u00e1ll\u00edt\u00e1sai mindk\u00e9t \u00fczenetkezel\u00e9si alrendszeren helyesek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: Pillanatnyilag nem fut \u00fczenetkezel\u00e9si alrendszer a(z) {0} buszon. Tov\u00e1bbi hiba inform\u00e1ci\u00f3k: {1}.
+NO_MES_STARTED_CWSIT0088.explanation=Egy kliens nem csatlakoztathat\u00f3 a buszhoz, mert a k\u00e9rt buszban pillanatnyilag nem fut \u00fczenetkezel\u00e9si alrendszer.
+NO_MES_STARTED_CWSIT0088.useraction=Ism\u00e9telje meg a m\u0171veletet. Ind\u00edtson el egy \u00fczenetkezel\u00e9si alrendszert a k\u00e9rt buszon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} buszon.
+FAILED_AUTHENTICATION_CWSIT0089.explanation=Egy klienskapcsolat \u00fczenetkezel\u00e9si alrendszerrel l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHENTICATION_CWSIT0089.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: Egy el\u0151bet\u00f6lt\u00e9si k\u00e9r\u00e9s k\u00e9sz\u00fclt a(z) {0} buszhoz a(z) {1} csatornal\u00e1nc haszn\u00e1lat\u00e1val. Ezen l\u00e1nc haszn\u00e1lata nem enged\u00e9lyezett a(z) {0} busz \u00e1ltal.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=Egy kliens a buszhoz csatlakoz\u00e1shoz megk\u00eds\u00e9relt egy el\u0151bet\u00f6lt\u00e9si k\u00e9r\u00e9st k\u00fcldeni, de a busz nem enged\u00e9lyez el\u0151bet\u00f6lt\u00e9si k\u00e9r\u00e9seket azon csatorna haszn\u00e1lat\u00e1val.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=\u00c1ll\u00edtsa be \u00fajra a klienst \u00fagy, hogy az el\u0151bet\u00f6lt\u00e9si v\u00e9gpont egy enged\u00e9lyezett l\u00e1ncot haszn\u00e1ljon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: Egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s kapcsolat sikeresen l\u00e9trej\u00f6tt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerhez szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s hiteles\u00edt\u00e9si \u00e1ln\u00e9v megad\u00e1sa n\u00e9lk\u00fcl. Biztons\u00e1gi okokb\u00f3l aj\u00e1nlatos be\u00e1ll\u00edtani egy hiteles\u00edt\u00e9si \u00e1lnevet.
+NO_AUTHALIAS_CWSIT0091.explanation=Ha a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz hiteles\u00edt\u00e9si \u00e1lneve nincs be\u00e1ll\u00edtva a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9sen, akkor hiteles\u00edt\u00e9si ellen\u0151rz\u00e9s v\u00e9grehajt\u00e1sa n\u00e9lk\u00fcl l\u00e9tre lehet hozni egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st egy biztons\u00e1gos busz \u00e9s egy nem biztons\u00e1gos busz k\u00f6z\u00f6tt.
+NO_AUTHALIAS_CWSIT0091.useraction=\u00c1ll\u00edtsa be a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s hiteles\u00edt\u00e9si \u00e1lnev\u00e9t, ha hiteles\u00edt\u00e9si ellen\u0151rz\u00e9st szeretne foganatos\u00edtani.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: Egy a(z) {0} buszhoz csatlakoz\u00e1sra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) {1} csatornal\u00e1nc haszn\u00e1lat\u00e1val. Ezen l\u00e1nc haszn\u00e1lata nem enged\u00e9lyezett a(z) {0} busz \u00e1ltal.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=Egy kliens a buszhoz csatlakoz\u00e1shoz megk\u00eds\u00e9relt egy k\u00e9r\u00e9st k\u00fcldeni, de a busz nem enged\u00e9lyezi azt a csatornal\u00e1ncot haszn\u00e1l\u00f3 kapcsolatokat.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=\u00c1ll\u00edtsa be \u00fajra a klienst \u00fagy, hogy egy enged\u00e9lyezett l\u00e1nc haszn\u00e1lat\u00e1val csatlakozzon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: A(z) {0} busz egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st pr\u00f3b\u00e1lt l\u00e9trehozni a(z) {1} idegen buszhoz a(z) {2} el\u0151bet\u00f6lt\u00e9si csatornal\u00e1nc haszn\u00e1lat\u00e1val. Ezen l\u00e1nc haszn\u00e1lata nem enged\u00e9lyezett a(z) {1} idegen busz \u00e1ltal.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=A busz egy olyan el\u0151bet\u00f6lt\u00e9si sz\u00e1ll\u00edt\u00e1si l\u00e1ncot pr\u00f3b\u00e1lt meg haszn\u00e1lni, amit az idegen busz nem t\u00e1mogat.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=\u00c1ll\u00edtsa be \u00fajra a buszt \u00fagy, hogy az el\u0151bet\u00f6lt\u00e9si v\u00e9gpont egy az idegen busz \u00e1ltal enged\u00e9lyezett l\u00e1ncot haszn\u00e1ljon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: A kliens nem volt jogosult a(z) {0} buszhoz csatlakozni az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3 {1} v\u00e9gponttal haszn\u00e1lat\u00e1val. Ok: {2}.
+NOT_AUTHORIZED_CWSIT0094.explanation=A buszhoz kapcsolat l\u00e9tes\u00edt\u00e9s\u00e9hez haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 nem volt jogosult a buszhoz csatlakozni.
+NOT_AUTHORIZED_CWSIT0094.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 rendelkezik buszcsatlakoz\u00f3 szereppel a buszhoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer egy szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9st pr\u00f3b\u00e1lt l\u00e9trehozni a(z) {3} idegen buszon l\u00e9v\u0151 {2} \u00fczenetkezel\u00e9si alrendszerhez a(z) {4} bej\u00f6v\u0151 csatornal\u00e1nc haszn\u00e1lat\u00e1val. Ezen l\u00e1nc haszn\u00e1lata nem enged\u00e9lyezett a(z) {3} idegen busz \u00e1ltal.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=A busz egy olyan bej\u00f6v\u0151 sz\u00e1ll\u00edt\u00e1si l\u00e1ncot pr\u00f3b\u00e1lt meg haszn\u00e1lni, amit az idegen busz nem t\u00e1mogat.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=\u00c1ll\u00edtsa be \u00fajra a buszt \u00fagy, hogy az az idegen busz \u00e1ltal enged\u00e9lyezett l\u00e1ncon csatlakozzon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer a(z) {3} bej\u00f6v\u0151 csatornal\u00e1nc haszn\u00e1lat\u00e1val pr\u00f3b\u00e1lt meg csatlakozni a(z) {2} \u00fczenetkezel\u00e9si alrendszerhez. Ezen l\u00e1nc haszn\u00e1lata nem enged\u00e9lyezett a(z) {1} busz \u00e1ltal.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=A busz egy olyan sz\u00e1ll\u00edt\u00e1si csatornal\u00e1nc haszn\u00e1lat\u00e1ra lett be\u00e1ll\u00edtva, ami nem enged\u00e9lyezett az \u00fczenetkezel\u00e9si alrendszerek k\u00f6zti kommunik\u00e1ci\u00f3hoz.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=\u00c1ll\u00edtsa be \u00fajra a buszt \u00fagy, hogy alrendszerek k\u00f6zti sz\u00e1ll\u00edt\u00e1si l\u00e1nck\u00e9nt egy enged\u00e9lyezett l\u00e1ncot adjon meg. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer a(z) {4} bej\u00f6v\u0151 csatornal\u00e1nc haszn\u00e1lat\u00e1val pr\u00f3b\u00e1lt meg csatlakozni a(z) {3} alh\u00e1l\u00f3zaton l\u00e9v\u0151 {2} \u00fczenetkezel\u00e9si alrendszerhez. Ezen l\u00e1nc haszn\u00e1lata nem enged\u00e9lyezett a(z) {5} busz \u00e1ltal.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=A busz egy nem enged\u00e9lyezett sz\u00e1ll\u00edt\u00e1si csatornal\u00e1ncot pr\u00f3b\u00e1lt meg haszn\u00e1lni.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=\u00c1ll\u00edtsa be \u00fajra a buszt \u00fagy, hogy egy enged\u00e9lyezett sz\u00e1ll\u00edt\u00e1si csatornal\u00e1ncon csatlakozzon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: A(z) {0} buszhoz egy klienscsatlakoz\u00e1s az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3 {1} v\u00e9gponttal haszn\u00e1lat\u00e1val hiteles\u00edt\u00e9se meghi\u00fasult a k\u00f6vetkez\u0151 ok miatt: {2}.
+FAILED_AUTHENTICATION_CWSIT0098.explanation=Egy klienskapcsolat \u00fczenetkezel\u00e9si alrendszerrel l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHENTICATION_CWSIT0098.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: A kliens sikeresen kapcsolatba l\u00e9pett az el\u0151bet\u00f6lt\u00e9si kiszolg\u00e1l\u00f3val a(z) {0} v\u00e9gponton, \u00e9s \u00e1tir\u00e1ny\u00edt\u00e1sra ker\u00fclt a(z) {2} v\u00e9gponton l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszerhez. Ezen v\u00e9gponttal kapcsolatba l\u00e9p\u00e9sre tett k\u00eds\u00e9rlet meghi\u00fasult a k\u00f6vetkez\u0151 ok miatt: {3}.
+REDIRECT_FAILURE_CWSIT0099.explanation=Egy kliensnek az \u00e1tir\u00e1ny\u00edt\u00e1s ut\u00e1n nem siker\u00fclt csatlakoznia egy buszhoz, egy kiszolg\u00e1l\u00f3n t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s miatt. A kiszolg\u00e1l\u00f3ban t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s oka visszaad\u00e1sra ker\u00fclt.
+REDIRECT_FAILURE_CWSIT0099.useraction=Der\u00edtse ki \u00e9s oldja meg a hiba\u00fczenetben le\u00edrt hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel. 
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: Egy CFEndpoint be\u00e1ll\u00edt\u00e1sb\u00f3l megszerz\u00e9se volt az elv\u00e1rt, de egy sem volt jelen (bels\u0151 hiba).
+BAD_SELECT_CWSIT0100.explanation=A k\u00e9r\u00e9s egy c\u00e9l \u00fczenetkezel\u00e9si alrendszer felold\u00e1s\u00e1ra meghi\u00fasult.
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: A rendszer egy \u00e9rv\u00e9nytelen param\u00e9tert \u00e9szlelt.
+INVALID_PARAMETER_CWSIT0101.explanation=A k\u00e9r\u00e9s egy c\u00e9l \u00fczenetkezel\u00e9si alrendszer felold\u00e1s\u00e1ra meghi\u00fasult.
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: Egy be\u00e1ll\u00edt\u00e1s {0} \u00fczenetkezel\u00e9si alrendszere ker\u00fclt el\u0151, de el kellett dobni, mert nem el\u00e9g\u00edti ki az alkalmaz\u00e1s \u00e1ltal megadott {1} csatlakoz\u00e1s-k\u00f6zel\u00edt\u00e9si megszor\u00edt\u00e1st.
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=A k\u00e9r\u00e9s egy c\u00e9l \u00fczenetkezel\u00e9si alrendszer felold\u00e1s\u00e1ra meghi\u00fasult.
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=Ha tervezte a kapcsolat l\u00e9tes\u00edt\u00e9s\u00e9t a hiba\u00fczenetben jelzett \u00fczenetkezel\u00e9si alrendszerhez, akkor m\u00e9rs\u00e9kelnie kell a kapcsolatk\u00f6zels\u00e9get a kapcsolatgy\u00e1rban vagy az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: Nem tal\u00e1lhat\u00f3 az al\u00e1bbi param\u00e9tereknek megfelel\u0151 \u00fczenetkezel\u00e9si alrendszer: busz: {0}, c\u00e9lcsoport: {1}, c\u00e9lt\u00edpus: {2}, c\u00e9ljelent\u0151s\u00e9g: {3}, sz\u00e1ll\u00edt\u00e1si l\u00e1nc: {4}, k\u00f6zel\u00edt\u00e9s: {5}.
+NULL_SELECTION_CWSIT0103.explanation=A k\u00e9r\u00e9s egy c\u00e9l \u00fczenetkezel\u00e9si alrendszer felold\u00e1s\u00e1ra meghi\u00fasult.
+NULL_SELECTION_CWSIT0103.useraction=Ellen\u0151rizze az \u00fczenetkezel\u00e9si alrendszer \u00e1llapot\u00e1t, amelyhez csatlakozni sz\u00e1nd\u00e9kozott, annak biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben, hogy az fut. alternat\u00edv megold\u00e1sk\u00e9nt m\u00f3dos\u00edtsa a csatlakoz\u00e1si tulajdons\u00e1gokat, hogy lehet\u0151v\u00e9 tegy\u00e9k egy akt\u00edv \u00fczenetkezel\u00e9si alrendszer kijel\u00f6l\u00e9s\u00e9t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: A kliens megk\u00eds\u00e9relt a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerhez csatlakozni, de a kapcsolatot nem lehetett l\u00e9trehozni, mert az \u00fczenetkezel\u00e9si alrendszer nem lett elind\u00edtva.
+ME_NOT_STARTED_CWSIT0104.explanation=Az \u00fczenetkezel\u00e9si alrendszer l\u00e9tezik, de nincs elind\u00edtva.
+ME_NOT_STARTED_CWSIT0104.useraction=Ind\u00edtsa el az \u00fczenetkezel\u00e9si alrendszert, amelyhez csatlakozni szeretne, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: Az alkalmaz\u00e1s nem adott meg felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t, amikor a(z) {0} busszal k\u00eds\u00e9rlett meg hiteles\u00edteni.
+FAILED_AUTHENTICATION_CWSIT0105.explanation=A hiteles\u00edt\u00e9s a t\u00e1voli \u00fczenetkezel\u00e9si alrendszerrel meghi\u00fasult, mert az alkalmaz\u00e1s nem adott meg felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t.
+FAILED_AUTHENTICATION_CWSIT0105.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: A(z) {0} szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz \u00f6sszek\u00f6ttet\u00e9s sikeresen l\u00e9trehoz\u00e1sra ker\u00fclt a(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszerhez a(z) {3} hoszton \u00e9s {4} porton kereszt\u00fcl a(z) {5} sz\u00e1ll\u00edt\u00e1si l\u00e1nc haszn\u00e1lat\u00e1val.
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=Egy h\u00edd l\u00e9tes\u00fclt egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel egy k\u00fcl\u00f6nb\u00f6z\u0151 buszon.
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: A megadott {0} port a v\u00e9gpontban utal a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1nc haszn\u00e1lat\u00e1ra. Ennek egy titkos\u00edtatlan jelsz\u00f3 kliens \u00e9s a kiszolg\u00e1l\u00f3 k\u00f6z\u00f6tti \u00e1tvitel\u00e9ben lesz eredm\u00e9nye. Biztons\u00e1gi okokb\u00f3l ez nem aj\u00e1nlatos.
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=Az alap\u00e9rtelmezett port van kijel\u00f6lve, \u00e9s a l\u00e1ncn\u00e9v nem ker\u00fclt megad\u00e1sra a szolg\u00e1ltat\u00f3 v\u00e9gpontban. Ez egy nem biztons\u00e1gos sz\u00e1ll\u00edt\u00e1si l\u00e1ncot eredm\u00e9nyez, \u00e9s aj\u00e1nlatos biztons\u00e1got megadni erre a kapcsolatra.
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=Ez a figyelmeztet\u00e9s a k\u00edv\u00e1nt sz\u00e1ll\u00edt\u00e1si l\u00e1nc (biztons\u00e1gos vagy nem biztons\u00e1gos) k\u00e9zi megad\u00e1s\u00e1val megel\u0151zhet\u0151, vagy a jelsz\u00f3 kihagy\u00e1s\u00e1val a kapcsolat l\u00e9trehoz\u00e1sakor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: A(z) {0} felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 hiteles\u00edt\u00e9se meghi\u00fasult a(z) {1} buszon.
+FAILED_AUTHORIZATION_CWSIT0108.explanation=Egy klienskapcsolat \u00fczenetkezel\u00e9si alrendszerrel l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t nem siker\u00fclt hiteles\u00edtenie a t\u00e1voli \u00fczenetkezel\u00e9si alrendszernek. A hiteles\u00edt\u00e9si meghib\u00e1sod\u00e1s val\u00f3sz\u00edn\u0171leg egy helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nt.
+FAILED_AUTHORIZATION_CWSIT0108.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: Az alkalmaz\u00e1s nem adott meg felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t, amikor a(z) {0} busszal k\u00eds\u00e9rlett meg hiteles\u00edteni.
+FAILED_AUTHORIZATION_CWSIT0109.explanation=A hiteles\u00edt\u00e9s a t\u00e1voli \u00fczenetkezel\u00e9si alrendszerrel meghi\u00fasult, mert az alkalmaz\u00e1s nem adott meg felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t.
+FAILED_AUTHORIZATION_CWSIT0109.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s a jelsz\u00f3 is helyes.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer \u00e1ltal biztos\u00edtott biztons\u00e1gi token hiteles\u00edt\u00e9se meghi\u00fasult.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=Egy buszok k\u00f6zti \u00fczenetkezel\u00e9si alrendszer kapcsolat\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt biztons\u00e1gi token hiteles\u00edt\u00e9se meghi\u00fasult.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: A biztons\u00e1gi tokenben biztos\u00edtott azonoss\u00e1gi inform\u00e1ci\u00f3k nem egyeznek meg a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer csatlakoz\u00e1si k\u00e9r\u00e9s\u00e9ben l\u00e9v\u0151 adatokkal.
+TOKEN_INCONSISTENT_CWSIT0111.explanation=Ez azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+TOKEN_INCONSISTENT_CWSIT0111.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: A(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer \u00e1ltal biztos\u00edtott {0} t\u00edpus\u00fa biztons\u00e1gi token nem t\u00e1mogatott.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=A t\u00e1voli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9se nem siker\u00fclt, mert a biztons\u00e1gi token t\u00edpusa nem t\u00e1mogatott.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerb\u0151l a csatlakoz\u00e1si k\u00e9r\u00e9s nem ad meg biztons\u00e1gi token t\u00edpust.
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=Ez azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: A biztons\u00e1gi tokenben biztos\u00edtott azonoss\u00e1gi inform\u00e1ci\u00f3k nem egyeznek meg a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer csatlakoz\u00e1si v\u00e1lasz\u00e1ban l\u00e9v\u0151 adatokkal.
+TOKEN_INCONSISTENT_CWSIT0115.explanation=Ez azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+TOKEN_INCONSISTENT_CWSIT0115.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: A(z) {2} buszon l\u00e9v\u0151 {1} \u00fczenetkezel\u00e9si alrendszer \u00e1ltal biztos\u00edtott {0} t\u00edpus\u00fa biztons\u00e1gi token k\u00f6lcs\u00f6n\u00f6s hiteles\u00edt\u00e9shez nem t\u00e1mogatott.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=A t\u00e1voli \u00fczenetkezel\u00e9si alrendszer hiteles\u00edt\u00e9se nem siker\u00fclt, mert a biztons\u00e1gi token t\u00edpusa nem t\u00e1mogatott.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: A(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszerb\u0151l a csatlakoz\u00e1si v\u00e1lasz nem ad meg biztons\u00e1gi token t\u00edpust.
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=Ez azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=Ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: A(z) {1} buszon l\u00e9v\u0151 {0} t\u00e1voli \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1sra tett k\u00eds\u00e9rlet sor\u00e1n hi\u00e1nyos inform\u00e1ci\u00f3k arra utaltak, hogy nem volt lehets\u00e9ges \u00e9rv\u00e9nyes\u00edteni a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer azonoss\u00e1g\u00e1t.
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=Ezt egy id\u0151z\u00edt\u00e9shez kapcsol\u00f3d\u00f3 probl\u00e9ma okozhatta, vagy azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=V\u00e1rjon egy \u00fajrapr\u00f3b\u00e1lkoz\u00e1si k\u00eds\u00e9rlet elv\u00e9gz\u00e9s\u00e9ig, vagy der\u00edtse ki egy biztons\u00e1g t\u00e1mad\u00e1s lehet\u0151s\u00e9g\u00e9t. Ehhez ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek rendszer- \u00e9s hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: A(z) {1} buszon l\u00e9v\u0151 {0} t\u00e1voli \u00fczenetkezel\u00e9si alrendszer egy csatlakoz\u00e1si k\u00eds\u00e9rletet tett, de hi\u00e1nyos inform\u00e1ci\u00f3k arra utaltak, hogy nem volt lehets\u00e9ges \u00e9rv\u00e9nyes\u00edteni a t\u00e1voli \u00fczenetkezel\u00e9si alrendszer azonoss\u00e1g\u00e1t.
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=Ezt egy id\u0151z\u00edt\u00e9shez kapcsol\u00f3d\u00f3 probl\u00e9ma okozhatta, vagy azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=V\u00e1rjon egy \u00fajrapr\u00f3b\u00e1lkoz\u00e1si k\u00eds\u00e9rlet elv\u00e9gz\u00e9s\u00e9ig, vagy der\u00edtse ki egy biztons\u00e1g t\u00e1mad\u00e1s lehet\u0151s\u00e9g\u00e9t. Ehhez ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek rendszer- \u00e9s hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: Nem volt lehets\u00e9ges \u00e9rv\u00e9nyes\u00edteni a(z) {1} buszon l\u00e9v\u0151 {0} \u00fczenetkezel\u00e9si alrendszer azonoss\u00e1g\u00e1t.
+TARGET_NOT_FOUND_CWSIT0120.explanation=Ezt egy id\u0151z\u00edt\u00e9shez kapcsol\u00f3d\u00f3 probl\u00e9ma okozhatta, vagy azt jelezheti, hogy egy jogosulatlan felhaszn\u00e1l\u00f3 k\u00eds\u00e9rel meg csatlakozni a rendszerhez.
+TARGET_NOT_FOUND_CWSIT0120.useraction=V\u00e1rjon egy \u00fajrapr\u00f3b\u00e1lkoz\u00e1si k\u00eds\u00e9rlet elv\u00e9gz\u00e9s\u00e9ig, vagy der\u00edtse ki egy biztons\u00e1g t\u00e1mad\u00e1s lehet\u0151s\u00e9g\u00e9t. Ehhez ellen\u0151rizze a csatlakoz\u00e1si k\u00eds\u00e9rletben \u00e9rintett \u00fczenetkezel\u00e9si alrendszerek rendszer- \u00e9s hibanapl\u00f3it.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: Egy java.net.UnknownHostException kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} hosztn\u00e9v felold\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+INVALID_HOST_CWSIT0121.explanation=Ezt egy \u00fcgyf\u00e9l okozhatta, ami olyan hosztnevet kapott, amelyet nem tudott tartom\u00e1nyn\u00e9v rendszerben (DNS) feloldani.
+INVALID_HOST_CWSIT0121.useraction=Pr\u00f3b\u00e1lja meg bejegyezni a hosztnevet a helyi tartom\u00e1nyn\u00e9v kiszolg\u00e1l\u00f3n, vagy hozz\u00e1adni egy bejegyz\u00e9st az \u00fcgyf\u00e9l "hosts" f\u00e1jlj\u00e1hoz, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: Egy statikus \u00fatv\u00e1laszt\u00e1si t\u00e1bla lesz haszn\u00e1lva ehhez a f\u00fcrth\u00f6z - a statikus \u00fatv\u00e1laszt\u00e1s haszn\u00e1lata \u00e1ltal\u00e1ban megakad\u00e1lyozza a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz helyes m\u0171k\u00f6d\u00e9s\u00e9t, \u00e9s nem aj\u00e1nlott.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=A statikus \u00fatv\u00e1laszt\u00e1s enged\u00e9lyez\u00e9se megakad\u00e1lyozza az olyan inform\u00e1ci\u00f3k, mint p\u00e9ld\u00e1ul egy \u00fczenetkezel\u00e9si alrendszer helye dinamikus megoszt\u00e1s\u00e1t a cell\u00e1n bel\u00fcl, ami azt okozza, hogy az alkalmaz\u00e1sok nem tudnak a buszhoz csatlakozni.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=Ha probl\u00e9m\u00e1kat tapasztal a szolg\u00e1ltat\u00e1sintegr\u00e1ci\u00f3s busz haszn\u00e1lata sor\u00e1n, akkor az \u00e1ltal\u00e1nos \u00fatv\u00e1laszt\u00e1si viselked\u00e9shez visszat\u00e9r\u00e9s \u00e9rdek\u00e9ben t\u00f6r\u00f6lni kell a statikus \u00fatv\u00e1laszt\u00e1si t\u00e1bl\u00e1t, \u00e9s \u00fajra kell ind\u00edtani a kiszolg\u00e1l\u00f3kat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: A kiszolg\u00e1l\u00f3 nincs be\u00e1ll\u00edtva, hogy megengedje az el\u0151bet\u00f6lt\u00e9st a(z) {0} buszhoz.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=Az \u00fcgyf\u00e9l el\u0151bet\u00f6lt\u00e9st k\u00eds\u00e9relt meg egy buszra egy olyan kiszolg\u00e1l\u00f3 haszn\u00e1lat\u00e1val, ami nem volt be\u00e1ll\u00edtva az el\u0151bet\u00f6lt\u00e9s enged\u00e9lyez\u00e9s\u00e9hez a buszhoz. 
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=\u00c1ll\u00edtsa be \u00fajra a buszt, hogy a kiszolg\u00e1l\u00f3 haszn\u00e1lhat\u00f3 legyen el\u0151bet\u00f6lt\u00e9shez, vagy friss\u00edtse az \u00fcgyfelek szolg\u00e1ltat\u00f3i v\u00e9gpontjait, hogy egy elt\u00e9r\u0151 kiszolg\u00e1l\u00f3t haszn\u00e1ljanak.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: A(z) {0} megpr\u00f3b\u00e1lta megkeresni a(z) {1} idegen buszt egy olyan kiszolg\u00e1l\u00f3 haszn\u00e1lat\u00e1val, ami nem volt be\u00e1ll\u00edtva az el\u0151bet\u00f6lt\u00e9s enged\u00e9lyez\u00e9s\u00e9hez a(z) {0} buszhoz.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=A busz el\u0151bet\u00f6lt\u00e9st k\u00eds\u00e9relt meg egy idegen buszra egy olyan kiszolg\u00e1l\u00f3 haszn\u00e1lat\u00e1val, ami nem t\u00e1mogatja az el\u0151bet\u00f6lt\u00e9st az idegen buszhoz.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=\u00c1ll\u00edtsa be \u00fajra a buszt, hogy az el\u0151bet\u00f6lt\u00e9si v\u00e9gpont egy m\u00e1sik kiszolg\u00e1l\u00f3t haszn\u00e1ljon, megadva egy elt\u00e9r\u0151 hoszt \u00e9s port kombin\u00e1ci\u00f3t.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=Ha ez az \u00fczenet nem ad el\u00e9g inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket a tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+TEMPORARY_CWSIT9999.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: A c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1s a(z) {0} helyen sikeres, de az \u00fczenetkezel\u00e9si alrendszer hibafelt\u00e9telt adott vissza: {1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=Az \u00fcgyf\u00e9l az \u00fczenetkezel\u00e9si alrendszerhez csatlakozott, de probl\u00e9ma mer\u00fclt fel a c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez t\u00f6rt\u00e9n\u0151 sikeres csatlakoz\u00e1s kialak\u00edt\u00e1sa sor\u00e1n. 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a c\u00e9l \u00fczenetkezel\u00e9si alrendszer helyesen van konfigur\u00e1lva \u00e9s megfelel\u0151en m\u0171k\u00f6dik a be\u00e9rkez\u0151 t\u00e1voli csatlakoz\u00e1sok elfogad\u00e1s\u00e1hoz. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: Nem lehet kapcsolatot teremteni a megadott c\u00e9l \u00fczenetkezel\u00e9si alrendszerrel. Tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt. A megk\u00eds\u00e9relt \u00fcgyf\u00e9lkapcsolatok: {0}
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=Az \u00fcgyf\u00e9l nem tud csatlakozni. A csatlakoz\u00e1s az ig\u00e9nyelt c\u00e9l \u00fczenetkezel\u00e9si alrendszer el\u00e9rhetetlens\u00e9ge miatt, vagy bizonyos konfigur\u00e1ci\u00f3s vagy h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt hi\u00fasulhatott meg. 
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik, illetve hogy az ig\u00e9nyelt c\u00e9l \u00fczenetkezel\u00e9si alrendszerek el\u00e9rhet\u0151ek. A c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez kapcsolat be\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l inform\u00e1ci\u00f3k\u00e9rt tanulm\u00e1nyozza a term\u00e9k dokument\u00e1ci\u00f3j\u00e1t. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: A c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez az \u00fcgyf\u00e9lhiteles\u00edt\u00e9s meghi\u00fasult, oka: {2}
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=A t\u00e1voli \u00fczenetkezel\u00e9si alrendszer nem tudta hiteles\u00edteni a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3t, amellyel az \u00fcgyf\u00e9lkapcsolat kialak\u00edt\u00e1sra ker\u00fcl a c\u00e9l \u00fczenetkezel\u00e9si alrendszerrel. A hiteles\u00edt\u00e9si hiba helytelen felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 vagy jelsz\u00f3 miatt t\u00f6rt\u00e9nhetett.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mind a megadott felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3, mind a jelsz\u00f3 helyes. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: Az \u00fcgyf\u00e9l nem kapott jogosults\u00e1got a c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez csatlakoz\u00e1sra. Ok: {2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=A kapcsolat l\u00e9tes\u00edt\u00e9s\u00e9hez haszn\u00e1lt felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 nem jogosult a c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez csatlakozni.
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 rendelkezik a sz\u00fcks\u00e9ges enged\u00e9lyekkel. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: A c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez egy \u00fcgyf\u00e9lcsatlakoz\u00e1si k\u00e9r\u00e9s meghi\u00fasult, oka: {2}
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=Egy \u00fcgyf\u00e9lcsatlakoz\u00e1si k\u00e9r\u00e9s a c\u00e9l \u00fczenetkezel\u00e9si alrendszer probl\u00e9m\u00e1ja miatt meghi\u00fasult. A c\u00e9l \u00fczenetkezel\u00e9si alrendszerben t\u00f6rt\u00e9nt meghib\u00e1sod\u00e1s oka visszaad\u00e1sra ker\u00fclt.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=Der\u00edtse ki \u00e9s oldja meg a hiba\u00fczenetben le\u00edrt hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: Nem lehet csatlakozni a c\u00e9l \u00fczenetkezel\u00e9si alrendszerhez a k\u00f6vetkez\u0151 helyen: {0}, a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=Az \u00fcgyf\u00e9l nem tudja kialak\u00edtani a kapcsolatot a megadott c\u00e9l \u00fczenetkezel\u00e9si alrendszerrel. A csatlakoz\u00e1s az ig\u00e9nyelt c\u00e9l \u00fczenetkezel\u00e9si alrendszer el\u00e9rhetetlens\u00e9ge miatt, vagy bizonyos konfigur\u00e1ci\u00f3s vagy h\u00e1l\u00f3zati probl\u00e9m\u00e1k miatt hi\u00fasulhatott meg. 
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1l\u00f3zat megfelel\u0151en m\u0171k\u00f6dik, illetve hogy az ig\u00e9nyelt c\u00e9l \u00fczenetkezel\u00e9si alrendszer el\u00e9rhet\u0151. A t\u00e1voli \u00fczenetkezel\u00e9si alrendszert a JMS kapcsolatgy\u00e1r T\u00e1voli kiszolg\u00e1l\u00f3c\u00edm tulajdons\u00e1ga hat\u00e1rozza meg. A c\u00edm a k\u00f6vetket\u0151 form\u00e1tum\u00fa: hosztn\u00e9v:portsz\u00e1m:l\u00e1ncn\u00e9v (p\u00e9ld\u00e1ul helyihoszt:7276:Alap\u00dczenetkezel\u00e9sEl\u0151bet\u00f6lt\u00e9s).  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: Nincs helyi \u00fczenetkezel\u00e9si alrendszer, amelyhez csatlakozni lehetne.  A helyi \u00fczenetkezel\u00e9si alrendszer enged\u00e9lyez\u00e9s\u00e9hez adja hozz\u00e1 a(z) {0} \u00f6sszetev\u0151t.
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=A kliens nem tud l\u00e9trehozni kapcsolatot a helyi \u00fczenetkezel\u00e9si alrendszerrel. Ennek oka az lehet, hogy az \u00fczenetkezel\u00e9si alrendszer nincs konfigur\u00e1lva vagy nem akt\u00edv az aktu\u00e1lis Liberty profilkiszolg\u00e1l\u00f3n, vagy az \u00fczenetkezel\u00e9si alrendszer nem k\u00e9pes kapcsolatokat elfogadni.
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetkezel\u00e9si alrendszer fut az aktu\u00e1lis Liberty profilkiszolg\u00e1l\u00f3n.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: Az \u00fcgyf\u00e9l kialak\u00edtott kapcsolatot a c\u00e9lkiszolg\u00e1l\u00f3 fel\u00e9 a k\u00f6vetkez\u0151 helyen: {0}, de a kiszolg\u00e1l\u00f3 visszautas\u00edtotta a kapcsolatot.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=Az \u00fcgyf\u00e9l sikeresen csatlakozott a c\u00e9lkiszolg\u00e1l\u00f3hoz, de a c\u00e9lkiszolg\u00e1l\u00f3 visszautas\u00edtotta a kapcsolatot, mert a c\u00e9lkiszolg\u00e1l\u00f3n fut\u00f3 \u00fczenetkezel\u00e9si alrendszer nem felel meg a kapcsolatgy\u00e1r tulajdons\u00e1gok k\u00f6z\u00f6tt meghat\u00e1rozott tulajdons\u00e1goknak.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= \u00c1ll\u00edtsa be a kapcsolatgy\u00e1r tulajdons\u00e1gait \u00fagy, hogy a c\u00e9lkiszolg\u00e1l\u00f3n fut\u00f3 \u00fczenetkezel\u00e9si alrendszer megfeleljen a megadott kapcsolatgy\u00e1r tulajdons\u00e1goknak.
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: Nem lehet csatlakozni a helyi \u00fczenetkezel\u00e9si alrendszerhez, mert annak indul\u00e1sa meghi\u00fasult.
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=Az \u00fcgyf\u00e9l nem tud l\u00e9trehozni kapcsolatot a helyi \u00fczenetkezel\u00e9si alrendszerrel. Ennek oka az lehet,  hogy az aktu\u00e1lis Liberty profilkiszolg\u00e1l\u00f3n az \u00fczenetkezel\u00e9si alrendszer be van ugyan \u00e1ll\u00edtva, de annak indul\u00e1sa meghi\u00fasult.
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetkezel\u00e9si alrendszer fut az aktu\u00e1lis Liberty profilkiszolg\u00e1l\u00f3n. Tov\u00e1bbi hibafelder\u00edt\u00e9s \u00e9rdek\u00e9ben ellen\u0151rizze a hibanapl\u00f3kat vagy FFDC bejegyz\u00e9seket.

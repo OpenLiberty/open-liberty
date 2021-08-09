@@ -1,0 +1,10 @@
+dn: m-oid=1.3.6.1.1.1.2.15, ou=objectClasses, cn=rfc2307bis, ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.15
+m-name: nisDomainObject
+m-description: Associates a NIS domain with a naming context
+m-supObjectClass: top
+m-typeObjectClass: AUXILIARY
+m-must: nisDomain

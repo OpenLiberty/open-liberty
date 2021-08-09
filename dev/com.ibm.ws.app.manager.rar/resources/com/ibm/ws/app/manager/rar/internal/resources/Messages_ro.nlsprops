@@ -1,0 +1,120 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: Adaptorul de resurse {0} a fost instalat\u0103 \u00een {1} secunde.
+J2CA7001.adapter.install.successful.explanation=Serverul a instalat cu succes adaptorul de resurse.
+J2CA7001.adapter.install.successful.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: A ap\u0103rut o excep\u0163ie \u00een timpul instal\u0103rii adaptorului de resurse {0}. Mesajul excep\u0163iei este: {1}
+J2CA7002.adapter.install.failed.explanation=Serverul nu a putut instala adaptorul de resurse.
+J2CA7002.adapter.install.failed.useraction=Citi\u0163i mesajul excep\u0163iei pentru informa\u0163ii.
+
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=Serverul nu a putut crea o loca\u0163ie de desc\u0103rcare la {0} pentru adaptorul de resurse {1}.
+J2CA7006.cannot.create.directory.explanation=C\u00e2nd se \u00eencerca desc\u0103rcarea unui adaptor de resurse de instalat, serverul nu a putut crea directorul de desc\u0103rcare.
+J2CA7006.cannot.create.directory.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 suficient spa\u0163iu pe disc pentru desc\u0103rcare.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: Adaptorul de resurse {0} s-a dezinstalat cu succes.
+J2CA7009.adapter.uninstalled.explanation=Serverul a dezinstalat cu succes adaptorul de resurse.
+J2CA7009.adapter.uninstalled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: A ap\u0103rut o excep\u0163ie \u00een timpul dezinstal\u0103rii adaptorului de resurse {0}. Mesajul excep\u0163iei este: {1}
+J2CA7010.adapter.uninstall.failed.explanation=Serverul nu a putut dezinstala adaptorul de resurse.
+J2CA7010.adapter.uninstall.failed.useraction=Asigura\u0163i-v\u0103 c\u0103 adaptorul de resurse este \u00eentr-o stare \u00een care poate fi dezinstalat.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: Adaptorul de resurse {0} nu a fost instalat.
+J2CA7012.adapter.not.installed.explanation=Adaptorul de resurse nu a putut fi instalat din cauza erorilor anterioare. 
+J2CA7012.adapter.not.installed.useraction=Verifica\u0163i configura\u0163ia adaptorului de resurse \u015fi verifica\u0163i istoricele pentru erorile din timpul pornirii adaptorului de resurse.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: Nu este posibil\u0103 instalarea adaptoarelor multiple de resurse sau a altor artefacte numite {0}.
+J2CA7013.duplicate.adapter.name.explanation=Numele adaptorului de resurse trebuie s\u0103 fie unic.  Aceasta poate fi deoarece dou\u0103 adaptoare de resurse au fost configurate s\u0103 aib\u0103 acela\u015fi nume sau un singur adaptorul de resurse a fost implementat at\u00e2t prin configurare \u00een fi\u015fierul server.xml c\u00e2t \u015fi prin plasarea adaptorului de resurse \u00een directorul dropins.
+J2CA7013.duplicate.adapter.name.useraction=Dac\u0103 dou\u0103 adaptoare de resurse sau alte artefacte au acela\u015fi nume, \u00eenl\u0103tura\u0163i sau redenumi\u0163i unul din ele. Dac\u0103 a fost implementat un singur adaptor de resurse \u00een dou\u0103 moduri diferite, modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t s\u0103 fie folosit\u0103 o singur\u0103 metod\u0103 de implementare.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: Adaptorul de resurse {0} nu a putut fi instalat deoarece nu a putut fi g\u0103sit la loca\u0163ia {1}.
+J2CA7014.adapter.not.found.explanation=Serverul nu a putut g\u0103si adaptorul de resurse la loca\u0163ia specificat\u0103 (sau la loca\u0163iile relative dac\u0103 a existat o cale relativ\u0103).
+J2CA7014.adapter.not.found.useraction=Verifica\u0163i c\u0103 loca\u0163ia definit\u0103 este corect\u0103 pentru adaptorul de resurse.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: Instalarea adaptorului de resurse {0}.
+J2CA7018.installing.adapter.explanation=Adaptorul de resurse este \u00een curs de instalare.
+J2CA7018.installing.adapter.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: Adaptorul de resurse {0} nu este actualizat.
+J2CA7020.adapter.not.updated.explanation=Adaptorul de resurse nu a putut fi instalat din cauza erorilor anterioare. 
+J2CA7020.adapter.not.updated.useraction=Verifica\u0163i configura\u0163ia adaptorului de resurse \u015fi verifica\u0163i istoricele pentru erorile din timpul pornirii adaptorului de resurse.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: Adaptorul de resurse {1} de la loca\u0163ia {0} este invalid.
+J2CA7021.adapter.at.location.not.valid.explanation=Nu este valid(\u0103) directorul sau arhiva de la loca\u0163ia specificat\u0103, deci adaptorul de resurse nu poate fi instalat.
+J2CA7021.adapter.at.location.not.valid.useraction=Asigura\u0163i-v\u0103 c\u0103 arhiva sau directorul identificat este valid.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: Adaptorul de resurse {0} nu a fost instalat \u00een {1} secunde.
+J2CA7022.adapter.slow.install.explanation=Adaptorul de resurse nu s-a instalat \u00een intervalul prev\u0103zut. Aceasta poate s\u0103 fie din cauza faptului c\u0103 serverul este supra\u00eenc\u0103rcat sau adaptorul de resurse este prea mare. Dac\u0103 adaptorul de resurse se instaleaz\u0103 ca parte a pornirii serverului, pornirea serverului se va finaliza f\u0103r\u0103 s\u0103 a\u015ftepte s\u0103 se instaleze adaptorul de resurse.
+J2CA7022.adapter.slow.install.useraction=Dac\u0103 dureaz\u0103 un timp \u00eendelungat instalarea adaptorului de resurse, atunci nu este necesar\u0103 nici o ac\u0163iune; altfel verifica\u0163i istoricele serverului pentru a vedea dac\u0103 alte mesaje indic\u0103 o cauz\u0103.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: A ap\u0103rut o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de a dezinstala automat adaptorul de resurse {0}.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=Adaptorul de resurse instalat nu a putut fi g\u0103sit pe server.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: A ap\u0103rut o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de a instala automat adaptorul de resurse {0}.
+J2CA7056.monitor.adapter.install.fail.explanation=Adaptorul de resurse nu a putut fi instalat de server.
+J2CA7056.monitor.adapter.install.fail.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: Adaptorul de resurse {0} instalat de la {1} a fost \u015fters \u00een timp ce era configurat \u00eenc\u0103.
+J2CA7059.invalid.delete.of.adapter.explanation=A fost \u015fters un adaptor de resurse care este configurat curent \u00een fi\u015fierul server.xml.
+J2CA7059.invalid.delete.of.adapter.useraction=Dac\u0103 \u015ftergerea a fost inten\u0163ionat\u0103, \u00eenl\u0103tura\u0163i configura\u0163ia adaptorului de resurse din fi\u015fierul server.xml.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: Serverul de aplica\u0163ii nu poate monitoriza adaptorul de resurse {0}.
+J2CA7060.adapter.monitoring.fail.explanation=A fost instalat un adaptor de resurse dar nu a fost pornit\u0103 monitorizarea pe  el. Dac\u0103 este actualizat un fi\u015fier \u00een adaptorul de resurse, modificarea nu va fi detectat\u0103 de server. 
+J2CA7060.adapter.monitoring.fail.useraction=La actualizarea fi\u015fierelor \u00een acest adaptor de resurse, dezinstala\u0163i manual \u015fi re-instala\u0163i adaptorul de resurse \u00een server.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: Serverul de aplica\u0163ii nu a putut instala adaptorul de resurse {0}.
+error.not.installed.explanation=O eroare anterioar\u0103 a \u00eempiedicat s\u0103 fie instalat adaptorul de resurse.
+error.not.installed.useraction=Verifica\u0163i loca\u0163ia specificat\u0103 \u00een elementul de configurare a adaptorului de resurse.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare de parsare la procesarea descriptorului de aplica\u0163ie {1}: {2}
+error.application.parse.descriptor.explanation=A ap\u0103rut o eroare la parsarea descriptorului de aplica\u0163ie.  Nici un modul nu va fi disponibil pentru aplica\u0163ie.
+error.application.parse.descriptor.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.  Examina\u0163i con\u0163inutul descriptorului de aplica\u0163ie pentru a v\u0103 asigura c\u0103 este valid con\u0163inutul ca date XML.

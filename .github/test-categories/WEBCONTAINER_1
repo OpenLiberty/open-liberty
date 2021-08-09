@@ -1,0 +1,5 @@
+com.ibm.ws.grpc_fat
+com.ibm.ws.transport.http.compression_fat
+com.ibm.ws.transport.http.remoteip_fat
+com.ibm.ws.transport.http2_fat
+com.ibm.ws.transport.iiop.open_fat

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.21.5,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: objectIdentifierFirstComponentMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.3
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: DIRECTORY_OPERATION
+m-oid: 2.5.21.5
+m-name: attributeTypes
+m-description: RFC2252: attribute types
+m-obsolete: FALSE
+entryUUID: 01a1f02b-81fe-4f8e-b49e-f1d8e5aa91a0
+entryCSN: 20130919065345.657000Z#000000#000#000000
+entryParentId: 8d7781fa-8bd8-4ab1-8c8c-ae6a13d0b74a
+createTimestamp: 20130919065353.109Z

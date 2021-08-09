@@ -1,0 +1,3 @@
+<server>
+	<classloading useJarUrls="true"/>	
+</server>

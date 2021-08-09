@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Errore: {0}
+error.inputConsoleNotAvailable=La console di input non \u00e8 disponibile.
+error.missingIO=Errore; manca l''unit\u00e0 I/O: {0}.
+
+usage=Utilizzo:  {0}
+task.unknown=Attivit\u00e0 sconosciuta: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Esistono troppi argomenti.
+insufficientArgs=Argomenti insufficienti.
+invalidArg=L''argomento {0} non \u00e8 valido.
+invalidValue=Il valore {0} non \u00e8 valido per l''argomento {1}.
+missingArg=Argomento {0} mancante.
+missingValue=Manca un valore per l''argomento {0}.
+missingArg2=\u00c8 necessario fornire l''argomento {0} o l''argomento {1}.
+exclusiveArg=\u00c8 necessario fornire l''argomento {0} o l''argomento {1}, ma non entrambi.
+serverNotFound=Il server {0} specificato non \u00e8 stato trovato nell''ubicazione {1}.
+missingArgs= Mancano i seguenti argomenti: {0} e {1}.
+missingArgs3=Mancano i seguenti argomenti: {0}, {1} e {2}.
+invalidFileLocations=Il percorso completo {0}, specificato per l''argomento --auditFileLocation \u00e8 uguale al percorso completo {1} specificato per l''argomento --outputFileLocation.  Entrambi i percorsi devono essere univoci.
+invalidURLFormat=Il valore {0} specificato per l''argomento {1} non \u00e8 nel formato URL file completo.
+
+password.enterText=Immetti password:
+password.reenterText=Reimmetti password:
+password.readError=Errore di lettura della password.
+password.entriesDidNotMatch=Le password non corrispondevano.
+
+audit.NonWriteableOuputFile=Il valore {0} specificato per --outputFileLocation \u00e8 un file non scrivibile.  Verificare che l''ubicazione specificata per il file di output sia scrivibile.
+audit.NoKeyStorePasswordValue=Nessuna password keystore specificata per il keystore di verifica {0}.
+audit.MismatchingEncrypt=Il log di verifica, {0}, \u00e8 codificato ma l''argomento --encrypted non \u00e8 stato specificato o \u00e8 stato specificato e impostato su false.
+audit.MismatchingSign=Il log di verifica, {0}, \u00e8 firmato ma l''argomento --signed non \u00e8 stato specificato o \u00e8 stato specificato e impostato su false.
+audit.MismatchingEncryptSign=Il log di verifica, {0}, \u00e8 codificato e firmato ma l''argomento --encrypted o l''argomento --signed non \u00e8 stato specificato o \u00e8 stato specificato e impostato su false.
+security.audit.UnsupportedKeyStoreType=Il valore tipo di keystore {0} per l''argomento {1} non \u00e8 supportato.
+security.audit.UnknownHost=Impossibile ottenere il nome host della macchina sulla quale \u00e8 in esecuzione il programma di utilit\u00e0 Lettore verifica. 
+security.audit.KeyStoreException=Si \u00e8 verificata un'eccezione nel tentativo di richiamare l'istanza del keystore con il tipo di provider e di keystore specificati.
+security.audit.NoSuchProviderException=Si \u00e8 verificata un'eccezione nel tentativo di richiamare l'istanza del keystore con il provider specificato.  Tale provider non esiste.
+security.audit.MalformedURLException=\u00c8 stata generata un'eccezione durante il tentativo di apertura del keystore.  L'ubicazione del keystore non \u00e8 formata correttamente. 
+security.audit.CertificateException=\u00c8 stata generata un'eccezione certificato durante il tentativo di caricamento del keystore.
+security.audit.NoSuchAlgorithmException=\u00c8 stata generata un'eccezione durante il caricamento del keystore.  \u00c8 stato richiesto un algoritmo di crittografia specifico ma non \u00e8 disponibile.
+security.audit.FileNotFound=Il file denominato {0} non esiste. 
+security.audit.ErrorLoadingKeystore=Errore durante il caricamento del keystore {0}. \u00c8 possibile che la password sia stata specificata in modo non corretto. 
+security.audit.MismatchingEncKeystores=Il valore di input, {0}, per il keystore specificato per contenere il certificato utilizzato per decodificare i record di verifica non corrisponde al keystore, {1}, specificato nel log di verifica.
+security.audit.MismatchingSigningKeystores=Il valore di input, {0}, per il keystore specificato per contenere il certificato utilizzato per annullare la firma dei record di verifica non corrisponde al keystore, {1}, specificato nel log di verifica.
+security.audit.CannotFindCertificate=L''alias del certificato {0} non esiste nel keystore {1}.

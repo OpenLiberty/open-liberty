@@ -1,0 +1,577 @@
+###############################################################################
+# Copyright (c) 2003, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIJ0001=CWSIJ0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIJ0000-CWSIJ9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIJ0001-CWSIJ9998   com.ibm.ws.sib.jfapchannel
+#   CWSIJ9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.43,0,10/10/14,01:07:38
+#
+#CMVCPATHNAME ws/code/sib.jfapchannel/src/com/ibm/ws/sib/jfapchannel/CWSIJMessages.nlsprops
+#COMPONENTPREFIX CWSIJ
+#COMPONENTNAMEFOR CWSIJ Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: A(z) {1} oszt\u00e1ly {0} met\u00f3dusa nem h\u00edvhat\u00f3 meg a(z) {2} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: A(z) {1} oszt\u00e1ly {0} met\u00f3dusa nem h\u00edvhat\u00f3 meg a(z) {2} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: A kommunik\u00e1ci\u00f3hoz haszn\u00e1lt csatornav\u00e1z szolg\u00e1ltat\u00e1s egy p\u00e9ld\u00e1nya nem tal\u00e1lhat\u00f3.
+CF_NOT_AVAILABLE_SICJ0005.explanation=A csatornav\u00e1z szolg\u00e1ltat\u00e1s egy p\u00e9ld\u00e1nya nem tal\u00e1lhat\u00f3.  Lehets\u00e9ges, hogy nincs h\u00e1l\u00f3zati kommunik\u00e1ci\u00f3.
+CF_NOT_AVAILABLE_SICJ0005.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a c\u00e9lkiszolg\u00e1l\u00f3 elindult \u00e9s a helyi g\u00e9pen a 2809-es alap\u00e9rtelmezett el\u0151bet\u00f6lt\u00e9si portot haszn\u00e1lja. Ha nem, akkor futtassa \u00fajra a launchClient parancsot a -CCBootstrapPort param\u00e9terrel, megadva a helyes portsz\u00e1mot, \u00e9s a -CCBootstrapHost param\u00e9terrel, megadva a c\u00e9lkiszolg\u00e1l\u00f3 helyes hosztnev\u00e9t. Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+EXCP_CONN_FAIL_NO_CF_SICJ0007=CWSIJ0007E: A l\u00e9trehozni pr\u00f3b\u00e1lt kapcsolat meghi\u00fasult, mert a Communications (kommunik\u00e1ci\u00f3k) komponens nem inicializ\u00e1lhat\u00f3.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.explanation=Egy h\u00e1l\u00f3zati kapcsolat l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt, de meghi\u00fasult, mert a Communications komponens nem inicializ\u00e1lhat\u00f3 megfelel\u0151en.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a Communications komponens mi\u00e9rt nem inicializ\u00e1lhat\u00f3 megfelel\u0151en.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_OUTBOUND_SICJ0008=CWSIJ0008W: A(z) {0} alap\u00e9rtelmezett kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+NO_DEFAULT_OUTBOUND_SICJ0008.explanation=Az alap\u00e9rtelmezett kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  Lehets\u00e9ges, hogy ez az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem k\u00e9pes l\u00e9trehozni kapcsolatot a t\u00e1voli \u00e1tj\u00e1r\u00f3 \u00fczenetkezel\u00e9si alrendszerekhez.
+NO_DEFAULT_OUTBOUND_SICJ0008.useraction=Hat\u00e1rozzon meg alap\u00e9rtelmezett kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1ncot ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009=CWSIJ0009W: A(z) {0} alap\u00e9rtelmezett biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.explanation=Az alap\u00e9rtelmezett biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  Lehets\u00e9ges, hogy ez az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem k\u00e9pes l\u00e9trehozni kapcsolatot a t\u00e1voli \u00e1tj\u00e1r\u00f3 \u00fczenetkezel\u00e9si alrendszerekhez.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.useraction=Hat\u00e1rozzon meg alap\u00e9rtelmezett biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1ncot ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010=CWSIJ0010W: A(z) {0} alap\u00e9rtelmezett, alag\u00fattal rendelkez\u0151 kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.explanation=Az alap\u00e9rtelmezett, alag\u00fattal rendelkez\u0151 kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  Lehets\u00e9ges, hogy ez az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem k\u00e9pes l\u00e9trehozni kapcsolatot a t\u00e1voli \u00e1tj\u00e1r\u00f3 \u00fczenetkezel\u00e9si alrendszerekhez.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Hat\u00e1rozzon meg alap\u00e9rtelmezett, alag\u00fattal rendelkez\u0151 kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1ncot ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: A(z) {0} alap\u00e9rtelmezett, alag\u00fattal rendelkez\u0151 biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Az alap\u00e9rtelmezett, alag\u00fattal rendelkez\u0151 biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  Lehets\u00e9ges, hogy ez az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem k\u00e9pes l\u00e9trehozni kapcsolatot a t\u00e1voli \u00e1tj\u00e1r\u00f3 \u00fczenetkezel\u00e9si alrendszerekhez.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Hat\u00e1rozzon meg alap\u00e9rtelmezett, alag\u00fattal rendelkez\u0151 biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1ncot ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the SSL properties file.
+NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: A kliens kezdeti \u00fczenetkezel\u00e9si sz\u00e1ll\u00edt\u00e1si szint\u0171 biztons\u00e1g\u00e1nak meghat\u00e1roz\u00e1s\u00e1ra haszn\u00e1lt {0} tulajdons\u00e1gf\u00e1jl nem tal\u00e1lhat\u00f3.
+NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=A biztons\u00e1gos kliens \u00fczenetkezel\u00e9si kapcsolatok l\u00e9trehoz\u00e1sakor haszn\u00e1lt inform\u00e1ci\u00f3kat tartalmaz\u00f3 tulajdons\u00e1gf\u00e1jl nem tal\u00e1lhat\u00f3.  Az alap\u00e9rtelmezett \u00e9rt\u00e9kek ker\u00fclnek felhaszn\u00e1l\u00e1sra.  Lehets\u00e9ges, hogy nem lehet biztons\u00e1gos kliens \u00fczenetkezel\u00e9si kapcsolatot l\u00e9trehozni.
+NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=\u00c1ll\u00edtsa be a tulajdons\u00e1gf\u00e1jlt az \u00fcgyf\u00e9l \u00fczenetkezel\u00e9s sz\u00e1ll\u00edt\u00e1si szint\u0171 biztons\u00e1ghoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy megjelen\u00e9se nem tal\u00e1lhat\u00f3.
+NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
+NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy megjelen\u00e9se nem tal\u00e1lhat\u00f3.
+NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
+NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy megjelen\u00e9se nem tal\u00e1lhat\u00f3.
+NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
+NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy megjelen\u00e9se nem tal\u00e1lhat\u00f3.
+NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
+NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy megjelen\u00e9se nem tal\u00e1lhat\u00f3.
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: A(z) {0} alap\u00e9rtelmezett kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: A(z) {0} biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: A(z) {0} alag\u00fattal rendelkez\u0151 kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: A(z) {0} alag\u00fattal rendelkez\u0151 biztons\u00e1gos kimen\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: Nem ind\u00edthat\u00f3 el bej\u00f6v\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=Nem ind\u00edthat\u00f3 el bej\u00f6v\u0151 \u00fczenetkezel\u00e9si csatornal\u00e1nc, amelynek lehets\u00e9ges oka az, hogy egy sincs meghat\u00e1rozva ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.  Lehets\u00e9ges, hogy az \u00fczenetkezel\u00e9si kliensek vagy m\u00e1s \u00fczenetkezel\u00e9si alrendszerek nem k\u00e9pesek sikeresen l\u00e9trehozni kapcsolatot ezen alkalmaz\u00e1skiszolg\u00e1l\u00f3val.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.useraction=Hat\u00e1rozzon meg tov\u00e1bbi bej\u00f6v\u0151 csatornal\u00e1ncokat az alkalmaz\u00e1skiszolg\u00e1l\u00f3n \u00fczenetkezel\u00e9si okokb\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The minimum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028=CWSIJ0028W: A(z) {1} csatorna \u00e9letjele sz\u00e1m\u00e1ra be\u00e1ll\u00edtott {0} id\u0151tartam kisebb, mint a(z) {2} minim\u00e1lis \u00e9rt\u00e9k.  Az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.explanation=A csatorna egy be\u00e1ll\u00edt\u00e1si attrib\u00fatuma sz\u00e1m\u00e1ra helytelen \u00e9rt\u00e9k ker\u00fclt megad\u00e1sra.  Ennek eredm\u00e9nyek\u00e9nt a hozz\u00e1 tartoz\u00f3 csatornal\u00e1nc feletti \u00f6sszes kommunik\u00e1ci\u00f3 eset\u00e9n az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.useraction=Helytelen \u00e9letjel-id\u0151tartam ker\u00fclt megad\u00e1sra.  M\u00f3dos\u00edtsa ezt az \u00e9rt\u00e9ket \u00fagy, hogy az elfogadhat\u00f3 \u00e9rt\u00e9kek tartom\u00e1ny\u00e1ban legyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The maximum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029=CWSIJ0029W: A(z) {1} csatorna \u00e9letjele sz\u00e1m\u00e1ra be\u00e1ll\u00edtott {0} id\u0151tartam nagyobb, mint a(z) {2} maxim\u00e1lis \u00e9rt\u00e9k.  Az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.explanation=A csatorna egy be\u00e1ll\u00edt\u00e1si attrib\u00fatuma sz\u00e1m\u00e1ra helytelen \u00e9rt\u00e9k ker\u00fclt megad\u00e1sra.  Ennek eredm\u00e9nyek\u00e9nt a hozz\u00e1 tartoz\u00f3 csatornal\u00e1nc feletti \u00f6sszes kommunik\u00e1ci\u00f3 eset\u00e9n az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.useraction=Helytelen \u00e9letjel-id\u0151tartam ker\u00fclt megad\u00e1sra.  M\u00f3dos\u00edtsa ezt az \u00e9rt\u00e9ket \u00fagy, hogy az elfogadhat\u00f3 \u00e9rt\u00e9kek tartom\u00e1ny\u00e1ban legyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030=CWSIJ0030W: A(z) {1} csatorna \u00e9letjele sz\u00e1m\u00e1ra be\u00e1ll\u00edtott {0} id\u0151korl\u00e1t kisebb, mint a(z) {2} minim\u00e1lis \u00e9rt\u00e9k.  Az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.explanation=A csatorna egy be\u00e1ll\u00edt\u00e1si attrib\u00fatuma sz\u00e1m\u00e1ra helytelen \u00e9rt\u00e9k ker\u00fclt megad\u00e1sra.  Ennek eredm\u00e9nyek\u00e9nt a hozz\u00e1 tartoz\u00f3 csatornal\u00e1nc feletti \u00f6sszes kommunik\u00e1ci\u00f3 eset\u00e9n az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.useraction=Helytelen \u00e9letjel-id\u0151korl\u00e1t ker\u00fclt megad\u00e1sra.  M\u00f3dos\u00edtsa ezt az \u00e9rt\u00e9ket \u00fagy, hogy az elfogadhat\u00f3 \u00e9rt\u00e9kek tartom\u00e1ny\u00e1ban legyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031=CWSIJ0031W: A(z) {1} csatorna \u00e9letjele sz\u00e1m\u00e1ra be\u00e1ll\u00edtott {0} id\u0151korl\u00e1t nagyobb, mint a(z) {2} maxim\u00e1lis \u00e9rt\u00e9k.  Az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.explanation=A csatorna egy be\u00e1ll\u00edt\u00e1si attrib\u00fatuma sz\u00e1m\u00e1ra helytelen \u00e9rt\u00e9k ker\u00fclt megad\u00e1sra.  Ennek eredm\u00e9nyek\u00e9nt a hozz\u00e1 tartoz\u00f3 csatornal\u00e1nc feletti \u00f6sszes kommunik\u00e1ci\u00f3 eset\u00e9n az \u00e9letjelek haszn\u00e1lata letilt\u00e1sra ker\u00fcl.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=Helytelen \u00e9letjel-id\u0151korl\u00e1t ker\u00fclt megad\u00e1sra.  M\u00f3dos\u00edtsa ezt az \u00e9rt\u00e9ket \u00fagy, hogy az elfogadhat\u00f3 \u00e9rt\u00e9kek tartom\u00e1ny\u00e1ban legyen.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032=CWSIJ0032E: An internal error occurred.  An object of class {0} cannot be created because of exception: {1}.
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.explanation=CMSG0001
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
+NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
+NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: Egy \u00fczenetkezel\u00e9si alrendszer, amely kor\u00e1bban csatlakozott a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon l\u00e9v\u0151 {0} hosztr\u00f3l, v\u00e1ratlanul bontotta a kapcsolatot.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.explanation=Egy \u00fczenetkezel\u00e9si alrendszer sz\u00e9tkapcsolt err\u0151l az alkalmaz\u00e1skiszolg\u00e1l\u00f3r\u00f3l az elv\u00e1rt sz\u00e9tkapcsol\u00e1si protokollok k\u00f6vet\u00e9se n\u00e9lk\u00fcl.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036=CWSIJ0036E: Egy kliens, amely kor\u00e1bban csatlakozott a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon l\u00e9v\u0151 {0} hosztr\u00f3l, v\u00e1ratlanul bontotta a kapcsolatot.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.explanation=Egy kliens sz\u00e9tkapcsolt err\u0151l az alkalmaz\u00e1skiszolg\u00e1l\u00f3r\u00f3l az elv\u00e1rt sz\u00e9tkapcsol\u00e1si protokollok k\u00f6vet\u00e9se n\u00e9lk\u00fcl.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_RECEIVED_SICJ0037=CWSIJ0037E: Egy l\u00e9trehozott \u00fczenetkezel\u00e9si alrendszer kapcsolata lez\u00e1r\u00e1sra ker\u00fclt a(z) {0} hosztr\u00f3l a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon fogadott \u00e9rv\u00e9nytelen adatok miatt.
+ME_BAD_DATA_RECEIVED_SICJ0037.explanation=A megadott hosztr\u00f3l egy \u00fczenetkezel\u00e9si alrendszer kapcsolata megszak\u00edt\u00e1sra ker\u00fclt az \u00e9rv\u00e9nytelen adatok \u00e1tvitele miatt.
+ME_BAD_DATA_RECEIVED_SICJ0037.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_ON_CONNECT_SICJ0038=CWSIJ0038E: Egy \u00fczenetkezel\u00e9si alrendszer kapcsolata lez\u00e1r\u00e1sra ker\u00fclt a(z) {0} hosztr\u00f3l a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon fogadott \u00e9rv\u00e9nytelen adatok miatt.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.explanation=A megadott hosztr\u00f3l egy \u00fczenetkezel\u00e9si alrendszer kapcsolata megszak\u00edt\u00e1sra ker\u00fclt az \u00e9rv\u00e9nytelen adatok \u00e1tvitele miatt.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_RECEIVED_SICJ0039=CWSIJ0039E: Egy l\u00e9trehozott kapcsolat lez\u00e1r\u00e1sra ker\u00fclt a(z) {0} hosztr\u00f3l a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon fogadott \u00e9rv\u00e9nytelen adatok miatt.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.explanation=A megadott hosztr\u00f3l egy kapcsolat megszak\u00edt\u00e1sra ker\u00fclt az \u00e9rv\u00e9nytelen adatok \u00e1tvitele miatt.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040=CWSIJ0040E: Egy kapcsolat lez\u00e1r\u00e1sra ker\u00fclt a(z) {0} hosztr\u00f3l a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon fogadott \u00e9rv\u00e9nytelen adatok miatt.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.explanation=A megadott hosztr\u00f3l egy kapcsolat megszak\u00edt\u00e1sra ker\u00fclt az \u00e9rv\u00e9nytelen adatok \u00e1tvitele miatt.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+ME_NOT_RESPONDING_SICJ0041=CWSIJ0041E: A(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon l\u00e9v\u0151 {0} hosztr\u00f3l egy \u00fczenetkezel\u00e9si alrendszer kapcsolata lez\u00e1r\u00e1sra ker\u00fclt, miut\u00e1n {2} m\u00e1sodpercig nem v\u00e1laszolt.
+ME_NOT_RESPONDING_SICJ0041.explanation=A megadott hosztr\u00f3l egy \u00fczenetkezel\u00e9si alrendszer kapcsolata megszak\u00edt\u00e1sra ker\u00fclt, mert nem v\u00e1laszolt.
+ME_NOT_RESPONDING_SICJ0041.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+CLIENT_NOT_RESPONDING_SICJ0042=CWSIJ0042E: A(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon l\u00e9v\u0151 {0} hosztr\u00f3l egy kapcsolat lez\u00e1r\u00e1sra ker\u00fclt, miut\u00e1n {2} m\u00e1sodpercig nem v\u00e1laszolt.
+CLIENT_NOT_RESPONDING_SICJ0042.explanation=A megadott hosztr\u00f3l egy kapcsolat megszak\u00edt\u00e1sra ker\u00fclt, mert nem v\u00e1laszolt.
+CLIENT_NOT_RESPONDING_SICJ0042.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+CONNECTION_INTERNAL_SICJ0043.explanation=CMSG0001
+CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: M\u00e1r bez\u00e1rt kapcsolaton pr\u00f3b\u00e1lt meg m\u0171veletet v\u00e9grehajtani.
+CONNECTION_CLOSED_SICJ0044.explanation=Olyan kapcsolat-er\u0151forr\u00e1son pr\u00f3b\u00e1lt meg m\u0171veletet v\u00e9grehajtani, amely kor\u00e1bban m\u00e1r be lett z\u00e1rva.  Ez a probl\u00e9ma egy alkalmaz\u00e1sprogram-hib\u00e1b\u00f3l ad\u00f3dhat vagy az\u00e9rt t\u00f6rt\u00e9nhet, mert a rendszer bez\u00e1rta a kapcsolat-er\u0151forr\u00e1st egy hibahelyzetre reag\u00e1lva.
+CONNECTION_CLOSED_SICJ0044.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain
+CONVERSATIONIMPL_INVALIDATE_SICJ0045=CWSIJ0045E: Egy v\u00e1ratlan helyzet miatt egy a(z) {1} l\u00e1ncot haszn\u00e1l\u00f3 h\u00e1l\u00f3zati kapcsolat a(z) {0} hosztr\u00f3l bez\u00e1r\u00e1sra ker\u00fclt.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.explanation=Egy v\u00e1ratlan helyzet felismer\u00e9se egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1s\u00e1t okozta.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=Vizsg\u00e1lja meg a hivatkozott kiv\u00e9teleket \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a hal\u00f3zati kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=CMSG0001
+CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: M\u00e1r bez\u00e1rt kapcsolaton pr\u00f3b\u00e1lt meg m\u0171veletet v\u00e9grehajtani.
+CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=Olyan kapcsolat-er\u0151forr\u00e1son pr\u00f3b\u00e1lt meg m\u0171veletet v\u00e9grehajtani, amely kor\u00e1bban m\u00e1r be lett z\u00e1rva.  Ez a probl\u00e9ma egy alkalmaz\u00e1sprogram-hib\u00e1b\u00f3l ad\u00f3dhat vagy az\u00e9rt t\u00f6rt\u00e9nhet, mert a rendszer bez\u00e1rta a kapcsolat-er\u0151forr\u00e1st egy hibahelyzetre reag\u00e1lva.
+CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=CMSG0001
+CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+EXCHANGERL_INTERNAL_SICJ0049.explanation=CMSG0001
+EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+IDTABLE_INTERNAL_SICJ0050.explanation=CMSG0001
+IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name
+INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: Egy v\u00e1ratlan helyzet miatt egy a(z) {1} l\u00e1ncot haszn\u00e1l\u00f3 h\u00e1l\u00f3zati kapcsolat a(z) {0} hosztr\u00f3l bez\u00e1r\u00e1sra ker\u00fclt.
+INBOUNDCONV_INVALIDATE_SICJ0051.explanation=Egy v\u00e1ratlan helyzet felismer\u00e9se egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1s\u00e1t okozta.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+INBOUNDCONV_INVALIDATE_SICJ0051.useraction=Vizsg\u00e1lja meg a hivatkozott kiv\u00e9teleket \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a hal\u00f3zati kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+INBOUNDCONV_INTERNAL_SICJ0052.explanation=CMSG0001
+INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name and {1} is the chain name.
+TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: Egy h\u00e1l\u00f3zati kapcsolat lez\u00e1r\u00e1sra ker\u00fclt, miut\u00e1n a partner nem megfelel\u0151 form\u00e1tum\u00fa inform\u00e1ci\u00f3kat k\u00fcld\u00f6tt.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.explanation=Az \u00e1tviteli l\u00e1ncban l\u00e9v\u0151 gazdag\u00e9pr\u0151l indul\u00f3 h\u00e1l\u00f3zati kapcsolat helytelen\u00fcl form\u00e1zott adat be\u00e9rkez\u00e9se ut\u00e1n megszakadt.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+TRANSPARSER_INTERNAL_SICJ0054.explanation=CMSG0001
+TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: Egy er\u0151forr\u00e1shi\u00e1ny le\u00e1ll\u00edtotta egy \u00faj kapcsolat l\u00e9trehoz\u00e1s\u00e1t.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=Egy \u00faj kapcsolat nem hozhat\u00f3 l\u00e9tre egy sz\u00fcks\u00e9ges er\u0151forr\u00e1s hi\u00e1nya miatt.  Ezt a probl\u00e9m\u00e1t az akt\u00edv, l\u00e9trehozott kapcsolatok nagy sz\u00e1ma okozza.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.useraction=Cs\u00f6kkentse az alkalmaz\u00e1sok \u00e1ltal haszn\u00e1lt er\u0151forr\u00e1sokat, ehhez z\u00e1rja be a nem sz\u00fcks\u00e9ges kapcsolatokat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name
+OUTBOUNDCONV_INVALIDATE_SICJ0056=CWSIJ0056E: Egy v\u00e1ratlan helyzet miatt egy a(z) {2} l\u00e1ncot haszn\u00e1l\u00f3 h\u00e1l\u00f3zati kapcsolat a(z) {0} hoszt {1} portj\u00e1n bez\u00e1r\u00e1sra ker\u00fclt.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.explanation=Egy v\u00e1ratlan helyzet felismer\u00e9se egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1s\u00e1t okozta.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=Vizsg\u00e1lja meg a hivatkozott kiv\u00e9teleket \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a hal\u00f3zati kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=CMSG0001
+PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+REQIDTABLE_INTERNAL_SICJ0058.explanation=CMSG0001
+REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+SVRCONNMGR_INTERNAL_SICJ0059.explanation=CMSG0001
+SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+TRANSDATA_INTERNAL_SICJ0060.explanation=CMSG0001
+TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+TRANSDATAIT_INTERNAL_SICJ0061.explanation=CMSG0001
+TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+CONNDATAGROUP_INTERNAL_SICJ0062.explanation=CMSG0001
+CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the hostname, {1} is the port.
+CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: A(z) {0} hoszt \u00e9s {1} port fel\u00e9 ir\u00e1nyul\u00f3 h\u00e1l\u00f3zati kapcsolat nem hozhat\u00f3 l\u00e9tre.
+CONNDATAGROUP_CONNFAILED_SICJ0063.explanation=A megadott hoszt \u00e9s port fel\u00e9 ir\u00e1nyul\u00f3 h\u00e1l\u00f3zati kapcsolat nem hozhat\u00f3 l\u00e9tre.
+CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=Hat\u00e1rozza meg, hogy a megadott hosztn\u00e9v \u00e9rv\u00e9nyes-e, \u00e9s hogy a kapcsolatokat megfigyeli-e egy folyamat a megadott porton. SSL-kapcsolathiba l\u00e9pett fel a JMS WebSphere Application Server kiszolg\u00e1l\u00f3val alkotott k\u00f6rnyezet egyszer\u0171s\u00edtett \u00fcgyfel\u00e9nek vagy er\u0151forr\u00e1s-illeszt\u0151j\u00e9nek haszn\u00e1lata sor\u00e1n. A hiba k\u00f6nnyebben behat\u00e1rolhat\u00f3 a javax.net.debug=all (Sun JSSE) vagy a javax.net.debug=true (IBM JSSE) rendszertulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1val, majd az alkalmaz\u00e1s\u00fcgyf\u00e9l \u00fajrapr\u00f3b\u00e1l\u00e1s\u00e1val.
+
+# -------------------------------------------------------------------------------------------------
+OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=CMSG0001
+OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
+CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nem tal\u00e1lhat\u00f3 az a(z) {0} nev\u0171 sz\u00e1ll\u00edt\u00e1si l\u00e1nc, amelyr\u0151l azon SSL be\u00e1ll\u00edt\u00e1sokat kell megszerezni, amelyek egy kapcsolat {1} t\u00e1voli hoszttal l\u00e9trehoz\u00e1s\u00e1hoz lehetnek sz\u00fcks\u00e9gesek.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=A partnerek fel\u00e9 ir\u00e1nyul\u00f3 V\u00e9dett socket r\u00e9teg (SSL) alap\u00fa kapcsolat l\u00e9trehoz\u00e1s\u00e1hoz sz\u00fcks\u00e9ges inform\u00e1ci\u00f3k nem tal\u00e1lhat\u00f3k a jelenlegi be\u00e1ll\u00edt\u00e1sban.  Ezen inform\u00e1ci\u00f3k norm\u00e1lis esetben egy megfelel\u0151 sz\u00e1ll\u00edt\u00e1si l\u00e1nc meghat\u00e1roz\u00e1s\u00e1b\u00f3l ker\u00fclnek beszerz\u00e9sre. Ezen l\u00e1ncmeghat\u00e1roz\u00e1s egy olyan l\u00e1ncnak megfelel\u0151 n\u00e9vvel rendelkezik, amely a t\u00e1voli partneren tal\u00e1lhat\u00f3.  Ilyen sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem tal\u00e1lhat\u00f3.  Nem lehet l\u00e9trehoni a kapcsolatot.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Hat\u00e1rozzon meg tov\u00e1bbi sz\u00e1ll\u00edt\u00e1si l\u00e1ncokat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: A(z) {0} nev\u0171 sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem tartalmaz SSL be\u00e1ll\u00edt\u00e1sokat, amelyek a(z) {1} t\u00e1voli hoszt fel\u00e9 ir\u00e1nyul\u00f3 kapcsolat l\u00e9trehoz\u00e1s\u00e1hoz lehetnek sz\u00fcks\u00e9gesek.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=A partnerek fel\u00e9 ir\u00e1nyul\u00f3 V\u00e9dett socket r\u00e9teg (SSL) alap\u00fa kapcsolat l\u00e9trehoz\u00e1s\u00e1hoz sz\u00fcks\u00e9ges inform\u00e1ci\u00f3k nem tal\u00e1lhat\u00f3k a jelenlegi be\u00e1ll\u00edt\u00e1sban.  Ezen inform\u00e1ci\u00f3k norm\u00e1lis esetben egy megfelel\u0151 sz\u00e1ll\u00edt\u00e1si l\u00e1nc meghat\u00e1roz\u00e1s\u00e1b\u00f3l ker\u00fclnek beszerz\u00e9sre. Ezen l\u00e1ncmeghat\u00e1roz\u00e1s egy olyan l\u00e1ncnak megfelel\u0151 n\u00e9vvel rendelkezik, amely a t\u00e1voli partneren tal\u00e1lhat\u00f3.  Ilyen sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem tal\u00e1lhat\u00f3.  Nem lehet l\u00e9trehoni a kapcsolatot.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=\u00c1ll\u00edtson be tov\u00e1bbi SSL sz\u00e1ll\u00edt\u00e1si csatorn\u00e1kat a megadott sz\u00e1ll\u00edt\u00e1si l\u00e1nchoz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=CMSG0001
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} csatorna egy p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=CMSG0001
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: A(z) {2} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon l\u00e9v\u0151 {0} hoszt {1} portj\u00e1ra egy \u00fczenetkezel\u00e9si alrendszer kapcsolata lez\u00e1r\u00e1sra ker\u00fclt, miut\u00e1n {3} m\u00e1sodpercig nem v\u00e1laszolt.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.explanation=A megadott hosztr\u00f3l egy \u00fczenetkezel\u00e9si alrendszer kapcsolata megszak\u00edt\u00e1sra ker\u00fclt, mert nem v\u00e1laszolt.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071=CWSIJ0071E: A(z) {2} sz\u00e1ll\u00edt\u00e1si l\u00e1ncon l\u00e9v\u0151 {0} hoszt {1} portj\u00e1ra egy kapcsolat lez\u00e1r\u00e1sra ker\u00fclt, miut\u00e1n {3} m\u00e1sodpercig nem v\u00e1laszolt.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.explanation=A megadott hosztr\u00f3l egy kapcsolat megszak\u00edt\u00e1sra ker\u00fclt, mert nem v\u00e1laszolt.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port and {2} is the chain
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072=CWSIJ0072E: Egy v\u00e1ratlan helyzet miatt egy a(z) {2} l\u00e1ncot haszn\u00e1l\u00f3 h\u00e1l\u00f3zati kapcsolat a(z) {0} hoszt {1} portj\u00e1n bez\u00e1r\u00e1sra ker\u00fclt.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.explanation=Egy v\u00e1ratlan helyzet felismer\u00e9se egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1s\u00e1t okozta.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=Vizsg\u00e1lja meg a hivatkozott kiv\u00e9teleket \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a hal\u00f3zati kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+# *** ignore this message - it is no longer used in the code. ***
+# {0} is the host, {1} is the port and {2} is the transport chain name
+#OUTOFMEMORY_SICJ0073=CWSIJ0073E: The available heap memory was exhausted while attempting to allocate storage for a message received from host {0} on port {1} using chain {2}.
+#OUTOFMEMORY_SICJ0073.explanation=Insufficient heap memory was available to store message data received from the specified remote process.  The connection to the remote process was closed.
+#OUTOFMEMORY_SICJ0073.useraction=Investigate the message throughput, message size and load of your application server.  Consider reducing message throughput, message size, application server load or increasing the amount of heap allocated by your server process.
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+BUFFER_NOT_VALID_SICJ0074.explanation=CMSG0001
+BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+BUFFER_NOT_PREPARED_SICJ0075.explanation=CMSG0001
+BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+BUFFER_ALREADY_RELEASED_SICJ0076.explanation=CMSG0001
+BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: Egy v\u00e1ratlan helyzet miatt egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1sra ker\u00fclt.
+PRIORITY_QUEUE_PURGED_SICJ0077.explanation=Egy v\u00e1ratlan helyzet felismer\u00e9se egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1s\u00e1t okozta.
+PRIORITY_QUEUE_PURGED_SICJ0077.useraction=Vizsg\u00e1lja meg a hivatkozott kiv\u00e9teleket \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a hal\u00f3zati kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAIN_SICJ0078=CWSIJ0078E: Egy {0} v\u00e1ratlan kiv\u00e9tel megakad\u00e1lyozta a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1nc elind\u00edt\u00e1s\u00e1t.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.explanation=A megadott sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem ind\u00edthat\u00f3 el a megadott kiv\u00e9tel miatt.  M\u00e1s folyamatok nem lesznek k\u00e9pesek h\u00e1l\u00f3zati kapcsolatokat l\u00e9tes\u00edteni ehhez a kiszolg\u00e1l\u00f3hoz a megadott sz\u00e1ll\u00edt\u00e1si l\u00e1nc haszn\u00e1lat\u00e1val.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.useraction=Vizsg\u00e1lja meg az \u00fczenetben megnevezett kiv\u00e9telt, \u00e9s d\u00f6ntse el, hogy el\u00e9g inform\u00e1ci\u00f3t tartalmaz-e a probl\u00e9ma megold\u00e1s\u00e1hoz. Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079=CWSIJ0079I: A(z) {0} \u00fczenetkezel\u00e9si sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem lett elind\u00edtva.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.explanation=A sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem lett elind\u00edtva, mert nincs busz meghat\u00e1rozva a cell\u00e1hoz, ami megengedi a l\u00e1nc haszn\u00e1lat\u00e1t.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.useraction=Tekintse \u00e1t a buszai \u00e1ltal enged\u00e9lyezett sz\u00e1ll\u00edt\u00e1sokat.
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_CONNFAILED_SICJ0080=CWSIJ0080E: Nem l\u00e9tes\u00edthet\u0151 keresztezett mem\u00f3ria kapcsolat a vez\u00e9rl\u0151ter\u00fcleti b\u0151v\u00edtm\u00e9ny folyamathoz.
+CONNDATAGROUP_CONNFAILED_SICJ0080.explanation=Nem l\u00e9tes\u00edthet\u0151 keresztezett mem\u00f3ria kapcsolat, ez az alkalmaz\u00e1skiszolg\u00e1l\u00f3 folyamatainak aszinkron ind\u00edt\u00e1sa miatt lehet.
+CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=Semmit sem kell tennie, ha ez az \u00fczenet az alkalmaz\u00e1skiszolg\u00e1l\u00f3 folyamat aszinkron ind\u00edt\u00e1sa miatti kimenet.  Ha ezt az \u00fczenetet a rendszer \u00e1lland\u00f3an el\u0151\u00e1ll\u00edtja, akkor l\u00e9pjen kapcsolatba az IBM technikai tan\u00e1csad\u00f3 szolg\u00e1lattal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A(z) {0} oszt\u00e1ly egy objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} kiv\u00e9tel miatt.
+EXCP_DURING_INIT_SICJ0081.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: Bels\u0151 hiba t\u00f6rt\u00e9nt.  A kapott kiv\u00e9tel {0} volt.
+EXCP_DURING_INIT_SICJ0082.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+NETWORK_FAILURE_SICJ0083=CWSIJ0083E: Egy v\u00e1ratlan helyzet miatt egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1sra ker\u00fclt.
+NETWORK_FAILURE_SICJ0083.explanation=Egy v\u00e1ratlan helyzet felismer\u00e9se egy h\u00e1l\u00f3zati kapcsolat bez\u00e1r\u00e1s\u00e1t okozta.
+NETWORK_FAILURE_SICJ0083.useraction=Vizsg\u00e1lja meg a hivatkozott kiv\u00e9teleket \u00e9s az alkalmaz\u00e1skiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljait annak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben, hogy a hal\u00f3zati kapcsolat mi\u00e9rt ker\u00fclt bez\u00e1r\u00e1sra. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket, \u00e9s jav\u00edtsa ki a probl\u00e9m\u00e1t, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084=CWSIJ0084E: Egy {0} v\u00e1ratlan kiv\u00e9tel megakad\u00e1lyozta a(z) {1} sz\u00e1ll\u00edt\u00e1si l\u00e1nc megfelel\u0151 elind\u00edt\u00e1s\u00e1t.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.explanation=A megadott sz\u00e1ll\u00edt\u00e1si l\u00e1nc lehet, hogy nem megfelel\u0151en \u00e1llt le a megadott kiv\u00e9tel miatt. Ha a sz\u00e1ll\u00edt\u00e1si l\u00e1nc nem tudott le\u00e1llni, akkor m\u00e1s folyamatok tov\u00e1bbra is k\u00e9pesek lesznek h\u00e1l\u00f3zati kapcsolatokat l\u00e9tes\u00edteni ehhez a kiszolg\u00e1l\u00f3hoz a megadott sz\u00e1ll\u00edt\u00e1si l\u00e1nc haszn\u00e1lat\u00e1val.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Vizsg\u00e1lja meg az \u00fczenetben megnevezett kiv\u00e9telt, \u00e9s d\u00f6ntse el, hogy el\u00e9g inform\u00e1ci\u00f3t tartalmaz-e a probl\u00e9ma megold\u00e1s\u00e1hoz. Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: A(z) {0} \u00fczenetkezel\u00e9si sz\u00e1ll\u00edt\u00e1si l\u00e1nc le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=A sz\u00e1ll\u00edt\u00e1si l\u00e1nc a biztons\u00e1gi be\u00e1ll\u00edt\u00e1sok m\u00f3dos\u00edt\u00e1sa ut\u00e1n le\u00e1llt, ami azt jelenti, hogy nincs busz meghat\u00e1rozva a cell\u00e1hoz, ami tov\u00e1bbra is engedn\u00e9 a l\u00e1nc haszn\u00e1lat\u00e1t.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Semmit sem kell tennie.
+
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIJ9999=CWSIJ9999E: {0}
+TEMPORARY_CWSIJ9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor tekintse meg a k\u00eds\u00e9r\u0151 hiba\u00fczeneteket a tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+TEMPORARY_CWSIJ9999.useraction=Ha tov\u00e1bbi inform\u00e1ci\u00f3kra van sz\u00fcks\u00e9ge a hiba megold\u00e1s\u00e1val kapcsolatban, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat az alkalmaz\u00e1skiszolg\u00e1l\u00f3 t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.

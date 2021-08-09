@@ -1,0 +1,8 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: basicRegistryInternals-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: com.ibm.ws.security.registry; type="ibm-api",
+ org.osgi.framework; type="internal",
+ com.ibm.websphere.ras; type="internal"
+IBM-Feature-Version: 2

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-client id="Application-client_ID" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="7">
+   <display-name>HelloApplicationClient</display-name>
+   <callback-handler>com.ibm.ws.clientcontainer.fat.TestLoginCallbackHandler</callback-handler>
+</application-client>

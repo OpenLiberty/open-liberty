@@ -1,0 +1,14 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.glassfish.json.2.0
+
+Export-Package: \
+   org.glassfish.json.*;version="2.0"
+
+Service-Component:\
+  com.ibm.ws.org.glassfish.json.JsonProviderImpl;\
+    implementation:=org.glassfish.json.JsonProviderImpl;\
+    provide:=jakarta.json.spi.JsonProvider;\
+    configuration-policy:=ignore;\
+    properties:='implementation.class=org.glassfish.json.JsonProviderImpl'

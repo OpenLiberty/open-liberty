@@ -1,0 +1,519 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Message component file for Exception messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SIRC0001=CWSIK0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - All msgs are for use by the Exception Destination mechanism. These messages
+#       - will be exposed to the user when a message cannot be delivered.
+#
+#   - Developers: Please ensure that every message in this message file is
+#       - only used once. Servicability requirements mean we need to be able
+#       - determine exactly who decided to reroute a message to the exception
+#       - destination. In addition, please ensure that you add as much useful
+#       - information as possible. Remember that the exception destination
+#       - may be on a different server.
+#
+#		**** IMPORTANT ***
+#       Please ensure EVERY message added has a corresponding reason code
+#		in com/ibm/websphere/sib/SIRCConstants.java
+#       ******************
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4
+#
+#CMVCPATHNAME ws/code/sib.mfp.api/com/ibm/websphere/sib/CWSIKMessages.nlsprops
+#COMPONENTPREFIX CWSIK
+#COMPONENTNAMEFOR CWSIK SIBus Return Codes
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# SIRC (Service Integration Return Code) messages
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# Note to developers: Notice that this message has NO useful inserts. It is the default used by
+# by SICoreException if no exception reason is provided to the SICoreException. NO CODE MAY
+# CONSTRUCT AN SICOREEXCEPTION WITHOUT PROVIDING AN EXCEPTION REASON. ANY CODE THAT DOES WILL
+# BE CAUSING A SERVICABILITY PROBLEM AND (IF DISCOVERED) WILL RESULT IN A DEFECT
+DELIVERY_ERROR_SIRC_1=CWSIK0001E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+DELIVERY_ERROR_SIRC_1.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_1.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_2=CWSIK0002E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest kolejk\u0105, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a obszaru tematu.
+DELIVERY_ERROR_SIRC_2.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_2.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_3=CWSIK0003E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest kolejk\u0105, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a us\u0142ugi.
+DELIVERY_ERROR_SIRC_3.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_3.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_4=CWSIK0004E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest kolejk\u0105, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a portu.
+DELIVERY_ERROR_SIRC_4.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_4.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_5=CWSIK0005E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest us\u0142ug\u0105, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a kolejki.
+DELIVERY_ERROR_SIRC_5.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_5.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_6=CWSIK0006E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest us\u0142ug\u0105, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a obszaru tematu.
+DELIVERY_ERROR_SIRC_6.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_6.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_7=CWSIK0007E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest us\u0142ug\u0105, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a portu.
+DELIVERY_ERROR_SIRC_7.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_7.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_8=CWSIK0008E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest portem, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a kolejki.
+DELIVERY_ERROR_SIRC_8.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_8.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_9=CWSIK0009E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest portem, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a obszaru tematu.
+DELIVERY_ERROR_SIRC_9.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_9.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_10=CWSIK0010E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest portem, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a us\u0142ugi.
+DELIVERY_ERROR_SIRC_10.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_10.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_11=CWSIK0011E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest obszarem tematu, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a kolejki.
+DELIVERY_ERROR_SIRC_11.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_11.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_12=CWSIK0012E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest obszarem tematu, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a us\u0142ugi.
+DELIVERY_ERROR_SIRC_12.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_12.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# {0} The destination name
+# {1} The messaging engine name.
+DELIVERY_ERROR_SIRC_13=CWSIK0013E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} jest obszarem tematu, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a portu.
+DELIVERY_ERROR_SIRC_13.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_13.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# {0} The destination name
+# {1} The messaging engine name.
+# {2} The destination Type
+# {3} The expected destination type
+DELIVERY_ERROR_SIRC_14=CWSIK0014E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nale\u017cy do typu {2}, a aplikacja nawi\u0105zuj\u0105ca po\u0142\u0105czenie za\u017c\u0105da\u0142a nieznanego typu {3}.
+DELIVERY_ERROR_SIRC_14.explanation=Aplikacja nawi\u0105za\u0142a po\u0142\u0105czenie si\u0119 z mechanizmem przesy\u0142ania komunikat\u00f3w i za\u017c\u0105da\u0142a typu miejsca docelowego, kt\u00f3ry jest niezgodny z bazowym typem miejsca docelowego.
+DELIVERY_ERROR_SIRC_14.useraction=Popraw aplikacj\u0119 nawi\u0105zuj\u0105c\u0105 po\u0142\u0105czenie lub przy u\u017cyciu Konsoli administracyjnej zmie\u0144 typ miejsca docelowego na \u017c\u0105dany typ.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# {0} is the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_15=CWSIK0015E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie znaleziono miejsca docelowego {0}.
+DELIVERY_ERROR_SIRC_15.explanation=Miejsce docelowe o podanej nazwie jest nieznane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_15.useraction=Sprawd\u017a, czy nazwa miejsca docelowego jest poprawna i czy miejsce docelowe zosta\u0142o utworzone na tej magistrali.  Je\u015bli miejsce docelowe istnieje w innym mechanizmie przesy\u0142ania komunikat\u00f3w, sprawd\u017a, czy dzia\u0142a komunikacja z innym mechanizmem przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# {0} The destination address
+DELIVERY_ERROR_SIRC_16=CWSIK0016E: Transakcja u\u017cywana do wysy\u0142ania (miejsce docelowe: {0}) zosta\u0142a ju\u017c zako\u0144czona.
+DELIVERY_ERROR_SIRC_16.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia transakcji, kt\u00f3ra zosta\u0142a ju\u017c zako\u0144czona.
+DELIVERY_ERROR_SIRC_16.useraction=Sprawd\u017a, czy u\u017cywana transakcja jest now\u0105 transakcj\u0105.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_17=CWSIK0017E: W przypadku miejsca docelowego o nazwie {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie jest dozwolone wysy\u0142anie.
+DELIVERY_ERROR_SIRC_17.explanation=Podj\u0119to pr\u00f3b\u0119 wys\u0142ania komunikatu do miejsca docelowego i sprawdzono, czy w przypadku tego miejsca docelowego jest dozwolone wysy\u0142anie.  Sprawdzenie nie powiod\u0142o si\u0119, poniewa\u017c w przypadku tego miejsca docelowego nie jest dozwolone wysy\u0142anie.
+DELIVERY_ERROR_SIRC_17.useraction=Zaktualizuj miejsce docelowe w taki spos\u00f3b, aby by\u0142o dozwolone wysy\u0142anie, a nast\u0119pnie ponownie wy\u015blij komunikat.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# {0} The destination name
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_18=CWSIK0018E: U\u017cytkownikowi z tematem {1} odm\u00f3wiono prawa do wys\u0142ania komunikatu do miejsca docelowego {0}.
+DELIVERY_ERROR_SIRC_18.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do wysy\u0142ania komunikat\u00f3w do miejsca docelowego.
+DELIVERY_ERROR_SIRC_18.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 uprawnienia do wysy\u0142ania komunikat\u00f3w do tego miejsca docelowego, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w w tym miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# {0} The destination prefix
+# {1} The subject attempting the operation
+DELIVERY_ERROR_SIRC_19=CWSIK0019E: U\u017cytkownik {1} nie ma uprawnie\u0144 do wysy\u0142ania komunikat\u00f3w do tymczasowych miejsc docelowych z przedrostkiem {0}.
+DELIVERY_ERROR_SIRC_19.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do wysy\u0142ania komunikat\u00f3w do tymczasowych miejsc docelowych z podanym przedrostkiem.
+DELIVERY_ERROR_SIRC_19.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 uprawnienia do wysy\u0142ania komunikat\u00f3w do danego tymczasowego miejsca docelowego, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w w tym tymczasowym miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# {0} The destination name
+# {1} The discriminator name
+# {2} The user attempting the operation
+DELIVERY_ERROR_SIRC_20=CWSIK0020E: U\u017cytkownikowi z tematem {2} odm\u00f3wiono prawa do wys\u0142ania komunikatu do wyr\u00f3\u017cnika {1} w miejscu docelowym {0}.
+DELIVERY_ERROR_SIRC_20.explanation=U\u017cytkownik nie ma uprawnie\u0144 wymaganych do wysy\u0142ania komunikat\u00f3w do miejsca docelowego przy u\u017cyciu okre\u015blonego tematu.
+DELIVERY_ERROR_SIRC_20.useraction=Je\u015bli ten u\u017cytkownik powinien mie\u0107 uprawnienia do wysy\u0142ania komunikat\u00f3w na dany temat, to nale\u017cy zaktualizowa\u0107 ustawienia dotycz\u0105ce autoryzacji u\u017cytkownik\u00f3w dla tego tematu w danym miejscu docelowym.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# {0} the name of the destination
+# {1} The messaging engine Name
+DELIVERY_ERROR_SIRC_21=CWSIK0021E: Sesja producenta zosta\u0142a zamkni\u0119ta w miejscu docelowym {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} i nie mo\u017cna jej u\u017cywa\u0107.
+DELIVERY_ERROR_SIRC_21.explanation=Producent zosta\u0142 zamkni\u0119ty i nie mo\u017ce zosta\u0107 u\u017cyty w okre\u015blonym miejscu docelowym.
+DELIVERY_ERROR_SIRC_21.useraction=Utw\u00f3rz now\u0105 sesj\u0119 producenta dla podanego miejsca docelowego.
+
+# -------------------------------------------------------------------------------------------------
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# {0} The messaging engine name
+DELIVERY_ERROR_SIRC_22=CWSIK0022E: Po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w {0} zosta\u0142o zamkni\u0119te i nie mo\u017cna go u\u017cywa\u0107.
+DELIVERY_ERROR_SIRC_22.explanation=Po\u0142\u0105czenie zosta\u0142o zamkni\u0119te i nie mo\u017cna go u\u017cywa\u0107 do \u017cadnych operacji.
+DELIVERY_ERROR_SIRC_22.useraction=Utw\u00f3rz nowe po\u0142\u0105czenie z mechanizmem przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# {0}  The destination name that could not be found
+# {1} The reason for failing to put the message to the exception destination
+# {2} The related error
+# {3} The current destination
+DELIVERY_ERROR_SIRC_23=CWSIK0023E: Pr\u00f3ba przekierowania komunikatu do miejsca docelowego wyj\u0105tk\u00f3w {3} - spowodowana nieznalezieniem miejsca docelowego \u015bcie\u017cki kierowania przy przekazywaniu {0} - nie powiod\u0142a si\u0119. Przyczyna: {1}. Pokrewny b\u0142\u0105d: {2}.
+DELIVERY_ERROR_SIRC_23.explanation=Nie znaleziono nast\u0119pnego miejsca docelowego \u015bcie\u017cki kierowania przy przekazywaniu. Komunikat przekierowano do miejsca docelowego wyj\u0105tk\u00f3w, ale podczas tego przekierowywania wyst\u0105pi\u0142 b\u0142\u0105d.
+DELIVERY_ERROR_SIRC_23.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# {0} the name of the destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_24=CWSIK0024E: W przypadku miejsca docelowego {0} nie jest dozwolona operacja wysy\u0142ania (mechanizm przesy\u0142ania komunikat\u00f3w: {1}).
+DELIVERY_ERROR_SIRC_24.explanation=Podj\u0119to pr\u00f3b\u0119 wys\u0142ania komunikatu do miejsca docelowego i sprawdzono, czy zosta\u0142 dla niego udost\u0119pniony punkt kolejki.  Sprawdzenie nie powiod\u0142o si\u0119, poniewa\u017c w jedynym punkcie kolejki dost\u0119pnym dla tego miejsca docelowego nie jest dozwolone wysy\u0142anie.
+DELIVERY_ERROR_SIRC_24.useraction=Zaktualizuj punkt kolejki dla miejsca docelowego w taki spos\u00f3b, aby by\u0142o dozwolone wysy\u0142anie, a nast\u0119pnie pon\u00f3w operacj\u0119 wysy\u0142ania.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# {0} is the name of the Destination
+# {1} The name of the messaging engine.
+DELIVERY_ERROR_SIRC_25=CWSIK0025E: Miejsce docelowe {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1} nie jest dost\u0119pne, poniewa\u017c osi\u0105gni\u0119to ju\u017c g\u00f3rny limit liczby komunikat\u00f3w dla tego miejsca docelowego.
+DELIVERY_ERROR_SIRC_25.explanation=Komunikat nie mo\u017ce by\u0107 zaakceptowany, poniewa\u017c wszystkie punkty kolejki dla wymienionego miejsca docelowego lub kolejki transmisji wymienionego mechanizmu przesy\u0142ania komunikat\u00f3w prowadz\u0105ce do tego miejsca docelowego osi\u0105gn\u0119\u0142y ju\u017c skonfigurowany dla nich g\u00f3rny limit.
+DELIVERY_ERROR_SIRC_25.useraction=Sprawd\u017a, czy g\u00f3rny limit liczby komunikat\u00f3w skonfigurowany dla tego miejsca docelowego jest poprawny.  Je\u015bli miejsce docelowe istnieje w innym mechanizmie przesy\u0142ania komunikat\u00f3w, sprawd\u017a, czy dzia\u0142a komunikacja z innym mechanizmem przesy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_26=CWSIK0026E: Nie znaleziono \u017cadnego dozwolonego adresowalnego punktu komunikatu dla miejsca docelowego {0}.
+DELIVERY_ERROR_SIRC_26.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia miejsca docelowego, ale \u017caden z punkt\u00f3w komunikatu tego miejsca docelowego nie by\u0142 adresowalny z powodu ogranicze\u0144, kt\u00f3re mog\u0105 wynika\u0107 z u\u017cycia aliasu lub powi\u0105zania z usuni\u0119tym punktem komunikatu.
+DELIVERY_ERROR_SIRC_26.useraction=Je\u015bli ten komunikat jest odpowiedzi\u0105, mo\u017cliwe jest, \u017ce w pierwotnym komunikacie \u017c\u0105dania okre\u015blono mechanizm przesy\u0142ania komunikat\u00f3w, a punkt komunikatu tego miejsca docelowego zosta\u0142 usuni\u0119ty. Je\u015bli u\u017cyto aliasu miejsca docelowego, kt\u00f3ry ogranicza adresowalne punkty komunikatu miejsca docelowego, nale\u017cy poprawi\u0107 alias w taki spos\u00f3b, aby identyfikowa\u0142 poprawny zestaw punkt\u00f3w komunikatu.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# {0} is the destination name
+DELIVERY_ERROR_SIRC_27=CWSIK0027E: Miejsce docelowe o nazwie {0} jest uszkodzone.
+DELIVERY_ERROR_SIRC_27.explanation=Miejsce docelowe o podanej nazwie jest uszkodzone i nie mo\u017cna go u\u017cy\u0107.
+DELIVERY_ERROR_SIRC_27.useraction=Zresetuj miejsce docelowe z u\u017cyciem konsoli administracyjnej.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+# {2} is the alias resolution path
+DELIVERY_ERROR_SIRC_28=CWSIK0028E: Nie mo\u017cna przet\u0142umaczy\u0107 miejsca docelowego okre\u015blonego przez alias {0}, poniewa\u017c w\u0142a\u015bciwe miejsce docelowe {1} nie istnieje w \u015bcie\u017cce aliasu {2}.
+DELIVERY_ERROR_SIRC_28.explanation=W\u0142a\u015bciwe miejsce docelowe w \u015bcie\u017cce aliasu jest nieznane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_28.useraction=Zdefiniuj w\u0142a\u015bciwe miejsce docelowe lub popraw niepoprawny alias w Konsoli administracyjnej.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# {0} is the name of the alias destination
+# {1} is the name of the service destination
+# {2} is the alias resolution path
+# {3} The name of the messaging engine bus
+DELIVERY_ERROR_SIRC_29=CWSIK0029E: Wyst\u0105pi\u0142 b\u0142\u0105d, poniewa\u017c miejsce docelowe okre\u015blone przez alias {0} wskazuje miejsce docelowe us\u0142ugi {1} w \u015bcie\u017cce {2} na magistrali mechanizmu przesy\u0142ania komunikat\u00f3w {3}.
+DELIVERY_ERROR_SIRC_29.explanation=Alias miejsca docelowego nie jest prawid\u0142owy, poniewa\u017c miejsce docelowe jest miejscem docelowym us\u0142ugi.
+DELIVERY_ERROR_SIRC_29.useraction=Usu\u0144 miejsce docelowe us\u0142ugi, zmieniaj\u0105c aliasy w \u015bcie\u017cce rozstrzygania w Konsoli administracyjnej.
+
+# -------------------------------------------------------------------------------------------------
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# {0} is the name of the link
+# {1} is the link UUID
+# {2} is the Bus Name
+DELIVERY_ERROR_SIRC_30=CWSIK0030E: Podczas tworzenia magistrali {2} nie znaleziono po\u0142\u0105czenia o nazwie {0} i identyfikatorze UUID {1}.
+DELIVERY_ERROR_SIRC_30.explanation=Po\u0142\u0105czenie o podanej nazwie jest nieznane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w, dlatego nie powiod\u0142a si\u0119 pr\u00f3ba utworzenia magistrali o okre\u015blonej nazwie.
+DELIVERY_ERROR_SIRC_30.useraction=Sprawd\u017a, czy nazwa po\u0142\u0105czenia jest poprawna i zosta\u0142a zdefiniowana w Konsoli administracyjnej dla danej magistrali.  Sprawd\u017a, czy konfiguracja mechanizmu przesy\u0142ania komunikat\u00f3w jest aktualna.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# {0} is the name of the destination
+DELIVERY_ERROR_SIRC_31=CWSIK0031E: Miejsce docelowe {0} ju\u017c istnieje.
+DELIVERY_ERROR_SIRC_31.explanation=Miejsce docelowe o podanej nazwie jest ju\u017c znane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w, dlatego nie powiod\u0142a si\u0119 pr\u00f3ba jego utworzenia.
+DELIVERY_ERROR_SIRC_31.useraction=Sprawd\u017a, czy konfiguracja miejsca docelowego jest poprawna w Konsoli administracyjnej i zrestartuj serwer.
+
+# -------------------------------------------------------------------------------------------------
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# {0} is the name of the destination
+# {1} The messaging engine name
+DELIVERY_ERROR_SIRC_32=CWSIK0032E: Usuni\u0119to miejsce docelowe lub obc\u0105 magistral\u0119 {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+DELIVERY_ERROR_SIRC_32.explanation=Z powodu usuni\u0119cia nie mo\u017cna ju\u017c u\u017cywa\u0107 danego miejsca docelowego lub obcej magistrali.
+DELIVERY_ERROR_SIRC_32.useraction=Podaj poprawn\u0105 nazw\u0119 miejsca docelowego lub obcej magistrali podczas wysy\u0142ania komunikat\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# {0}  The messages reliability
+# {1}  The destinations reliability
+# {2}  The destinations name.
+# {3}  The messaging engine name.
+DELIVERY_ERROR_SIRC_33=CWSIK0033E: Warto\u015b\u0107 niezawodno\u015bci komunikatu ({0}) jest wi\u0119ksza ni\u017c warto\u015b\u0107 niezawodno\u015bci ({1}) miejsca docelowego {2} w mechanizmie przesy\u0142ania komunikat\u00f3w {3}.
+DELIVERY_ERROR_SIRC_33.explanation=Podj\u0119to pr\u00f3b\u0119 przekazanie komunikatu do miejsca docelowego, ale warto\u015b\u0107 niezawodno\u015bci komunikatu jest wi\u0119ksza ni\u017c warto\u015b\u0107 obs\u0142ugiwana przez miejsce docelowe.
+DELIVERY_ERROR_SIRC_33.useraction=Zaktualizuj miejsce docelowe w taki spos\u00f3b, aby umo\u017cliwia\u0142o obs\u0142ug\u0119 komunikat\u00f3w o wi\u0119kszej niezawodno\u015bci, lub zmniejsz niezawodno\u015b\u0107 komunikatu, kt\u00f3ry ma zosta\u0107 wys\u0142any.
+
+# -------------------------------------------------------------------------------------------------
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+# {0} the name of the service destination
+# {1} The name of the messaging engine
+DELIVERY_ERROR_SIRC_34=CWSIK0034E: \u015acie\u017cka kierowania przy przekazywaniu nie zawiera \u017cadnych wpis\u00f3w dotycz\u0105cych miejsca docelowego us\u0142ugi {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}.
+DELIVERY_ERROR_SIRC_34.explanation=Podj\u0119to pr\u00f3b\u0119 u\u017cycia miejsca docelowego us\u0142ugi, ale \u015bcie\u017cka kierowania przy przekazywaniu by\u0142a pusta.
+DELIVERY_ERROR_SIRC_34.useraction=Miejsce docelowe us\u0142ugi musi mie\u0107 miejsca docelowe poddane mediacji uwzgl\u0119dnione w swojej \u015bcie\u017cce kierowania przy przekazywaniu. Popraw \u015bcie\u017ck\u0119 i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination to which we were delivering
+# {1} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_35=CWSIK0035E: Nie mo\u017cna dostarczy\u0107 komunikatu do miejsca docelowego {0} w mechanizmie przesy\u0142ania komunikat\u00f3w {1}, poniewa\u017c zosta\u0142 on wycofany wi\u0119cej razy ni\u017c wynosi jego pr\u00f3g liczby ponownych dostarcze\u0144.
+DELIVERY_ERROR_SIRC_35.explanation=Nie mo\u017cna dostarczy\u0107 tego komunikatu, poniewa\u017c ka\u017cda pr\u00f3ba zatwierdzenia transakcji dostarczania komunikatu zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+DELIVERY_ERROR_SIRC_35.useraction=Sprawd\u017a przyczyn\u0119 wycofywania transakcji. Dodatkowe informacje o rozwi\u0105zaniu tego b\u0142\u0119du zawieraj\u0105 artyku\u0142y na temat okre\u015blania problem\u00f3w na stronie WWW wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webserver/appserv/was/support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination from which the message was rerouted
+# {2} identifies the messaging engine where the destination is located
+DELIVERY_ERROR_SIRC_36=CWSIK0036E: Komunikat {0} zosta\u0142 administracyjnie przekierowany z miejsca docelowego {1} w mechanizmie przesy\u0142ania komunikat\u00f3w {2}.
+DELIVERY_ERROR_SIRC_36.explanation=Komunikat zosta\u0142 usuni\u0119ty z tego miejsca docelowego i przeniesiony do miejsca docelowego wyj\u0105tk\u00f3w.
+DELIVERY_ERROR_SIRC_36.useraction=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the destination that was invalid
+# {1} identifies the messaging engine where the destination is located
+# {2} identifies the last valid destination in the path
+# {3} identified the exception caused by the invalid destination
+DELIVERY_ERROR_SIRC_37=CWSIK0037E: Nie mo\u017cna dostarczy\u0107 komunikatu, poniewa\u017c jego \u015bcie\u017cka routingu zawiera niepoprawne miejsce docelowe {0}. Ostatnim poprawnym miejscem docelowym by\u0142o miejsce {2} w mechanizmie przesy\u0142ania komunikat\u00f3w {3}. Miejsce docelowe by\u0142o niepoprawne z powodu wyj\u0105tku {3}.
+DELIVERY_ERROR_SIRC_37.explanation=Nie mo\u017cna dostarczy\u0107 komunikatu, poniewa\u017c jego \u015bcie\u017cka routingu zawiera niepoprawne miejsce docelowe.
+DELIVERY_ERROR_SIRC_37.useraction=Sprawd\u017a miejsca docelowe dost\u0119pne w \u015bcie\u017cce routingu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_38=CWSIK0038E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} nie znaleziono obcej magistrali o nazwie {0}.
+DELIVERY_ERROR_SIRC_38.explanation=Obca magistrala o podanej nazwie jest nieznana w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_38.useraction=Sprawd\u017a, czy nazwa obcej magistrali jest poprawna.  Sprawd\u017a, czy \u0142\u0105cze obcej magistrali zosta\u0142o zdefiniowane i wydaj komend\u0119 ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_39=CWSIK0039E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} nie znaleziono obcej magistrali o nazwie {0} z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {3}.
+DELIVERY_ERROR_SIRC_39.explanation=Obca magistrala o podanej nazwie jest nieznana w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_39.useraction=Sprawd\u017a, czy nazwa obcej magistrali jest poprawna.  Sprawd\u017a, czy \u0142\u0105cze obcej magistrali zosta\u0142o zdefiniowane i wydaj komend\u0119 ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus link
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_40=CWSIK0040E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} nie znaleziono \u0142\u0105cza obcej magistrali o nazwie {0}.
+DELIVERY_ERROR_SIRC_40.explanation=\u0141\u0105cze obcej magistrali o podanej nazwie jest nieznane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_40.useraction=Sprawd\u017a, czy nazwa obcej magistrali jest poprawna oraz czy ma zdefiniowane \u0142\u0105cza.  Je\u015bli nie zosta\u0142y zdefiniowane \u017cadne \u0142\u0105cza, zdefiniuj mi\u0119dzy dwoma magistralami nowe \u0142\u0105cze obcej magistrali.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the foreign bus
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+# {3} The related error
+DELIVERY_ERROR_SIRC_41=CWSIK0041E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} nie zdefiniowano \u0142\u0105czy s\u0142u\u017c\u0105cych do nawi\u0105zywania po\u0142\u0105czenia z obc\u0105 magistral\u0105 o nazwie {0} z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {3}.
+DELIVERY_ERROR_SIRC_41.explanation=Aplikacja podj\u0119\u0142a pr\u00f3b\u0119 wys\u0142ania komunikatu do miejsca docelowego na obcej magistrali, ale nie zdefiniowano \u017cadnych \u0142\u0105czy mi\u0119dzy lokaln\u0105 i obc\u0105 magistral\u0105.
+DELIVERY_ERROR_SIRC_41.useraction=W Konsoli administracyjnej zdefiniuj \u0142\u0105cze mi\u0119dzy lokaln\u0105 i obc\u0105 magistral\u0105, a nast\u0119pnie ponownie wy\u015blij komunikat.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the uuid of the mqlink
+# {1} The name of the messaging engine
+# {2} The name of the messaging engines bus
+DELIVERY_ERROR_SIRC_42=CWSIK0042E: W mechanizmie przesy\u0142ania komunikat\u00f3w {1} na magistrali {2} nie znaleziono \u0142\u0105cza produktu MQ o identyfikatorze UUID {0}.
+DELIVERY_ERROR_SIRC_42.explanation=\u0141\u0105cze produktu MQ o podanej nazwie jest nieznane w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_42.useraction=Upewnij si\u0119, \u017ce jest zdefiniowana nazwa \u0142\u0105cza produktu MQ, oraz sprawd\u017a poprawno\u015b\u0107 jej pisowni (jest rozr\u00f3\u017cniana wielko\u015b\u0107 liter).  Je\u015bli \u0142\u0105cze MQ nie jest zdefiniowane, u\u017cyj istniej\u0105cego \u0142\u0105cza MQ lub zdefiniuj nowe \u0142\u0105cze MQ.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the current maximum forward routing path depth
+DELIVERY_ERROR_SIRC_43=CWSIK0043E: Nie mo\u017cna dostarczy\u0107 komunikatu do miejsca docelowego w \u015bcie\u017cce kierowania przy przekazywaniu, poniewa\u017c zosta\u0142a przekroczona maksymalna g\u0142\u0119boko\u015b\u0107 \u015bcie\u017cki kierowania przy przekazywaniu ({0}).
+DELIVERY_ERROR_SIRC_43.explanation=Komunikat zosta\u0142 przekierowany przez \u015bcie\u017ck\u0119 kierowania przy przekazywaniu. Liczba przekierowa\u0144 przekroczy\u0142a dozwolon\u0105 warto\u015b\u0107 maksymaln\u0105. Z tego powodu komunikat zosta\u0142 wys\u0142any do miejsca docelowego wyj\u0105tk\u00f3w.
+DELIVERY_ERROR_SIRC_43.useraction=Sprawd\u017a \u015bcie\u017ck\u0119 kierowania przy przekazywaniu pod k\u0105tem cykli. Mo\u017cesz tak\u017ce zwi\u0119kszy\u0107 maksymaln\u0105 warto\u015b\u0107 poprzez niestandardow\u0105 w\u0142a\u015bciwo\u015b\u0107 sib.processor.maxForwardRoutingPath.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination to which we were delivering
+# {1} is the bus from the message originated
+DELIVERY_ERROR_SIRC_44=CWSIK0044E: Nie mo\u017cna dostarczy\u0107 komunikatu do miejsca docelowego {0}, poniewa\u017c punkt kolejki dla tego miejsca docelowego znajduje si\u0119 w elemencie magistrali serwera produktu WebSphere MQ, a ten komunikat zosta\u0142 wys\u0142any z obcej magistrali {1}.
+DELIVERY_ERROR_SIRC_44.explanation=Nie mo\u017cna wys\u0142a\u0107 komunikat\u00f3w z obcej magistrali bezpo\u015brednio do miejsca docelowego, kt\u00f3rego punkt kolejki znajduje si\u0119 w produkcie WebSphere MQ i do kt\u00f3rego dost\u0119p jest uzyskiwany za pomoc\u0105 elementu magistrali serwera produktu WebSphere MQ. 
+DELIVERY_ERROR_SIRC_44.useraction=Ponownie skonfiguruj aplikacj\u0119 wysy\u0142aj\u0105c\u0105 tak, aby nawi\u0105zywa\u0142a po\u0142\u0105czenie z magistral\u0105 lokaln\u0105, lub zezw\u00f3l na dost\u0119p do miejsca docelowego produktu WebSphere MQ z u\u017cyciem po\u0142\u0105czenia obcej magistrali produktu WebSphere MQ, a nast\u0119pnie kieruj komunikat przez obc\u0105 magistral\u0119, a nie przez element magistrali serwera produktu WebSphere MQ.
+
+# -------------------------------------------------------------------------------------------------
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# {0} is the alias destination name
+# {1} is the target destination name
+DELIVERY_ERROR_SIRC_45=CWSIK0045E: Nie mo\u017cna przet\u0142umaczy\u0107 miejsca docelowego okre\u015blonego przez alias {0}, poniewa\u017c w\u0142a\u015bciwe miejsce docelowe {1} nie istnieje.
+DELIVERY_ERROR_SIRC_45.explanation=Miejsce docelowe jest niedost\u0119pne w lokalnym mechanizmie przesy\u0142ania komunikat\u00f3w.
+DELIVERY_ERROR_SIRC_45.useraction=Okre\u015bl poprawne miejsce docelowe.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the destination to which the message was rerouted
+# {2} identifies the mediation that caused the message to be rerouted
+# {3} identifies the destination at which the message was mediated
+# {4} identifies the exception that mediation generated that caused the message to be rerouted
+DELIVERY_ERROR_SIRC_101=CWSIK0101W: Komunikat {0} zosta\u0142 przekierowany do miejsca docelowego wyj\u0105tk\u00f3w {1}, poniewa\u017c mediacja {2} w miejscu docelowym {3} spowodowa\u0142a nast\u0119puj\u0105cy wyj\u0105tek: {4}.
+DELIVERY_ERROR_SIRC_101.explanation=Komunikat zosta\u0142 dostarczony do podanej mediacji. Spowodowa\u0142a ona wyj\u0105tek, w wyniku czego komunikat zosta\u0142 przekierowany do miejsca docelowego wyj\u0105tk\u00f3w.
+DELIVERY_ERROR_SIRC_101.useraction=Je\u015bli mediacja nie powinna przekierowywa\u0107 komunikat\u00f3w, sprawd\u017a przyczyn\u0119 wyj\u0105tku.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+# {3} identifies the message format to which the message does not conform
+DELIVERY_ERROR_SIRC_102=CWSIK0102E: Komunikat {0}, po poddaniu go mediacji {1} w miejscu docelowym {2}, nie mo\u017ce kontynuowa\u0107 przechodzenia przez \u015bcie\u017ck\u0119 kierowania przy przekazywaniu, poniewa\u017c jego format nie jest zgodny z formatem {3}.
+DELIVERY_ERROR_SIRC_102.explanation=Po zastosowaniu okre\u015blonej mediacji wzgl\u0119dem tego komunikatu jego format nie jest zgodny z danym formatem. Mediacja zmieni\u0142a tre\u015b\u0107 komunikatu i/lub format komunikatu. Do miejsca docelowego wyj\u0105tk\u00f3w zosta\u0142a przekierowana oryginalna wersja komunikatu.
+DELIVERY_ERROR_SIRC_102.useraction=Sprawd\u017a, jak i dlaczego okre\u015blona mediacja zmodyfikowa\u0142a komunikat w taki spos\u00f3b, \u017ce jego format nie jest zgodny z okre\u015blonym formatem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the message that has been rerouted
+# {1} identifies the mediation that caused the message to become invalid
+# {2} identifies the destination at which the message was mediated
+DELIVERY_ERROR_SIRC_103=CWSIK0103E: Komunikat {0}, po poddaniu go mediacji {1} w miejscu docelowym {2}, nie mo\u017ce kontynuowa\u0107 przechodzenia przez \u015bcie\u017ck\u0119 kierowania przy przekazywaniu, poniewa\u017c nie jest poprawnie sformatowany.
+DELIVERY_ERROR_SIRC_103.explanation=Po zastosowaniu okre\u015blonej mediacji wzgl\u0119dem tego komunikatu jego w\u0142a\u015bciwo\u015bci zawiera\u0142y obiekty, kt\u00f3rych nie mo\u017cna przekszta\u0142ci\u0107 do postaci szeregowej, lub wykres danych jest niepoprawny.
+DELIVERY_ERROR_SIRC_103.useraction=Sprawd\u017a, w jaki spos\u00f3b i dlaczego okre\u015blona mediacja zmieni\u0142a komunikat tak, \u017ce jest teraz niepoprawny.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_104=CWSIK0104E: Komunikat jest zbyt du\u017cy, aby m\u00f3g\u0142 zosta\u0107 obs\u0142u\u017cony przez zdalny produkt MQ, dlatego zostanie wys\u0142any do miejsca docelowego wyj\u0105tk\u00f3w (wielko\u015b\u0107 komunikatu: {0}, maksymalna wielko\u015b\u0107 komunikatu: {1}).
+DELIVERY_ERROR_SIRC_104.explanation=Komunikat jest zbyt du\u017cy.
+DELIVERY_ERROR_SIRC_104.useraction=Sprawd\u017a ustawienia produktu MQ.
+
+# -------------------------------------------------------------------------------------------------
+DELIVERY_ERROR_SIRC_105=CWSIK0105E: Wyst\u0105pi\u0142 b\u0142\u0105d dotycz\u0105cy formatu komunikatu.
+DELIVERY_ERROR_SIRC_105.explanation=Nie mo\u017cna przetworzy\u0107 komunikatu z powodu b\u0142\u0119du formatowania.
+DELIVERY_ERROR_SIRC_105.useraction=Sprawd\u017a po\u0142\u0105czenie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} identifies the WebSphere MQ return code
+# {1} identifies the WebSphere MQ reason code
+DELIVERY_ERROR_SIRC_106=CWSIK0106E: Produkt WebSphere MQ spowodowa\u0142 b\u0142\u0105d. Kod powrotu oraz kod przyczyny produktu WebSphere MQ to odpowiednio: {0} i {1}.  
+DELIVERY_ERROR_SIRC_106.explanation=Nie mo\u017cna przetworzy\u0107 komunikatu z powodu wyst\u0105pienia warunku b\u0142\u0119du spowodowanego przez produkt WebSphere MQ.  
+DELIVERY_ERROR_SIRC_106.useraction=Dokonaj analizy kodu powrotu oraz kodu przyczyny produktu WebSphere MQ, a tak\u017ce dziennik\u00f3w b\u0142\u0119d\u00f3w produktu WebSphere MQ w celu okre\u015blenia przyczyny wyst\u0105pienia b\u0142\u0119du. Rozwi\u0105zanie problemu mo\u017ce okaza\u0107 si\u0119 niemo\u017cliwe bez pomocy administratora produktu WebSphere MQ.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name of the Object which cannot be serialized.
+DELIVERY_ERROR_SIRC_200=CWSIK0200E: W \u0142adunku komunikatu ustawiono obiekt klasy {0}, ale nie jest mo\u017cliwe jego przekszta\u0142cenie do postaci szeregowej.
+DELIVERY_ERROR_SIRC_200.explanation=Komunikat obiektu z flag\u0105 producerDoesNotModifyPayloadAfterSet w\u0142\u0105czon\u0105 w elemencie ConnectionFactory zosta\u0142 wys\u0142any z \u0142adunkiem, kt\u00f3rego system nie mo\u017ce przekszta\u0142ci\u0107 do postaci szeregowej.  Dane tego komunikatu zosta\u0142y utracone.
+DELIVERY_ERROR_SIRC_200.useraction=Wy\u0142\u0105cz flag\u0119 producerDoesNotModifyPayloadAfterSet w elemencie ConnectionFactory.  Je\u015bli flaga b\u0119dzie wy\u0142\u0105czona, aplikacja JMS, kt\u00f3ra ustawia obiekt w komunikacie, otrzyma niezw\u0142ocznie ka\u017cdy wyj\u0105tek dotycz\u0105cy przekszta\u0142cania do postaci szeregowej.
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0001
+# {0} The class name
+# {1} The PROBE ID.
+DELIVERY_ERROR_SIRC_900=CWSIK0900E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w (identyfikator sondy: {1}).
+DELIVERY_ERROR_SIRC_900.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_900.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_MESSAGING_ERROR_CWSIP0002
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+DELIVERY_ERROR_SIRC_901=CWSIK0901E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d przesy\u0142ania komunikat\u00f3w (identyfikator sondy: {1}). Wyj\u0105tek: {2}.
+DELIVERY_ERROR_SIRC_901.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_901.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# INTERNAL_CONFIGURATION_ERROR_CWSIP0006
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+DELIVERY_ERROR_SIRC_905=CWSIK0905E: W klasie {0} wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d konfiguracji miejsca docelowego {2} (identyfikator sondy: {1}).
+DELIVERY_ERROR_SIRC_905.explanation=CMSG0001
+DELIVERY_ERROR_SIRC_905.useraction=CMSG0002

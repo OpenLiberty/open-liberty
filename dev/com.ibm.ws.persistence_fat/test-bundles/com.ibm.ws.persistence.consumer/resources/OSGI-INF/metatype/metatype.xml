@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="consumer">
+  <Object ocdref="test.consumerbundle.consumer" />
+ </Designate>
+
+ <OCD id="test.consumerbundle.consumer" ibm:alias="consumer" name="Consumer Service" description="Consumer Service.">
+  <AD id="inmemMappingFile" type="String"  required="false" ibm:unique="inmemMappingFile" name="In memory mapping file" description="In memory mapping file name"/>
+  <AD id="staticMappingFile" type="String"  required="false" ibm:unique="staticMappingFile" name="Static mapping file" description="Static mapping file name"/>
+  <AD id="createTables" type="String" required="false" ibm:unique="createTables" name="Create tables" description="Create tables"/>
+  <AD id="dbVendor" type="String" required="false" ibm:unique="dbVendor" name="Database Vendor" description="Database vendor.  Used when generating DDL without a database connection."/>
+  <AD id="dbMajorVersion" type="String" required="false" ibm:unique="dbMajorVersion" name="Database major version" description="Database major version.  Used when generating DDL without a database connection."/>
+  <AD id="dbMinorVersion" type="String" required="false" ibm:unique="dbMinorVersion" name="Database minor version" description="Database major version.  Used when generating DDL without a database connection."/>
+ </OCD>
+
+</metatype:MetaData>

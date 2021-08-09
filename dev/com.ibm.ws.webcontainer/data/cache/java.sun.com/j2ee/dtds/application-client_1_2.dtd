@@ -1,0 +1,292 @@
+<!--
+Copyright 1999 Sun Microsystems, Inc. 901 San Antonio Road,
+Palo Alto, CA  94303, U.S.A.  All rights reserved.
+ 
+This product or document is protected by copyright and distributed
+under licenses restricting its use, copying, distribution, and
+decompilation.  No part of this product or documentation may be
+reproduced in any form by any means without prior written authorization
+of Sun and its licensors, if any.  
+
+Third party software, including font technology, is copyrighted and 
+licensed from Sun suppliers. 
+
+Sun, Sun Microsystems, the Sun Logo, Solaris, Java, JavaServer Pages, Java 
+Naming and Directory Interface, JDBC, JDK, JavaMail and Enterprise JavaBeans, 
+are trademarks or registered trademarks of Sun Microsystems, Inc in the U.S. 
+and other countries.
+
+All SPARC trademarks are used under license and are trademarks
+or registered trademarks of SPARC International, Inc.
+in the U.S. and other countries. Products bearing SPARC
+trademarks are based upon an architecture developed by Sun Microsystems, Inc. 
+
+PostScript is a registered trademark of Adobe Systems, Inc. 
+
+ 
+Federal Acquisitions: Commercial Software - Government Users Subject to 
+Standard License Terms and Conditions.
+
+
+ 
+DOCUMENTATION IS PROVIDED "AS IS" AND ALL EXPRESS OR IMPLIED
+CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY
+IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE OR NON-INFRINGEMENT, ARE DISCLAIMED, EXCEPT
+TO THE EXTENT THAT SUCH DISCLAIMERS ARE HELD TO BE LEGALLY
+INVALID.
+
+_________________________________________________________________________
+Copyright 1999 Sun Microsystems, Inc., 
+901 San Antonio Road, Palo Alto, CA  94303, Etats-Unis. 
+Tous droits re'serve's.
+ 
+
+Ce produit ou document est prote'ge' par un copyright et distribue' avec 
+des licences qui en restreignent l'utilisation, la copie, la distribution,
+et la de'compilation.  Aucune partie de ce produit ou de sa documentation
+associe'e ne peut e^tre reproduite sous aucune forme, par quelque moyen 
+que ce soit, sans l'autorisation pre'alable et e'crite de Sun et de ses 
+bailleurs de licence, s'il y en a.  
+
+Le logiciel de'tenu par des tiers, et qui comprend la technologie 
+relative aux polices de caracte`res, est prote'ge' par un copyright 
+et licencie' par des fournisseurs de Sun.
+ 
+Sun, Sun Microsystems, le logo Sun, Solaris, Java, JavaServer Pages, Java 
+Naming and Directory Interface, JDBC, JDK, JavaMail, et Enterprise JavaBeans,  
+sont des marques de fabrique ou des marques de'pose'es de Sun 
+Microsystems, Inc. aux Etats-Unis et dans d'autres pays.
+ 
+Toutes les marques SPARC sont utilise'es sous licence et sont
+des marques de fabrique ou des marques de'pose'es de SPARC
+International, Inc. aux Etats-Unis et  dans
+d'autres pays. Les produits portant les marques SPARC sont
+base's sur une architecture de'veloppe'e par Sun Microsystems, Inc.  
+
+Postcript est une marque enregistre'e d'Adobe Systems Inc. 
+ 
+LA DOCUMENTATION EST FOURNIE "EN L'ETAT" ET TOUTES AUTRES CONDITIONS,
+DECLARATIONS ET GARANTIES EXPRESSES OU TACITES SONT FORMELLEMENT EXCLUES,
+DANS LA MESURE AUTORISEE PAR LA LOI APPLICABLE, Y COMPRIS NOTAMMENT
+TOUTE GARANTIE IMPLICITE RELATIVE A LA QUALITE MARCHANDE, A L'APTITUDE
+A UNE UTILISATION PARTICULIERE OU A L'ABSENCE DE CONTREFACON.
+-->
+
+<!--
+The application-client element is the root element of an application client
+deployment descriptor.
+The application client deployment descriptor describes the EJB components and
+external resources referenced by the application client.
+-->
+<!ELEMENT application-client (icon?, display-name, description?, env-entry*,
+ejb-ref*, resource-ref*)>
+
+<!--
+The description element is used to provide text describing the parent element.
+The description element should include any information that the
+application-client file producer wants to provide to the consumer of the
+application-client file (i.e., to the Deployer). Typically, the tools used by
+the application-client file consumer will display the description when
+processing the parent element that contains the description.
+-->
+<!ELEMENT description (#PCDATA)>
+
+<!--
+The display-name element contains a short name that is intended to be displayed
+by tools.
+-->
+<!ELEMENT display-name (#PCDATA)>
+
+<!--
+The ejb-link element is used in the ejb-ref element to specify that an EJB
+reference is linked to an enterprise bean in the encompassing J2EE Application
+package. The value of the ejb-link element must be the ejb-name of an enterprise
+bean in the same J2EE Application package. Used in: ejb-ref
+Example: <ejb-link>EmployeeRecord</ejb-link>
+-->
+<!ELEMENT ejb-link (#PCDATA)>
+
+<!--
+The ejb-ref element is used for the declaration of a reference to an enterprise
+bean's home. The declaration consists of an optional description; the EJB
+reference name used in the code of the referencing application client; the
+expected type of the referenced enterprise bean; the expected home and remote
+interfaces of the referenced enterprise bean; and an optional ejb-link
+information. The optional ejb-link element is used to specify the referenced
+enterprise bean.
+-->
+<!ELEMENT ejb-ref (description?, ejb-ref-name, ejb-ref-type, home, remote,
+ejb-link?)>
+
+<!--
+The ejb-ref-name element contains the name of an EJB reference. The EJB
+reference is an entry in the application client's environment. It is recommended
+that name is prefixed with "ejb/". Used in: ejb-ref
+Example: <ejb-ref-name>ejb/Payroll</ejb-ref-name>
+-->
+<!ELEMENT ejb-ref-name (#PCDATA)>
+
+<!--
+The ejb-ref-type element contains the expected type of the referenced enterprise
+bean. The ejb-ref-type element must be one of the following:
+<ejb-ref-type>Entity</ejb-ref-type>
+<ejb-ref-type>Session</ejb-ref-type>
+Used in: ejb-ref
+-->
+<!ELEMENT ejb-ref-type (#PCDATA)>
+
+<!--
+The env-entry element contains the declaration of an application client's
+environment entries. The declaration consists of an optional description, the
+name of the environment entry, and an optional value.
+-->
+<!ELEMENT env-entry (description?, env-entry-name, env-entry-type,
+env-entry-value?)>
+
+<!--
+The env-entry-name element contains the name of an application client's
+environment entry. Used in: env-entry
+Example: <env-entry-name>EmployeeAppDB</env-entry-name>
+-->
+<!ELEMENT env-entry-name (#PCDATA)>
+
+<!--
+The env-entry-type element contains the fully-qualified Java type of the
+environment entry value that is expected by the application client's code. The
+following are the legal values of env-entry-type: java.lang.Boolean,
+java.lang.String, java.lang.Integer, java.lang.Double, java.lang.Byte,
+java.lang.Short, java.lang.Long, and java.lang.Float.
+
+Used in: env-entry
+
+Example:
+<env-entry-type>java.lang.Boolean</env-entry-type>
+-->
+<!ELEMENT env-entry-type (#PCDATA)>
+
+<!--
+The env-entry-value element contains the value of an application client's
+environment entry. The value must be a String that is valid for the constructor
+of the specified type that takes a single String parameter.
+
+Used in: env-entry
+
+Example:
+<env-entry-value>/datasources/MyDatabase</env-entry-value>
+-->
+<!ELEMENT env-entry-value (#PCDATA)>
+
+<!--
+The home element contains the fully-qualified name of the enterprise bean's home
+interface.
+Used in: ejb-ref
+Example: <home>com.aardvark.payroll.PayrollHome</home>
+-->
+<!ELEMENT home (#PCDATA)>
+
+<!--
+The icon element contains a small-icon and large-icon element which specify the
+URIs for a small and a large GIF or JPEG icon image used to represent the
+application client in a GUI tool.
+-->
+<!ELEMENT icon (small-icon?, large-icon?)>
+
+<!--
+The large-icon element contains the name of a file containing a large (32 x 32)
+icon image. The file name is a relative path within the application-client jar
+file. The image must be either in the JPEG or GIF format, and the file name must
+end with the suffix ".jpg" or ".gif" respectively. The icon can be used by
+tools.
+Example:
+<large-icon>lib/images/employee-service-icon32x32.jpg</large-icon>
+-->
+<!ELEMENT large-icon (#PCDATA)>
+
+<!--
+The remote element contains the fully-qualified name of the enterprise bean's
+remote interface.
+Used in: ejb-ref
+Example:
+<remote>com.wombat.empl.EmployeeService</remote>
+-->
+<!ELEMENT remote (#PCDATA)>
+
+<!--
+The res-auth element specifies whether the enterprise bean code signs on
+programmatically to the resource manager, or whether the Container will sign on
+to the resource manager on behalf of the bean. In the latter case, the Container
+uses information that is supplied by the Deployer.
+The value of this element must be one of the two following:
+<res-auth>Application</res-auth>
+<res-auth>Container</res-auth>
+-->
+<!ELEMENT res-auth (#PCDATA)>
+
+<!--
+The res-ref-name element specifies the name of the resource factory reference
+name. The resource factory reference name is the name of the application
+client's environment entry whose value contains the JNDI name of the data
+source.
+Used in: resource-ref
+-->
+<!ELEMENT res-ref-name (#PCDATA)>
+
+<!--
+The res-type element specifies the type of the data source. The type is
+specified by the Java interface (or class) expected to be implemented by the
+data source.
+Used in: resource-ref
+-->
+<!ELEMENT res-type (#PCDATA)>
+
+<!--
+The resource-ref element contains a declaration of application clients's
+reference to an external resource. It consists of an optional description, the
+resource factory reference name, the indication of the resource factory type
+expected by the application client's code, and the type of authentication (bean
+or container).
+
+Example:
+<resource-ref>
+<res-ref-name>EmployeeAppDB</res-ref-name>
+<res-type>javax.sql.DataSource</res-type>
+<res-auth>Container</res-auth>
+</resource-ref>
+-->
+<!ELEMENT resource-ref (description?, res-ref-name, res-type, res-auth)>
+<!--
+The small-icon element contains the name of a file containing a small (16 x 16)
+icon image. The file name is a relative path within the application-client jar
+file. The image must be either in the JPEG or GIF format, and the file name must
+end with the suffix ".jpg" or ".gif" respectively. The icon can be used by
+tools.
+Example:
+<small-icon>lib/images/employee-service-icon16x16.jpg</small-icon>
+-->
+<!ELEMENT small-icon (#PCDATA)>
+
+<!--
+The ID mechanism is to allow tools to easily make tool-specific references to
+the elements of the deployment descriptor.
+ -->
+<!ATTLIST application-client id ID #IMPLIED>
+<!ATTLIST description id ID #IMPLIED>
+<!ATTLIST display-name id ID #IMPLIED>
+<!ATTLIST ejb-link id ID #IMPLIED>
+<!ATTLIST ejb-ref id ID #IMPLIED>
+<!ATTLIST ejb-ref-name id ID #IMPLIED>
+<!ATTLIST ejb-ref-type id ID #IMPLIED>
+<!ATTLIST env-entry id ID #IMPLIED>
+<!ATTLIST env-entry-name id ID #IMPLIED>
+<!ATTLIST env-entry-type id ID #IMPLIED>
+<!ATTLIST env-entry-value id ID #IMPLIED>
+<!ATTLIST home id ID #IMPLIED>
+<!ATTLIST icon id ID #IMPLIED>
+<!ATTLIST large-icon id ID #IMPLIED>
+<!ATTLIST remote id ID #IMPLIED>
+<!ATTLIST res-auth id ID #IMPLIED>
+<!ATTLIST res-ref-name id ID #IMPLIED>
+<!ATTLIST res-type id ID #IMPLIED>
+<!ATTLIST resource-ref id ID #IMPLIED>
+<!ATTLIST small-icon id ID #IMPLIED>

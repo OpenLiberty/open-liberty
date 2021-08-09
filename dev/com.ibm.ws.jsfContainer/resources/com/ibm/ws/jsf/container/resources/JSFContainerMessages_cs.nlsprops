@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME none
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
+
+# 0: JSF provider type (will be either MOJARRA or MYFACES)
+# 1: application name
+jsf.container.init=JSFG0100I: Liberty inicializovala integrace JSF pro poskytovatele JSF {0} v aplikaci {1}.
+jsf.container.init.explanation=Pro ozna\u010denou aplikaci jsou inicializov\u00e1ny integrace Liberty JSF, kter\u00e9 umo\u017en\u00ed fungov\u00e1n\u00ed integrac\u00ed CDI a JSF.
+jsf.container.init.useraction=Informa\u010dn\u00ed zpr\u00e1va. Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# 0: application name
+# 1: required ApplicationFactory implementations
+jsf.container.no.jsf.impl=JSFG0101E: V aplikaci {0} nebyly nalezeny \u017e\u00e1dn\u00e9 implementace JSF. Implementace JSF obsahuj\u00edc\u00ed jednu z n\u00e1sleduj\u00edc\u00edch implementac\u00ed javax.faces.application.ApplicationFactory mus\u00ed b\u00fdt dostupn\u00e1 v aplikaci {1}.
+jsf.container.no.jsf.impl.explanation=Integrace Liberty JSF jsou podporov\u00e1ny pouze pro specifickou sadu implementac\u00ed JSF t\u0159et\u00ed strany. Jedna z uveden\u00fdch implementac\u00ed ApplicationFactory mus\u00ed b\u00fdt dostupn\u00e1 ozna\u010den\u00e9 aplikaci.
+jsf.container.no.jsf.impl.useraction=Do ozna\u010den\u00e9 aplikace zahr\u0148te bu\u010f implementaci Apache MyFaces, nebo Mojarra JSF. Voliteln\u011b pokud chcete pou\u017e\u00edt v\u00fdchoz\u00ed implementaci JSF, kter\u00e1 je dod\u00e1na Liberty, Apache MyFaces, pou\u017eijte funkci jsf-2.2 nam\u00edsto jsfContainer-2.2.
+
+# 0: application name
+jsf.container.no.app.name=JSFG0102E: Liberty nem\u016f\u017ee z\u00edskat n\u00e1zev aplikace z aplikace JSF {0} pomoc\u00ed rozhran\u00ed JNDI.
+jsf.container.no.app.name.explanation=Registrace aplikace s kontejnerem Liberty JSF Container vy\u017eaduje m\u00edt k dispozici n\u00e1zev aplikace, proveden\u00edm vyhled\u00e1n\u00ed v rozhran\u00ed JNDI "java:app/AppName".
+jsf.container.no.app.name.useraction=Ov\u011b\u0159te, \u017ee funkce jndi-1.0 je povolena a \u017ee proveden\u00ed vyhled\u00e1n\u00ed v rozhran\u00ed JNDI, nap\u0159. InitialContext.doLookup("java:app/AppName"), v r\u00e1mci aplikace pracuje.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.spec.api.version=JSFG0103E: Pro aplikaci {0} je dostupn\u00e1 verze API specifikace JSF {2}, ta ale vy\u017eaduje rozsah verz\u00ed {1}. Ujist\u011bte se, \u017ee rozhran\u00ed JSF API zabalen\u00e9 v ozna\u010den\u00e9 aplikaci odpov\u00edd\u00e1 verzi povolen\u00e9ho kontejneru jsfContainer. Liberty ur\u010duje verzi rozhran\u00ed JSF API kontrolou atributu typu manifest Specification-Version v souboru .jar, kter\u00fd obsahuje t\u0159\u00eddu JSF API.
+jsf.container.bad.spec.api.version.explanation=Verze povolen\u00e9ho kontejneru jsfContainer mus\u00ed odpov\u00eddat stejn\u00e9 verzi JSF API zabalen\u00e9 do ozna\u010den\u00e9 aplikace.
+jsf.container.bad.spec.api.version.useraction=Ujist\u011bte se, \u017ee rozhran\u00ed JSF API zabalen\u00e9 v ozna\u010den\u00e9 aplikaci odpov\u00edd\u00e1 verzi povolen\u00e9ho kontejneru jsfContainer. Liberty ur\u010duje verzi rozhran\u00ed JSF API kontrolou atributu typu manifest Specification-Version v souboru .jar, kter\u00fd obsahuje t\u0159\u00eddu JSF API.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.impl.version=JSFG0104E: Pro aplikaci {0} je dostupn\u00e1 verze implementace JSF {2}, to ale vy\u017eaduje rozsah verz\u00ed {1}. Ujist\u011bte se, \u017ee implementace JSF zabalen\u00e1 v ozna\u010den\u00e9 aplikaci odpov\u00edd\u00e1 verzi povolen\u00e9ho kontejneru jsfContainer. Liberty ur\u010duje verzi implementace JSF kontrolou atributu typu manifest Specification-Version v souboru .jar, kter\u00fd obsahuje t\u0159\u00eddu MyFaces nebo Mojarra ApplicationFactory.
+jsf.container.bad.impl.version.explanation=Verze povolen\u00e9ho kontejneru jsfContainer mus\u00ed odpov\u00eddat stejn\u00e9 verzi implementace JSF zabalen\u00e9 do ozna\u010den\u00e9 aplikace.
+jsf.container.bad.impl.version.useraction=Ujist\u011bte se, \u017ee implementace JSF zabalen\u00e1 v ozna\u010den\u00e9 aplikaci odpov\u00edd\u00e1 verzi povolen\u00e9ho kontejneru jsfContainer. Liberty ur\u010duje verzi implementace JSF kontrolou atributu typu manifest Specification-Version v souboru .jar, kter\u00fd obsahuje t\u0159\u00eddu MyFaces nebo Mojarra ApplicationFactory.

@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=1.30,0,02/04/15,09:57:59
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.jpa/resources/EJBJPAMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: {2} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 {1} \u6a21\u5757\u4e2d\u7684 {0} \u6709\u72b6\u6001\u4f1a\u8bdd bean \u672a\u58f0\u660e\u5bf9 {3} \u6301\u4e45\u6027\u5f15\u7528\u7684\u4f9d\u8d56\u5173\u7cfb\u3002
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=\u5f53\u6709\u72b6\u6001\u4f1a\u8bdd\u4f4d\u4e8e WAR \u4e2d\u65f6\uff0c\u5b83\u5fc5\u987b\u58f0\u660e\u5bf9\u6240\u6709\u5c06\u8981\u8bbf\u95ee\u7684\u6301\u4e45\u6027\u4e0a\u4e0b\u6587\u5f15\u7528\u548c\u6301\u4e45\u6027\u5355\u5143\u5f15\u7528\u7684\u4f9d\u8d56\u5173\u7cfb\u3002
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=\u5c06\u76f8\u5e94 @PersistenceContext \u6216 @PersistenceUnit \u6e90\u4ee3\u7801\u6ce8\u91ca\u6dfb\u52a0\u81f3\u6709\u72b6\u6001\u4f1a\u8bdd bean\uff0c\u6216\u5c06\u76f8\u5e94<persistence-context-ref> \u6216 <persistence-unit-ref> \u5143\u7d20\u6dfb\u52a0\u81f3 ejb-jar.xml \u6587\u4ef6\u4e2d\u7684\u76f8\u5e94 <session> \u5143\u7d20\u3002

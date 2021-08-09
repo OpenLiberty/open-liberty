@@ -1,0 +1,65 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+
+Bundle-Name: OpenAPI 3.1
+Bundle-SymbolicName: com.ibm.ws.openapi.3.1
+Bundle-Description: Project for OpenAPI; version=${bVersion}
+
+Include-Resource: \
+  lib=lib
+  
+-dsannotations: \
+	com.ibm.ws.openapi31.OpenAPIAggregator,\
+	com.ibm.ws.openapi31.OpenAPIEndpointManager,\
+	com.ibm.ws.openapi31.OpenAPIModuleListener,\
+	com.ibm.ws.openapi31.WebModuleAdapter,\
+	com.ibm.ws.openapi31.customization.OpenAPICustomizer,\
+	com.ibm.ws.openapi31.customization.CustomCSSProcessor
+
+Private-Package: \
+  com.ibm.ws.openapi31.merge,\
+  com.ibm.ws.openapi31.customization,\
+  com.ibm.ws.openapi31.resources
+
+Export-Package: \
+  com.ibm.ws.openapi31
+
+-buildpath: \
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest, \
+	com.ibm.ws.microprofile.openapi;version=latest,\
+	com.ibm.ws.microprofile.openapi.model;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.openapi.3.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.app.manager.wab;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.filemonitor;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
+instrument.classesExcludes: com/ibm/ws/openapi31/resources/OpenAPIMessages*.class

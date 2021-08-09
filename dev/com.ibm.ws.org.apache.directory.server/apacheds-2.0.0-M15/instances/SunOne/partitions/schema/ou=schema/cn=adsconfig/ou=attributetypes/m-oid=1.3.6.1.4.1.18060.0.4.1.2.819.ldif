@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.819,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: caseExactOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.819
+m-description: the alias dereference mode of replication search
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.18060.0.4.1.0.11
+m-name: ads-replAliasDerefMode
+creatorsname: uid=admin,ou=system
+m-equality: caseExactMatch
+m-length: 0

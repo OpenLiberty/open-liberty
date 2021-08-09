@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry/resources/com/ibm/ws/security/registry/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3000 - CWWKS3099
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID=CWWKS3000E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002userRegistry \u914d\u7f6e\u6ca1\u6709\u5df2\u914d\u7f6e\u7684 refId \u53c2\u6570\u3002
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.explanation=userRegistry \u914d\u7f6e\u5143\u7d20\u901a\u8fc7\u5176\u6807\u8bc6\u503c\u6765\u5f15\u7528\u7279\u5b9a\u7684 UserRegistry \u5b9e\u4f8b\u3002
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.useraction=\u8bf7\u5728 userRegistry \u914d\u7f6e\u4e2d\u6307\u5b9a refId \u53c2\u6570\u3002
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID=CWWKS3001E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002\u627e\u4e0d\u5230\u6807\u8bc6\u4e3a {0} \u7684\u6240\u8bf7\u6c42 UserRegistry \u5b9e\u4f8b\u3002
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.explanation=\u6bcf\u4e2a UserRegistry \u914d\u7f6e\u90fd\u6307\u5b9a\u4e00\u4e2a id \u53c2\u6570\u3002
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.useraction=\u8bf7\u4e3a\u5df2\u914d\u7f6e\u5143\u7d20\u6307\u5b9a id \u53c2\u6570\uff0c\u6216\u521b\u5efa\u5fc5\u9700\u7684\u914d\u7f6e\u3002
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE=CWWKS3002E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002\u627e\u4e0d\u5230\u7c7b\u578b\u4e3a {0} \u7684\u6240\u8bf7\u6c42 UserRegistry \u5de5\u5382\u3002
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.explanation=\u6bcf\u4e2a UserRegistry \u5b9e\u73b0\u6346\u7ed1\u8f6f\u4ef6\u90fd\u6307\u5b9a\u5176\u63d0\u4f9b\u7684\u7c7b\u578b\u3002
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.useraction=\u8bf7\u6307\u5b9a\u53d7\u652f\u6301\u7684\u7c7b\u578b\uff0c\u6216\u5b89\u88c5\u7528\u4e8e\u63d0\u4f9b\u6240\u8bf7\u6c42\u7c7b\u578b\u7684 UserRegistry \u5b9e\u4f8b\u7684\u6346\u7ed1\u8f6f\u4ef6\u3002
+
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID=CWWKS3003E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002\u6ce8\u518c\u8868\u7c7b\u578b {0} \u7684\u914d\u7f6e\u672a\u5b9a\u4e49\u6807\u8bc6\u3002
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.explanation=\u8be5\u6ce8\u518c\u8868\u7c7b\u578b\u7684\u914d\u7f6e\u672a\u5b9a\u4e49\u6807\u8bc6\u3002
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.useraction=\u8bf7\u4e3a\u8be5\u6ce8\u518c\u8868\u7c7b\u578b\u7684\u914d\u7f6e\u5b9a\u4e49\u6807\u8bc6\u3002
+
+USER_REGISTRY_SERVICE_WITHOUT_TYPE=CWWKS3004E: \u53d1\u751f\u5185\u90e8\u5f02\u5e38\u3002\u670d\u52a1 {0} \u672a\u5b9a\u4e49\u5b83\u5b9e\u73b0\u7684\u6ce8\u518c\u8868\u7c7b\u578b\u3002
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.explanation=\u8be5\u670d\u52a1\u672a\u5b9a\u4e49 com.ibm.ws.security.registry.type \u5c5e\u6027\u3002
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.useraction=\u8bf7\u4e3a\u8be5\u670d\u52a1\u5b9a\u4e49 com.ibm.ws.security.registry.type \u5c5e\u6027\u3002
+
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE=CWWKS3005E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002\u6ca1\u6709\u4efb\u4f55 UserRegistry \u5b9e\u73b0\u670d\u52a1\u53ef\u7528\u3002\u8bf7\u786e\u4fdd\u914d\u7f6e\u7528\u6237\u6ce8\u518c\u8868\u3002
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.explanation=\u672a\u901a\u8fc7 OSGi \u670d\u52a1\u6ce8\u518c\u8868\u63d0\u4f9b UserRegistry \u5b9e\u73b0\u3002
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.useraction=\u8bf7\u6307\u5b9a UserRegistry \u5b9e\u73b0\u529f\u80fd\u90e8\u4ef6\u3002
+
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE=CWWKS3006E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002\u5b58\u5728\u591a\u4e2a\u53ef\u7528\u7684 UserRegistry \u5b9e\u73b0\u670d\u52a1\uff1b\u7cfb\u7edf\u65e0\u6cd5\u786e\u5b9a\u8981\u4f7f\u7528\u54ea\u4e2a\u670d\u52a1\u3002
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.explanation=\u901a\u8fc7 OSGi \u670d\u52a1\u6ce8\u518c\u8868\u63d0\u4f9b\u4e86\u591a\u4e2a UserRegistry \u5b9e\u73b0\u3002
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.useraction=\u8bf7\u4ec5\u6307\u5b9a\u4e00\u4e2a UserRegistry \u5b9e\u73b0\u529f\u80fd\u90e8\u4ef6\u3002\u5982\u679c\u9009\u62e9\u591a\u4e2a userRegistry\uff0c\u90a3\u4e48\u5fc5\u987b\u5728\u8054\u5408\u7528\u6237\u6ce8\u518c\u8868\u65f6\u5305\u542b\u8054\u5408\u529f\u80fd\u90e8\u4ef6\u3002
+
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE=CWWKS3007E: \u53d1\u751f\u914d\u7f6e\u5f02\u5e38\u3002\u7c7b\u578b\u4e3a {0} \u4e14\u6807\u8bc6\u4e3a {1} \u7684\u914d\u7f6e\u4e0e\u7c7b\u578b\u4e3a {2} \u4e14\u6807\u8bc6\u4e3a {3} \u7684\u914d\u7f6e\u51b2\u7a81\u3002\u6b63\u5728\u5ffd\u7565\u7c7b\u578b\u4e3a {0} \u4e14\u6807\u8bc6\u4e3a {1} \u7684\u914d\u7f6e\u3002
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.explanation=\u591a\u4e2a\u6ce8\u518c\u8868\u914d\u7f6e\u5b9a\u4e49\u540c\u4e00\u6807\u8bc6\u3002\u8fd9\u4e0d\u53d7\u652f\u6301\u3002
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.useraction=\u8bf7\u66f4\u6539\u53d1\u751f\u51b2\u7a81\u7684\u67d0\u4e2a\u6ce8\u518c\u8868\u914d\u7f6e\u7684\u6807\u8bc6\uff0c\u4ee5\u4f7f\u5176\u552f\u4e00\u3002
+
+FEDERATING_REGISTRY=CWWKS3008I: \u8054\u5408\u4e86\u6807\u8bc6\u4e3a {0} \u7684\u7528\u6237\u6ce8\u518c\u8868\u3002
+FEDERATING_REGISTRY.explanation=\u5df2\u542f\u7528\u7528\u6237\u6ce8\u518c\u8868\u8054\u5408\uff0c\u5e76\u4e14\u8054\u5408\u4e86\u6240\u914d\u7f6e\u7684\u7528\u6237\u6ce8\u518c\u8868\u3002
+FEDERATING_REGISTRY.useraction=\u5982\u679c\u4e0d\u9700\u8981\u8fdb\u884c\u5b58\u50a8\u5e93\u8054\u5408\uff0c\u8bf7\u5728 server.xml \u6587\u4ef6\u4e2d\u66f4\u65b0\u914d\u7f6e\u4ee5\u7981\u7528\u8054\u5408
+
+REMOVE_FEDERATED_REGISTRY=CWWKS3009I: \u4ece\u8054\u5408\u9664\u53bb\u4e86\u6807\u8bc6\u4e3a {0} \u7684\u7528\u6237\u6ce8\u518c\u8868\u3002
+REMOVE_FEDERATED_REGISTRY.explanation=\u5df2\u542f\u7528\u7528\u6237\u6ce8\u518c\u8868\u8054\u5408\uff0c\u5e76\u4e14\u4ece\u8054\u5408\u9664\u53bb\u4e86\u5148\u524d\u8054\u5408\u7684\u5df2\u914d\u7f6e\u7528\u6237\u6ce8\u518c\u8868\u3002
+REMOVE_FEDERATED_REGISTRY.useraction=\u5982\u679c\u4e0d\u9700\u8981\u8fdb\u884c\u5b58\u50a8\u5e93\u8054\u5408\uff0c\u8bf7\u5728 server.xml \u6587\u4ef6\u4e2d\u66f4\u65b0\u914d\u7f6e\u4ee5\u7981\u7528\u8054\u5408
+
+USER_REGISTRY_SERVICE_FEDERATION_FAILED=CWWKS3010E: \u8054\u5408\u7528\u6237\u6ce8\u518c\u8868\u65f6\u53d1\u751f\u610f\u5916\u5f02\u5e38\uff1a{0}\u3002
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.explanation=\u5df2\u5c1d\u8bd5\u8054\u5408\u7528\u6237\u6ce8\u518c\u8868\uff0c\u4f46\u5931\u8d25\u3002
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.useraction=\u8bf7\u53c2\u9605 WebSphere Application Server \u652f\u6301 Web \u9875\u9762 (http://www.ibm.com/software/webservers/appserv/was/support) \u4e0a\u7684\u95ee\u9898\u786e\u5b9a\u4fe1\u606f

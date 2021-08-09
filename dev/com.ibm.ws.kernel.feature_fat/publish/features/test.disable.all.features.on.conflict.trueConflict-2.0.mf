@@ -1,0 +1,7 @@
+IBM-Feature-Version: 2
+Subsystem-ManifestVersion: 1
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Version: 1.0.0
+Subsystem-SymbolicName: trueConflict-2.0; visibility:=public; singleton:=true
+WLP-DisableAllFeatures-OnConflict: true
+

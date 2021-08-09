@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/io/openliberty/security/mp/jwt/v12/resources/MpConfigProxyMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT 1.2 Config Proxy
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5780 - CWWKS5785
+
+MPJWT_12_CONFIG_PROXY_PROCESSED=CWWKS5780I: Pomy\u015blnie przetworzono element mpConfigProxy znacznika MicroProfile JWT w wersji 1.2.
+MPJWT_12_CONFIG_PROXY_PROCESSED.explanation=Wskazana konfiguracja zosta\u0142a przetworzona pomy\u015blnie.
+MPJWT_12_CONFIG_PROXY_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+MPJWT_12_CONFIG_PROXY_MODIFIED=CWWKS5781I: Pomy\u015blnie przetworzono element mpConfigProxy znacznika MicroProfile JWT w wersji 1.2.
+MPJWT_12_CONFIG_PROXY_MODIFIED.explanation=Wskazana konfiguracja zosta\u0142a przetworzona pomy\u015blnie.
+MPJWT_12_CONFIG_PROXY_MODIFIED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+MPJWT_12_CONFIG_PROXY_DEACTIVATED=CWWKS5782I: Pomy\u015blnie dezaktywowano element mpConfigProxy znacznika MicroProfile JWT w wersji 1.2.
+MPJWT_12_CONFIG_PROXY_DEACTIVATED.explanation=Wskazana konfiguracja zosta\u0142a dezaktywowana pomy\u015blnie.
+MPJWT_12_CONFIG_PROXY_DEACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 

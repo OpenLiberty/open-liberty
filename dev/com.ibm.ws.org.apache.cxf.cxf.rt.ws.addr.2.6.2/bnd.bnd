@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-addr;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+instrument.disabled: true
+instrument.ffdc: false
+
+cxfVersion=2.6.2
+
+Include-Resource:\
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/META-INF/cxf/**, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/schemas/**, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/org/apache/cxf/**, \
+  com/ibm/ws=${bin}/com/ibm/ws
+
+-buildpath: org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest

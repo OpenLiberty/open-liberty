@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: Nu este procesat\u0103 o cerere pentru generarea unui fi\u015fier de configurare plug-in-uri server de web pentru clusterul {0} deoarece nu este g\u0103sit\u0103 caracteristica necesar\u0103 de controler colectiv MBean.
+collective.mbean.not.available.explanation=Caracteristica de controler colectiv trebuie s\u0103 fie activat\u0103 pentru ca serverul s\u0103 proceseze cererea. 
+collective.mbean.not.available.useraction=Activa\u0163i caracteristica de controler colectiv \u00een serverul \u0163int\u0103 sau direc\u0163iona\u0163i cererile la un server care are caracteristica de controler colectiv deja activat\u0103.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: Nu este procesat\u0103 o cerere pentru generarea unui fi\u015fier de configurare plug-in-uri server de web pentru acest server deoarece nu este g\u0103sit\u0103 caracteristica necesar\u0103 MBean Java Servlet.
+appserver.mbean.not.available.explanation=Caracteristica de Java Servlet, 3.0 sau 3.1, trebuie s\u0103 fie activat\u0103 pentru ca serverul s\u0103 proceseze cererea.
+appserver.mbean.not.available.useraction=Activa\u0163i caracteristica Java Servlet 3.0 sau 3.1 , \u00een serverul \u0163int\u0103 sau direc\u0163iona\u0163i cererea la un server care are caracteristica Java Servlet deja activat\u0103.
+# -------------------------------- 

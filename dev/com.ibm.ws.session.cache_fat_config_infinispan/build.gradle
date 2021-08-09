@@ -1,0 +1,119 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  caffeine
+  gson
+  infinispanCommons
+  infinispanCore
+  infinispanJCache
+  infinispanJCacheCommons
+  jbossLogging
+  jGroups
+  protostream
+  rxjava
+  smallryeMetrics
+}
+
+// Define G:A:V coordinates of each dependency
+dependencies {
+  caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+  gson 'com.google.code.gson:gson:2.8.2'
+  infinispanCommons 'org.infinispan:infinispan-commons:10.0.0.Final'
+  infinispanCore 'org.infinispan:infinispan-core:10.0.0.Final'
+  infinispanJCache 'org.infinispan:infinispan-jcache:10.0.0.Final'
+  infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:10.0.0.Final'
+  protostream 'org.infinispan.protostream:protostream:4.3.0.Alpha13'
+  jbossLogging 'org.jboss.logging:jboss-logging:3.4.1.Final'
+  jGroups 'org.jgroups:jgroups:4.1.6.Final'
+  rxjava 'io.reactivex.rxjava2:rxjava:2.2.9'
+  smallryeMetrics 'io.smallrye:smallrye-metrics:2.1.5'
+}
+
+task addCaffeineToSharedDir(type: Copy) {
+  from configurations.caffeine
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'caffeine-*.jar', 'caffeine.jar'
+}
+
+task addGSONToSharedDir(type: Copy) {
+  from configurations.gson
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'gson-*.jar', 'gson.jar'
+}
+
+task addInfinispanCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-commons-10.*.jar', 'infinispan-commons.jar'
+}
+
+task addInfinispanCoreToSharedDir(type: Copy) {
+  from configurations.infinispanCore
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-core-10.*.jar', 'infinispan-core.jar'
+}
+
+task addInfinispanJCacheToSharedDir(type: Copy) {
+  from configurations.infinispanJCache
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-jcache-10.*.jar', 'infinispan-jcache.jar'
+}
+
+task addInfinispanJCacheCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanJCacheCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-jcache-commons-10.*.jar', 'infinispan-jcache-commons.jar'
+}
+
+task addJbossLoggingToSharedDir(type: Copy) {
+  from configurations.jbossLogging
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'jboss-logging-*.jar', 'jboss-logging.jar'
+}
+
+task addJGroupsToSharedDir(type: Copy) {
+  from configurations.jGroups
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'jgroups-*.jar', 'jgroups.jar'
+}
+
+task addProtoStreamToSharedDir(type: Copy) {
+  from configurations.protostream
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'protostream-*.jar', 'protostream.jar'
+}
+
+task addRxJavaToSharedDir(type: Copy) {
+  from configurations.rxjava
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'rxjava-*.jar', 'rxjava.jar'
+}
+
+task addSmallRyeMetricsToSharedDir(type: Copy) {
+  from configurations.smallryeMetrics
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'smallrye-metrics-*.jar', 'smallrye-metrics.jar'
+}
+
+addRequiredLibraries {
+  dependsOn addCaffeineToSharedDir
+  dependsOn addGSONToSharedDir
+  dependsOn addInfinispanCommonsToSharedDir
+  dependsOn addInfinispanCoreToSharedDir
+  dependsOn addInfinispanJCacheToSharedDir
+  dependsOn addInfinispanJCacheCommonsToSharedDir
+  dependsOn addJbossLoggingToSharedDir
+  dependsOn addJGroupsToSharedDir
+  dependsOn addProtoStreamToSharedDir
+  dependsOn addRxJavaToSharedDir
+  dependsOn addSmallRyeMetricsToSharedDir
+}

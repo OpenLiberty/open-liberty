@@ -1,0 +1,10 @@
+version: 1
+dn: ou=normalizers,cn=pwdpolicy,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 641d7f2d-e9d9-4aa0-829a-6eb17e102917
+entryCSN: 20130919065345.495000Z#000000#000#000000
+entryParentId: 64825709-9b70-4170-8617-f13ddfe8a990
+ou: normalizers
+createTimestamp: 20130919065353.071Z

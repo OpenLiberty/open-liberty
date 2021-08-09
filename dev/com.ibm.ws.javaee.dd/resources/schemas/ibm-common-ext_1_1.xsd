@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified"
+        version="1.1">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+			Copyright (c) 2010 IBM Corporation and others.
+			All rights reserved. This program and the accompanying materials
+			are made available under the terms of the Eclipse Public License v1.0
+			which accompanies this distribution, and is available at
+			http://www.eclipse.org/legal/epl-v10.html
+
+			Contributors:
+				IBM Corporation - initial API and implementation
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:complexType name= "nameType">
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="methodType">
+                <xsd:attribute name="name" type="xsd:string" />
+                <xsd:attribute name="params" type="xsd:string" />
+                <xsd:attribute name="type" use="required">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="UNSPECIFIED"/>
+                                        <xsd:enumeration value="REMOTE"/>
+                                        <xsd:enumeration value="HOME"/>
+                                        <xsd:enumeration value="LOCAL"/>
+                                        <xsd:enumeration value="LOCAL_HOME"/>
+                                        <xsd:enumeration value="SERVICE_ENDPOINT"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="extendedMethodType">
+                <xsd:complexContent>
+                        <xsd:extension base="methodType">
+                                <xsd:sequence>
+                                        <xsd:element name="ejb" type="nameType"/>
+                                </xsd:sequence>
+                        </xsd:extension>
+                </xsd:complexContent>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="global-transactionType">
+                <!-- If true, send Web Services Atomic Transaction on outgoing requests -->
+                <xsd:attribute name="send-wsat-context" type="xsd:boolean" />
+                <xsd:attribute name="transaction-time-out" type="xsd:integer"/>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="local-transactionType">
+
+                <xsd:attribute name="boundary">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="ACTIVITY_SESSION"/>
+                                        <xsd:enumeration value="BEAN_METHOD"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+
+                <xsd:attribute name="resolver">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="APPLICATION"/>
+                                        <xsd:enumeration value="CONTAINER_AT_BOUNDARY"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+
+                <xsd:attribute name="unresolved-action">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="ROLLBACK"/>
+                                        <xsd:enumeration value="COMMIT"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+
+                <xsd:attribute name="shareable" type="xsd:boolean" />
+				
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="resource-refType">
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+
+                <xsd:attribute name="isolation-level">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="TRANSACTION_NONE"/>
+                                        <xsd:enumeration value="TRANSACTION_READ_UNCOMMITTED"/>
+                                        <xsd:enumeration value="TRANSACTION_READ_COMMITTED"/>
+                                        <xsd:enumeration value="TRANSACTION_REPEATABLE_READ"/>
+                                        <xsd:enumeration value="TRANSACTION_SERIALIZABLE"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+                
+                <xsd:attribute name="connection-management-policy">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                         <xsd:enumeration value="DEFAULT"/>
+                                         <xsd:enumeration value="AGGRESSIVE"/>
+                                         <xsd:enumeration value="NORMAL"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+
+                <xsd:attribute name="commit-priority" type="xsd:integer" />
+
+                <xsd:attribute name="branch-coupling">
+                        <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="LOOSE"/>
+                                        <xsd:enumeration value="TIGHT"/>
+                                </xsd:restriction>
+                        </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+</xsd:schema>

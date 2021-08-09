@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: O coletor de logstash n\u00e3o p\u00f4de se conectar ao servidor de logstash no host {0} e n\u00famero da porta {1} especificados. 
+LOGSTASH_CONNECTION_FAILED.explanation=A conex\u00e3o ao servidor de logstash falhou porque o servidor de logstash n\u00e3o estava em execu\u00e7\u00e3o no host especificado, as informa\u00e7\u00f5es de configura\u00e7\u00e3o como o nome do host e n\u00famero da porta n\u00e3o estavam corretas ou a entrada de lumberjack n\u00e3o est\u00e1 configurada no servidor de logstash.  
+LOGSTASH_CONNECTION_FAILED.useraction=Verifique as informa\u00e7\u00f5es de configura\u00e7\u00e3o e inicie o servidor de logstash no host especificado. Assegure-se de que a entrada de lumberjack esteja configurada corretamente e de que o host e n\u00famero da porta especificados na configura\u00e7\u00e3o do coletor de logstash no arquivo server.xml corresponda \u00e0 configura\u00e7\u00e3o do servidor de logstash correspondente.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: O coletor de logstash n\u00e3o p\u00f4de enviar eventos ao servidor de logstash. A conex\u00e3o ao servidor de logstash \u00e9 necess\u00e1ria para enviar eventos.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Falhou ao enviar eventos, porque a conex\u00e3o ao servidor de logstash n\u00e3o est\u00e1 dispon\u00edvel. A conex\u00e3o pode ter sido estabelecida anteriormente, mas parece estar desconectada agora. O sistema continuar\u00e1 tentando e ir\u00e1 se conectar ao servidor de logstash quando se tornar dispon\u00edvel.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Assegure-se de que o servidor de logstash esteja em execu\u00e7\u00e3o no host.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: O coletor de logstash est\u00e1 conectado ao servidor de logstash no host {0} e n\u00famero da porta {1} especificados.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=O coletor de logstash est\u00e1 conectado com \u00eaxito ao servidor de logstash.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: O coletor de logstash est\u00e1 desconectado do servidor logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=O coletor de logstash \u00e9 fechado e restabelece a conex\u00e3o ao servidor de logstash quando a configura\u00e7\u00e3o do coletor de logstash \u00e9 atualizada, incluindo qualquer mudan\u00e7a no repert\u00f3rio de SSL dependente e configura\u00e7\u00e3o de armazenamento de chaves. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: O coletor logstash n\u00e3o reconhece a origem {0} especificada.
+LOGSTASH_SOURCE_UNKNOWN.explanation=A origem especificada n\u00e3o \u00e9 uma das origens padr\u00e3o fornecidas pelo ambiente de tempo de execu\u00e7\u00e3o do Liberty. A origem pode ser uma parte de um recurso do Liberty que n\u00e3o foi inclu\u00eddo na configura\u00e7\u00e3o do servidor.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Verifique as informa\u00e7\u00f5es de configura\u00e7\u00e3o. Assegure-se de que voc\u00ea tenha especificado uma das origens suportadas para o coletor.
+

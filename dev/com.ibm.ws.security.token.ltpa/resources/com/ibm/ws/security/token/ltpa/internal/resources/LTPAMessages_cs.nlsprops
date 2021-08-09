@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: Neexistuje \u017e\u00e1dn\u00e1 inicializovan\u00e1 tov\u00e1rna token\u016f.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=Tov\u00e1rna token\u016f nebyla inicializov\u00e1na.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Ov\u011b\u0159te konfiguraci spr\u00e1vce token\u016f v souboru server.xml nebo v jak\u00e9mkoli jin\u00e9m prost\u0159edku ur\u010den\u00e9m v konfiguraci.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: Neexistuje \u017e\u00e1dn\u00e9 jedine\u010dn\u00e9 ID, se kter\u00fdm by se dal token vytvo\u0159it.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=Parametr unique_id m\u00e1 hodnotu Null nebo nen\u00ed v datech tokenu zad\u00e1n.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Ov\u011b\u0159te, zda m\u00e1 u\u017eivatel jedine\u010dn\u00e9 ID. Pokud pou\u017e\u00edv\u00e1te vlastn\u00ed registr u\u017eivatel\u016f, ov\u011b\u0159te, zda data tokenu obsahuj\u00ed hodnotu pro parametr unique_id.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it token LTPA, proto\u017ee chyb\u00ed po\u017eadovan\u00e1 vlastnost {0}.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=Chyb\u00ed uveden\u00fd kl\u00ed\u010d, tak\u017ee token LTPA nelze vytvo\u0159it.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Prozkoumejte soubor vlastnost\u00ed, ve kter\u00e9m jsou ulo\u017eeny informace o kl\u00ed\u010di LTPA a zkontrolujte, zda informace o kl\u00ed\u010di obsahuj\u00ed tajn\u00fd kl\u00ed\u010d, soukrom\u00fd kl\u00ed\u010d a ve\u0159ejn\u00fd kl\u00ed\u010d.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Vytv\u00e1\u0159ej\u00ed se kl\u00ed\u010de LTPA. Tato operace m\u016f\u017ee trvat n\u011bkolik sekund.
+LTPA_CREATE_KEYS_START.explanation=Kl\u00ed\u010de LTPA neexistuj\u00ed a automaticky se vygeneruj\u00ed. Ve\u0161ker\u00e9 slu\u017eby vy\u017eaduj\u00edc\u00ed LTPA se nebudou spou\u0161t\u011bt a\u017e do momentu vygenerov\u00e1n\u00ed kl\u00ed\u010d\u016f LTPA a p\u0159ipraven\u00ed konfigurace.
+LTPA_CREATE_KEYS_START.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Kl\u00ed\u010de LTPA byly vytvo\u0159eny za {0} sekund. Soubor s kl\u00ed\u010di LTPA: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LTPA_CONFIG_READY=CWWKS4105I: Konfigurace LTPA byla p\u0159ipravena za {0} sekund.
+LTPA_CONFIG_READY.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+LTPA_CONFIG_READY.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: Chyba konfigurace LTPA. Nelze vytvo\u0159it nebo p\u0159e\u010d\u00edst soubor s kl\u00ed\u010di LTPA: {0}
+LTPA_CONFIG_ERROR.explanation=V zadan\u00e9m um\u00edst\u011bn\u00ed nelze p\u0159e\u010d\u00edst nebo vytvo\u0159it kl\u00ed\u010de LTPA.
+LTPA_CONFIG_ERROR.useraction=Zajist\u011bte, aby k um\u00edst\u011bn\u00ed mohl p\u0159istupovat proces serveru. P\u0159\u00edpadn\u00fd z\u00e1znam FFDC m\u016f\u017ee signalizovat z\u00e1va\u017enou chybu p\u0159i generov\u00e1n\u00ed nebo na\u010d\u00edt\u00e1n\u00ed kl\u00ed\u010d\u016f.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Do\u0161lo k \u00faprav\u011b souboru s kl\u00ed\u010di LTPA nebo konfigurace. Kl\u00ed\u010de LTPA budou znovu na\u010dteny ze souboru: {0}
+LTPA_KEYS_TO_LOAD.explanation=Je t\u0159eba znovu na\u010d\u00edst kl\u00ed\u010de LTPA, proto\u017ee do\u0161lo ke zm\u011bn\u011b konfigurace nebo souboru kl\u00ed\u010d\u016f LTPA.
+LTPA_KEYS_TO_LOAD.useraction=Zajist\u011bte, aby v\u0161echny servery \u00fa\u010dastn\u00edc\u00ed se na jednotn\u00e9m p\u0159ihl\u00e1\u0161en\u00ed pou\u017e\u00edvaly stejn\u00e9 kl\u00ed\u010de LTPA a heslo.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: Syst\u00e9m nem\u016f\u017ee vytvo\u0159it kl\u00ed\u010d LTPA.
+LTPA_KEY_CREATE_ERROR.explanation=Kl\u00ed\u010d LTPA nelze vytvo\u0159it.
+LTPA_KEY_CREATE_ERROR.useraction=P\u0159\u00edpadn\u00fd z\u00e1znam FFDC m\u016f\u017ee signalizovat z\u00e1va\u017enou chybu p\u0159i generov\u00e1n\u00ed kl\u00ed\u010d\u016f.
+
+

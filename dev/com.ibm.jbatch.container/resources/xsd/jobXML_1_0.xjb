@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    jaxb:version="2.1">
+
+    <jaxb:bindings schemaLocation="jobXML_1_0.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings >
+          <jaxb:package name="com.ibm.jbatch.jsl.model"/>
+        </jaxb:schemaBindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Step']/xsd:attribute[@name='next']">
+            <jaxb:property name="nextFromAttribute"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Split']/xsd:attribute[@name='next']">
+            <jaxb:property name="nextFromAttribute"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Flow']/xsd:attribute[@name='next']">
+            <jaxb:property name="nextFromAttribute"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Job']">
+            <jaxb:class name="JSLJob"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Job']/xsd:sequence/xsd:choice[1]">
+            <jaxb:property name="executionElements">
+                <jaxb:baseType name="com.ibm.jbatch.container.jsl.ExecutionElement"/>
+             </jaxb:property>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Decision']/xsd:sequence/xsd:group[1]">
+            <jaxb:property name="transitionElements">
+                <jaxb:baseType name="com.ibm.jbatch.container.jsl.TransitionElement"/>
+             </jaxb:property>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Step']/xsd:sequence/xsd:group[1]">
+            <jaxb:property name="transitionElements">
+                <jaxb:baseType name="com.ibm.jbatch.container.jsl.TransitionElement"/>
+             </jaxb:property>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Split']/xsd:sequence/xsd:element[@name='flow']">
+            <jaxb:property name="flows"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Flow']/xsd:sequence/xsd:choice[1]">
+            <jaxb:property name="executionElements">
+                <jaxb:baseType name="com.ibm.jbatch.container.jsl.ExecutionElement"/>
+             </jaxb:property>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Flow']/xsd:sequence/xsd:group[1]">
+            <jaxb:property name="transitionElements">
+                <jaxb:baseType name="com.ibm.jbatch.container.jsl.TransitionElement"/>
+             </jaxb:property>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Properties']">
+            <jaxb:class name="JSLProperties"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Properties']/xsd:sequence/xsd:element[1]">
+            <jaxb:property name="propertyList"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='Listeners']/xsd:sequence/xsd:element[1]">
+            <jaxb:property name="listenerList"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='ExceptionClassFilter']/xsd:sequence/xsd:element[@name='include']">
+            <jaxb:property name="includeList"/>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xsd:complexType[@name='ExceptionClassFilter']/xsd:sequence/xsd:element[@name='exclude']">
+            <jaxb:property name="excludeList"/>
+        </jaxb:bindings>
+    </jaxb:bindings>
+</jaxb:bindings>
+

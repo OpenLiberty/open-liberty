@@ -1,0 +1,3 @@
+<server>
+	<library id="testLibrary" description="Library From Simple.xml"/>
+</server>

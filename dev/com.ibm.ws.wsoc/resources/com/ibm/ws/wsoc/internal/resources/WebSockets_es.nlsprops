@@ -1,0 +1,230 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que la clase Endpoint anotada {0} no es p\u00fablica, no es concreta o no tiene un constructor no-args p\u00fablico.
+invalid.endpointclass.explanation=La clase ServerEndpoint anotada debe ser p\u00fablica, concreta y tener un constructor no-args p\u00fablico.
+invalid.endpointclass.useraction=Arregle la clase ServerEndpoint anotada de modo que sea p\u00fablica, concreta y tenga un constructor no-args p\u00fablico. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+missing.annotation=CWWKH0002E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que faltan las dos anotaciones @onOpen y @onMessage en la clase de punto final de servidor anotado {0}.
+missing.annotation.explanation=La clase ServerEndpoint anotada no es v\u00e1lida si faltan @OnOpen y @onMessage.
+missing.annotation.useraction=Arregle la clase ServerEndpoint anotada a\u00f1adiendo@OnOpen y/o @OnMessage. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanonepong.annotation=CWWKH0003E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que se ha definido m\u00e1s de un m\u00e9todo @OnMessage con el tipo de mensaje Pong en la clase Endpoint anotada {0}.
+morethanonepong.annotation.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que se ha definido m\u00e1s de un m\u00e9todo @OnMessage con el tipo de mensaje Pong en la clase Endpoint anotada. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanonepong.annotation.useraction=Arregle la clase ServerEndpoint anotada definiendo un solo m\u00e9todo @OnMessage de tipo de mensaje pong. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanonebinary.annotation=CWWKH0004E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que se ha definido m\u00e1s de un m\u00e9todo @OnMessage con el tipo de mensaje binario en la clase Endpoint anotada {0}.
+morethanonebinary.annotation.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que se ha definido m\u00e1s de un m\u00e9todo @OnMessage con el tipo de mensaje binario en la clase Endpoint anotada. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanonebinary.annotation.useraction=Arregle la clase ServerEndpoint anotada definiendo un solo m\u00e9todo @OnMessage de tipo de mensaje binario. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+missing.msgtype.param=CWWKH0005E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage de la clase Endpoint anotada {0} no tiene el par\u00e1metro de tipo de mensaje pong, binario o de texto.
+missing.msgtype.param.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que el m\u00e9todo @OnMessage no tiene un par\u00e1metro de mensaje de tipo pong, binario o de texto. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+missing.msgtype.param.useraction=Arregle la clase ServerEndpoint anotada declarando el m\u00e9todo @OnMessage con el par\u00e1metro de mensaje de tipo pong, binario o de texto. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanonetext.annotation=CWWKH0006E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket porque se ha definido m\u00e1s de un m\u00e9todo @OnMessage con el tipo de mensaje de texto en la clase Endpoint anotada {0}.
+morethanonetext.annotation.explanation=El ServerEndpoint anotado no es v\u00e1lido porque se ha definido m\u00e1s de un m\u00e9todo @OnMessage con el tipo de mensaje en la clase Endpoint anotada. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanonetext.annotation.useraction=Arregle la clase ServerEndpoint anotada definiendo solo un tipo m\u00e9todo @OnMessage de tipo de mensaje de texto. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.onopen.annotation=CWWKH0007E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnOpen {0} en la clase Endpoint anotada {1} tiene par\u00e1metros distintos a los par\u00e1metros Session, EndpointConfig o @PathParam.
+invalid.onopen.annotation.explanation=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnOpen. El m\u00e9todo @OnOpen solo puede tener los par\u00e1metros opcionales Session, EndpointConfig y @PathParam. 
+invalid.onopen.annotation.useraction=Arregle la clase ServerEndpoint anotada eliminando el tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnOpen. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanoneclose.annotation=CWWKH0008E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que se ha definido m\u00e1s de un m\u00e9todo @OnClose en la clase Endpoint anotada {0}. Los m\u00e9todos @OnClose son {1} y {2}.
+morethanoneclose.annotation.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que se ha definido m\u00e1s de un m\u00e9todo @OnClose en la clase Endpoint anotada. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanoneclose.annotation.useraction=Corrija la clase ServerEndpoint anotada definiendo solo un m\u00e9todo @OnClose. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.onclose.annotation=CWWKH0009E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnClose {0} en la clase Endpoint anotada {1} tiene par\u00e1metros distintos a los par\u00e1metros Session, CloseReason o @PathParam.
+invalid.onclose.annotation.explanation=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnClose. El m\u00e9todo @OnClose solo puede tener los par\u00e1metros opcionales CloseReason y @PathParam. 
+invalid.onclose.annotation.useraction=Arregle la clase ServerEndpoint anotada eliminando el tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnClose. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanoneerror.annotation=CWWKH0010E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que se ha definido m\u00e1s de un m\u00e9todo @OnError en la clase Endpoint anotada {0}. Los m\u00e9todos @OnError son {1} y {2}.
+morethanoneerror.annotation.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que se ha definido m\u00e1s de un m\u00e9todo @OnError en la clase Endpoint anotada. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanoneerror.annotation.useraction=Arregle la clase ServerEndpoint anotada definiendo un solo m\u00e9todo @OnError. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.onerror.annotation=CWWKH0011E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnError {0} en la clase Endpoint anotada {1} tiene par\u00e1metros distintos a los par\u00e1metros Throwable, Session o @PathParam.
+invalid.onerror.annotation.explanation=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnError. El m\u00e9todo @OnError solo puede tener par\u00e1metros obligatorios Throwable y par\u00e1metros opcionales Session y @PathParam. 
+invalid.onerror.annotation.useraction=Arregle la clase ServerEndpoint anotada eliminando el tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnError. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+missing.throwable=CWWKH0012E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que en el m\u00e9todo @OnError {0} de la clase Endpoint anotada {1} falta el par\u00e1metro obligatorio de tipo Throwable.
+missing.throwable.explanation=La clase ServerEndpoint anotada no es v\u00e1lida ya que en el m\u00e9todo @OnError falta el par\u00e1metro obligatorio de tipo Throwable. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+missing.throwable.useraction=Arregle la clase ServerEndpoint anotada a\u00f1adiendo el par\u00e1metro obligatorio de tipo Throwable en el m\u00e9todo @OnError. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.pong.annotation=CWWKH0013E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage {0} de la clase Endpoint anotada {1} tiene un par\u00e1metro no v\u00e1lido {2}.
+invalid.pong.annotation.explanation=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnMessage con el tipo de mensaje pong. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente.
+invalid.pong.annotation.useraction=Arregle la clase ServerEndpoint anotada eliminando el tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnMessage. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanone.binary.param=CWWKH0014E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage {0} de la clase Endpoint anotada {1} tiene m\u00e1s de un par\u00e1metro de tipo de mensaje binario.
+morethanone.binary.param.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que el m\u00e9todo @OnMessage tiene m\u00e1s un par\u00e1metro de mensaje de tipo binario. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanone.binary.param.useraction=Arregle la clase ServerEndpoint anotada definiendo un solo par\u00e1metro de tipo de mensaje binario. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.decoderclass=CWWKH0015E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que la clase de decodificador {0} utilizada en el m\u00e9todo @OnMessage {1} de la clase Endpoint anotada {2} no es p\u00fablica, no es concreta o no tiene un constructor no-args p\u00fablico.
+invalid.decoderclass.explanation=La clase de decodificador utilizada en la clase ServerEndpoint anotada debe ser p\u00fablica, concreta y tener un constructor no-args p\u00fablico.
+invalid.decoderclass.useraction=Arregle la clase de decodificador de la clase ServerEndpoint anotada de modo que sea p\u00fablica, concreta y tenga un constructor no-args p\u00fablico. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanone.message.param=CWWKH0016E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage {0} de la clase Endpoint anotada {1} tiene m\u00e1s de un par\u00e1metro de tipo de mensaje {2}.
+morethanone.message.param.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que el m\u00e9todo @OnMessage tiene m\u00e1s un par\u00e1metro de tipo de mensaje. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanone.message.param.useraction=Arregle el m\u00e9todo @OnMessage definiendo un solo par\u00e1metro de tipo de mensaje, como se indica en la documentaci\u00f3n de la API javax.websocket.OnMessage. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.binary.param=CWWKH0017E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage {0} de la clase Endpoint anotada {1} tiene un par\u00e1metro no v\u00e1lido {2}.
+invalid.binary.param.explanation=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnMessage con el tipo de mensaje binario. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente.
+invalid.binary.param.useraction=Arregle el m\u00e9todo @OnMessage eliminando el tipo de par\u00e1metro no v\u00e1lido como se indica en la documentaci\u00f3n de la API javax.websocket.OnMessage. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+morethanone.text.param=CWWKH0018E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage {0} de la clase Endpoint anotada {1} tiene m\u00e1s de un par\u00e1metro de tipo de mensaje de texto {2}.
+morethanone.text.param.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que el m\u00e9todo @OnMessage tiene m\u00e1s un par\u00e1metro de tipo de mensaje binario. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanone.text.param.useraction=Arregle el m\u00e9todo @OnMessage definiendo un solo par\u00e1metro de tipo de mensaje de texto, como se indica en la documentaci\u00f3n de la API javax.websocket.OnMessage. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.text.param=CWWKH0019E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que el m\u00e9todo @OnMessage {0} de la clase Endpoint anotada {1} tiene un par\u00e1metro no v\u00e1lido {2}.
+invalid.text.param.explanation=Se ha encontrado un tipo de par\u00e1metro no v\u00e1lido en el m\u00e9todo @OnMessage con el tipo de mensaje de texto. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente.
+invalid.text.param.useraction=Arregle el m\u00e9todo @OnMessage eliminando el tipo de par\u00e1metro no v\u00e1lido como se indica en la documentaci\u00f3n de la API javax.websocket.OnMessage. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+missing.path.segment=CWWKH0020E: Se ha producido una excepci\u00f3n al invocar el punto final del servidor de WebSocket. El par\u00e1metro @PathParam {0} definido en el m\u00e9todo {1} no tiene un segmento de v\u00eda de acceso correspondiente en el URI @ServerEndpoint de la clase Endpoint anotada {2}.
+missing.path.segment.explanation=El par\u00e1metro @PathParam no tiene un segmento de v\u00eda de acceso correspondiente en el URI @ServerEndpoint. 
+missing.path.segment.useraction=Arregle el nombre del par\u00e1metro @PathParam de modo que coincida con los segmentos de v\u00eda de acceso del URI de @ServerEndpoint. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+missing.pathparam.value=CWWKH0021E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que en la anotaci\u00f3n @PathParam {0}, definida en el m\u00e9todo {1}, falta el valor de anotaci\u00f3n de la clase Endpoint anotada {2}.
+missing.pathparam.value.explanation=La anotaci\u00f3n @PathParam no tiene un valor. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente.
+missing.pathparam.value.useraction=Arregle la anotaci\u00f3n @PathParam a\u00f1adiendo el valor a la anotaci\u00f3n. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.pathparam.type=CWWKH0022E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que la anotaci\u00f3n @PathParam {0}, definida en el m\u00e9todo {1}, tiene un tipo no v\u00e1lido en la clase Endpoint anotada {2}.
+invalid.pathparam.type.explanation=El par\u00e1metro @PathParam tiene un tipo no v\u00e1lido. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente.
+invalid.pathparam.type.useraction=Arregle el tipo de anotaci\u00f3n @PathParam de modo que sea de tipo Serie, de cualquier tipo de primitivo Java o una versi\u00f3n incluida. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+mismatch.pathparam.type=CWWKH0023E: Se ha producido una excepci\u00f3n durante la ejecuci\u00f3n del m\u00e9todo {0} en la clase Endpoint anotada {1} cuando se convert\u00edan los datos de @PathParam en el \u00edndice de par\u00e1metros {2} al tipo {3}.
+mismatch.pathparam.type.explanation=Ha fallado la conversi\u00f3n del par\u00e1metro @PathParam de v\u00eda de acceso al segmento correspondiente del URI de ServerEndpoint debido a que el tipo no es v\u00e1lido. El m\u00e9todo Endpoint no se ha ejecutado correctamente.
+mismatch.pathparam.type.useraction=Aseg\u00farese de que el segmento del URI de ServerEndpoint entrante tenga un tipo de datos que coincida con el par\u00e1metro @PathParam correspondiente.
+
+bytes.notavailable=CWWKH0024E: Se ha producido una excepci\u00f3n al leer un mensaje de WebSocket entrante debido a que ya no hab\u00edan m\u00e1s bytes disponibles para lectura.
+bytes.notavailable.explanation=Se ha producido una excepci\u00f3n al leer un mensaje de WebSocket entrante debido a que no hab\u00edan m\u00e1s byte disponibles para lectura.
+bytes.notavailable.useraction=Compruebe si los datos del mensaje de WebSocket entrante son correctos.
+
+onmessage.notdefined=CWWKH0025E: El cliente ha enviado un mensaje al punto final {0} que no tiene definido el m\u00e9todo @OnMessage ni MessageHandler para este tipo de mensaje.
+onmessage.notdefined.explanation=No se ha podido ejecutar la solicitud del cliente de WebSocket debido a que el cliente est\u00e1 enviando un mensaje a ServerEndpoint que no tiene definido el m\u00e9todo @OnMessage o MessageHandler para este tipo de mensaje.
+onmessage.notdefined.useraction=Informe al cliente o a\u00f1ada el m\u00e9todo @OnMessage a la clase ServerEndpoint anotada, o a\u00f1ada un MessageHandler, de modo que se pueda dar servicio a la solicitud del cliente, y vuelva a desplegar la aplicaci\u00f3n.
+
+decoder.ioexception=CWWKH0026E: No se puede ejecutar la solicitud del cliente de WebSocket debido a que se ha producido una IOException en la llamada onMessage de la clase {0} durante la decodificaci\u00f3n de los datos del mensaje {1}. El mensaje de excepci\u00f3n es {2}
+decoder.ioexception.explanation=No se puede ejecutar la solicitud del cliente de WebSocket debido a que se ha producido una IOException en la llamada onMessage durante la decodificaci\u00f3n de los datos del mensaje. 
+decoder.ioexception.useraction=Compruebe los datos del mensaje entrante y compruebe el decodificador.
+
+decoder.create.exception=CWWKH0027E: No se puede ejecutar la solicitud WebSocket debido a un problema durante la creaci\u00f3n de una nueva instancia de la clase de decodificador {0}. La excepci\u00f3n es {1}.
+decoder.create.exception.explanation=No se puede ejecutar la solicitud WebSocket debido a un problema durante la creaci\u00f3n de una nueva instancia de la clase de decodificador.
+decoder.create.exception.useraction=Compruebe la clase del decodificador.
+
+fin1.processing.error=CWWKH0028E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a un error al procesar el valor FIN de 1.
+fin1.processing.error.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a un error al procesar el valor FIN de 1.
+fin1.processing.error.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos.
+ 
+fin0.processing.error=CWWKH0029E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a un error al procesar el valor FIN de 0.
+fin0.processing.error.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a un error al procesar el valor FIN de 0.
+fin0.processing.error.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos.
+
+invalid.opcode=CWWKH0030E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a un opcode {1} no v\u00e1lido en el marco del mensaje.
+invalid.opcode.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a un opcode no v\u00e1lido en el marco del mensaje.
+invalid.opcode.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos.
+
+invalid.continue.opcode=CWWKH0031E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a un opcode de continuaci\u00f3n no v\u00e1lido con un mensaje desfragmentado.
+invalid.continue.opcode.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a un opcode de continuaci\u00f3n no v\u00e1lido con un mensaje desfragmentado.
+invalid.continue.opcode.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos.  
+
+incorrect.maskflag=CWWKH0032E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a que el distintivo de m\u00e1scara no se ha establecido correctamente en el marco del mensaje.
+incorrect.maskflag.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a que el distintivo de m\u00e1scara no se ha establecido correctamente en el marco del mensaje.
+incorrect.maskflag.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos. 
+
+invalid.maskflag.value=CWWKH0033E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a que el distintivo de m\u00e1scara no se ha establecido en un valor correcto.
+invalid.maskflag.value.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a que el distintivo de m\u00e1scara no se ha establecido en un valor correcto en el marco del mensaje.
+invalid.maskflag.value.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos.
+
+duplicate.uri=CWWKH0034E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que m\u00e1s de un punto final de servidor tiene el mismo URI {0}.
+duplicate.uri.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que m\u00e1s de un ServerEndpoint tiene el mismo URI. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+duplicate.uri.useraction=Defina URI de ServerEndpoint exclusivos en la aplicaci\u00f3n WebSocket. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.nonzero.opcode=CWWKH0035E: Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante en la clase ServerEndpoint {0} debido a que un opcode no de cero no es v\u00e1lido en un marco que es de tipo no primero.
+invalid.nonzero.opcode.explanation=Se ha producido una excepci\u00f3n durante la lectura de un mensaje de WebSocket entrante debido a que un opcode no de cero no es v\u00e1lido en un marco que es de tipo no primero.
+invalid.nonzero.opcode.useraction=Compruebe si los datos del marco del mensaje de WebSocket entrante son correctos.
+
+morethanoneonopen.annotation=CWWKH0036E: Se ha producido una excepci\u00f3n durante el despliegue de la aplicaci\u00f3n WebSocket debido a que se ha definido m\u00e1s de un m\u00e9todo @OnOpen en la clase Endpoint anotada {0}.
+morethanoneonopen.annotation.explanation=La clase ServerEndpoint anotada no es v\u00e1lida debido a que se ha definido m\u00e1s de un m\u00e9todo @OnOpen en la clase Endpoint anotada. La aplicaci\u00f3n WebSocket no se ha desplegado correctamente. 
+morethanoneonopen.annotation.useraction=Arregle la clase ServerEndpoint anotada definiendo un solo m\u00e9todo @OnOpen. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+invalid.message.toobig=CWWKH0037E: El mensaje de WebSocket entrante en la clase ServerEndpoint {0} no es v\u00e1lido. El tama\u00f1o del mensaje es {1}, lo cual supera el valor de maxMessageSize {2} definido en el m\u00e9todo de anotaci\u00f3n @OnMessage {3}.
+invalid.message.toobig.explanation=El mensaje de WebSocket no puede superar el valor de maxMessageSize definido en la anotaci\u00f3n @OnMessage.
+invalid.message.toobig.useraction=Compruebe el cliente para enviar un mensaje de WebSocket de un tama\u00f1o inferior al valor de maxMessageSize definido en @OnMessage o aumente el valor de maxMessageSize en @OnMessage y vuelva a desplegar la aplicaci\u00f3n.
+
+maxidletimeout.closesession=CWWKH0038E: La sesi\u00f3n de WebSocket ha estado inactiva durante {0} segundos. Se cierra la conexi\u00f3n.
+maxidletimeout.closesession.explanation=La sesi\u00f3n de WebSocket ha agotado el tiempo de espera. Las sesiones de WebSocket se convierten en inactivas cuando no se env\u00edan ni reciben los mensajes dentro del n\u00famero de segundos especificado por el valor de maxIdleTimeout.
+maxidletimeout.closesession.useraction=Compruebe porqu\u00e9 el cliente no env\u00eda ni recibe mensajes. Si fuera necesario, aumente el valor de maxIdleTimeout mediante la API Session.setMaxIdleTimeout().
+
+client.invalid.returncode=CWWKH0039E: Cuando se ha enviado una solicitud de WebSocket saliente al punto final {1} en el servidor de destino, se ha devuelto una respuesta {0} en lugar de una respuesta 101.
+client.invalid.returncode.explanation=Las operaciones de WebSocket salientes requieren un c\u00f3digo de respuesta 101 para las operaciones de WebSocket.
+client.invalid.returncode.useraction=Utilice el c\u00f3digo de respuesta no v\u00e1lido para determinar si el punto final de destino es v\u00e1lido para WebSocket y est\u00e1 en ejecuci\u00f3n y para determinar la causa de la anomal\u00eda en la solicitud de WebSocket saliente. 
+
+client.invalid.acceptkey=CWWKH0040E: El servidor de destino ha respondido con una clave de aceptaci\u00f3n de WebSocket no v\u00e1lida al enviar una solicitud de WebSocket saliente al punto final {1}.  
+client.invalid.acceptkey.explanation=Las operaciones de WebSocket salientes requieren que el servidor de destino devuelva una clave de aceptaci\u00f3n de WebSocket v\u00e1lida para las operaciones de WebSocket.
+client.invalid.acceptkey.useraction=Verifique que el servidor de destino es compatible con el protocolo de WebSocket.
+
+client.invalid.endpoint=CWWKH0041E: Se ha especificado el punto final {0} no v\u00e1lido durante una solicitud de WebSocket saliente.
+client.invalid.endpoint.explanation=Es necesario un punto final v\u00e1lido para una solicitud de WebSocket saliente.
+client.invalid.endpoint.useraction=Compruebe que el par\u00e1metro ClientEndpoint utilizado en el m\u00e9todo connectToServer de la llamada de API de WebSocket es un punto final de cliente anotado. 
+
+client.invalid.scheme=CWWKH0042E: Se ha utilizado un esquema {0} no v\u00e1lido para la conexi\u00f3n de cliente saliente. Los esquemas v\u00e1lidos para el protocolo de WebSocket son ws o wss.
+client.invalid.scheme.explanation=Los esquemas de WebSocket v\u00e1lidos son ws o wss.
+client.invalid.scheme.useraction=Utilice un esquema v\u00e1lido durante una solicitud de WebSocket saliente.
+
+client.invalid.configurator=CWWKH0043E: La clase Configurator {0} no se ha creado durante una solicitud saliente. La excepci\u00f3n es {1}. 
+client.invalid.configurator.explanation=La clase Configuration no se ha creado durante una solicitud saliente, posiblemente porque no exist\u00eda el constructor de argumento cero p\u00fablico de la clase Configurator o no era accesible.
+client.invalid.configurator.useraction=Verifique la exactitud de la clase configurator y que la clase tenga un constructor de argumento cero p\u00fablico accesible.
+ 
+client.connection.error=CWWKH0044E: El punto final {0} no se ha podido procesar durante una solicitud de WebSocket saliente.  La excepci\u00f3n es {1}.
+client.connection.error.explanation=La excepci\u00f3n se ha producido cuando el punto final ha intentado conectarse al servidor de destino durante una solicitud de WebSocket saliente.
+client.connection.error.useraction=Utilice los detalles de excepci\u00f3n para determinar la causa y corregir el problema.
+
+client.invalid.endpointclass=CWWKH0045E: La clase{0} no es v\u00e1lida y se ha especificado durante una solicitud de WebSocket saliente.
+client.invalid.endpointclass.explanation=Es necesaria una clase de punto final v\u00e1lida para una solicitud de WebSocket saliente.
+client.invalid.endpointclass.useraction=Compruebe que el par\u00e1metro Endpoint utilizado en el m\u00e9todo connectToServer de la llamada de API de WebSocket ampl\u00eda una clase de punto final de WebSocket.
+
+adding.endpoint=CWWKH0046I: A\u00f1adiendo un ServerEndpoint de WebSocket con el siguiente URI: {0}
+adding.endpoint.explanation=El ServerEndpoint de WebSocket con el URI especificado est\u00e1 disponible para que lo utilice el cliente de WebSocket.
+adding.endpoint.useraction=No se requiere ninguna acci\u00f3n. 
+
+invalid.endpoint.context=CWWKH0047E: Los ServerEndpoints de WebSocket con la v\u00eda de acceso de contexto {0} no est\u00e1n disponibles para el cliente.
+invalid.endpoint.context.explanation=Los ServerEndpoints de WebSocket con la v\u00eda de acceso de contexto especificada no est\u00e1n disponibles para dar servicio al cliente de WebSocket.
+invalid.endpoint.context.useraction=Para obtener informaci\u00f3n sobre el motivo por el cual los ServerEndpoints no est\u00e1n disponibles, consulte los registros y el rastreo del servidor Liberty.
+
+client.connection.nossl=CWWKH0048E: El punto final {0} no se ha podido procesar durante una solicitud de WebSocket segura de salida porque la seguridad no est\u00e1 habilitada.
+client.connection.nossl.explanation=La seguridad debe estar habilitada para procesar las solicitudes de WebSocket seguras de salida.
+client.connection.nossl.useraction=Habilitar seguridad.
+
+endpoint.addsclosed=CWWKH0049E: No se ha podido a\u00f1adir puntos finales adicionales de WebSocket una vez iniciada la aplicaci\u00f3n WebSocket.
+endpoint.addsclosed.explanation=Los puntos finales de WebSocket se deben a\u00f1adir antes de que se inicie la aplicaci\u00f3n WebSocket.
+endpoint.addsclosed.useraction=A\u00f1adir puntos finales de WebSocket antes de que se inicie la aplicaci\u00f3n WebSocket.
+
+endpoint.creation.error=CWWKH0050E: La clase de punto final {0} no se ha podido crear.  La excepci\u00f3n es {1}.
+endpoint.creation.error.explanation=La excepci\u00f3n se ha producido durante la creaci\u00f3n de la clase de punto final.
+endpoint.creation.error.useraction=Utilice los detalles de excepci\u00f3n para determinar la causa y corregir el problema.
+
+endpoint.instance.error=CWWKH0051E: El servidor no ha podido acceder a la clase de punto final {0} debido a la siguiente excepci\u00f3n: {1}
+endpoint.instance.error.explanation=Cuando el servidor ha intentado acceder a la clase de punto final especificada, se ha producido un error.
+endpoint.instance.error.useraction=Revise los detalles de la excepci\u00f3n para determinar porqu\u00e9 no se puede acceder a la clase de punto final y corrija el problema.
+
+missingslashornull.uri=CWWKH0052E: Se ha producido una excepci\u00f3n durante el despliegue/inicio del punto final del servidor: {0} con el URI: "{1}". El URI de punto final es nulo o no empieza por /.
+missingslashornull.uri.explanation=ServerEndpoint no es v\u00e1lido debido porque el URI de punto es nulo o no empieza por / en la clase de punto final. La aplicaci\u00f3n WebSocket no est\u00e1 disponible para las solicitudes. 
+missingslashornull.uri.useraction=Defina un URI de punto final no nulo que empiece por /. Una vez solucionado el problema, vuelva a desplegar la aplicaci\u00f3n.
+
+
+

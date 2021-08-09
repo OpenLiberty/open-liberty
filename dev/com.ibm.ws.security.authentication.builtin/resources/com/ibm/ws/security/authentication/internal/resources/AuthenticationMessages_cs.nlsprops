@@ -1,0 +1,85 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/authentication/internal/resources/AuthenticationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1000 - CWWKS1099
+
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE=CWWKS1000E: Slu\u017eba JAAS nen\u00ed dostupn\u00e1.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.explanation=Ov\u011b\u0159ovac\u00ed slu\u017eba nen\u00ed konfigurovan\u00e1 se slu\u017ebou JAAS.
+AUTHENTICATION_SERVICE_JAAS_UNAVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# JAAS Message prefix block: CWWKS1100 - CWWKS1132
+
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD=CWWKS1100A: Ov\u011b\u0159en\u00ed pro ID u\u017eivatele ID {0} nebylo \u00fasp\u011b\u0161n\u00e9. Bylo zad\u00e1no neplatn\u00e9 ID u\u017eivatele nebo heslo.
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD.explanation=Zadan\u00e9 ID u\u017eivatele nebo p\u0159idru\u017een\u00e9 heslo nen\u00ed platn\u00e9.
+JAAS_AUTHENTICATION_FAILED_BADUSERPWD.useraction=Ov\u011b\u0159te, \u017ee je spr\u00e1vn\u011b zad\u00e1no ID u\u017eivatele a heslo. Pokud probl\u00e9m potrv\u00e1, obra\u0165te se na administr\u00e1tora registru u\u017eivatel\u016f.
+
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP=CWWKS1101W: Ov\u011b\u0159en\u00ed CLIENT-CERT nebylo \u00fasp\u011b\u0161n\u00e9 pro certifik\u00e1t klienta s rozli\u0161uj\u00edc\u00edm jm\u00e9nem {0}. Rozli\u0161uj\u00edc\u00ed jm\u00e9no nen\u00ed mapov\u00e1no na u\u017eivatele v registru.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP.explanation=Zadan\u00fd certifik\u00e1t klienta nen\u00ed mapov\u00e1n na u\u017eivatele v registru.
+JAAS_AUTHENTICATION_FAILED_CERTNOMAP.useraction=Zajist\u011bte, aby klient dodal certifik\u00e1t namapovan\u00fd na u\u017eivatele v registru.
+
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR=CWWKS1102E: Ov\u011b\u0159en\u00ed CLIENT-CERT nebylo \u00fasp\u011b\u0161n\u00e9 pro certifik\u00e1t klienta s rozli\u0161uj\u00edc\u00edm jm\u00e9nem {0}. Do\u0161lo k intern\u00ed v\u00fdjimce: {1}.
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.explanation=CMSG0001
+JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR.useraction=CMSG0002
+
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND=CWWKS1103E: Neexistuje \u017e\u00e1dn\u00e1 sd\u00edlen\u00e1 knihovna pro vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul.
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee neexistuje \u017e\u00e1dn\u00fd soubor JAR pro vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul JAAS.
+JAAS_CUSTOM_LOGIN_MODULE_JAR_FILE_NOT_FOUND.useraction=Zkontrolujte, zda vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul JAAS m\u00e1 platn\u00fd soubor JAR.
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1104W: Odkaz na p\u0159ihla\u0161ovac\u00ed modul (loginModuleRef) {0} nem\u00e1 definov\u00e1n \u017e\u00e1dn\u00fd vlastn\u00ed p\u0159ihla\u0161ovac\u00ed modul (loginModule) JAAS.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee neexistuje p\u0159ihla\u0161ovac\u00ed modul definovan\u00fd pro odkaz na p\u0159ihla\u0161ovac\u00ed modul.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Zajist\u011bte, aby m\u011bl prvek loginModuleRef nakonfigurov\u00e1n prvek jaasLoginModule.
+
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR=CWWKS1105W: Nelze na\u010d\u00edst p\u0159ihla\u0161ovac\u00ed modul JAAS ze sd\u00edlen\u00e9 knihovny. Do\u0161lo k vnit\u0159n\u00ed v\u00fdjimce.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.explanation=Do\u0161lo k intern\u00ed chyb\u011b.
+JAAS_LOGIN_MODULE_CLASS_LOADER_ERROR.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+JAAS_AUTHENTICATION_FAILED_BADUSER=CWWKS1106A: Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9 pro ID u\u017eivatele ID {0}. Bylo zad\u00e1no neplatn\u00e9 ID u\u017eivatele.
+JAAS_AUTHENTICATION_FAILED_BADUSER.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee zadan\u00e9 ID u\u017eivatele nen\u00ed platn\u00e9.
+JAAS_AUTHENTICATION_FAILED_BADUSER.useraction=Ov\u011b\u0159te, zda je zad\u00e1no spr\u00e1vn\u00e9 ID u\u017eivatele. Pokud probl\u00e9m potrv\u00e1, obra\u0165te se na administr\u00e1tora registru u\u017eivatel\u016f.
+
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS=CWWKS1107E: Volby WSLoginModuleProxy maj\u00ed hodnotu null nebo jsou pr\u00e1zdn\u00e9.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee prvek voleb WSLoginModuleProxy maj\u00ed hodnotu null nebo jsou pr\u00e1zdn\u00e9.
+JAAS_WSLOGIN_MODULE_PROXY_NULL_OPTIONS.useraction=Ov\u011b\u0159te, zda konfigurace WSLoginModuleProxy obsahuje prvek voleb.
+
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: Nen\u00ed nastavena volba delegov\u00e1n\u00ed WSLoginModuleProxy.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=Ov\u011b\u0159en\u00ed nebylo \u00fasp\u011b\u0161n\u00e9, proto\u017ee modul jaasLoginModule s ID WSLoginModuleProxy nem\u00e1 v prvku voleb delegovan\u00fd atribut.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Ov\u011b\u0159te, \u017ee modul jaasLoginModule s ID WSLoginModuleProxy zahrnuje v prvku voleb delegovan\u00fd atribut. 
+
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT=CWWKS1109W: Z\u00e1stupce WSLoginModuleProxy nen\u00ed v jaasLoginContextEntry system.DEFAULT podporov\u00e1n.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.explanation=Z\u00e1stupce WSLoginModuleProxy nen\u00ed v jaasLoginContextEntry system.DEFAULT podporov\u00e1n.
+JAAS_PROXY_IS_NOT_SUPPORT_IN_SYSTEM_DEFAULT.useraction=Odeberte polo\u017eku serveru proxy z atributu loginModuleRef polo\u017eky jaasLoginContextEntry system.DEFAULT.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1120E: Polo\u017eka jaasLoginContextEntry {0} nem\u00e1 v loginModuleRef ur\u010den\u00e9 \u017e\u00e1dn\u00e9 p\u0159ihla\u0161ovac\u00ed moduly.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=Polo\u017eka jassLoginContextEntry nem\u00e1 v atributu loginModuleRef ur\u010den\u00e9 \u017e\u00e1dn\u00e9 p\u0159ihla\u0161ovac\u00ed moduly.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je v atributu loginModuleRef ur\u010den alespo\u0148 jeden p\u0159ihla\u0161ovac\u00ed modul. 
+
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME=CWWKS1121W: Ov\u011b\u0159en\u00ed u\u017eivatele {0} bylo \u00fasp\u011b\u0161n\u00e9. Zobrazovan\u00fd n\u00e1zev nelze s pou\u017eit\u00edm filtru userIdMap pro u\u017eivatele {0} z registru LDAP ur\u010dit. Bezpe\u010dnostn\u00ed jm\u00e9no, kter\u00fdm je obvykle \u00fapln\u00fd rozli\u0161uj\u00edc\u00ed n\u00e1zev, bude vr\u00e1ceno pro programov\u00e9 vol\u00e1n\u00ed API, aby mohlo z\u00edskat \u010dinitele u\u017eivatele.
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.explanation=Filtr LDAP userIDMap nem\u016f\u017ee ur\u010dit zobrazovan\u00fd n\u00e1zev u\u017eivatele. Pro n\u00e1zev \u010dinitele pro programov\u00e9 vol\u00e1n\u00ed API, jako je getUserPrincipal, bude vr\u00e1ceno bezpe\u010dnostn\u00ed jm\u00e9no.
+JAAS_COMMON_LOGIN_NULL_DISPLAY_NAME.useraction=Pokud m\u00e1 u\u017eivatel zobrazovan\u00fd n\u00e1zev displayName, zkontrolujte, zda byl u\u017eivatel vytvo\u0159en v LDAP, aby se mohl shodovat s konfigurovan\u00fdm filtrem userIdMap.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1122W: Kv\u016fli duplicitn\u00edmu n\u00e1zvu byl n\u00e1zev polo\u017eky jaasLoginContextEntry {0} definovan\u00fd v id {1} p\u0159eps\u00e1n hodnotou id {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=Jeden n\u00e1zev byl definov\u00e1n v\u00edce ne\u017e jedn\u00edm prvkem jassLoginContextEntry. Ve v\u00fdsledku byla p\u016fvodn\u00ed hodnota p\u0159eps\u00e1na jinou hodnotou.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd prvek jaasLoginContextEntry m\u00e1 jedine\u010dn\u00e9 ID a n\u00e1zev.
+
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE=CWWKS1123I: Byl aktivov\u00e1n kolektivn\u00ed modul plug-in ov\u011b\u0159en\u00ed s n\u00e1zvem t\u0159\u00eddy {0}. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.explanation=Kolektivn\u00ed modul plug-in ov\u011b\u0159en\u00ed byl aktivov\u00e1n a nyn\u00ed je dostupn\u00fd k ov\u011b\u0159en\u00ed kolektivn\u00edch po\u017eadavk\u016f.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_AVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE=CWWKS1124I: Byl deaktivov\u00e1n kolektivn\u00ed modul plug-in ov\u011b\u0159en\u00ed s n\u00e1zvem t\u0159\u00eddy {0}. 
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.explanation=Kolektivn\u00ed modul plug-in ov\u011b\u0159en\u00ed byl deaktivov\u00e1n a ji\u017e nen\u00ed dostupn\u00fd k ov\u011b\u0159en\u00ed kolektivn\u00edch po\u017eadavk\u016f.
+JAAS_LOGIN_COLLECTIVE_PLUGIN_UNAVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

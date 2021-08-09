@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RESTServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0100 - CWWKX0120
+
+jmx.connector.server.rest.notification.timeout.warning=CWWKX0101W: Notificarea clientului cu ID-ul {0} nu a f\u0103cut nicio cerere \u00een timpul alocat \u015fi de aceea a fost dezactivat\u0103.
+jmx.connector.server.rest.notification.timeout.warning.explanation= Notificarea clien\u0163ilor este necesar\u0103 pentru a face cereri \u00een timpul alocat pentru a evita timeout-uri.
+jmx.connector.server.rest.notification.timeout.warning.useraction= Verifica\u0163i c\u0103 serverul accept\u0103 \u00eenc\u0103 cereri HTTP.
+
+jmx.connector.server.rest.notification.limit.warning=CWWKX0102W: Serverul a atins limita sa de clienti de notificare concuren\u0163i.
+jmx.connector.server.rest.notification.limit.warning.explanation= Exist\u0103 oo limit\u0103 de num\u0103r de clien\u0163i concuren\u0163i care pot semna pentru notific\u0103ri.
+jmx.connector.server.rest.notification.limit.warning.useraction= Asigura\u0163i-v\u0103 c\u0103 notificarea clien\u0163ilor este autentic\u0103 \u015fi necesar\u0103.  Repornirea serverului va reseta to\u0163i clien\u0163ii de notificare.
+
+JMX_REST_ADDRESS=CWWKX0103I: Conectorul JMX REST ruleaz\u0103 \u015fi este disponibil la urm\u0103torul URL de serviciu: {0}
+JMX_REST_ADDRESS.explanation=Conectorul JMX REST este acum gata s\u0103 fie accesat la URL-ul de serviciu dat.
+JMX_REST_ADDRESS.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR=CWWKX0104W: Clientul notific\u0103rii cu ID-ul {0} \u015fi-a atins limita de \u00eenregistr\u0103ri de ascult\u0103tor MBean concomitente.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.explanation= Clientul notific\u0103rii are num\u0103rul maxim de \u00eenregistr\u0103ri de ascult\u0103tor MBean concomitente permis.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.useraction= Asigura\u0163i-v\u0103 c\u0103 \u00eenregistr\u0103rile de ascult\u0103tor MBean sunt unice \u015fi necesare.  \u00cenl\u0103tura\u0163i \u00eenregistr\u0103rile de ascult\u0103tor MBean nenecesare sau crea\u0163i un nou client de notificare.

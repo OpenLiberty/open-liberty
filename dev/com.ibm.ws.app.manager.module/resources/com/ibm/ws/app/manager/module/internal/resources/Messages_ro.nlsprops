@@ -1,0 +1,52 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.module/resources/com/ibm/ws/app/manager/module/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.
+
+#{0} is the web module name
+error.cache.adapt=CWWKZ0107E: A ap\u0103rut o eroare intern\u0103. Nu poate s\u0103 adapteze cache-ul pentru modulul web {0}.
+error.cache.adapt.explanation=MSG0001
+error.cache.adapt.useraction=CMSG0002
+
+#{0} is the connector module name
+error.cache.adapt.connector=CWWKZ0108E: Managerul de aplica\u0163ii nu poate adapta cache-ul pentru modulul conector {0}
+error.cache.adapt.connector.explanation=A ap\u0103rut o eroare intern\u0103 \u00een timpul instal\u0103rii unui modul conector. Informa\u0163iile de modul nu au fost ad\u0103ugate la cache.
+error.cache.adapt.connector.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: Aplica\u0163ia {0} a \u00eent\u00e2lnit o eroare de parsare la procesarea descriptorului de aplica\u0163ie {1}: {2}
+error.application.parse.descriptor.explanation=A ap\u0103rut o eroare la parsarea descriptorului de aplica\u0163ie.  Nici un modul nu va fi disponibil pentru aplica\u0163ie.
+error.application.parse.descriptor.useraction=Consulta\u0163i informa\u0163iile excep\u0163iei pentru detalii suplimentare.  Examina\u0163i con\u0163inutul descriptorului de aplica\u0163ie pentru a v\u0103 asigura c\u0103 este valid con\u0163inutul ca date XML.
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.

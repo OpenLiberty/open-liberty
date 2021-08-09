@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2017, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Niciun obiect IdentityStore nu suport\u0103 validarea utilizatorului. Asigura\u0163i-v\u0103 c\u0103 cel pu\u0163in un obiect IdentityStore suport\u0103 validarea utilizatorilor.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nu a fost g\u0103sit niciun obiect IdentityStore pentru a valida utilizatorul. Prin urmare, utilizatorul nu poate fi autentificat.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Asigura\u0163i-v\u0103 c\u0103 cel pu\u0163in un obiect IdentityStore suport\u0103 validarea utilizatorului.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Obiectul HttpAuthenticationMechanism pentru modulul {0} din aplica\u0163ia {1} nu a putut fi creat.
+JAVAEESEC_ERROR_NO_HAM.explanation=Motivul pentru care nu a putut fi creat obiectul HttpAuthenticationMechanism difer\u0103. Mesajele de eroare pentru obiectul HttpAuthenticationMechanism furnizeaz\u0103 informa\u0163ii despre motivul pentru care nu poate fi creat obiectul HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.useraction=Investiga\u0163i toate mesajele de eroare din obiectul HttpAuthenticationMechanism \u015fi face\u0163i corec\u0163ii bazate pe mesajele de eroare.
+
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Expresia EL (Expression Language) pentru atributul ''{0}'' al adnot\u0103rii depozitului de identit\u0103\u0163i nu poate fi rezolvat\u0103 la o valoare valid\u0103. Asigura\u0163i-v\u0103 c\u0103 sunt valide expresia EL \u015fi rezultatul \u015fi c\u0103 toate bean-urile referite care sunt utilizate \u00een expresie sunt rezolvabile. Este utilizat\u0103 \u00een loc valoarea implicit\u0103 a atributului ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Cauza erorii este o nepotrivire de tip \u00eentre rezultatul EL \u015fi valoarea a\u015fteptat\u0103 a atributului. De exemplu, dac\u0103 tipul a\u015fteptat de atribut este \u015eir, rezultatul EL trebuie s\u0103 fie \u015eir.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea con\u0163ine o valoare valid\u0103 de configura\u0163ie. Asigura\u0163i-v\u0103 c\u0103 sunt valide expresiile EL, \u015fi c\u0103 toate bean-urile referite care sunt utilizate \u00een expresie sunt rezolvabile \u015fi c\u0103 tipul de rezultat corespunde cu atributul.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Un parametru hashAlgorithm furnizat pentru hashAlgorithm, {0}, este \u00een format incorect. Parametrul primit este {1}. Formatul necesar este nume=valoare.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=O list\u0103 de parametri hashAlgorithm este \u00een format incorect \u015fi nu poate fi parsat\u0103.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Corecta\u0163i elementul hashAlgorithmParameters pe adnotarea DatabaseIdentityStore.
+
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Acredit\u0103rile pentru apelantul {0} nu pot fi validate. Obiectul DatabaseIdentityStore a e\u015fuat s\u0103 ruleze interogarea ''{1}''  cu o eroare: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=C\u0103utarea pentru apelant a e\u015fuat cu o eroare.
+JAVAEESEC_ERROR_GEN_DB.useraction=Examina\u0163i mesajul de eroare \u015fi face\u0163i corec\u0163iile la c\u0103utare pe baza mesajului de eroare.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: DatabaseIdentityStore a e\u015fuat s\u0103 ruleze interogarea ''{1}'' pentru a ob\u0163ine grupurile pentru apelantul {0}. Lista par\u0163ial\u0103 de grupuri este {2}. Eroarea este {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Este returnat\u0103 o list\u0103 par\u0163ial\u0103 de grupuri pentru apelant \u00een locul unei liste complete de grupuri din cauza unei erori \u00een interogare.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Examina\u0163i eroarea furnizat\u0103 \u015fi face\u0163i corec\u0163ii la interogare astfel \u00eenc\u00e2t s\u0103 poat\u0103 fi returnat\u0103 lista complet\u0103 de grupuri pentru apelant. 
+
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Acreditarea furnizat\u0103 obiectului IdentityStore nu este o UsernamePasswordCredential \u015fi nu poate fi validat\u0103.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Acreditarea furnizat\u0103 obiectului IdentityStore nu este o clas\u0103 UsernamePasswordCredential \u015fi nu poate fi validat\u0103.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Examina\u0163i tipul de acreditare transmis \u00een obiectul IdentityStore de implementarea HttpAuthMechanism.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Nu a fost g\u0103sit bean-ul de algoritmi hash pentru clasa {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Nu a fost g\u0103sit algoritmul hash listat \u00een elementul hashAlgorithm element pe adnotarea DatabaseIdentityStoreDefinition.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Ad\u0103uga\u0163i algoritmul hash personalizat ca bean disponibil pentru aplica\u0163ie.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Interogarea ''{1}'' nu a returnat o parol\u0103 pentru apelantul {0} pe DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=Interogarea nu a returnat o parol\u0103 pentru interogarea apelantului furnizat.
+JAVAEESEC_WARNING_NO_PWD.useraction=Dac\u0103 era a\u015fteptat\u0103 o parol\u0103, examina\u0163i interogarea apelantului \u015fi con\u0163inutul bazei de date.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Interogarea ''{1}'' a returnat multiple rezultate pentru apelantul {0} pe DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Au fost returnat rezultate multiple pentru apelantul cerut. Interogarea apelantului ar trebui s\u0103 returneze un singur rezultat.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Examina\u0163i interogarea apelantului \u015fi con\u0163inutul bazei de date. Modifica\u0163i interogarea apelantului pentru a returna un singur rezultat.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND=CWWKS3400W: A e\u015fuat legarea cu apelantul {0}. Urm\u0103toarea excep\u0163ie a survenit: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.explanation=A survenit o excep\u0163ie \u00een timpul leg\u0103rii cu apelantul furnizat.
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.useraction=Examina\u0163i excep\u0163ia furnizat\u0103.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH=CWWKS3401E: A e\u015fuat c\u0103utarea apelantului {0} cu filtrul {1} \u015fi searchBase {2}. Urm\u0103toarea excep\u0163ie a survenit: {3}
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.explanation=A survenit o excep\u0163ie \u00een timpul c\u0103ut\u0103rii apelantului furnizat.
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.useraction=Examina\u0163i excep\u0163ia furnizat\u0103.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH=CWWKS3402E: A e\u015fuat c\u0103utarea grupurilor de {0}. Urm\u0103toarea excep\u0163ie a survenit: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.explanation=A survenit o excep\u0163ie \u00een timpul c\u0103ut\u0103rii grupurilor utilizatorului specificat.
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.useraction=Examina\u0163i excep\u0163ia furnizat\u0103.
+
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP=CWWKS3403W: Au fost returnat rezultate multiple pentru apelantul {0} pe LdapIdentityStore folosind filtrul {1} \u015fi searchBase-ul {2}.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.explanation=Au fost returnat rezultate multiple pentru apelantul cerut. C\u0103utarea apelantului ar trebui s\u0103 returneze doar un singur rezultat.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.useraction=Examina\u0163i callerSearchFilter, searchBase \u015fi con\u0163inutul magaziei.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3404W: A e\u015fuat c\u0103utarea atributului {1} pe entitatea {0}. Urm\u0103toarea excep\u0163ie a survenit: {2}
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=A survenit o excep\u0163ie \u00een timpul c\u0103ut\u0103rii atributelor pe entitatea specificat\u0103.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Examina\u0163i excep\u0163ia furnizat\u0103.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3405W: Apelantul {0} nu are callerNameAttribute-ul {1}.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=Apelantul specificat nu are atributul specificat, a\u015fa cum este setat pe LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Examina\u0163i callerNameAttribute-ul \u015fi con\u0163inutul magaziei.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3406W: Grupul {0} nu are groupNameAttribute-ul {1}.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=Grupul specificat nu are atributul specificat, a\u015fa cum este setat pe LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Examina\u0163i groupNameAttribute \u015fi con\u0163inutul magaziei.

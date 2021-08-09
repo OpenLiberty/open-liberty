@@ -1,0 +1,10 @@
+version: 1
+dn: ou=syntaxCheckers,cn=dhcp,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 1abed219-e4d1-42d1-beb6-2f311c1c5341
+entryCSN: 20130919081858.672000Z#000000#000#000000
+entryParentId: 46016b49-fa8b-4efa-88df-4cc2c46cdfdf
+ou: syntaxcheckers
+createTimestamp: 20130919081909.259Z

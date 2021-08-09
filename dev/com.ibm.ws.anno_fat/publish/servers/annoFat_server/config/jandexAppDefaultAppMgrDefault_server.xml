@@ -1,0 +1,25 @@
+<server description="Server for testing Webcontainer">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <!-- logging
+    traceSpecification="*=info=enabled:com.ibm.ws.anno*=finer"
+    maxFileSize="20"
+    maxFiles="10"
+    traceFormat="BASIC"/ -->
+    
+  <javaPermission
+    className="java.util.PropertyPermission"
+    name="org.glassfish.web.rfc2109_cookie_names_enforced"
+    actions="read"
+    codebase="${server.config.dir}dropins/TestServlet40.ear"/>
+
+  <!-- Default and default: Do not use jandex -->
+  <!-- applicationManager useJandex="false"/> No override for all applications: Default to disabled -->
+  <application location="TestServlet40.ear"/> <!-- No override for this application: Still disabled -->
+
+</server>

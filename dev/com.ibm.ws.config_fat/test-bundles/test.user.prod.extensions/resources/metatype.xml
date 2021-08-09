@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+ 
+    <OCD id="test.user.prod.extensions" name="user.prodtest1.ocd1.name" description="user.prodtest1.ocd1.desc" ibm:alias="userProdtest1Config">
+        <AD id="attribute1" name="user.prodtest1.attribute1.name" description="user.prodtest1.attribute1.desc" required="false" type="String" ibm:type="duration" default="15s" />
+        <AD id="attribute2" name="user.prodtest1.attribute2.name" description="user.prodtest1.attribute2.desc" required="false" type="String" default="DEFAULT"/>
+    </OCD>
+
+    <Designate factoryPid="test.user.prod.extensions">
+        <Object ocdref="test.user.prod.extensions" />
+    </Designate>
+
+</metatype:MetaData>

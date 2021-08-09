@@ -1,0 +1,963 @@
+version: 1
+dn: ou=config
+ou: config
+objectclass: top
+objectclass: organizationalUnit
+
+dn: ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-directoryService
+ads-directoryserviceid: default
+ads-dsreplicaid: 1
+ads-dssyncperiodmillis: 15000
+ads-dsPasswordHidden: FALSE
+ads-dsallowanonymousaccess: TRUE
+ads-dsaccesscontrolenabled: FALSE
+ads-dsdenormalizeopattrsenabled: FALSE
+ads-enabled: TRUE
+
+dn: ads-changeLogId=defaultChangeLog,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-changeLog
+ads-changeLogId: defaultChangeLog
+ads-changeLogExposed: FALSE
+ads-enabled: FALSE
+
+dn: ads-journalId=defaultJournal,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-journal
+ads-journalId: defaultJournal
+ads-journalFileName: Journal.txt
+ads-journalWorkingDir: /
+ads-journalRotation: 2
+ads-enabled: FALSE
+
+dn: ou=interceptors,ads-directoryServiceId=default,ou=config
+ou: interceptors
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-interceptorId=normalizationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 1
+ads-interceptorclassname: org.apache.directory.server.core.normalization.NormalizationInterceptor
+ads-interceptorid: normalizationInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+objectclass: ads-authenticationInterceptor
+ads-interceptororder: 2
+ads-interceptorclassname: org.apache.directory.server.core.authn.AuthenticationInterceptor
+ads-interceptorid: authenticationInterceptor
+ads-enabled: TRUE
+
+dn: ou=authenticators,ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+ou: authenticators
+objectclass: top
+objectclass: organizationalUnit
+
+dn: ads-authenticatorid=anonymousauthenticator,ou=authenticators,ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+ads-authenticatorid: anonymousauthenticator
+objectclass: top
+objectclass: ads-base
+objectClass: ads-authenticator
+objectClass: ads-authenticatorImpl
+ads-authenticatorClass: org.apache.directory.server.core.authn.AnonymousAuthenticator
+ads-enabled: TRUE
+
+dn: ads-authenticatorid=simpleauthenticator,ou=authenticators,ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+ads-authenticatorid: simpleauthenticator
+objectclass: top
+objectclass: ads-base
+objectClass: ads-authenticator
+objectClass: ads-authenticatorImpl
+ads-authenticatorClass: org.apache.directory.server.core.authn.SimpleAuthenticator
+ads-enabled: TRUE
+
+dn: ads-authenticatorid=strongauthenticator,ou=authenticators,ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+ads-authenticatorid: strongauthenticator
+objectclass: top
+objectclass: ads-base
+objectClass: ads-authenticator
+objectClass: ads-authenticatorImpl
+ads-authenticatorClass: org.apache.directory.server.core.authn.StrongAuthenticator
+ads-enabled: TRUE
+
+dn: ou=passwordPolicies,ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectClass: organizationalUnit
+objectClass: top
+ou: passwordPolicies
+
+dn: ads-pwdId=default,ou=passwordPolicies,ads-interceptorId=authenticationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectClass: top
+objectClass: ads-base
+objectClass: ads-passwordPolicy
+ads-pwdId: default
+ads-pwdSafeModify: FALSE
+ads-pwdMaxAge: 0
+ads-pwdFailureCountInterval: 30
+ads-pwdAttribute: userPassword
+ads-pwdMaxFailure: 5
+ads-pwdLockout: TRUE
+ads-pwdMustChange: FALSE
+ads-pwdLockoutDuration: 0
+ads-pwdMinLength: 5
+ads-pwdInHistory: 5
+ads-pwdExpireWarning: 600
+ads-pwdMinAge: 0
+ads-pwdAllowUserChange: TRUE
+ads-pwdGraceAuthNLimit: 5
+ads-pwdCheckQuality: 1
+ads-pwdMaxLength: 0 
+ads-pwdGraceExpire: 0
+ads-pwdMinDelay: 0
+ads-pwdMaxDelay: 0
+ads-pwdMaxIdle: 0
+ads-pwdValidator: org.apache.directory.server.core.api.authn.ppolicy.DefaultPasswordValidator
+ads-enabled: TRUE
+
+dn: ads-interceptorId=referralInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 3
+ads-interceptorclassname: org.apache.directory.server.core.referral.ReferralInterceptor
+ads-interceptorid: referralInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=aciAuthorizationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 4
+ads-interceptorclassname: org.apache.directory.server.core.authz.AciAuthorizationInterceptor
+ads-interceptorid: aciAuthorizationInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=defaultAuthorizationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 5
+ads-interceptorclassname: org.apache.directory.server.core.authz.DefaultAuthorizationInterceptor
+ads-interceptorid: defaultAuthorizationInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=administrativePointInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 6
+ads-interceptorclassname: org.apache.directory.server.core.admin.AdministrativePointInterceptor
+ads-interceptorid: administrativePointInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=exceptionInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 7
+ads-interceptorclassname: org.apache.directory.server.core.exception.ExceptionInterceptor
+ads-interceptorid: exceptionInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=keyDerivationInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-enabled: FALSE
+ads-interceptororder: 8
+ads-interceptorclassname: org.apache.directory.server.core.kerberos.KeyDerivationInterceptor
+ads-interceptorid: keyDerivationInterceptor
+
+dn: ads-interceptorId=passwordHashingInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-enabled: TRUE
+ads-interceptororder: 9
+ads-interceptorclassname: org.apache.directory.server.core.hash.SshaPasswordHashingInterceptor
+ads-interceptorid: passwordHashingInterceptor
+
+dn: ads-interceptorId=schemaInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 10
+ads-interceptorclassname: org.apache.directory.server.core.schema.SchemaInterceptor
+ads-interceptorid: schemaInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=operationalAttributeInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 11
+ads-interceptorclassname: org.apache.directory.server.core.operational.OperationalAttributeInterceptor
+ads-interceptorid: operationalAttributeInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=collectiveAttributeInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 12
+ads-interceptorclassname: org.apache.directory.server.core.collective.CollectiveAttributeInterceptor
+ads-interceptorid: collectiveAttributeInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=subentryInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 13
+ads-interceptorclassname: org.apache.directory.server.core.subtree.SubentryInterceptor
+ads-interceptorid: subentryInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=eventInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 14
+ads-interceptorclassname: org.apache.directory.server.core.event.EventInterceptor
+ads-interceptorid: eventInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=triggerInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 15
+ads-interceptorclassname: org.apache.directory.server.core.trigger.TriggerInterceptor
+ads-interceptorid: triggerInterceptor
+ads-enabled: TRUE
+
+dn: ads-interceptorId=journalInterceptor,ou=interceptors,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-interceptor
+ads-interceptororder: 16
+ads-interceptorclassname: org.apache.directory.server.core.journal.JournalInterceptor
+ads-interceptorid: journalInterceptor
+ads-enabled: TRUE
+
+dn: ou=partitions,ads-directoryServiceId=default,ou=config
+ou: partitions
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectClass: ads-base
+objectclass: ads-partition
+objectclass: ads-jdbmPartition
+ads-partitionSuffix: ou=system
+ads-jdbmpartitionoptimizerenabled: TRUE
+ads-partitioncachesize: 100
+ads-partitionsynconwrite: TRUE
+ads-partitionid: system
+ads-enabled: TRUE
+ads-contextEntry: dn: ou=system\n
+ objectClass: top\n
+ objectClass: organizationalUnit\n
+ ou: system\n
+ description: The System context entry
+
+dn: ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ou: indexes
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-indexAttributeId=apacheRdn,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheRdn
+ads-indexHasReverse: TRUE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apachePresence,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apachePresence
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apacheOneAlias,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheOneAlias
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apacheSubAlias,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheSubAlias
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apacheAlias,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheAlias
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=objectClass,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: objectClass
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=entryCSN,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: entryCSN
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=ou,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: ou
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=uid,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: uid
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=administrativeRole,ou=indexes,ads-partitionId=system,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: administrativeRole
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectClass: ads-base
+objectclass: ads-partition
+objectclass: ads-jdbmPartition
+ads-partitionSuffix: dc=example,dc=com
+ads-contextentry:: ZG46IGRjPWV4YW1wbGUsZGM9Y29tCmRjOiBleGFtcGxlCm9iamVjdGNsY
+ XNzOiBkb21haW4Kb2JqZWN0Y2xhc3M6IHRvcAoK
+ads-jdbmpartitionoptimizerenabled: TRUE
+ads-partitioncachesize: 100
+ads-partitionsynconwrite: TRUE
+ads-partitionid: example
+ads-enabled: TRUE
+
+dn: ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ou: indexes
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-indexAttributeId=apacheRdn,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheRdn
+ads-indexHasReverse: TRUE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apachePresence,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apachePresence
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apacheOneAlias,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheOneAlias
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apacheSubAlias,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheSubAlias
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=apacheAlias,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: apacheAlias
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=dc,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: dc
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=krb5PrincipalName,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: krb5PrincipalName
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=objectClass,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: objectClass
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=entryCSN,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: entryCSN
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=ou,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: ou
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=uid,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: uid
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-indexAttributeId=administrativeRole,ou=indexes,ads-partitionId=example,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexattributeid: administrativeRole
+ads-indexHasReverse: FALSE
+ads-indexcachesize: 100
+objectclass: ads-index
+objectclass: ads-jdbmIndex
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ou=servers,ads-directoryServiceId=default,ou=config
+ou: servers
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-serverId=changePasswordServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectclass: ads-server
+objectclass: ads-changePasswordServer
+objectclass: ads-dsBasedServer
+objectclass: ads-base
+objectclass: top
+ads-serverid: changePasswordServer
+ads-enabled: FALSE
+
+dn: ou=transports,ads-serverId=changePasswordServer,ou=servers,ads-directoryServiceId=default,ou=config
+ou: transports
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-transportId=tcp,ou=transports,ads-serverId=changePasswordServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-systemport: 60464
+ads-transportnbthreads: 2
+ads-transportaddress: 0.0.0.0
+ads-transportid: tcp
+objectclass: ads-transport
+objectclass: ads-tcpTransport
+objectClass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-transportId=udp,ou=transports,ads-serverId=changePasswordServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-systemport: 60464
+ads-transportnbthreads: 2
+ads-transportaddress: 0.0.0.0
+ads-transportid: udp
+objectclass: ads-transport
+objectclass: ads-udpTransport
+objectClass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-serverId=httpServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-serverid: httpServer
+ads-enabled: FALSE
+objectclass: ads-server
+objectclass: ads-httpServer
+objectclass: ads-base
+objectclass: top
+
+dn: ou=transports,ads-serverId=httpServer,ou=servers,ads-directoryServiceId=default,ou=config
+ou: transports
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-transportid=http,ou=transports,ads-serverId=httpServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-transport
+objectclass: ads-tcpTransport
+ads-transportid: http
+ads-systemport: 8080
+ads-transportaddress: 0.0.0.0
+ads-enabled: TRUE
+
+dn: ads-transportid=https,ou=transports,ads-serverId=httpServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectclass: top
+objectclass: ads-base
+objectclass: ads-transport
+objectclass: ads-tcpTransport
+ads-transportid: https
+ads-transportaddress: 0.0.0.0
+ads-systemport: 8443
+ads-enabled: TRUE
+
+dn: ou=httpWebApps,ads-serverId=httpServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectclass: organizationalUnit
+objectclass: top
+ou: httpWebApps
+
+dn: ads-id=testapp,ou=httpWebApps,ads-serverId=httpServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-httpwarfile: /path/to/foo/war
+ads-httpappctxpath: /foo
+ads-id: testapp
+objectclass: ads-httpWebApp
+objectclass: ads-base
+objectclass: top
+ads-enabled: FALSE
+
+dn: ads-serverId=kerberosServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectclass: ads-server
+objectclass: ads-kdcServer
+objectclass: ads-dsBasedServer
+objectclass: ads-base
+objectclass: top
+ads-serverid: kerberosServer
+ads-enabled: FALSE
+ads-krbAllowableClockSkew: 300000
+ads-krbBodyChecksumVerified: TRUE
+ads-krbEmptyAddressesAllowed: TRUE
+ads-krbEncryptionTypes: aes128-cts-hmac-sha1-96
+ads-krbEncryptionTypes: des3-cbc-sha1-kd
+ads-krbEncryptionTypes: des-cbc-md5
+ads-krbForwardableAllowed: TRUE
+ads-krbmaximumrenewablelifetime: 604800000
+ads-krbMaximumTicketLifetime: 86400000
+ads-krbPaEncTimestampRequired: TRUE
+ads-krbPostdatedAllowed: TRUE
+ads-krbPrimaryRealm: EXAMPLE.COM
+ads-krbProxiableAllowed: TRUE
+ads-krbRenewableAllowed: TRUE
+ads-searchBaseDN: ou=users,dc=example,dc=com
+
+dn: ou=transports,ads-serverId=kerberosServer,ou=servers,ads-directoryServiceId=default,ou=config
+ou: transports
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-transportid=tcp,ou=transports,ads-serverId=kerberosServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-systemport: 60088
+ads-transportnbthreads: 4
+ads-transportaddress: 0.0.0.0
+ads-transportid: tcp
+objectclass: ads-transport
+objectClass: ads-base
+objectclass: ads-tcpTransport
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-transportid=udp,ou=transports,ads-serverId=kerberosServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-systemport: 60088
+ads-transportnbthreads: 4
+ads-transportaddress: 0.0.0.0
+ads-transportid: udp
+objectclass: ads-transport
+objectclass: ads-udpTransport
+objectClass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectclass: ads-server
+objectclass: ads-ldapServer
+objectclass: ads-dsBasedServer
+objectclass: ads-base
+objectclass: top
+ads-serverId: ldapServer
+ads-confidentialityRequired: FALSE
+ads-maxSizeLimit: 1000
+ads-maxTimeLimit: 15000
+ads-maxpdusize: 2000000
+ads-saslHost: ldap.example.com
+ads-saslPrincipal: ldap/ldap.example.com@EXAMPLE.COM
+ads-saslRealms: example.com
+ads-saslRealms: apache.org
+ads-searchBaseDN: ou=users,ou=system
+ads-replEnabled: true
+ads-replPingerSleep: 5
+ads-keystoreFile: liberty.ks
+ads-certificatePassword:: c2VjcmV0
+ads-enabled: TRUE
+
+dn: ou=replConsumers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+objectClass: organizationalUnit
+objectClass: top
+ou: replConsumers
+
+dn: ou=transports,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ou: transports
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-transportid=ldap,ou=transports,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-systemport: 30389
+ads-transportnbthreads: 8
+ads-transportaddress: 0.0.0.0
+ads-transportid: ldap
+objectclass: ads-transport
+objectclass: ads-tcpTransport
+objectClass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-transportid=ldaps,ou=transports,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-systemport: 30636
+ads-transportenablessl: TRUE
+ads-transportaddress: 0.0.0.0
+ads-transportid: ldaps
+objectclass: ads-transport
+objectclass: ads-tcpTransport
+objectClass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ou=extendedOpHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ou: extendedOpHandlers
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-extendedOpId=gracefulShutdownHandler,ou=extendedOpHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-extendedOpId: gracefulShutdownHandler
+ads-extendedOpHandlerclass: org.apache.directory.server.ldap.handlers.extended.GracefulShutdownHandler
+objectclass: ads-extendedOpHandler
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-extendedOpId=starttlshandler,ou=extendedOpHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-extendedOpId: starttlshandler
+ads-extendedOpHandlerclass: org.apache.directory.server.ldap.handlers.extended.StartTlsHandler
+objectclass: ads-extendedOpHandler
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ads-extendedOpId=storedprochandler,ou=extendedOpHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-enabled: FALSE
+ads-extendedOpId: storedprochandler
+ads-extendedOpHandlerclass: org.apache.directory.server.ldap.handlers.extended.StoredProcedureExtendedOperationHandler
+objectclass: ads-extendedOpHandler
+objectclass: ads-base
+objectclass: top
+
+dn: ads-extendedOpId=pwdModifyHandler,ou=extendedOpHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-extendedOpId: pwdModifyHandler
+ads-extendedOpHandlerclass: org.apache.directory.server.ldap.handlers.extended.PwdModifyHandler
+objectclass: ads-extendedOpHandler
+objectclass: ads-base
+objectclass: top
+ads-enabled: TRUE
+
+dn: ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ou: saslMechHandlers
+objectclass: organizationalUnit
+objectclass: top
+
+dn: ads-saslMechName=CRAM-MD5,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-saslMechClassName: org.apache.directory.server.ldap.handlers.sasl.cramMD5.CramMd5MechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+ads-saslMechName: CRAM-MD5
+ads-enabled: TRUE
+
+dn: ads-saslMechName=DIGEST-MD5,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-saslMechClassName: org.apache.directory.server.ldap.handlers.sasl.digestMD5.DigestMd5MechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+ads-saslMechName: DIGEST-MD5
+ads-enabled: TRUE
+
+dn: ads-saslMechName=GSS-SPNEGO,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-saslMechClassName: org.apache.directory.server.ldap.handlers.sasl.ntlm.NtlmMechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+ads-saslMechName: GSS-SPNEGO
+ads-ntlmMechProvider: com.foo.Bar
+ads-enabled: TRUE
+
+dn: ads-saslMechName=GSSAPI,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-saslMechClassName: org.apache.directory.server.ldap.handlers.sasl.gssapi.GssapiMechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+ads-saslMechName: GSSAPI
+ads-enabled: TRUE
+
+dn: ads-saslMechName=NTLM,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-saslMechClassName: org.apache.directory.server.ldap.handlers.sasl.ntlm.NtlmMechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+ads-saslMechName: NTLM
+ads-ntlmMechProvider: com.foo.Bar
+ads-enabled: TRUE
+
+dn: ads-saslMechName=SIMPLE,ou=saslMechHandlers,ads-serverId=ldapServer,ou=servers,ads-directoryServiceId=default,ou=config
+ads-saslMechClassName: org.apache.directory.server.ldap.handlers.sasl.SimpleMechanismHandler
+objectclass: ads-saslMechHandler
+objectclass: ads-base
+objectclass: top
+ads-saslMechName: SIMPLE
+ads-enabled: TRUE
+
+dn: ads-partitionId=rtp.raleigh.ibm.com,ou=partitions,ads-directoryServiceId=def
+ ault,ou=config
+ads-contextEntry:: ZG46IGRjPXJ0cCxkYz1yYWxlaWdoLGRjPWlibSxkYz1jb20Kb2JqZWN0Q2xhc
+ 3M6IGRvbWFpbgpvYmplY3RDbGFzczogdG9wCmRjOiBydHAKCg==
+ads-enabled: TRUE
+ads-partitionCacheSize: 100
+ads-partitionSyncOnWrite: TRUE
+ads-partitionId: rtp.raleigh.ibm.com
+objectClass: top
+objectClass: ads-jdbmPartition
+objectClass: ads-partition
+objectClass: ads-base
+ads-partitionSuffix: dc=rtp,dc=raleigh,dc=ibm,dc=com
+
+dn: ou=indexes,ads-partitionId=rtp.raleigh.ibm.com,ou=partitions,ads-directorySe
+ rviceId=default,ou=config
+ou: indexes
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ads-indexAttributeId=apacheAlias,ou=indexes,ads-partitionId=rtp.raleigh.ibm.
+ com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apacheAlias
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=apacheOneAlias,ou=indexes,ads-partitionId=rtp.raleigh.i
+ bm.com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apacheOneAlias
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=apacheOneLevel,ou=indexes,ads-partitionId=rtp.raleigh.i
+ bm.com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apacheOneLevel
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=apachePresence,ou=indexes,ads-partitionId=rtp.raleigh.i
+ bm.com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apachePresence
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=apacheRdn,ou=indexes,ads-partitionId=rtp.raleigh.ibm.co
+ m,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apacheRdn
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=apacheSubAlias,ou=indexes,ads-partitionId=rtp.raleigh.i
+ bm.com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apacheSubAlias
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=apacheSubLevel,ou=indexes,ads-partitionId=rtp.raleigh.i
+ bm.com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: apacheSubLevel
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=dc,ou=indexes,ads-partitionId=rtp.raleigh.ibm.com,ou=pa
+ rtitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: dc
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=entryCSN,ou=indexes,ads-partitionId=rtp.raleigh.ibm.com
+ ,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: entryCSN
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=entryUUID,ou=indexes,ads-partitionId=rtp.raleigh.ibm.co
+ m,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: entryUUID
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=krb5PrincipalName,ou=indexes,ads-partitionId=rtp.raleig
+ h.ibm.com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: krb5PrincipalName
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=objectClass,ou=indexes,ads-partitionId=rtp.raleigh.ibm.
+ com,ou=partitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: objectClass
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=ou,ou=indexes,ads-partitionId=rtp.raleigh.ibm.com,ou=pa
+ rtitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: ou
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+
+dn: ads-indexAttributeId=uid,ou=indexes,ads-partitionId=rtp.raleigh.ibm.com,ou=p
+ artitions,ads-directoryServiceId=default,ou=config
+ads-indexAttributeId: uid
+ads-enabled: TRUE
+objectClass: ads-jdbmIndex
+objectClass: top
+objectClass: ads-index
+objectClass: ads-base
+ads-indexHasReverse: FALSE
+

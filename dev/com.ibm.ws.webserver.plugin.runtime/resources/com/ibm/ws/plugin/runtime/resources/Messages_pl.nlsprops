@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWKU
+#COMPONENTNAMEFOR Plugin Utility Runtime
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+collective.mbean.not.available=CWWKU0101E: \u017b\u0105danie wygenerowania pliku konfiguracyjnego wtyczki serwera WWW nie zosta\u0142o przetworzone dla klastra {0}, poniewa\u017c nie znaleziono wymaganego komponentu MBean sk\u0142adnika kontrolera kolektywu.
+collective.mbean.not.available.explanation=Sk\u0142adnik kontrolera kolektywu musi by\u0107 w\u0142\u0105czony na serwerze, aby mo\u017cna by\u0142o przetworzy\u0107 to \u017c\u0105danie. 
+collective.mbean.not.available.useraction=W\u0142\u0105cz sk\u0142adnik kontrolera kolektywu na serwerze docelowym lub skieruj to \u017c\u0105danie do serwera, na kt\u00f3rym w\u0142\u0105czono ju\u017c sk\u0142adnik kontrolera kolektywu.
+# --------------------------------
+# --------------------------------
+appserver.mbean.not.available=CWWKU0102E: \u017b\u0105danie wygenerowania pliku konfiguracyjnego wtyczki serwera WWW nie zosta\u0142o przetworzone dla tego serwera, poniewa\u017c nie znaleziono wymaganego komponentu MBean sk\u0142adnika serwletu Java.
+appserver.mbean.not.available.explanation=Sk\u0142adnik serwletu Java 3.0 lub 3.1 musi by\u0107 w\u0142\u0105czony na serwerze, aby mo\u017cna by\u0142o przetworzy\u0107 to \u017c\u0105danie.
+appserver.mbean.not.available.useraction=W\u0142\u0105cz sk\u0142adnik serwletu Java 3.0 lub 3.1 na serwerze docelowym lub skieruj to \u017c\u0105danie do serwera, na kt\u00f3rym w\u0142\u0105czono ju\u017c sk\u0142adnik serwletu Java.
+# -------------------------------- 

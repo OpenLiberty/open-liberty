@@ -1,0 +1,63 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+#CMVCPATHNAME com.ibm.ws.security.audit.reader/resources/com/ibm/ws/security/audit/reader/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKS
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Error: {0}
+error.inputConsoleNotAvailable=La consola de entrada no est\u00e1 disponible.
+error.missingIO=Error; falta el dispositivo de E/S: {0}.
+
+usage=Uso: {0}
+task.unknown=Tarea desconocida: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=Existen demasiados argumentos.
+insufficientArgs=Argumentos insuficientes.
+invalidArg=El argumento {0} no es v\u00e1lido.
+invalidValue=El valor {0} no es v\u00e1lido para el argumento {1}.
+missingArg=Falta el argumento {0}.
+missingValue=Falta un valor para el argumento {0}.
+missingArg2=Debe proporcionarse el argumento {0} o el argumento {1}.
+exclusiveArg=Debe especificarse el argumento {0} o el argumento {1}, pero no ambos.
+serverNotFound=El servidor especificado {0} no se ha encontrado en la ubicaci\u00f3n {1}.
+missingArgs= Faltan los argumentos siguientes: {0} y {1}.
+missingArgs3=Faltan los argumentos siguientes: {0}, {1} y {2}.
+invalidFileLocations=La v\u00eda de acceso completa {0}, especificada para el argumento --auditFileLocation, es la misma que la v\u00eda de acceso completa {1} especificada para el argumento --outputFileLocation.  Ambas v\u00edas de acceso deben ser exclusivas.
+invalidURLFormat=El valor {0} especificado para el argumento {1} no est\u00e1 en formato de URL de archivo completo.
+
+password.enterText=Especifique la contrase\u00f1a:
+password.reenterText=Vuelva a especificar la contrase\u00f1a:
+password.readError=Error al leer la contrase\u00f1a.
+password.entriesDidNotMatch=Las contrase\u00f1as no han coincidido.
+
+audit.NonWriteableOuputFile=El valor {0} especificado para --outputFileLocation es un archivo no grabable.  Aseg\u00farese de que se puede grabar en la ubicaci\u00f3n especificada para el archivo de salida.
+audit.NoKeyStorePasswordValue=No se ha especificado ninguna contrase\u00f1a de almac\u00e9n de claves para el almac\u00e9n de claves de auditor\u00eda {0}.
+audit.MismatchingEncrypt=El registro de auditor\u00eda, {0}, est\u00e1 cifrado pero el argumento --encrypted no se ha especificado o se ha especificado y se ha establecido en falso.
+audit.MismatchingSign=El registro de auditor\u00eda, {0}, se ha firmado pero el argumento --signed no se ha especificado o se ha especificado y se ha establecido en falso.
+audit.MismatchingEncryptSign=El registro de auditor\u00eda, {0}, se ha cifrado y firmado, pero el argumento --signed o --encrypted no se ha especificado o se ha especificado y se ha establecido en falso.
+security.audit.UnsupportedKeyStoreType=El valor de tipo de almac\u00e9n de claves {0} para el argumento {1} no se soporta.
+security.audit.UnknownHost=No se ha podido obtener el nombre de host de la m\u00e1quina en la que se ejecuta el programa de utilidad lector de auditor\u00eda. 
+security.audit.KeyStoreException=Se ha producido una excepci\u00f3n al intentar obtener una instancia del almac\u00e9n de claves con el tipo de almac\u00e9n de claves y el tipo de proveedor especificados.
+security.audit.NoSuchProviderException=Se ha producido una excepci\u00f3n al intentar obtener una instancia del almac\u00e9n de claves con el proveedor especificado.  No existe este proveedor.
+security.audit.MalformedURLException=Se ha producido una excepci\u00f3n al intentar abrir el almac\u00e9n de claves.  La ubicaci\u00f3n del almac\u00e9n de claves tiene un formato incorrecto. 
+security.audit.CertificateException=Se ha producido una excepci\u00f3n de certificado al intentar cargar el almac\u00e9n de claves.
+security.audit.NoSuchAlgorithmException=Se ha producido una excepci\u00f3n al cargar el almac\u00e9n de claves.  Se ha solicitado un algoritmo criptogr\u00e1fico concreto, pero no est\u00e1 disponible.
+security.audit.FileNotFound=El archivo mencionado {0} no existe. 
+security.audit.ErrorLoadingKeystore=Error al cargar el almac\u00e9n de claves {0}. Puede que se haya especificado incorrectamente la contrase\u00f1a. 
+security.audit.MismatchingEncKeystores=El valor de entrada, {0}, para el almac\u00e9n de claves especificado para contener el certificado utilizado para descifrar los registros de auditor\u00eda no coincide con el almac\u00e9n de claves, {1}, especificado en el registro de auditor\u00eda.
+security.audit.MismatchingSigningKeystores=El valor de entrada, {0}, para el almac\u00e9n de claves especificado para contener el certificado utilizado para eliminar la firma de los registros de auditor\u00eda no coincide con el almac\u00e9n de claves, {1}, especificado en el registro de auditor\u00eda.
+security.audit.CannotFindCertificate=El alias de certificado {0} no existe en el almac\u00e9n de claves {1}.

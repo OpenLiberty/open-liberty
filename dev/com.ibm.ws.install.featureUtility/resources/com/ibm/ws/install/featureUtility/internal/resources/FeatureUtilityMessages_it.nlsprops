@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=Impostazioni di featureUtility
+MSG_PROPERTIES_FILE_NOT_FOUND=Nessuna configurazione utente rilevata. Maven Central Repository \u00e8 il repository di asset predefinito.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Per personalizzare le impostazioni di featureUtility, creare un file featureUtility.properties nella seguente ubicazione: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Utilizzare il seguente esempio come un template per creare il proprio file featureUtility.properties. Escludere le righe contrassegnate da un singolo carattere # e sostituire i valori con quelli personalizzati.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Per personalizzare le impostazioni di installUtility, creare un file repositories.properties nella seguente ubicazione: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Utilizzare il seguente esempio come un template per creare il proprio file repositories.properties. Escludere le righe contrassegnate da un singolo carattere # e sostituire i valori con quelli personalizzati.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=Utilizza repository predefinito:
+MSG_DEFAULT_REPO_NAME_LABEL=Repository di asset predefinito:
+MSG_DEFAULT_REPO_NAME=Maven Central Repository
+MSG_CONFIG_REPO_LABEL=Repository configurati
+MSG_MAVEN_LOCAL_REPO=Maven Local Repository
+MSG_NO_CONFIG_REPO=Nessun repository configurato
+MSG_UNSPECIFIED=<Non specificato>
+MSG_PASSWORD_NOT_ENCODED_PROXY=La password per questo proxy non \u00e8 codificata. Per codificare la password, eseguire l'azione di codifica securityUtility con l'opzione --encoding impostata su un tipo di codifica supportato. I tipi supportati sono xor (valore predefinito), aes e hash.
+MSG_PROXY_LABEL=Impostazioni proxy
+MSG_NO_CONFIG_PROXY=Nessun proxy configurato
+MSG_REPO_FILE_NOT_FOUND=Nessuna configurazione utente rilevata. IBM WebSphere Liberty Repository \u00e8 il repository di asset predefinito.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Per personalizzare le impostazioni di installUtility, creare un file repositories.properties nella seguente ubicazione: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Utilizzare il seguente esempio come un template per creare il proprio file repositories.properties. Escludere le righe contrassegnate da un singolo carattere # e sostituire i valori con quelli personalizzati.
+MSG_VALIDATION_SUCCESSFUL=Convalida del file di propriet\u00e0 riuscita.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Convalida del file di propriet\u00e0 non riuscita. Utilizzare l'opzione --viewValidationMessages per visualizzare i messaggi della convalida dettagliati.
+MSG_VALIDATION_NUM_OF_ERRORS=Numero di errori: {0}
+MSG_VALIDATION_MESSAGES=Convalida del file di propriet\u00e0
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nome: {0}
+FIELD_REPO_LOCATION=Ubicazione: {0}
+FIELD_REPO_STATUS=Stato: {0}
+FIELD_REPO_REASON=Causa: {0}
+FIELD_REPO_WARNING=Avvertenza: {0}
+FIELD_NAME=Nome:
+FIELD_PORT=Porta:
+FIELD_LOCATION=Ubicazione:
+FIELD_PROXY_SERVER=Server proxy:
+FIELD_USER=Nome utente:
+FIELD_PASS=Password:
+FIELD_PROPS_FILE=File delle propriet\u00e0: {0}
+FIELD_REPO=Server di repository: {0} ({1})
+FIELD_PROXY=Server proxy: {0}
+FIELD_VALIDATION_RESULTS=Risultati della convalida: {0}
+FIELD_VALIDATION_LINE=Linea: {0}

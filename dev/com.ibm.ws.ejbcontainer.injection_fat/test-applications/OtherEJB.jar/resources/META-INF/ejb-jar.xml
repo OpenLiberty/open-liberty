@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="ejb-jar_ID" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <display-name>Other</display-name>
+      <enterprise-beans>
+         <session id="OtherBean">
+            <ejb-name>OtherBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldLocal</business-local>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodLocal</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBFieldRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBMethodRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="AutoBean">
+            <ejb-name>AutoBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBAuto</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbo.AutoBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="IdenticalBean">
+            <ejb-name>IdenticalBean</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBIdentical</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbo.OtherIdenticalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="NestedBean3">
+            <ejb-name>NestedBean3</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejbx.EJBNested</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejbo.NestedBean3</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+      </assembly-descriptor>
+   </ejb-jar>

@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: Il sistema non \u00e8 stato in grado di creare il nuovo file {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Un componente del server delle applicazioni non \u00e8 stato in grado di eseguire un'operazione su una risorsa richiesta.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Verificare che il nome del file specificato sia un nome di file valido. Assicurarsi che il runtime del server delle applicazioni consenta l'accesso in scrittura alla directory per la risorsa e che il disco non sia pieno. Se questa operazione non risolve il problema, consultare le informazioni sulla determinazione del problema sulla pagina web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: Il sistema non \u00e8 stato in grado di creare il file {0} a causa della seguente eccezione: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Un tentativo di aprire la risorsa specificata ha avuto esito negativo. L'eccezione indica la causa principale dell'errore.
+UNABLE_TO_CREATE_RESOURCE.useraction=Esaminare l'eccezione per determinare la causa principale. Verificare che il nome del file specificato sia un nome di file valido. Assicurarsi che il runtime del server delle applicazioni consenta l'accesso in scrittura alla directory per la risorsa e che il disco non sia pieno. Se questa operazione non risolve il problema, consultare le informazioni sulla determinazione del problema sulla pagina web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: Il sistema non \u00e8 stato in grado di eliminare il file {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Un componente del server delle applicazioni non \u00e8 stato in grado di eseguire un'operazione su una risorsa richiesta.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Verificare che il nome del file specificato sia un nome di file valido. Assicurarsi che il runtime del server delle applicazioni consenta l'accesso in scrittura alla directory per la risorsa e che il disco non sia pieno. Se questa operazione non risolve il problema, consultare le informazioni sulla determinazione del problema sulla pagina web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: Impossibile eliminare il file {0} a causa della seguente eccezione: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Un tentativo di eliminare la risorsa specificata non \u00e8 riuscito. L'eccezione indica la causa principale dell'errore.
+UNABLE_TO_DELETE_RESOURCE.useraction=Esaminare l'eccezione per determinare la causa principale. Assicurarsi che il runtime del server delle applicazioni sia autorizzato ad accedere in scrittura alla directory per la risorsa. Se questa operazione non risolve il problema, consultare le informazioni sulla determinazione del problema sulla pagina web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: Il servizio Gestore file di verifica \u00e8 in fase di avvio.
+AUDIT_FILEHANDLER_STARTING.explanation= Il servizio Gestore file di verifica \u00e8 in fase di avvio. Questa operazione potrebbe richiedere diversi minuti, se l'inizializzazione deve essere eseguita una sola  volta.
+AUDIT_FILEHANDLER_STARTING.useraction=Non \u00e8 richiesta alcuna azione.
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: Il servizio Gestore file di verifica \u00e8 pronto.
+AUDIT_FILEHANDLER_READY.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+AUDIT_FILEHANDLER_READY.useraction=Non \u00e8 richiesta alcuna azione.
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: Il servizio Gestore file di verifica \u00e8 stato arrestato.
+AUDIT_FILEHANDLER_STOPPED.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+AUDIT_FILEHANDLER_STOPPED.useraction=Non \u00e8 richiesta alcuna azione.
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: Il servizio di verifica non pu\u00f2 iniziare perch\u00e9 la configurazione del gestore di verifica per codificare i record di verifica non \u00e8 corretta. Configurare un riferimento keystore e alias certificato corretti. Assicurarsi che il keystore a cui fa riferimento {1} esista e assicurarsi che il nome alias {0} del certificato che si utilizza per codificare i record di verifica sia presente nel keystore. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=Il servizio di verifica non pu\u00f2 iniziare a causa di un errore nella configurazione del gestore di verifica per codificare i record di verifica. Per ulteriori informazioni, consultare l'eccezione nel messaggio di errore di attivazione del servizio precedente. Specificare un riferimento keystore valido e assicurarsi che l'alias del certificato si riferisca ad un certificato presente nel keystore.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Verificare che la configurazione del gestore di verifica specifichi sia un riferimento keystore che un alias certificato per codificare i record di verifica. Assicurarsi che il keystore esista, la password sia specificata correttamente e che il keystore contenga il certificato a cui fa riferimento l'alias certificato di codifica.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: Il servizio di verifica non pu\u00f2 iniziare perch\u00e9 la configurazione del gestore di verifica per firmare i record di verifica non \u00e8 corretta. Configurare un riferimento keystore e alias certificato personale corretti. Assicurarsi che il keystore a cui fa riferimento {1} esista e assicurarsi che il nome alias {0} del certificato personale che si utilizza per firmare i record di verifica sia presente nel keystore. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=Il servizio di verifica non pu\u00f2 iniziare a causa di un errore nella configurazione del gestore di verifica per firmare i record di verifica. Per ulteriori informazioni, consultare l'eccezione nel messaggio di errore di attivazione del servizio precedente. Specificare un riferimento keystore valido e assicurarsi che l'alias del certificato personale si riferisca ad un certificato personale presente nel keystore.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Verificare che la configurazione del gestore di verifica specifichi sia un riferimento keystore che un alias certificato personale per firmare i record di verifica. Assicurarsi che il keystore esista, la password sia specificata correttamente e che il keystore contenga il certificato personale a cui fa riferimento l'alias certificato di firma.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: Il servizio di verifica non pu\u00f2 iniziare perch\u00e9 si \u00e8 verificato un errore mentre il servizio ha avviato il gestore di verifica per codificare i record di verifica. L''eccezione \u00e8 {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=Il servizio di verifica non pu\u00f2 iniziare perch\u00e9 si \u00e8 verificato un errore durante l'inizializzazione della configurazione del gestore di verifica per codificare i record di verifica. Per ulteriori informazioni, consultare l'eccezione nel messaggio.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=Consultare l'eccezione per determinare la causa dell'errore.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: Il servizio di verifica non pu\u00f2 iniziare perch\u00e9 si \u00e8 verificato un errore mentre il servizio ha avviato il gestore di verifica per firmare i record di verifica. L''eccezione \u00e8 {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=Il servizio di verifica non pu\u00f2 iniziare perch\u00e9 si \u00e8 verificato un errore durante l'inizializzazione della configurazione del gestore di verifica per firmare i record di verifica. Per ulteriori informazioni, consultare l'eccezione indicata nel messaggio.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=Consultare l'eccezione per determinare la causa dell'errore.

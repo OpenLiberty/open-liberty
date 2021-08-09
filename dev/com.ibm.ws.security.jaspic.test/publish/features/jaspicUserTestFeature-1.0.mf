@@ -1,0 +1,10 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: jaspicUserTestFeature-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.jaspicUserTestFeature-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: 
+   com.ibm.ws.security.jaspic.test; version="[1,1.0.100)",
+   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1"; type="osgi.subsystem.feature",
+   com.ibm.websphere.appserver.jaspic-1.1; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

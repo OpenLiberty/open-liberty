@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RESTServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0100 - CWWKX0120
+
+jmx.connector.server.rest.notification.timeout.warning=CWWKX0101W: A(z) {0} azonos\u00edt\u00f3j\u00fa \u00e9rtes\u00edt\u00e9si \u00fcgyf\u00e9l nem k\u00fcld\u00f6tt k\u00e9r\u00e9st a megengedett id\u0151n bel\u00fcl, ez\u00e9rt tilt\u00e1sra ker\u00fclt.
+jmx.connector.server.rest.notification.timeout.warning.explanation= Az \u00e9rtes\u00edt\u00e9s \u00fcgyfeleknek az id\u0151t\u00fall\u00e9p\u00e9s elker\u00fcl\u00e9s\u00e9hez a megengedett id\u0151n bel\u00fcl kell k\u00e9r\u00e9seket k\u00fcldeni\u00fck.
+jmx.connector.server.rest.notification.timeout.warning.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 tov\u00e1bbra is elfogad HTTP k\u00e9r\u00e9seket.
+
+jmx.connector.server.rest.notification.limit.warning=CWWKX0102W: A kiszolg\u00e1l\u00f3 el\u00e9rte a p\u00e1rhuzamosan futtathat\u00f3 \u00e9rtes\u00edt\u00e9si \u00fcgyfelek korl\u00e1tj\u00e1t.
+jmx.connector.server.rest.notification.limit.warning.explanation= Korl\u00e1tozott az egyidej\u0171leg futtathat\u00f3 \u00fcgyfelek sz\u00e1ma, amelyek feliratkozhatnak az \u00e9rtes\u00edt\u00e9sekre.
+jmx.connector.server.rest.notification.limit.warning.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e9rtes\u00edt\u00e9si \u00fcgyfelek hitelesek \u00e9s sz\u00fcks\u00e9g van azokra.  A kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1sa alaphelyzetbe \u00e1ll\u00edt minden \u00e9rtes\u00edt\u00e9si klienst.
+
+JMX_REST_ADDRESS=CWWKX0103I: A JMX REST kapcsolat fut \u00e9s a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1si URL c\u00edmen \u00e9rhet\u0151 el: {0}
+JMX_REST_ADDRESS.explanation=A JMX REST kapcsolat mostant\u00f3l a megadott szolg\u00e1ltat\u00e1si URL c\u00edmen el\u00e9rhet\u0151.
+JMX_REST_ADDRESS.useraction=Nincs teend\u0151. 
+
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR=CWWKX0104W: A(z) {0} azonos\u00edt\u00f3j\u00fa \u00e9rtes\u00edt\u00e9si \u00fcgyf\u00e9l el\u00e9rte p\u00e1rhuzamos MBean figyel\u0151 regisztr\u00e1ci\u00f3k korl\u00e1tj\u00e1t.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.explanation= Az \u00e9rtes\u00edt\u00e9si \u00fcgyf\u00e9l a megengedett maxim\u00e1lis sz\u00e1m\u00fa p\u00e1rhuzamos MBean figyel\u0151 regisztr\u00e1ci\u00f3val rendelkezik.
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az aktu\u00e1lis MBean figyel\u0151 regisztr\u00e1ci\u00f3k egyediek \u00e9s mindegyikre sz\u00fcks\u00e9g van.  T\u00e1vol\u00edtsa el a sz\u00fcks\u00e9gtelen MBean figyel\u0151 regisztr\u00e1ci\u00f3kat vagy hozzon l\u00e9tre \u00faj \u00e9rtes\u00edt\u00e9si \u00fcgyfelet.

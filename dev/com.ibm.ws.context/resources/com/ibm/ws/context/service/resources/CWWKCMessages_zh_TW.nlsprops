@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.context/resources/com/ibm/ws/context/service/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Context Propagation Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# CWWKC1000, CWWKC1001, CWWKC1002 have been moved to another file. Do not reuse them.
+
+CWWKC1003.not.serializable=CWWKC1003E: \u914d\u7f6e\u5143\u7d20 {0} \u5fc5\u9808\u6709\u552f\u4e00 ID \u6216 jndiName\uff0c\u624d\u80fd\u5e8f\u5217\u5316\u3002
+CWWKC1003.not.serializable.explanation=\u5982\u679c\u8981\u5e8f\u5217\u5316\uff0c\u74b0\u5883\u5b9a\u7fa9\u670d\u52d9\u5fc5\u9808\u6709 unique id \u5c6c\u6027\u6216 jndiName \u5c6c\u6027\u3002
+CWWKC1003.not.serializable.useraction=\u8acb\u5c07 id \u5c6c\u6027\u6216 jndiName \u5c6c\u6027\u65b0\u589e\u81f3\u74b0\u5883\u5b9a\u7fa9\u670d\u52d9\u914d\u7f6e\u3002
+
+CWWKC1004.context.provider.unavailable=CWWKC1004E: \u57f7\u884c\u7dd2\u74b0\u5883\u5b9a\u7fa9\u63d0\u4f9b\u8005 {0} \u7121\u6cd5\u4f7f\u7528\u3002
+CWWKC1004.context.provider.unavailable.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u627e\u4e0d\u5230\u6307\u5b9a\u985e\u578b\u4e4b\u57f7\u884c\u7dd2\u74b0\u5883\u5b9a\u7fa9\u7684\u63d0\u4f9b\u8005\u3002
+CWWKC1004.context.provider.unavailable.useraction=\u8acb\u78ba\u5b9a\u63d0\u4f9b\u6307\u5b9a\u985e\u578b\u4e4b\u57f7\u884c\u7dd2\u74b0\u5883\u5b9a\u7fa9\u7684\u7279\u6027\u5df2\u555f\u7528\u3002
+
+CWWKC1010.context.service.unavailable=CWWKC1010E: \u5728\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\uff0c\u627e\u4e0d\u5230\u552f\u4e00 ID \u6216 JNDI \u540d\u7a31\u70ba {0} \u7684\u914d\u7f6e\u5143\u7d20\u3002
+CWWKC1010.context.service.unavailable.explanation=\u5728\u914d\u7f6e\u4e2d\uff0c\u627e\u4e0d\u5230\u6307\u5b9a ID \u6216 jndiName \u7684\u74b0\u5883\u5b9a\u7fa9\u670d\u52d9\u3002
+CWWKC1010.context.service.unavailable.useraction=\u8acb\u78ba\u5b9a\u914d\u7f6e\u4e2d\u6709\u6307\u5b9a ID \u6216 jndiName \u7684\u74b0\u5883\u5b9a\u7fa9\u670d\u52d9\uff0c\u4e26\u4e14\u6709\u6548\u3002
+
+CWWKC1011.app.unavailable=CWWKC1011E: \u7121\u6cd5\u555f\u52d5\u4f5c\u696d {0}\uff0c\u56e0\u70ba\u63d0\u4ea4\u5b83\u7684\u61c9\u7528\u7a0b\u5f0f {1} \u7121\u6cd5\u4f7f\u7528\u3002
+CWWKC1011.app.unavailable.explanation=\u63d0\u4ea4\u4f5c\u696d\u7684\u61c9\u7528\u7a0b\u5f0f\u5fc5\u9808\u662f\u53ef\u7528\u7684\uff0c\u624d\u80fd\u555f\u52d5\u4f5c\u696d\u3002
+CWWKC1011.app.unavailable.useraction=\u8acb\u78ba\u5b9a\u61c9\u7528\u7a0b\u5f0f\u5df2\u555f\u52d5\uff0c\u7136\u5f8c\u91cd\u65b0\u63d0\u4ea4\u4f5c\u696d\u3002
+
+CWWKC1012.module.unavailable=CWWKC1012E: \u7121\u6cd5\u555f\u52d5\u4f5c\u696d {0}\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f {2} \u4e2d\u63d0\u4ea4\u5b83\u7684\u6a21\u7d44 {1} \u7121\u6cd5\u4f7f\u7528\u3002
+CWWKC1012.module.unavailable.explanation=\u63d0\u4ea4\u4f5c\u696d\u7684\u6a21\u7d44\u5fc5\u9808\u662f\u53ef\u7528\u7684\uff0c\u624d\u80fd\u555f\u52d5\u4f5c\u696d\u3002
+CWWKC1012.module.unavailable.useraction=\u8acb\u78ba\u5b9a\u6a21\u7d44\u5df2\u555f\u52d5\uff0c\u7136\u5f8c\u91cd\u65b0\u63d0\u4ea4\u4f5c\u696d\u3002
+
+CWWKC1013.component.unavailable=CWWKC1013E: \u7121\u6cd5\u555f\u52d5\u4f5c\u696d {0}\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f {3} \u7684\u6a21\u7d44 {2} \u4e2d\uff0c\u63d0\u4ea4\u5b83\u7684\u5143\u4ef6 {1} \u7121\u6cd5\u4f7f\u7528\u3002
+CWWKC1013.component.unavailable.explanation=\u63d0\u4ea4\u4f5c\u696d\u7684\u61c9\u7528\u7a0b\u5f0f\u5143\u4ef6\u5fc5\u9808\u662f\u53ef\u7528\u7684\uff0c\u624d\u80fd\u555f\u52d5\u4f5c\u696d\u3002
+CWWKC1013.component.unavailable.useraction=\u8acb\u78ba\u5b9a\u61c9\u7528\u7a0b\u5f0f\u5143\u4ef6\u5df2\u555f\u52d5\uff0c\u7136\u5f8c\u91cd\u65b0\u63d0\u4ea4\u4f5c\u696d\u3002
+
+# CWWKC1020 has been moved to another file. Do not reuse it.

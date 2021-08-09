@@ -1,0 +1,2192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="ejb-jar_ID" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <display-name>EJB3INJSX</display-name>
+      <enterprise-beans>
+         <session id="SLMsgDestinationTestBean">
+            <description>A description</description>
+          <ejb-name>SLMsgDestinationTestBean</ejb-name>
+            <resource-ref id="ResourceRef_1050954917288">
+               <description>A queue connection factory</description>
+               <res-ref-name>jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+      <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>
+                  jms/RequestQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+            </message-destination-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/ResponseQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+            </message-destination-ref>
+         </session>
+
+         <session id="SFMsgDestinationFldInjTestBean">
+          <ejb-name>SFMsgDestinationFldInjTestBean</ejb-name>
+            <resource-ref id="ResourceRef_1050954917291">
+               <res-ref-name>jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                 <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SFMsgDestinationFldInjTestBean</injection-target-class>
+                 <injection-target-name>queueConnectionFactory</injection-target-name>
+               </injection-target>
+            </resource-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/RequestQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                 <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SFMsgDestinationFldInjTestBean</injection-target-class>
+                 <injection-target-name>requestQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/ResponseQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                 <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SFMsgDestinationFldInjTestBean</injection-target-class>
+                 <injection-target-name>responseQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+         </session>
+
+         <session id="SFMsgDestinationTestBean">
+          <ejb-name>SFMsgDestinationTestBean</ejb-name>
+            <resource-ref id="ResourceRef_1050954917290">
+               <res-ref-name>jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+            </resource-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/RequestQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+            </message-destination-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/ResponseQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+            </message-destination-ref>
+         </session>
+
+         <session id="SLMsgDestinationMthdInjTestBean">
+          <ejb-name>SLMsgDestinationMthdInjTestBean</ejb-name>
+            <resource-ref id="ResourceRef_1050954917289">
+               <res-ref-name>jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                 <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SLMsgDestinationMthdInjTestBean</injection-target-class>
+                 <injection-target-name>queueConnectionFactory</injection-target-name>
+               </injection-target>
+            </resource-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/RequestQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                 <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SLMsgDestinationMthdInjTestBean</injection-target-class>
+                 <injection-target-name>requestQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+      <message-destination-ref>
+               <message-destination-ref-name>
+                  jms/ResponseQueue
+               </message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                 <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SLMsgDestinationMthdInjTestBean</injection-target-class>
+                 <injection-target-name>responseQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+         </session>
+
+         <session id="BasicSLEnvInjectObjFld">
+            <ejb-name>BasicSLEnvInjectObjFld</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_101">
+               <description>EJB3: keep the heading for test</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_102">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_103">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_104">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_105">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_106">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_107">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_108">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_109">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_101">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="BasicSLEnvInjectPrimFld">
+            <ejb-name>BasicSLEnvInjectPrimFld</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_202">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_203">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_204">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_205">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_206">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_207">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_208">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_209">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_201">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="BasicSLEnvInjectObjMthd">
+            <ejb-name>BasicSLEnvInjectObjMthd</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_301">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_302">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_303">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_304">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_305">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_306">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_307">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_308">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_309">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_301">
+                 <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>sessionContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="BasicSLEnvInjectPrimMthd">
+            <ejb-name>BasicSLEnvInjectPrimMthd</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_402">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_403">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_404">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_405">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_406">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_407">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_408">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_409">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_401">
+                 <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>sessionContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="CompSLEnvInjectObjFld">
+            <ejb-name>CompSLEnvInjectObjFld</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_501">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_502">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_503">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_504">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_505">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_506">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_507">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_508">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_509">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="CompSLEnvInjectPrimFld">
+            <ejb-name>CompSLEnvInjectPrimFld</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_602">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_603">
+                 <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_604">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_605">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_606">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_607">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_608">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_609">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="CompSLEnvInjectObjMthd">
+            <ejb-name>CompSLEnvInjectObjMthd</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_701">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_702">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_703">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_704">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_705">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_706">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_707">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_708">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_709">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="CompSLEnvInjectPrimMthd">
+            <ejb-name>CompSLEnvInjectPrimMthd</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_802">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_803">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_804">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_805">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_806">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_807">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_808">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_809">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSLEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="BasicSFEnvInjectObjFld">
+            <ejb-name>BasicSFEnvInjectObjFld</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_901">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_902">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_903">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_904">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_905">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_906">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_907">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_908">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_909">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_901">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean/ivContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="BasicSFEnvInjectPrimFld">
+            <ejb-name>BasicSFEnvInjectPrimFld</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1002">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1003">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1004">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1005">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1006">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1007">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1008">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1009">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_1001">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean/ivContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="BasicSFEnvInjectObjMthd">
+            <ejb-name>BasicSFEnvInjectObjMthd</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1101">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1102">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1103">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1104">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1105">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1106">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1107">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1108">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1109">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_1101">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean/sessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>sessionContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="BasicSFEnvInjectPrimMthd">
+            <ejb-name>BasicSFEnvInjectPrimMthd</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1202">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1203">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                 <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1204">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                 <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1205">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1206">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1207">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1208">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1209">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_1201">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean/sessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.BasicSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>sessionContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="CompSFEnvInjectObjFld">
+            <ejb-name>CompSFEnvInjectObjFld</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1301">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1302">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1303">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1304">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1305">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1306">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1307">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1308">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1309">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjFldBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="CompSFEnvInjectPrimFld">
+            <ejb-name>CompSFEnvInjectPrimFld</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1402">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1403">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1404">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1405">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1406">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1407">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1408">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1409">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimFldBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="CompSFEnvInjectObjMthd">
+            <ejb-name>CompSFEnvInjectObjMthd</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1501">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Hi Bob!</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1502">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivCharacter</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivCharacter</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1503">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivByte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivByte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1504">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivShort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivShort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1505">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivInteger</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivInteger</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1506">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivLong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivLong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1507">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivBoolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivBoolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1508">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivDouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivDouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1509">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean/ivFloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectObjMthdBean</injection-target-class>
+                  <injection-target-name>ivFloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="CompSFEnvInjectPrimMthd">
+            <ejb-name>CompSFEnvInjectPrimMthd</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote</remote>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1602">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivchar</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>T</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivchar</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1603">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivbyte</env-entry-name>
+               <env-entry-type>java.lang.Byte</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivbyte</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1604">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivshort</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>40</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivshort</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1605">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivint</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>91</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivint</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1606">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivlong</env-entry-name>
+               <env-entry-type>java.lang.Long</env-entry-type>
+               <env-entry-value>15</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivlong</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1607">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivboolean</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivboolean</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1608">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivdouble</env-entry-name>
+               <env-entry-type>java.lang.Double</env-entry-type>
+               <env-entry-value>12.257</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivdouble</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1609">
+               <description>Moved the injection target info to the proper location.</description>
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean/ivfloat</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>16.23</env-entry-value>
+                <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CompSFEnvInjectPrimMthdBean</injection-target-class>
+                  <injection-target-name>ivfloat</injection-target-name>
+               </injection-target>
+            </env-entry>
+         </session>
+         <session id="SuperSLEnvInject">
+            <ejb-name>SuperSLEnvInject</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSLEnvInjectBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1701">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSLEnvInjectBean/myNumber</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>8675309</env-entry-value>
+              <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSLEnvInjectBean</injection-target-class>
+                  <injection-target-name>myNumber</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1702">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1703">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field2</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field2</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1704">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field3</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>Y</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field3</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1705">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field4</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>1</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field4</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1706">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field5</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>55.55</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field5</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1707">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field6</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field6</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1708">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject/superSuperPrivateString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes I will!</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>superSuperPrivateString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_1709">
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSLEnvInjectBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+     </session>
+     <session id="SuperSFEnvInject">
+            <ejb-name>SuperSFEnvInject</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSFEnvInjectBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1801">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSFEnvInjectBean/myNumber</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>8675309</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSFEnvInjectBean</injection-target-class>
+                  <injection-target-name>myNumber</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1802">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1803">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field2</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field2</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1804">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field3</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>Y</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field3</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1805">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field4</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>1</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field4</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1806">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field5</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>55.55</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field5</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1807">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field6</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field6</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1808">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject/superSuperPrivateString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes I will!</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>superSuperPrivateString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_1809">
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSFEnvInjectBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+     </session>
+     <session id="SuperCompSLEnvInject">
+            <ejb-name>SuperCompSLEnvInject</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperEnvInjectionEJBRemoteHome</home>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperEnvInjectionEJBLocalHome</local-home>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSLEnvInjectBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_1901">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSLEnvInjectBean/myNumber</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>8675309</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSLEnvInjectBean</injection-target-class>
+                  <injection-target-name>myNumber</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1902">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1903">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field2</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field2</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1904">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field3</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>Y</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field3</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1905">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field4</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>1</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field4</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1906">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field5</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>55.55</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field5</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1907">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field6</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field6</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_1908">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject/superSuperPrivateString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes I will!</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>superSuperPrivateString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_1909">
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSLEnvInjectBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+     </session>
+     <session id="SuperCompSFEnvInject">
+            <ejb-name>SuperCompSFEnvInject</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperEnvInjectionEJBRemoteHome</home>
+            <local-home>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperEnvInjectionEJBLocalHome</local-home>
+            <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSFEnvInjectBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+            <env-entry id="EnvEntry_2001">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSFEnvInjectBean/myNumber</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>8675309</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSFEnvInjectBean</injection-target-class>
+                  <injection-target-name>myNumber</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2002">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field</env-entry-name>
+               <env-entry-type>java.lang.Boolean</env-entry-type>
+               <env-entry-value>true</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2003">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field2</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field2</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2004">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field3</env-entry-name>
+               <env-entry-type>java.lang.Character</env-entry-type>
+               <env-entry-value>Y</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field3</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2005">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field4</env-entry-name>
+               <env-entry-type>java.lang.Integer</env-entry-type>
+               <env-entry-value>1</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field4</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2006">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field5</env-entry-name>
+               <env-entry-type>java.lang.Float</env-entry-type>
+               <env-entry-value>55.55</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field5</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2007">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject/field6</env-entry-name>
+               <env-entry-type>java.lang.Short</env-entry-type>
+               <env-entry-value>5</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>field6</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <env-entry id="EnvEntry_2008">
+               <env-entry-name>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject/superSuperPrivateString</env-entry-name>
+               <env-entry-type>java.lang.String</env-entry-type>
+               <env-entry-value>Yes I will!</env-entry-value>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperOfSuperSuperEnvInject</injection-target-class>
+                  <injection-target-name>superSuperPrivateString</injection-target-name>
+               </injection-target>
+            </env-entry>
+            <resource-env-ref id="ResourceEnvRef_2009">
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.SuperCompSFEnvInjectBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+     </session>
+      <session>
+         <ejb-name>CatBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.Cat</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.CatBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+      </session>
+      <session>
+         <ejb-name>FieldTypeCompatibleInjectBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+         <ejb-local-ref>
+            <ejb-ref-name>Animal</ejb-ref-name>
+            <ejb-ref-type>Session</ejb-ref-type>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.Cat</local>
+            <ejb-link>CatBean</ejb-link>
+            <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</injection-target-class>
+               <injection-target-name>ivAnimal</injection-target-name>
+            </injection-target>
+         </ejb-local-ref>
+      </session>
+      <session>
+         <ejb-name>MethodSpecificTypeWithCompatibleInjectBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+         <ejb-local-ref>
+            <ejb-ref-name>Animal</ejb-ref-name>
+            <ejb-ref-type>Session</ejb-ref-type>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.Cat</local>
+            <ejb-link>CatBean</ejb-link>
+            <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</injection-target-class>
+               <injection-target-name>object</injection-target-name>
+            </injection-target>
+         </ejb-local-ref>
+      </session>
+      <session>
+         <ejb-name>MethodTypeCompatibleInjectBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+         <ejb-local-ref>
+            <ejb-ref-name>Animal</ejb-ref-name>
+            <ejb-ref-type>Session</ejb-ref-type>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.Cat</local>
+            <ejb-link>CatBean</ejb-link>
+            <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</injection-target-class>
+               <injection-target-name>animal</injection-target-name>
+            </injection-target>
+         </ejb-local-ref>
+      </session>
+      <session>
+         <ejb-name>MethodTypeAmbiguousInjectBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+         <ejb-local-ref>
+            <ejb-ref-name>Animal</ejb-ref-name>
+            <ejb-ref-type>Session</ejb-ref-type>
+            <local>com.ibm.ws.ejbcontainer.injection.xml.ejb.Cat</local>
+            <ejb-link>CatBean</ejb-link>
+            <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</injection-target-class>
+               <injection-target-name>cat</injection-target-name>
+            </injection-target>
+         </ejb-local-ref>
+      </session>
+      <session>
+         <ejb-name>MethodObjectTypeWithSpecificPrimitiveAndCompatibleInjectBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+         <env-entry>
+            <env-entry-name>Integer</env-entry-name>
+            <env-entry-type>java.lang.Integer</env-entry-type>
+            <env-entry-value>5566</env-entry-value>
+            <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</injection-target-class>
+               <injection-target-name>primitive</injection-target-name>
+            </injection-target>
+         </env-entry>
+      </session>
+      <session>
+         <ejb-name>MethodObjectTypeWithPrimitiveAndCompatibleInjectBean</ejb-name>
+         <business-local>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatible</business-local>
+         <ejb-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+         <env-entry>
+            <env-entry-name>Integer</env-entry-name>
+            <env-entry-type>java.lang.Integer</env-entry-type>
+            <env-entry-value>5566</env-entry-value>
+            <injection-target>
+               <injection-target-class>com.ibm.ws.ejbcontainer.injection.xml.ejb.TypeCompatibleBean</injection-target-class>
+               <injection-target-name>primitiveInt</injection-target-name>
+            </injection-target>
+         </env-entry>
+      </session>
+   </enterprise-beans>
+
+   <assembly-descriptor id="AssemblyDescriptor_1">
+      <!-- message-destination>
+         <description>Request Queue</description>
+         <display-name>Request Queue</display-name>
+         <message-destination-name>RequestQueue</message-destination-name>
+      </message-destination>
+      <message-destination>
+         <message-destination-name>ResponseQueue</message-destination-name>
+      </message-destination -->
+   </assembly-descriptor>
+</ejb-jar>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      >
+     
+    <h:body>
+    	<h1>JSF 2 internationalization example</h1>
+		<f:view transient="true">
+			<h:outputScript library="js" name="common.js" />
+				
+			<h:form>
+				<h3>
+					<h:outputText value="#{msg['welcome.jsf']}" />
+				</h3>
+				
+				<div id="flag"><h:graphicImage library="images" name="country_flag.jpg" /></div>
+				
+				<h:panelGrid columns="2">
+					Language : 
+					<h:selectOneMenu value="#{language.localeCode}" onchange="submit()"
+						valueChangeListener="#{language.countryLocaleCodeChanged}">
+	   					<f:selectItems value="#{language.countriesInMap}" /> 
+	   				</h:selectOneMenu>
+				</h:panelGrid>
+			</h:form>
+		</f:view>
+    </h:body>
+</html>

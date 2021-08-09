@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: Impossible de configurer la propri\u00e9t\u00e9 {0} sur le service {1} avec l''ID {2} et la valeur {3}.
+CWKKD0010.prop.error.explanation=Une propri\u00e9t\u00e9 configur\u00e9e n'est pas reconnue ou n'a pas pu \u00eatre configur\u00e9e en raison d'une erreur.
+CWKKD0010.prop.error.useraction=Corrigez ou supprimez la propri\u00e9t\u00e9 configur\u00e9e.
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: Le service {0} avec l''ID {1} est d\u00e9fini avec un nombre in\u00e9gal de noms d''h\u00f4te ({2}) et de ports ({3}).
+CWKKD0011.hosts.ports.mismatch.explanation=Les listes de noms d'h\u00f4te et de num\u00e9ros de port doivent avoir le m\u00eame nombre d'\u00e9l\u00e9ments. 
+CWKKD0011.hosts.ports.mismatch.useraction=Mettez \u00e0 jour la configuration du serveur de telle sorte que les \u00e9l\u00e9ments hostNames et ports contiennent le m\u00eame nombre d'\u00e9l\u00e9ments.
+
+CWKKD0012.authentication.error=CWKKD0012E: Le service {0} avec l''ID {1} ne peut pas \u00eatre authentifi\u00e9 aupr\u00e8s de la base de donn\u00e9es {2}.
+CWKKD0012.authentication.error.explanation=La base de donn\u00e9es a refus\u00e9 la tentative d'authentification.
+CWKKD0012.authentication.error.useraction=Mettez \u00e0 jour la configuration du serveur avec le nom d'utilisateur et le mot de passe corrects.
+
+CWKKD0013.unsupported.driver=CWKKD0013E: Le service {0} a d\u00e9tect\u00e9 une version non prise en charge du pilote MongoDB pour la librairie partag\u00e9e {1}. Le niveau minimal {2} \u00e9tait attendu mais le niveau {3} a \u00e9t\u00e9 trouv\u00e9.
+CWKKD0013.unsupported.driver.explanation=Le service MongoDB a \u00e9t\u00e9 fourni avec une biblioth\u00e8que de pilote non valide.
+CWKKD0013.unsupported.driver.useraction=Mettez \u00e0 jour la biblioth\u00e8que partag\u00e9e avec un niveau pris en charge.
+
+CWKKD0014.missing.driver=CWKKD0014E: Le service {0} n''a pas pu localiser les classes de pilote MongoDB requises pour la biblioth\u00e8que partag\u00e9e {1}.
+CWKKD0014.missing.driver.explanation=Le service MongoDB ne peut pas localiser les classes requises dans la biblioth\u00e8que partag\u00e9e configur\u00e9e.
+CWKKD0014.missing.driver.useraction=Mettez \u00e0 jour la biblioth\u00e8que partag\u00e9e avec le niveau pris en charge.
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: Le service {0} associ\u00e9 \u00e0 l''ID {1} tente d''utiliser SSL alors que la fonction ssl-1.0 n''est pas activ\u00e9e dans le fichier server.xml.
+CWKKD0015.ssl.feature.missing.explanation=La configuration SSL ne peut pas \u00eatre utilis\u00e9e si la fonction ssl-1.0 n'est pas activ\u00e9e.
+CWKKD0015.ssl.feature.missing.useraction=Ajoutez la fonction ssl-1.0 au fichier server.xml.
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: Le service {0} associ\u00e9 \u00e0 l''ID {1} a rencontr\u00e9 une version incompatible du pilote MongoDB dans la biblioth\u00e8que partag\u00e9e {2}. Pour SSL, le niveau minimal {3} est requis, mais le service a rencontr\u00e9 le niveau {4}.
+CWKKD0017.ssl.incompatible.driver.explanation=Le service MongoDB a \u00e9t\u00e9 fourni avec une biblioth\u00e8que de pilote non valide pour une utilisation avec SSL.
+CWKKD0017.ssl.incompatible.driver.useraction=Mettez \u00e0 jour la biblioth\u00e8que partag\u00e9e avec un niveau pris en charge.
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: Le service {0} associ\u00e9 \u00e0 l''ID {1} e rencontr\u00e9 une combinaison incompatible d''options d''authentification. useCertificateAuthentication est incompatible avec mention de l''utilisateur et du mot de passe.
+CWKKD0018.ssl.user.pswd.certificate.explanation=Des options d'authentification incompatibles ont \u00e9t\u00e9 fournies au service MongoDB pour une utilisation avec SSL.
+CWKKD0018.ssl.user.pswd.certificate.useraction=Mettez \u00e0 jour l'\u00e9l\u00e9ment mongo server.xml en sp\u00e9cifiant l'utilisateur et le mot de passe ou bien useCertificateAuthentication, mais non pas les deux.
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: Le service {0} associ\u00e9 \u00e0 l''ID {1} a \u00e9t\u00e9 configur\u00e9 pour authentification par certificat sans que SSL ne soit activ\u00e9.
+CWKKD0019.ssl.certificate.no.ssl.explanation=Le service MongoDB a \u00e9t\u00e9 configur\u00e9 pour authentification bas\u00e9e certificat sans SSL.
+CWKKD0019.ssl.certificate.no.ssl.useraction=Mettez \u00e0 jour l'\u00e9l\u00e9ment mongo dans le fichier server.xml en incluant sslEnabled=true, ou bien retirez l'instruction useCertificateAuthentication.
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: Le service {0} associ\u00e9 \u00e0 l''ID {1} a rencontr\u00e9 une exception lors de la lecture de la cl\u00e9 du client et du certificat depuis le magasin de cl\u00e9s indiqu\u00e9. Exception imbriqu\u00e9e : {2}
+CWKKD0020.ssl.get.certificate.user.explanation=Le service MongoDB a tent\u00e9 de lire la cl\u00e9 du client et le certificat depuis le magasin de cl\u00e9s, mais a rencontr\u00e9 un probl\u00e8me concernant le magasin de cl\u00e9s ou un certificat qu'il h\u00e9berge.  
+CWKKD0020.ssl.get.certificate.user.useraction=Pour plus d'informations, examinez l'exception imbriqu\u00e9e.
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: Le service {0} associ\u00e9 \u00e0 l''ID {1} a rencontr\u00e9 une version incompatible du pilote MongoDB dans la biblioth\u00e8que partag\u00e9e {2}. Dans le cas d''une authentification par certificat, le niveau minimal requis est {3}, mais le service e rencontr\u00e9 le niveau {4}.
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=Une biblioth\u00e8que de pilotes non valide a \u00e9t\u00e9 fournie au service MongoDB pour utilisation avec l'authentification par certificat.
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=Mettez \u00e0 jour la biblioth\u00e8que partag\u00e9e en ajoutant un niveau pris en charge.
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: La propri\u00e9t\u00e9 sslRef a \u00e9t\u00e9 d\u00e9finie pour le service {0} associ\u00e9 \u00e0 l''ID {1} dans le fichier server.xml, mais sslEnabled n''a pas \u00e9t\u00e9 d\u00e9fini sur ''true''.
+CWKKD0024.ssl.sslref.no.ssl.explanation=La stipulation sslRef sans que SSL soit activ\u00e9 n'est pas valide.
+CWKKD0024.ssl.sslref.no.ssl.useraction=Sp\u00e9cifiez sslEnabled=true ou retirez sslRef.
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: Le service {0} associ\u00e9 \u00e0 l''ID {1} n''est pas parvenu \u00e0 extraire la cl\u00e9 du client et le certificat depuis le magasin de cl\u00e9s. Il se peut que le magasin de cl\u00e9s ne contienne pas de cl\u00e9s ou qu''il en comporte plusieurs alors que clientKeyAlias n''a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9 sur l''\u00e9l\u00e9ment SSL.
+CWKKD0026.ssl.certificate.exception.explanation=Le magasin de cl\u00e9s r\u00e9f\u00e9renc\u00e9 doit contenir au moins une cl\u00e9 de client et une paire de certificats, et s'il en contient plusieurs, le param\u00e8tre clientKeyAlias doit \u00eatre utilis\u00e9 pour identifier lesquels utiliser.
+CWKKD0026.ssl.certificate.exception.useraction=Examinez le magasin de cl\u00e9s utilis\u00e9 avec l'outil de cl\u00e9s Java. Par exemple, "keytool -list  -keystore keystorename.jks" affiche les entr\u00e9es dans le magasin de cl\u00e9s et leurs alias. Sp\u00e9cifiez l'un de ces alias en utilisant clientKeyAlias sur l'\u00e9l\u00e9ment SSL.
+

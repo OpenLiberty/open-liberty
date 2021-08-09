@@ -1,0 +1,361 @@
+###############################################################################
+# Copyright (c) 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  10-22-01  ihodges               Creation
+#  10-24-01  irobins   113516      Added ERR_BEGIN_LTC_ACT
+#  27/02/02  gareth  LIDB1436.01.1 Use new RAS format
+#  14-03-02 amulholl    121351     Add message def ERR_DEPLOY
+#  25-04-02 beavenj    126204      Add message defs ERR_DEPLOY_...
+#  27-05-02 dmatthew   130828      Add message defs for cleanup failures
+#  23-08-02 irobins    143408      Use common messages
+#  17-06-03 ihodges    151542      New message ERR_BEGIN_GLOBAL_TX
+#  02-02-04 irobins    165735      Update explanation text
+#  01-06-04 dmatthew   207915      Change errors to warnings for unresolved
+#  26-02-07 awilkins   422999      Message review: updates to useraction and explanation
+#  11-02-08 mallam     496337      PII additions
+#  29-02-08 johawkes   501807      Style changes
+#-----------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/transaction.impl/src/com/ibm/ws/LocalTransaction/resources/LocalTransactionMessages.nlsprops
+#COMPONENTPREFIX WLTC
+#COMPONENTNAMEFOR WLTC WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#-----------------------------------------------------------------------
+ERR_INT_ERROR=WLTC0001E: O eroare intern\u0103 a ap\u0103rut \u00een metoda {0} din clasa {1}; urm\u0103rirea stivei de excep\u0163ii urmeaz\u0103: {2}.
+ERR_INT_ERROR.explanation=CMSG0001
+ERR_INT_ERROR.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: Nu poate \u00eencepe LocalTransactionContainment deoarece este activ\u0103 o Tranzac\u0163ie global\u0103.
+ERR_BEGIN_TX_GLB_ACT.explanation=A existat o \u00eencercare de pornire a unei tranzac\u0163ii locale \u00een timp ce o tranzac\u0163ie global\u0103 este activ\u0103, fapt ce nu este permis.
+ERR_BEGIN_TX_GLB_ACT.useraction=Asigura\u0163i-v\u0103 c\u0103 toate tranzac\u0163iile globale sunt complete \u00eenainte de a efectua activit\u0103\u0163i \u00eentr-o tranzac\u0163ie local\u0103.
+
+#-----------------------------------------------------------------------
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: Nu poate continua LocalTransactionContainment deoarece este activ\u0103 o Tranzac\u0163ie global\u0103.
+ERR_RESUME_TX_GLB_ACT.explanation=Containerul nu poate rezuma un LocalTransactionContainment deoarece o tranzac\u0163ie global\u0103 este activ\u0103 la momentul curent.
+ERR_RESUME_TX_GLB_ACT.useraction=Asigura\u0163i-v\u0103 c\u0103 toate tranzac\u0163iile globale sunt finalizate sau suspendate \u00eenainte ca un LocalTransactionContainment s\u0103 fie rezumat.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Nu poate \u00eenregistra o resurs\u0103 a unei tranzac\u0163ii locale deoarece o tranzac\u0163ie global\u0103 este activ\u0103.
+ERR_ENLIST_TX_GLB_ACT.explanation=O conexiune tranzac\u0163ie local\u0103 nu poate fi utilizat\u0103 deoarece o tranzac\u0163ie global\u0103 este activ\u0103 la momentul curent.
+ERR_ENLIST_TX_GLB_ACT.useraction=Asigura\u0163i-v\u0103 c\u0103 toate tranzac\u0163iile globale sunt finalizate \u00eenainte de a efectua activit\u0103\u0163i \u00eentr-o tranzac\u0163ie local\u0103.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: Nu poate \u00eenscrie resursa \u00een list\u0103. Valoarea control rezolu\u0163ie a tranzac\u0163iei locale este Application \u015fi astfel resursele pot fi \u00eenregistrate doar pentru cur\u0103\u0163are.
+ERR_ENLIST_TX_CLEANUP.explanation=Containerul a \u00eencercat s\u0103 \u00eenregistreze o resurs\u0103 atunci c\u00e2nd valoarea de control a rezolu\u0163iei nu este ContainerAtBoundary.
+ERR_ENLIST_TX_CLEANUP.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Nu poate \u00eenscrie resursa \u00een list\u0103. LocalTransactionContainment se finalizeaz\u0103 sau este finalizat.
+ERR_ENLIST_LTC_COMPLETE.explanation=LocalTransactionContainment nu este \u00eentr-o stare \u00een care o resurs\u0103 poate fi \u00eenregistrat\u0103.
+ERR_ENLIST_LTC_COMPLETE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Nu poate \u00eenregistra o resurs\u0103 pentru cur\u0103\u0163are deoarece o tranzac\u0163ie global\u0103 este activ\u0103.
+ERR_ENLIST_CLN_TX_GLB_ACT.explanation=O conexiune tranzac\u0163ie local\u0103 nu poate fi utilizat\u0103 deoarece o tranzac\u0163ie global\u0103 este activ\u0103 la momentul curent.
+ERR_ENLIST_CLN_TX_GLB_ACT.useraction=Asigura\u0163i-v\u0103 c\u0103 toate tranzac\u0163iile globale sunt finalizate \u00eenainte de a efectua activit\u0103\u0163i \u00eentr-o tranzac\u0163ie local\u0103.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Nu poate \u00eenscrie resursa \u00een list\u0103 pentru cur\u0103\u0163are. Valoarea control rezolu\u0163ie a tranzac\u0163iei locale este ContainerAtBoundary \u015fi astfel resursele nu pot fi \u00eenregistrate pentru cur\u0103\u0163are.
+ERR_ENLIST_CLN_TX_CLEANUP.explanation=Aplica\u0163ia ce utilizeaz\u0103 conexiunea tranzac\u0163iei locale este configurat\u0103 pentru ca containerul s\u0103 fie responsabil de pornirea \u015fi rezolvarea tranzac\u0163iilor locale dar aplica\u0163ia a pornit o tranzac\u0163ie local\u0103 ea \u00eens\u0103\u015fi.
+ERR_ENLIST_CLN_TX_CLEANUP.useraction=Aplica\u0163ia ar trebui s\u0103 urmeze modelul ob\u0163ine-utilizeaz\u0103 de folosire a conexiunii atunci c\u00e2nd utilizeaz\u0103 tranzac\u0163ii locale care sunt rezolvate de c\u0103tre container.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Nu poate \u00eenscrie resursa \u00een list\u0103 pentru cur\u0103\u0163are. LocalTransactionContainment se finalizeaz\u0103 sau este finalizat.
+ERR_ENLIST_CLN_LTC_COMPLETE.explanation=LocalTransactionContainment nu este \u00eentr-o stare \u00een care o resurs\u0103 poate fi \u00eenregistrat\u0103.
+ERR_ENLIST_CLN_LTC_COMPLETE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: Nu poate scoate din list\u0103 o resurs\u0103 deoarece o tranzac\u0163ie global\u0103 este activ\u0103.
+ERR_DELIST_TX_GLB_ACT.explanation=LocalTransactionContainment nu poate elimina dintre \u00eenregistr\u0103ri o resurs\u0103 deoarece o tranzac\u0163ie global\u0103 este activ\u0103 la momentul curent.
+ERR_DELIST_TX_GLB_ACT.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: Nu poate scoate resursa din list\u0103. Aceasta nu este \u00eenregistrat\u0103 pentru cur\u0103\u0163are \u00een LocalTransactionContainment.
+ERR_DELIST_NOT_ENLISTED.explanation=LocalTransactionContainment nu poate elimina dintre \u00eenregistr\u0103ri o resurs\u0103 care nu a fost \u00eenregistrat\u0103 pentru cur\u0103\u0163are.
+ERR_DELIST_NOT_ENLISTED.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: Nu poate scoate resursa din list\u0103. LocalTransactionContainment se finalizeaz\u0103 sau este finalizat.
+ERR_DELIST_LTC_COMPLETE.explanation=LocalTransactionContainment nu este \u00eentr-o stare \u00een care o resurs\u0103 poate fi eliminat\u0103 dintre \u00eenregistr\u0103ri.
+ERR_DELIST_LTC_COMPLETE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Nu poate \u00eenregistra o sincronizare deoarece o tranzac\u0163ie global\u0103 este activ\u0103.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=O Sincronizare nu poate fi \u00eenregistrat\u0103 cu LocalTransactionContainment deoarece o tranzac\u0163ie global\u0103 este activ\u0103 la momentul curent.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: Nu poate \u00eenscrie sincronizarea \u00een list\u0103. LocalTransactionContainment se finalizeaz\u0103 sau este finalizat.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=LocalTransactionContainment nu este \u00eentr-o stare \u00een care o Sincronizare poate fi \u00eenregistrat\u0103.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_START=WLTC0015E: Pornirea resursei {0} a e\u015fuat. Urm\u0103rirea din stiva de excep\u0163ii: {1}.
+ERR_XA_RESOURCE_START.explanation=Containerul nu a putut s\u0103 porneasc\u0103 tranzac\u0163ia local\u0103.
+ERR_XA_RESOURCE_START.useraction=Investiga\u0163i managerul de resurse.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: Finalizarea resursei {0} a e\u015fuat. Urm\u0103rirea din stiva de excep\u0163ii: {1}.
+ERR_XA_RESOURCE_COMPLETE.explanation=Containerul nu a putut s\u0103 finalizeze tranzac\u0163ia local\u0103.
+ERR_XA_RESOURCE_COMPLETE.useraction=Investiga\u0163i managerul de resurse.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Resursele au fost resetate datorit\u0103 apel\u0103rii setRollbackOnly().
+ERR_XA_RESOURCE_ROLLEDBACK.explanation=Resursele \u00eenregistrate cu LocalTransactionContainment (LTC) au fost derulate \u00eenapoi \u00een loc s\u0103 fie comise deoarece a fost apelat setRollbackOnly() asupra LTC.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Nici o ac\u0163iune necesar\u0103. Acest mesaj este doar \u00een scop informativ.
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_LTC_ACT=WLTC0018E: Nu poate \u00eencepe LocalTransactionContainment. Un LocalTransactionContainment este deja activ.
+ERR_BEGIN_LTC_ACT.explanation=Un LocalTransactionContainment era deja activ atunci c\u00e2nd a fost f\u0103cut\u0103 o \u00eencercare pentru pornirea unuia nou.
+ERR_BEGIN_LTC_ACT.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_STATE_RB_ONLY=WLTC0019E: Nu poate realiza opera\u0163ia. LocalTransactionContainment a fost marcat numai pentru derulare \u00eenapoi.
+ERR_STATE_RB_ONLY.explanation=LocalTransactionContainment sub care a fost realizat\u0103 opera\u0163ia e\u015fuat\u0103 a fost marcat doar pentru derulare \u00eenapoi de c\u0103tre container.
+ERR_STATE_RB_ONLY.useraction=Utiliza\u0163i urm\u0103rirea pentru a determina de ce a fost LocalTransactionContainment marcat doar pentru derulare \u00eenapoi.
+
+#-----------------------------------------------------------------------
+ERR_LTC_COMPLETE=WLTC0020E: Nu poate realiza opera\u0163ia. LocalTransactionContainment se finalizeaz\u0103 sau este finalizat.
+ERR_LTC_COMPLETE.explanation=LocalTransactionContainment sub care a fost realizat\u0103 opera\u0163ia e\u015fuat\u0103 se finalizeaz\u0103 sau a fost finalizat.
+ERR_LTC_COMPLETE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT=WLTC0021E: Starea finalizat\u0103 a resursei este inconsistent\u0103.
+ERR_NP_INCONSISTENT.explanation=LocalTransactionCoordinator \u00eenregistrat drept o ActivitySessionResource s-a finalizat cu rezultate inconsistente.
+ERR_NP_INCONSISTENT.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_ROLLEDBACK=WLTC0022E: Resursa a fost resetat\u0103 din cauza apel\u0103rii setRollbackOnly \u00een LTC
+ERR_NP_ROLLEDBACK.explanation=LocalTransactionCoordinator \u00eenregistrat drept o ActivitySessionResource a fost resetat deoarece a fost apelat setRollbackOnly asupra LocalTransactionContainment.
+ERR_NP_ROLLEDBACK.useraction=Nici o ac\u0163iune necesar\u0103. Acest mesaj este doar \u00een scop informativ.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL=WLTC0023E: Finalizarea resursei a e\u015fuat din cauza st\u0103rii ilegale.
+ERR_NP_ILLEGAL.explanation=LocalTransactionCoordinator \u00eenregistrat drept o ActivitySessionResource nu este \u00eentr-o stare valid\u0103 pentru terminare.
+ERR_NP_ILLEGAL.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_LOOKUP_ASM=WLTC0024E: Nu poate contacta serviciul ActivitySession. C\u0103utarea ActivitySessionManager a e\u015fuat.
+ERR_AS_LOOKUP_ASM.explanation=Obiectul ActivitySessionManager nu a putut fi g\u0103sit \u00een spa\u0163iul nume JNDI.
+ERR_AS_LOOKUP_ASM.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_ILLEGAL_STATE=WLTC0025E: Nu poate \u00eenscrie \u00een list\u0103 serviciul ActivitySession. ActivitySession este \u00eentr-o stare ilegal\u0103.
+ERR_AS_ILLEGAL_STATE.explanation=ActivitySession actual nu este \u00een starea corect\u0103 pentru ca LocalTransactionContainment s\u0103 fie \u00eenregistrat drept o resurs\u0103.
+ERR_AS_ILLEGAL_STATE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_UNEXPECTED=WLTC0026E: O eroare nea\u015fteptat\u0103 a ap\u0103rut \u00een timpul interac\u0163ion\u0103rii cu serviciul ActivitySession.
+ERR_AS_UNEXPECTED.explanation=A ap\u0103rut o eroare nea\u015fteptat\u0103 \u00een timpul \u00eencerc\u0103rii de a \u00eenregistra LocalTransactionContainment cu serviciul ActivitySession.
+ERR_AS_UNEXPECTED.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_CLEANUP=WLTC0027E: Nu exist\u0103 LocalTransactionCoordinator de cur\u0103\u0163at.
+ERR_NO_LTC_CLEANUP.explanation=Un LocalTransactionCoordinator nu este asociat cu firul de execu\u0163ie curent \u015fi astfel nu poate fi cur\u0103\u0163at.
+ERR_NO_LTC_CLEANUP.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_COMPLETE=WLTC0028E: Nu exist\u0103 LocalTransactionCoordinator de finalizat.
+ERR_NO_LTC_COMPLETE.explanation=Un LocalTransactionCoordinator nu este asociat cu firul de execu\u0163ie curent \u015fi astfel nu poate fi terminat.
+ERR_NO_LTC_COMPLETE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY=WLTC0029E: Instalarea aplica\u0163iei a e\u015fuat; componenta aplica\u0163iei {0} are extensii de descriptor de implementare WebSphere care nu sunt activate \u00een edi\u0163ia instalat\u0103 a WebSphere Application Server; utilizarea lor poate avea ca rezultat pierderea integrit\u0103\u0163ii datelor: ActivationPolicy este {1}; LocalTransactionBoundary este {2}.
+ERR_DEPLOY.explanation=Aplica\u0163ia identificat\u0103 \u00een mesaj a fost asamblat\u0103 cu extensii care nu sunt suportate \u00een edi\u0163ia instalat\u0103 a produsului. \
+Dac\u0103 produsul ar permite aplica\u0163iei s\u0103 ruleze \u00een lipsa suportului extensie a\u015fteptat, comportamentul s-ar putea modifica \u00eentr-un mod care ar afecta integritatea datelor; de exemplu, actualiz\u0103rile datelor de tranzac\u0163ie s-ar putea produce sub mai multe tranzac\u0163ii c\u00e2nd prezen\u0163a suportului extensie le-ar face s\u0103 apar\u0103 sub aceea\u015fi tranzac\u0163ie. \
+Prin urmare, nu este sigur s\u0103 fie instalat\u0103 aplica\u0163ia.
+ERR_DEPLOY.useraction=Examina\u0163i aplica\u0163ia a c\u0103rei instalare a e\u015fuat. \
+Dac\u0103 poate fi rulat\u0103 f\u0103r\u0103 suportul extensie, reasambla\u0163i aplica\u0163ia f\u0103r\u0103 a specifica extensiile. \
+Dac\u0103 aplica\u0163ia necesit\u0103 suportul extins, instala\u0163i-l doar pe servere de aplica\u0163ii care furnizeaz\u0103 acel suport.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_RESOLUTION=WLTC0030E: Instalarea aplica\u0163iei a e\u015fuat; bean-ul aplica\u0163iei {0} este configurat s\u0103 gestioneze propriile sale tranzac\u0163ii dar are o setare incompatibil\u0103 a controlului rezolu\u0163iei pentru tranzac\u0163ia local\u0103 a ContainerAtBoundary.
+ERR_DEPLOY_RESOLUTION.explanation=Bean-ul identificat \u00een mesaj a fost asamblat cu extensii care nu sunt suportate. Din acest motiv aplica\u0163ia nu a fost instalat\u0103.
+ERR_DEPLOY_RESOLUTION.useraction=Aplica\u0163ia a c\u0103rei instalare a e\u015fuat trebuie s\u0103 fie reasamblat\u0103 cu o configura\u0163ie alternativ\u0103 a bean-ului.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_FAILURE=WLTC0031E: Instalarea aplica\u0163iei a e\u015fuat; componenta aplica\u0163iei {0} nu a putut fi instalat\u0103.
+ERR_DEPLOY_FAILURE.explanation=Instalarea corect\u0103 aplica\u0163iei identificate \u00een mesaj a e\u015fuat \u015fi aplica\u0163ia nu este disponibil\u0103.
+ERR_DEPLOY_FAILURE.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Una sau mai multe resurse ale tranzac\u0163iei locale au fost repetate \u00een timpul cur\u0103\u0163\u0103rii unui LocalTransactionContainment.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=S-a terminat un LocalTransactionContainment cu resurse tranzac\u0163ie local\u0103 incomplete \u015fi a f\u0103cut ca resursele s\u0103 fie derulate \u00eenapoi.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Nici o ac\u0163iune necesar\u0103. Acest mesaj este doar \u00een scop informativ.
+
+#-----------------------------------------------------------------------
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: Resursa {0} s-a repetat \u00een cur\u0103\u0163area LocalTransactionContainment.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=Resursa tranzac\u0163ie local\u0103 a fost nerezolvat\u0103 la finalizarea LocalTransactionContainment \u015fi a fost derulat\u0103 \u00eenapoi.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Nici o ac\u0163iune necesar\u0103. Acest mesaj este doar \u00een scop informativ.
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: Starea finalizat\u0103 a LocalTransactionContainment este inconsistent\u0103 \u00een timpul cur\u0103\u0163\u0103rii.
+ERR_NP_INCONSISTENT_CLEANUP.explanation=LocalTransactionCoordinator care este \u00eenregistrat drept o ActivitySessionSynchronization s-a terminat \u00een timpul cur\u0103\u0163\u0103rii cu rezultate inconsistente.
+ERR_NP_INCONSISTENT_CLEANUP.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Un LocalTransactionContainment nerezolvat a fost resetat \u00een timpul cur\u0103\u0163\u0103rii.
+WRN_NP_ROLLEDBACK_CLEANUP.explanation=LocalTransactionCoordinator \u00eenregistrat drept o ActivitySessionSynchronization a fost resetat.
+WRN_NP_ROLLEDBACK_CLEANUP.useraction=Este posibil s\u0103 fi ap\u0103rut o eroare a aplica\u0163iei. Examina\u0163i orice mesaje \u00eenrudite pentru a determina cauza reset\u0103rii.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: Finalizarea uneia sau a mai multor resurse \u00eenregistrate \u00een LocalTransactionContainment a e\u015fuat \u00een timpul cur\u0103\u0163\u0103rii din cauza st\u0103rii ilegale.
+ERR_NP_ILLEGAL_CLEANUP.explanation=Un LocalTransactionCoordinator care este \u00eenregistrat drept o ActivitySessionSynchronization con\u0163ine una sau mai multe resurse care nu se afl\u0103 \u00eentr-o stare valid\u0103 pentru finalizare \u00een timpul cur\u0103\u0163\u0103rii.
+ERR_NP_ILLEGAL_CLEANUP.useraction=-CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: Nu poate porni o tranzac\u0163ie global\u0103. Un LocalTransactionContainment este deja activ cu lucru.
+ERR_BEGIN_GLOBAL_TX.explanation=Un LocalTransactionContainment era deja activ atunci c\u00e2nd a fost f\u0103cut\u0103 o \u00eencercare pentru pornirea unei tranzac\u0163ii globale.
+ERR_BEGIN_GLOBAL_TX.useraction=-CMSG0002
+

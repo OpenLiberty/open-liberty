@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.10,ou=attributeTypes,cn=dhcp,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 2.16.840.1.113719.1.203.4.10
+m-obsolete: FALSE
+m-description: the distinguished name(s) of the dhcpHost objects.
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-usage: USER_APPLICATIONS
+m-name: dhcpHostDN
+creatorsname: uid=admin,ou=system
+m-equality: distinguishedNameMatch

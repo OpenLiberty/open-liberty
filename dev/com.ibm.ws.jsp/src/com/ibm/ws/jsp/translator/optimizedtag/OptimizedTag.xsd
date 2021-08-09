@@ -1,0 +1,28 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ 
+ <xsd:annotation>
+  <xsd:documentation xml:lang="en">
+   Optimized Tag Configuration
+  </xsd:documentation>
+ </xsd:annotation>
+ 
+ <xsd:element name="optimized-tags">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element ref="optimized-tag" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+ 
+ <xsd:element name="optimized-tag" type="optimized-tagType"/>
+
+ <xsd:complexType name="optimized-tagType">
+  <xsd:sequence>
+   <xsd:element name="taglib-uri" type="xsd:string"/>
+   <xsd:element name="tlib-version" type="xsd:string"/>
+   <xsd:element name="short-name" type="xsd:string"/>
+   <xsd:element name="class-name" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ 
+</xsd:schema>

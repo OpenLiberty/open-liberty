@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: Laden des in clientInterceptors definierten gRPC-Interceptors nicht m\u00f6glich: {0}
+invalid.clientinterceptor.explanation=Ein in clientInterceptors definierter gRPC-Interceptor konnte nicht geladen werden.
+invalid.clientinterceptor.useraction=\u00dcberpr\u00fcfen Sie den konfigurierten Interceptornamen und den Anwendungsklassenpfad.
+
+invalid.keepalive.time=CWWKT0302E: keepAliveTime {0} f\u00fcr den gRPC-Client ist nicht g\u00fcltig. Werte m\u00fcssen gr\u00f6\u00dfer als 0 sein.
+invalid.keepalive.time.explanation=Der konfigurierte Wert f\u00fcr keepAliveTime ist nicht g\u00fcltig.
+invalid.keepalive.time.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: keepAliveTimeout {0} f\u00fcr den gRPC-Client ist nicht g\u00fcltig. Werte m\u00fcssen gr\u00f6\u00dfer als 0 sein.
+invalid.keepalive.timeout.explanation=Der konfigurierte Wert f\u00fcr keepAliveTimeout ist nicht g\u00fcltig.
+invalid.keepalive.timeout.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: maxInboundMessageSize {0} f\u00fcr den gRPC-Client ist nicht g\u00fcltig. Werte m\u00fcssen gr\u00f6\u00dfer als 0 sein.
+invalid.client.inbound.msg.size.explanation=Der konfigurierte Wert f\u00fcr maxInboundMessageSize ist nicht g\u00fcltig.
+invalid.client.inbound.msg.size.useraction=Konfigurieren Sie f\u00fcr maxInboundMessageSize einen g\u00fcltigen Wert.

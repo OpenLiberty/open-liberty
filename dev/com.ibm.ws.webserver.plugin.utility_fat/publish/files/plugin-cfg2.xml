@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><!--HTTP server plugin config file for defaultServer generated on 2016.04.28 at 10:50:33 IST-->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="./logs/defaultServer/http_plugin.log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="."/>
+<!-- Configuration generated using httpEndpointRef=defaultHttpEndpoint-->
+<!-- No Virtual Hosts were found, possibly because no applications are defined. 
+	 Verify that at least one application is defined in the server configuration. -->
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="defaultServer_default_node_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60">
+      <Server CloneID="212c1d6d-4cb4-4a4e-ba29-bf0f6ed56c08" ConnectTimeout="5" ExtendedHandshake="false" MaxConnections="-1" Name="default_node_defaultServer" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="was-sibus-dt.in.ibm.com" Port="8010" Protocol="http"/>
+         <Transport Hostname="was-sibus-dt.in.ibm.com" Port="8020" Protocol="https">
+            <Property Name="keyring" Value="keyring.kdb"/>
+            <Property Name="stashfile" Value="keyring.sth"/>
+            <Property Name="certLabel" Value="LibertyCert"/>
+         </Transport>
+      </Server>
+      <PrimaryServers>
+         <Server Name="default_node_defaultServer"/>
+      </PrimaryServers>
+   </ServerCluster>
+</Config>

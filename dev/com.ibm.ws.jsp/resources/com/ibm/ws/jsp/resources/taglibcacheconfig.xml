@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<taglib-cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.ibm.com/xml/ns/TagLibCacheConfig.xsd">
+	<implict-taglib>
+		<uri>http://websphere.ibm.com/tags/tsx</uri>
+		<prefix>tsx</prefix>
+		<location>/com/ibm/ws/jsp/tsx/tag/tsx.tld</location>
+	</implict-taglib>
+	<implict-taglib>
+		<uri>http://websphere.ibm.com/tags/jsx</uri>
+		<prefix>jsxFunction</prefix>
+		<location>/com/ibm/ws/jsp/jsx/tags/jsxFunction.tld</location>
+	</implict-taglib>
+	<global-taglib>
+		<jar-name>standard.jar</jar-name>
+		<tld-path path="META-INF/c.tld" uri="http://java.sun.com/jsp/jstl/core"/>
+		<tld-path path="META-INF/c-1_0.tld" uri="http://java.sun.com/jstl/core"/>
+		<tld-path path="META-INF/c-1_0-rt.tld" uri="http://java.sun.com/jstl/core_rt"/>
+		<tld-path path="META-INF/fmt.tld" uri="http://java.sun.com/jsp/jstl/fmt"/>
+		<tld-path path="META-INF/fmt-1_0.tld" uri="http://java.sun.com/jstl/fmt"/>
+		<tld-path path="META-INF/fmt-1_0-rt.tld" uri="http://java.sun.com/jstl/fmt_rt"/>
+		<tld-path path="META-INF/fn.tld" uri="http://java.sun.com/jsp/jstl/functions"/>
+		<tld-path path="META-INF/permittedTaglibs.tld" uri="http://jakarta.apache.org/taglibs/standard/permittedTaglibs"/>
+		<tld-path path="META-INF/scriptfree.tld" uri="http://jakarta.apache.org/taglibs/standard/scriptfree"/>
+		<tld-path path="META-INF/sql.tld" uri="http://java.sun.com/jsp/jstl/sql"/>
+		<tld-path path="META-INF/sql-1_0.tld" uri="http://java.sun.com/jstl/sql"/>
+		<tld-path path="META-INF/sql-1_0-rt.tld" uri="http://java.sun.com/jstl/sql_rt"/>
+		<tld-path path="META-INF/x.tld" uri="http://java.sun.com/jsp/jstl/xml"/>
+		<tld-path path="META-INF/x-1_0.tld" uri="http://java.sun.com/jstl/xml"/>
+		<tld-path path="META-INF/x-1_0-rt.tld" uri="http://java.sun.com/jstl/xml_rt"/>
+	</global-taglib>
+    <global-taglib>
+        <jar-name>ard.jar</jar-name>
+        <tld-path path="META-INF/ard.tld" uri="http://www.ibm.com/jsp/ard"/>
+    </global-taglib> 
+</taglib-cache-config>
+                

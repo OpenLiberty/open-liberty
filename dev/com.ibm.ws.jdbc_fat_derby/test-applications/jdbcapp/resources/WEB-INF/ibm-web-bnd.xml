@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+    
+  	<resource-ref name="jdbc/dsfat0ref" binding-name="jdbc/dsfat0">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+	
+	<resource-ref name="jdbc/dsfat1ref" binding-name="jdbc/dsfat1">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+  
+	<resource-ref name="jdbc/dsfat2ref" binding-name="jdbc/dsfat2">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+	
+	<resource-ref name="jdbc/dsfat5ref" binding-name="java:module/env/jdbc/dsfat5">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+	
+	<resource-ref name="jdbc/dsfat6ref" binding-name="java:module/env/jdbc/dsfat6">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+	
+	<resource-ref name="jdbc/dsfat7ref" binding-name="java:module/env/jdbc/dsfat7">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+</web-bnd>

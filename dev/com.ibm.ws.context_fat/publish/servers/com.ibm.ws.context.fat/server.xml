@@ -1,0 +1,19 @@
+<server>
+    <featureManager>
+        <feature>concurrent-2.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>contextinternals-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+    
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="createSecurityManager"/>
+    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+    <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="register,get"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+</server>

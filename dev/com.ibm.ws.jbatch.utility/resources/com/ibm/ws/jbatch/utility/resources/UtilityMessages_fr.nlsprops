@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0101 - 0150: com.ibm.ws.jbatch.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Erreur : {0}
+error.inputConsoleNotAvailable=La console d'entr\u00e9e n'est pas disponible.
+error.missingIO=Erreur, p\u00e9riph\u00e9rique d''entr\u00e9e-sortie manquant : {0}.
+
+usage=Syntaxe : {0}
+task.unknown=T\u00e2che inconnue : {0}
+for.task.usage=Pour la description de t\u00e2che et l''utilisation : {0} {1} {2}
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argument requis manquant : {0}.
+argument.unrecognized=Argument non reconnu : {0}.
+argument.unrecognized.expected=Argument non reconnu : {0}. Vouliez-vous dire : {1} ?.
+argument.invalid.value=Valeur inacceptable pour l''argument : {0}={1}. Valeurs acceptables : {2}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+job.submitted=CWWKY0101I: Le travail {0} avec l''ID d''instance {1} a \u00e9t\u00e9 soumis.
+job.submitted.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.submitted.useraction=Aucune action n'est requise.
+
+job.restarted=CWWKY0102I: Une demande de red\u00e9marrage a \u00e9t\u00e9 soumise pour le travail {0} avec l''ID d''instance {1}.
+job.restarted.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.restarted.useraction=Aucune action n'est requise.
+
+job.stopped=CWWKY0103I: Le travail {0} avec l''ID d''instance {1} est arr\u00eat\u00e9. Etat du lot : {2}. Etat de sortie : {3}
+job.stopped.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.stopped.useraction=Aucune action n'est requise.
+
+job.stop.submitted=CWWKY0104I: Une demande d''arr\u00eat a \u00e9t\u00e9 soumise pour le travail {0} avec l''ID d''instance {1}.
+job.stop.submitted.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.stop.submitted.useraction=Aucune action n'est requise.
+
+job.finished=CWWKY0105I: Le travail {0} avec l''ID d''instance {1} est termin\u00e9. Etat du lot : {2}. Etat de sortie : {3}
+job.finished.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.finished.useraction=Aucune action n'est requise.
+
+job.instance.record=CWWKY0106I: JobInstance:{0}
+job.instance.record.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.instance.record.useraction=Aucune action n'est requise.
+
+job.execution.record=CWWKY0107I: JobExecution:{0}
+job.execution.record.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.execution.record.useraction=Aucune action n'est requise.
+
+waiting.for.termination=CWWKY0108I: En attente de l''ach\u00e8vement de JobExecution :{0}
+waiting.for.termination.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+waiting.for.termination.useraction=Aucune action n'est requise.
+
+waiting.for.latest.job.execution=CWWKY0109I: En attente de la derni\u00e8re ex\u00e9cution du travail avec l''ID d''instance {0}
+waiting.for.latest.job.execution.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+waiting.for.latest.job.execution.useraction=Aucune action n'est requise.
+
+waiting.for.next.job.execution=CWWKY0110I: En attente de la prochaine ex\u00e9cution du travail apr\u00e8s JobExecution :{0}
+waiting.for.next.job.execution.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+waiting.for.next.job.execution.useraction=Aucune action n'est requise.
+
+joblog.to.file=CWWKY0111I: L''historique de travail a \u00e9t\u00e9 \u00e9crite dans le fichier {0}
+joblog.to.file.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+joblog.to.file.useraction=Aucune action n'est requise.
+
+failover.to.next.target=CWWKY0112I: Une demande pour le gestionnaire de lots \u00e0 {0} a \u00e9chou\u00e9. R\u00e9acheminement de la demande au gestionnaire de lots \u00e0 {1}. L''\u00e9chec \u00e9tait le suivant : {2}
+failover.to.next.target.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+failover.to.next.target.useraction=Aucune action n'est requise.
+
+joblog.location=CWWKY0113I: Le journal du travail pour le travail {0} avec l''ID d''instance {1} sera t\u00e9l\u00e9charg\u00e9 \u00e0 l''ach\u00e8vement du travail. \
+Entre-temps, vous pouvez consulter le journal du travail en suivant ces liens : {2}
+joblog.location.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+joblog.location.useraction=Aucune action n'est requise.
+
+joblog.download=CWWKY0114I: Le journal du travail pour le travail {0} avec l''ID d''instance {1} est en cours de t\u00e9l\u00e9chargement via {2}.
+joblog.download.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+joblog.download.useraction=Aucune action n'est requise.
+
+job.purged=CWWKY0115I: Le travail {0} avec l''ID d''instance {1} a \u00e9t\u00e9 purg\u00e9.
+job.purged.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.purged.useraction=Aucune action n'est requise.
+
+shutdown.hook=CWWKY0116I: L''utilitaire client a \u00e9t\u00e9 arr\u00eat\u00e9 lors de l''attente de la fin du travail {0} ID instance {1}.
+shutdown.hook.explanation=Ce message est \u00e9mis lorsque l'utilitaire de ligne de commande est arr\u00eat\u00e9 de force lors de l'attente de la fin d'un travail. \
+En r\u00e9ponse, l'utilitaire essaie d'arr\u00eater le travail en soumettant une demande d'arr\u00eat.
+shutdown.hook.useraction=Aucune action n'est requise.
+
+job.purged.multi=CWWKY0117I: La tentative de purge du travail avec l''ID instance {0} a renvoy\u00e9 l''\u00e9tat : {1}. Message : {2} RedirectUrl : {3}
+job.purged.multi.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.purged.multi.useraction=Aucune action n'est requise.
+
+job.parms.vals=CWWKY0118I: Ensemble final de param\u00e8tres de travail : {0}
+job.parms.vals.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+job.parms.vals.useraction=Aucune action n'est requise.
+
+control.props.vals=CWWKY0119I: Ensemble final de propri\u00e9t\u00e9s de contr\u00f4le : {0}
+control.props.vals.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+control.props.vals.useraction=Aucune action n'est requise.
+
+control.props.file.warning=CWWKY0120W: La propri\u00e9t\u00e9 {0} ne peut pas \u00eatre utilis\u00e9e dans un propri\u00e9t\u00e9 de contr\u00f4le et elle sera ignor\u00e9e. La propri\u00e9t\u00e9 {0} peut uniquement \u00eatre utilis\u00e9e en ligne de commande.
+control.props.file.warning.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+control.props.file.warning.useraction=Aucune action n'est requise.
+
+

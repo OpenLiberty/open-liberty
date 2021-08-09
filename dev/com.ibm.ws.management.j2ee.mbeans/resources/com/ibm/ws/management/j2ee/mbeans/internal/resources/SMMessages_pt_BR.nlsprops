@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: O produto n\u00e3o pode determinar o nome completo do dom\u00ednio do host. O nome do host ser\u00e1 padronizado para {0}. O erro era: {1}
+DETERMINE_HOST_ERROR.explanation=N\u00e3o \u00e9 poss\u00edvel determinar o endere\u00e7o IP ou o nome do host do servidor.
+DETERMINE_HOST_ERROR.useraction=Verifique a configura\u00e7\u00e3o de rede do servidor e reinicie o servidor com a op\u00e7\u00e3o --clean.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: O servi\u00e7o OSGi {0} n\u00e3o est\u00e1 dispon\u00edvel.  Tente reiniciar o servidor com a op\u00e7\u00e3o --clean.
+OSGI_SERVICE_ERROR.explanation=O servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel, o que causa esse erro de servidor interno.
+OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o --clean.

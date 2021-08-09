@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: O servi\u00e7o de criptografia de senha customizada foi iniciado. O nome de classe \u00e9 {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: O servi\u00e7o de criptografia de senha customizada foi interrompido. O nome de classe \u00e9 {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: Houve uma exce\u00e7\u00e3o inesperada durante a decriptografia de senha usando o servi\u00e7o de criptografia de senha customizado.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=Houve uma exce\u00e7\u00e3o inesperada ao processar a decriptografia usando o servi\u00e7o de criptografia de senha customizado.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=Verifique os logs de servi\u00e7o de criptografia de senha customizada e os logs do servidor para obter informa\u00e7\u00f5es adicionais sobre a causa da exce\u00e7\u00e3o.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: Houve uma exce\u00e7\u00e3o inesperada durante a criptografia de senha usando o servi\u00e7o de criptografia de senha customizado.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=Houve uma exce\u00e7\u00e3o inesperada ao processar a criptografia usando o servi\u00e7o de criptografia de senha customizado.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=Verifique os logs de servi\u00e7o de criptografia de senha customizada e os logs do servidor para obter informa\u00e7\u00f5es adicionais sobre a causa da exce\u00e7\u00e3o.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: O servi\u00e7o de senha customizada de terceiro n\u00e3o est\u00e1 dispon\u00edvel para processar a senha codificada customizada.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=A senha codificada customizada n\u00e3o pode ser processada porque o servi\u00e7o de senha customizada n\u00e3o est\u00e1 dispon\u00edvel.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=Certifique-se de que o recurso de usu\u00e1rio de senha customizada que implementa a interface com.ibm.wsspi.security.crypto.CustomPasswordEncryption esteja configurado e iniciado.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: A senha n\u00e3o foi processada porque o nome de algoritmo de senha {0} n\u00e3o \u00e9 suportado. Os tipos suportados s\u00e3o {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=A senha n\u00e3o foi criptografada ou decriptografada porque o nome de algoritmo de senha fornecido n\u00e3o \u00e9 suportado.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Certifique-se de que um dos algoritmos suportados seja usado.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: A senha n\u00e3o foi processada porque uma exce\u00e7\u00e3o de algoritmo de senha desconhecida foi relatada.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=O algoritmo especificado n\u00e3o \u00e9 suportado.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Verifique o log do servidor e, se a criptografia de senha customizada for usada, verifique os logs de criptografia de senha customizada para obter informa\u00e7\u00f5es adicionais.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: A senha n\u00e3o foi processada porque uma exce\u00e7\u00e3o de cifra de senha inv\u00e1lida foi relatada.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=A senha n\u00e3o foi criptografada ou decriptografada porque a exce\u00e7\u00e3o foi relatada ao processar a senha.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Verifique o log do servidor e, se a criptografia de senha customizada for usada, verifique os logs de criptografia de senha customizada para obter informa\u00e7\u00f5es adicionais.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: A senha n\u00e3o foi processada porque uma exce\u00e7\u00e3o de codifica\u00e7\u00e3o n\u00e3o suportada foi relatada.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=A senha n\u00e3o foi criptografada ou decriptografada porque a exce\u00e7\u00e3o foi relatada ao processar a senha.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Verifique o log do servidor e, se a criptografia de senha customizada for usada, verifique os logs de criptografia de senha customizada para obter informa\u00e7\u00f5es adicionais.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: A senha n\u00e3o foi decriptografada porque um erro de decodifica\u00e7\u00e3o foi relatado.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=A senha criptografada n\u00e3o foi codificada corretamente.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Certifique-se de que a senha criptografada n\u00e3o esteja truncada e codificada usando codifica\u00e7\u00e3o Base64.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Mais de uma implementa\u00e7\u00e3o CustomPasswordEncryption foi detectada. Somente uma implementa\u00e7\u00e3o CustomPasswordEncryption \u00e9 suportada. A lista de implementa\u00e7\u00e3o CustomPasswordEncryption detectada \u00e9 a seguinte:
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Foi relatado um erro ao processar o arquivo manifest de extens\u00e3o {0}. Esse arquivo foi ignorado.  A criptografia customizada n\u00e3o est\u00e1 dispon\u00edvel. A mensagem de erro \u00e9 {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=O cabe\u00e7alho necess\u00e1rio {0} n\u00e3o foi localizado no arquivo manifest de extens\u00e3o {1}. A criptografia customizada n\u00e3o est\u00e1 dispon\u00edvel.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=O arquivo manifest de recurso que corresponde ao arquivo manifest de extens\u00e3o {0} n\u00e3o foi localizado. A criptografia customizada n\u00e3o est\u00e1 dispon\u00edvel.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=A opera\u00e7\u00e3o de decriptografia n\u00e3o \u00e9 suportada pelo algoritmo hash. 

@@ -1,0 +1,11 @@
+<infinispan>
+  <jgroups>
+     <stack-file name="jgroups-udp" path="/default-configs/default-jgroups-udp.xml"/>
+  </jgroups>
+  
+  <cache-container>
+    <transport cluster="${infinispan.cluster.name}" stack="jgroups-udp"/>
+    <replicated-cache-configuration name="com.ibm.ws.session.attr.*"/>
+    <replicated-cache-configuration name="com.ibm.ws.session.meta.*"/>
+  </cache-container>
+</infinispan>

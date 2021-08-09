@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.rest.handler/resources/com/ibm/wsspi/rest/config/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Rest Handler
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   that do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1500 to CWWKO1529
+
+CWWKO1500_NOT_FOUND=CWWKO1500E: Aucune instance configur\u00e9e de l''\u00e9l\u00e9ment {0} n''a \u00e9t\u00e9 trouv\u00e9e dans la configuration du serveur.
+CWWKO1500_NOT_FOUND.explanation=L'\u00e9l\u00e9ment de configuration demand\u00e9 est introuvable dans le fichier server.xml.
+CWWKO1500_NOT_FOUND.useraction=V\u00e9rifiez que l'\u00e9l\u00e9ment de configuration existe dans le fichier server.xml et qu'il est correctement orthographi\u00e9 avec la casse appropri\u00e9e.
+
+CWWKO1501_INVALID_IDENTIFIER=CWWKO1501E: L''identificateur unique {0} n''est pas valide. L''identificateur unique correct peut \u00eatre : {1}.
+CWWKO1501_INVALID_IDENTIFIER.explanation=Aucun \u00e9l\u00e9ment configur\u00e9 avec l'identificateur unique demand\u00e9 n'a \u00e9t\u00e9 trouv\u00e9. Une instance avec un identificateur unique diff\u00e9rent a \u00e9t\u00e9 trouv\u00e9e et est signal\u00e9e au cas o\u00f9 il s'agirait de celle que vous recherchez.
+CWWKO1501_INVALID_IDENTIFIER.useraction=D\u00e9terminez l'identificateur unique correct. Pour les \u00e9l\u00e9ments de configuration de niveau sup\u00e9rieur avec un attribut ID sp\u00e9cifi\u00e9, l'identificateur unique est la valeur de l'attribut ID. Sinon, l'identificateur unique est g\u00e9n\u00e9r\u00e9 par le serveur.
+CWWKO1502_MULTIPLE_FOUND=CWWKO1502E: Un identificateur unique en conflit, {0}, a \u00e9t\u00e9 sp\u00e9cifi\u00e9 ou calcul\u00e9 pour plusieurs instances configur\u00e9es.
+CWWKO1502_MULTIPLE_FOUND.explanation=Un identificateur unique ne peut \u00eatre utilis\u00e9 qu'une seule fois.
+CWWKO1502_MULTIPLE_FOUND.useraction=Mettez \u00e0 jour la configuration du serveur pour ajouter ou modifier les attributs ID des instances configur\u00e9es de sorte que chaque identificateur unique ne soit utilis\u00e9 qu'une seule fois.

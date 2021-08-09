@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Hiba: {0}
+error.inputConsoleNotAvailable=A beviteli konzol nem \u00e9rhet\u0151 el.
+error.missingIO=Hiba, hi\u00e1nyz\u00f3 I/O eszk\u00f6z: {0}.
+
+usage=Haszn\u00e1lat:  {0}
+task.unknown=Ismeretlen feladat: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=T\u00fal sok param\u00e9ter.
+insufficientArgs=Nem elegend\u0151 param\u00e9ter.
+invalidArg=\u00c9rv\u00e9nytelen param\u00e9ter: {0}.
+missingArg=Hi\u00e1nyz\u00f3 param\u00e9ter: {0}.
+missingValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a(z) {0} param\u00e9ter eset\u00e9ben.
+missingArg2=A(z) {0} argumentumot vagy a(z) {1} argumentumot meg kell adni.
+exclusiveArg=A(z) {0} argumentumot vagy a(z) {1} argumentumot meg kell adni, de nem adhat\u00f3 meg mindkett\u0151.
+serverNotFound=A megadott {0} kiszolg\u00e1l\u00f3 nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}
+
+
+encode.enterText=Sz\u00f6veg be\u00edr\u00e1sa:
+encode.reenterText=Sz\u00f6veg \u00fajb\u00f3li be\u00edr\u00e1sa:
+encode.readError=Hiba a sz\u00f6veg olvas\u00e1sakor.
+encode.entriesDidNotMatch=A bejegyz\u00e9sek nem egyeznek.
+
+
+password.enterText=\u00cdrja be a jelsz\u00f3t:
+password.reenterText=Jelsz\u00f3 ism\u00e9telt be\u00edr\u00e1sa:
+password.readError=Hiba a jelsz\u00f3 olvas\u00e1sakor.
+password.entriesDidNotMatch=A jelszavak nem egyeznek.
+
+name=n\u00e9v
+days=nap
+
+sslCert.abort=Tan\u00fas\u00edtv\u00e1nyl\u00e9trehoz\u00e1s megszak\u00edt\u00e1sa:
+sslCert.createFailed=Nem lehet l\u00e9trehozni az alap\u00e9rtelmezett SSL tan\u00fas\u00edtv\u00e1nyt:\n\
+{0}
+sslCert.errorEncodePassword=Hiba a jelsz\u00f3 k\u00f3dol\u00e1sakor (a tan\u00fas\u00edtv\u00e1ny nem j\u00f6tt l\u00e9tre):\n\
+{0}
+sslCert.createKeyStore=Kulcst\u00e1rol\u00f3 l\u00e9trehoz\u00e1sa: {0}\n
+sslCert.oneType=A(z) {0} \u00e9s a(z) {1} argumentum nem adhat\u00f3 meg egyszerre.
+sslCert.clientNotFound=A megadott {0} \u00fcgyf\u00e9l nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3hoz: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\
+\n\
+Adja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a server.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 \u00fcgyf\u00e9lhez: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\
+\n\
+Adja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a client.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
+
+fileUtility.failedDirCreate=A(z) {0} k\u00f6nyvt\u00e1r l\u00e9trehoz\u00e1sa sikertelen volt
+file.exists=A(z) {0} kulcst\u00e1rol\u00f3 f\u00e1jl m\u00e1r l\u00e9tezik.  Nem hozhat\u00f3 l\u00e9tre kulcst\u00e1rol\u00f3 f\u00e1jl az adott helyen.
+file.requiredDirNotCreated=Nem lehetett l\u00e9trehozni a sz\u00fcks\u00e9ges k\u00f6nyvt\u00e1rszerkezetet a k\u00f6vetkez\u0151 sz\u00e1m\u00e1ra: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\tAz egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s is el\u00e9rhet\u0151.
+encode.option-desc.custom.feature=\n\
+\tA(z) {0} szolg\u00e1ltat\u00e1sneve a k\u00f6vetkez\u0151: \n\
+\t
+encode.option-desc.custom.description=\n\
+\tA(z) {0} le\u00edr\u00e1sa a k\u00f6vetkez\u0151: \n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=Az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s nem \u00e9szlelhet\u0151.
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=LTPA kulcsf\u00e1jl l\u00e9trehoz\u00e1s\u00e1nak megszak\u00edt\u00e1sa:
+createLTPAKeys.fileExists=A(z) {0} f\u00e1jl m\u00e1r l\u00e9tezik.  Nem hozhat\u00f3 l\u00e9tre LTPA kulcsf\u00e1jl az adott helyen.
+createLTPAKeys.createdFile=A l\u00e9trehozott LTPA kulcsf\u00e1jl: {0}\n\
+Vegye fel a  k\u00f6vetkez\u0151 be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlba: \n {1}\n

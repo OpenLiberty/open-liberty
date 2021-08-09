@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Include timpul scurs men\u0163in\u00e2nd mecanismul num\u0103rului de ordine \u015fi set\u00e2nd propriu-zis num\u0103rul de ordine pe obiecte
+
+cache_hits=Num\u0103rul de d\u0103\u0163i c\u00e2nd a fost g\u0103sit obiectul \u00een cache
+
+cache_misses=Num\u0103rul de g\u0103siri ale obiectului \u00een cache
+
+caching=Include timpul scurs ad\u0103ug\u00e2nd, c\u0103ut\u00e2nd \u015fi \u00eenl\u0103tur\u00e2nd obiecte din cache
+
+change_set_not_processed=Num\u0103rul de ObjectChangeSets aruncat pentru c\u0103 obiectul NU a fost g\u0103sit \u00een cache
+
+change_set_processed=Num\u0103rul de ObjectChangeSets g\u0103sit \u00een cache
+
+client_session_count=Num\u0103rul de ClientSession logate
+
+connect_call=Num\u0103rul total de apeluri de conectare f\u0103cute
+
+connection=Timpul scurs gestion\u00e2nd conexiuni inclusiv conectarea, reconectarea \u015fi deconectarea de la o surs\u0103 de date
+
+connection_in_used=Num\u0103rul de conexiuni \u00een uz per pool pentru orice ConnectionPool(Write, ExclusiveRead) exclusiv
+
+connection_ping=Timpul consumat la testarea conexiunii la baza de date pentru a determina dac\u0103 poate fi utilizat\u0103.
+
+database_execute=Timpul scurs \u00een apeluri la JDBC Statement, include timpul scurs \u00een apeluri la: close, executeUpdate \u015fi executeQuery
+
+deleted_object=Obiectul trebuie \u00eenl\u0103turat din identityMap din ObjectChangeSet
+
+descriptor_event=Timpul scurs la executarea DescriptorEvent
+
+disconnect_call=Num\u0103rul total de apeluri de deconectare f\u0103cute
+
+distributed_merge=Timpul scurs combin\u00e2nd modific\u0103ri de tranzac\u0163ii la distan\u0163\u0103 \u00een cache-ul partajat local. Apare c\u00e2nd se folose\u015fte sincronizarea cache
+
+jts_aftercompletion=Timpul scurs pe metoda JTS afterCompletion(Object status)
+
+jts_beforecompletion=Timpul scurs pe metoda JTS beforeCompletion()
+
+logging=Timpul scurs \u00eenregistr\u00e2nd activit\u0103\u0163i TopLink
+
+merge_time=Timpul scurs combin\u00e2nd modific\u0103ri \u00een cache-ul partajat.
+
+object_building=Timpul scurs construind obiecte persistente din linii de baz\u0103 de date
+
+optimistic_lock=Num\u0103rul de excep\u0163ii de blocare optimiste care au fost aruncate
+
+query=Timpul total petrecut pe opera\u0163ia: {0}
+
+query_misc=Timpul total petrecut pe opera\u0163ia: {0}.  Acesta este pentru opera\u0163ii speciale care nu sunt incluse \u00een niciun substantiv de interogare, cum ar fi scrierea batch-ului.
+
+query_prepareation=Timpul de preg\u0103tit interogarea
+
+rcm_message_received=Num\u0103rul de mesaje care au fost primite prin RCM
+
+rcm_message_sent=Num\u0103rul de mesaje care au fost trimise prin RCM
+
+rcm_status=Unul dintre [not configured, started, stopped]
+
+remote_change_set=Num\u0103rul de seturi de modific\u0103ri primite de la ma\u015fini de la distan\u0163\u0103 \u015fi procesate
+
+row_fetch=Timpul necesar pentru a construi obiecte Record (\u00cenregistrare) din jdbc ResultSet. Include apelurile SQL obi\u015fnuite \u015fi apeluri de proceduri stocate
+
+session_event=Timpul petrecut pe execu\u0163ia SessionEvent
+
+session_login_time=Timpul c\u00e2t a fost logat\u0103 sesiunea
+
+session_name=Numele sesiunii
+
+sql_generation=Timpul petrecut gener\u00e2nd SQL. \u00cen cazul expresiilor TopLink, timpul petrecut convertind Expresii \u00een SQL
+
+sql_prepare=Timpul petrecut la preg\u0103tirea JDBC a Instruc\u0163iunii. Include \u015fi timpul petrecut \u00een EIS cre\u00e2nd o Interac\u0163iune asociat\u0103 cu o conexiune \u015fi cre\u00e2nd obiecte Record (\u00cenregistrare) de intrare \u015fi ie\u015fire
+
+unitofwork_commit=M\u0103soar\u0103 procesul de comitere al UnitOfWork
+
+unitofwork_commits=Num\u0103rul de comiteri UnitOfWork
+
+unitofwork_count=Num\u0103rul total de obiecte UnitOfWork create
+
+unitofwork_register=Include timpul petrecut \u00een registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=Num\u0103rul de comiteri UnitOfWork care au fost derulate \u00eenapoi
+
+wrapping=Timpul petrecut \u00eenf\u0103\u015fur\u00e2nd ambele bean-uri CMP \u015fi BMP
+

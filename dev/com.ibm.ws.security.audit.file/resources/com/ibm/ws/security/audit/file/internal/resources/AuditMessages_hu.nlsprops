@@ -1,0 +1,65 @@
+#/*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.file/resources/com/ibm/ws/security/audit/file/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+UNABLE_TO_CREATE_RESOURCE_NOEX=CWWKS5800E: A rendszer nem tudta l\u00e9trehozni az \u00faj f\u00e1jlt: {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Egy alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00f6sszetev\u0151 egy kiv\u00e9tel miatt nem tudta v\u00e9grehajtani a m\u0171veletet egy sz\u00fcks\u00e9ges er\u0151forr\u00e1son.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jln\u00e9v egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9v. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1shoz rendelkezik \u00edr\u00e1si enged\u00e9llyel, \u00e9s a lemez nincs tele. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_CREATE_RESOURCE=CWWKS5801E: A rendszer a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem tudta l\u00e9trehozni a(z) {0} f\u00e1jlt: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=A megadott er\u0151forr\u00e1s megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult. A kiv\u00e9tel jelzi a hiba kiv\u00e1lt\u00f3 ok\u00e1t.
+UNABLE_TO_CREATE_RESOURCE.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt a kiv\u00e1lt\u00f3 ok meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jln\u00e9v egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9v. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1shoz rendelkezik \u00edr\u00e1si enged\u00e9llyel, \u00e9s a lemez nincs tele. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE_NOEX=CWWKS5802E: A rendszer nem tudta t\u00f6r\u00f6lni a(z) {0} f\u00e1jlt.
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Egy alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00f6sszetev\u0151 egy kiv\u00e9tel miatt nem tudta v\u00e9grehajtani a m\u0171veletet egy sz\u00fcks\u00e9ges er\u0151forr\u00e1son.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jln\u00e9v egy \u00e9rv\u00e9nyes f\u00e1jln\u00e9v. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1shoz rendelkezik \u00edr\u00e1si enged\u00e9llyel, \u00e9s a lemez nincs tele. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+UNABLE_TO_DELETE_RESOURCE=CWWKS5803E: A rendszer a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem tudta t\u00f6r\u00f6lni a(z) {0} f\u00e1jlt: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=A megadott er\u0151forr\u00e1s t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet meghi\u00fasult. A kiv\u00e9tel jelzi a hiba kiv\u00e1lt\u00f3 ok\u00e1t.
+UNABLE_TO_DELETE_RESOURCE.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt a kiv\u00e1lt\u00f3 ok meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1skiszolg\u00e1l\u00f3 futtat\u00f3k\u00f6rnyezete az er\u0151forr\u00e1s k\u00f6nyvt\u00e1r\u00e1ra vonatkoz\u00f3an rendelkezik \u00edr\u00e1si enged\u00e9llyel. Ha ez nem oldja fel a probl\u00e9m\u00e1t, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+AUDIT_FILEHANDLER_STARTING=CWWKS5804I: A fel\u00fclvizsg\u00e1lati f\u00e1jlkezel\u0151 szolg\u00e1ltat\u00e1s elindul.
+AUDIT_FILEHANDLER_STARTING.explanation=A fel\u00fclvizsg\u00e1lati f\u00e1jlkezel\u0151 szolg\u00e1ltat\u00e1s ind\u00edt\u00e1sa folyamatban van. Ez percekig is eltarthat, amennyiben egyszeri inicializ\u00e1l\u00e1s v\u00e9grehajt\u00e1s\u00e1ra van sz\u00fcks\u00e9g.
+AUDIT_FILEHANDLER_STARTING.useraction=Nincs teend\u0151. 
+
+AUDIT_FILEHANDLER_READY=CWWKS5805I: A fel\u00fclvizsg\u00e1lati f\u00e1jlkezel\u0151 szolg\u00e1ltat\u00e1s \u00fczemk\u00e9sz.
+AUDIT_FILEHANDLER_READY.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+AUDIT_FILEHANDLER_READY.useraction=Nincs teend\u0151. 
+
+AUDIT_FILEHANDLER_STOPPED=CWWKS5806I: A fel\u00fclvizsg\u00e1lati f\u00e1jlkezel\u0151 szolg\u00e1ltat\u00e1s le\u00e1llt.
+AUDIT_FILEHANDLER_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+AUDIT_FILEHANDLER_STOPPED.useraction=Nincs teend\u0151. 
+
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION=CWWKS5807E: A fel\u00fclvizsg\u00e1lat szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert a fel\u00fclvizsg\u00e1lat rekordok titkos\u00edt\u00e1s\u00e1t v\u00e9gz\u0151 fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3 helytelen. \u00c1ll\u00edtsa be a helyes kulcst\u00e1rol\u00f3 hivatkoz\u00e1st \u00e9s tan\u00fas\u00edtv\u00e1ny \u00e1lnevet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) {1} \u00e1ltal hivatkozott kulcst\u00e1rol\u00f3 l\u00e9tezik \u00e9s a tan\u00fas\u00edtv\u00e1ny {0} \u00e1lneve, amelyet a fel\u00fclvizsg\u00e1lat rekordok titkos\u00edt\u00e1s\u00e1hoz haszn\u00e1l, jelen van a kulcst\u00e1rol\u00f3ban. 
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.explanation=A fel\u00fclvizsg\u00e1lat szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert a fel\u00fclvizsg\u00e1lat rekordok titkos\u00edt\u00e1s\u00e1t v\u00e9gz\u0151 fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3ja hib\u00e1s. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt az el\u0151z\u0151 szolg\u00e1ltat\u00e1saktiv\u00e1l\u00e1si hiba\u00fczenetben. Adjon meg \u00e9rv\u00e9nyes kulcst\u00e1rol\u00f3 hivatkoz\u00e1st \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tan\u00fas\u00edtv\u00e1ny \u00e1ln\u00e9v olyan tan\u00fas\u00edtv\u00e1nyra hivatkozik, amely jelen van a kulcst\u00e1rol\u00f3ban.
+INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3 a fel\u00fclvizsg\u00e1lat rekordok titkos\u00edt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 hivatkoz\u00e1st \u00e9s tan\u00fas\u00edtv\u00e1ny \u00e1lnevet egyar\u00e1nt megadja. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcst\u00e1rol\u00f3 l\u00e9tezik, a jelsz\u00f3 helyesen van megadva, \u00e9s a kulcst\u00e1rol\u00f3 tartalmazza a tan\u00fas\u00edtv\u00e1nyt, amelyre a titkos\u00edt\u00e1si tan\u00fas\u00edtv\u00e1ny \u00e1lneve hivatkozik.
+
+INCORRECT_AUDIT_SIGNING_CONFIGURATION=CWWKS5808E: A fel\u00fclvizsg\u00e1lat szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert a fel\u00fclvizsg\u00e1lat rekordok al\u00e1\u00edr\u00e1s\u00e1t v\u00e9gz\u0151 fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3 helytelen. \u00c1ll\u00edtsa be a helyes kulcst\u00e1rol\u00f3 hivatkoz\u00e1st \u00e9s szem\u00e9lyes tan\u00fas\u00edtv\u00e1ny \u00e1lnevet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) {1} \u00e1ltal hivatkozott kulcst\u00e1rol\u00f3 l\u00e9tezik \u00e9s a szem\u00e9lyes tan\u00fas\u00edtv\u00e1ny {0} \u00e1lneve, amelyet a fel\u00fclvizsg\u00e1lat rekordok al\u00e1\u00edr\u00e1s\u00e1hoz haszn\u00e1l, jelen van a kulcst\u00e1rol\u00f3ban. 
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.explanation=A fel\u00fclvizsg\u00e1lat szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert a fel\u00fclvizsg\u00e1lat rekordok al\u00e1\u00edr\u00e1s\u00e1t v\u00e9gz\u0151 fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3ja hib\u00e1s. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt az el\u0151z\u0151 szolg\u00e1ltat\u00e1saktiv\u00e1l\u00e1si hiba\u00fczenetben. Adjon meg \u00e9rv\u00e9nyes kulcst\u00e1rol\u00f3 hivatkoz\u00e1st \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a szem\u00e9lyes tan\u00fas\u00edtv\u00e1ny \u00e1ln\u00e9v olyan szem\u00e9lyes tan\u00fas\u00edtv\u00e1nyra hivatkozik, amely jelen van a kulcst\u00e1rol\u00f3ban.
+INCORRECT_AUDIT_SIGNING_CONFIGURATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3 a fel\u00fclvizsg\u00e1lat rekordok al\u00e1\u00edr\u00e1s\u00e1hoz sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 hivatkoz\u00e1st \u00e9s szem\u00e9lyes tan\u00fas\u00edtv\u00e1ny \u00e1lnevet egyar\u00e1nt megadja. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcst\u00e1rol\u00f3 l\u00e9tezik, a jelsz\u00f3 helyesen van megadva, \u00e9s a kulcst\u00e1rol\u00f3 tartalmazza a szem\u00e9lyes tan\u00fas\u00edtv\u00e1nyt, amelyre az al\u00e1\u00edr\u00e1si tan\u00fas\u00edtv\u00e1ny \u00e1lneve hivatkozik.
+
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION=CWWKS5809E: A fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert hiba t\u00f6rt\u00e9nt, mik\u00f6zben a szolg\u00e1ltat\u00e1s inicializ\u00e1lta a fel\u00fclvizsg\u00e1lat rekordok titkos\u00edt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges fel\u00fclvizsg\u00e1latkezel\u0151t. A kiv\u00e9tel: {0}.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.explanation=A fel\u00fclvizsg\u00e1lat szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert hiba t\u00f6rt\u00e9nt a fel\u00fclvizsg\u00e1lat rekordok titkos\u00edt\u00e1s\u00e1hoz haszn\u00e1lt fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3 inicializ\u00e1l\u00e1sa k\u00f6zben. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt.
+FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION.useraction=A kiv\u00e9tel alapj\u00e1n pr\u00f3b\u00e1lja meg meg\u00e1llap\u00edtani a hiba ok\u00e1t.
+
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION=CWWKS5810E: A fel\u00fclvizsg\u00e1lati szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert hiba t\u00f6rt\u00e9nt, mik\u00f6zben a szolg\u00e1ltat\u00e1s inicializ\u00e1lta a fel\u00fclvizsg\u00e1lat rekordok al\u00e1\u00edr\u00e1s\u00e1hoz sz\u00fcks\u00e9ges fel\u00fclvizsg\u00e1latkezel\u0151t. A kiv\u00e9tel: {0}.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.explanation=A fel\u00fclvizsg\u00e1lat szolg\u00e1ltat\u00e1s nem ind\u00edthat\u00f3, mert hiba t\u00f6rt\u00e9nt a fel\u00fclvizsg\u00e1lat rekordok al\u00e1\u00edr\u00e1s\u00e1hoz haszn\u00e1lt fel\u00fclvizsg\u00e1latkezel\u0151 konfigur\u00e1ci\u00f3 inicializ\u00e1l\u00e1sa k\u00f6zben. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt.
+FAILURE_INITIALIZING_SIGNING_CONFIGURATION.useraction=A kiv\u00e9tel alapj\u00e1n pr\u00f3b\u00e1lja meg meg\u00e1llap\u00edtani a hiba ok\u00e1t.

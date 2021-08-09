@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+    <enterprise-beans>
+        <!--  Stateless Session Bean, Package Protection, No Inheritance -->
+        <session>
+            <ejb-name>JPAEjbInWarJavaCompEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.ejb.JPAEjbInWarJavaCompEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.ejb.JPAEjbInWarJavaCompEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+  
+        </session>
+    </enterprise-beans>
+</ejb-jar>

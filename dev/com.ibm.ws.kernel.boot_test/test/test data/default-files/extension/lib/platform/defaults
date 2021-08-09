@@ -1,0 +1,3 @@
+# These defaults are used by the test bucket only.
+WebSphere-DefaultKernel: kernelCoreTest-1.0
+WebSphere-DefaultLogProvider: defaultLoggingTest-1.0

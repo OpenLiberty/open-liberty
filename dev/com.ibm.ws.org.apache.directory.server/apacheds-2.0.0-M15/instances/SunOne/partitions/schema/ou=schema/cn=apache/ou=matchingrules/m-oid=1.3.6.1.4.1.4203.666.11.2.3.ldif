@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.4203.666.11.2.3,ou=matchingRules,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.4203.666.11.2.3
+m-obsolete: FALSE
+m-syntax: 1.3.6.1.4.1.4203.666.11.2.1
+objectclass: metaMatchingRule
+objectclass: metaTop
+objectclass: top
+m-name: csnOrderingMatch
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="4.0"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+  <display-name>TestAddJspFile</display-name>
+    
+  <servlet>
+     <servlet-name>webxmljsp</servlet-name>
+     <jsp-file>/webxml.jsp</jsp-file>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>webxmljsp</servlet-name>
+    <url-pattern>/webxmljsp</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+     <servlet-name>webxmlpartialone</servlet-name>
+   </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>webxmlpartialone</servlet-name>
+    <url-pattern>/webxmlpartialone</url-pattern>   
+  </servlet-mapping>  
+  
+  <servlet>
+     <servlet-name>webxmlpartialtwo</servlet-name>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>webxmlpartialtwo</servlet-name>
+    <url-pattern>/webxmlpartialtwo</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>webxmlpartialtwo</servlet-name>
+    <url-pattern>/webxmlpartialthree</url-pattern>
+  </servlet-mapping> 
+     
+</web-app>

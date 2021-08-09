@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SoftwareIdentity xml:lang="EN" name="Open Liberty" version="@VERSION@" 
+ versionScheme="multipartnumeric" 
+ tagId="swidgen-5cdcb1cc-6efe-bd10-177b-863e0f4f82fc_@VERSION@" 
+ xmlns="http://standards.iso.org/iso/19770/-2/2015/schema.xsd"> 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://standards.iso.org/iso/19770/-2/2015-current/schema.xsd schema.xsd" >
+  <Meta generator="SWID Tag Online Generator v0.1" /> 
+  <Entity name="openliberty.io" regid="openliberty.io" role="tagCreator" /> 
+</SoftwareIdentity>

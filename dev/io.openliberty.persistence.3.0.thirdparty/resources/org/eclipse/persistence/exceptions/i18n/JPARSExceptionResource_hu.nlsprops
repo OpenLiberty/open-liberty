@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Egy {0} t\u00edpus\u00fa, {1} azonos\u00edt\u00f3j\u00fa entit\u00e1s nem tal\u00e1lhat\u00f3 a(z) {2} perzisztencia egys\u00e9gben.
+
+61001=A hivatkoz\u00e1s \u00e1ltal azonos\u00edtott entit\u00e1s nem l\u00e9tezik, entit\u00e1st\u00edpus: {0}, azonos\u00edt\u00f3: {1}.
+
+61002=\u00c9rv\u00e9nytelen konfigur\u00e1ci\u00f3.
+
+61003=Egy {0} entit\u00e1st\u00edpus l\u00e9trehoz\u00e1sa a(z) {1} perzisztencia egys\u00e9gben folyamatban van PUT met\u00f3dussal, azonban az entit\u00e1s nem idempotens vagy szekvencia-el\u0151\u00e1ll\u00edt\u00e1s, vagy \u00e1tfed\u00e9s miatt.
+
+61004=A(z) {0} perzisztencia kontextus nem t\u00f6lthet\u0151 be.
+
+61005=Nem tal\u00e1lhat\u00f3 oszt\u00e1ly vagy oszt\u00e1lyle\u00edr\u00f3 a(z) {0} entit\u00e1st\u00edpushoz a(z) {1} perzisztencia egys\u00e9gben.
+
+61006=Nem tal\u00e1lhat\u00f3 megfelel\u0151 adatb\u00e1zis-lek\u00e9pez\u00e9s a(z) {1} entit\u00e1st\u00edpus \u00e9s {2} azonos\u00edt\u00f3 {0} attrib\u00fatum\u00e1hoz a(z) {3} perzisztencia egys\u00e9gben.
+
+61007=A(z) {1} entit\u00e1st\u00edpus \u00e9s {2} azonos\u00edt\u00f3 {0} attrib\u00fatuma nem tal\u00e1lhat\u00f3 a(z) {3} perzisztencia egys\u00e9gben.
+
+61008=A(z) {1} entit\u00e1st\u00edpus \u00e9s {2} azonos\u00edt\u00f3 {0} attrib\u00fatum\u00e1nak kiv\u00e1laszt\u00e1si lek\u00e9rdez\u00e9se nem tal\u00e1lhat\u00f3 a(z) {3} perzisztencia egys\u00e9gben.
+
+61009=\u00c9rv\u00e9nytelen param\u00e9ter(ek) a lapoz\u00e1si k\u00e9r\u00e9s URL c\u00edmben.
+
+61010=A(z) {1} entit\u00e1st\u00edpus \u00e9s {2} azonos\u00edt\u00f3 {0} attrib\u00fatuma a(z) {3} perzisztencia egys\u00e9gben nem friss\u00edthet\u0151.
+
+61011=\u00c9rv\u00e9nytelen param\u00e9terek a(z) {1} entit\u00e1st\u00edpus \u00e9s {2} azonos\u00edt\u00f3 {0} attrib\u00fatum\u00e1nak attrib\u00fatum elt\u00e1vol\u00edt\u00e1si k\u00e9r\u00e9s URL c\u00edm\u00e9ben a(z) {3} perzisztencia egys\u00e9gben.
+
+61012=A(z) {1} entit\u00e1st\u00edpus \u00e9s {2} azonos\u00edt\u00f3 {0} attrib\u00fatum\u00e1nak keres\u00e9si k\u00e9r\u00e9s\u00e9re a v\u00e1lasz a(z) {3} perzisztencia egys\u00e9gben nem \u00e9p\u00edthet\u0151 fel sikeresen.
+
+61013=Munkamenet-komponens kikeres\u00e9s {0} JNDI n\u00e9vvel meghi\u00fasult.
+
+61014=A(z) {0} lek\u00e9rdez\u00e9shez a megnevezett lek\u00e9rdez\u00e9si k\u00e9r\u00e9sre a(z) {1} perzisztencia egys\u00e9gben nem \u00e9p\u00edthet\u0151 fel v\u00e1lasz sikeresen.
+
+61015=\u00c9rv\u00e9nytelen {0} szolg\u00e1ltat\u00e1sv\u00e1ltozat a k\u00e9r\u00e9sben.
+
+61016=Oldalt\u00f6r\u00e9s lek\u00e9rdez\u00e9s param\u00e9ter (limit vagy offset) ker\u00fclt felhaszn\u00e1l\u00e1sra oldalakra nem t\u00f6rdelhet\u0151 er\u0151forr\u00e1s eset\u00e9ben.
+
+61017=Nem haszn\u00e1lhat\u00f3 egyidej\u0171leg a "fields" \u00e9s a "excludeFields" is egyazon k\u00e9r\u00e9sben.
+
+61018=\u00c9rv\u00e9nytelen param\u00e9ter\u00e9rt\u00e9k: ("{0}" = "{1}").
+
+61999={0} t\u00f6rt\u00e9nt.
+

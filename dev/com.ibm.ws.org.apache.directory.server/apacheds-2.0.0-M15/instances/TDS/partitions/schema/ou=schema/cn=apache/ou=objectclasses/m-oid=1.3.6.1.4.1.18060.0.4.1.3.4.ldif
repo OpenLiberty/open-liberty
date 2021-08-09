@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.4,ou=objectClasses,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.4
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: apacheFactoryConfiguration
+m-supobjectclass: top
+entryUUID: 41f66f33-46e1-4abe-ad77-a63fe784eca0
+m-must: cn
+m-must: apacheServicePid
+entryCSN: 20130919065344.822000Z#000000#000#000000
+entryParentId: 0c1ea7c4-619c-490e-8435-95ed67e50d7f
+createTimestamp: 20130919065354.017Z

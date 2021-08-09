@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<attachments 
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsp="http://www.w3.org/ns/ws-policy" 
+	xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06">
+	<wsp:PolicyAttachment namespace="http://tempuri.org/AreaService/">
+		<wsp:AppliesTo>
+			<!-- URI Service
+			<wsp:URI>http://server.test.ws.ibm.com/#wsdl11.service(HelloImplService)</wsp:URI>
+			 -->
+			
+			<!-- URI portTypeOperation --> 
+			<wsp:URI>http://service1.policyattachments.ws.ibm.com/#wsdl11.portTypeOperation(HelloService1/helloWithPolicy)</wsp:URI>
+
+			
+			<!-- URI bindingOperation --> 
+			<wsp:URI>http://service1.policyattachments.ws.ibm.com/#wsdl11.bindingOperation(HelloService1SoapBinding/helloWithYouWant)</wsp:URI>
+			 
+			<!-- EndpointReference
+			<wsa:EndpointReference>
+       			<wsa:Address>http://localhost:8091/wsatApp/HelloImplService</wsa:Address>
+     		</wsa:EndpointReference>
+     		-->
+		</wsp:AppliesTo>
+		<wsp:Policy wsu:Id="TransactedPolicy" >
+			<wsat:ATAssertion />
+		</wsp:Policy>
+	</wsp:PolicyAttachment>
+	<wsp:PolicyAttachment namespace="http://tempuri.org/AreaService/">
+		<wsp:AppliesTo>			
+			<!-- URI bindingOperation --> 
+			<wsp:URI>http://service1.policyattachments.ws.ibm.com/#wsdl11.bindingOperation(HelloService1SoapBinding/helloWithOptionalPolicy)</wsp:URI>
+			 
+			<!-- EndpointReference
+			<wsa:EndpointReference>
+       			<wsa:Address>http://localhost:8091/wsatApp/HelloImplService</wsa:Address>
+     		</wsa:EndpointReference>
+     		-->
+		</wsp:AppliesTo>
+		<wsp:Policy wsu:Id="TransactedPolicy2" >
+			<wsat:ATAssertion wsp:Optional="true" />
+		</wsp:Policy>
+	</wsp:PolicyAttachment>
+	<wsp:PolicyAttachment>
+		<wsp:AppliesTo>
+			<!-- URI Service
+			<wsp:URI>http://server.test.ws.ibm.com/#wsdl11.service(HelloImplService)</wsp:URI>
+			 -->
+			
+			<!-- URI portTypeOperation
+			<wsp:URI>http://service.policyattachments.ws.ibm.com/#wsdl11.portTypeOperation(HelloService1/helloWithPolicy)</wsp:URI>
+			 --> 	
+			
+			<!-- URI bindingOperation
+			<wsp:URI>http://server.test.ws.ibm.com/#wsdl11.bindingOperation(HelloService1SoapBinding/helloWithYouWant)</wsp:URI>
+			 --> 
+			 
+			<!-- EndpointReference -->
+			<wsa:EndpointReference>
+       			<wsa:Address>http://localhost:8091/policyAttachmentsService2/HelloService2</wsa:Address>
+     		</wsa:EndpointReference>
+
+		</wsp:AppliesTo>
+		<wsp:Policy wsu:Id="TransactedPolicy" >
+			<wsat:ATAssertion />
+		</wsp:Policy>
+	</wsp:PolicyAttachment>
+</attachments>

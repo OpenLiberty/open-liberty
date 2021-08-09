@@ -1,0 +1,135 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<samlWebSso20
+		id="sp1"
+		authFilterRef="myAuthFilter1"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata=""
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		nameIDFormat="unspecified"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/idp/shibboleth" />
+	</samlWebSso20>
+
+
+	<authFilter id="myAuthFilter1">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp1/"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp2"
+		authFilterRef="myAuthFilter2"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA256"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata=""
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		nameIDFormat="unspecified"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="https://witsend.austin.ibm.com:8020/sps/FooFoo/saml20" />
+	</samlWebSso20>
+
+	<authFilter id="myAuthFilter2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp2/"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="sp13"
+		authFilterRef="myAuthFilter13"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata=""
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+		nameIDFormat="unspecified"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/idp/shibboleth" />
+	</samlWebSso20>
+
+	<authFilter id="myAuthFilter13">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp13/"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="defaultSP"
+		authFilterRef="myAuthFilterDef"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata=""
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="Group"
+		loginPageURL="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"
+	>
+		<pkixTrustEngine
+			trustAnchor="serverStoreShibboleth"
+			trustedIssuers="https://witsend.austin.ibm.com:8020/sps/FooFoo/saml20" />
+	</samlWebSso20>
+
+	<authFilter id="myAuthFilterDef">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/defaultSP/"
+			matchType="contains" />
+	</authFilter>
+
+</server>    

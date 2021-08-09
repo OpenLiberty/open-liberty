@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.16.840.1.113730.3.1.34,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseExactMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: DISTRIBUTED_OPERATION
+m-oid: 2.16.840.1.113730.3.1.34
+m-name: ref
+m-description: namedref: subordinate referral URL
+m-obsolete: FALSE
+entryUUID: a749665c-d88d-4d44-81e4-641b2279c41d
+entryCSN: 20130919081859.229000Z#000000#000#000000
+entryParentId: 00d07a58-ce34-4e15-b277-c443ee6d991b
+createTimestamp: 20130919081908.723Z

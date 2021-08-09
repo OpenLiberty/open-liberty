@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Error: {0}
+error.inputConsoleNotAvailable=Input console is not available.
+error.missingIO=Error, missing I/O device: {0}.
+
+usage=Usage: {0}
+task.unknown=Unknown task: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+insufficientArgs=Insufficient arguments.
+invalidArg=Invalid argument {0}.
+missingArg=Missing argument {0}.
+missingArg2=Either the {0} argument or the {1} argument must be provided.
+exclusiveArg=The {0} argument or the {1} argument must be specified, but not both.
+missingValue=Missing value for argument {0}.
+
+thin.abort=Aborting application thin task:
+thin.appNotFound=Specified application could not be found at location {0}
+thin.appTargetIsDirectory=Specified application target is a directory {0}
+thin.libCacheIsFile=Specified library cache target is a file {0}
+thin.creating=Creating a thin application from: {0}
+thin.libraryCache=Library cache: {0}
+thin.applicationLoc=Thin application: {0}
+
+file.requiredDirNotCreated=Could not create required directory structure for {0}
+file.failedDirCreate=Failed to create directory {0}
+
+

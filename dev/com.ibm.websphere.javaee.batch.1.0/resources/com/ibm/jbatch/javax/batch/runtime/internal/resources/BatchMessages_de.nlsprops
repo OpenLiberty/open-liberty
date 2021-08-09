@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME javax.batch-1.0/resources/com/ibm/jbatch/javax/batch/runtime/internal/resources/BatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0350 - 0399: javax.batch
+# 
+
+batch.container.unavailable=CWWKY0350E: Der Stapelcontainer ist nicht aktiviert. Stellen Sie sicher, dass die Stapelpersistenz mit dem Konfigurationselement {0} konfiguriert wurde.
+batch.container.unavailable.explanation=Der Versuch, auf den Stapelcontainer zuzugreifen, ist fehlgeschlagen, weil der Stapelcontainer nicht aktiviert ist. Gew\u00f6hnlich ist dies darauf zur\u00fcckzuf\u00fchren, dass die Konfiguration fehlt. 
+batch.container.unavailable.useraction=Stellen Sie sicher, dass die Stapelpersistenz konfiguriert wurde.
+ 
+
+ 

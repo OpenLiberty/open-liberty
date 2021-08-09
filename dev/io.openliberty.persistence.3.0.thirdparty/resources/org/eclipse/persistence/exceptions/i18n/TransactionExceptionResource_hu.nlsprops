@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Hiba t\u00f6rt\u00e9nt a(z) [{0}] JNDI n\u00e9v alatt l\u00e9v\u0151 k\u00fcls\u0151 tranzakci\u00f3 er\u0151forr\u00e1s kikeres\u00e9sekor
+
+23002=Hiba t\u00f6rt\u00e9nt az aktu\u00e1lis k\u00fcls\u0151leg kezelt tranzakci\u00f3 \u00e1llapot\u00e1nak beszerz\u00e9sekor
+
+23003=Hiba t\u00f6rt\u00e9nt az aktu\u00e1lis k\u00fcls\u0151leg kezelt tranzakci\u00f3 beszerz\u00e9sekor
+
+23004=Hiba t\u00f6rt\u00e9nt a tranzakci\u00f3kezel\u0151 beszerz\u00e9sekor
+
+23005=Hiba a k\u00fcls\u0151leg kezelt tranzakci\u00f3hoz val\u00f3 k\u00f6t\u00e9s l\u00e9trehoz\u00e1sakor
+
+23006=Hiba az \u00faj k\u00fcls\u0151leg kezelt tranzakci\u00f3 kezd\u00e9sekor
+
+23007=Hiba t\u00f6rt\u00e9nt a k\u00fcls\u0151leg kezelt tranzakci\u00f3 v\u00e9gleges\u00edt\u00e9sekor
+
+23008=Hiba t\u00f6rt\u00e9nt a k\u00fcls\u0151leg kezelt tranzakci\u00f3 visszag\u00f6rget\u00e9sekor
+
+23009=Hiba a k\u00fcls\u0151leg kezelt tranzakci\u00f3 visszag\u00f6rget\u00e9sre val\u00f3 megjel\u00f6l\u00e9sekor
+
+23010=Jelenleg egyetlen k\u00fcls\u0151leg kezelt tranzakci\u00f3 sem akt\u00edv ehhez a sz\u00e1lhoz
+
+23011=A(z) [{0}] UnitOfWork inakt\u00edvan lett el\u0151\u00e1ll\u00edtva, miel\u0151tt a t\u00e1rs\u00edtott k\u00fcls\u0151leg kezelt tranzakci\u00f3 befejez\u0151d\u00f6tt.
+
+23012=Jelenleg egyetlen tranzakci\u00f3 sem akt\u00edv
+
+23013=A tranzakci\u00f3 jelenleg akt\u00edv
+
+23014=Nem haszn\u00e1lhat\u00f3 egy EntityTransaction a JTA haszn\u00e1latakor.
+
+23015=Nem sorolhat\u00f3 fel t\u00f6bb adatforr\u00e1s a tranzakci\u00f3ban.
+
+23016=Kiv\u00e9tel t\u00f6rt\u00e9nt a proxy v\u00e9grehajt\u00e1s\u00e1ban.
+

@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.wab/resources/com/ibm/ws/app/manager/wab/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKZ0201 to CWWKZ0300
+
+bundle.tracker.init.fail=CWWKZ0201E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania instalatora pakunku WAB.
+bundle.tracker.init.fail.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 instalatora pakunku aplikacji WWW (Web Application Bundle - WAB), dlatego pakunki WAB nie zosta\u0142y zainstalowane.
+bundle.tracker.init.fail.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail=CWWKZ0202E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW.
+wab.install.fail.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW.
+wab.install.fail.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail.adapt=CWWKZ0203E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW.
+wab.install.fail.adapt.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW.
+wab.install.fail.adapt.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail.overlay=CWWKZ0204E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW.
+wab.install.fail.overlay.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW.
+wab.install.fail.overlay.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail.cache=CWWKZ0205E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW.
+wab.install.fail.cache.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW.
+wab.install.fail.cache.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail.container=CWWKZ0206E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW.
+wab.install.fail.container.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW.
+wab.install.fail.container.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail.wiring=CWWKZ0207E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW.
+wab.install.fail.wiring.explanation=Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW.
+wab.install.fail.wiring.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 pliki FFDC i pliki dziennika.
+
+wab.install.fail.clash=CWWKZ0208E: Nie mo\u017cna zainstalowa\u0107 pakunku {0} z kontekstowym katalogiem g\u0142\u00f3wnym {1} w kontenerze WWW, poniewa\u017c ma on taki sam kontekstowy katalog g\u0142\u00f3wny co nast\u0119puj\u0105ce pakunki: {2}
+wab.install.fail.clash.explanation=Kontekstowy katalog g\u0142\u00f3wny ka\u017cdego pakunku aplikacji WWW (Web Application Bundle - WAB) w kontenerze WWW musi by\u0107 unikalny. Serwer nie m\u00f3g\u0142 zainicjowa\u0107 pakunku WAB w kontenerze WWW, poniewa\u017c jego kontekstowy katalog g\u0142\u00f3wny jest taki sam co innego wdro\u017conego pakunku.
+wab.install.fail.clash.useraction=U\u017cyj innego kontekstowego katalogu g\u0142\u00f3wnego.

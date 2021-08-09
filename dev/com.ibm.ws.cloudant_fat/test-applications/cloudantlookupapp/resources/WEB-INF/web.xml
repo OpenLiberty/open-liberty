@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+
+  <!-- Only valid when the test case adds config or modifies jndiName to cloudant/dbLoadFromApp -->
+  <resource-ref>
+    <res-ref-name>java:app/env/cloudant/dbLoadFromApp</res-ref-name>
+    <res-type>com.cloudant.client.api.Database</res-type>
+    <lookup-name>cloudant/dbLoadFromApp</lookup-name>
+  </resource-ref>
+
+</web-app>

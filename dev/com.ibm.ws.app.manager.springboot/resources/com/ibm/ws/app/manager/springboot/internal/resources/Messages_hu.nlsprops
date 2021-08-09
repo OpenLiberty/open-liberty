@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Nem siker\u00fclt \u00e1talak\u00edtani a(z) {0} alkalmaz\u00e1st egy v\u00e9kony alkalmaz\u00e1sra a(z) {1} kiv\u00e9tel miatt.
+warning.could.not.thin.application.explanation=Az alkalmaz\u00e1s nem alak\u00edthat\u00f3 \u00e1t v\u00e9kony alkalmaz\u00e1ss\u00e1. Az alkalmaz\u00e1s tov\u00e1bbra is az eredeti JAR arch\u00edvumb\u00f3l fog futni. 
+warning.could.not.thin.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani a kiv\u00e9tel \u00fczenet\u00e9ben jelzett probl\u00e9m\u00e1t, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st. 
+
+error.need.springboot.version.15=CWWKC0252E: Az alkalmaz\u00e1s nem tudott elindulni, mert a springBoot-2.0 szolg\u00e1ltat\u00e1s van be\u00e1ll\u00edtva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s a Springboot-1.5 szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t ig\u00e9nyli.
+error.need.springboot.version.15.explanation=Az alkalmaz\u00e1s a Springboot-1.5 szolg\u00e1ltat\u00e1st ig\u00e9nyli. Ellen\u0151rizze a Spring Boot szolg\u00e1ltat\u00e1s aktu\u00e1lisan be\u00e1ll\u00edtott v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.  
+error.need.springboot.version.15.useraction=\u00c1ll\u00edtsa be a springBoot-1.5 szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban. T\u00e1vol\u00edtson el minden m\u00e1s Spring Boot szolg\u00e1ltat\u00e1st.
+
+error.need.springboot.version.20=CWWKC0253E: Az alkalmaz\u00e1s nem tudott elindulni, mert a springBoot-1.5 szolg\u00e1ltat\u00e1s van be\u00e1ll\u00edtva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s a Springboot-2.0 szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t ig\u00e9nyli.
+error.need.springboot.version.20.explanation=Az alkalmaz\u00e1s a Springboot-2.0 szolg\u00e1ltat\u00e1st ig\u00e9nyli. Ellen\u0151rizze a Spring Boot szolg\u00e1ltat\u00e1s aktu\u00e1lisan be\u00e1ll\u00edtott v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.  
+error.need.springboot.version.20.useraction=\u00c1ll\u00edtsa be a springBoot-2.0 szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban. T\u00e1vol\u00edtson el minden m\u00e1s Spring Boot szolg\u00e1ltat\u00e1st.
+
+error.missing.servlet=CWWKC0254E: Az alkalmaz\u00e1s nem tudott elindulni, mert egy szervlet szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban.
+error.missing.servlet.explanation=Az alkalmaz\u00e1s egy webalkalmaz\u00e1s, \u00e9s megk\u00f6veteli egy szervlet szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t a server.xml f\u00e1jlban.
+error.missing.servlet.useraction=\u00c1ll\u00edtson be egy szervlet szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban.
+
+error.multiple.applications.not.allowed=CWWKC0255E: A Spring Boot alkalmaz\u00e1s ({0}) nem ind\u00edthat\u00f3 el, mert a(z) {1} alkalmaz\u00e1s m\u00e1r akt\u00edv. Nem \u00e1ll\u00edthat be t\u00f6bb Spring Boot alkalmaz\u00e1st ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+error.multiple.applications.not.allowed.explanation=T\u00f6bb Spring Boot alkalmaz\u00e1s be\u00e1ll\u00edt\u00e1sa ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nem t\u00e1mogatott.
+error.multiple.applications.not.allowed.useraction=Kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3nk\u00e9nt csak egy Spring Boot alkalmaz\u00e1st \u00e1ll\u00edtson be.
+
+error.no.manifest.found=CWWKC0256E: Nem tal\u00e1lhat\u00f3 META-INF/MANIFEST.MF f\u00e1jl a(z) {0} Spring Boot alkalmaz\u00e1shoz.
+error.no.manifest.found.explanation=A Spring Boot alkalmaz\u00e1snak tartalmaznia kell egy META-INF/MANIFEST.MF f\u00e1jlt.
+error.no.manifest.found.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes Spring Boot alkalmaz\u00e1st, amely tartalmaz META-INF/MANIFEST.MF f\u00e1jlt a kiszolg\u00e1l\u00f3val egy\u00fctt.
+
+error.no.spring.class.found=CWWKC0257E: A Spring Boot alkalmaz\u00e1s META-INF/MANIFEST.MF f\u00e1jlj\u00e1nak meg kell hat\u00e1roznia egy Start-Class fejl\u00e9cet.
+error.no.spring.class.found.explanation=A Spring Boot alkalmaz\u00e1soknak tartalmazniuk kell egy, a Sart-Class le\u00edr\u00f3 fejl\u00e9cben meghat\u00e1rozott f\u0151 oszt\u00e1lyt.
+error.no.spring.class.found.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes Spring Boot alkalmaz\u00e1st, amely tartalmazza a Start-Class le\u00edr\u00f3 fejl\u00e9cet, a kiszolg\u00e1l\u00f3val egy\u00fctt.
+
+error.missing.ssl=CWWKC0258E: Az alkalmaz\u00e1s nem tudott elindulni, mert SSL szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban.
+error.missing.ssl.explanation=Az alkalmaz\u00e1s egy biztons\u00e1gi alkalmaz\u00e1s, \u00e9s megk\u00f6veteli SSL szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t a server.xml f\u00e1jlban.
+error.missing.ssl.useraction=\u00c1ll\u00edtsa be a transportSecurity-1.0 szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban.
+
+error.missing.websocket=CWWKC0259E: Az alkalmaz\u00e1s nem tudott elindulni, mert websocket szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban.
+error.missing.websocket.explanation=Az alkalmaz\u00e1s egy websocket alkalmaz\u00e1s, \u00e9s megk\u00f6veteli websocket szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t a server.xml f\u00e1jlban.
+error.missing.websocket.useraction=\u00c1ll\u00edtson be egy websocket szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban.
+
+# CWWKC0260E: GOT REMOVED
+
+warning.spring_config.ignored.compression=CWWKC0261W: Az alkalmaz\u00e1s enged\u00e9lyezte a t\u00f6m\u00f6r\u00edt\u00e9st. A t\u00f6m\u00f6r\u00edt\u00e9s nem t\u00e1mogatott, \u00e9s a be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl fog maradni.
+warning.spring_config.ignored.compression.explanation=A t\u00f6m\u00f6r\u00edt\u00e9s nem t\u00e1mogatott, \u00e9s a be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl fog maradni, de az alkalmaz\u00e1s egy\u00e9bk\u00e9nt tov\u00e1bbra is m\u0171k\u00f6dni fog.
+warning.spring_config.ignored.compression.useraction=Nincs felhaszn\u00e1l\u00f3i teend\u0151.
+
+warning.spring_config.ignored.session=CWWKC0262W: Az alkalmaz\u00e1s be\u00e1ll\u00edtott munkamenet id\u0151korl\u00e1tot vagy munkamenet perzisztenci\u00e1t. Ezeket a munkamenet be\u00e1ll\u00edt\u00e1sokat a server.xml f\u00e1jlban kell konfigur\u00e1lni.
+warning.spring_config.ignored.session.explanation=A munkamenet id\u0151korl\u00e1tot \u00e9s a munkamenet perzisztenci\u00e1t a server.xml f\u00e1jlban kell konfigur\u00e1lni. Ezek az alkalmaz\u00e1s munkamenet be\u00e1ll\u00edt\u00e1sok figyelmen k\u00edv\u00fcl maradnak.
+warning.spring_config.ignored.session.useraction=Konfigur\u00e1lja a munkamenet id\u0151korl\u00e1tot \u00e9s a munkamenet perzisztenci\u00e1t a server.xml f\u00e1jlban.
+
+error.wrong.spring.boot.version=CWWKC0263E: A Spring Boot {0} v\u00e1ltozata nem t\u00e1mogatott.  A Spring Boot {1} tartom\u00e1nyba es\u0151 v\u00e1ltozata sz\u00fcks\u00e9ges.
+error.wrong.spring.boot.version.explanation=A Spring Boot kiszolg\u00e1l\u00f3 \u00e1ltal nem t\u00e1mogatott v\u00e1ltozat\u00e1t \u00e9szlelte a rendszer.
+error.wrong.spring.boot.version.useraction=Friss\u00edtse a Spring Boot alkalmaz\u00e1st az elv\u00e1rt tartom\u00e1nyba es\u0151 Spring Boot v\u00e1ltozatra.
+
+warning.application.started.event.timeout=CWWKC0264W: A(z) {0} alkalmaz\u00e1s nem adta ki a(z) {1} esem\u00e9nyt {2} percen bel\u00fcl.
+warning.application.started.event.timeout.explanation=Az alkalmaz\u00e1s nem adta ki a kezd\u0151 esem\u00e9nyt az elv\u00e1rt id\u0151n bel\u00fcl. Lehet, hogy a kiszolg\u00e1l\u00f3 t\u00falterhelt vagy az alkalmaz\u00e1s t\u00fal nagy. Ha az alkalmaz\u00e1s a kiszolg\u00e1l\u00f3ind\u00edt\u00e1s r\u00e9szek\u00e9nt indul, akkor a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa befejez\u0151dhet an\u00e9lk\u00fcl, hogy megv\u00e1rn\u00e1 az alkalmaz\u00e1s elindul\u00e1s\u00e1t.
+warning.application.started.event.timeout.useraction=Ha az alkalmaz\u00e1s v\u00e9g\u00fcl elindul, akkor nincs teend\u0151. Ha az alkalmaz\u00e1s nem indul el, akkor n\u00e9zzen ut\u00e1na a kiszolg\u00e1l\u00f3napl\u00f3kban, hogy m\u00e1s \u00fczenetek jelzik-e ennek az ok\u00e1t.
+
+warning.java.version.not.supported=CWWKC0265W: A jelenlegi Java v\u00e1ltozatot ({0}) a Spring Boot {1} v\u00e1ltozat nem t\u00e1mogatja. Friss\u00edtse az alkalmaz\u00e1s Spring Boot v\u00e1ltozat\u00e1t 2.0.x vagy \u00fajabb v\u00e1ltozatra.
+warning.java.version.not.supported.explanation=Az 1.8 v\u00e1ltozatn\u00e1l \u00fajabb v\u00e1ltozatokat a Spring Boot 1.5.x \u00e9s r\u00e9gebbi v\u00e1ltozatok nem t\u00e1mogatj\u00e1k.
+warning.java.version.not.supported.useraction=Friss\u00edtse az alkalmaz\u00e1s Spring Boot v\u00e1ltozat\u00e1t 2.0.x vagy \u00fajabb v\u00e1ltozatra.
+
+error.invalid.packaged.liberty.jar=CWWKC0265E: Az alkalmaz\u00e1s nem tudott elindulni, mert a becsomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jl nem \u00e9rv\u00e9nyes.
+error.invalid.packaged.liberty.jar.explanation=A becsomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlb\u00f3l hi\u00e1nyzik egy kiszolg\u00e1l\u00f3n\u00e9v le\u00edr\u00f3f\u00e1jlfejl\u00e9c, a kiszolg\u00e1l\u00f3gy\u00f6k\u00e9r bejegyz\u00e9sek vagy lib.index.cache k\u00f6nyvt\u00e1r bejegyz\u00e9sei.
+error.invalid.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlt.
+
+error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Az alkalmaz\u00e1s nem tudott elindulni, mert a Spring Boot alkalmaz\u00e1s nem tal\u00e1lhat\u00f3 meg a csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlban.
+error.application.not.found.inside.packaged.liberty.jar.explanation=A csomagolt Liberty Server JAR f\u00e1jlnak tartalmaznia kell egy be\u00e1ll\u00edtott Spring Boot rendszerbet\u00f6lt\u00e9si alkalmaz\u00e1st.
+error.application.not.found.inside.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlt.

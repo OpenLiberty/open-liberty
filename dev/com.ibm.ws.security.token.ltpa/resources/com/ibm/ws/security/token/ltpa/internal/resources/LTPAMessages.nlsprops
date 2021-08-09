@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: There is no initialized token factory.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=The token factory was not initialized.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Validate the Token Manager configuration in the server.xml file, or any other resource specified by the configuration.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: There is no unique ID with which to create the token.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=The unique_id parameter is null or was not specified in the token data.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=Validate that the user has a unique ID. If using a custom user registry, validate that the token data contains a value for the unique_id parameter.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: The system cannot create the LTPA token because the required {0} property is missing.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=The specified key is missing, so the LTPA token cannot be created.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Explore the properties file in which the LTPA key information is stored, and check that the key information includes a secret key, a private key and a public key.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Creating the LTPA keys. This may take a few seconds.
+LTPA_CREATE_KEYS_START.explanation=The LTPA keys do not exist and are generated automatically. Any services requiring LTPA will not start until the LTPA keys have been generated and the configuration is ready.
+LTPA_CREATE_KEYS_START.useraction=No action is required.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: LTPA keys created in {0} seconds. LTPA key file: {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=This message is for informational purposes only.
+LTPA_CREATE_KEYS_COMPLETE.useraction=No action is required.
+
+LTPA_CONFIG_READY=CWWKS4105I: LTPA configuration is ready after {0} seconds.
+LTPA_CONFIG_READY.explanation=This message is for informational purposes only.
+LTPA_CONFIG_READY.useraction=No action is required.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: LTPA configuration error. Unable to create or read LTPA key file: {0}
+LTPA_CONFIG_ERROR.explanation=The LTPA keys could not be read or created at the specified location.
+LTPA_CONFIG_ERROR.useraction=Ensure the location is accessible by the server process. Any FFDCs might indicate a fatal error in generating or loading the keys.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: The LTPA keys file or configuration were modified. The LTPA keys will be reloaded from the file: {0}
+LTPA_KEYS_TO_LOAD.explanation=The LTPA keys need to be reloaded because there was a change to the LTPA keys file or the configuration.
+LTPA_KEYS_TO_LOAD.useraction=Ensure that all servers participating in Single-Sign-On use the same LTPA keys and password.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: The system cannot create the LTPA key.
+LTPA_KEY_CREATE_ERROR.explanation=The LTPA key cannot be created.
+LTPA_KEY_CREATE_ERROR.useraction=Any FFDCs might indicate a fatal error in generating the keys.
+
+

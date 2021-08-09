@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+#------------------------------------------------------------------------------
+# Global options used multiple times when help operation is used. 
+#------------------------------------------------------------------------------
+global.description=Opis:
+global.actions=Dzia\u0142ania:
+global.options=Opcje:
+global.usage=Sk\u0142adnia:
+global.options.statement=\tU\u017cyj komendy help [action] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach ka\u017cdego dzia\u0142ania.
+
+help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
+
+help.usage.options=\t{0} help [nazwa_akcji]
+
+#------------------------------------------------------------------------------
+# generate operation options (generateWebServerPluginTask)
+#------------------------------------------------------------------------------
+generateWebServerPluginTask.required-option-key.serverName=\ \ \ \ <nazwa_serwera>
+generateWebServerPluginTask.required-option-desc.serverName=\tOpcjonalna. Nazwa lokalnego serwera WebSphere Liberty Server, dla kt\u00f3rego\n\
+\tma zosta\u0107 wygenerowany plik konfiguracyjny wtyczki serwera WWW. Je\u015bli\n\
+\twarto\u015b\u0107 <nazwa_serwera> nie zostanie podana, zostanie u\u017cyta warto\u015b\u0107 domy\u015blna\n\
+\tdefaultServer. Serwer zostanie uruchomiony, je\u015bli nie jest uruchomiony,\n\
+\ti zatrzymany po wygenerowaniu pliku konfiguracyjnego wtyczki.
+
+generateWebServerPluginTask.required-option-key.targetPath=\ \ \ \ --targetPath=\u015bcie\u017cka
+generateWebServerPluginTask.required-option-desc.targetPath=\tOpcjonalna. Poprawna \u015bcie\u017cka do katalogu, w kt\u00f3rym ma zosta\u0107\n\
+\twygenerowany plik konfiguracyjny wtyczki serwera WWW. Je\u015bli warto\u015b\u0107 parametru\n\
+\t--targetPath nie jest okre\u015blona, zostanie u\u017cyty bie\u017c\u0105cy katalog roboczy.
+
+generateWebServerPluginTask.usage.options=\t{0} get [opcje]
+
+generateWebServerPluginTask.desc=\tGeneruje plik konfiguracyjny wtyczki serwera WWW\n\
+\tdla okre\u015blonego serwera WebSphere Liberty Server.
+
+#------------------------------------------------------------------------------
+# merge operation options (MergePluginFilesTask)
+#------------------------------------------------------------------------------
+MergePluginFilesTask.usage.options=\t{0} merge [opcje]
+
+MergePluginFilesTask.required-option-key.sourcePath=\ \ \ \ --sourcePath=katalog|(rozdzielona przecinkami lista plik\u00f3w wtyczki)
+MergePluginFilesTask.required-option-desc.sourcePath=\tWymagana. Po\u0142o\u017cenie katalogu \u017ar\u00f3d\u0142owego, w kt\u00f3rym znajduj\u0105 si\u0119 wszystkie pliki\n\
+\twtyczki lub rozdzielona przecinkami lista nazw plik\u00f3w wtyczki \u017ar\u00f3d\u0142owej\n\
+\tz odpowiednimi pe\u0142nymi \u015bcie\u017ckami do plik\u00f3w.
+
+MergePluginFilesTask.required-option-key.targetPath=\ \ \ \ --targetPath=katalog|(nazwa \
+pliku z pe\u0142n\u0105 \u015bcie\u017ck\u0105 do katalogu)
+MergePluginFilesTask.required-option-desc.targetPath=\tOpcjonalna. Domy\u015blnie scalony plik konfiguracyjny wtyczki jest generowany\n\
+\tw bie\u017c\u0105cym katalogu pod nazw\u0105 merged-plugin-cfg.xml. U\u017cytkownicy mog\u0105\n\
+\tpoda\u0107 nazw\u0119 katalogu, w kt\u00f3rym zostanie umieszczony plik merged-plugin-cfg.xml,\n\
+\tlub pe\u0142n\u0105 nazw\u0119 pliku. Je\u015bli plik merged-plugin-cfg.xml\n\
+\tju\u017c istnieje lub istnieje inny plik o podanej nazwie,\n\
+\tzawarto\u015b\u0107 pliku zostanie nadpisana.
+
+MergePluginFilesTask.desc=\tScala wiele plik\u00f3w \
+konfiguracyjnych wtyczki serwera WWW w jeden plik.
+
+#------------------------------------------------------------------------------
+# generate operation options (GeneratePluginTask)
+#------------------------------------------------------------------------------
+GeneratePluginTask.desc=\tTa komenda umo\u017cliwia wygenerowanie pliku konfiguracyjnego wtyczki\n\
+\tdla serwera aplikacji lub klastra serwer\u00f3w. 
+
+GeneratePluginTask.usage.options=\t{0} generate [opcje]
+
+
+GeneratePluginTask.required-option-key.serverLoginAddress=\ \ \ \ --server=<ID serwera>
+
+GeneratePluginTask.required-option-desc.serverLoginAddress=\tWymagana. \
+Serwer musi by\u0107 uruchomiony.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal1=\tW przypadku serwera lokalnego: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal2=\t\tNazwa serwera.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote1=\tW przypadku serwera zdalnego: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2=\t\t<u\u017cytkownik>:<has\u0142o>@<host>:<port>
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.User=\n\
+\t\t<u\u017cytkownik>: Administrator serwera docelowego. Je\u015bli ta\n\
+\t\twarto\u015b\u0107 nie zostanie podana, w programie narz\u0119dziowym\n\
+\t\tzostanie wy\u015bwietlona pro\u015bba o jej wprowadzenie. W nazwie\n\
+\t\tu\u017cytkownika nie wolno u\u017cywa\u0107 dwukropka (:).
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Password=\n\
+\t\t<has\u0142o>: Has\u0142o u\u017cytkownika administracyjnego do serwera\n\
+\t\tdocelowego. Je\u015bli has\u0142o nie zostanie podane, w programie\n\
+\t\tnarz\u0119dziowym dwukrotnie zostanie wy\u015bwietlona pro\u015bba jego\n\
+\t\twprowadzenie. Wprowadzone has\u0142a musz\u0105 by\u0107 zgodne.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Host=\n\
+\t\t<host>: Nazwa hosta serwera docelowego. W nazwie hosta nie\n\
+\t\twolno u\u017cywa\u0107 symbolu @. Brak nazwy hosta spowoduje\n\
+\t\tniepowodzenie operacji.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Port=\n\
+\t\t<port>: Numer portu serwera docelowego. Brak numeru portu\n\
+\t\tspowoduje niepowodzenie operacji.
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress=\ \ \ \ --collective=<u\u017cytkownik>:<has\u0142o>@<host>:<port>
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress1=\ \ \ \ --collective=<ID serwera>
+
+GeneratePluginTask.required-option-key.cluster=\ \ \ \ --cluster=<nazwa_klastra>
+GeneratePluginTask.required-option-desc.cluster=\tOpcjonalna. Nazwa klastra serwer\u00f3w. Je\u015bli nazwa\n\
+\tklastra zostanie podana, opcja server musi okre\u015bla\u0107 kontroler kolektywu.  
+
+
+GeneratePluginTask.optional-option-key.targetPath=\ \ \ \ --targetPath=katalog|(nazwa \
+pliku z pe\u0142n\u0105 \u015bcie\u017ck\u0105 do katalogu)
+GeneratePluginTask.optional-option-desc.targetPath=\tOpcjonalna. Domy\u015blnie plik konfiguracyjny wtyczki jest generowany\n\
+\tw bie\u017c\u0105cym katalogu. Plik ma nazw\u0119 <nazwa_klastra>-plugin-cfg.xml\n\
+\t(w przypadku klastra)lub plugin-cfg.xml (w przypadku serwera).\n \tIstnieje mo\u017cliwo\u015b\u0107 okre\u015blenia nazwy katalogu, w kt\u00f3rym ma zosta\u0107\n\
+\tumieszczony plik, lub podania pe\u0142nej nazwy pliku. Nowy plik zast\u0105pi\n\
+\tistniej\u0105cy plik.
+
+GeneratePluginTask.optionl-option-key.local=\ \ \ \ --local
+
+GeneratePluginTask.optionl-option-desc.local=\tOpcjonalna. \
+Wskazuje, \u017ce opcja --server ma zastosowanie do serwera lokalnego.
+
+#------------------------------------------------------------------------------

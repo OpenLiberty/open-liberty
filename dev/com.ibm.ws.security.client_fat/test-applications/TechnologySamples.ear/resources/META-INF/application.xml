@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<application id="Application_ID" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:j2ee="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd" version="1.4">
+    <description>Technology Samples Enterprise Application</description>
+    <display-name>TechnologySamples</display-name>
+    <module id="EjbModule_1">
+        <ejb>BasicCalculatorEJB.jar</ejb>
+    </module>
+    <module id="JavaClientModule_1">
+        <java>BasicCalculatorClient.jar</java>
+    </module>
+    <security-role id="SecurityRole_1047187622811">
+        <description>All Authenticated user Role</description>
+        <role-name>All Role</role-name>
+    </security-role>
+</application>

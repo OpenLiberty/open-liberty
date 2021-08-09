@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: Open API 2.0 for Config REST Endpoint
+Bundle-SymbolicName: io.openliberty.rest.handler.config.openapi.2.0
+Bundle-Description: Open API information for REST-based config resources; version=${bVersion}
+
+WS-TraceGroup: rest.config
+
+Include-Resource: \
+    META-INF=resources/META-INF
+
+Private-Package:\
+  io.openliberty.rest.handler.config.openapi20.*
+
+-dsannotations:\
+  io.openliberty.rest.handler.config.openapi20.ConfigSchemaRESTHandler
+
+-buildpath: \
+    com.ibm.websphere.appserver.spi.logging,\
+    com.ibm.websphere.rest.handler;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    com.ibm.ws.rest.handler.validator,\
+    com.ibm.websphere.org.osgi.service.component,\
+    com.ibm.websphere.org.osgi.core,\
+    io.openliberty.io.smallrye.openapi.core,\
+    io.openliberty.org.eclipse.microprofile.openapi.2.0

@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Slu\u017eba protokolu pro zotaven\u00ed byla pozastavena ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=Slu\u017eba protokolu pro zotaven\u00ed se nach\u00e1z\u00ed ve stavu nevy\u0159\u00edzen\u00e9 \u00falohy, aby mohl syst\u00e9m z\u00e1lohovat soubory protokolu pro zotaven\u00ed.
+CWRLS0001_SUSPEND_RLS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Slu\u017eba protokolu pro zotaven\u00ed pokra\u010duje v \u010dinnosti ({0}).
+CWRLS0002_RESUME_RLS.explanation=Pro slu\u017ebu protokolu pro zotaven\u00ed, kter\u00e1 byla d\u0159\u00edve pozastavena, byl obnoven stav Spu\u0161t\u011bno.
+CWRLS0002_RESUME_RLS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Tento k\u00f3d zpr\u00e1vy se pou\u017e\u00edv\u00e1 pro podporu zpr\u00e1v, kter\u00fdm dosud nebyl p\u0159id\u011blen vlastn\u00ed k\u00f3d zpr\u00e1vy.
+CWRLS0003_GENERIC_ERROR.useraction=Dal\u0161\u00ed informace naleznete v textu zpr\u00e1vy.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Nelze vytvo\u0159it soubor protokolu pro zotaven\u00ed {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=Slu\u017eb\u011b protokolu pro zotaven\u00ed se nepoda\u0159ilo vytvo\u0159it soubor uveden\u00fd ve zpr\u00e1v\u011b. C\u00edlov\u00fd adres\u00e1\u0159 nen\u00ed p\u0159\u00edstupn\u00fd nebo syst\u00e9m nem\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed k vytvo\u0159en\u00ed po\u017eadovan\u00e9ho souboru.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Ov\u011b\u0159te, \u017ee po\u017eadovan\u00e1 hierarchie adres\u00e1\u0159\u016f je platn\u00e1 a p\u0159\u00edstupn\u00e1 pro slu\u017ebu protokolu pro zotaven\u00ed.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Nelze z\u00edskat v\u00fdhradn\u00ed uzam\u010den\u00ed souboru {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=Slu\u017eb\u011b protokolu pro zotaven\u00ed se nepoda\u0159ilo v\u00fdhradn\u011b uzamknout soubor uveden\u00fd ve zpr\u00e1v\u011b.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Prob\u00edh\u00e1 vytvo\u0159en\u00ed nov\u00e9ho souboru protokolu pro zotaven\u00ed {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=Byl vytvo\u0159en nov\u00fd soubor protokolu pro zotaven\u00ed pro ukl\u00e1d\u00e1n\u00ed trval\u00fdch dat.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: V adres\u00e1\u0159i {0} nebyly nalezeny \u017e\u00e1dn\u00e9 existuj\u00edc\u00ed soubory protokolu pro zotaven\u00ed. Prob\u00edh\u00e1 nov\u00e9 spu\u0161t\u011bn\u00ed protokolu pro zotaven\u00ed.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=P\u0159edchoz\u00ed soubory protokolu pro zotaven\u00ed byly odstran\u011bny nebo se jedn\u00e1 o prvn\u00ed ulo\u017een\u00ed soubor\u016f protokolu pro zotaven\u00ed v tomto um\u00edst\u011bn\u00ed. V obou p\u0159\u00edpadech bude p\u0159idru\u017een\u00e1 slu\u017eba spu\u0161t\u011bna a nebude prov\u00e1d\u011bt \u017e\u00e1dn\u00e9 zpracov\u00e1n\u00ed zotaven\u00ed.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: Protokol pro zotaven\u00ed je ozna\u010den jako protokol, u n\u011bho\u017e do\u0161lo k selh\u00e1n\u00ed. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Protokol pro zotaven\u00ed nebyl \u00fasp\u011b\u0161n\u00fd a nelze ji\u017e k n\u011bmu p\u0159istupovat. Ve zpr\u00e1v\u011b je uvedena komponenta a relevantn\u00ed v\u00fdjimka.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Restartujte server, aby bylo mo\u017en\u00e9 opravit protokol. Pokuste se opravit v\u0161echny podm\u00ednky uveden\u00e9 ve zpr\u00e1v\u011b v\u00fdjimky.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Podrobnosti selh\u00e1n\u00ed protokolu pro zotaven\u00ed: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Tato zpr\u00e1va je zobrazena spole\u010dn\u011b se zpr\u00e1vou CWRLS0008E a ur\u010duje podrobnosti o selh\u00e1n\u00ed protokolu pro zotaven\u00ed.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Pomoc\u00ed informac\u00ed v t\u00e9to zpr\u00e1v\u011b a zpr\u00e1v\u011b CWRLS0008E odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed protokolu pro zotaven\u00ed.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Prob\u00edh\u00e1 zpracov\u00e1n\u00ed zotaven\u00ed pro lok\u00e1ln\u00ed server WebSphere ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=Slu\u017eba protokolu pro zotaven\u00ed prov\u00e1d\u00ed sm\u011brov\u00e1n\u00ed zpracov\u00e1n\u00ed zotaven\u00ed p\u0159idru\u017een\u00fdch slu\u017eeb klienta.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Prob\u00edh\u00e1 zpracov\u00e1n\u00ed zotaven\u00ed pro server WebSphere Server typu peer ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=Slu\u017eba protokolu pro zotaven\u00ed prov\u00e1d\u00ed sm\u011brov\u00e1n\u00ed zpracov\u00e1n\u00ed zotaven\u00ed p\u0159idru\u017een\u00fdch slu\u017eeb klienta pro server typu peer.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: V\u0161em trval\u00fdm slu\u017eb\u00e1m byl d\u00e1n pokyn k prov\u00e1d\u011bn\u00ed zpracov\u00e1n\u00ed zotaven\u00ed pro tento server WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=Slu\u017eba protokolu pro zotaven\u00ed vyzvala v\u0161echny p\u0159idru\u017een\u00e9 slu\u017eby klient\u016f k zah\u00e1jen\u00ed zotaven\u00ed.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: V\u0161em trval\u00fdm slu\u017eb\u00e1m byl d\u00e1n pokyn k prov\u00e1d\u011bn\u00ed zpracov\u00e1n\u00ed zotaven\u00ed pro server WebSphere Server typu peer ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=Slu\u017eba protokolu pro zotaven\u00ed vyzvala v\u0161echny p\u0159idru\u017een\u00e9 slu\u017eby klient\u016f k zah\u00e1jen\u00ed zotaven\u00ed pro server typu peer.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Prob\u00edh\u00e1 zastaven\u00ed aktu\u00e1ln\u00edho zpracov\u00e1n\u00ed zotaven\u00ed pro server WebSphere Server typu peer ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=Zpracov\u00e1n\u00ed zotaven\u00ed je p\u0159eneseno na alternativn\u00ed aplika\u010dn\u00ed server. K t\u00e9to situaci obvykle doch\u00e1z\u00ed, pokud je server restartov\u00e1n a p\u0159eb\u00edr\u00e1 vlastnictv\u00ed sv\u00fdch protokol\u016f pro zotaven\u00ed.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: V p\u0159izp\u016fsoben\u00fdch vlastnostech slu\u017eby transakc\u00ed bylo zak\u00e1z\u00e1no uzam\u010den\u00ed souboru protokolu pro zotaven\u00ed.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=Mechanizmus zamyk\u00e1n\u00ed soubor\u016f pou\u017e\u00edvan\u00fd slu\u017ebou protokolu pro zotaven\u00ed k zaji\u0161t\u011bn\u00ed v\u00fdhradn\u00edho p\u0159\u00edstupu k soubor\u016fm protokolu byl explicitn\u011b zak\u00e1z\u00e1n.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Ov\u011b\u0159te, \u017ee je toto nastaven\u00ed konfigurace podporov\u00e1no odpov\u00eddaj\u00edc\u00edmi podm\u00ednkami.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Nelze z\u00edskat v\u00fdhradn\u00ed uzam\u010den\u00ed souboru pot\u0159ebn\u00e9 k proveden\u00ed zpracov\u00e1n\u00ed zotaven\u00ed pro server {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=C\u00edlov\u00fd server je aktivn\u00ed nebo konfigurace protokolu pro zotaven\u00ed nen\u00ed spr\u00e1vn\u00e1.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Ov\u011b\u0159te platnost konfigurace protokolu pro zotaven\u00ed.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Pokus o z\u00edsk\u00e1n\u00ed v\u00fdhradn\u00edho uzam\u010den\u00ed souboru pot\u0159ebn\u00e9ho k proveden\u00ed zpracov\u00e1n\u00ed zotaven\u00ed pro server {0} byl p\u0159eru\u0161en.   Pro proveden\u00ed zpracov\u00e1n\u00ed zotaven\u00ed je aktivov\u00e1n jin\u00fd server.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=\u0158\u00edzen\u00ed protokolu pro zotaven\u00ed bylo p\u0159ed\u00e1no mezi dv\u011bma aplika\u010dn\u00edmi servery.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: Pokus o pozastaven\u00ed zotaven\u00ed transakc\u00ed a p\u0159ed\u00e1n\u00ed zpracov\u00e1n\u00ed pro lok\u00e1ln\u00ed server ({0}) byl zru\u0161en.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=Slu\u017eba protokolu pro zotaven\u00ed zabr\u00e1nila lok\u00e1ln\u00edmu serveru v zanech\u00e1n\u00ed \u0159\u00edzen\u00ed vlastn\u00edch protokol\u016f pro zotaven\u00ed. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt konfigurace z\u00e1sad hlavn\u00ed skupiny.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Ov\u011b\u0159te, \u017ee v konfiguraci z\u00e1sady nen\u00ed vlastnictv\u00ed protokolu pro zotaven\u00ed aktivn\u00edho serveru p\u0159i\u0159azeno alternativn\u00edmu serveru.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: Slu\u017eba protokolu pro zotaven\u00ed je v p\u0159izp\u016fsoben\u00fdch vlastnostech slu\u017eby transakc\u00ed konfigurov\u00e1na jako zabezpe\u010den\u00e9 \u00falo\u017ei\u0161t\u011b sn\u00edmk\u016f.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Je-li vy\u017eadov\u00e1n sn\u00edmek soubor\u016f protokolu, je b\u011bhem vytv\u00e1\u0159en\u00ed sn\u00edmku pozastavena ve\u0161ker\u00e1 aktivita protokolov\u00e1n\u00ed transakc\u00ed, aby byl zaru\u010den zn\u00e1m\u00fd stav soubor\u016f protokolu, kter\u00fd je konzistentn\u00ed s jin\u00fdmi syst\u00e9my, kter\u00e9 se na sn\u00edmku pod\u00edlej\u00ed.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: Slu\u017eba protokolu pro zotaven\u00ed nen\u00ed v p\u0159izp\u016fsoben\u00fdch vlastnostech slu\u017eby transakc\u00ed konfigurov\u00e1na jako zabezpe\u010den\u00e9 \u00falo\u017ei\u0161t\u011b sn\u00edmk\u016f.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Pokud je vytvo\u0159en sn\u00edmek soubor\u016f protokolu, je mo\u017en\u00e9, \u017ee soubory protokoly nebudou ve stav konzistentn\u00edm s jin\u00fdmi syst\u00e9my, kter\u00e9 se na sn\u00edmku pod\u00edlej\u00ed.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Slu\u017eba protokolu pro zotaven\u00ed byla vol\u00e1na, aby pokra\u010dovala v \u010dinnosti ({0}), existuj\u00ed v\u0161ak dal\u0161\u00ed nevy\u0159\u00edzen\u00e9 pozastaven\u00e9 procesy.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=Slu\u017eba protokolu pro zotaven\u00ed bude pokra\u010dovat v \u010dinnosti pouze v p\u0159\u00edpad\u011b, \u017ee neexistuj\u00ed \u017e\u00e1dn\u00e9 nevy\u0159\u00edzen\u00e9 operace pozastaven\u00ed.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: Operaci pozastaven\u00ed slu\u017eby protokolu pro zotaven\u00ed vypr\u0161ela doba platnosti ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Pokud ji\u017e nezb\u00fdvaj\u00ed \u017e\u00e1dn\u00e9 nevy\u0159\u00edzen\u00e9 operace pozastaven\u00ed, slu\u017eba protokolu pro zotaven\u00ed obnov\u00ed svoji \u010dinnost.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: \u010cinnost slu\u017eby protokolu pro zotaven\u00ed byla obnovena po vypr\u0161en\u00ed platnosti operace pozastaven\u00ed.
+CWRLS0023_RESUME_RLS.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+CWRLS0023_RESUME_RLS.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: B\u011bhem zotaven\u00ed do\u0161lo k v\u00fdjimce. {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= P\u0159i pokusu o zotaven\u00ed z p\u0159edchoz\u00edho selh\u00e1n\u00ed serveru byla zji\u0161t\u011bna v\u00fdjimka.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: Spu\u0161t\u011bn\u00ed v re\u017eimu zotaven\u00ed serveru nen\u00ed kompatibiln\u00ed s povolen\u00edm slu\u017eby HA.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=V konfiguraci se slu\u017ebou vysokou dostupnost\u00ed m\u016f\u017ee b\u00fdt zotaven\u00ed serveru automaticky inicializov\u00e1no na serveru typu peer.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Nepokou\u0161ejte se spustit server v re\u017eimu zotaven\u00ed, je-li pro n\u011bj povolena slu\u017eba vysok\u00e9 dostupnosti.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Nelze z\u00edskat v\u00fdhradn\u00ed uzam\u010den\u00ed souboru {0} - bude proveden nov\u00fd pokus.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=Slu\u017eb\u011b protokolu pro zotaven\u00ed nem\u016f\u017ee b\u011bhem zotavov\u00e1n\u00ed v\u00fdhradn\u011b uzamknout soubor uveden\u00fd ve zpr\u00e1v\u011b, proto\u017ee je soubor z\u0159ejm\u011b pou\u017e\u00edv\u00e1n. Slu\u017eba zotaven\u00ed se bude pravideln\u011b pokou\u0161et o z\u00edsk\u00e1n\u00ed v\u00fdhradn\u00edho uzam\u010den\u00ed, aby bylo mo\u017en\u00e9 v zotaven\u00ed pokra\u010dovat. Pokud je souborem protokolu pro zotaven\u00ed n\u011bkter\u00fd z hlavn\u00edch protokol\u016f pro zotaven\u00ed serveru, bude spu\u0161t\u011bn\u00ed odlo\u017eeno do doby, kdy bude p\u0159\u00edstup k protokol\u016fm mo\u017en\u00fd. Pokud soubor protokolu pro zotaven\u00ed pat\u0159\u00ed jin\u00e9mu serveru na stejn\u00e9 \u00farovni, m\u016f\u017ee uzam\u010den\u00ed z\u00edskat jin\u00fd server a m\u016f\u017ee prov\u00e9st zotaven\u00ed na serveru na stejn\u00e9 \u00farovni. V takov\u00e9 situaci se tento server p\u0159estane o zotaven\u00ed pokou\u0161et.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Prozkoumejte v\u0161echny souvisej\u00edc\u00ed zpr\u00e1vy a ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy nejsou k dispozici, zkontrolujte protokoly pro zotaven\u00ed a ujist\u011bte se, \u017ee k nim nep\u0159istupuje jin\u00fd server. K t\u00e9to situaci m\u016f\u017ee nap\u0159\u00edklad doj\u00edt v p\u0159\u00edpad\u011b, kdy jeden nebo v\u00edce server\u016f bylo konfigurov\u00e1no pro pou\u017eit\u00ed protokol\u016f pro zotaven\u00ed jin\u00e9ho serveru.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Pro servery {1} a {2} byl definov\u00e1n spole\u010dn\u00fd adres\u00e1\u0159 protokolu transakc\u00ed {0}.
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Pro protokoly transakc\u00ed ze dvou server\u016f je pou\u017eita spole\u010dn\u00e1 konfigurace adres\u00e1\u0159e. To m\u016f\u017ee m\u00edt za n\u00e1sledek konflikt uzam\u010den\u00ed protokolu pro zotaven\u00ed nebo selh\u00e1n\u00ed integrity dat. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Pro ka\u017ed\u00fd server konfigurujte samostatnou cestu adres\u00e1\u0159e protokolu.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Pro servery {1} a {2} byl definov\u00e1n spole\u010dn\u00fd adres\u00e1\u0159 protokolu kompenzac\u00ed {0}.
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Pro protokoly kompenzac\u00ed ze dvou server\u016f je pou\u017eita spole\u010dn\u00e1 konfigurace adres\u00e1\u0159e. To m\u016f\u017ee m\u00edt za n\u00e1sledek konflikt uzam\u010den\u00ed protokolu pro zotaven\u00ed nebo selh\u00e1n\u00ed integrity dat. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Pro ka\u017ed\u00fd server konfigurujte samostatnou cestu adres\u00e1\u0159e protokolu.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Nelze prov\u00e9st zpracov\u00e1n\u00ed zotaven\u00ed pro lok\u00e1ln\u00ed server WebSphere - server ukon\u010duje \u010dinnost.
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=Slu\u017eba protokolu pro zotaven\u00ed nem\u016f\u017ee prov\u00e9st nebo dokon\u010dit zotaven\u00ed pro lok\u00e1ln\u00ed server a nelze prov\u00e9st \u017e\u00e1dnou dal\u0161\u00ed operaci. Server bude zastaven.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: \u010cek\u00e1 se, a\u017e spr\u00e1vce HA povoluje zpracov\u00e1n\u00ed zotaven\u00ed pro lok\u00e1ln\u00ed server WebSphere.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=Slu\u017eba protokolu pro zotaven\u00ed nem\u016f\u017ee zah\u00e1jit zpracov\u00e1n\u00ed zotaven\u00ed pro lok\u00e1ln\u00ed server, proto\u017ee \u010dek\u00e1, a\u017e spr\u00e1vce HA povoluje \u010dlenstv\u00ed ve skupin\u011b pro protokoly pro zotaven\u00ed tohoto lok\u00e1ln\u00edho serveru.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Prozkoumejte v\u0161echny souvisej\u00edc\u00ed zpr\u00e1vy a ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy nejsou k dispozici, zkontrolujte konfiguraci nastaven\u00ed DefaultCoreGroup a p\u0159idru\u017een\u00e9 definice z\u00e1sad pro slu\u017ebu protokolu pro zotaven\u00ed serveru. Pokud je nap\u0159\u00edklad z\u00e1sada Clustered TM nastavena tak, aby nebyl podporov\u00e1n n\u00e1vrat po selh\u00e1n\u00ed, m\u016f\u017ee dr\u017een\u00ed protokol\u016f p\u0159ej\u00edt na jin\u00fd server; tento server pak nebude aktivov\u00e1n.
+

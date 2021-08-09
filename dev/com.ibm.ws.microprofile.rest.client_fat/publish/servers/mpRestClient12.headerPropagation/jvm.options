@@ -1,0 +1,1 @@
+-Dorg.eclipse.microprofile.rest.client.propagateHeaders=Authorization,MyCustomHeader

@@ -1,0 +1,52 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.module/resources/com/ibm/ws/app/manager/module/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.
+
+#{0} is the web module name
+error.cache.adapt=CWWKZ0107E: Es ist ein interner Fehler aufgetreten. Der Cache f\u00fcr das Webmodul {0} konnte nicht angepasst werden.
+error.cache.adapt.explanation=CMSG0001 
+error.cache.adapt.useraction=CMSG0002                                                   
+
+#{0} is the connector module name
+error.cache.adapt.connector=CWWKZ0108E: Der Anwendungsmanager kann den Cache f\u00fcr das Connectormodul {0} nicht anpassen.
+error.cache.adapt.connector.explanation=W\u00e4hrend der Installation eines Connectormoduls ist ein interner Fehler aufgetreten. Die Modulinformationen wurden dem Cache nicht hinzugef\u00fcgt.
+error.cache.adapt.connector.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: In der Anwendung {0} ist bei der Verarbeitung des Anwendungsdeskriptors {1} ein Parsing-Fehler aufgetreten: {2}
+error.application.parse.descriptor.explanation=Beim Parsing des Anwendungsdeskriptors ist ein Fehler aufgetreten. Es sind keine Module f\u00fcr die Anwendung verf\u00fcgbar.
+error.application.parse.descriptor.useraction=Suchen Sie in den Ausnahmeinformationen nach weiteren Einzelheiten. \u00dcberpr\u00fcfen Sie den Inhalt des Anwendungsdeskriptors, um sicherzustellen, dass der Inhalt aus g\u00fcltigen XML-Daten besteht.
+
+# NOTE: The message ID range is shared with com.ibm.ws.app.manager.war.
+# Reserve message IDs in that project before using them here.

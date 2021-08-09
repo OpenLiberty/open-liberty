@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Erreur de configuration.  Classe [{0}] non trouv\u00e9e.
+
+4005=DatabaseAccessor non connect\u00e9.
+
+4006=Erreur lors de la lecture de donn\u00e9es BLOB depuis le flux dans getObject().
+
+4007=Impossible de convertir le type d''objet en raison d''une erreur interne. {0}java.sql.TYPES : [{1}]
+
+4008=Vous ne pouvez pas vous d\u00e9connecter pendant qu''une transaction est en cours.
+
+4009=Les informations de la table s\u00e9quenc\u00e9e ne sont pas compl\u00e8tes.
+
+4011=Erreur de pr\u00e9allocation des num\u00e9ros de s\u00e9quence.  Les informations de la table s\u00e9quenc\u00e9e ne sont pas compl\u00e8tes.
+
+4014=Impossible d''enregistrer SynchronizationListener.
+
+4015=L''unit\u00e9 d''oeuvre synchronis\u00e9e ne prend pas en charge l''op\u00e9ration commitAndResume().
+
+4016=Erreur de configuration.  Impossible d''instancier le pilote [{0}].
+
+4017=Erreur de configuration.  Impossible d''acc\u00e9der au pilote [{0}].
+
+4018=Le gestionnaire de transactions n''a pas \u00e9t\u00e9 d\u00e9fini pour le pilote JTS.
+
+4019=Erreur lors de l''obtention des informations sur la base de donn\u00e9es. Pour plus de d\u00e9tails, consultez l''exception imbriqu\u00e9e.
+
+4020=Impossible de trouver la zone de base de donn\u00e9es correspondante pour la zone de verrouillage optimiste sp\u00e9cifi\u00e9e[{0}]. Notez que la correspondance est sensible \u00e0 la casse ; par cons\u00e9quent, si vous avez autoris\u00e9 le nom de colonne a utiliser par d\u00e9faut la m\u00e9thode getter, le nom sera en majuscules.
+
+4021=Impossible d''acqu\u00e9rir une connexion depuis le pilote [{0}], utilisateur [{1}] et URL [{2}].  V\u00e9rifiez que vous avez d\u00e9fini la classe et l''URL de pilote attendu.  V\u00e9rifiez vos donn\u00e9es de connexion, la ressource persistence.xml ou sessions.xml.  La propri\u00e9t\u00e9 jdbc.driver doit \u00eatre d\u00e9finie par une classe qui est compatible avec votre plateforme de base de donn\u00e9es
+
+4022=L''accesseur ou sa connexion ont \u00e9t\u00e9 d\u00e9finis sur null.  Cela peut se produire si la session client ou l''unit\u00e9 d''oeuvre a \u00e9t\u00e9 publi\u00e9e dans une unit\u00e9 d''ex\u00e9cution distincte, par exemple s''il s''est produit un d\u00e9passement de d\u00e9lai.
+

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+  metadata-complete="false" version="3.0">
+  <display-name>AssemblyDescriptorTest</display-name>
+  
+  <!--   dPK93643.fvt   WAS70    20100215 urrvano   : New -->
+  
+  <assembly-descriptor>
+    <security-role>
+      <description>
+      This is to verify that the security role is getting picked up even if the bean is not defined using xml (i.e. only defined via annotations)
+      </description>
+      <role-name>MrBurtonMercer</role-name>
+    </security-role>
+    <method-permission>
+      <role-name>MrBurtonMercer</role-name>
+      <method>
+        <ejb-name>SecRoleBean</ejb-name>
+        <method-name>secRoleMethod</method-name>
+      </method>
+    </method-permission>
+    <container-transaction>
+      <description>
+      Verify that transaction attributes defined in the assembly descriptor are picked up even if the bean is not defined using xml.
+      </description>
+      <method>
+        <ejb-name>TranAttrBean</ejb-name>
+        <method-name>xmlOverridesAnnTxAttr</method-name>
+      </method>
+      <method>
+        <ejb-name>TranAttrBean</ejb-name>
+        <method-name>xmlOnlyTxAttr</method-name>
+      </method>
+      <trans-attribute>Mandatory</trans-attribute>
+    </container-transaction>
+  </assembly-descriptor>
+</ejb-jar>

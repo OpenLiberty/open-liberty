@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.5,ou=objectClasses,cn=apachedns,ou=schema
+m-must: apacheDnsSoaMName
+m-must: apacheDnsSoaRName
+m-must: apacheDnsSoaMinimum
+m-oid: 1.3.6.1.4.1.18060.0.4.2.3.5
+m-obsolete: FALSE
+m-supobjectclass: apacheDnsAbstractRecord
+m-description: A start of authority SOA record
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: apacheDnsStartOfAuthorityRecord
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: apacheDnsClass
+m-may: apacheDnsSoaSerial
+m-may: apacheDnsSoaRefresh
+m-may: apacheDnsSoaRetry
+m-may: apacheDnsSoaExpire

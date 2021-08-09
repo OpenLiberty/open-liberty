@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: vmmapi-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: com.ibm.wsspi.security.wim.exception; type="ibm-api",
+ org.osgi.framework; type="ibm-api",
+ com.ibm.ws.security.wim; type="ibm-api",
+ com.ibm.wsspi.security.wim.model; type="ibm-api";
+IBM-Feature-Version: 2

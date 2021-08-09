@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=Nazwa nie mo\u017ce mie\u0107 warto\u015bci NULL.
+empty.name=Nazwa nie mo\u017ce by\u0107 pusta.
+
+jndi.entry.bad.name=CWWKN0001W: Nie mo\u017cna zanalizowa\u0107 nazwy [{0}]. Niepowodzenie z wyj\u0105tkiem [{1}].
+jndi.entry.bad.name.explanation=Nazwa jest niezgodna z wymagan\u0105 sk\u0142adni\u0105.  Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+jndi.entry.bad.name.useraction=Popraw nazw\u0119, aby by\u0142a zgodna z wymagan\u0105 sk\u0142adni\u0105.
+
+jndi.entry.bad.value=CWWKN0002W: Nie mo\u017cna zanalizowa\u0107 warto\u015b\u0107 [{0}] jako typu [{1}].
+jndi.entry.bad.value.explanation=Podana warto\u015b\u0107 jest niezgodna z zadanym typem.
+jndi.entry.bad.value.useraction=Zmie\u0144 warto\u015b\u0107 na zgodn\u0105 z typem albo zmie\u0144 typ, aby by\u0142 zgodny z warto\u015bci\u0105.
+
+jndi.entry.bad.type=CWWKN0003W: Nie mo\u017cna utworzy\u0107 pozycji JNDI, poniewa\u017c jest skonfigurowana z nierozpoznanym typem [{0}].
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=Typ musi mie\u0107 oczekiwan\u0105 warto\u015b\u0107.  Poprawnymi warto\u015bciami s\u0105: auto, boolean, byte, char, double, float, int, long, short lub string.
+jndi.entry.bad.type.useraction=Wybierz poprawn\u0105 specyfikacj\u0119 typu.
+
+jndi.entry.bind.failed=CWWKN0004W: Wywo\u0142anie w celu powi\u0105zania warto\u015bci [{0}] z nazw\u0105 [{1}] nie powiod\u0142o si\u0119 z wyj\u0105tkiem [{3}]
+jndi.entry.bind.failed.explanation=Nie mo\u017cna kontynuowa\u0107 operacji wi\u0105zania. Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+jndi.entry.bind.failed.useraction=Sprawd\u017a, czy inny element nie jest zwi\u0105zany z t\u0105 sam\u0105 lub po\u015bredni\u0105 nazw\u0105, i rozstrzygnij konflikt.
+
+jndi.osgi.bind.failed=CWWKN0005W: Automatyczne wi\u0105zanie obiektu rejestru z nazw\u0105 {0} nie powiod\u0142o si\u0119 z wyj\u0105tkiem {1}.
+jndi.osgi.bind.failed.explanation=Powi\u0105zanie obiektu rejestru z nazw\u0105 by\u0142o niemo\u017cliwe.
+jndi.osgi.bind.failed.useraction=Zbadaj wyj\u0105tek, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia, i rozwi\u0105\u017c problem.
+
+jndi.objectfactory.no.class=CWWKN0006E: Nie mo\u017cna znale\u017a\u0107 klasy potrzebnej do utworzenia obiektu ObjectFactory {0} dla klasy {1}.
+jndi.objectfactory.no.class.explanation=Nie mo\u017cna utworzy\u0107 okre\u015blonego obiektu ObjectFactory, poniewa\u017c nie mo\u017cna znale\u017a\u0107 klasy.
+jndi.objectfactory.no.class.useraction=Upewnij si\u0119, \u017ce klasa {0} jest dost\u0119pna w \u015brodowisku wykonawczym serwera WebSphere Application Server.
+
+jndi.objectfactory.create.failed=CWWKN0007E: Nie mo\u017cna utworzy\u0107 obiektu ObjectFactory {0} dla klasy {1}.
+jndi.objectfactory.create.failed.explanation=Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+jndi.objectfactory.create.failed.useraction=Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+
+jndi.servicereference.failed=CWWKN0008E: Nie mo\u017cna uzyska\u0107 obiektu dla nazwy {0}.
+jndi.servicereference.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzyskiwania obiektu dla podanej nazwy.
+jndi.servicereference.failed.useraction=Szczeg\u00f3\u0142owe informacje mo\u017cna znale\u017a\u0107 we wcze\u015bniejszych wyj\u0105tkach.
+
+jndi.objectfactory.create.exception=CWWKN0009E: Nie mo\u017cna utworzy\u0107 obiektu ObjectFactory dla klasy {0}. Wyj\u0105tek: {1}
+jndi.objectfactory.create.exception.explanation=Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+jndi.objectfactory.create.exception.useraction=Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+
+jndi.url.create.exception=CWWKN0010E: System nie mo\u017ce utworzy\u0107 warto\u015bci java.net.URL z \u0142a\u0144cucha {0}. Ten adres URL jest skonfigurowany tak, aby by\u0142 powi\u0105zany z nazw\u0105 JNDI {1}. Zosta\u0142 odebrany nast\u0119puj\u0105cy wyj\u0105tek: {2}
+jndi.url.create.exception.explanation=\u0141a\u0144cuch adresu URL okre\u015blony w konfiguracji dla nazwy JNDI jest niepoprawny i nie mo\u017cna go powi\u0105za\u0107 z przestrzeni\u0105 nazw JNDI.
+jndi.url.create.exception.useraction=Okre\u015bl poprawn\u0105 warto\u015b\u0107 \u0142a\u0144cucha adresu URL. B\u0142\u0105d wyj\u0105tku zawiera szczeg\u00f3\u0142owe informacje dotycz\u0105ce niepoprawnej nazwy JNDI.
+
+jndi.decode.failed=CWWKN0011E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dekodowania has\u0142a {0}. Sprawd\u017a, czy has\u0142o zosta\u0142o poprawnie zakodowane. Wyj\u0105tek: {1}.
+jndi.decode.failed.explanation=Has\u0142o nie zosta\u0142o poprawnie zakodowane.
+jndi.decode.failed.useraction=Sprawd\u017a, czy has\u0142o zosta\u0142o poprawnie zakodowane. Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.

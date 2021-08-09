@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=A n\u00e9v nem lehet null\u00e9rt\u00e9k\u0171.
+empty.name=A n\u00e9v nem lehet \u00fcres.
+
+jndi.entry.bad.name=CWWKN0001W: A(z) [{0}] n\u00e9v nem \u00e9rtelmezhet\u0151, a m\u0171velet meghi\u00fasul a(z) [{1}] kiv\u00e9tellel.
+jndi.entry.bad.name.explanation=A n\u00e9v nem felel meg a sz\u00fcks\u00e9ges szintaxisnak.  A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.
+jndi.entry.bad.name.useraction=Jav\u00edtsa a nevet, hogy az megfeleljen a sz\u00fcks\u00e9ges szintaxisnak.
+
+jndi.entry.bad.value=CWWKN0002W: A(z) [{0}] \u00e9rt\u00e9k nem \u00e9rtelmezhet\u0151 [{1}] t\u00edpusk\u00e9nt.
+jndi.entry.bad.value.explanation=A megadott \u00e9rt\u00e9k nem felel meg a meghat\u00e1rozott t\u00edpus\u00e1nak.
+jndi.entry.bad.value.useraction=M\u00f3dos\u00edtsa az \u00e9rt\u00e9ket, hogy az megfeleljen a t\u00edpushoz, vagy m\u00f3dos\u00edtsa a t\u00edpust, hogy megfeleljen az \u00e9rt\u00e9khez.
+
+jndi.entry.bad.type=CWWKN0003W: A JNDI bejegyz\u00e9s nem hozhat\u00f3 l\u00e9tre, mert az ismeretlen [{0}] t\u00edpussal van konfigur\u00e1lva.
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=A t\u00edpusnak elv\u00e1rt \u00e9rt\u00e9knek kell lennie.  Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek az automatikus, logikai, byte, karakter, dupla, lebeg\u0151, eg\u00e9sz, hossz\u00fa, r\u00f6vid, vagy karaktersorozat.
+jndi.entry.bad.type.useraction=V\u00e1lasszon egy \u00e9rv\u00e9nyes specifik\u00e1ci\u00f3t.
+
+jndi.entry.bind.failed=CWWKN0004W: A(z) [{0}] \u00e9rt\u00e9k [{1}] n\u00e9vhez t\u00f6rt\u00e9n\u0151 k\u00f6t\u00e9s\u00e9re ir\u00e1nyul\u00f3 h\u00edv\u00e1s a(z) [{3}] kiv\u00e9tellel meghi\u00fasult
+jndi.entry.bind.failed.explanation=A k\u00f6t\u00e9si m\u0171velet nem folytathat\u00f3. A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.
+jndi.entry.bind.failed.useraction=Ellen\u0151rizze, hogy van-e m\u00e1s is k\u00f6tve ugyanahhoz vagy egy k\u00f6ztes n\u00e9vhez, \u00e9s oldja fel az \u00fctk\u00f6z\u00e9st.
+
+jndi.osgi.bind.failed=CWWKN0005W: Egy nyilv\u00e1ntart\u00e1s-objektum automatikus hozz\u00e1rendel\u00e9se a(z) {0} n\u00e9vhez a(z) {1} kiv\u00e9tellel meghi\u00fasult.
+jndi.osgi.bind.failed.explanation=Valami megakad\u00e1lyozta, hogy a rendszer a n\u00e9vhez k\u00f6sse a nyilv\u00e1ntart\u00e1s-objektumot.
+jndi.osgi.bind.failed.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt, hat\u00e1rozza meg a hiba ok\u00e1t, \u00e9s pr\u00f3b\u00e1lja megoldani.
+
+jndi.objectfactory.no.class=CWWKN0006E: Nem tal\u00e1lhat\u00f3 a(z) {1} oszt\u00e1ly {0} ObjectFactory gy\u00e1r\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz sz\u00fcks\u00e9ges oszt\u00e1ly.
+jndi.objectfactory.no.class.explanation=A megadott ObjectFactory nem hozhat\u00f3 l\u00e9tre, mivel az oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+jndi.objectfactory.no.class.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) {0} el\u00e9rhet\u0151 a WebSphere Application Server fut\u00e1si k\u00f6rnyezetben.
+
+jndi.objectfactory.create.failed=CWWKN0007E: A(z) {1} oszt\u00e1lyhoz tartoz\u00f3 {0} ObjectFactory nem hozhat\u00f3 l\u00e9tre.
+jndi.objectfactory.create.failed.explanation=A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.
+jndi.objectfactory.create.failed.useraction=A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.
+
+jndi.servicereference.failed=CWWKN0008E: Nem lehet objektumot beszerezni a(z) {0} n\u00e9vhez.
+jndi.servicereference.failed.explanation=A megadott nev\u0171 objektum lek\u00e9rdez\u00e9se k\u00f6zben hiba t\u00f6rt\u00e9nt.
+jndi.servicereference.failed.useraction=A r\u00e9szletek\u00e9rt n\u00e9zze meg a kor\u00e1bbi kiv\u00e9teleket.
+
+jndi.objectfactory.create.exception=CWWKN0009E: Nem hozhat\u00f3 l\u00e9tre ObjectFactory a(z) {0} oszt\u00e1lyhoz. A kiv\u00e9tel: {1}
+jndi.objectfactory.create.exception.explanation=A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.
+jndi.objectfactory.create.exception.useraction=A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.
+
+jndi.url.create.exception=CWWKN0010E: A rendszer nem tudja l\u00e9trehozni a java.net.URL value \u00e9rt\u00e9ket a(z) {0} karaktersorozatb\u00f3l. Ez az URL \u00fagy van konfigur\u00e1lva, hogy a(z) {1} JNDI n\u00e9vhez legyen k\u00f6tve. A k\u00f6vetkez\u0151 kiv\u00e9tel \u00e9rkezett: {2}
+jndi.url.create.exception.explanation=A JNDI n\u00e9v konfigur\u00e1ci\u00f3j\u00e1hoz megadott URL karaktersorozat nem \u00e9rv\u00e9nyes, \u00e9s nem k\u00f6thet\u0151 a JNDI n\u00e9vt\u00e9rhez.
+jndi.url.create.exception.useraction=Adjon meg egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az URL karaktersorozathoz. A kiv\u00e9tel hiba tov\u00e1bbi r\u00e9szleteket biztos\u00edt az \u00e9rv\u00e9nytelen JNDI n\u00e9vvel kapcsolatban.
+
+jndi.decode.failed=CWWKN0011E: Hiba t\u00f6rt\u00e9nt a(z) {0} jelsz\u00f3 dek\u00f3dol\u00e1sakor. Ellen\u0151rizze, hogy a jelsz\u00f3 helyesen van k\u00f3dolva. Kiv\u00e9tel: {1}.
+jndi.decode.failed.explanation=A jelsz\u00f3 k\u00f3dol\u00e1sa helytelen.
+jndi.decode.failed.useraction=Ellen\u0151rizze, hogy a jelsz\u00f3 helyesen van k\u00f3dolva. A r\u00e9szleteket l\u00e1sd a kiv\u00e9telben.

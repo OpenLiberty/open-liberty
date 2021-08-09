@@ -1,0 +1,64 @@
+###############################################################################
+# Copyright (c) 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSInn0000=CWSIO0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WebSphere Composable Server (Transaction server)
+#CMVCPATHNAME com.ibm.ws.transaction/resources/com/ibm/ws/transaction/services/TransactionMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# Message:       CWLIB0001E: UserTransaction service reference is null.
+# -----------------------------------------------------------------------
+USERTRAN_IS_NULL=CWLIB0001E: \u0417\u0430\u0434\u0430\u043d\u0430 \u043f\u0443\u0441\u0442\u0430\u044f \u0441\u0441\u044b\u043b\u043a\u0430 \u043d\u0430 \u0441\u043b\u0443\u0436\u0431\u0443 UserTransaction.
+USERTRAN_IS_NULL.explanation=\u0411\u044b\u043b \u0441\u0434\u0435\u043b\u0430\u043d \u0437\u0430\u043f\u0440\u043e\u0441 \u043d\u0430 \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0438\u0435 \u0441\u043b\u0443\u0436\u0431\u044b UserTransaction, \u043e\u0434\u043d\u0430\u043a\u043e \u0441\u043b\u0443\u0436\u0431\u0430 UserTransaction \u043d\u0435 \u0441\u0432\u044f\u0437\u0430\u043d\u0430 \u0441 \u044d\u0442\u0438\u043c \u043a\u043e\u043c\u043f\u043b\u0435\u043a\u0442\u043e\u043c.
+USERTRAN_IS_NULL.useraction=\u0415\u0441\u043b\u0438 \u043d\u0435\u043e\u0431\u0445\u043e\u0434\u0438\u043c \u0434\u043e\u0441\u0442\u0443\u043f \u043a UserTransaction, \u0442\u043e \u043e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u043a\u043e\u043d\u0441\u043e\u043b\u044c OSGi \u0438 \u043e\u043f\u0440\u0435\u0434\u0435\u043b\u0438\u0442\u0435 \u043f\u0440\u0438\u0447\u0438\u043d\u0443, \u043f\u043e \u043a\u043e\u0442\u043e\u0440\u043e\u0439 \u043d\u0438\u043a\u0430\u043a\u0430\u044f \u0441\u043b\u0443\u0436\u0431\u0430 UserTransaction \u043d\u0435 \u0441\u0432\u044f\u0437\u0430\u043d\u0430 \u0441 \u044d\u0442\u0438\u043c \u043a\u043e\u043c\u043f\u043b\u0435\u043a\u0442\u043e\u043c. 
+
+
+# {0} is the error that happened
+UNEXPECTED_TRAN_ERROR=CWLIB0002E: \u041d\u0435\u043f\u0440\u0435\u0434\u0432\u0438\u0434\u0435\u043d\u043d\u0430\u044f \u043e\u0448\u0438\u0431\u043a\u0430 \u0442\u0440\u0430\u043d\u0437\u0430\u043a\u0446\u0438\u0438: {0}
+UNEXPECTED_TRAN_ERROR.explanation=\u0411\u044b\u043b \u0441\u0434\u0435\u043b\u0430\u043d \u0437\u0430\u043f\u0440\u043e\u0441 \u043d\u0430 \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0438\u0435 \u043e\u0431\u044a\u0435\u043a\u0442\u0430 Transaction, \u043e\u0434\u043d\u0430\u043a\u043e \u0432\u043e\u0437\u043d\u0438\u043a\u043b\u0430 \u043d\u0435\u043f\u0440\u0435\u0434\u0432\u0438\u0434\u0435\u043d\u043d\u0430\u044f \u043e\u0448\u0438\u0431\u043a\u0430. 
+UNEXPECTED_TRAN_ERROR.useraction=\u041f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0438\u0442\u0435 \u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0435 \u043e\u0448\u0438\u0431\u043a\u0438 \u0432 \u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u0435 \u0438\u043b\u0438 \u0437\u0430\u043f\u0438\u0441\u0438 FFDC.
+
+# {0} is the TransactionRolledbackException thrown
+GLOBAL_TRAN_ROLLBACK=CWLIB0003E: \u0412\u044b\u043f\u043e\u043b\u043d\u0435\u043d \u043e\u0442\u043a\u0430\u0442 \u0433\u043b\u043e\u0431\u0430\u043b\u044c\u043d\u043e\u0439 \u0442\u0440\u0430\u043d\u0437\u0430\u043a\u0446\u0438\u0438 \u043f\u043e \u0442\u0430\u0439\u043c-\u0430\u0443\u0442\u0443: {0}
+GLOBAL_TRAN_ROLLBACK.explanation=\u0412 \u0442\u0435\u043a\u0443\u0449\u0435\u0439 \u0433\u043b\u043e\u0431\u0430\u043b\u044c\u043d\u043e\u0439 \u0442\u0440\u0430\u043d\u0437\u0430\u043a\u0446\u0438\u0438 \u0432\u043e\u0437\u043d\u0438\u043a \u0442\u0430\u0439\u043c-\u0430\u0443\u0442, \u043f\u043e\u044d\u0442\u043e\u043c\u0443 \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d \u0435\u0435 \u043e\u0442\u043a\u0430\u0442.
+GLOBAL_TRAN_ROLLBACK.useraction=\u0423\u0431\u0435\u0434\u0438\u0442\u0435\u0441\u044c \u0432 \u0442\u043e\u043c, \u0447\u0442\u043e \u0433\u043b\u043e\u0431\u0430\u043b\u044c\u043d\u0430\u044f \u0442\u0440\u0430\u043d\u0437\u0430\u043a\u0446\u0438\u044f \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0430 \u0437\u0430 \u043e\u0442\u0432\u0435\u0434\u0435\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f, \u043b\u0438\u0431\u043e \u0443\u0432\u0435\u043b\u0438\u0447\u044c\u0442\u0435 \u0442\u0430\u0439\u043c-\u0430\u0443\u0442.

@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Nincsenek a k\u00e9rt URL c\u00edmnek ({0}) megfelel\u0151 regisztr\u00e1lt kezel\u0151k.
+HANDLER_NOT_FOUND_ERROR.explanation=Olyan URL el\u00e9r\u00e9s\u00e9re t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely a regisztr\u00e1lt kezel\u0151k egyik\u00e9nek sem felel meg.
+HANDLER_NOT_FOUND_ERROR.useraction=Jav\u00edtsa az URL c\u00edmet, hogy megfeleljen valamelyik regisztr\u00e1lt kezel\u0151nek.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=Ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t az\u00e9rt dobja a rendszer, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a clean param\u00e9terrel.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: Az egy\u00fcttes tag SSL kontextus\u00e1nak felold\u00e1sa k\u00f6zben a k\u00f6vetkez\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Az SSL kontextus nem hozhat\u00f3 l\u00e9tre a tag SSL tan\u00fas\u00edtv\u00e1ny\u00e1val.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=Ellen\u0151rizze az egy\u00fcttes SSL be\u00e1ll\u00edt\u00e1s\u00e1t, bele\u00e9rtve a vez\u00e9rl\u0151t \u00e9s a c\u00e9l tagot.
+
+MISSING_PARAMETER=CWWKO1003E: Egy k\u00f6telez\u0151 param\u00e9ter ({0}) hi\u00e1nyzik a https k\u00e9r\u00e9sb\u0151l.
+MISSING_PARAMETER.explanation=A megadott k\u00f6telez\u0151 param\u00e9ter hi\u00e1nyzik a k\u00e9r\u00e9sb\u0151l. 
+MISSING_PARAMETER.useraction=Foglalja bele a megadott param\u00e9tert a k\u00e9r\u00e9sbe, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+MISSING_HEADER=CWWKO1004E: Egy k\u00f6telez\u0151 fejl\u00e9c ({0}) hi\u00e1nyzik a https k\u00e9r\u00e9sb\u0151l.
+MISSING_HEADER.explanation=A megadott k\u00f6telez\u0151 fejl\u00e9c hi\u00e1nyzik a k\u00e9r\u00e9sb\u0151l. 
+MISSING_HEADER.useraction=Foglalja bele a megadott fejl\u00e9cet a k\u00e9r\u00e9sbe, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+INVALID_INPUT_VALUE=CWWKO1005E: A(z) {0} nev\u0171 beviteli mez\u0151 helytelen \u00e9rt\u00e9ket tartalmaz.
+INVALID_INPUT_VALUE.explanation=A k\u00e9r\u00e9s egyik beviteli mez\u0151je helytelen \u00e9rt\u00e9ket tartalmaz. A beviteli mez\u0151 nem felel meg egyik rekordnak se a rendszeren. 
+INVALID_INPUT_VALUE.useraction=Jav\u00edtsa ki a beviteli mez\u0151 \u00e9rt\u00e9k\u00e9t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: A k\u00e9r\u00e9s {0} MIME t\u00edpusa nem t\u00e1mogatott.
+UNSUPPORTED_MEDIA_TYPE.explanation=A kiszolg\u00e1l\u00f3 nem tudja felhaszn\u00e1lni a k\u00e9r\u00e9s MIME t\u00edpus\u00e1t.  A MIME t\u00edpus nem egyezik egyetlen v\u00e1rt MIME t\u00edpussal sem. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Jav\u00edtsa ki a tartalomt\u00edpus \u00e9rt\u00e9k\u00e9t, majd k\u00fcldje \u00fajra a k\u00e9r\u00e9st.
+

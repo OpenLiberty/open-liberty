@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: Le gestionnaire de travaux n'est pas parvenu \u00e0 alimenter le sujet d'ex\u00e9cution avec le principal de l'appelant ou les donn\u00e9es d'identification n\u00e9cessaires pour \u00e9tablir le contexte de s\u00e9curit\u00e9 pour cette instance de travail.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=Le gestionnaire d'appel JASPIC du gestionnaire de travaux n'est pas parvenu \u00e0 alimenter le principal ou les donn\u00e9es d'identification personnalis\u00e9es du sujet d'ex\u00e9cution car une exception a \u00e9t\u00e9 \u00e9mise lors du traitement des rappels JASPIC fournis par l'adaptateur de ressources.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=Consultez les journaux de l'outil de diagnostic de premier niveau (FFDC) et du serveur \u00e9mis juste avant le message J2CA0672E afin de d\u00e9terminer l'origine du probl\u00e8me. Si cette derni\u00e8re ne peut pas \u00eatre identifi\u00e9e \u00e0 partir des messages d'erreur pr\u00e9c\u00e9dents, collectez des donn\u00e9es de diagnostic et visitez le site Web de support pour plus d'informations.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: Le sujet d''ex\u00e9cution fourni par le gestionnaire de travaux ne correspond pas au sujet fourni par le rappel {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=L'instance du sujet d'ex\u00e9cution fourni par le gestionnaire de travaux pour \u00e9tablir le contexte de s\u00e9curit\u00e9 de l'instance de travail n'est pas la m\u00eame que celle obtenue du rappel respectif. Le gestionnaire de travaux a ignor\u00e9 le sujet obtenu du rappel et a \u00e9tabli le contexte de s\u00e9curit\u00e9 avec l'instance qu'il a lui-m\u00eame fourni.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Prenez contact avec le fournisseur de l'adaptateur de ressources pour modifier la m\u00e9thode getSubject() du rappel JASPIC afin de renvoyer le sujet d'ex\u00e9cution fourni \u00e0 l'instance du contexte de s\u00e9curit\u00e9 via l'appel de la m\u00e9thode setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: Le gestionnaire d''appel JASPIC du gestionnaire de travaux a \u00e9chou\u00e9 avec l''exception {0} lors du traitement des rappels fournis par le contexte de s\u00e9curit\u00e9. Le message de l''exception est : {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=Le gestionnaire de travaux a rencontr\u00e9 une exception lors du traitement des rappels JASPIC fournis par l'adaptateur de ressources dans le contexte de s\u00e9curit\u00e9 transf\u00e9r\u00e9. L'exception peut \u00eatre l'une des suivantes : 1) Un \u00e9l\u00e9ment CallerPrincipalCallback a fourni un principal avec un nom d'utilisateur qui n'existe pas dans le registre d'utilisateurs. 2) Un \u00e9l\u00e9ment PasswordValidationCallback a fourni un nom d'utilisateur ou un mot de passe non valide. 3) Un \u00e9l\u00e9ment CallerPrincipalCallback et un \u00e9l\u00e9ment PasswordValidationCallback ont fourni des noms d'utilisateur diff\u00e9rents. 4) L'adaptateur de ressources a fourni un rappel que le serveur d'applications ne prend pas en charge. 5) L'adaptateur de ressources a fourni plusieurs \u00e9l\u00e9ments CallerPrincipalCallback.  6) Le gestionnaire de travaux a rencontr\u00e9 une erreur inattendue.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Si le message de l'exception comporte un code d'erreur, prenez connaissance de l'action \u00e0 effectuer pour ce code d'erreur. Si l'exception est de type UnsupportedCallbackException, prenez contact avec le fournisseur de l'adaptateur de ressources car le gestionnaire d'appel JASPIC du gestionnaire de travaux ne prend pas en charge le rappel fourni. Si l'exception est diff\u00e9rente de celles mentionn\u00e9es, collectez des donn\u00e9es de diagnostic et visitez le site de support IBM pour plus d'informations.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: Le groupe {0} n''appartient pas au domaine associ\u00e9 \u00e0 l''application.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=Le contexte de s\u00e9curit\u00e9 transf\u00e9r\u00e9 avec l'instance de travail a fourni un nom de groupe qui n'existe pas dans le domaine (registre d'utilisateurs) du domaine de s\u00e9curit\u00e9 associ\u00e9 \u00e0 l'application.  Le gestionnaire de travaux a obtenu le nom de groupe valide d'une instance d'\u00e9l\u00e9ment JASPIC GroupPrincipalCallback, \u00e0 chaque fois qu'une instance a \u00e9t\u00e9 fournie par l'adaptateur de ressources.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=V\u00e9rifiez que le groupe appartient au m\u00eame domaine en vous assurant qu'il existe dans le registre d'utilisateurs pour ce domaine. Si tel n'est pas le cas, prenez contact avec le fournisseur de l'adaptateur de ressources car le gestionnaire de travaux ne prend pas en charge des groupes de domaines diff\u00e9rents.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Aucun groupe n''a \u00e9t\u00e9 trouv\u00e9 pour l''utilisateur avec l''ID unique {0}
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=Le contexte de s\u00e9curit\u00e9 transf\u00e9r\u00e9 avec l'instance de travail a fourni un utilisateur qui n'appartient \u00e0 aucun des groupes d\u00e9finis dans le registre d'utilisateurs.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Aucune action de l'utilisateur n'est requise.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: Le nom d''utilisateur {0} ou le mot de passe indiqu\u00e9 par l''\u00e9l\u00e9ment PasswordValidationCallback n''est pas valide.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=Le nom d'utilisateur ou le mot de passe n'existent pas dans le registre d'utilisateurs du domaine qui est configur\u00e9 pour le domaine de s\u00e9curit\u00e9 associ\u00e9 \u00e0 l'application.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Configurez l'adaptateur de ressources et le syst\u00e8me d'information d'entreprise en vue de l'utilisation d'un nom d'utilisateur et d'un mot de passe valides. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Impossible de valider le nom d''utilisateur {0} et le mot de passe indiqu\u00e9s par l''\u00e9l\u00e9ment PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=Le gestionnaire de travaux n'a pas pu valider le nom d'utilisateur et le mot de passe indiqu\u00e9s par l'\u00e9l\u00e9ment PasswordValidationCallback en raison d'une exception CustomRegistryException. Cette exception est due \u00e0 un mot de passe non valide ou \u00e0 un probl\u00e8me li\u00e9 au registre d'utilisateurs pour ce domaine d'application.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=Si la cause de l'exception CustomRegistryException est un mot de passe non valide, configurez l'adaptateur de ressources ou le syst\u00e8me d'information d'entreprise en vue de l'utilisation d'une combinaison de nom d'utilisateur et de mot de passe valide. Sinon, r\u00e9solvez le probl\u00e8me li\u00e9 au registre d'utilisateurs.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: Le nom d''utilisateur {0} fourni par l''\u00e9l\u00e9ment PasswordValidationCallback et le nom d''utilisateur {1} fourni par l''\u00e9l\u00e9ment CallerPrincipalCallback ne correspondent pas.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=Les noms d'utilisateur fournis par les \u00e9l\u00e9ments PasswordValidationCallback et CallerPrincipalCallback doivent correspondre. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Prenez contact avec le fournisseur de l'adaptateur de ressources et l'administrateur syst\u00e8me pour vous assurer que l'adaptateur de ressources est con\u00e7u et configur\u00e9 pour renvoyer le m\u00eame nom d'utilisateur \u00e0 partir des deux rappels.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: Le gestionnaire de travaux n'est pas parvenu \u00e0 associer le contexte de s\u00e9curit\u00e9 fourni \u00e0 l'instance de travail.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=Le gestionnaire de travaux a rencontr\u00e9 un probl\u00e8me alors qu'il \u00e9tablissait et configurait le contexte de s\u00e9curit\u00e9 pour la demande de travail entrante. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=Recherchez les messages J2CA0668E et J2CA0669E dans les journaux de l'outil de diagnostic de premier niveau (FFDC) et du serveur afin de d\u00e9terminer l'origine du probl\u00e8me.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: La m\u00e9thode {0} a intercept\u00e9 une exception {1}.
+METHOD_FAILED_J2CA0132.explanation=La m\u00e9thode a intercept\u00e9 une exception qui est probablement une erreur interne.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

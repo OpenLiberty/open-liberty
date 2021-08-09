@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: Es ist keine Java-Instrumentierungsinstanz verf\u00fcgbar. Deshalb funktionieren die \u00dcberwachungs- und Diagnosefunktionen nicht. Konfigurieren Sie die Datei ws-javaagent.jar mit der JVM-Option -javaagent.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=Die Instrumentierungsinstanz ist f\u00fcr die Umsetzung von Klassen durch Injektion von Bytecode erforderlich. Die Bytecodeinjektion wird von Liberty f\u00fcr die Generierung von \u00dcberwachungs- und Diagnoseinformationen verwendet.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=F\u00fcr die Aktivierung der Java-Instrumentierung sind weitere JVM-Einstellungen erforderlich. Konfigurieren Sie die Datei ws-javaagent.jar mit der JVM-Option -javaagent. Die Datei ws-javaagent.jar befindet sich im Verzeichnis ${wlp.install.dir}/bin/tools der Liberty Profile-Installation.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Dauer
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=Operation

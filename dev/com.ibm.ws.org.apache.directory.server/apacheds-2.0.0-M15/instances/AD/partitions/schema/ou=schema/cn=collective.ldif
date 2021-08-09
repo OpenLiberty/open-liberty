@@ -1,0 +1,12 @@
+version: 1
+dn: cn=collective,ou=schema
+objectclass: metaSchema
+objectclass: top
+creatorsname: uid=admin,ou=system
+cn: collective
+entryUUID: a0a536f2-7097-4ff2-9a7c-2742e80673f4
+m-dependencies: system
+m-dependencies: core
+entryCSN: 20130919081858.039000Z#000000#000#000000
+entryParentId: 529257cc-a63e-4ee3-827f-354e24136008
+createTimestamp: 20130919081909.192Z

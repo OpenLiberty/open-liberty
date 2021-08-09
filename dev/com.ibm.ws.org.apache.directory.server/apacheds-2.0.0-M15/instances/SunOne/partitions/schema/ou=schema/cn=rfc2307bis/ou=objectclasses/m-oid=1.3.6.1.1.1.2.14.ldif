@@ -1,0 +1,14 @@
+dn: m-oid=1.3.6.1.1.1.2.14, ou=objectClasses, cn=rfc2307bis, ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.14
+m-name: nisKeyObject
+m-description: An object with a public and secret key
+m-supObjectClass: top
+m-typeObjectClass: AUXILIARY
+m-must: cn
+m-must: nisPublicKey
+m-must: nisSecretKey
+m-may: uidNumber
+m-may: description

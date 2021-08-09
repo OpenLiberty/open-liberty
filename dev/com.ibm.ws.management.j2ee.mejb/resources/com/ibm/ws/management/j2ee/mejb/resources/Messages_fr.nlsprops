@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mejb/resources/com/ibm/ws/management/j2ee/mejb/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSR77
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+MANAGEMENT_EJB_SERVICE_ACTIVATED=CWWKJ0200I: Le service ManagementEJB a d\u00e9marr\u00e9.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.explanation=Le d\u00e9marrage du service ManagementEJB a abouti.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.useraction=Ce message est fourni pour information uniquement. Aucune action n'est requise.
+
+MANAGEMENT_EJB_SERVICE_DEACTIVATED=CWWKJ0201I: Le service ManagementEJB a \u00e9t\u00e9 arr\u00eat\u00e9.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.explanation=L'arr\u00eat du service ManagementEJB a abouti.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.useraction=Ce message est affich\u00e9 \u00e0 titre purement informatif. Aucune action n'est requise.
+
+MANAGEMENT_EJB_START_ERROR=CWWKJ0202E: Impossible de d\u00e9marrer le module EJB syst\u00e8me. Erreur : {0} 
+MANAGEMENT_EJB_START_ERROR.explanation=Le produit ne peut pas d\u00e9marrer le module EJB syst\u00e8me car une erreur est survenue.
+MANAGEMENT_EJB_START_ERROR.useraction=V\u00e9rifiez que le module EJB est configur\u00e9 correctement. 
+

@@ -1,0 +1,91 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Im Kafka-Connector f\u00fcr Reactive Messaging ist ein interner Fehler aufgetreten. Der Fehler ist: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=Es ist ein Reactive-Messaging-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+internal.kafka.connector.error.CWMRX1000E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: Beim Festschreiben von Leseoffsets im Kafka-Broker ist ein Fehler aufgetreten. Der Fehler ist: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=Im Kafka-Eingangsconnector ist ein Fehler aufgetreten, durch den die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: Beim Polling des Kafka-Brokers ist ein Fehler aufgetreten. Der Fehler ist: {0}.
+kafka.poll.error.CWMRX1002E.explanation=Im Kafka-Eingangsconnector ist ein Fehler aufgetreten, durch den die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.poll.error.CWMRX1002E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: Beim Senden einer Nachricht an den Kafka-Broker ist ein Fehler aufgetreten. Der Fehler ist: {0}.
+kafka.send.error.CWMRX1003E.explanation=Im Kafka-Ausgangsconnector ist ein Fehler aufgetreten, durch den die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.send.error.CWMRX1003E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Im Kafka-Ausgangsconnector f\u00fcr Reactive Messaging wurde ein Fehler empfangen. Der Fehler ist {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=Im Kafka-Ausgangsconnector wurde ein Fehlersignal empfangen, durch das die normale Ausf\u00fchrung von Reactive Messaging verhindert wird.
+kafka.output.error.signal.CWMRX1004E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Die Eigenschaft group.id wurde nicht in der Konfiguration auf diesen Kanal gesetzt. Setzen Sie die Eigenschaft {0} in einer der MicroProfile-Config-Quellen f\u00fcr diese Anwendung.
+kafka.groupid.not.set.CWMRX1005E.explanation=Die Gruppen-ID f\u00fcr den Kafka-Konsumenten muss definiert sein, damit Reactive Messaging ordnungsgem\u00e4\u00df funktioniert.
+kafka.groupid.not.set.CWMRX1005E.useraction=Setzen Sie die Eigenschaft in einem der MicroProfile-ConfigSource-Speicherorte f\u00fcr diese Anwendung, z. B. in der Datei microprofile-config.properties.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Klassen aus der kafka-clients-JAR-Datei konnten nicht geladen werden. Stellen Sie sicher, dass die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten Ihrer Anwendung als Bibliotheken zur Verf\u00fcgung stehen.
+kafka.library.not.present.CWMRX1006E.explanation=Anwendungen, die den Reactive-Messaging-Kafka-Client verwenden, m\u00fcssen die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten bereitstellen. Diese Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten k\u00f6nnen entweder als gepackte Bibliothek innerhalb der Anwendung oder als gemeinsam genutzte Bibliothek bereitgestellt werden.
+kafka.library.not.present.CWMRX1006E.useraction=Packen Sie die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten als Bibliotheken in Ihrer Anwendung oder als gemeinsam genutzte Bibliothek. Die kafka-clients-JAR-Datei kann von der Apache Kafka-Website oder von Maven Central heruntergeladen werden.
+
+# A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
+kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: Ein eingehender Kafka-Connector f\u00fcr den Kanal {0} kann nicht erstellt werden. Fehler: {1}
+kafka.create.incoming.error.CWMRX1007E.explanation=Ein Fehler, der bei der Konfiguration des Kafka-Connectors f\u00fcr einen eingehenden Reactive-Messaging-Kanal aufgetreten ist, verhindert die normale Ausf\u00fchrung von MicroProfile Reactive Messaging. Dieser Fehler kann m\u00f6glicherweise auf ein Problem mit der Connectorkonfiguration zur\u00fcckzuf\u00fchren sein oder es gibt ein Problem bei der Aufl\u00f6sung des Hostnamens des Kafka-Brokers.
+kafka.create.incoming.error.CWMRX1007E.useraction=Ermitteln Sie das Problem anhand der Fehlernachricht, der Datei messages.log auf dem Server und der FFDC-Protokolldateien.
+
+# A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
+kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: Ein abgehender Kafka-Connector f\u00fcr den Kanal {0} kann nicht erstellt werden. Fehler: {1}
+kafka.create.outgoing.error.CWMRX1008E.explanation=Ein Fehler, der bei der Konfiguration des Kafka-Connectors f\u00fcr einen abgehenden Reactive-Messaging-Kanal aufgetreten ist, verhindert die normale Ausf\u00fchrung von MicroProfile Reactive Messaging. Dieser Fehler kann m\u00f6glicherweise auf ein Problem mit der Connectorkonfiguration zur\u00fcckzuf\u00fchren sein oder es gibt ein Problem bei der Aufl\u00f6sung des Hostnamens des Kafka-Brokers.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Ermitteln Sie das Problem anhand der Fehlernachricht, der Datei messages.log auf dem Server und der FFDC-Protokolldateien.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: Ein eingehender Kafka-Connector f\u00fcr den Kanal {0} kann nicht erstellt werden, aber es wird versucht, die Operation zu wiederholen. Fehler: {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=Bei der Konfiguration des Kafka-Connectors f\u00fcr einen eingehenden Reactive-Messaging-Kanal ist ein Fehler aufgetreten. Dieser Fehler kann m\u00f6glicherweise auf ein Problem mit der Connectorkonfiguration zur\u00fcckzuf\u00fchren sein oder es gibt ein Problem bei der Aufl\u00f6sung des Hostnamens des Kafka-Brokers.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Ermitteln Sie das Problem anhand der Fehlernachricht, der Datei messages.log auf dem Server und der FFDC-Protokolldateien, um herauszufinden, ob es sich um ein tempor\u00e4res Problem handelt, das durch erneutes Konfigurieren des Connectors behoben werden kann.
+
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Ein Kafka-Connector f\u00fcr abgehende Nachrichten f\u00fcr den Kanal {0} k\u00f6nnen nicht erstellt werden, diese Operation wird jedoch gerade wiederholt. Fehler: {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Bei der Konfiguration des Kafka-Connectors f\u00fcr einen Reactive-Messaging-Kanal f\u00fcr abgehende Nachrichten ist ein Fehler aufgetreten. Dieser Fehler kann m\u00f6glicherweise auf ein Problem mit der Connectorkonfiguration zur\u00fcckzuf\u00fchren sein oder es gibt ein Problem bei der Aufl\u00f6sung des Hostnamens des Kafka-Brokers.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Ermitteln Sie das Problem anhand der Fehlernachricht, der Datei messages.log auf dem Server und der FFDC-Protokolldateien, um herauszufinden, ob es sich um ein tempor\u00e4res Problem handelt, das durch erneutes Konfigurieren des Connectors behoben werden kann.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: Der folgende Reactive-Messaging-Fehler ist aufgetreten: {0}.
+temporary.CWMRX1999E.explanation=Es ist ein Reactive-Messaging-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMRX1999E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.

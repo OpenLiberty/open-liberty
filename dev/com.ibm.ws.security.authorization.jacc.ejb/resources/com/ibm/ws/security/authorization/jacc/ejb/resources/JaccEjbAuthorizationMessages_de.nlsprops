@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc.ejb/resources/com/ibm/ws/security/authorization/jacc/ejb/resources/JaccEjbAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2890 - CWWKS2899
+
+JACC_EJB_GET_POLICYCONFIGURATION_FAILURE=CWWKS2890E: Der JACC-Service kann das PolicyConfiguration-Objekt mit der contextID {0} nicht abrufen. Ausnahme: {1}
+JACC_EJB_GET_POLICYCONFIGURATION_FAILURE.explanation=Der JACC-Service kann das PolicyConfiguration-Objekt des JACC-Providers nicht abrufen. Dies kann ein schwerwiegender Fehler im JACC-Provider sein.
+JACC_EJB_GET_POLICYCONFIGURATION_FAILURE.useraction=Suchen Sie in den JACC-Providerprotokollen und in den Serverprotokollen nach weiteren Informationen.
+
+JACC_EJB_IMPLIES_FAILURE=CWWKS2891E: Die Berechtigung f\u00fcr die Ressource mit der contextID {0} ist wegen der Ausnahme {1} fehlgeschlagen.
+JACC_EJB_IMPLIES_FAILURE.explanation=Die Berechtigung f\u00fcr die angegebene Ressource ist fehlgeschlagen.
+JACC_EJB_IMPLIES_FAILURE.useraction=Suchen Sie in den JACC-Providerprotokollen und in den Serverprotokollen nach weiteren Informationen.
+
+JACC_EJB_PERMISSION_PROPAGATION_FAILURE=CWWKS2892E: Der JACC-Service kann die EJB-Sicherheitsrollen mit der contextID {0} wegen der Ausnahme {1} nicht an den JACC-Provider weitergeben.
+JACC_EJB_PERMISSION_PROPAGATION_FAILURE.explanation=Der JACC-Service kann die EJB-Sicherheitsrollen wegen der angegebenen unerwarteten Ausnahme nicht an den JACC-Provider weitergeben.
+JACC_EJB_PERMISSION_PROPAGATION_FAILURE.useraction=Suchen Sie in den JACC-Providerprotokollen und in den Serverprotokollen nach weiteren Informationen.
+
+JACC_EJB_SPI_PARAMETER_ERROR=CWWKS2893E: Das Parameterobjekt {0} der Methode {1} ist nicht g\u00fcltig. Das erwartete Objekt des Parameters ist {2}.
+JACC_EJB_SPI_PARAMETER_ERROR.explanation=Der JACC-Service kann die Anforderung nicht ausf\u00fchren, weil das Objekt des Parameters nicht g\u00fcltig ist. Dies ist ein interner Fehler.
+JACC_EJB_SPI_PARAMETER_ERROR.useraction=Dies ist ein interner Fehler. Wenn der Fehler weiterhin auftritt, finden Sie auf der Unterst\u00fctzungsseite f\u00fcr WebSphere Application Server unter der Adresse "http://www.ibm.com/software/webservers/appserv/was/support/" Informationen zur Fehlerbestimmung.

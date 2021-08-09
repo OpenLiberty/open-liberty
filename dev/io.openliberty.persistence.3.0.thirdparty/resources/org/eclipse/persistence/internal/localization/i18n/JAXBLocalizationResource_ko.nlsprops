@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=\ub124\uc784\uc2a4\ud398\uc774\uc2a4 \ubd84\uc11d\uae30 \ucd94\uac00
+
+create_descriptors=\ub514\uc2a4\ud06c\ub9bd\ud130 \uc791\uc131
+
+create_mappings={0} \ub514\uc2a4\ud06c\ub9bd\ud130\uc5d0 \ub9f5\ud551 \ucd94\uac00
+
+error=\uc624\ub958: 
+
+generate_files=\ubc30\uce58 XML \ubc0f \uc138\uc158 \uad6c\uc131 \uc4f0\uae30
+
+generate_source=\uad6c\ud604 \ud074\ub798\uc2a4 \uc0dd\uc131
+
+impl_package_missing=\uad6c\ud604 \ud074\ub798\uc2a4 \ud328\ud0a4\uc9c0 \uc774\ub984\uc774 \ub204\ub77d\ub428
+
+io_exception_error=\uc624\ub958: \uc608\uc0c1\ub418\ub294 IOException
+
+malformed_url_error=\uc624\ub958: \uc608\uc0c1\uce58 \ubabb\ud55c MalformedURLException
+
+missing_customization=\uc785\ub825 \uc0ac\uc6a9\uc790 \uc815\uc758 \ud30c\uc77c\uc774 \ub204\ub77d\ub428
+
+missing_output_dir=TopLink \ucd9c\ub825 \ub514\ub809\ud1a0\ub9ac \uc774\ub984\uc774 \ub204\ub77d\ub428
+
+missing_project_dir=TopLink \uc6cc\ud06c\ubca4\uce58 \ud504\ub85c\uc81d\ud2b8 \ub514\ub809\ud1a0\ub9ac \uc774\ub984\uc774 \ub204\ub77d\ub428
+
+missing_schema_file=\uc785\ub825 \uc2a4\ud0a4\ub9c8 \ud30c\uc77c\uc774 \ub204\ub77d\ub428
+
+missing_src_dir=\uc18c\uc2a4 \ucd9c\ub825 \ub514\ub809\ud1a0\ub9ac \uc774\ub984\uc774 \ub204\ub77d\ub428
+
+missing_target_package=\ub300\uc0c1 \ud328\ud0a4\uc9c0 \uc774\ub984\uc774 \ub204\ub77d\ub428
+
+read_customization=\uc0ac\uc6a9\uc790 \uc815\uc758 \ud30c\uc77c \uc77d\uae30
+
+setup_inheritance=\uc0c1\uc18d \uc124\uc815
+
+start_mw_project=\ub9f5\ud551 \uc6cc\ud06c\ubca4\uce58 \ud504\ub85c\uc81d\ud2b8 \uc791\uc131
+
+start_orajaxb=orajaxb \ud638\ucd9c
+
+start_toplink=TopLink \uc0dd\uc131 \ud638\ucd9c
+
+version=\ubc84\uc804: 
+

@@ -1,0 +1,77 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>jndi-1.0</feature>
+    </featureManager>
+ 
+     <library id="DerbyLib" fat.modify="true">
+    	<fileset dir="${shared.resource.dir}/derby"/>
+    </library>
+    
+    <authData id="derbyAuth" user="dbuser" password="{xor}Oz0vKDtt" />
+     
+    <dataSource id="dsfat0" jndiName="jdbc/dsfat0" type="javax.sql.DataSource" isolationLevel="TRANSACTION_SERIALIZABLE">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <authentication-alias name="derbyAuth"/>
+      <properties.derby.embedded databaseName="memory:ds0" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="dsfat1" jndiName="jdbc/dsfat1" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="dsfat2" jndiName="jdbc/dsfat2" type="javax.sql.DataSource">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <authentication-alias name="derbyAuth"/>
+      <properties.derby.embedded databaseName="memory:ds2" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="dsfat3" jndiName="jdbc/dsfat3" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:ds3" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="dsfat4" jndiName="jdbc/dsfat4" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <authentication-alias name="derbyAuth"/>
+      <properties.derby.embedded databaseName="memory:ds4" createDatabase="create"/>
+    </dataSource>
+    
+    <!-- dsfat5, dsfat6, dsfat7 are defined via @DataSourceDefinition in JDBCDerbyServlet -->
+    
+    <dataSource id="dsfat8" jndiName="jdbc/dsfat8" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:ds8" createDatabase="create"/>
+    </dataSource>
+    
+    <!-- During testing dsfatX will permanently have it's isolation level changed.  Do not use in any other tests. -->
+    <dataSource id="dsfatX" jndiName="jdbc/dsfatX" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:dsX" createDatabase="create"/>
+    </dataSource>
+    
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    
+    <jdbcDriver id="Derby1" libraryRef="DerbyLib"/>
+        
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="jdbcapp.war" >
+        <classloader commonLibraryRef="DerbyLib"/>
+    </application>
+
+</server>

@@ -1,0 +1,10 @@
+version: 1
+dn: ou=syntaxCheckers,cn=cosine,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: ef57fb98-ee01-4ee6-b803-2f64b3a2cd28
+entryCSN: 20130919065345.100000Z#000000#000#000000
+entryParentId: 95620dd4-5113-4789-bde3-6c10e43f5663
+ou: syntaxcheckers
+createTimestamp: 20130919065353.979Z

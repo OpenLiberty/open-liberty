@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Nie mo\u017cna znale\u017a\u0107 wymaganej instancji us\u0142ugi TokenService typu {0}.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Ka\u017cdy pakunek implementacji TokenService okre\u015bla sw\u00f3j udost\u0119pniony typ.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Okre\u015bl obs\u0142ugiwany typ lub zainstaluj pakunek, kt\u00f3ry udost\u0119pnia instancj\u0119 \
+us\u0142ugi TokenService wymaganego typu.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika bezpiecze\u0144stwa. Przyczyny mog\u0105 by\u0107 nast\u0119puj\u0105ce:\n\
+1. Znacznik bezpiecze\u0144stwa zosta\u0142 wygenerowany na innym serwerze z u\u017cyciem innych kluczy.\n\
+2. Nast\u0105pi\u0142a zmiana konfiguracji znacznika lub kluczy zabezpiecze\u0144 us\u0142ugi znacznik\u00f3w, kt\u00f3ra wygenerowa\u0142a znacznik.\n\
+3. Us\u0142uga znacznik\u00f3w, kt\u00f3ra utworzy\u0142a znacznik, nie jest ju\u017c dost\u0119pna.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=Nie mo\u017cna ponownie utworzy\u0107 znacznika za pomoc\u0105 aktualnie skonfigurowanych us\u0142ug znacznik\u00f3w.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=Aby odtworzy\u0107 znacznik, sprawd\u017a, czy co najmniej jeden sk\u0142adnik zawiera us\u0142ug\u0119 znacznik\u00f3w, kt\u00f3ra jest poprawnie skonfigurowana.
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika bezpiecze\u0144stwa. Przyczyny mog\u0105 by\u0107 nast\u0119puj\u0105ce:\n\
+1. Znacznik bezpiecze\u0144stwa zosta\u0142 wygenerowany na innym serwerze z u\u017cyciem innych kluczy.\n\
+2. Nast\u0105pi\u0142a zmiana konfiguracji znacznika lub kluczy zabezpiecze\u0144 us\u0142ugi znacznik\u00f3w, kt\u00f3ra wygenerowa\u0142a znacznik.\n\
+3. Us\u0142uga znacznik\u00f3w, kt\u00f3ra utworzy\u0142a znacznik, nie jest ju\u017c dost\u0119pna.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Nie mo\u017cna ponownie utworzy\u0107 znacznika za pomoc\u0105 aktualnie skonfigurowanych us\u0142ug znacznik\u00f3w.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Aby odtworzy\u0107 znacznik, sprawd\u017a, czy co najmniej jeden sk\u0142adnik zawiera us\u0142ug\u0119 znacznik\u00f3w, kt\u00f3ra jest poprawnie skonfigurowana.
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: Interfejsy API ograniczonego delegowania (S4U2self i S4U2proxy) wymagaj\u0105 \u015brodowiska wykonawczego program\u00f3w Java przynajmniej w wersji JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=Interfejsy API ograniczonego delegowania (S4U2self i S4U2proxy) wymagaj\u0105 \u015brodowiska wykonawczego program\u00f3w Java przynajmniej w wersji JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=U\u017cywaj \u015brodowiska wykonawczego program\u00f3w Java w wersji IBM JavaSE 1.8.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Us\u0142uga OSGi ograniczonego delegowania {0} nie jest dost\u0119pna.
+KRB_OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga OSGi nie jest dost\u0119pna.
+KRB_OSGI_SERVICE_ERROR.useraction=W\u0142\u0105cz sk\u0142adnik Ograniczone delegowanie i u\u017cywaj \u015brodowiska wykonawczego program\u00f3w Java w wersji IBM JavaSE 1.8. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.

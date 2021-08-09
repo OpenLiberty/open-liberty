@@ -1,0 +1,5 @@
+com.ibm.ws.webcontainer.security.jacc.1.5_fat
+com.ibm.ws.webcontainer.servlet.3.1_fat
+com.ibm.ws.webcontainer.servlet.4.0_fat
+com.ibm.ws.webserver.plugin.utility_fat
+io.openliberty.wsoc.internal_fat

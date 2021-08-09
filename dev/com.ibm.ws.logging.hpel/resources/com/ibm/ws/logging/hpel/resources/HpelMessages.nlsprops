@@ -1,0 +1,140 @@
+###############################################################################
+# Copyright (c) 1997, 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/HpelMessages.nlsprops
+#COMPONENTPREFIX HPEL
+# Long proper prefix CWLHP
+#COMPONENTNAMEFOR HPEL IBM High Performance Extensible Logging
+#NLS_MESSAGEFORMAT_VAR
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+# AbstractBufferedLogFileWriter messages.
+HPEL_WrongBufferSizeValue=HPEL0101W: Buffer size {0} specified in the system property {1} is not a number. Using {2} instead.
+HPEL_WrongBufferSizeValue.explanation=The buffer size specified was invalid, a default size is being used instead
+HPEL_WrongBufferSizeValue.useraction=If the default size is not optimal, specify a valid buffer size
+
+HPEL_WrongFlushPeriodValue=HPEL0102W: Flush period {0} specified in the system property {1} is not a number. Using {2} instead.
+HPEL_WrongFlushPeriodValue.explanation=The flush period specified is invalid, a default period is being used instead
+HPEL_WrongFlushPeriodValue.useraction=If the default flush period is not optimal, specify a valid flush period
+
+HPEL_ExceptionInPeriodicFlush=HPEL0103W: Exception during periodic log stream flush.
+HPEL_ExceptionInPeriodicFlush.explanation=An exception occurred while flushing the buffered log stream.  Details are included with the message
+HPEL_ExceptionInPeriodicFlush.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# AbstractHPELRepositoryExporter messages.
+HPEL_HeaderWithoutProcessId=HPEL0104E: Header does not contain process ID information. Make sure property {0} is set there.
+HPEL_HeaderWithoutProcessId.explanation=There is information missing in the header
+HPEL_HeaderWithoutProcessId.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingHeader=HPEL0105E: Exception during log header conversion into a byte array.
+HPEL_ErrorWhileSerializingHeader.explanation=Log header was not valid as the code processing it was not able to parse and convert it
+HPEL_ErrorWhileSerializingHeader.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_LogHeaderWasNotSet=HPEL0106E: Invocation error: Illegal attempt to export a log record before setting process wide information.
+HPEL_LogHeaderWasNotSet.explanation=A process order issue occurred and records are being written before the logging system is ready
+HPEL_LogHeaderWasNotSet.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingRecord=HPEL0107E: Exception during log record conversion into a byte array.
+HPEL_ErrorWhileSerializingRecord.explanation=The log information was not serialized properly. Exception information is included in the error
+HPEL_ErrorWhileSerializingRecord.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRecordBrowser messages.
+HPEL_NoRecordAtLocation=HPEL0108W: No records were found at the specified location.
+HPEL_NoRecordAtLocation.explanation=Location specified for the log directory does not contain any files with records
+HPEL_NoRecordAtLocation.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryBrowserImpl messages.
+HPEL_NotRepositoryLocation=HPEL0109E: Specified location does not belong to this repository.
+HPEL_NotRepositoryLocation.explanation=Repository information specified is incorrect
+HPEL_NotRepositoryLocation.useraction=ReAssess the specified location information and modify the calls
+
+HPEL_NotRepositoryFileNoTimestamp=HPEL0110E: File "{0}" used in the argument does not belong to this repository. Cannot retrieve timestamp.
+HPEL_NotRepositoryFileNoTimestamp.explanation=File is not a legitimate file in the repository
+HPEL_NotRepositoryFileNoTimestamp.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_RepositoryFileMissing=HPEL0111W: File "{0}" is missing in the repository. Most probably it was removed by retention manager.
+HPEL_RepositoryFileMissing.explanation=Expected file has been removed either by the location manager or by manual intervention
+HPEL_RepositoryFileMissing.useraction=If information from the file is desired and it has been archived, consider restoring the information.
+
+HPEL_NotRepositoryFileNoProcessId=HPEL0112E: File "{0}" used in the argument does not belong to this repository. Cannot retrieve process ID.
+HPEL_NotRepositoryFileNoProcessId.explanation=Header information in file indicatest that the file is not a properly formed file in this repository
+HPEL_NotRepositoryFileNoProcessId.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryWriterImpl messages.
+HPEL_IncorrectSwitchHour=HPEL0113W: Specified value {0} is incorrect for an hour of the day. Value {1} will be used instead.
+HPEL_IncorrectSwitchHour.explanation=The hour of the day specified is invalid, a default hour is being used instead
+HPEL_IncorrectSwitchHour.useraction=If the default hour is not optimal, specify a valid hour of the day
+
+# OneLogFileRecordIterator messages.
+HPEL_NoHeaderRecordInFileHead=HPEL0114E: Failed to read header record at the start of file "{0}": {1}
+HPEL_NoHeaderRecordInFileHead.explanation=Either the file does not have valid header information or when buffering is enabled, the repository is creating a new binary file that is simultaneously being accessed. 
+HPEL_NoHeaderRecordInFileHead.useraction=This could be a timing issue, consider reRunning the query.  Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_NoRecordsInFile=HPEL0115E: No records found in file "{0}".
+HPEL_NoRecordsInFile.explanation=This file is currently empty.  This is generally indicative of some sort of error as files are created because records exist to be stored or the repository is creating a new binary file that is simultaneously being accessed. 
+HPEL_NoRecordsInFile.useraction=This could be a timing issue, consider reRunning the query.  Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInHeaderRecordSize=HPEL0116W: Log Header record size check failed. The end copy of  a record header size ({0}) at offset ({1}) is different than the start copy ({2}). This may indicate a problem with log file "{3}".
+HPEL_InconsistencyInHeaderRecordSize.explanation=Log file internal information indicates that a problem may have occurred.
+HPEL_InconsistencyInHeaderRecordSize.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInLogRecordSize=HPEL0117W: Tail copy of a message record size ({0}) at offset ({1}) is different than the head one ({2}). This may indicate a problem with log file "{3}".
+HPEL_InconsistencyInLogRecordSize.explanation=Log file internal information indicates that a problem may have occurred.
+HPEL_InconsistencyInLogRecordSize.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_OffsetBeyondFileSize=HPEL0118E: Incorrect attempt to position stream for file "{0}" to the offset {1} which is beyond its size: {2}.
+HPEL_OffsetBeyondFileSize.explanation=Somehow an offset into a file is invalid (beyond the end of the file)
+HPEL_OffsetBeyondFileSize.useraction=If this is a locally written client, review the logic on calculation of the offset.  Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSettingFileOffset=HPEL0119E: Failed to position stream for file "{0}" to the offset {1} where a log record was successfully read from previously: {2}.
+HPEL_ErrorSettingFileOffset.explanation=There appears to be an issue in positioning into the appropriate location in the file.
+HPEL_ErrorSettingFileOffset.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingFileOffset=HPEL0120E: Failed to retrieve current offset in the stream for file "{0}": {2}.
+HPEL_ErrorReadingFileOffset.explanation=There appears to be an issue in positioning into the appropriate location in the file. 
+HPEL_ErrorReadingFileOffset.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingLogRecord=HPEL0121E: Failed to read log record from file "{0}": {1}.
+HPEL_ErrorReadingLogRecord.explanation=Unable to read a record from the file
+HPEL_ErrorReadingLogRecord.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSkippingFailedLogRecord=HPEL0122E: Failed to skip to the next record after failure in file "{0}": {1}.
+HPEL_ErrorSkippingFailedLogRecord.explanation=Error occurred on attempting to reposition within the file
+HPEL_ErrorSkippingFailedLogRecord.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# CompatZipRepositoryExporter and HPELZipRepositoryExporter message.
+HPEL_ErrorClosingZipStream=HPEL0123W: An error occured while closing a zip stream.
+HPEL_ErrorClosingZipStream.explanation=Error occurred while closing a stream.  Exception should include more information
+HPEL_ErrorClosingZipStream.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# RepositoryReaderImpl message.
+HPEL_RepositoryPointerNotInRepository=HPEL0124W: Specified repository pointer does not belong to any repository. Most probably the file it points to was deleted already.
+HPEL_RepositoryPointerNotInRepository.explanation=Specified repository pointer does not belong to any repository. Most probably the file it points to was deleted already.
+HPEL_RepositoryPointerNotInRepository.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Additional messages from OneLogFileRecordIterator
+HPEL_ErrorReadingLogRecordDoSkip=HPEL0125W: Could not find good record at offset {0}. Skipping {1} bytes to the next record in the file {2}.
+HPEL_ErrorReadingLogRecordDoSkip.explanation=Unable to read a record from the file while file may contain some other good records.
+HPEL_ErrorReadingLogRecordDoSkip.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the service log file. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for handling of PCI list
+IllegalArgInConstructingPatternLevel=HPEL0150W: Illegal argument in constructing an element in the restricted list {0}
+IllegalArgInConstructingPatternLevel.explanation=A new entry in the restricted list was of the wrong format
+IllegalArgInConstructingPatternLevel.useraction=Determine if this entry is from the properties file, or someone using the API to add entries, then fix the file or caller of the API
+
+InvalidPatternString=HPEL0151I: Pattern/Level String {0} cannot be properly parsed into a loggerName Pattern and a Level
+InvalidPatternString.explanation=String to be parsed into loggerName and level could not be parsed
+InvalidPatternString.useraction=Determine if this entry is from the properties file, or someone using the API to add entries, then fix the file or caller of the API
+
+# Messages for file system space alarms
+HPEL_FileSystem_Space_Warning=HPEL0161W: File System at {0} needs {1} bytes for logging requirements but has only {2} bytes left
+HPEL_FileSystem_Space_Warning.explanation=Logging and Tracing configurations require more space than this file system currently contains
+HPEL_FileSystem_Space_Warning.useraction=Clear space from the file system or modify log and trace configurations to point elsewhere or consume less space

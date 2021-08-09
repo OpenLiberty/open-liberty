@@ -1,0 +1,2290 @@
+
+###############################################################################
+# Copyright (c) 2001, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIText.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# EPM Names
+epm.moduleName.epm=Modu\u0142y wydajno\u015bci
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.beanData=komponenty EJB
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.beanMethodData=metody komponentu EJB
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.orbThreadPool=pula w\u0105tk\u00f3w ORB
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.connectionMgr=pule po\u0142\u0105cze\u0144 z baz\u0105 danych (4.0)
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.objectPools=pule obiekt\u00f3w komponent\u00f3w bean
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.servletEngine=mechanizm serwlet\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.sessions=sesje serwletu
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.transactionData=transakcje
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+pmiroot=Domena administracyjna produktu WebSphere
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+pmi=Wydajno\u015b\u0107
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+beanModule=Komponenty EJB
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+connectionPoolModule=Pule po\u0142\u0105cze\u0144 JDBC
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+j2cModule=Pule po\u0142\u0105cze\u0144 JCA
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+threadPoolModule=Pule w\u0105tk\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+transactionModule=Mened\u017cer transakcji
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+webAppModule=Aplikacje WWW
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+servletSessionsModule=Mened\u017cer sesji serwletu
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+jvmRuntimeModule=\u015arodowisko wykonawcze JVM
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+jvmpiModule=Profil JVMPI
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+relationalResourceAdapterModule=Relacyjny adapter zasob\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+orbPerfModule=ORB
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+wlmModule=Zarz\u0105dzanie obci\u0105\u017ceniem
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+webServicesModule=Us\u0142ugi Web Services
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+wsgwModule=Gateway us\u0142ug Web Services
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+cacheModule=Buforowanie dynamiczne
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+systemModule=Dane systemu
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Kontener WWW
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+ORB.thread.pool=Obiektowy broker zapyta\u0144
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+MessageListenerThreadPool=Obiekt nas\u0142uchiwania komunikat\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+pmiroot.desc=Dane dotycz\u0105ce wydajno\u015bci serwera.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+beanModule.desc=Dane dotycz\u0105ce wydajno\u015bci wszystkich podstawowych obiekt\u00f3w komponentu bean na serwerze.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+connectionPoolModule.desc=Dane dotycz\u0105ce wydajno\u015bci pul po\u0142\u0105cze\u0144 z baz\u0105 danych JDBC (\u017ar\u00f3d\u0142a danych zar\u00f3wno w wersji 4.0, jak i w wersji 5.0).
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+j2cModule.desc=Dane dotycz\u0105ce wydajno\u015bci pul po\u0142\u0105cze\u0144 JCA.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+threadPoolModule.desc=Dane dotycz\u0105ce wydajno\u015bci pul w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+transactionModule.desc=Dane dotycz\u0105ce wydajno\u015bci mened\u017cera transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Dane dotycz\u0105ce wydajno\u015bci aplikacji WWW, serwlet\u00f3w i plik\u00f3w JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+servletSessionsModule.desc=Dane dotycz\u0105ce wydajno\u015bci mened\u017cera sesji serwletu.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+jvmRuntimeModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce ze \u015brodowiska wykonawczego wirtualnej maszyny j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+jvmpiModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z klasyfikatora JVMPI.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+wlmModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z funkcji zarz\u0105dzania obci\u0105\u017ceniem (Workload Management - WLM).
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webServicesModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z us\u0142ug Web Services.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webServicesModule.services.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z punkt\u00f3w ko\u0144cowych us\u0142ugi Web Service.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+cacheModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z dynamicznej pami\u0119ci podr\u0119cznej.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+orbPerfModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z obiektowego brokera zapyta\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+relationalResourceAdapterModule.desc=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z relacyjnego adaptera zasob\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+systemModule.desc=Dane dotycz\u0105ce wydajno\u015bci systemu pochodz\u0105ce z systemu operacyjnego.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+beanModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci podstawowego obiektu komponentu bean na serwerze.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+connectionPoolModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci \u017ar\u00f3d\u0142a danych.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+threadPoolModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci puli w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+transactionModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci mened\u017cera transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+webAppModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci aplikacji WWW oraz jej serwlet\u00f3w i plik\u00f3w JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+servletSessionsModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci mened\u017cera sesji serwletu.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+jvmRuntimeModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce ze \u015brodowiska wykonawczego wirtualnej maszyny j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+jvmpiModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci pochodz\u0105ce z klasyfikatora JVMPI
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+systemModule.desc.col=Dane dotycz\u0105ce wydajno\u015bci systemu pochodz\u0105ce z systemu operacyjnego.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.creates.desc=Liczba wskazuj\u0105ca, ile razy komponenty bean zosta\u0142y utworzone.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.removes.desc=Liczba wskazuj\u0105ca, ile razy komponenty bean zosta\u0142y usuni\u0119te.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.activates.desc=Liczba wskazuj\u0105ca, ile razy komponenty bean zosta\u0142y aktywowane.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.passivates.desc=Liczba wskazuj\u0105ca, ile razy komponenty bean zosta\u0142y umieszczone w stanie pasywnym.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.passivationCount.desc=Liczba komponent\u00f3w bean w stanie pasywnym.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.instantiates.desc=Liczba wskazuj\u0105ca, ile razy zosta\u0142y utworzone instancje komponent\u00f3w bean.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.destroys.desc=Liczba wskazuj\u0105ca, ile razy komponenty bean zosta\u0142y zwolnione.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.loads.desc=Liczba wskazuj\u0105ca, ile razy dane komponent\u00f3w bean zosta\u0142y za\u0142adowane z trwa\u0142ej pami\u0119ci masowej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.stores.desc=Liczba wskazuj\u0105ca, ile razy dane komponent\u00f3w bean zosta\u0142y zapisane w trwa\u0142ej pami\u0119ci masowej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule  (for Entity beans)
+beanModule.readyCount.desc=Liczba instancji komponent\u00f3w bean w stanie gotowo\u015bci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule (for Session beans - same counter as readyCount but different name)
+beanModule.methodReadyCount.desc=Liczba instancji komponent\u00f3w bean w stanie gotowo\u015bci metody.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.concurrentLives.desc=\u015arednia liczba jednocze\u015bnie aktywnych komponent\u00f3w bean.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.totalMethodCalls.desc=Liczba wywo\u0142a\u0144 zdalnych metod komponentu bean.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgMethodRt.desc=\u015aredni czas odpowiedzi (w milisekundach) przez zdalne metody komponentu bean.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgMethodTotalRt.desc=\u015aredni czas (w milisekundach) przetwarzania metody od momentu jej otrzymania a\u017c do odes\u0142ania odpowiedzi.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgCreateTime.desc=\u015aredni czas (w milisekundach) zajmowany przez wywo\u0142anie tworzenia komponentu (w\u0142\u0105cznie z czasem \u0142adowania, je\u015bli zaistnia\u0142).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgRemoveTime.desc=\u015aredni czas (w milisekundach) zajmowany przez wywo\u0142anie usuni\u0119cia komponentu (w\u0142\u0105cznie z czasem potrzebnym na obs\u0142ug\u0119 bazy danych, je\u015bli zaistnia\u0142).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.loadTime.desc=\u015aredni czas (w milisekundach) \u0142adowania danych komponentu bean z trwa\u0142ej pami\u0119ci masowej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.storeTime.desc=\u015aredni czas (w milisekundach) zapisywania danych komponentu bean w trwa\u0142ej pami\u0119ci masowej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.activationTime.desc=\u015aredni czas (w milisekundach) aktywowania obiektu komponentu bean.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.passivationTime.desc=\u015aredni czas (w milisekundach) przechodzenia obiektu komponentu bean w stan pasywny.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.messageCount.desc=Liczba komunikat\u00f3w dostarczonych do metody onMessage komponentu bean (dotyczy komponent\u00f3w bean sterowanych komunikatami).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.messageBackoutCount.desc=Liczba wycofanych komunikat\u00f3w, kt\u00f3rych dostarczenie do metody onMessage komponentu bean nie powiod\u0142o si\u0119 (dotyczy komponent\u00f3w bean sterowanych komunikatami).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgSrvSessionWaitTime.desc=\u015aredni czas (w milisekundach) wymagany do uzyskania sesji serwera z puli (dotyczy komponent\u00f3w bean sterowanych komunikatami).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.serverSessionUsage.desc=Procent u\u017cycia puli sesji serwera (dotyczy komponent\u00f3w bean sterowanych komunikatami).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.activeMethods.desc=\u015arednia liczba jednocze\u015bnie aktywnych metod (to znaczy liczba metod wywo\u0142ywanych w tym samym czasie).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.getsFromPool.desc=Liczba wywo\u0142a\u0144 wydobywania obiektu z puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.getsFound.desc=Liczba wskazuj\u0105ca, ile razy operacja wydobywania znalaz\u0142a dost\u0119pny obiekt w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.returnsToPool.desc=Liczba wywo\u0142a\u0144 zwracaj\u0105cych obiekt do puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.returnsDiscarded.desc=Liczba wskazuj\u0105ca, ile razy zwracany obiekt zosta\u0142 usuni\u0119ty, poniewa\u017c pula by\u0142a pe\u0142na.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.drainsFromPool.desc=Liczba wskazuj\u0105ca, ile razy demon znalaz\u0142 bezczynn\u0105 pul\u0119 i wykona\u0142 pr\u00f3b\u0119 jej wyczyszczenia.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgDrainSize.desc=\u015arednia liczba obiekt\u00f3w usuwanych w czasie ka\u017cdej operacji zajmowania.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.poolSize.desc=\u015arednia liczba obiekt\u00f3w w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.desc=Zawiera wszystkie dane dotycz\u0105ce wydajno\u015bci pozwalaj\u0105ce \u015bledzi\u0107 wydajno\u015b\u0107 poszczeg\u00f3lnych metod.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.methodCalls.desc=Liczba wywo\u0142a\u0144 metody.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.methodRt.desc=\u015aredni czas odpowiedzi metody (w milisekundach).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.methodLoad.desc=Liczba wsp\u00f3\u0142bie\u017cnych wywo\u0142a\u0144 tej samej metody.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numCreates.desc=\u0141\u0105czna liczba utworzonych po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numDestroys.desc=\u0141\u0105czna liczba zamkni\u0119tych po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numAllocates.desc=\u0141\u0105czna liczba przydzielonych po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numReturns.desc=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zwr\u00f3conych do puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.poolSize.desc=Wielko\u015b\u0107 puli po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.freePoolSize.desc=Liczba wolnych po\u0142\u0105cze\u0144 w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.concurrentWaiters.desc=\u015arednia liczba w\u0105tk\u00f3w, kt\u00f3re jednocze\u015bnie oczekuj\u0105 na po\u0142\u0105czenie.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.avgWaitTime.desc=\u015aredni czas oczekiwania (w milisekundach) na przydzielenie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.avgUseTime.desc=\u015aredni czas (w milisekundach) korzystania z po\u0142\u0105czenia. Jest to r\u00f3\u017cnica mi\u0119dzy czasem przydzielenia i zwr\u00f3cenia po\u0142\u0105czenia. Warto\u015b\u0107 ta obejmuje czas operacji JBDC.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.faults.desc=Liczba zdarze\u0144 przekroczenia limitu czasu po\u0142\u0105czenia w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.percentUsed.desc=\u015aredni procent wykorzystania puli. Warto\u015b\u0107 ta jest oparta na \u0142\u0105cznej liczbie po\u0142\u0105cze\u0144 skonfigurowanych w puli po\u0142\u0105cze\u0144, a nie obecnej liczbie po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.percentMaxed.desc=\u015aredni procent czasu, gdy u\u017cywane s\u0105 wszystkie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.prepStmtCacheDiscards.desc=Lista instrukcji usuni\u0119tych z powodu zape\u0142nienia pami\u0119ci podr\u0119cznej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numManagedConnections.desc=Liczba obiekt\u00f3w zarz\u0105dzanych po\u0142\u0105cze\u0144 u\u017cywanych dla okre\u015blonej puli po\u0142\u0105cze\u0144 (dotyczy tylko \u017ar\u00f3de\u0142 danych w wersji 5.0).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numConnectionHandles.desc=Liczba obiekt\u00f3w po\u0142\u0105cze\u0144 u\u017cywanych dla okre\u015blonej puli po\u0142\u0105cze\u0144 (dotyczy tylko \u017ar\u00f3de\u0142 danych w wersji 5.0).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For RRA in JDBC Connection Pool Module
+connectionPoolModule.jdbcOperationTimer.desc=\u015aredni czas (w milisekundach) po\u015bwi\u0119cany na wykonywanie wywo\u0142a\u0144 JDBC, w\u0142\u0105cznie z czasem sp\u0119dzonym w sterowniku JDBC, sieci i bazie danych (dotyczy tylko \u017ar\u00f3de\u0142 danych w wersji 5.0).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnections.desc=Liczba obiekt\u00f3w zarz\u0105dzanych po\u0142\u0105cze\u0144, kt\u00f3re s\u0105 dost\u0119pne w okre\u015blonej puli po\u0142\u0105cze\u0144. Liczba ta obejmuje wszystkie obiekty zarz\u0105dzanych po\u0142\u0105cze\u0144, kt\u00f3re zosta\u0142y utworzone, ale nie zosta\u0142y zniszczone.
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numConnectionHandles.desc=Liczba po\u0142\u0105cze\u0144 powi\u0105zanych z zarz\u0105dzanymi po\u0142\u0105czeniami (po\u0142\u0105czeniami fizycznymi) w tej puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsCreated.desc=\u0141\u0105czna liczba utworzonych po\u0142\u0105cze\u0144 zarz\u0105dzanych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsDestroyed.desc=\u0141\u0105czna liczba zniszczonych po\u0142\u0105cze\u0144 zarz\u0105dzanych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsAllocated.desc=Liczba okre\u015blaj\u0105ca, ile razy zarz\u0105dzane po\u0142\u0105czenie zosta\u0142o przydzielone klientowi. \u0141\u0105czna liczba jest obliczana dla ca\u0142ej puli, a nie wed\u0142ug po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsReleased.desc=Liczba okre\u015blaj\u0105ca, ile razy zarz\u0105dzane po\u0142\u0105czenie zosta\u0142o zwolnione do puli. \u0141\u0105czna liczba jest obliczana dla ca\u0142ej puli, a nie wed\u0142ug po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.faults.desc=Liczba b\u0142\u0119d\u00f3w (np. przekroczenia limitu czasu) w puli po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.freePoolSize.desc=Liczba wolnych po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re aktualnie znajduj\u0105 si\u0119 w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.poolSize.desc=\u015arednia liczba zarz\u0105dzanych po\u0142\u0105cze\u0144 w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.concurrentWaiters.desc=\u015arednia liczba w\u0105tk\u00f3w, kt\u00f3re jednocze\u015bnie oczekuj\u0105 na po\u0142\u0105czenie.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.percentUsed.desc=\u015aredni procent wykorzystania puli. Warto\u015b\u0107 ta jest oparta na \u0142\u0105cznej liczbie po\u0142\u0105cze\u0144 skonfigurowanych w puli po\u0142\u0105cze\u0144, a nie obecnej liczbie po\u0142\u0105cze\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.percentMaxed.desc=Procent czasu, kiedy u\u017cywane s\u0105 wszystkie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.avgWait.desc=\u015aredni czas oczekiwania (w milisekundach) na przydzielenie po\u0142\u0105czenia.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.useTime.desc=\u015aredni czas (w milisekundach) u\u017cywania po\u0142\u0105cze\u0144 (mierzony od przydzielenia po\u0142\u0105czenia do jego zwolnienia).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.threadCreates.desc=\u0141\u0105czna liczba utworzonych w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.threadDestroys.desc=\u0141\u0105czna liczba zniszczonych w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.activeThreads.desc=\u0141\u0105czna liczba w\u0105tk\u00f3w, kt\u00f3re s\u0105 jednocze\u015bnie aktywne.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.poolSize.desc=\u015arednia liczba w\u0105tk\u00f3w w puli.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.percentMaxed.desc=\u015aredni procent czasu, kiedy u\u017cywane s\u0105 wszystkie w\u0105tki.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.activeTime.desc=\u015aredni czas (w milisekundach) stanu aktywno\u015bci wszystkich w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.concurrentlyHungThreads.desc=\u0141\u0105czna liczba w\u0105tk\u00f3w, kt\u00f3re zosta\u0142y jednocze\u015bnie zatrzymane.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.declaredThreadHangCleared.desc=Liczba zatrzyma\u0144 w\u0105tk\u00f3w, kt\u00f3re zosta\u0142y wyczyszczone.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.declaredThreadHung.desc=Liczba w\u0105tk\u00f3w zadeklarowanych jako zatrzymane.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransBegun.desc=Liczba transakcji globalnych, kt\u00f3re zosta\u0142y rozpocz\u0119te na serwerze.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransInvolved.desc=Liczba transakcji globalnych, kt\u00f3re s\u0105 zaanga\u017cowane na serwerze (tzn. rozpocz\u0119te i zaimportowane).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransBegun.desc=Liczba transakcji lokalnych, kt\u00f3re zosta\u0142y rozpocz\u0119te na serwerze.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.activeGlobalTrans.desc=Liczba transakcji globalnych, kt\u00f3re s\u0105 jednocze\u015bnie aktywne.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.activeLocalTrans.desc=Liczba transakcji lokalnych, kt\u00f3re s\u0105 jednocze\u015bnie aktywne.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTranDuration.desc=\u015aredni czas trwania transakcji globalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTranDuration.desc=\u015aredni czas trwania transakcji lokalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalBeforeCompletionDuration.desc=\u015aredni czas trwania przed zako\u0144czeniem transakcji globalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalPrepareDuration.desc=\u015aredni czas przygotowywania transakcji globalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalCommitDuration.desc=\u015aredni czas zatwierdzania transakcji globalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localBeforeCompletionDuration.desc=\u015aredni czas trwania przed zako\u0144czeniem transakcji lokalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localCommitDuration.desc=\u015aredni czas zatwierdzania transakcji lokalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.numOptimization.desc=\u0141\u0105czna liczba transakcji globalnych, kt\u00f3re zosta\u0142y przekszta\u0142cone w pojedyncz\u0105 faz\u0119 w celu optymalizacji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransCommitted.desc=Liczba zatwierdzonych transakcji globalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransCommitted.desc=Liczba zatwierdzonych transakcji lokalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransRolledBack.desc=Liczba wycofanych transakcji globalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransRolledBack.desc=Liczba wycofanych transakcji lokalnych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransTimeout.desc=Liczba transakcji globalnych, kt\u00f3re przekroczy\u0142y limit czasu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.numCheckpoints.desc=Liczba wskazuj\u0105ca liczb\u0119 operacji punktu kontrolnego dla dziennika transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.checkpointTime.desc=\u015aredni czas (w milisekundach) mi\u0119dzy dwoma kolejnymi punktami kontrolnymi dla dziennika transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranStartInChkPnt.desc=\u015arednia liczba transakcji uruchomionych mi\u0119dzy dwoma kolejnymi punktami kontrolnymi dla dziennika transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranEndInChkPnt.desc=\u015arednia liczba transakcji zako\u0144czonych mi\u0119dzy dwoma kolejnymi punktami kontrolnymi dla dziennika transakcji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransTimeout.desc=Liczba transakcji lokalnych, kt\u00f3re przekroczy\u0142y limit czasu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=Liczba za\u0142adowanych serwlet\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=Liczba prze\u0142adowanych serwlet\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=Kolekcja z danymi dotycz\u0105cymi wydajno\u015bci wed\u0142ug serwlet\u00f3w i plik\u00f3w JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=\u0141\u0105czna liczba \u017c\u0105da\u0144 przetworzonych przez serwlet.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=\u0141\u0105czna liczba wsp\u00f3\u0142bie\u017cnie przetwarzanych \u017c\u0105da\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=\u015aredni czas odpowiedzi (w milisekundach) zako\u0144czenia \u017c\u0105dania serwletu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=\u0141\u0105czna liczba b\u0142\u0119d\u00f3w w serwlecie i pliku JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.loadedSince.desc=Czas (w milisekundach) \u0142adowania serwletu i pliku JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.createdSessions.desc=Liczba utworzonych sesji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.invalidatedSessions.desc=Liczba uniewa\u017cnionych sesji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.finalizedSessions.desc=Liczba zako\u0144czonych sesji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.sessionLifeTime.desc=\u015aredni czas \u017cycia sesji (w milisekundach; czas uniewa\u017cnienia - czas utworzenia).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.sessionInvalidateTime.desc=\u015aredni czas (w milisekundach), kiedy obiekt sesji znajdowa\u0142 si\u0119 w stanie uniewa\u017cnienia (czas zako\u0144czenia - czas uniewa\u017cnienia).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.activeSessions.desc=\u0141\u0105czna liczba sesji, do kt\u00f3rych aktualnie maj\u0105 dost\u0119p \u017c\u0105dania.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.liveSessions.desc=\u0141\u0105czna liczba sesji, kt\u00f3re aktualnie s\u0105 aktywne.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.noRoomForNewSession.desc=Odnosi si\u0119 tylko do sesji w pami\u0119ci z parametrem AllowOverflow=false. Liczba wskazuj\u0105ca, ile razy nie mo\u017cna by\u0142a obs\u0142u\u017cy\u0107 nowej sesji, poniewa\u017c warto\u015b\u0107 ta przekracza\u0142a maksymaln\u0105 liczb\u0119 sesji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.cacheDiscards.desc=Liczba obiekt\u00f3w sesji, kt\u00f3rych usuni\u0119cie z pami\u0119ci podr\u0119cznej zosta\u0142o wymuszone. Algorytm LRU usuwa stare pozycje, aby zwolni\u0107 miejsce dla nowych sesji i chybie\u0144 w pami\u0119ci podr\u0119cznej. Odnosi si\u0119 tylko do trwa\u0142ych sesji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalReadTime.desc=Czas (w milisekundach) po\u015bwi\u0119cony na odczyt danych sesji ze sk\u0142adnicy trwa\u0142ej. W przypadku opcji Multirow warto\u015b\u0107 ta odnosi si\u0119 do atrybutu, natomiast w przypadku opcji SingleRow warto\u015b\u0107 ta dotyczy ca\u0142ej sesji. Odnosi si\u0119 tylko do trwa\u0142ych sesji.  Kiedy u\u017cywana jest trwa\u0142a sk\u0142adnica JMS, licznik ten nie b\u0119dzie dost\u0119pny, je\u015bli nie wybrano opcji przekszta\u0142cania danych do postaci szeregowej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalReadSize.desc=Wielko\u015b\u0107 danych sesji odczytanych z trwa\u0142ej sk\u0142adnicy. Dotyczy tylko trwa\u0142ych (przekszta\u0142conych do postaci szeregowej) sesji i przypomina licznik externalReadTime.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalWriteTime.desc=Czas (w milisekundach) po\u015bwi\u0119cony na zapis danych sesji z trwa\u0142ej sk\u0142adnicy. Dotyczy tylko trwa\u0142ych (przekszta\u0142conych do postaci szeregowej) sesji i przypomina licznik externalReadTime.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalWriteSize.desc=Wielko\u015b\u0107 danych sesji zapisanych w trwa\u0142ej sk\u0142adnicy. Dotyczy tylko trwa\u0142ych (przekszta\u0142conych do postaci szeregowej) sesji i przypomina licznik externalReadTime.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.affinityBreaks.desc=Liczba zerwanych powinowactw sesji HTTP, bez uwzgl\u0119dniania powinowactw sesji celowo zerwanych przez serwer WebSphere Application Server.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.timeSinceLastActivated.desc=R\u00f3\u017cnica czasu (w milisekundach) mi\u0119dzy znacznikami czasu poprzedniego i bie\u017c\u0105cego dost\u0119pu. Nie obejmuje sesji, kt\u00f3rych limit czasu zosta\u0142 przekroczony.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.invalidatedViaTimeout.desc=Liczba sesji uniewa\u017cnionych z powodu przekroczenia limitu czasu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.activateNonExistSessions.desc=Liczba \u017c\u0105da\u0144 sesji, kt\u00f3ra ju\u017c nie istnieje, prawdopodobnie z powodu przekroczenia limitu czasu sesji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.serializableSessObjSize.desc=\u015arednia wielko\u015b\u0107 obiekt\u00f3w sesji na poziomie sesji, z uwzgl\u0119dnieniem tylko tych atrybut\u00f3w w pami\u0119ci podr\u0119cznej, kt\u00f3re mo\u017cna przekszta\u0142ci\u0107 do postaci szeregowej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.totalMemory.desc=\u0141\u0105czna ilo\u015b\u0107 pami\u0119ci (w kilobajtach) w \u015brodowisku wykonawczym wirtualnej maszyny j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.freeMemory.desc=Ilo\u015b\u0107 wolnej pami\u0119ci (w kilobajtach) w \u015brodowisku wykonawczym wirtualnej maszyny j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.usedMemory.desc=Ilo\u015b\u0107 u\u017cywanej pami\u0119ci (w kilobajtach) w \u015brodowisku wykonawczym wirtualnej maszyny j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.upTime.desc=Czas dzia\u0142ania (w sekundach) wirtualnej maszyny j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Process CPU Usage
+jvmRuntimeModule.cpuUsage.desc=Procent u\u017cycia procesora przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numGcCalls.desc=Liczba wywo\u0142a\u0144 operacji czyszczenia pami\u0119ci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.avgTimeBetweenGcCalls.desc=\u015aredni czas (w milisekundach) mi\u0119dzy dwoma wywo\u0142aniami operacji czyszczenia pami\u0119ci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.avgGcDuration.desc=\u015aredni czas trwania (w milisekundach) wywo\u0142ania operacji czyszczenia pami\u0119ci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numObjectsAllocated.desc=Liczba przydzielonych obiekt\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numObjectsFreed.desc=Liczba zwolnionych obiekt\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numObjectsMoved.desc=Liczba obiekt\u00f3w przeniesionych na stert\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numThreadsStarted.desc=Liczba uruchomionych w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numThreadsDead.desc=Liczba zako\u0144czonych w\u0105tk\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numWaitsForLock.desc=Liczba wskazuj\u0105ca, ile razy w\u0105tek oczekiwa\u0142 na blokad\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.avgTimeWaitForLock.desc=\u015aredni czas oczekiwania w\u0105tku na blokad\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Relational Resource Adapter Module
+RRAModule.jdbcOperationTimer.desc=Czas (w milisekundach) po\u015bwi\u0119cony na dzia\u0142anie w sterowniku JDBC.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Relational Resource Adapter Module
+RRAModule.numDiscardedStatements.desc=\u0141\u0105czna liczba instrukcji, kt\u00f3re zosta\u0142y odrzucone przez algorytm LRU pami\u0119ci podr\u0119cznej przygotowanej instrukcji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.referenceLookupTime.desc=Czas (w milisekundach, zwykle mniej ni\u017c 10 ms) po\u015bwi\u0119cony na wyszukanie odwo\u0142ania do obiektu, zanim mo\u017cliwe jest zako\u0144czenie rozsy\u0142ania metody. Zbyt d\u0142ugi czas mo\u017ce oznacza\u0107 problem z wyszukiwaniem kontenera EJB.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.requestMarshallingTime.desc=Czas (w milisekundach) zestawiania \u017c\u0105dania klienta.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.percentUsingIndirectIORs.desc=Procent wszystkich \u017c\u0105da\u0144, kt\u00f3re u\u017cywaj\u0105 po\u015brednich odwo\u0142a\u0144 do obiekt\u00f3w wymagaj\u0105cych wyszukiwania demona po\u0142o\u017cenia.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.numPortableInterceptors.desc=Liczba przeno\u015bnych przechwytywaczy, kt\u00f3re zosta\u0142y zarejestrowane.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.totalRequests.desc=\u0141\u0105czna liczba \u017c\u0105da\u0144 wys\u0142anych do obiektowego brokera zapyta\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.concurrentRequests.desc=\u0141\u0105czna liczba \u017c\u0105da\u0144 wsp\u00f3\u0142bie\u017cnie przetwarzanych przez obiektowy broker zapyta\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.LSDLookups.desc=\u0141\u0105czna liczba wyszukiwa\u0144 demona us\u0142ugi lokalizacji, kt\u00f3re s\u0105 wymagane do obs\u0142ugi \u017c\u0105da\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.interceptors.desc=Przechwytywacze obiektowego brokera zapyta\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.interceptors.processingTime.desc=Czas (w milisekundach) uruchamiania zarejestrowanego przechwytywacza przeno\u015bnego.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingRequests.desc=Liczba przychodz\u0105cych \u017c\u0105da\u0144 IIOP odebranych przez ten serwer.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingStrongAffinityRequests.desc=Liczba przychodz\u0105cych \u017c\u0105da\u0144 IIOP odebranych przez ten serwer z silnym powinowactwem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingWeakAffinityRequests.desc=Liczba przychodz\u0105cych \u017c\u0105da\u0144 IIOP odebranych przez ten serwer ze s\u0142abym powinowactwem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingNonAffinityRequests.desc=Liczba przychodz\u0105cych \u017c\u0105da\u0144 IIOP odebranych przez ten serwer bez powinowactwa.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingNonWLMObjectRequests.desc=Liczba przychodz\u0105cych \u017c\u0105da\u0144 IIOP odebranych przez ten serwer bez w\u0142\u0105czonego zarz\u0105dzania obci\u0105\u017ceniem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numServerClusterUpdates.desc=Liczba wskazuj\u0105ca, ile razy ten serwer odebra\u0142 nowe informacje o klastrze serwer\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numOfWLMClientsServiced.desc=Liczba klient\u00f3w z w\u0142\u0105czonym zarz\u0105dzaniem obci\u0105\u017ceniem, kt\u00f3re zosta\u0142y obs\u0142u\u017cone przez ten serwer.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numOfConcurrentRequests.desc=Liczba \u017c\u0105da\u0144 IIOP, kt\u00f3re s\u0105 aktualnie przetwarzane przez ten serwer.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.serverResponseTime.desc=Czas odpowiedzi (w milisekundach) na \u017c\u0105dania IIOP, kt\u00f3re zosta\u0142y obs\u0142u\u017cone przez ten serwer.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.client.numOfOutgoingRequests.desc=Liczba wychodz\u0105cych \u017c\u0105da\u0144 IIOP, kt\u00f3re zosta\u0142y wys\u0142ane przez tego klienta.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.client.numClientClusterUpdates.desc=Liczba wskazuj\u0105ca, ile razy ten klient odebra\u0142 nowe informacje o klastrze serwer\u00f3w.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.client.clientResponseTime.desc=Czas odpowiedzi (w milisekundach) na \u017c\u0105dania IIOP wys\u0142ane przez tego klienta.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.numLoadedServices.desc=Liczba us\u0142ug Web Services za\u0142adowanych przez serwer aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.numberReceived.desc=Liczba \u017c\u0105da\u0144 odebranych przez us\u0142ug\u0119.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.numberDispatched.desc=Liczba \u017c\u0105da\u0144 rozes\u0142anych przez us\u0142ug\u0119 do kodu docelowego.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.numberSuccessfull.desc=Liczba \u017c\u0105da\u0144 rozes\u0142anych wraz z odpowiednimi odpowiedziami, kt\u00f3re zosta\u0142y zwr\u00f3cone pomy\u015blnie.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.responseTime.desc=\u015aredni czas (w milisekundach) mi\u0119dzy odebraniem \u017c\u0105dania i zwr\u00f3ceniem odpowiedzi.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.requestResponseTime.desc=\u015aredni czas (w milisekundach) mi\u0119dzy odebraniem \u017c\u0105dania i rozes\u0142aniem w celu przetworzenia \u017c\u0105dania.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.dispatchResponseTime.desc=\u015aredni czas (w milisekundach) mi\u0119dzy rozes\u0142aniem \u017c\u0105dania i odebraniem odpowiedzi.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.replyResponseTime.desc=\u015aredni czas (w milisekundach) mi\u0119dzy rozes\u0142aniem odpowiedzi i zwr\u00f3ceniem odpowiedzi.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.size.desc=\u015arednia wielko\u015b\u0107 \u0142adunku (w bajtach) odebranego \u017c\u0105dania i odpowiedzi.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.requestSize.desc=\u015arednia wielko\u015b\u0107 \u0142adunku \u017c\u0105dania (w bajtach).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.replySize.desc=\u015arednia wielko\u015b\u0107 \u0142adunku odpowiedzi (w bajtach).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.synchronousRequests.desc=Liczba utworzonych \u017c\u0105da\u0144 synchronicznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.synchronousResponses.desc=Liczba utworzonych odpowiedzi synchronicznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.asynchronousRequests.desc=Liczba utworzonych \u017c\u0105da\u0144 asynchronicznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.asynchronousResponses.desc=Liczba utworzonych odpowiedzi asynchronicznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.maxInMemoryCacheEntryCount.desc=Maksymalna liczba zaj\u0119tych pozycji pami\u0119ci podr\u0119cznej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynamic Cache
+cacheModule.inMemoryCacheEntryCount.desc=Bie\u017c\u0105ca liczba zaj\u0119tych pozycji pami\u0119ci podr\u0119cznej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynamic Cache
+cacheModule.objectsOnDisk.desc=Bie\u017c\u0105ca liczba wpis\u00f3w pami\u0119ci podr\u0119cznej na dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.hitsOnDisk.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w obs\u0142u\u017conych z poziomu dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitInvalidationFromDisk.desc=Liczba jawnych uniewa\u017cnie\u0144 powoduj\u0105cych usuni\u0119cie wpis\u00f3w z dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.timeoutInvalidationsFromDisk.desc=Liczba przekrocze\u0144 limitu czasu w przypadku dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.pendingRemovalFromDisk.desc=Bie\u017c\u0105ca liczba wpis\u00f3w oczekuj\u0105cych na usuni\u0119cie z dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdsOnDisk.desc=Bie\u017c\u0105ca liczba identyfikator\u00f3w zale\u017cno\u015bci na dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdsBufferedForDisk.desc=Bie\u017c\u0105ca liczba identyfikator\u00f3w zale\u017cno\u015bci buforowanych dla dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdsOffloadedToDisk.desc=Liczba identyfikator\u00f3w zale\u017cno\u015bci przeniesionych na dysk.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdBasedInvalidationsFromDisk.desc=Liczba uniewa\u017cnie\u0144 opartych na identyfikatorze zale\u017cno\u015bci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templatesOnDisk.desc=Bie\u017c\u0105ca liczba szablon\u00f3w na dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templatesBufferedForDisk.desc=Bie\u017c\u0105ca liczba szablon\u00f3w buforowanych dla dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templatesOffloadedToDisk.desc=Liczba szablon\u00f3w przeniesionych na dysk.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templateBasedInvalidationsFromDisk.desc=Liczba uniewa\u017cnie\u0144 opartych na szablonie.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.garbageCollectorInvalidationsFromDisk.desc=Liczba uniewa\u017cnie\u0144 funkcji czyszczenia pami\u0119ci powoduj\u0105cych usuni\u0119cie wpis\u00f3w z pami\u0119ci podr\u0119cznej dysku z powodu osi\u0105gni\u0119cia g\u00f3rnego progu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.overflowInvalidationsFromDisk.desc=Liczba uniewa\u017cnie\u0144 powoduj\u0105cych usuni\u0119cie wpis\u00f3w z dysku z powodu przekroczenia wielko\u015bci pami\u0119ci podr\u0119cznej dysku lub limitu wielko\u015bci pami\u0119ci podr\u0119cznej dysku (w gigabajtach).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.hitsInMemoryCount.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w obs\u0142u\u017conych z poziomu pami\u0119ci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.hitsOnDiskCount.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w obs\u0142u\u017conych z poziomu dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitInvalidationCount.desc=Liczba jawnych uniewa\u017cnie\u0144.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.lruInvalidationCount.desc=Liczba wpis\u00f3w pami\u0119ci podr\u0119cznej, kt\u00f3re zosta\u0142y usuni\u0119te z pami\u0119ci przez algorytm LRU (Least Recently Used).
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.timeoutInvalidationCount.desc=Liczba wpis\u00f3w pami\u0119ci podr\u0119cznej, kt\u00f3re zosta\u0142y usuni\u0119te z pami\u0119ci i dysku z powodu przekroczenia limitu czasu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.inMemoryAndDiskCacheEntryCount.desc=Bie\u017c\u0105ca liczba u\u017cywanych pozycji pami\u0119ci podr\u0119cznej w pami\u0119ci i na dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.remoteHitCount.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w obs\u0142u\u017conych z poziomu innych wirtualnych maszyn j\u0119zyka Java w domenie replikacji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.missCount.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w, kt\u00f3re nie zosta\u0142y znalezione w pami\u0119ci podr\u0119cznej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.clientRequestCount.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w, kt\u00f3re zosta\u0142y wygenerowane przez aplikacje dzia\u0142aj\u0105ce na tym serwerze aplikacji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.distributedRequestCount.desc=Liczba \u017c\u0105da\u0144 dotycz\u0105cych buforowanych obiekt\u00f3w, kt\u00f3re zosta\u0142y wygenerowane przez wsp\u00f3\u0142pracuj\u0105ce pami\u0119ci podr\u0119czne w tej domenie replikacji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitMemoryInvalidationCount.desc=Liczba jawnych uniewa\u017cnie\u0144 powoduj\u0105cych usuni\u0119cie wpisu z pami\u0119ci.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitDiskInvalidationCount.desc=Liczba jawnych uniewa\u017cnie\u0144 powoduj\u0105cych usuni\u0119cie wpisu z dysku.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.localExplicitInvalidationCount.desc=Liczba jawnych uniewa\u017cnie\u0144 wygenerowanych lokalnie w spos\u00f3b programowy lub przez strategi\u0119 pami\u0119ci podr\u0119cznej.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.remoteExplicitInvalidationCount.desc=Liczba jawnych uniewa\u017cnie\u0144 odebranych ze wsp\u00f3\u0142pracuj\u0105cej wirtualnej maszyny j\u0119zyka Java w tej domenie replikacji.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.remoteCreationCount.desc=Liczba pozycji pami\u0119ci podr\u0119cznej, kt\u00f3re zosta\u0142y odebrane ze wsp\u00f3\u0142pracuj\u0105cych dynamicznych pami\u0119ci podr\u0119cznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For System Module
+systemModule.cpuUtilization.desc=\u015arednie u\u017cycie procesora od ostatniego zapytania.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For System Module
+systemModule.avgCpuUtilization.desc=\u015arednie u\u017cycie procesora od uruchomienia serwera.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For System Module
+systemModule.freeMemory.desc=Obraz stanu wolnej pami\u0119ci (w kB).
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.creates=Num Creates
+beanModule.creates=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.removes=Num Removes
+beanModule.removes=RemoveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.activates=Num Activates
+beanModule.activates=ActivateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (PMI - passivate / countstatistic)
+#beanModule.passivates=Num Passivates
+beanModule.passivates=PassivateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+beanModule.passivationCount=PassiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.instantiates=Num Instantiates
+beanModule.instantiates=InstantiateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.destroys=Num Destroys
+beanModule.destroys=FreedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.loads=Num Loads
+beanModule.loads=LoadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.stores=Num Stores
+beanModule.stores=StoreCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77 - Entity beans)
+#beanModule.readyCount=Ready Beans
+beanModule.readyCount=ReadyCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77 - Session beans, same counter as readyCount but different name)
+beanModule.methodReadyCount=MethodReadyCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.concurrentLives=Concurrent Lives
+beanModule.concurrentLives=LiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.totalMethodCalls=Total Method Calls
+beanModule.totalMethodCalls=MethodCallCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgMethodRt=Avg Method RT (ms)
+beanModule.avgMethodRt=MethodResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgMethodTotalRt=Avg Method Total RT (ms)
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgCreateTime=Avg Create Time (ms)
+beanModule.avgCreateTime=CreateTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgRemoveTime=Avg Remove Time (ms)
+beanModule.avgRemoveTime=RemoveTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgLoadTime=Avg Load Time (ms)
+beanModule.avgLoadTime=LoadTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgStoreTime=Avg Store Time (ms)
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.activeMethods=Active Methods
+beanModule.activeMethods=ActiveMethodCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.getsFromPool=Gets From Pool
+beanModule.getsFromPool=RetrieveFromPoolCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.getsFound=Gets Found
+beanModule.getsFound=RetrieveFromPoolSuccessCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.returnsToPool=Returns To Pool
+beanModule.returnsToPool=ReturnsToPoolCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.returnsDiscarded=Returns Discarded
+beanModule.returnsDiscarded=ReturnsDiscardCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.drainsFromPool=Drains From Pool
+beanModule.drainsFromPool=DrainsFromPoolCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgDrainSize=Avg Drain Size
+beanModule.avgDrainSize=DrainSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.poolSize=Pool Size
+beanModule.poolSize=PooledCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.methods=Methods
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.methods.methodCalls=Method Calls
+beanModule.methods.methodCalls=MethodLevelCallCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.methods.methodRt=Method Response Time (ms)
+beanModule.methods.methodRt=MethodLevelResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.methods.methodLoad=Concurrent Invocations
+beanModule.methods.methodLoad=MethodLevelConcurrentInvocations
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.activationTime=Activation Time (ms)
+beanModule.activationTime=ActivationTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.passivationTime=Passivation Time (ms)
+beanModule.passivationTime=PassivationTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.loadTime=Load Time (ms)
+beanModule.loadTime=LoadTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.storeTime=Store Time (ms)
+beanModule.storeTime=StoreTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.messageCount=Message Count
+beanModule.messageCount=MessageCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.messageBackoutCount=Message Backout Count
+beanModule.messageBackoutCount=MessageBackoutCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgSrvSessionWaitTime=Wait Time (ms)
+beanModule.avgSrvSessionWaitTime=WaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.serverSessionUsage=Session Usage
+beanModule.serverSessionUsage=ServerSessionPoolUsage
+
+# F743-9001 F1031-27071 -START
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.readLockTime=ReadLockTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.writeLockTime=WriteLockTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.lockCancelCount=LockCancelCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncWaitTime=AsyncWaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncQSize=AsyncQSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncCancelCount=AsyncCancelCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFNFFailCount=AsyncFNFFailCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFutureObjectCount=AsyncFutureObjectCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.discards=Discards
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.readLockTime.desc=Wyra\u017cony w milisekundach \u015bredni czas oczekiwania przez w\u0105tek na blokad\u0119 odczytu przed wywo\u0142aniem metod klasy Singleton.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.writeLockTime.desc=Wyra\u017cony w milisekundach \u015bredni czas oczekiwania w\u0105tk\u00f3w na blokad\u0119 zapisu przed wywo\u0142aniem metod Singleton.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.lockCancelCount.desc=\u0141\u0105czna liczba wywo\u0142a\u0144 metod Singleton, kt\u00f3re zosta\u0142y anulowane, poniewa\u017c przekroczy\u0142y okre\u015blon\u0105 warto\u015b\u0107 limitu czasu dost\u0119pu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncWaitTime.desc=\u015aredni czas oczekiwania metod asynchronicznych w kolejce mened\u017cera pracy na uruchomienie.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncQSize.desc=\u015arednia wielko\u015b\u0107 kolejki mened\u017cera pracy dla metod asynchronicznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncCancelCount.desc=Liczba anulowanych metod asynchronicznych.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFNFFailCount.desc=Liczba automatycznych metod asynchronicznych zako\u0144czonych niepowodzeniem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFutureObjectCount.desc=Liczba przysz\u0142ych obiekt\u00f3w metod asynchronicznych po stronie serwera, w kt\u00f3rych zwracane s\u0105 wyniki. Dotyczy tylko klient\u00f3w wywo\u0142uj\u0105cych komponent EJB za pomoc\u0105 zdalnego interfejsu biznesowego.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.discards.desc=Liczba odrzuconych komponent\u00f3w bean.
+
+# F743-9001 F1031-27071 -End
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.numCreates=Num Creates
+connectionPoolModule.numCreates=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.numDestroys=Num Closes
+connectionPoolModule.numDestroys=CloseCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.numAllocates=Num Allocates
+connectionPoolModule.numAllocates=AllocateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.numReturns=Num Returns
+connectionPoolModule.numReturns=ReturnCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.poolSize=Pool Size
+connectionPoolModule.poolSize=PoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.concurrentWaiters=Concurrent Waiters
+connectionPoolModule.concurrentWaiters=WaitingThreadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.freePoolSize=Free Pool Size
+connectionPoolModule.freePoolSize=FreePoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.avgWaitTime=Avg Wait Time (ms)
+connectionPoolModule.avgWaitTime=WaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.avgUseTime=Avg Use Time (ms)
+connectionPoolModule.avgUseTime=UseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+connectionPoolModule.faults=FaultCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.percentUsed=Percent Used
+connectionPoolModule.percentUsed=PercentUsed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.percentMaxed=Percent Maxed
+connectionPoolModule.percentMaxed=PercentMaxed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.prepStmtCacheDiscards=PrepStmt Cache Discards
+connectionPoolModule.prepStmtCacheDiscards=PrepStmtCacheDiscardCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.numManagedConnections=Num Managed Connections
+connectionPoolModule.numManagedConnections=ManagedConnectionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In JDBC Connection Pool Module
+#connectionPoolModule.numConnectionHandles=Num Connection Handles
+connectionPoolModule.numConnectionHandles=ConnectionHandleCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For RRA in JDBC Connection Pool Module
+#connectionPoolModule.jdbcOperationTimer=JDBC Time
+connectionPoolModule.jdbcOperationTimer=JDBCTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.threadCreates=Thread Creates
+threadPoolModule.threadCreates=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.threadDestroys=Thread Destroys
+threadPoolModule.threadDestroys=DestroyCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.activeThreads=Active Threads
+threadPoolModule.activeThreads=ActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.poolSize=Pool Size
+threadPoolModule.poolSize=PoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.percentMaxed=Percent Maxed
+threadPoolModule.percentMaxed=PercentMaxed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.declaredThreadHung=DeclaredThreadHungCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.declaredThreadHangCleared=ClearedThreadHangCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.concurrentlyHungThreads=ConcurrentHungThreadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.activeTime=ActiveTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTransBegun=GlobalBegunCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTransInvolved=GlobalInvolvedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransBegun=LocalBegunCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module (JSR77)
+#transactionModule.activeGlobalTrans=Active Global Trans
+transactionModule.activeGlobalTrans=ActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.activeLocalTrans=LocalActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTranDuration=GlobalTranTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTranDuration=LocalTranTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalBeforeCompletionDuration=GlobalBeforeCompletionTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalPrepareDuration=GlobalPrepareTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalCommitDuration=GlobalCommitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localBeforeCompletionDuration=LocalBeforeCompletionTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localCommitDuration=LocalCommitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.numOptimization=OptimizationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module (JSR77)
+#transactionModule.globalTransCommitted=Global Trans Committed
+transactionModule.globalTransCommitted=CommittedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransCommitted=LocalCommittedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module (JSR77)
+#transactionModule.globalTransRolledBack=Global Trans RolledBack
+transactionModule.globalTransRolledBack=RolledbackCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransRolledBack=LocalRolledbackCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTransTimeout=GlobalTimeoutCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransTimeout=LocalTimeoutCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.numCheckpoints=NumCheckPoints
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.checkpointTime=CheckPointDuration
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranStartInChkPnt=TranStartedBetweenCheckPoints
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranEndInChkPnt=TranFinishedBetweenCheckPoints
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servlets
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.createdSessions=Created Sessions
+servletSessionsModule.createdSessions=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.invalidatedSessions=Invalidated Sessions
+servletSessionsModule.invalidatedSessions=InvalidateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.finalizedSessions=Finalized Sessions
+servletSessionsModule.finalizedSessions=FinalizeCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.sessionLifeTime=Session Life Time (ms)
+servletSessionsModule.sessionLifeTime=LifeTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.sessionInvalidateTime=Session Invalidate Time (ms)
+servletSessionsModule.sessionInvalidateTime=InvalidateTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.activeSessions=Active Sessions
+servletSessionsModule.activeSessions=ActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.liveSessions=Live Sessions
+servletSessionsModule.liveSessions=LiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.noRoomForNewSession=NoRoomForNewSessionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.cacheDiscards=CacheDiscardCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalReadTime=ExternalReadTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.externalReadSize=ExternalReadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.externalWriteTime=ExternalWriteTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.externalWriteSize=ExternalWriteSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.affinityBreaks=AffinityBreakCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.timeSinceLastActivated=TimeSinceLastActivated
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.invalidatedViaTimeout=TimeoutInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.activateNonExistSessions=ActivateNonExistSessionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.serializableSessObjSize=SessionObjectSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module (JSR77)
+#jvmRuntimeModule.totalMemory=Total Memory (KB)
+jvmRuntimeModule.totalMemory=HeapSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.freeMemory=FreeMemory
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.usedMemory=UsedMemory
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module (JSR77)
+#jvmRuntimeModule.upTime=JVM Up Time (seconds)
+jvmRuntimeModule.upTime=UpTime
+
+# Data Name For JVM Process Usage
+jvmRuntimeModule.cpuUsage=ProcessCpuUsage
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numGcCalls=GCCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.avgTimeBetweenGcCalls=GCIntervalTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.avgGcDuration=GCTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numObjectsAllocated=ObjectAllocateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numObjectsFreed=ObjectFreedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numObjectsMoved=ObjectMovedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numThreadsStarted=ThreadStartedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numThreadsDead=ThreadEndedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numWaitsForLock=WaitsForLockCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.avgTimeWaitForLock=WaitForLockTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For RRA
+RRAModule.jdbcOperationTimer=JDBCTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For RRA
+RRAModule.numDiscardedStatements=NumDiscardedStatements
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.referenceLookupTime=LookupTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.requestMarshallingTime=MarshallingTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.percentUsingIndirectIOR=PercentIndirectIOR
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.numPortableInterceptors=NumPortableInterceptors
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.concurrentRequests=ConcurrentRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.LSDLookups=LSDLookups
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.interceptors=Interceptors
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.interceptors.processingTime=ProcessingTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingRequests=IIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingStrongAffinityRequests=StrongAffinityIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingWeakAffinityRequests=WeakAffinityIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingNonAffinityRequests=NoAffinityIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingNonWLMObjectRequests=NonWLMEnabledIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numServerClusterUpdates=ServerClusterUpdateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numOfWLMClientsServiced=WLMClientsServicedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numOfConcurrentRequests=ConcurrentRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.serverResponseTime=ServerResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.client.numOfOutgoingRequests=OutgoingIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.client.numClientClusterUpdates=ClientClusterUpdateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.client.clientResponseTime=ClientResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.numLoadedServices=LoadedWebServiceCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.numberReceived=ReceivedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.numberDispatched=DispatchedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.numberSuccessfull=ProcessedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.responseTime=ResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.requestResponseTime=RequestResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.dispatchResponseTime=DispatchResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.replyResponseTime=ReplyResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.size=PayloadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.requestSize=RequestPayloadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.replySize=ReplyPayloadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.maxInMemoryCacheEntryCount=MaxInMemoryCacheEntryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.inMemoryCacheEntryCount=InMemoryCacheEntryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.objectsOnDisk=ObjectsOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.hitsOnDisk=HitsOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitInvalidationFromDisk=ExplicitInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.timeoutInvalidationsFromDisk=TimeoutInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.pendingRemovalFromDisk=PendingRemovalFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdsOnDisk=DependencyIDsOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdsBufferedForDisk=DependencyIDsBufferedForDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdsOffloadedToDisk=DependencyIDsOffloadedToDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdBasedInvalidationsFromDisk=DependencyIDBasedInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templatesOnDisk=TemplatesOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templatesBufferedForDisk=TemplatesBufferedForDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templatesOffloadedToDisk=TemplatesOffloadedToDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templateBasedInvalidationsFromDisk=TemplateBasedInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.garbageCollectorInvalidationsFromDisk=GarbageCollectorInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.overflowInvalidationsFromDisk=OverflowInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.hitsInMemoryCount=HitsInMemoryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.hitsOnDiskCount=HitsOnDiskCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitInvalidationCount=ExplicitInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.lruInvalidationCount=LruInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.timeoutInvalidationCount=TimeoutInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.inMemoryAndDiskCacheEntryCount=InMemoryAndDiskCacheEntryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.remoteHitCount=RemoteHitCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.missCount=MissCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.clientRequestCount=ClientRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.distributedRequestCount=DistributedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitMemoryInvalidationCount=ExplicitMemoryInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitDiskInvalidationCount=ExplicitDiskInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.localExplicitInvalidationCount=LocalExplicitInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.remoteExplicitInvalidationCount=RemoteExplicitInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.remoteCreationCount=RemoteCreationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For System Module
+systemModule.cpuUtilization=CPUUsageSinceLastMeasurement
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For System Module
+systemModule.avgCpuUtilization=CPUUsageSinceServerStarted
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For System Module
+systemModule.freeMemory=FreeMemory
+
+# -------------------------------------------------------------------------------------------------
+# Load Data Average
+pmi.avg=Przeci\u0119tne
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.maximum=Maksimum
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.high=Wysokie
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.medium=\u015arednie
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.low=Niskie
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.none=Brak
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+jvm.memory=Pami\u0119\u0107
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+GC=Czyszczenie pami\u0119ci
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+Monitor=Monitor
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+Thread=W\u0105tek
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+Object=Obiekt
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in wlmModule
+wlmModule.server=serwer
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in webServicesModule
+webServicesModule.services=us\u0142ugi
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in wlmModule
+wlmModule.client=klient
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.object=Pami\u0119\u0107 podr\u0119czna obiekt\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.servlet=Pami\u0119\u0107 podr\u0119czna serwlet\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.template=Szablony
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.disk=Dysk
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.diskOffloadEnabled=W\u0142\u0105czone przenoszenie na dysk
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.objectCache=Pami\u0119\u0107 podr\u0119czna obiekt\u00f3w
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.counters=Liczniki
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+#j2cModule.numManagedConnections=Num Managed Connections
+j2cModule.numManagedConnections=ManagedConnectionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numConnectionHandles=Num Connection Handles
+j2cModule.numConnectionHandles=ConnectionHandleCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsCreated=Num Connections Created
+j2cModule.numManagedConnectionsCreated=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsDestroyed=Num Connections Destroyed
+j2cModule.numManagedConnectionsDestroyed=CloseCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsAllocated=Num Connections Allocated
+j2cModule.numManagedConnectionsAllocated=AllocateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsReleased=Num Connections Freed
+j2cModule.numManagedConnectionsReleased=FreedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.faults=Num faults
+j2cModule.faults=FaultCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.freePoolSize=Free Pool Size
+j2cModule.freePoolSize=FreePoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.poolSize=Pool Size
+j2cModule.poolSize=PoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.concurrentWaiters=Concurrent Waiters
+j2cModule.concurrentWaiters=WaitingThreadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.percentUsed=Percent Used
+j2cModule.percentUsed=PercentUsed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.percentMaxed=Percent Maxed
+j2cModule.percentMaxed=PercentMaxed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.avgWait=Avg Wait Time
+j2cModule.avgWait=WaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.useTime=Avg Use Time
+j2cModule.useTime=UseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.synchronousRequests=SynchronousRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.synchronousResponses=SynchronousResponseCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.asynchronousRequests=AsynchronousRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.asynchronousResponses=AsynchronousResponseCount
+
+# -------------------------------------------------------------------------------------------------
+# Name for EJB types
+ejb.entity=Komponent bean jednostki
+ejb.stateful=Stanowy komponent bean sesji
+ejb.stateless=Bezstanowy komponent bean sesji
+ejb.messageDriven=Komponent bean sterowany komunikatami
+ejb.singleton=Pojedynczy komponent bean sesji
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=Nie dotyczy
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=MILISEKUNDA
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.second=second (JSR77)
+unit.second=SEKUNDA
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.byte=BAJT
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.kbyte=kilobyte (JSR77)
+unit.kbyte=KILOBAJT
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.mbyte=MEGABAJT
+
+# -------------------------------------------------------------------------------------------------
+# JMS Connection Factories in J2C module
+jmsConnections=Fabryki po\u0142\u0105cze\u0144 JMS

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+                           
+       default-init-method="initialize"
+       default-destroy-method="destroy">
+
+    <!--
+    Optional Function<ProfileRequest,String> to supply name of proxied IdP,
+    otherwise flow assumes IdP discovery has been performed already.
+    -->
+    <!--
+    <bean id="shibboleth.authn.SAML.discoveryFunction" parent="shibboleth.Functions.Constant"
+        c:target="https://idp.example.org/idp/shibboleth" />
+    -->
+    
+    <!--
+    Add authentication flow descriptor's supportedPrincipals collection to the
+    resulting Subject? This may be problematic if it happens without regard for
+    the information returned in the assertion from the IdP, so changing this is
+    likely to lead to violations of intent.
+    
+    Usually this should be left FALSE, and appropriate bidirectional mappings defined
+    via conf/authn/authn-comparison.xml to translate across the proxy boundary.
+    -->
+    <util:constant id="shibboleth.authn.SAML.addDefaultPrincipals" static-field="java.lang.Boolean.FALSE"/>
+
+</beans>

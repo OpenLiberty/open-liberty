@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.sar/resources/com/ibm/ws/app/manager/sar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0552E: \u5904\u7406\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26 {1} \u65f6\uff0c\u5e94\u7528\u7a0b\u5e8f {0} \u9047\u5230\u4e86\u89e3\u6790\u9519\u8bef\uff1a{2}
+error.application.parse.descriptor.explanation=\u89e3\u6790\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u65f6\u53d1\u751f\u9519\u8bef\u3002\u8be5\u5e94\u7528\u7a0b\u5e8f\u5c06\u6ca1\u6709\u53ef\u7528\u6a21\u5757\u3002
+error.application.parse.descriptor.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\u4ee5\u786e\u4fdd\u5185\u5bb9\u5728\u4f5c\u4e3a XML \u6570\u636e\u65f6\u662f\u6709\u6548\u7684\u3002

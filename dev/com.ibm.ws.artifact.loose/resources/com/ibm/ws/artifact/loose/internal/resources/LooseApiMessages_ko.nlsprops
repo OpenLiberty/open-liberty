@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: {0}\uc5d0\uc11c XML \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+XML_NOT_FOUND.explanation=\uc9c0\uc815\ub41c XML \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+XML_NOT_FOUND.useraction=\ud30c\uc77c\uc774 \uc62c\ubc14\ub978 \uc704\uce58\uc5d0 \uc788\uace0 \uc81c\uac70\ub418\uc9c0 \uc54a\uc558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: {0}\uc758 XML \ud30c\uc77c\uc744 \uc77d\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+XML_STREAM_ERROR.explanation=\uc9c0\uc815\ub41c XML \ud30c\uc77c\uc744 \uc77d\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+XML_STREAM_ERROR.useraction=\ud30c\uc77c\uc774 XML\ub85c \uc62c\ubc14\ub974\uac8c \ud615\uc2dd\ud654\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: \uc791\uc5c5\uacf5\uac04 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc120\uc5b8\ub41c XML \ud30c\uc77c\uc774 {0}\uc758 \ud30c\uc77c\uc744 \ucc38\uc870\ud558\uace0 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 "excludes" \uc18d\uc131\uc744 \ud3ec\ud568\ud569\ub2c8\ub2e4. 
+EXCLUDES_ON_FILE.explanation=XML \ud30c\uc77c \uc694\uc18c\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 "excludes" \uc18d\uc131\uc744 \uac16\uace0 \uc788\uc2b5\ub2c8\ub2e4. \ud574\ub2f9 \uc18d\uc131\uc740 \ubb34\uc2dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+EXCLUDES_ON_FILE.useraction=\uc694\uc18c\uc5d0\uc11c "excludes" \uc18d\uc131\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: \uc791\uc5c5\uacf5\uac04 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc120\uc5b8\ub41c XML \ud30c\uc77c\uc774 {0}(\uc774)\ub77c\ub294 \uc544\uce74\uc774\ube0c\ub97c \ucc38\uc870\ud558\uace0 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 "excludes" \uc18d\uc131\uc744 \ud3ec\ud568\ud569\ub2c8\ub2e4. 
+EXCLUDES_ON_ARCHIVE.explanation=XML \uc544\uce74\uc774\ube0c \uc694\uc18c\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 "excludes" \uc18d\uc131\uc744 \uac16\uace0 \uc788\uc2b5\ub2c8\ub2e4. \ud574\ub2f9 \uc18d\uc131\uc740 \ubb34\uc2dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+EXCLUDES_ON_ARCHIVE.useraction=\uc694\uc18c\uc5d0\uc11c "excludes" \uc18d\uc131\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: \uc791\uc5c5\uacf5\uac04 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc120\uc5b8\ub41c XML \ud30c\uc77c\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 "excludes" \uc18d\uc131 {0}\uc744(\ub97c) \ud3ec\ud568\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+INVALID_EXCLUDE_PATTERN.explanation="excludes" \uc18d\uc131\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\uba70 \uc774\ud574\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+INVALID_EXCLUDE_PATTERN.useraction=\uc18d\uc131\uc744 \uc62c\ubc14\ub978 \uad6c\ubb38\uc774 \ub418\ub3c4\ub85d \ubcc0\uacbd\ud558\uac70\ub098 \ud544\uc694\ud558\uc9c0 \uc54a\uc73c\uba74 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: \uc791\uc5c5\uacf5\uac04 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc120\uc5b8\ub41c XML \ud30c\uc77c\uc774 \ucc3e\uc744 \uc218 \uc5c6\ub294 {0} \ud30c\uc77c\uc744 \ucc38\uc870\ud569\ub2c8\ub2e4.
+DECLARED_FILE_NOT_FOUND.explanation=\uc791\uc5c5\uacf5\uac04 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 \uc120\uc5b8\ub41c \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DECLARED_FILE_NOT_FOUND.useraction=\ud30c\uc77c\uc774 \ucc38\uc870\ub41c \uc704\uce58\uc5d0 \uc788\ub294\uc9c0, \ub610\ub294 \ucc38\uc870\ub41c \uc704\uce58\uac00 \ud30c\uc77c\uc758 \uc704\uce58\uc640 \uc77c\uce58\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

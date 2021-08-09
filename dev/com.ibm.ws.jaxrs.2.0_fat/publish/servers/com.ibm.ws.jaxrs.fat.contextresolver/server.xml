@@ -1,0 +1,17 @@
+<server>
+    <featureManager>
+    	<feature>jaxb-2.2</feature>
+        <feature>jaxrs-2.0</feature>
+    </featureManager>
+ 
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.util.PropertyPermission" name="javax.xml.bind.JAXBContext" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="com.sun.xml.bind.improvedXsiTypeHandling" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="com.sun.xml.bind.v2.runtime.JAXBContextImpl.fastBoot" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.glassfish.jaxb.improvedXsiTypeHandling" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.glassfish.jaxb.runtime.v2.runtime.JAXBContextImpl.fastBoot" actions="read"/>
+	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="class,resolve"/>
+</server>

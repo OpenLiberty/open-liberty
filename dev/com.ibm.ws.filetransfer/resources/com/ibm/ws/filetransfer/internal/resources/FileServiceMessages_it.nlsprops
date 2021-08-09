@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Accesso negato al percorso {0}.
+ACCESS_DENIED_ERROR.explanation=\u00c8 stato effettuato un tentativo di accesso ad un percorso esterno alla region di lettura/scrittura configurata.
+ACCESS_DENIED_ERROR.useraction=Assicurarsi che il percorso richiesto sia all'interno della region di lettura/scrittura configurata.
+
+PATH_ERROR=CWWKX7901E: Il percorso del file system {0} non \u00e8 valido.
+PATH_ERROR.explanation=Il percorso del file system specificato non pu\u00f2 essere risolto.
+PATH_ERROR.useraction=Fornire un percorso del file system valido.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: Creazione dell''archivio mediante l''MBean di trasferimento file negata per il percorso di origine {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=\u00c8 stato effettuato un tentativo di lettura delle informazioni da un percorso esterno alla region di lettura configurata.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: Creazione dell''archivio mediante l''MBean di trasferimento file negata per il percorso di destinazione {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=\u00c8 stato effettuato un tentativo di scrittura delle informazioni per un percorso esterno alla region di scrittura configurata.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: Archivio {1} creato correttamente da {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=L'archivio \u00e8 stato creato correttamente.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: Impossibile creare l''archivio {1} da {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=La richiesta di creazione dell'archivio non \u00e8 riuscita.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: L''espansione dell''archivio \u00e8 stata negata per il percorso di origine {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=\u00c8 stato effettuato un tentativo di lettura delle informazioni da un percorso esterno alla region di lettura configurata.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: L''espansione dell''archivio \u00e8 stata negata per il percorso di destinazione {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=\u00c8 stato effettuato un tentativo di scrittura delle informazioni per un percorso esterno alla region di scrittura configurata.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: Archivio {0} espanso correttamente su {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=L'archivio \u00e8 stato espanso correttamente.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: Impossibile espandere l''archivio {0} su {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=La richiesta di espansione dell'archivio non \u00e8 riuscita.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=Questo \u00e8 un messaggio solo a scopo informativo. Non \u00e8 richiesta alcuna azione.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: L''operazione ''{0}'' \u00e8 disponibile solo quando si accede a questo MBean mediante il connettore REST JMX di IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=L'accesso all'operazione MBean specificata \u00e8 disponibile solo quando vi si accede mediante il connettore REST JMX di IBM.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Accedi a questo MBean mediante il connettore REST JMX di IBM.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: Il servizio OSGi {0} non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.explanation=Si tratta di un errore interno di questo server dovuto al fatto che il servizio specificato non \u00e8 disponibile.
+OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione "clean".
+
+ATTRIBUTE_UPDATED=CWWKX7912I: Attributo {0} FileServiceMXBean aggiornato correttamente.
+ATTRIBUTE_UPDATED.explanation=L'attributo specificato da FileServiceMXBean \u00e8 stato aggiornato correttamente.
+ATTRIBUTE_UPDATED.useraction=Non sono richieste azioni.

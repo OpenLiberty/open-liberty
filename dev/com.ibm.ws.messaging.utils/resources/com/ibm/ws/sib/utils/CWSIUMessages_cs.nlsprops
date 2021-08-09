@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.utils.CWSIUMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIU0001I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# cmvc_en_version_level=1.31,0,09/07/29,08:43:02
+#
+#CMVCPATHNAME ws/code/sib.utils/src/com/ibm/ws/sib/utils/CWSIUMessages.nlsprops
+#COMPONENTPREFIX CWSIU
+#COMPONENTNAMEFOR CWSIU utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the messaging build release
+# {1} is the messaging build level
+
+WPM_SPLASH_CWSIU0000=CWSIU0000I: Verze: {0} \u00darove\u0148: {1}
+WPM_SPLASH_CWSIU0000.explanation=Tato zpr\u00e1va zobrazuje aktu\u00e1ln\u00ed verzi a \u00farove\u0148 sestaven\u00ed syst\u00e9mu zpr\u00e1v.
+WPM_SPLASH_CWSIU0000.useraction=Nen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          220097.0
+# {0} is the name of a runtime property
+# {1} is the new value of the named property
+
+RUNTIME_CWSIU0001=CWSIU0001I: B\u011bhov\u00e1 vlastnost {0} se zm\u011bnila na hodnotu {1}.
+RUNTIME_CWSIU0001.explanation=B\u011bhov\u00e1 vlastnost se zm\u011bnila na nev\u00fdchoz\u00ed hodnotu.
+RUNTIME_CWSIU0001.useraction=Nen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002=CWSIU0002I: Dal\u0161\u00ed v\u00fdskyty \
+zpr\u00e1vy {0} budou p\u0159\u00ed\u0161t\u00edch {1} minut potla\u010deny.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.explanation=Dal\u0161\u00ed v\u00fdskyty zpr\u00e1vy budou potla\u010deny, aby se protokoly neplnily shodn\u00fdmi kopiemi zpr\u00e1vy.
+FUTURE_MESSAGES_SUPPRESSED_CWSIU0002.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that will be suppressed
+
+ALL_MESSAGES_SUPPRESSED_CWSIU0003=CWSIU0003I: Budouc\u00ed v\u00fdskyty zpr\u00e1vy {0} budou potla\u010deny.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.explanation=V\u0161echny budouc\u00ed v\u00fdskyty zpr\u00e1vy budou potla\u010deny, aby se protokoly neplnily shodn\u00fdmi kopiemi zpr\u00e1vy.
+ALL_MESSAGES_SUPPRESSED_CWSIU0003.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+MESSAGES_SUPPRESSED_CWSIU0004=CWSIU0004I: Zpr\u00e1va {0} se za posledn\u00edch {2} minut vyskytla v intervalu {3} a\u017e {4} {1}kr\u00e1t. \
+Budouc\u00ed v\u00fdskyty t\u00e9to zpr\u00e1vy budou p\u0159\u00ed\u0161t\u00edch {5} minut potla\u010deny.
+MESSAGES_SUPPRESSED_CWSIU0004.explanation=Zpr\u00e1va se vyskytla mnohokr\u00e1t, jej\u00ed zobrazen\u00ed v\u0161ak bylo potla\u010deno.
+MESSAGES_SUPPRESSED_CWSIU0004.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+# {1} is the time interval during which the message will be suppressed
+
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005=CWSIU0005I: Dal\u0161\u00ed v\u00fdskyty \
+zpr\u00e1vy budou p\u0159\u00ed\u0161t\u00edch {1} minut potla\u010deny: {0} 
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.explanation=Dal\u0161\u00ed v\u00fdskyty zpr\u00e1vy budou potla\u010deny, aby se protokoly neplnily shodn\u00fdmi kopiemi zpr\u00e1vy.
+SOME_FUTURE_MESSAGES_SUPPRESSED_CWSIU0005.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that will be suppressed
+
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006=CWSIU0006I: Budouc\u00ed v\u00fdskyty zpr\u00e1vy budou potla\u010deny: {0}.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.explanation=V\u0161echny budouc\u00ed v\u00fdskyty zpr\u00e1vy budou potla\u010deny, aby se protokoly neplnily shodn\u00fdmi kopiemi zpr\u00e1vy.
+SOME_ALL_MESSAGES_SUPPRESSED_CWSIU0006.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the length of the time interval during which the message was suppressed
+# {3} is the time of the first message to be suppressed
+# {4} is the time of the last message to be suppressed
+# {5} is the time interval during which the message will be suppressed again
+
+SOME_MESSAGES_SUPPRESSED_CWSIU0007=CWSIU0007I: Zpr\u00e1va {0} se za posledn\u00edch {2} minut vyskytla v intervalu {3} a\u017e {4} {1}kr\u00e1t. \
+Budouc\u00ed v\u00fdskyty t\u00e9to zpr\u00e1vy budou p\u0159\u00ed\u0161t\u00edch {5} minut potla\u010deny
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.explanation=Zpr\u00e1va se vyskytla mnohokr\u00e1t, jej\u00ed zobrazen\u00ed v\u0161ak bylo potla\u010deno.
+SOME_MESSAGES_SUPPRESSED_CWSIU0007.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the illegal character supplied in the topic string
+# {1} is the topic string to be converted from MA0C to SIB
+INVALID_WILDCARD_CHAR_CWSIU0011=CWSIU0011E: Znak {0} nen\u00ed povolen v \u0159et\u011bzci z\u00e1stupn\u00fdch znak\u016f pro t\u00e9ma SIB {1}.
+INVALID_WILDCARD_CHAR_CWSIU0011.explanation=V syntaxi z\u00e1stupn\u00fdch znak\u016f pro t\u00e9ma SIB nen\u00ed povolen znak otazn\u00edk.
+INVALID_WILDCARD_CHAR_CWSIU0011.useraction=Odeberete instance znaku otazn\u00edk ze zadan\u00e9ho \u0159et\u011bzce z\u00e1stupn\u00fdch znak\u016f pro t\u00e9ma.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic string to be converted from MA0C to SIB
+INVALID_ASTERIX_WILDCARD_CWSIU0012=CWSIU0012E: \u0158et\u011bzec t\u00e9matu {0} nelze p\u0159ev\u00e9st na syntaxi SIB, proto\u017ee obsahuje neodd\u011blen\u00e9 znaky hv\u011bzdi\u010dka.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.explanation=Znaky hv\u011bzdi\u010dka nejsou povoleny v syntaxi z\u00e1stupn\u00fdch znak\u016f SIB, pokud nejsou zcela odd\u011bleny lom\u00edtky.
+INVALID_ASTERIX_WILDCARD_CWSIU0012.useraction=Ov\u011b\u0159te, zda se v zadan\u00e9m \u0159et\u011bzci t\u00e9matu vyskytuj\u00ed lom\u00edtka po obou stran\u00e1ch hv\u011bzdi\u010dek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property file that can not be loaded
+# {1} is the exception thrown when the file can not be loaded
+EXCP_DURING_LOAD_CWSIU0050=CWSIU0050E: Soubor vlastnost\u00ed {0} nelze na\u010d\u00edst kv\u016fli v\u00fdjimce: {1}.
+EXCP_DURING_LOAD_CWSIU0050.explanation=CMSG0001
+EXCP_DURING_LOAD_CWSIU0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name
+# {1} is the value of the Exception
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051=CWSIU0051E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.explanation=CMSG0001
+CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_CWSIU0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the time that the message was suppressed
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101=CWSIU0101I: D\u0159\u00edv\u011bj\u0161\u00ed v\u00fdskyt zpr\u00e1vy {0} byl potla\u010den v \u010dase {1}.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.explanation=Zpr\u00e1va se vyskytla d\u0159\u00edve, jej\u00ed nejnov\u011bj\u0161\u00ed v\u00fdskyt v\u0161ak byl potla\u010den.
+A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0101.useraction=Nen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message number of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102=CWSIU0102I: Zpr\u00e1va {0} se vyskytla v obdob\u00ed {2} a\u017e {3} (po\u010det v\u00fdskyt\u016f: {1}), av\u0161ak byla potla\u010dena.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.explanation=Zpr\u00e1va se vyskytla mnohokr\u00e1t, jej\u00ed zobrazen\u00ed v\u0161ak bylo potla\u010deno.
+MESSAGES_SUPPRESSED_EARLIER_CWSIU0102.useraction=Nen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the time of the first message to be suppressed
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103=CWSIU0103I: D\u0159\u00edv\u011bj\u0161\u00ed v\u00fdskyt zpr\u00e1vy "{0}" byl potla\u010den v \u010dase {1}.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.explanation=Zpr\u00e1va se vyskytla d\u0159\u00edve, jej\u00ed nejnov\u011bj\u0161\u00ed v\u00fdskyt p\u0159ed sou\u010dasnou zpr\u00e1vou v\u0161ak byl potla\u010den.
+SOME_A_MESSAGE_SUPPRESSED_EARLIER_CWSIU0103.useraction=Nen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the complete text of the message that has been suppressed
+# {1} is the number of times the message has been suppressed (i.e. not displayed)
+# {2} is the time of the first message to be suppressed
+# {3} is the time of the last message to be suppressed
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104=CWSIU0104I: Zpr\u00e1va "{0}" se vyskytla v obdob\u00ed {2} a\u017e {3} (po\u010det v\u00fdskyt\u016f: {1}), av\u0161ak byla potla\u010dena.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.explanation=Zpr\u00e1va se vyskytla mnohokr\u00e1t, jej\u00ed zobrazen\u00ed v\u0161ak bylo potla\u010deno.
+SOME_MESSAGES_SUPPRESSED_EARLIER_CWSIU0104.useraction=Nen\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIU0200=CWSIU0200E: Hexadecim\u00e1ln\u00ed \u0159et\u011bzec {0} je nespr\u00e1vn\u011b form\u00e1tovan\u00fd.
+BAD_HEX_STRING_CWSIU0200.explanation=Pokus o p\u0159eveden\u00ed z \u0159et\u011bzce na bajtov\u00e9 pole selhal v d\u016fsledku toho, \u017ee \u0159et\u011bzec obsahoval jin\u00e9 ne\u017e hexadecim\u00e1ln\u00ed znaky, nebo obsahoval lich\u00fd po\u010det znak\u016f.
+BAD_HEX_STRING_CWSIU0200.useraction=Ov\u011b\u0159te obsah \u0159et\u011bzce, u n\u011bho\u017e do\u0161lo k selh\u00e1n\u00ed p\u0159evodu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIU9999=CWSIU9999E: {0}
+TEMPORARY_CWSIU9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed informace v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIU9999.useraction=Pokud nem\u016f\u017eete probl\u00e9m vy\u0159e\u0161it, po\u017e\u00e1dejte o pomoc administr\u00e1tora syst\u00e9mu.
+

@@ -1,0 +1,187 @@
+The change file is used to maintain the extra CXF changes from the community.
+
+Each entry should follow the format below:
+
+#a.Change Description: What is the change for ?
+#b.Affected file list: Which file is updated/added ?
+#c.Affected library file names: Which jar file is updated ?
+#d.Community status: Is a JIRA in CXF community opened ? Is the patch accepted ? Which version will include the change ?
+#e.Liberty work item number
+
+-------------------------------------------------------------------------------
+a. wrong usages for System.arraycopy in org.apache.cxf.jaxrs.impl.AsyncResponseImpl
+b. org/apache/cxf/jaxrs/impl/AsyncResponseImpl.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6370 is created, and the patch file is accepted. The changes will be included in the version >= 3.0.5
+e. 171456: CTS:JAxrs2.0:argumentContainsExceptionInTwoCallbackInstancesTest fails
+
+-------------------------------------------------------------------------------
+a. NPE when calling ServiceUnavailableException.getRetryTime()
+b. org/apache/cxf/jaxrs/impl/RuntimeDelegateImpl.java
+   org/apache/cxf/jaxrs/impl/DateHeaderProvider
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6356 is created, and the patch file is accepted. The changes will be included in the version >= 3.0.5
+e. 170905: CTS:Jaxrs 2.0: constructorDateTest fails..
+
+-------------------------------------------------------------------------------
+a. ContainerResponseContext.getLinks() lose links
+b. org/apache/cxf/jaxrs/impl/ResponseImpl.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6352 is created, and the patch file is accepted. The changes will be included in the version >= 3.0.5
+e. 170210: CTS:Jaxrs2.0: getLinksTest fails
+   
+-------------------------------------------------------------------------------
+a. Throw error in exceptionmapper
+b. org/apache/cxf/jaxrs/utils/ExceptionUtils.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-5943 is created, and the patch file is accepted. The changes will be included in the version >= 3.0.2
+e. 136401: JAX-RS 2.0 FAT: com.ibm.ws.jaxrs.fat - ExceptionMappersTest - 7 Failures
+
+-------------------------------------------------------------------------------
+a. ClassCastException in org.apache.cxf.jaxrs.provider.BinaryDataProvider & SourceProvider
+b. org/apache/cxf/jaxrs/provider/BinaryDataProvider.java
+   org/apache/cxf/jaxrs/provider/SourceProvider.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-5846 is created, and the patch file is accepted. The changes will be included in the version >= 3.0.2
+e. 136398: JAX-RS 2.0 FAT: com.ibm.ws.jaxrs.fat - StandardProvidersTest - 11 Failures
+
+-------------------------------------------------------------------------------
+a. Relax setter method name restriction for @context injection
+b. org/apache/cxf/jaxrs/model/AbstractResourceInfo.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-5897 is created, and the patch file is accepted. The change will be included in version >=3.0.2
+e. 136406: JAX-RS 2.0 FAT: com.ibm.ws.jaxrs.fat - SecurityContextTest - 5 Failures
+
+-------------------------------------------------------------------------------
+a. org.apache.cxf.jaxrs.impl.ConfigurationImpl does not comply with SPEC
+b. org/apache/cxf/jaxrs/model/ConfigurationImpl.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6369 is created, and the patch file is accepted. The change will be included in version >=3.0.5
+e. 170903: CTS: Jaxrs 2.0: isRegisteredProviderRegisteredClassTest 
+
+-------------------------------------------------------------------------------
+a. CompletionCallback can not get the Throwable if error occurs in other interceptor (no serviceinvokerInterceptor)
+b. org/apache/cxf/jaxrs/interceptor/JAXRSDefaultFaultOutInterceptor.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-CXF-6373 is created....need input later
+e. 171457: CTS:Jaxrs2.0:argumentContainsExceptionTest fails 
+
+-------------------------------------------------------------------------------
+a. if no OPTIONS defined and has no sub resource, OPTIONS will fails with 404
+b. org/apache/cxf/jaxrs/interceptor/JAXRSDefaultFaultOutInterceptor.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6374 is created....need input later
+e. 171322: CTS: JAXRS 2.0: /ee/rs est case throws exception: [JAXRSCommonClient] null failed!  Check output for cause of failure. 
+
+-------------------------------------------------------------------------------
+a. Provider matching when nested generic type
+b. org/apache/cxf/jaxrs/provider/ProviderFactory.java
+   org/apache/cxf/jaxrs/provider/FakeInterface.java
+   org/apache/cxf/jaxrs/provider/JAXBElementSubProvider.java
+   org/apache/cxf/jaxrs/utils/InjectionUtils.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6429 is created....need input later
+e. 174461：JAXRS 2.0: null failed!  Check output for cause of failure.
+
+-------------------------------------------------------------------------------
+a. Wrong media type of response when entiry body is empty
+b. org/apache/cxf/jaxrs/interceptor/JAXRSOutInterceptor.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6377 is created, and the patch file is accepted. The change will be included in version >=3.0.5
+e. 171500：CTS: ee/rs/core/response/ Unexpected Status Code recieved from server.  Expected '200' received '404'
+
+-------------------------------------------------------------------------------
+a. Providers.getMessageBodyReader throws NPE
+b. org/apache/cxf/jaxrs/impl/ProvidersImpl.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6375 is created, and the patch file is accepted. The change will be included in version >=3.0.5
+e. 171497：CTS: ee/rs/ext/provider Expected '200' received '500'
+
+-------------------------------------------------------------------------------
+a. Determine response media type- spec 3.8.10 when the media type is not wildcard nor application/* return 406
+b. org/apache/cxf/jaxrs/interceptor/JAXRSOutInterceptor.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6256 is created, and the patch file is accepted. The change will be included in version >=3.0.5
+e. 161035：CTS: JAXRS 2.0: defaultErrorTest - incorrect response code received
+
+-------------------------------------------------------------------------------
+a. Wrong select the message body reader and spec 4.2.4 only for text/plain except String
+b. org/apache/cxf/jaxrs/provider/ProviderFactory.java
+   org/apache/cxf/jaxrs/provider/PrimitiveTextProvider.java
+   org/apache/cxf/jaxrs/provider/StringProvider.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6307 is created....need input later
+e. 161757：CTS: JAXRS2.0: readWriteBooleanProviderTest Expected '200' received '406' failure
+
+-------------------------------------------------------------------------------
+a. compare reader algorithm spec4.2.1 should compare mediatype first then java type
+b. org/apache/cxf/jaxrs/provider/ProviderFactory.java(writer change has been reverted in 174015)
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6380 is created....seams CXF fixed by itself
+e. 170928：CTS: JAXRS 2.0: Unexpected Status Code recieved from server.  Expected '200' received '204'
+
+-------------------------------------------------------------------------------
+a. Zero-length entity should throw 400
+b. org/apache/cxf/jaxrs/provider/PrimitiveTextProvider.java
+   org/apache/cxf/jaxrs/provider/AbstractJAXBProvider.java
+   org/apache/cxf/jaxrs/provider/AbstractConfigurableProvider
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6320 is created. The change will be included in version >=3.0.5
+e. 162143	CTS: JAXRS2.0: serverCharProviderTest Expected '400' received '200' failure
+
+-------------------------------------------------------------------------------
+a. WADL2JAVA tool, compilation errors for duplicate methods
+b. org/apache/cxf/tools/wadlto/jaxrs/SourceGenerator.java
+c. cxf-tools-wadlto-jxrs-3.0.3.jar
+d. Need create JIRA and push back to CXF community
+e. 174530：Generated JAX-RS service has compilation errors for duplicate methods
+
+-------------------------------------------------------------------------------
+a. Cannot handle @NameBinding on Application
+b. org/apache/cxf/jaxrs/utils/JAXRSUtils.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. http://git-wip-us.apache.org/repos/asf/cxf/commit/22bc02ff. The change will be included in version >=3.0.5
+e. 170924: CTS: JAXRS 2.0: Test case throws exception: [JAXRSCommonClient] null failed!  Check output for cause of failure.
+
+-------------------------------------------------------------------------------
+a. Cannot get correct Link from Response getLinks()
+b. org/apache/cxf/jaxrs/impl/LinkBuilderImpl.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. A JIRA CXF-6378 is created....need input later. The change will be included in version >=3.0.5
+170935: CTS:Jaxrs2.0:fromResourceMethodLinkUsedInInvocationTest fails
+
+-------------------------------------------------------------------------------
+a. Didn't wrap the exception to ProcessingException when using async Post method.
+b. org/apache/cxf/jaxrs/client/AbstractClient.java, WebClient.java
+c. cxf-rt-rs-client-3.0.3.jar
+d. A JIRA CXF-6252 and 6390 is created....need input later. The change will be included in version >=3.0.5
+173140: CTS: JaxRS 2.0 submitGenericTypeThrowsProcessingExceptionTest fails
+
+-------------------------------------------------------------------------------
+
+*****************************************************************************************************
+Private changes on CXF files
+*****************************************************************************************************
+Each entry should follow the format below:
+#a. Defect/Task num in RTC
+#b. Affected file list: Which file is updated/added ?
+#c. Affected library file names: Which jar file is updated ?
+#d. why not accepted by CXF community
+--------------------------------------------------------------------------------------
+a. 88874
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataReaderImpl.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataWriterImpl.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d. This fix only improve performance for XLXP in Libery, but not improve very much for CXF
+------------------------------------------------------------------------------------------
+a. 173843
+b. org/apache/cxf/model/wadl/WadlGenerator.java
+c. cxf-rt-rs-service-description-3.0.3.jar
+d.：add FFDCIgnore when generate wadl
+-------------------------------------------------------------------------------
+a. 171498: JAXRS 2.0 ee/rs/core/request Unexpected Status Code recieved from server.  Expected '200' received '406'
+b. org/apache/cxf/jaxrs/impl/RequestImpl.java
+c. cxf-rt-frontend-jaxrs-3.0.3.jar
+d. The existing code canot handle the * in Variant Response, it's easy to add a solution,
+-------------------------------------------------------------------------------

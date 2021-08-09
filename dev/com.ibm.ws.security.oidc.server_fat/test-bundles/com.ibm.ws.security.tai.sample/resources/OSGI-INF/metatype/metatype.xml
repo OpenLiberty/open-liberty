@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2013, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.tai.sample.metatype" ibm:alias="sampleTAI"
+         name="%sampleTAI.config" description="%sampleTAI.config.desc" >
+        	<AD id="properties" ibm:type="pid" ibm:reference="com.ibm.ws.security.tai.sample.properties"
+                required="false" type="String" />            
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.tai.sample" >
+        <Object ocdref="com.ibm.ws.security.tai.sample.metatype"  />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.security.tai.sample.properties.metatype" name="%properties" description="%properties.desc" 
+         ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+     	 <AD id="com.ibm.websphere.security.invokeAfterSSO" required="false" type="Boolean" name="%invokeAfterSSO"
+     	     description="%invokeAfterSSO.desc" default="true"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.tai.sample.properties">
+        <Object ocdref="com.ibm.ws.security.tai.sample.properties.metatype" />
+    </Designate>
+
+</metatype:MetaData>

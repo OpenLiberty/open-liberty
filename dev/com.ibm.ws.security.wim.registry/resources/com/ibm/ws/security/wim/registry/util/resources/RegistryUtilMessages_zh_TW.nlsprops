@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: \u7121\u6cd5\u5b8c\u6210\u4f7f\u7528\u8005\u767b\u9304\u4f5c\u696d\u3002{0} \u5167\u5bb9\u503c\u7684\u683c\u5f0f\u7121\u6548\u3002\u5167\u5bb9\u503c\u5fc5\u9808\u6709\u6b63\u78ba\u7684\u8cc7\u6599\u985e\u578b\u548c\u683c\u5f0f\u3002
+INVALID_PROPERTY_VALUE_FORMAT.explanation=\u5167\u5bb9\u503c\u7684\u683c\u5f0f\u7121\u6548\u3002\u4f8b\u5982\uff0c\u5167\u5bb9\u7684\u985e\u578b\u662f\u6574\u6578\uff0c\u4f46\u6307\u5b9a\u7684\u503c\u4e0d\u662f\u6709\u6548\u7684\u6574\u6578\u3002
+INVALID_PROPERTY_VALUE_FORMAT.useraction=\u8acb\u78ba\u5b9a\u5167\u5bb9\u7684\u503c\u662f\u6b63\u78ba\u7684\u8cc7\u6599\u985e\u578b\u548c\u683c\u5f0f\u3002
+ENTITY_NOT_FOUND=CWIML4001E: \u7121\u6cd5\u5b8c\u6210\u4f7f\u7528\u8005\u767b\u9304\u4f5c\u696d\u3002\u627e\u4e0d\u5230 {0} \u5be6\u9ad4\u3002\u8acb\u6307\u5b9a\u6b63\u78ba\u7684\u5be6\u9ad4\uff0c\u6216\u5efa\u7acb\u907a\u6f0f\u7684\u5be6\u9ad4\u3002
+ENTITY_NOT_FOUND.explanation=\u5728\u57fa\u790e\u5132\u5b58\u5eab\u4e2d\uff0c\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u5be6\u9ad4\u540d\u7a31\uff0c\u53ef\u80fd\u662f uniqueName \u6216 uniqueId\u3002\u5982\u679c\u627e\u4e0d\u5230\u9019\u500b\u5be6\u9ad4\uff0c\u7121\u6cd5\u7e7c\u7e8c\u57f7\u884c\u4f7f\u7528\u8005\u767b\u9304\u4f5c\u696d\u3002
+ENTITY_NOT_FOUND.useraction=\u78ba\u5b9a\u5be6\u9ad4\u5b58\u5728\u57fa\u790e\u5132\u5b58\u5eab\u4e2d\u3002\u5982\u679c\u5be6\u9ad4\u5b58\u5728\uff0c\u8acb\u78ba\u8a8d\u5be6\u9ad4\u5df2\u8a2d\u5b9a\u8b80\u53d6\u6b0a\u9650\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21\u3002
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: \u7121\u6cd5\u5b8c\u6210\u4f7f\u7528\u8005\u767b\u9304\u4f5c\u696d\u3002\u5728\u914d\u7f6e\u7684\u4f7f\u7528\u8005\u767b\u9304\u4e2d\uff0c{0} \u4e3b\u9ad4\u540d\u7a31\u6709\u591a\u500b\u8a18\u9304\u5b58\u5728\u3002\u4e3b\u9ad4\u540d\u7a31\u5728\u6240\u6709\u4f7f\u7528\u8005\u767b\u9304\u4e2d\u5fc5\u9808\u662f\u552f\u4e00\u7684\u3002
+MULTIPLE_PRINCIPALS_FOUND.explanation=\u7d66\u5b9a\u7684\u4e3b\u9ad4\u540d\u7a31\u6709\u591a\u500b\u4e3b\u9ad4\u3002\u7121\u6cd5\u7e7c\u7e8c\u57f7\u884c\u767b\u5165\u7a0b\u5e8f\u3002
+MULTIPLE_PRINCIPALS_FOUND.useraction=\u78ba\u5b9a\u5df2\u6307\u5b9a\u6b63\u78ba\u7684\u4e3b\u9ad4\u540d\u7a31\u3002\u4f8b\u5982\uff0c\u4ee5\u552f\u4e00\u7684\u540d\u7a31\u4f86\u6307\u5b9a\u4e3b\u9ad4\u540d\u7a31\u53ef\u4ee5\u907f\u514d\u9019\u7a2e\u7570\u5e38\u72c0\u6cc1\u3002

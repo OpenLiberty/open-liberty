@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2019, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+
+src: \
+	fat/src, \
+	test-applications/slowapp.war/src
+
+fat.project: true
+tested.features: appsecurity-4.0, expressionlanguage-4.0, cdi-3.0
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+-buildpath: \
+    com.ibm.ws.security.acme;version=latest, \
+    io.openliberty.org.testcontainers;version=latest,\
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
+    org.shredzone.acme4j:acme4j-client;version=2.7,\
+    org.shredzone.acme4j:acme4j-utils;version=2.7,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    org.bitbucket.b_c:jose4j;version=0.6.5,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+    com.ibm.ws.crypto.certificateutil;version=latest
+    

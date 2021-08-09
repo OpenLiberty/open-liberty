@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.webservices.javaee.common/resources/com/ibm/ws/webservices/javaee/common/resources/WsEECommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere WebServices EE Common Code
+#RANGE 0300-0399
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#{0}=service impl bean link
+warn.dd.invalid.portcomponentname=CWWKW0300W: W przypadku elementu {0} zawartego w pliku webservices.xml warto\u015b\u0107 elementu <port-component-name> wynosi NULL lub jest pusta.
+warn.dd.invalid.portcomponentname.explanation=Warto\u015b\u0107 elementu <port-component-name> nie mo\u017ce wynosi\u0107 NULL i nie mo\u017ce by\u0107 pusta.
+warn.dd.invalid.portcomponentname.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 elementu <port-component-name> nie wynosi NULL i nie jest pusta.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.protocolbinding=CWWKW0301W: Warto\u015b\u0107 {0} elementu <protocol-binding> nie jest poprawn\u0105 warto\u015bci\u0105 dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.protocolbinding.explanation=Warto\u015b\u0107 elementu <protocol-binding> w pliku webservices.xml musi by\u0107 jednym z nast\u0119puj\u0105cych adres\u00f3w URL (http://schemas.xmlsoap.org/wsdl/soap/http, http://www.w3.org/2003/05/soap/bindings/HTTP/, http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true, http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true) lub ich alias\u00f3w ##SOAP11_HTTP, ##SOAP11_HTTP.MTOM, ##SOAP12_HTTP, ##SOAP12_HTTP.MTOM, ##XML_HTTP.
+warn.dd.invalid.protocolbinding.useraction=W przypadku powi\u0105zania protoko\u0142u u\u017cyj jednego z wymienionych w nawiasie adres\u00f3w URL (http://schemas.xmlsoap.org/wsdl/soap/http, http://www.w3.org/2003/05/soap/bindings/HTTP/, http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true, http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true) lub jego aliasu (##SOAP11_HTTP, ##SOAP11_HTTP.MTOM, ##SOAP12_HTTP, ##SOAP12_HTTP.MTOM, ##XML_HTTP).
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlservice=CWWKW0302W: Warto\u015b\u0107 {0} elementu <wsdl-service> jest niekwalifikowana dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.wsdlservice.explanation=Warto\u015b\u0107 elementu <wsdl-service> w pliku webservices.xml musi by\u0107 nazw\u0105 kwalifikowan\u0105.
+warn.dd.invalid.wsdlservice.useraction=U\u017cyj nazwy kwalifikowanej dla elementu <wsdl-service> w pliku webservices.xml. Nazwa kwalifikowana powinna zawiera\u0107 nazw\u0119 lokaln\u0105 oraz przestrze\u0144 nazw XML.  Na przyk\u0142ad element <wsdl-service> powinien by\u0107 zdefiniowany w pliku webservices.xml w nast\u0119puj\u0105cy spos\u00f3b: <wsdl-service xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLService</wsdl-service>.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlport=CWWKW0303W: Warto\u015b\u0107 {0} elementu <wsdl-port> jest niekwalifikowana dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.wsdlport.explanation=Warto\u015b\u0107 elementu <wsdl-port> w pliku webservices.xml musi by\u0107 nazw\u0105 kwalifikowan\u0105.
+warn.dd.invalid.wsdlport.useraction=U\u017cyj nazwy kwalifikowanej dla elementu <wsdl-port> w pliku webservices.xml. Nazwa kwalifikowana powinna zawiera\u0107 nazw\u0119 lokaln\u0105 oraz przestrze\u0144 nazw XML. Na przyk\u0142ad element <wsdl-port> powinien by\u0107 zdefiniowany w pliku webservices.xml w nast\u0119puj\u0105cy spos\u00f3b: <wsdl-port xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLPort</wsdl-port>.
+
+#{0}=namespace of the port qname
+#{1}=value
+#{2}=port component name
+warn.dd.invalid.namespace.of.wsdlport=CWWKW0304W: Przestrze\u0144 nazw {0} warto\u015bci {1} w elemencie <wsdl-port> jest niepoprawna dla komponentu portu {2} w pliku webservices.xml.
+warn.dd.invalid.namespace.of.wsdlport.explanation=Je\u015bli przestrze\u0144 nazw elementu <wsdl-port> jest okre\u015blona, musi by\u0107 ona zgodna z przestrzeni\u0105 nazw okre\u015blon\u0105 w elemencie <wsdl-service>. 
+warn.dd.invalid.namespace.of.wsdlport.useraction=Okre\u015bl przestrze\u0144 nazw, kt\u00f3ra jest zgodna z okre\u015blon\u0105 w elemencie <wsdl-service>. 
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.serviceendpointinterface=CWWKW0305W: Warto\u015b\u0107 {0} elementu <service-endpoint-interface> nie jest pe\u0142n\u0105 nazw\u0105 klasy dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.serviceendpointinterface.explanation=Warto\u015b\u0107 elementu <service-endpoint-interface> w pliku webservices.xml musi by\u0107 pe\u0142n\u0105 nazw\u0105 klasy.
+warn.dd.invalid.serviceendpointinterface.useraction=U\u017cyj pe\u0142nej nazwy klasy dla elementu <service-endpoint-interface> w pliku webservices.xml. Pe\u0142na nazwa klasy powinna mie\u0107 posta\u0107 <nazwa_pakietu>.<nazwa_klasy>, na przyk\u0142ad com.ibm.ws.example.MyService.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.mtomthreshold=CWWKW0306W: Warto\u015b\u0107 {0} elementu <mtom-threshold> jest ujemn\u0105 liczb\u0105 ca\u0142kowit\u0105 dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.mtomthreshold.explanation=Warto\u015b\u0107 elementu <mtom-threshold> w pliku webservices.xml musi by\u0107 nieujemn\u0105 liczb\u0105 ca\u0142kowit\u0105.
+warn.dd.invalid.mtomthreshold.useraction=U\u017cyj nieujemnej liczby ca\u0142kowitej dla elementu <mtom-threshold> w pliku webservices.xml. 
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.enablemtom=CWWKW0307W: Warto\u015b\u0107 {0} elementu <enable-mtom> nie jest warto\u015bci\u0105 boolowsk\u0105 dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.enablemtom.explanation=Warto\u015b\u0107 elementu <enable-mtom> w pliku webservices.xml musi by\u0107 warto\u015bci\u0105 boolowsk\u0105.
+warn.dd.invalid.enablemtom.useraction=Ustaw dla elementu <enable-mtom> warto\u015b\u0107 true lub false.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.respectbinding=CWWKW0308W: Warto\u015b\u0107 {0} elementu <enabled> w elemencie <respect-binding> nie jest warto\u015bci\u0105 boolowsk\u0105 dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.respectbinding.explanation=Warto\u015b\u0107 elementu <enabled> zdefiniowanego w elemencie <respect-binding> w pliku webservices.xml musi by\u0107 warto\u015bci\u0105 boolowsk\u0105.
+warn.dd.invalid.respectbinding.useraction=Ustaw dla elementu <enabled> warto\u015b\u0107 true lub false.
+
+#{0}=value
+#{1}=element tag
+#{2}=port component name
+warn.dd.invalid.addressing=CWWKW0309W: Warto\u015b\u0107 {0} znacznika {1} w elemencie <addressing> nie jest warto\u015bci\u0105 boolowsk\u0105 dla komponentu portu {2} w pliku webservices.xml.
+warn.dd.invalid.addressing.explanation=Warto\u015b\u0107 elementu <enabled> lub <required> zdefiniowanego w ramach elementu <addressing> musi by\u0107 warto\u015bci\u0105 boolowsk\u0105.
+warn.dd.invalid.addressing.useraction=Ustaw dla elementu <enabled> lub <required> warto\u015b\u0107 true lub false.
+
+#{0}=element tag
+#{1}=port component name
+warn.dd.invalid.handler=CWWKW0310W: Elementu {0} brakuje w elemencie <handler> dla komponentu portu {1} w pliku webservices.xml.
+warn.dd.invalid.handler.explanation=Je\u015bli ustawiono procedur\u0119 obs\u0142ugi, wymagane s\u0105 elementy <handler-class> i <handler-name>.
+warn.dd.invalid.handler.useraction=Ustaw element <handler-class> i <handler-name> w poprawnej procedurze obs\u0142ugi. Warto\u015b\u0107 elementu <handler-name> musi by\u0107 nazw\u0105 unikaln\u0105 w obr\u0119bie danego pliku webservices.xml. Warto\u015b\u0107 elementu <handler-class> musi by\u0107 pe\u0142n\u0105 nazw\u0105 klasy. Pe\u0142na nazwa klasy powinna mie\u0107 posta\u0107 <nazwa_pakietu>.<nazwa_klasy>, na przyk\u0142ad com.ibm.ws.example.MyHandler.

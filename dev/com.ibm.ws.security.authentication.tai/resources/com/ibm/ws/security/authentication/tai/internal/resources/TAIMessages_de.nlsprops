@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.tai/resources/com/ibm/ws/security/authentication/tai/internal/resources/TAIMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1200 - CWWKS1299
+
+SEC_TAI_LOAD_INIT=CWWKS1200I: Bei der Initialisierung der Trust-Association wurden {0} Interceptor geladen.
+SEC_TAI_LOAD_INIT.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SEC_TAI_LOAD_INIT.useraction=Es ist keine Aktion erforderlich.
+
+SEC_TAI_INIT_SIGNATURE=CWWKS1201I: Die Initialisierungsklasse der Trust-Association, {0}, wurde erfolgreich geladen.
+SEC_TAI_INIT_SIGNATURE.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SEC_TAI_INIT_SIGNATURE.useraction=Es ist keine Aktion erforderlich.
+
+SEC_TAI_LOAD_CLASS=CWWKS1202I: Initialisierung der Trust-Association: Interceptorsignatur: {0}
+SEC_TAI_LOAD_CLASS.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+SEC_TAI_LOAD_CLASS.useraction=Es ist keine Aktion erforderlich.
+
+SEC_TAI_INIT_CLASS_LOAD_ERROR=CWWKS1203E: Die Trust-Association kann nicht aktiviert werden. Ausnahme bei der Initialisierung der Trust-Association: {0}
+SEC_TAI_INIT_CLASS_LOAD_ERROR.explanation=Die Trust-Association konnte nicht initialisiert werden.
+SEC_TAI_INIT_CLASS_LOAD_ERROR.useraction=Vergewissern Sie sich, dass die entsprechenden Trust-Association-Klassen installiert sind und dass der Klassenpfad korrekt ist.
+
+SEC_TAI_NO_INTERCEPTOR_CLASS=CWWKS1204E: Initialisierung der Trust-Association: Die Interceptorklasse {0} wurde nicht gefunden.
+SEC_TAI_NO_INTERCEPTOR_CLASS.explanation=Die in der Datei trustedservers.properties angegebene Interceptorklassendatei wurde nicht gefunden.
+SEC_TAI_NO_INTERCEPTOR_CLASS.useraction=Vergewissern Sie sich, dass die entsprechenden Trust-Association-Klassen installiert sind und dass der Klassenpfad korrekt ist. \
+Stellen Sie auch sicher, dass die in der Datei trustedservers.properties angegebene Klasse korrekt ist und dass die Datei mindestens Leseberechtigung hat.
+
+SEC_TAI_LOAD_CLASS_ERROR=CWWKS1205E: Die Trust-Association ist w\u00e4hrend der Validierung fehlgeschlagen. Ausnahme: {0}
+
+SEC_TAI_LOAD_CLASS_ERROR.explanation=Beim Laden der Subjektklasse ist eine Ausnahme des Typs ClassNotFoundException eingetreten.
+SEC_TAI_LOAD_CLASS_ERROR.useraction=Vergewissern Sie sich, dass Konfiguration und Klassenpfad korrekt und die entsprechenden Trust-Association-Klassen installiert sind.
+
+SEC_TAI_INTERCEPTOR_PROPERTIES_INCOMPLETE=CWWKS1206E: Die f\u00fcr den Interceptor {0} angegebenen Eigenschaften sind unvollst\u00e4ndig: {1}
+SEC_TAI_INTERCEPTOR_PROPERTIES_INCOMPLETE.explanation=Die angegebenen Eigenschaften m\u00fcssen einen Namen und einen Wert definieren.
+SEC_TAI_INTERCEPTOR_PROPERTIES_INCOMPLETE.useraction=Definieren Sie einen Namen und einen Wert f\u00fcr die Eigenschaften des Interceptors.
+
+SEC_TAI_NO_SHARED_LIBRARY=CWWKS1207E: Es ist keine gemeinsam genutzte Bibliothek f\u00fcr den Trust-Association-Interceptor (TAI) vorhanden.
+SEC_TAI_NO_SHARED_LIBRARY.explanation=Der angegebene TAI hat keine gemeinsam genutzte Bibliothek.
+SEC_TAI_NO_SHARED_LIBRARY.useraction=Stellen Sie sicher, dass der TAI eine g\u00fcltige JAR-Datei hat. 

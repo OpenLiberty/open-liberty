@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Logout of $logoutPropCtx.session.id</title>
+</head>
+<body onload="document.getElementById('logout_prop').submit()">
+<form id="logout_prop" method="POST" action="$logoutPropCtx.session.id">
+    <input type="hidden" name="logoutRequest" value="
+        <samlp:LogoutRequest xmlns:samlp='urn:oasis:names:tc:SAML:2.0:protocol' ID='$messageID' Version='2.0' IssueInstant='$issueInstant'>
+        <saml:NameID xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>somebody</saml:NameID>
+        <samlp:SessionIndex>$logoutPropCtx.session.ticketId</samlp:SessionIndex>
+        </samlp:LogoutRequest>" >
+    <button id="logout" name="logout" type="submit">Logout</button>
+</form>
+<script>
+    if (typeof(Storage) !== "undefined") {
+        sessionStorage.setItem("$logoutPropCtx.sessionKey", "$flowExecutionUrl&_eventId=proceed");
+    }
+</script>
+</body>
+</html>

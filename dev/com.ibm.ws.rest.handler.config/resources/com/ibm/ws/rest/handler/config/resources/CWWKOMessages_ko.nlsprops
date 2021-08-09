@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.config/resources/com/ibm/ws/rest/handler/config/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Config REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1530 to CWWKO1549
+
+CWWKO1530_CIRCULAR_DEPENDENCY=CWWKO1530I: \uc21c\ud658 \uc885\uc18d\uc131\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c {0}\uc5d0 \ub300\ud55c \uad6c\uc131 \uc815\ubcf4\uac00 \uc798\ub9bd\ub2c8\ub2e4.
+CWWKO1530_CIRCULAR_DEPENDENCY.explanation=\uc21c\ud658 \uc885\uc18d\uc131\uc774 \uad6c\uc131\uc5d0 \uc788\ub294 \uacbd\uc6b0 \uc911\ubcf5 \uad6c\uc131 \uc138\ubd80\uc0ac\ud56d\uc744 \uc798\ub77c\uc11c \ubd84\ud560\ub429\ub2c8\ub2e4.
+CWWKO1530_CIRCULAR_DEPENDENCY.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+CWWKO1531_NOT_FOUND=CWWKO1531E: \uad6c\uc131 \uc694\uc18c {0}\uc774(\uac00) \uc778\uc2dd\ub418\uc9c0 \uc54a\uac70\ub098 \uc774\ub97c \uc81c\uacf5\ud558\ub294 \uae30\ub2a5\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWWKO1531_NOT_FOUND.explanation=\uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub41c \uae30\ub2a5\uc5d0\uc11c \uc694\uccad\ub41c \uc720\ud615\uc758 \uad6c\uc131 \uc694\uc18c\ub97c \uc81c\uacf5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWWKO1531_NOT_FOUND.useraction=\ucca0\uc790\uac00 \uc62c\ubc14\ub974\uace0 \uc774 \uad6c\uc131\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uae30\ub2a5\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

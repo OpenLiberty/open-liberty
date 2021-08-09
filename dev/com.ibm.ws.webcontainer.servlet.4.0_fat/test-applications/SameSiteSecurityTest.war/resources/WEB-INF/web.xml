@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app
+    version="4.0"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+  <display-name>SameSiteSecurityTest</display-name>
+
+    <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>SameSiteSecurityTest</web-resource-name>
+        <url-pattern>/SameSiteSecurityServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+        <role-name>sameSiteSecurity_basic</role-name>
+     </auth-constraint>
+  </security-constraint>
+    
+  <!-- CHALLENGE TYPE -->
+  <login-config>
+  	<auth-method>FORM</auth-method>
+  	<realm-name>TestRealm</realm-name>
+    <form-login-config id="FormLoginConfig_1">
+    	<form-login-page>/login.jsp</form-login-page>
+        <form-error-page>/loginError.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+</web-app>

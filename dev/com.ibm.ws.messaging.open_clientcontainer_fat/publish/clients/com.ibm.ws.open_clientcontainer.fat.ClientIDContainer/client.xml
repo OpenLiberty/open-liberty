@@ -1,0 +1,28 @@
+<client description="client ID test">
+  <include location="../fatTestPorts.xml"/>
+  <featureManager>
+    <feature>javaeeClient-7.0</feature>
+  </featureManager>
+
+  <application id="ClientIDClient" name="ClientID" type="ear" location="ClientID.ear"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms clientID="" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr6" maxPoolSize="10"/>
+
+  <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr7">
+    <properties.wasJms  clientID="" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsConnectionFactory>
+  <connectionManager id="ConMgr7" maxPoolSize="10"/>
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr8">
+    <properties.wasJms clientID="" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsTopicConnectionFactory>
+  <connectionManager id="ConMgr8" maxPoolSize="10"/>
+
+  <jmsTopic jndiName="jndi_TOPIC_ONE">
+    <properties.wasJms topicSpace="TOPIC_ONE"/>
+  </jmsTopic>
+
+</client>

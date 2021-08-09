@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs.2.0.server/resources/com/ibm/ws/jaxrs20/server/internal/resources/JaxRsWebServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS WebContainer Code
+#RANGE 0100 - 0199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+warn.provider.no.public.ctor=CWWKW0100W: A(z) {0}  JAX-RS szolg\u00e1ltat\u00f3 oszt\u00e1ly az alkalmaz\u00e1sban nem tartalmaz nyilv\u00e1nos konstruktort. A kiszolg\u00e1l\u00f3 figyelmen k\u00edv\u00fcl fogja hagyni ezt a szolg\u00e1ltat\u00f3t.
+warn.provider.no.public.ctor.explanation=A JAX-RS specifik\u00e1ci\u00f3 megk\u00f6veteli, hogy a szolg\u00e1ltat\u00f3 oszt\u00e1ly tartalmazzon legal\u00e1bb egy nyilv\u00e1nos konstruktort, amelyet a JAX-RS t\u00e1rol\u00f3 megval\u00f3s\u00edt\u00e1s megh\u00edv. A megadott szolg\u00e1ltat\u00f3 oszt\u00e1ly nem tartalmaz nyilv\u00e1nos konstruktort, \u00edgy a kiszolg\u00e1l\u00f3 figyelmen k\u00edv\u00fcl fogja hagyni.
+warn.provider.no.public.ctor.useraction=Ha az alkalmaz\u00e1shoz sz\u00fcks\u00e9ges ez a szolg\u00e1ltat\u00f3, akkor m\u00f3dos\u00edtani kell az oszt\u00e1lyt, hogy tartalmazzon legal\u00e1bb egy nyilv\u00e1nos konstruktort. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a JAX-RS 2.0 (JSR 339) specifik\u00e1ci\u00f3 4.1.2 szakasz\u00e1t.
+
+warn.servlet.specified.without.application=CWWKW0101W: A web.xml a(z) {0} modulban a(z) {1} nev\u0171 szervletet adja meg {2} oszt\u00e1llyal, de nem adja meg a sz\u00fcks\u00e9ges alkalmaz\u00e1s inicializ\u00e1l\u00e1si param\u00e9tert.
+warn.servlet.specified.without.application.explanation=A web.xml f\u00e1jlnak meg kell adnia egy alkalmaz\u00e1s init-param elemet a JAX-RS szervletek deklar\u00e1l\u00e1sakor. Tov\u00e1bbi inform\u00e1ci\u00f3kat a Knowledge Center webhelyen tal\u00e1l: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.without.application.useraction=Eg\u00e9sz\u00edtse ki a web.xml f\u00e1jlt a sz\u00fcks\u00e9ges init-param elemmel, amely megadja az alkalmaz\u00e1soszt\u00e1lyt ebben a modulban.
+
+warn.servlet.specified.with.invalid.application=CWWKW0102W: A web.xml a(z) {0} modulban a(z) {1} nev\u0171 szervletet adja meg, amely \u00e9rv\u00e9nytelen alkalmaz\u00e1soszt\u00e1lyt deklar\u00e1l az inicializ\u00e1l\u00e1siu param\u00e9terben. A(z) {2} oszt\u00e1ly nem a javax.ws.rs.Application aloszt\u00e1lya.
+warn.servlet.specified.with.invalid.application.explanation=A web.xml f\u00e1jlnak meg kell adnia egy init-param elemet "javax.ws.rs.Application" param-name elemmel \u00e9s olyan alkalmaz\u00e1soszt\u00e1lyt tartalmaz\u00f3 param-value elemmel, amely a javax.ws.rs.Application oszt\u00e1lyt terjeszti ki. Tov\u00e1bbi inform\u00e1ci\u00f3kat a Knowledge Center webhelyen tal\u00e1l: https://www.ibm.com/support/knowledgecenter/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/twbs_jaxrs_configwebxml.html?pos=2
+warn.servlet.specified.with.invalid.application.useraction=M\u00f3dos\u00edtsa a web.xml f\u00e1jlt \u00e9s adjon meg Application aloszt\u00e1lyt ebben a modulban.

@@ -1,0 +1,183 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=\u00cencepere profil pentru
+
+class=clas\u0103
+
+commit_depth=(ad\u00e2ncime comitere = {0})
+
+connected=conectat
+
+connector=conector
+
+context=Context:    
+
+database_name=nume baz\u0103 de date
+
+datasource=surs\u0103 de date
+
+datasource_URL=URL surs\u0103 de date
+
+datasource_name=nume surs\u0103 de date
+
+depth_reset_key=(ad\u00e2ncime = {0}, resterare cheie = {1}, resetare versiune = {2})
+
+disconnected=deconectat
+
+empty_commit_order_dependency_node=CommitOrderDependencyNode gol
+
+end_profile=Terminare profil
+
+error_printing_expression=Eroare la tip\u0103rirea expresiei
+
+lazy=lent
+
+local_time=or\u0103 local\u0103
+
+login=logare
+
+longestTime=cel mai lung timp
+
+min_max=(conexiuni minime = {0}, conexiuni maxime = {1})
+
+mulitple_files=mai multe fi\u015fiere
+
+multiple_readers=mai multe cititoare
+
+name=Nume: 
+
+nest_level=(nivel imbricare = {0})
+
+no_files=niciun fi\u015fier
+
+no_streams=niciun flux
+
+node=Nod ({0})
+
+non_lazy=non-lent
+
+not_instantiated=neinstan\u0163iat
+
+number_of_objects=num\u0103r de obiecte
+
+objects_second=obiecte/secund\u0103
+
+platform=platform\u0103
+
+pooled=pus \u00een pool
+
+profile=Profil
+
+profiling_time=timp profilare
+
+reader=cititor
+
+schema=Schem\u0103: 
+
+sdo_classgenerator_usage_help_1of8={0} Utilizare: org.eclipse.persistence.sdo.helper.{0} [-options]
+
+sdo_classgenerator_usage_help_2of8=Op\u0163iuni:
+
+sdo_classgenerator_usage_help_3of8=    -help Tip\u0103re\u015fte textul mesajului de ajutor
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       Fi\u015fierul schem\u0103 de intrare (necesar)
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   Directorul de generat sursa Java (op\u0163ional)
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        Specifica\u0163i valoarea \u00eentreag\u0103 a nivelului de \u00eenregistrare \u00een istoric (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(default),1=FINEST,0=ALL).
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces Nu genera\u0163i clase de interfa\u0163\u0103
+
+sdo_classgenerator_usage_help_8of8=    -noImpls Nu genera\u0163i clase impl
+
+sdo_classgenerator_usage_missing_sourcefile={0} Parametrul -sourceFile nu a fost specificat \u015fi este necesar.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} Valoarea -sourceFile nu a fost specificat\u0103.
+
+sdo_classgenerator_usage_missing_targetdir={0} Valoarea -targetDirectory nu a fost specificat\u0103.
+
+server_name=nume server
+
+shortestTime=timpul cel mai scurt
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           Specifica\u0163i fi\u015fierul de \u00eenregistrare \u00een istoric.
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           Specifica\u0163i valoarea \u00eentreag\u0103 a nivelului de \u00eenregistrare \u00een istoric (8=OFF,7=SEVERE,6=WARNING,5=INFO,4=CONFIG,3=FINE,2=FINER(default),1=FINEST,0=ALL).
+
+staticweave_commandline_help_message_14of19=    Calea de clase trebuie s\u0103 con\u0163in\u0103 toate clasele necesare pentru a \u00eenc\u0103rca clasele \u00een surs\u0103.
+
+staticweave_commandline_help_message_15of19=    \u0162es\u0103tura va fi realizat\u0103 pe loc dac\u0103 sursa \u015fi \u0163inta indic\u0103 la aceea\u015fi loca\u0163ie.  \u0162es\u0103tura pe loc se aplic\u0103 NUMAI pentru surse bazate pe director.
+
+staticweave_commandline_help_message_16of19=  Exemplu:
+
+staticweave_commandline_help_message_17of19=    Pentru a face weave pentru toate intr\u0103rile con\u0163inute \u00een C:\\foo-source.jar cu persistence.xml al s\u0103u con\u0163inut \u00een C:\\foo-containing-persistence-xml.jar,
+
+staticweave_commandline_help_message_18of19=    \u015fi ie\u015firea la C:\\foo-target.jar:
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  Utilizare: StaticWeave [options] source target
+
+staticweave_commandline_help_message_2of19=  Op\u0163iuni:
+
+staticweave_commandline_help_message_3of19=    -classpath cale de clase
+
+staticweave_commandline_help_message_4of19=           Seta\u0163i calea de clase a utilizatorului.  Folosi\u0163i ";" ca delimitator \u00een Windows \u015fi ":" \u00een Unix.
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           Identifica\u0163i explicit unde este stocat META-INF/persistence.xml.  Trebuie s\u0103 fie r\u0103d\u0103cina META-INF/persistence.xml.
+
+staticweave_commandline_help_message_7of19=           Aceast\u0103 op\u0163iune este folosit\u0103 de obicei pentru a specifica jar-ul principal c\u00e2nd se \u0163es fi\u015fiere referite de <jar-file> \u00een persistence.xml.
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           Identifica\u0163i loca\u0163ia  persistence.xml fa\u0163\u0103 de r\u0103d\u0103cina unit\u0103\u0163ii de persisten\u0163\u0103 dac\u0103 este \u00een alt\u0103 parte dec\u00e2t META-INF/persistence.xml
+
+staticweave_processor_dir_not_created=Directorul {0} nu poate fi creat.
+
+staticweave_processor_file_not_created=Nu poate fi creat fi\u015fierul {0}.
+
+staticweave_processor_unknown_outcome=Clasele de Weaving stocate \u00eentr-un director \u015fi scoaterea \u00eentr-un JAR duce de obicei la rezultate nea\u015fteptate.
+
+time_object=timp/obiect
+
+total_time=timp total
+
+unknown=necunoscut
+
+user_name=nume utilizator
+
+writer=scriitor
+

@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Der angegebene Service ist nicht verf\u00fcgbar. Dies ist ein interner Serverfehler. 
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option [--clean] erneut.
+
+OPENAPI_IS_NULL=CWWKO1701W: Der Provider {0} hat kein OpenAPI-Dokument zur\u00fcckgegeben.
+OPENAPI_IS_NULL.explanation=Ein f\u00fcr den OASProvider erstelltes OpenAPI-Objekt ist null. Wahrscheinlich liegt ein G\u00fcltigkeitsfehler vor.
+OPENAPI_IS_NULL.useraction=Stellen Sie ein g\u00fcltiges Dokument bereit. Ermitteln Sie den Fehler anhand der Protokolle.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: Das OpenAPI-Objekt, das der Server mit dem Anpassungswert {0} erstellt hat, ist null.
+CUSTOMIZATION_IS_NULL.explanation=Ein OpenAPI-Objekt, das mit dem Anpassungswert erstellt wurde, ist null.
+CUSTOMIZATION_IS_NULL.useraction=Suchen Sie den Fehler in den Protokollen. Geben Sie ein g\u00fcltiges OpenAPI-Dokument f\u00fcr das Anpassungsattribut an.
+
+PUBLIC_URL_INVALID=CWWKO1703W: Die \u00f6ffentliche URL kann nicht auf {0} gesetzt werden. Diese URL ist f\u00fcr den Anwendungsserver reserviert.
+PUBLIC_URL_INVALID.explanation=Die \u00f6ffentliche URL kann nicht auf einen Wert gesetzt werden, der f\u00fcr den Anwendungsserver reserviert ist.
+PUBLIC_URL_INVALID.useraction=Geben Sie einen Wert f\u00fcr das Attribut publicURL in der Serverkonfiguration an.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: Es wurden mehrere OpenAPI-Anpassungsdateien gefunden: {0}. {1} wird auf \u00c4nderungen hin \u00fcberwacht.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=Es sind mehrere OpenAPI-Anpassungsdateien im Verzeichnis ${server.config.dir}/openapi-3.1 enthalten.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Stellen Sie sicher, dass nur eine einzige OpenAPI-Standardanpassungsdatei im Verzeichnis ${server.config.dir}/openapi-3.1 enthalten ist.
+
+CSS_NOT_PROCESSED=CWWKO1705W: Der Server kann das angegebene CSS-Dokument {0} nicht lesen. Ursache {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Das CSS-Dokument kann wegen eines G\u00fcltigkeitsfehlers nicht verarbeitet werden.
+CSS_NOT_PROCESSED.useraction=Stellen Sie ein g\u00fcltiges CSS-Dokument bereit.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: Bei der Validierung des OpenAPI-Dokuments wurden die folgenden Fehler erzeugt:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Das OpenAPI-Dokument ist ung\u00fcltig.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Geben Sie ein g\u00fcltiges OpenAPI-Dokument an, um den berichteten Fehler zu beheben.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: Bei der Validierung des OpenAPI-Dokuments wurden die folgenden Warnungen erzeugt:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Das OpenAPI-Dokument enth\u00e4lt Daten, die nicht in dem empfohlenen Format enthalten sind.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Geben Sie ein g\u00fcltiges OpenAPI-Dokument an, um die berichtete Warnung zu beheben.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: Die f\u00fcr die OpenAPI-Benutzerschnittstelle angegebene angepasste CSS-Datei {0} wurde nicht verarbeitet. Der Server stellt die Standardwerte f\u00fcr die OpenAPI-Benutzerschnittstelle bereit. Ursache: {1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Der Server kann die angepasste CSS-Datei nicht verarbeiten. Der Server stellt die Standardwerte f\u00fcr die OpenAPI-Benutzerschnittstelle bereit.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Stellen Sie eine g\u00fcltige angepasste CSS-Datei f\u00fcr die OpenAPI-Benutzerschnittstelle zusammen mit allen Abh\u00e4ngigkeiten bereit.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: Der Server hat das angegebene CSS-Dokument {0} gelesen, konnte jedoch die Angabe <.swagger-ui .headerbar > nicht finden.
+CSS_SECTION_NOT_FOUND.explanation=Das angegebene CSS-Dokument enth\u00e4lt keine Angabe <.swagger-ui .headerbar > oder das Format des Dokuments entspricht nicht den erforderlichen Vorgaben des Servers.
+CSS_SECTION_NOT_FOUND.useraction=Stellen Sie eine g\u00fcltige CSS-Datei bereit, die die Angabe <.swagger-ui .headerbar > im erforderlichen Format enth\u00e4lt.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: Der f\u00fcr die Eigenschaft {0} angegebene Wert wird nicht unterst\u00fctzt. Der g\u00fcltige Wert ist {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Der Wert der angegebenen Eigenschaft ist ung\u00fcltig oder er wird vom OpenAPI-Framework nicht unterst\u00fctzt.
+UNSUPPORTED_CSS_VALUE.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr die Eigenschaft in der angepassten CSS-Datei f\u00fcr die OpenAPI-Benutzerschnittstelle an. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: Das in {0} angegebene Hintergrundbild ist nicht vorhanden oder ung\u00fcltig.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Das Hintergrundbild ist nicht vorhanden oder es ist ung\u00fcltig.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Geben Sie ein g\u00fcltiges Bild an.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: Fehler beim Parsen des OpenAPI-Dokuments f\u00fcr die folgende Anwendung: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Fehler beim Parsen des OpenAPI-Dokuments aus dem META-INF-Ordner.
+OPENAPI_FILE_PARSE_ERROR.useraction=Stellen Sie sicher, dass die Datei das richtige YAML-oder JSON-Format hat. 

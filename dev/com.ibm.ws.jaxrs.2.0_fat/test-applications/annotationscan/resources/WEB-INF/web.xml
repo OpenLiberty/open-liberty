@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="AnnotationScan" version="3.0" 
+     xmlns="http://java.sun.com/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+     
+	<servlet>
+		<servlet-name>com.ibm.ws.jaxrs.fat.annotation.multipleapp.App4</servlet-name>
+	</servlet>
+
+	<servlet>
+		<servlet-name>App5</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet
+		</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.core.Application</param-name>
+			<param-value>com.ibm.ws.jaxrs.fat.annotation.multipleapp.App5
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.ibm.ws.jaxrs.fat.annotation.multipleapp.App5
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+	  	<!-- This servlet is valid by the servlet spec, but is invalid for Liberty because
+	  	     it declares the IBMRestServlet without declaring the Application init-param.
+	  	     The proper init-param is commented out below just to show what it _should_
+	  	     look like.  But for this test case, we want it to fail to ensure that we
+	  	     get the correct warning message. -->
+		<servlet-name>App7IBMRestServlet</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+		<!--
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.ibm.ws.jaxrs.fat.annotation.multipleapp.App7</param-value>
+		</init-param>
+		-->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+	  	<!-- This servlet is valid by the servlet spec, but is invalid for JAX-RS because
+	  	     it declares an Application class that is not a subclass of the 
+	  	     javax.ws.rs.core.Application class.  This configuration should result in a
+	  	     warning message getting printed to the logs. -->
+		<servlet-name>NotAnAppIBMRestServlet</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>com.ibm.ws.jaxrs.fat.annotation.multipleapp.App4</servlet-name>
+		<url-pattern>/app4withwebxml/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>App5</servlet-name>
+		<url-pattern>/app5withwebxml/*</url-pattern>
+	</servlet-mapping>
+</web-app>

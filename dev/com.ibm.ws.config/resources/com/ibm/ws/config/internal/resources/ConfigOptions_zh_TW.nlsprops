@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=\u7528\u6cd5\uff1ajava [JVM \u9078\u9805] -jar {0} [\u9078\u9805] outputFile  
+
+use.options=\u9078\u9805\uff1a
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.ignorePids=--ignorePidsFile
+option-desc.ignorePids=\u5305\u542b\u8981\u5ffd\u7565\u4e4b PID \u6e05\u55ae\u7684\u6a94\u540d
+option-key.encoding=--encoding
+option-desc.encoding=\u7528\u65bc\u8f38\u51fa\u7684\u5b57\u5143\u7de8\u78bc
+option-key.locale=--locale
+option-desc.locale=\u7528\u65bc\u8f38\u51fa\u7684\u8a9e\u8a00\u74b0\u5883
+option-key.compactoutput=--compactOutput
+option-desc.compactoutput=\u8f38\u51fa\u7db1\u76ee\u4e0d\u6703\u5305\u542b\u7e2e\u6392\u7a7a\u683c\u3001\u63db\u884c\u8cc7\u8a0a\u4f86\u6e90\u6216 XML \u8a3b\u89e3
+option-key.productExtension=--productExtension
+option-desc.productExtension=\u8981\u8655\u7406\u7684\u5ef6\u4f38\u7522\u54c1\u540d\u7a31\u3002                           \n\
+\u5982\u679c\u5ef6\u4f38\u7522\u54c1\u662f\u5b89\u88dd\u5728\u9810\u8a2d\u4f7f\u7528\u8005\u4f4d\u7f6e\u4e0a\uff0c                                \n\
+\u8acb\u4f7f\u7528\u95dc\u9375\u5b57\uff1ausr\u3002                                                    \n\
+\u5982\u679c\u6c92\u6709\u6307\u5b9a\u9019\u500b\u9078\u9805\uff0c\u5c31\u6703\u5c0d Liberty \u6838\u5fc3\u63a1\u53d6\u52d5\u4f5c\u3002

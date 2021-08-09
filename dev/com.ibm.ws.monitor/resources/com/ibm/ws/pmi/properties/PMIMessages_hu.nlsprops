@@ -1,0 +1,323 @@
+###############################################################################
+# Copyright (c) 2001, 2004 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIMessages.nlsprops
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring Instrumentation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# Warning message when a null path is passed to PMI
+PMI0001W=CWPMI0001W: A PMI sz\u00e1m\u00e1ra \u00e1tadott \u00fatvonal \u00fcres: {0}
+PMI0001W.explanation=\u00c9rv\u00e9nytelen vagy null \u00fatvonal ker\u00fclt \u00e1tad\u00e1sra a teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00far\u00e1nak (PMI). A PMI az \u00fatvonal azonos\u00edt\u00f3 seg\u00edts\u00e9g\u00e9vel rendezi el azokat a sz\u00e1ml\u00e1l\u00f3kat, amelyek nyomon k\u00f6vetik az alkalmaz\u00e1s statisztik\u00e1j\u00e1t.  A PMI egy gy\u00f6k\u00e9r \u00fatvonallal indul, \u00e9s valamennyi WebSphere \u00f6sszetev\u0151 a gy\u00f6k\u00e9rb\u0151l sz\u00e1rmaz\u00f3 al\u00e1gakon t\u00e1rolja a saj\u00e1t statisztik\u00e1it.  Amikor a PMI \u00fcres \u00fatvonalat kap, nem tudja teljes\u00edteni a hozz\u00e1 tartoz\u00f3 k\u00e9r\u00e9st, mert nem tal\u00e1lja meg a megadott elemet.
+PMI0001W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find a PMI module the mbean
+PMI0002W=CWPMI0002W: A k\u00f6vetkez\u0151 MBean komponenshez nem tal\u00e1lhat\u00f3 PMI moduln\u00e9v: {0}
+PMI0002W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) h\u00edv\u00f3ja \u00e1ltal megadott fel\u00fcgyelt komponens (MBean) neve nem felel meg egy bels\u0151 PMI n\u00e9vnek sem.  A JMX specifik\u00e1ci\u00f3ban az MBean komponensek olyan Java objektumok, amelyek fel\u00fcgyelhet\u0151 er\u0151forr\u00e1sokat \u00e1br\u00e1zolnak.  A PMI er\u0151forr\u00e1sok egy MBean fel\u00fcleten kereszt\u00fcl c\u00edmezhet\u0151k.  Ha a megadott MBean neve nem egyezik meg egy jelenleg bet\u00f6lt\u00f6tt PMI n\u00e9vvel, akkor figyelmeztet\u00e9s k\u00e9sz\u00fcl.  A probl\u00e9ma a h\u00edv\u00f3 alkalmaz\u00e1s \u00e1ltal v\u00e9tett hiba, vagy az a t\u00e9ny, hogy a h\u00edv\u00f3 alkalmaz\u00e1s olyan PMI n\u00e9vre pr\u00f3b\u00e1l hivatkozni, amelyet az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00f6lt\u00f6tt be.
+PMI0002W.useraction=Akkor kap ilyen \u00fczenetet, ha a PMI statisztika megjelen\u00edt\u00e9s\u00e9hez egy k\u00fcls\u0151 teljes\u00edtm\u00e9nyfigyel\u0151 eszk\u00f6zt haszn\u00e1l. Ellen\u0151rizze, hogy helyes-e az eszk\u00f6z konfigur\u00e1ci\u00f3ja.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when multiple ObjectNames are found but only a single is expected
+PMI0003W=CWPMI0003W: MultipleObjectNamesExistException: MBean kulcs: {0}
+PMI0003W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) h\u00edv\u00f3ja \u00e1ltal megadott MBean n\u00e9v t\u00f6bb PMI n\u00e9vnek is megfelel. A JMX specifik\u00e1ci\u00f3ban az MBean komponensek olyan Java objektumok, amelyek fel\u00fcgyelhet\u0151 er\u0151forr\u00e1sokat \u00e1br\u00e1zolnak.  A PMI er\u0151forr\u00e1sok egy MBean fel\u00fcleten kereszt\u00fcl c\u00edmezhet\u0151k. Ez a hiba t\u00f6rt\u00e9nik, ha a megadott MBean n\u00e9v t\u00f6bb PMI n\u00e9vnek is megfelel.
+PMI0003W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to create AdminUtilImpl
+PMI0004W=CWPMI0004W: Kiv\u00e9tel AdminUtilImpl lek\u00e9r\u00e9sekor a k\u00f6vetkez\u0151 PmiJmxMapper oszt\u00e1lyban: {0}
+PMI0004W.explanation=A PmiJmxMapper oszt\u00e1ly nem tud \u00faj AdminUtil oszt\u00e1lyt l\u00e9trehozni. Az AdminUtil fel\u00fclet lehet\u0151vi teszi, hogy a PMI hozz\u00e1f\u00e9rjen ahhoz az adminisztr\u00e1ci\u00f3s objektumhoz, amely a JMX csatlakoz\u00e1shoz sz\u00fcks\u00e9ges.
+PMI0004W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected null parameter is passed to PMI
+PMI0005W=CWPMI0005W: A PMI sz\u00e1m\u00e1ra \u00e1tadott \u00fatvonal \u00fcres: {0}
+PMI0005W.explanation=Ez az esem\u00e9ny akkor aktiv\u00e1l\u00f3dik, ha a Teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) friss\u00edt\u00e9st hajt v\u00e9gre, \u00e9s a PMI \u00fcgyf\u00e9l \u00e1ltal k\u00fcld\u00f6tt valamelyik param\u00e9ter \u00fcres.
+PMI0005W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot a mbean for the given data descriptor
+PMI0006W=CWPMI0006W: Nem tal\u00e1lhat\u00f3 MBean a k\u00f6vetkez\u0151 PMI adatle\u00edr\u00f3hoz: {0}
+PMI0006W.explanation=A PMI nem tud PMI nevet rendelni a hozz\u00e1 tartoz\u00f3 MBean komponenshez. A JMX specifik\u00e1ci\u00f3ban az MBean komponensek olyan Java objektumok, amelyek fel\u00fcgyelhet\u0151 er\u0151forr\u00e1sokat \u00e1br\u00e1zolnak.  A PMI er\u0151forr\u00e1sok egy MBean fel\u00fcleten kereszt\u00fcl c\u00edmezhet\u0151k.
+PMI0006W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when the module config object is null
+PMI0007W=CWPMI0007W: Nem tal\u00e1lhat\u00f3 PMI modul \u00f6ssze\u00e1ll\u00edt\u00e1s: {0}
+PMI0007W.explanation=Ez a hiba azt a szitu\u00e1ci\u00f3t jelzi, amikor a Teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) nem tal\u00e1lja egy megadott modul be\u00e1ll\u00edt\u00e1sait.  A modulok azok a szervezeti egys\u00e9gek, amelyeket a PMI a funkcion\u00e1lis \u00f6sszetev\u0151k megszak\u00edt\u00e1s\u00e1ra haszn\u00e1l az alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. 
+PMI0007W.useraction=A kiv\u00e9tel v\u00e1ratlan. Az okot nem lehet azonnal felismerni. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tekintse meg a hibafelder\u00edt\u00e9ssel foglalkoz\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si webhely\u00e9n: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an invalid data ID is using in PMI
+PMI0008W=CWPMI0008W: \u00c9rv\u00e9nytelen adatazonos\u00edt\u00f3: {0}
+PMI0008W.explanation=Egy PMI modul nem tud azonos\u00edtani egy olyan adatobjektumot, amelyet a modul feldolgoz. Minden egyes PMI modul adatobjektumok egy v\u00e9ges halmaz\u00e1ra van be\u00e1ll\u00edtva. Az \u00fczenetben szerepel az \u00e9rv\u00e9nytelen adat azonoss\u00e1g.
+PMI0008W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong parameter is passed to updateData method
+PMI0009W=CWPMI0009W: Nem megfelel\u0151 param\u00e9ter ker\u00fclt \u00e1tad\u00e1sra az updateData met\u00f3dusnak a PmiAbstractModule modulban: {0}
+PMI0009W.explanation=A PmiAbstractModule objektumnak egy nem defini\u00e1lt f\u00fcggv\u00e9nyt kell v\u00e9grehajtani a meadott adatobjektumon.
+PMI0009W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find the XML file to read
+PMI0010W=CWPMI0010W: A k\u00f6vetkez\u0151 f\u00e1jl nem tal\u00e1lhat\u00f3: {0}
+PMI0010W.explanation=A PMI nem tal\u00e1l olyan f\u00e1jlt a bels\u0151 feldolgoz\u00e1s\u00e1hoz, amely sz\u00fcks\u00e9ges a PMI inicializ\u00e1l\u00e1s\u00e1hoz. Az \u00fczenetben l\u00e1that\u00f3 annak a f\u00e1jlnak a neve, ami nem tal\u00e1lhat\u00f3.
+PMI0010W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when pmiSpec in WCCM config file is ill-formatted
+PMI0011W=CWPMI0011W: Rosszul megadott pmiSpec a PmiUtil belsej\u00e9ben: {0}
+PMI0011W.explanation=A PMI \u00e9rv\u00e9nytelen teljes\u00edtm\u00e9nyfigyel\u0151 szint \u00e9rt\u00e9ket \u00e1ll\u00edt be. A PMI a teljes\u00edtm\u00e9nyfigyel\u0151 szint seg\u00edts\u00e9g\u00e9vel d\u00f6nti el, hogy az aktu\u00e1lis megfigyel\u00e9si halmazba melyik modulok, almodulok \u00e9s statisztik\u00e1k legyenek benne.
+PMI0011W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong number of parameters is passed to PmiFactory
+PMI0012W=CWPMI0012W: A PmiFactory nem megfelel\u0151 sz\u00e1m\u00fa param\u00e9tert kapott: {0}
+PMI0012W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) egy modult hoz l\u00e9tre, de kapott param\u00e9terek nem felelnek meg a l\u00e9trehozand\u00f3 modul k\u00f6vetelm\u00e9nyeinek.
+PMI0012W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong type of parameters is passed to PmiFactory
+PMI0013W=CWPMI0013W: A PmiFactory nem megfelel\u0151 t\u00edpus\u00fa param\u00e9tereket kapott: {0}
+PMI0013W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) egy modult hoz l\u00e9tre, de kapott param\u00e9terek egyike nem a v\u00e1rt objektumt\u00edpussal rendelkezik. 
+PMI0013W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI failed to create TransactionModule
+PMI0014W=CWPMI0014W: A PmiFactory nem tudta l\u00e9trehozni a TransactionModule modult: {0}
+PMI0014W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) nem tudja l\u00e9trehozni a tranzakci\u00f3s modul teljes\u00edtm\u00e9ny statisztik\u00e1j\u00e1t kezel\u0151 objektumot.
+PMI0014W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to connect to AdminClient or AdminService
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0015W=CWPMI0015W: Az AdminUtilImpl kiv\u00e9telt dobott az AdminClient/AdminService modulhoz kapcsol\u00f3d\u00e1s sor\u00e1n: {0}
+PMI0015W.explanation=Az AdminUtilImpl kiv\u00e9telbe \u00fctk\u00f6z\u00f6tt az AdminClient vagy AdminService modulhoz kapcsol\u00f3d\u00e1s sor\u00e1n.
+PMI0015W.useraction=A kiv\u00e9tel v\u00e1ratlan. Az ok nem ismerhet\u0151 fel azonnal. CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to find the ObjectNames
+PMI0016W=CWPMI0016W: Kiv\u00e9tel, amikor az AdminUtilImpl megk\u00eds\u00e9rli megkeresni/kilist\u00e1zni az ObjectName-eket: {0}
+PMI0016W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) nem tud PMI nevet p\u00e1ros\u00edtani a megfelel\u0151 fel\u00fcgyelt komponens (MBean) nev\u00e9hez.  A JMX specifik\u00e1ci\u00f3ban az MBean komponensek olyan Java objektumok, amelyek fel\u00fcgyelhet\u0151 er\u0151forr\u00e1sokat \u00e1br\u00e1zolnak.  A PMI er\u0151forr\u00e1sokat MBean fel\u00fcletek sz\u00f3l\u00edtj\u00e1k meg.
+PMI0016W.useraction=Akkor kap ilyen \u00fczenetet, ha a PMI statisztika megjelen\u00edt\u00e9s\u00e9hez egy k\u00fcls\u0151 teljes\u00edtm\u00e9nyfigyel\u0151 eszk\u00f6zt haszn\u00e1l. Ellen\u0151rizze, hogy helyes-e az eszk\u00f6z konfigur\u00e1ci\u00f3ja.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to get status from NodeAgent or AppServer
+PMI0017W=CWPMI0017W: AdminUtilImpl kiv\u00e9tel a getAdminState sor\u00e1n: {0}
+PMI0017W.explanation=A PMI nem tud kommunik\u00e1lni az adminisztr\u00e1ci\u00f3s \u00fcgyf\u00e9llel. Lehets\u00e9ges, hogy az adminisztr\u00e1ci\u00f3s \u00fcgyf\u00e9l m\u00e1r nem k\u00e9pes a kommunik\u00e1lni a c\u00e9l csom\u00f3pont\u00fcgyn\u00f6kkel vagy alkalmaz\u00e1skiszolg\u00e1l\u00f3val.
+PMI0017W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when no ObjectName is returned from query
+PMI0018W=CWPMI0018W: Az AdminUtilImpl nem kapott vissza ObjectName \u00e9rt\u00e9ket a lek\u00e9rdez\u00e9sb\u0151l: {0}
+PMI0018W.explanation= A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) figyelmeztet\u00e9st ad ki, ha a PMI nem tud PMI nevet p\u00e1ros\u00edtani a megfelel\u0151 fel\u00fcgyelt komponens (MBean) nev\u00e9hez. A JMX specifik\u00e1ci\u00f3ban az MBean komponensek olyan Java objektumok, amelyek fel\u00fcgyelhet\u0151 er\u0151forr\u00e1sokat \u00e1br\u00e1zolnak.  A PMI er\u0151forr\u00e1sokat MBean fel\u00fcletek sz\u00f3l\u00edtj\u00e1k meg.
+
+PMI0018W.useraction=Akkor kap ilyen \u00fczenetet, ha a PMI statisztika megjelen\u00edt\u00e9s\u00e9hez egy k\u00fcls\u0151 teljes\u00edtm\u00e9nyfigyel\u0151 eszk\u00f6zt haszn\u00e1l. Ellen\u0151rizze, hogy helyes-e az eszk\u00f6z konfigur\u00e1ci\u00f3ja.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected runtime config attribute name passed to PMI
+PMI0019W=CWPMI0019W: Nem v\u00e1rt fut\u00e1si k\u00f6rnyezet konfigur\u00e1ci\u00f3 attrib\u00fatumn\u00e9v: {0}
+PMI0019W.explanation=A kapcsolatt\u00e1r modulhoz megadott konfigur\u00e1ci\u00f3s param\u00e9ter nem \u00e9rv\u00e9nyes. A be\u00e1ll\u00edt\u00e1s egyetlen \u00e9rv\u00e9nyes param\u00e9tere: 'PoolSize'.
+PMI0019W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI counter is obviously wrong, e.g., a negative number
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0020W=CWPMI0020W: A sz\u00e1ml\u00e1l\u00f3 nincs szinkronban: {0}
+PMI0020W.explanation=A sz\u00e1ml\u00e1l\u00f3 nincs szinkronban.
+PMI0020W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0021W=CWPMI0021W: Rossz adatt\u00edpus: {0}
+PMI0021W.explanation=Helytelen adatt\u00edpus.
+PMI0021W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0022W=CWPMI0022W: T\u00f6bbsz\u00f6r\u00f6s moduln\u00e9v: {0}
+PMI0022W.explanation=T\u00f6bbsz\u00f6r szerepl\u0151 moduln\u00e9v.
+PMI0022W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0023W=CWPMI0023W: A PMI modul bejegyz\u00e9se t\u00f6bbsz\u00f6r\u00f6s n\u00e9v miatt nem lehets\u00e9ges: {0}
+PMI0023W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) n\u00e9v\u00fctk\u00f6z\u00e9s miatt nem tud regisztr\u00e1lni egy modult.  A PMI a megadott \u00fatvonalon egy egyedi n\u00e9v seg\u00edts\u00e9g\u00e9vel figyeli az \u00f6sszes modult \u00e9s almodult.  Ha ez az \u00fczenet jelenik meg, akkor a PMI nem tudja v\u00e9grehajtani a modulfelv\u00e9telt, mert ugyanazzal a n\u00e9vvel m\u00e1r l\u00e9tezik egy modul.
+PMI0023W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0024W=CWPMI0024W: Az MBean-PMI modul lek\u00e9pez\u00e9s fel\u00fcl\u00edr\u00e1sra ker\u00fcl: {0}
+PMI0024W.explanation=Ez az \u00fczenet akkor jelenik meg, ha a hivatkoz\u00e1shoz t\u00e1rolt MBean el\u00e9r\u00e9si \u00fat m\u00e1r l\u00e9tezik a gyors\u00edt\u00f3t\u00e1rban.  A JMX specifik\u00e1ci\u00f3ban az MBean komponensek olyan Java objektumok, amelyek fel\u00fcgyelhet\u0151 er\u0151forr\u00e1sokat \u00e1br\u00e1zolnak.  A PMI er\u0151forr\u00e1sokat MBean fel\u00fcletek sz\u00f3l\u00edtj\u00e1k meg. Ebben a p\u00e9ld\u00e1nyban a PMI egy MBean el\u00e9r\u00e9si utat t\u00e1rs\u00edt egy megl\u00e9v\u0151 bels\u0151 PMI objektumhoz.
+PMI0024W.useraction=Akkor kap ilyen \u00fczenetet, ha a PMI statisztika megjelen\u00edt\u00e9s\u00e9hez egy k\u00fcls\u0151 teljes\u00edtm\u00e9nyfigyel\u0151 eszk\u00f6zt haszn\u00e1l. Ellen\u0151rizze, hogy helyes-e az eszk\u00f6z konfigur\u00e1ci\u00f3ja.
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0025W=CWPMI0025W: Hiba t\u00f6rt\u00e9nt a PMI-konfigur\u00e1ci\u00f3 pmi-config.xml f\u00e1jlban t\u00e1rol\u00e1sa sor\u00e1n: {0}
+PMI0025W.explanation=Hiba t\u00f6rt\u00e9nt a teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) konfigur\u00e1ci\u00f3j\u00e1nak pmi-config.xml f\u00e1jlba t\u00e1rol\u00e1sa k\u00f6zben.
+PMI0025W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0026W=CWPMI0026W: Hiba t\u00f6rt\u00e9nt a PMI konfigur\u00e1ci\u00f3 pmi-config.xml f\u00e1jlb\u00f3l beolvas\u00e1sa sor\u00e1n: {0}
+PMI0026W.explanation=A PMI nem tudja beolvasni a pmi-config.xml f\u00e1jlt a v\u00e1rt helyr\u0151l.
+PMI0026W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0027W=CWPMI0027W: Hiba t\u00f6rt\u00e9nt a PMI-konfigur\u00e1ci\u00f3 server.xml f\u00e1jlban t\u00e1rol\u00e1sa sor\u00e1n: {0}
+PMI0027W.explanation=A PMI sikertelen\u00fcl pr\u00f3b\u00e1lja elt\u00e1rolni az aktu\u00e1lis PMI konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kat.  A hiba egy elfogott kiv\u00e9tel, amely akkor keletkezik, amikor a PMI fizikailag pr\u00f3b\u00e1lja t\u00e1rolni az inform\u00e1ci\u00f3kat.
+PMI0027W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0028W=CWPMI0028W: Hiba a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s el\u00e9r\u00e9se sor\u00e1n
+PMI0028W.explanation= A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) nem tal\u00e1lja a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1st. A PMI a konfigur\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s seg\u00edts\u00e9g\u00e9vel m\u0171k\u00f6dik egy\u00fctt a konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kkal.
+PMI0028W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0030W=CWPMI0030W: Hiba t\u00f6rt\u00e9nt az egy\u00e9ni PMI er\u0151forr\u00e1sk\u00f6teg bet\u00f6lt\u00e9se sor\u00e1n: {0}
+PMI0030W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara(PMI) nem tal\u00e1l honos\u00edtott er\u0151forr\u00e1sk\u00f6teget. Az er\u0151forr\u00e1sk\u00f6teg egy nyelvspecifikus inform\u00e1ci\u00f3halmaz, amelyet a PMI haszn\u00e1l, amikor inform\u00e1ci\u00f3kat ad \u00e1t az alkalmaz\u00e1skiszolg\u00e1l\u00f3 felhaszn\u00e1l\u00f3inak.
+PMI0030W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0031W=CWPMI0031W: 5.0 \u00e9s 6.0 verzi\u00f3sz\u00e1m\u00fa PMI-konfigur\u00e1ci\u00f3 egyar\u00e1nt el\u0151fordul. PMI-szolg\u00e1ltat\u00e1s ind\u00edt\u00e1sa a 6.0 verzi\u00f3sz\u00e1m\u00fa konfigur\u00e1ci\u00f3 haszn\u00e1lat\u00e1val. Az initialSpecLevel jellemz\u0151 a server.xml f\u00e1jlban elavult, mivel 6.0 verzi\u00f3j\u00fa.
+PMI0031W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) 6.x v\u00e1ltozat\u00fa alkalmaz\u00e1skiszolg\u00e1l\u00f3hoz lett inicializ\u00e1lva, de 5.x v\u00e1ltozat\u00fa konfigur\u00e1ci\u00f3s param\u00e9tereket tal\u00e1lt.  A 6.0 v\u00e1ltozatban a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlban l\u00e9v\u0151 initialSpecLevel attrib\u00fatum elavult.
+PMI0031W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0032W=CWPMI0032W: A PMI szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el a telep\u00edt\u00e9skezel\u0151 folyamatban.
+PMI0032W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) nem inicializ\u00e1lhat\u00f3 a h\u00e1l\u00f3zati telep\u00edt\u00e9s konfigur\u00e1ci\u00f3 k\u00f6rnyezetkezel\u0151 folyamat\u00e1ban.  A PMI nem m\u0171k\u00f6dik a k\u00f6rnyezetkezel\u0151ben, ez\u00e9rt az inicializ\u00e1l\u00e1ra tett k\u00eds\u00e9rletek meghi\u00fasulnak.
+PMI0032W.useraction=A PMI-szolg\u00e1ltat\u00e1s nem el\u00e9rhet\u0151 a telep\u00edt\u00e9skezel\u0151 folyamaton bel\u00fcl.  Tekintse \u00e1t a telep\u00edt\u00e9skezel\u0151 konfigur\u00e1ci\u00f3s f\u00e1jljait \u00e9s kapcsolja ki a PMI komponenst.
+
+# ************* CUSTOM PMI MESSAGES *************
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0101W=CWPMI0101W: Az alap\u00e9rtelmezett MBean nem hozhat\u00f3 l\u00e9tre az egy\u00e9ni PMI modulhoz: {0}
+PMI0101W.explanation=Nem hozhat\u00f3 l\u00e9tre alap\u00e9rtelmezett (MBean) az egy\u00e9ni teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) modulhoz.
+PMI0101W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0102W=CWPMI0102W: Az egy\u00e9ni PMI modul-konfigur\u00e1ci\u00f3 nem olvashat\u00f3: {0}
+PMI0102W.explanation=A PMI nem tudja beolvasni az egy\u00e9ni PMI modul konfigur\u00e1l\u00e1s\u00e1hoz haszn\u00e1lt XML forr\u00e1sf\u00e1jlt.  Az egy\u00e9ni PMI egy olyan API, amelynek seg\u00edts\u00e9g\u00e9vel a PMI szolg\u00e1ltat\u00f3k modulokat regisztr\u00e1lnak a PMI-ben.  Egy egy\u00e9ni PMI modul inicializ\u00e1l\u00e1sa sor\u00e1n a PMI egy XML f\u00e1jlt olvas be, amely megadja a modul be\u00e1ll\u00edt\u00e1si inform\u00e1ci\u00f3it.
+PMI0102W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0103W=CWPMI0103W: Az egy\u00e9ni PMI modul azonos sz\u00fcl\u0151 alatt t\u00f6bbsz\u00f6r szerepl\u0151 n\u00e9v vagy \u00e9rv\u00e9nytelen fa \u00fatvonal miatt nem regisztr\u00e1lhat\u00f3: {0}
+PMI0103W.explanation=A PMI \u00faj modult hoz l\u00e9tre \u00e9rv\u00e9nytelen sz\u00fcl\u0151\u00fatvonallal, vagy olyan sz\u00fcl\u0151\u00fatvonallal, amely m\u00e1r tartalmaz egy ugyanilyen nev\u0171 modult.  A PMI modulneveknek a PMI fa minden egyes sz\u00fcl\u0151\u00fatvonal\u00e1n egyedinek kell lenni.
+PMI0103W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0104W=CWPMI0104W: Az egy\u00e9ni PMI modulhoz nem tal\u00e1lhat\u00f3 sz\u00fcl\u0151 MBean: {0}
+PMI0104W.explanation=Nem tal\u00e1lhat\u00f3 fel\u00fcgyelt komponens (MBean) az egy\u00e9ni teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) modulhoz.
+PMI0104W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0105W=CWPMI0105W: A k\u00f6vetkez\u0151h\u00f6z nem tal\u00e1lhat\u00f3 PMI modulelem: {0}
+PMI0105W.explanation=A PMI nem tal\u00e1lja a figyelmeztet\u0151 \u00fczenetben megjelen\u00edtett \u00fatvonal \u00e1ltal azonos\u00edtott modult. A PMI megpr\u00f3b\u00e1lja megkeresni a modult, hogy v\u00e9grehajthasson rajta egy feladatot.
+PMI0105W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0106W=CWPMI0106W: Hiba t\u00f6rt\u00e9nt egy egy\u00e9ni PMI MBean le\u00e1ll\u00edt\u00e1sa sor\u00e1n: {0}
+PMI0106W.explanation=Hiba t\u00f6rt\u00e9nt egy egy\u00e9ni teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) fel\u00fcgyelt komponens (MBean) le\u00e1ll\u00edt\u00e1sakor.
+PMI0106W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0107W=CWPMI0107W: A k\u00f6vetkez\u0151 egy\u00e9ni PMI modult nem lehet regisztr\u00e1lni, mert a PMI-szolg\u00e1ltat\u00e1s nem enged\u00e9lyezett: {0}
+PMI0107W.explanation=A PMI tiltott, \u00e9s egy komponens vagy alkalmaz\u00e1s PMI objektumot pr\u00f3b\u00e1l l\u00e9trehozni.  Ez az \u00fczenet t\u00e1j\u00e9koztatja a PMI \u00fcgyf\u00e9l tulajdonos\u00e1t, mi\u00e9rt nem lehet v\u00e9grehajtani a k\u00e9r\u00e9st.
+PMI0107W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0108W=CWPMI0108W: Az egy\u00e9ni PMI modul a sz\u00fcl\u0151statisztika csoport/p\u00e9ld\u00e1ny t\u00f6bbsz\u00f6r\u00f6s statisztikaazonos\u00edt\u00f3ja miatt nem regisztr\u00e1lhat\u00f3: ID={0}; ParentStats={1}
+PMI0108W.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) akkor hozta l\u00e9tre az \u00fczenetet, amikor egy egy\u00e9ni PMI modult inicializ\u00e1lt.  A PMI nem tud statisztika azonos\u00edt\u00f3t \u00f6ssze\u00e1ll\u00edtani az egy\u00e9ni PMI modulhoz, mert a modulhoz m\u00e1r tartozik statisztikai azonos\u00edt\u00f3.  A probl\u00e9m\u00e1t az egy\u00e9ni PMI XML sablonban l\u00e9v\u0151 hiba okozhatja.
+PMI0108W.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0201I=CWPMI0201I: Az egy\u00e9ni PMI MBean le\u00e1ll\u00edt\u00e1sa a k\u00f6vetkez\u0151h\u00f6z: {0}
+PMI0201I.explanation=Egy\u00e9ni PMI MBean le\u00e1ll\u00edt\u00e1sa.
+PMI0201I.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0001I=CWPMI1101I: Az ideiglenes t\u00e1rol\u00f3ban megtal\u00e1lhat\u00f3: {0}
+PMI0001I.explanation=Az ideiglenes t\u00e1rol\u00f3ban megtal\u00e1lhat\u00f3.
+PMI0001I.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0002I=CWPMI1102I: Az ideiglenes t\u00e1rol\u00f3ban nem tal\u00e1lhat\u00f3: {0}
+PMI0002I.explanation=Az ideiglenes t\u00e1rol\u00f3ban nem tal\u00e1lhat\u00f3.
+PMI0002I.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# Information
+PMI0001A=CWPMI1001I: A PMI enged\u00e9lyezett
+PMI0001A.explanation=Ez egy fel\u00fclvizsg\u00e1lati \u00fczenet, amely azt nyugt\u00e1zza, hogy a PMI enged\u00e9lyezett \u00e9s m\u0171k\u00f6dik.
+PMI0001A.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+PMI0002A=CWPMI1002I: A PMI tiltott
+PMI0002A.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) tiltott.
+PMI0002A.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# Indicates and internal error in PMI
+PMI9999E=CWPMI9999E: Bels\u0151 hiba: {0}
+PMI9999E.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 infrastrukt\u00fara (PMI) sz\u00e1mos probl\u00e9m\u00e1t jelez.  A probl\u00e9ma egyedi jelleg\u00e9t az \u00fczenet t\u00f6rzse jelzi.
+PMI9999E.useraction=CMSG0002
+
+

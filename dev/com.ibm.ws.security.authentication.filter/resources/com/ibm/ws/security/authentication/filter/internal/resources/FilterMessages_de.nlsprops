@@ -1,0 +1,61 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Filter service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4350 - CWWKS4399
+AUTH_FILTER_INIT_NULL_STRING=CWWKS4350E: Eine Nullzeichenfolge ist keine g\u00fcltige Authentifizierungsfilterregel.
+AUTH_FILTER_INIT_NULL_STRING.explanation=F\u00fcr die Authentifizierungsfilterregel wurde in der Datei server.xml eine Nullzeichenfolge angegeben.
+AUTH_FILTER_INIT_NULL_STRING.useraction=Korrigieren Sie die Authentifizierungsfilterregel.
+
+AUTH_FILTER_MALFORMED_CONDITION=CWWKS4351E: Die Filterbedingung ist fehlerhaft. s1 = {0};  s2 = {1}; s3 = {2}.
+AUTH_FILTER_MALFORMED_CONDITION.explanation=Die Filterbedingung ist fehlerhaft. Es kann nur ein einziger Wert angegeben werden.
+AUTH_FILTER_MALFORMED_CONDITION.useraction=\u00dcberpr\u00fcfen Sie den Filterwert in der Datei server.xml.
+
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE=CWWKS4352E: Die g\u00fcltigen Filterabgleichstypen sind ==, !=, %=, > oder <. Es wurde aber der Abgleichstyp {0} verwendet.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.explanation=Die g\u00fcltigen Filterabgleichstypen sind ==, !=, %=, > und <.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.useraction=\u00dcberpr\u00fcfen Sie den Filterabgleichstyp in der Datei server.xml.
+
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE=CWWKS4353E: Die g\u00fcltigen Filterabgleichstypen sind equals, notContain, contains, greaterThan und lessThan. Es wurde aber der Abgleichstyp {0} verwendet.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.explanation=Die g\u00fcltigen Filterabgleichstypen sind equals, notContain, contains, greaterThan und lessThan.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.useraction=\u00dcberpr\u00fcfen Sie den Filterabgleichstyp in der Datei server.xml.
+
+AUTH_FILTER_MALFORMED_IP_RANGE=CWWKS4354E: Es wurde ein fehlerhafter IP-Adressbereich angegeben. Es wurde {0} anstelle eines Platzhalters gefunden.
+AUTH_FILTER_MALFORMED_IP_RANGE.explanation=Es wurde ein ung\u00fcltiger IP-Adressbereich angegeben. Nach dem ersten Bereich d\u00fcrfen nur Platzhalter stehen.
+AUTH_FILTER_MALFORMED_IP_RANGE.useraction=Stellen Sie sicher, dass nach dem ersten Bereich nur Platzhalter angegeben werden.
+
+AUTH_FILTER_UNKNOWN_HOST=CWWKS4355E: Es wurde eine Ausnahme des Typs Unbekannter Host f\u00fcr die IP-Adresse {0} ausgel\u00f6st.
+AUTH_FILTER_UNKNOWN_HOST.explanation=Es konnte kein Hostname f\u00fcr die angegebene IP-Adresse abgerufen werden.
+AUTH_FILTER_UNKNOWN_HOST.useraction=\u00dcberpr\u00fcfen Sie den angegebenen IP-Adressbereich.
+
+AUTH_FILTER_IP_STRING_CONVERT_ERROR=CWWKS4356E: Der IP-Attributwert {0} kann nicht in eine IP-Adresse konvertiert werden.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.explanation=Beim Konvertieren des IP-Attributwerts in eine IP-Adresse ist ein Konvertierungsfehler aufgetreten.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.useraction=\u00dcberpr\u00fcfen Sie das in der Datei server.xml angegebene IP-Attribut.
+
+AUTH_FILTER_NOT_CONFIG=CWWKS4357I: Das Element authFilter ist nicht in der Datei server.xml angegeben.
+AUTH_FILTER_NOT_CONFIG.explanation=Das Element authFilter ist nicht in der Datei server.xml angegeben.
+AUTH_FILTER_NOT_CONFIG.useraction=Stellen Sie sicher, dass das authFilter-Element in der Datei server.xml angegeben ist.
+
+AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: Die Konfiguration des Authentifizierungsfilters {0} wurde erfolgreich verarbeitet.
+AUTH_FILTER_CONFIG_PROCESSED.explanation=Die Konfiguration des Authentifizierungsfilters wurde erfolgreich verarbeitet.
+AUTH_FILTER_CONFIG_PROCESSED.useraction=Es ist keine Aktion erforderlich.
+
+AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: Die Konfiguration des Authentifizierungsfilters {0} wurde erfolgreich ge\u00e4ndert.
+AUTH_FILTER_CONFIG_MODIFIED.explanation=Die Konfiguration des Authentifizierungsfilters wurde erfolgreich ge\u00e4ndert.
+AUTH_FILTER_CONFIG_MODIFIED.useraction=Es ist keine Aktion erforderlich.
+
+AUTH_FILTER_MISSING_ID=CWWKS4360E: Dem in der Datei server.xml angegebenen Element authFilter fehlt das erforderliche ID-Attribut {0}.
+AUTH_FILTER_MISSING_ID.explanation=Dem in der Datei server.xml angegebenen Element authFilter fehlt das erforderliche ID-Attribut. Daher wird dieses Element authFilter nicht verwendet.
+AUTH_FILTER_MISSING_ID.useraction=Stellen Sie sicher, dass das ID-Attribut f\u00fcr das in der Datei server.xml angegebene Element authFilter vorhanden ist.

@@ -1,0 +1,40 @@
+<!--Copyright (c) 2020 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-v10.html 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="microprofile-config-2.0-tck" verbose="2" configfailurepolicy="continue">
+    <test name="tck-package-org.eclipse.microprofile.config20.tck">
+        <method-selectors>
+            <method-selector>
+                <script language="beanshell">
+                    <![CDATA[
+                    // org.eclipse.microprofile.config.tck.ConverterTest
+                    if(method.getName().startsWith("testURLConverter") ||
+                       method.getName().startsWith("testGetURLConverter")){
+                        // Tests unreliable in 2.0 TCK due to URL.equals() performing DNS resolution. See: https://github.com/eclipse/microprofile-config/issues/695
+                        return false;
+                    }
+                    
+                    // org.eclipse.microprofile.config.tck.ConfigProviderTest
+                    String os = System.getProperty("os.name");
+                    if (os.contains("Windows") && method.getName().startsWith("testEnvironmentConfigSource")){
+                        // Test unreliable in 2.0 TCK on Windows due to inconsistent path variable name. See https://github.com/eclipse/microprofile-config/issues/664
+                        return false;
+                    }
+                    
+                    return true;
+                    ]]>
+                </script>
+            </method-selector>
+        </method-selectors>
+        <packages>
+            <package name="org.eclipse.microprofile.config.tck.*"></package>
+        </packages>
+    </test>
+</suite>

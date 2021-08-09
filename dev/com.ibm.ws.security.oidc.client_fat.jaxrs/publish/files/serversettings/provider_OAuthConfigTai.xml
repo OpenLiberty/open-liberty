@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<openidConnectProvider
+		id="OidcConfigTai"
+		oauthProviderRef="OAuthConfigTai"
+		httpsRequired="false" />
+
+	<oauthProvider
+		id="OAuthConfigTai"
+		filter="request-url%=snooping"
+		oauthOnly="true"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+		<autoAuthorizeClient>user1</autoAuthorizeClient>
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+
+</server>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   02/01/2013  mzheng         CXF Web service - WSS 11 encryption service client
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>CxfWss11EncSvcClient</display-name>
+
+    <servlet>
+        <servlet-name>wss11encclientclient</servlet-name>
+        <display-name>wss11encclientclient</display-name>
+        <description>CXF WSS 11 encryption Service Client</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11encclient.CxfWss11EncSvcClient</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+<!-- comment out 11/2020
+    <servlet-mapping>
+        <servlet-name>wss11encclientclient</servlet-name>
+        <url-pattern>/CxfWss11EncSvcClient</url-pattern>
+    </servlet-mapping>
+-->
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

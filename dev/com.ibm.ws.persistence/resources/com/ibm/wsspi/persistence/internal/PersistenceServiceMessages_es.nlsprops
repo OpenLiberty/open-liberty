@@ -1,0 +1,91 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.persistence/resources/com/ibm/wsspi/persistence/internal/PersistenceServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD WebSphere Persistence Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+# Message   Range       Used by                         Notes
+# Prefix 
+# CWWKD     0100-0199   com.ibm.ws.persistence.utility  Persistence Service
+# CWWKD     0200-0299   com.ibm.ws.persistence          Persistence Service
+# CWWKD     0300-9999   Reserved for use by liberty
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: La configuraci\u00f3n del prefijo de almac\u00e9n de base de datos {1} contiene caracteres no permitidos.
+ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=Un prefijo de almac\u00e9n de base de datos solo puede contener n\u00fameros, letras o el s\u00edmbolo '_'.
+ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=El prefijo de almac\u00e9n de base de datos debe modificarse para que contenga \u00fanicamente n\u00fameros, letras o el s\u00edmbolo '_'.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: La configuraci\u00f3n del esquema de almac\u00e9n de base de datos {1} contiene caracteres no permitidos.
+ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=Un esquema de almac\u00e9n de base de datos solo puede contener n\u00fameros, letras o el s\u00edmbolo '_'.
+ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=El esquema de almac\u00e9n de base de datos debe modificarse para que contenga \u00fanicamente n\u00fameros, letras o el s\u00edmbolo '_'.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+DEACTIVATED_CWWKD0202E=CWWKD0202E: Este almac\u00e9n de base de datos ha sido desactivado.
+DEACTIVATED_CWWKD0202E.explanation=Se ha intentado operar con un almac\u00e9n de base de datos que ha sido desactivado.
+DEACTIVATED_CWWKD0202E.useraction= No es necesaria ninguna acci\u00f3n del usuario.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E=CWWKD0203E: Se ha detectado un car\u00e1cter Unicode no permitido en el par\u00e1metro de serie de sentencia preparada.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E.explanation= El almac\u00e9n de base de datos se ha configurado manual o autom\u00e1ticamente para rechazar los caracteres Unicode en argumentos de serie de sentencia preparada y se ha detectado un car\u00e1cter de este tipo en un par\u00e1metro de serie de sentencia preparada.
+INVALID_CHAR_IN_PREPSTMT_CWWKD0203E.useraction=Elimine el car\u00e1cter Unicode del par\u00e1metro de serie antes de volver a intentarlo.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+PROVIDER_WARNING_CWWKD0291W=CWWKD0291W: {0}
+PROVIDER_WARNING_CWWKD0291W.explanation=El almac\u00e9n de base de datos ha registrado este mensaje de aviso.
+PROVIDER_WARNING_CWWKD0291W.useraction=Consulte la documentaci\u00f3n del almac\u00e9n de base de datos.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
+PROVIDER_ERROR_CWWKD0292E=CWWKD0292E: {0}
+PROVIDER_ERROR_CWWKD0292E.explanation=El almac\u00e9n de base de datos ha registrado este mensaje de error.
+PROVIDER_ERROR_CWWKD0292E.useraction=Consulte la documentaci\u00f3n del almac\u00e9n de base de datos.
+

@@ -1,0 +1,48 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+ <xsd:annotation>
+  <xsd:documentation xml:lang="en">
+   Jsp Visitor Collection schema.
+  </xsd:documentation>
+ </xsd:annotation>
+
+ <xsd:element name="jsp-visitor-configuration">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element ref="jsp-visitor-definition" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+   <xsd:sequence>
+    <xsd:element ref="jsp-visitor-collection" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name="jsp-visitor-definition" type="jsp-visitor-definitionType"/>
+
+ <xsd:complexType name="jsp-visitor-definitionType">
+  <xsd:sequence>
+   <xsd:element name="class-name" type="xsd:string"/>
+   <xsd:element name="result-type" type="xsd:string"/>
+  </xsd:sequence>
+  <xsd:attribute name="id" type="xsd:string"/>
+ </xsd:complexType>
+ 
+ <xsd:element name="jsp-visitor-collection" type="jsp-visitor-collectionType"/>
+ 
+ <xsd:complexType name="jsp-visitor-collectionType">
+   <xsd:sequence>
+    <xsd:element ref="jsp-visitor" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+   <xsd:attribute name="id" type="xsd:string"/>
+ </xsd:complexType>
+ 
+ <xsd:element name="jsp-visitor" type="jsp-visitorType"/>
+
+ <xsd:complexType name="jsp-visitorType">
+  <xsd:attribute name="id" type="xsd:string"/>
+  <xsd:attribute name="order" type="xsd:int"/>
+  <xsd:attribute name="visits" type="xsd:int"/>
+ </xsd:complexType>
+ 
+</xsd:schema>
+

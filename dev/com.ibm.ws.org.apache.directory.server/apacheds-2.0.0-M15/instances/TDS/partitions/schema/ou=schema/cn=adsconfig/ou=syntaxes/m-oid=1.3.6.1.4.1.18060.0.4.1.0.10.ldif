@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.0.10,ou=syntaxes,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.0.10
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaSyntax
+x-not-human-readable: FALSE
+m-description: Search Scope
+m-obsolete: FALSE
+entryUUID: 8cc9c3b8-7921-4c30-b1ed-951f09d072db
+entrycsn: 20100111202214.878000Z#000000#000#000000
+entryParentId: 0f5a07a8-fa21-4486-aed9-8e78cf29fa54
+createtimestamp: 20100111145217Z

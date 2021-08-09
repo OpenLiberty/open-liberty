@@ -1,0 +1,11 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: cdi.helloWorld.extension-1.0
+Subsystem-SymbolicName: cdi.helloWorld.extension-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: 
+  cdi.helloworld.extension; version="[1.0,1.100)",
+  cdi.internals-1.0; type="osgi.subsystem.feature",
+  com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:="2.0"; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: com.ibm.ws.cdi.extension.impl
+IBM-Feature-Version: 2

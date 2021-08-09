@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: Diversos recursos possuem o nome {0}. A pol\u00edtica de autoriza\u00e7\u00e3o n\u00e3o pode ser determinada.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=H\u00e1 diversos recursos com o mesmo nome e a pol\u00edtica de autoriza\u00e7\u00e3o correta n\u00e3o pode ser determinada. Os nomes de recursos devem ser exclusivos.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=Altere o nome de um dos nomes do recurso para que todos os recursos sejam exclusivos.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: A defini\u00e7\u00e3o de fun\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lida: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=A sintaxe para defini\u00e7\u00e3o de uma fun\u00e7\u00e3o \u00e9 <{1} name="..." />.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=Altere a defini\u00e7\u00e3o de fun\u00e7\u00e3o na configura\u00e7\u00e3o.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: V\u00e1rios elementos {0} com o nome {1} foram localizados
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=Apenas uma defini\u00e7\u00e3o de uma determinada fun\u00e7\u00e3o \u00e9 permitida
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=Remova a(s) defini\u00e7\u00e3o(\u00f5es) de fun\u00e7\u00e3o duplicada(s) na configura\u00e7\u00e3o.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: A fun\u00e7\u00e3o {0} tem um usu\u00e1rio, grupo ou assunto especial que foi inclu\u00eddo mais de uma vez
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=Apenas uma defini\u00e7\u00e3o de um membro \u00e9 permitida por fun\u00e7\u00e3o
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=Remova a(s) defini\u00e7\u00e3o(\u00f5es) de membro da fun\u00e7\u00e3o duplicada(s) na configura\u00e7\u00e3o.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: A decis\u00e3o de autoriza\u00e7\u00e3o para recursos no aplicativo {0} ser\u00e1 feita usando os nomes de grupos do usu\u00e1rio que corresponderem aos nomes de fun\u00e7\u00e3o necess\u00e1rios para acessar esse recurso.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=O aplicativo n\u00e3o tem nenhuma tabela de autoriza\u00e7\u00f5es definida. Portanto, o nome de fun\u00e7\u00e3o necess\u00e1rio para acessar o recurso ser\u00e1 tratado como o nome do grupo para a verifica\u00e7\u00e3o de acesso. Por exemplo, se o nome de fun\u00e7\u00e3o necess\u00e1rio para acessar o recurso for Gerente, e o usu\u00e1rio autenticado pertencer ao grupo Gerente, o acesso ser\u00e1 concedido.  
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=A verifica\u00e7\u00e3o de autoriza\u00e7\u00e3o impl\u00edcita pode ser desativada configurando o atributo useGroupToRoleName do elemento de autoriza\u00e7\u00e3o como false no server.xml.   

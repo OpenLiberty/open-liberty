@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/pseudo/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0800 - 0899 com.ibm.ws.kernel.pseudo.internal.PseudoServiceMessages
+# -------------------------------------------------------------------------------------------------
+
+jndi.not.installed=CWWKE0800W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a kezdeti [{0}] kontextus lek\u00e9r\u00e9s\u00e9re, de nincs be\u00e1ll\u00edtva JNDI szolg\u00e1ltat\u00e1s.
+jndi.not.installed.explanation=A JNDI szolg\u00e1ltat\u00e1s JNDI nyilv\u00e1ntart\u00e1st \u00e9s hozz\u00e1 tartoz\u00f3 seg\u00e9dprogramokat biztos\u00edt.  Ez norm\u00e1l k\u00f6r\u00fclm\u00e9nyek k\u00f6z\u00f6tt akkor sz\u00fcks\u00e9ges, amikor egy alkalmaz\u00e1snak vagy szolg\u00e1ltat\u00e1snak bejegyz\u00e9seket kell kikeresnie egy JNDI kontextusban.
+jndi.not.installed.useraction=Gondoskodj\u00e9k r\u00f3la, hogy rendelkez\u00e9sre \u00e1lljon JNDI megval\u00f3s\u00edt\u00e1s (pl. a JNDI szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1val a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban).
+

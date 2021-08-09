@@ -1,0 +1,146 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/RESTClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Client
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0200-CWWKX0259
+	
+jmx.rest.client.request.error=CWWKX0201E: The WebSphere Java Management Extensions REST client encountered an error while preparing the request to the server for URL {0} on connection {1}
+jmx.rest.client.request.error.explanation=The WebSphere Java Management Extensions REST client encountered an error while preparing a request for the server
+jmx.rest.client.request.error.useraction=Examine the server logs for further information.
+
+jmx.rest.client.response.error=CWWKX0202E: The WebSphere Java Management Extensions REST client was unable to process the response from the server for URL {0} on connection {1}
+jmx.rest.client.response.error.explanation=The WebSphere Java Management Extensions REST client was unable to process a response from the server
+jmx.rest.client.response.error.useraction=Examine the server logs for further information.
+
+jmx.rest.client.response.code.error=CWWKX0203E: The WebSphere Java Management Extensions REST client received an unexpected response code {0} with message ''{1}'' from the server for URL {2} on connection {3}
+jmx.rest.client.response.code.error.explanation=The WebSphere Java Management Extensions REST client received an unexpected response code from the server
+jmx.rest.client.response.code.error.useraction=Examine the server logs for further information.
+
+jmx.rest.client.server.throwable.exception=CWWKX0204E: Unable to parse Throwable from server error stream.
+jmx.rest.client.server.throwable.exception.explanation=The server raised an exception handling the client request, but the client could not parse a Throwable object from the server error stream. The class of the Throwable object may not be available to the client.
+jmx.rest.client.server.throwable.exception.useraction=Examine the server logs for further information.
+
+jmx.rest.client.not.connected=CWWKX0206E: The client is not connected to the server.
+jmx.rest.client.not.connected.explanation=The connection to the server or was closed or has failed.
+jmx.rest.client.not.connected.useraction=Check that the REST connector feature is enabled on the server and obtain a new connection to the server.
+
+jmx.rest.client.url.not.found=CWWKX0207E: The server reported that the URL requested by the client was not found.
+jmx.rest.client.url.not.found.explanation=The client may have out-of-date information or the REST connector feature on the server may have been disabled.
+jmx.rest.client.url.not.found.useraction=Check that the REST connector feature is enabled on the server and obtain a new connection to the server.
+
+jmx.rest.client.class.name.null=CWWKX0208E: The class name argument was null.
+jmx.rest.client.class.name.null.explanation=The class name argument must not be null.
+jmx.rest.client.class.name.null.useraction=Provide a non-null class name when calling the method.
+
+jmx.rest.client.attribute.name.null=CWWKX0209E: The attribute name argument was null.
+jmx.rest.client.attribute.name.null.explanation=The attribute name argument must not be null.
+jmx.rest.client.attribute.name.null.useraction=Provide a non-null attribute name when calling the method.
+
+jmx.rest.client.attribute.names.null=CWWKX0210E: The argument containing an array of attribute names was null.
+jmx.rest.client.attribute.names.null.explanation=The argument containing an array of attribute names must not be null.
+jmx.rest.client.attribute.names.null.useraction=Provide a non-null array of attribute names when calling the method.
+
+jmx.rest.client.attribute.null=CWWKX0211E: The Attribute argument was null.
+jmx.rest.client.attribute.null.explanation=The Attribute argument must not be null.
+jmx.rest.client.attribute.null.useraction=Provide a non-null Attribute when calling the method.
+
+jmx.rest.client.attribute.list.null=CWWKX0212E: The AttributeList argument was null.
+jmx.rest.client.attribute.list.null.explanation=The AttributeList argument must not be null.
+jmx.rest.client.attribute.list.null.useraction=Provide a non-null AttributeList when calling the method.
+
+jmx.rest.client.object.name.null=CWWKX0213E: The ObjectName argument was null.
+jmx.rest.client.object.name.null.explanation=The ObjectName argument must not be null.
+jmx.rest.client.object.name.null.useraction=Provide a non-null ObjectName when calling the method.
+
+jmx.rest.client.unexpected.server.throwable=CWWKX0214E: An unexpected Throwable object was returned from the server.
+jmx.rest.client.unexpected.server.throwable.explanation=The exception wraps a Throwable object returned from the server that is not normally expected for this operation.
+jmx.rest.client.unexpected.server.throwable.useraction=Examine the server logs for further information.
+
+jmx.rest.client.bad.credentials=CWWKX0215E: There was a problem with the user name or password provided. The server responded with code {0} and message ''{1}''
+jmx.rest.client.bad.credentials.explanation=The credentials provided when obtaining the connection were incorrect. The user may not exist or may not have authority to access the server, or the password may be incorrect.
+jmx.rest.client.bad.credentials.useraction=Correct the user name or password, then obtain a new connection.
+
+jmx.rest.client.object.name.pattern=CWWKX0216E: The ObjectName argument ''{0}'' is a pattern."
+jmx.rest.client.object.name.pattern.explanation=The ObjectName argument is a pattern but the method requires an ObjectName matching exactly one MBean.
+jmx.rest.client.object.name.pattern.useraction=Provide an ObjectName argument without wildcards that will match exactly one MBean.
+
+jmx.rest.client.instance.not.found=CWWKX0217E: No MBean is currently registered with the given ObjectName ''{0}''
+jmx.rest.client.instance.not.found.explanation=The operation requires a registered MBean, but no MBean with the given ObjectName was registered.
+jmx.rest.client.instance.not.found.useraction=Ensure the MBean is registered before attempting to perform management operations on it.
+
+jmx.rest.client.attribute.not.found=CWWKX0218E: The MBean ''{0}'' does not have an attribute by the name ''{1}''
+jmx.rest.client.attribute.not.found.explanation=The MBean does not provide an attribute of the given name.
+jmx.rest.client.attribute.not.found.useraction=Obtain the MBean information to confirm which attributes the MBean provides.
+
+jmx.rest.client.operation.not.found=CWWKX0219E: The MBean ''{0}'' does not have an operation by the name ''{1}''
+jmx.rest.client.operation.not.found.explanation=The MBean does not provide an operation of the given name.
+jmx.rest.client.operation.not.found.useraction=Obtain the MBean information to confirm which operations the MBean provides.
+
+jmx.rest.client.listener.not.found=CWWKX0220E: The given NotificationListener is not currently registered to receive notifications from MBean ''{0}''
+jmx.rest.client.listener.not.found.explanation=The NotificationListener was not added or has already been removed and is not currently registered to receive notifications from the given MBean.
+jmx.rest.client.listener.not.found.useraction=Make sure the calling code tracks which NotificationListeners have been added and removed or catch and handle the exception.
+
+jmx.rest.client.notification.lost=CWWKX0221I: The notification could not be delivered.
+jmx.rest.client.notification.lost.explanation=A notification could not be delivered to one or more NotificationListeners because a registered NotificationListener was not found or there was an exception during delivery of the notification.
+jmx.rest.client.notification.lost.useraction=If the notification should have been delivered to a registered NotificationListener, check the logs for exceptions.
+
+jmx.rest.client.connection.failed=CWWKX0222I: The connection to the server has failed.
+jmx.rest.client.connection.failed.explanation=The server became unavailable and did not become available again within the configured maximum time allowable.
+jmx.rest.client.connection.failed.useraction=Check the network connection and ensure that the server is running with the REST connector feature enabled. 
+
+jmx.rest.client.connection.temporarily.lost=CWWKX0223I: The connection to the server has been temporarily lost.
+jmx.rest.client.connection.temporarily.lost.explanation=The server has become unavailable, but the client will attempt to restore the connection for the duration of the configured maximum time allowable.
+jmx.rest.client.connection.temporarily.lost.useraction=If the server is intentionally restarting, no action is required. Otherwise, check the network connection and ensure that the server is running with the REST connector feature enabled.
+
+jmx.rest.client.connection.restored.with.exceptions=CWWKX0224I: The connection was restored but exceptions were encountered when adding NotificationListeners.
+jmx.rest.client.connection.restored.with.exceptions.explanation=The connection to the server was temporarily lost but has been restored successfully. Exceptions were encountered while adding NotificationListeners, so some notifications may not be received.
+jmx.rest.client.connection.restored.with.exceptions.useraction=Check the exceptions included with the notification and re-register NotificationListeners after correcting the problems.
+
+jmx.rest.client.connection.restored=CWWKX0225I: The connection was restored successfully.
+jmx.rest.client.connection.restored.explanation=The connection to the server was temporarily lost but has been restored successfully. Any registered NotificationListeners will continue to receive notifications.
+jmx.rest.client.connection.restored.useraction=None
+
+jmx.rest.client.connection.illegal.argument=CWWKX0226E: The parameter of type JMXServiceURL cannot be null.
+jmx.rest.client.connection.illegal.argument.explanation=The value for the parameter 'serviceURL' cannot be null.
+jmx.rest.client.connection.illegal.argument.useraction=Re-connect to the JMX REST Connector using a non-null JMXServiceURL value.
+
+jmx.rest.client.connection.invalid.endpoint=CWWKX0227E: The following is not a valid endpoint value: {0}
+jmx.rest.client.connection.invalid.endpoint.explanation=The specified endpoint value is not valid.
+jmx.rest.client.connection.invalid.endpoint.useraction=Re-connect to the JMX REST Connector using a valid endpoint value that is of type String and has the format "host:port".
+
+jmx.rest.client.connection.no.endpoints=CWWKX0228E: Could not find any available endpoints to initialize the connector.
+jmx.rest.client.connection.no.endpoints.explanation=None of the specified endpoints were available during the JMX REST Connector's initialization.
+jmx.rest.client.connection.no.endpoints.useraction=Re-connect to the JMX REST Connector using at least 1 available endpoint.
+
+jmx.rest.client.bad.user.credentials=CWWKX0229E: There was a problem with the user credentials provided. The server responded with code {0} and message ''{1}''
+jmx.rest.client.bad.user.credentials.explanation=The credentials provided are incorrect, expired, incomplete, or denied authorization.
+jmx.rest.client.bad.user.credentials.useraction=Verify that the user credentials have correct authentication and authorization, then obtain a new connection.
+
+jmx.rest.client.connection.connect=CWWKX0230I: The collective member opened JMX client to the collective controller: {0}
+jmx.rest.client.connection.connect.explanation=The member connected to the controller.
+jmx.rest.client.connection.connect.useraction=No action required.
+ 
+jmx.rest.client.connection.disconnect=CWWKX0231I: The collective member closed JMX client from the collective controller: {0}
+jmx.rest.client.connection.disconnect.explanation=The member disconnected from the controller.
+jmx.rest.client.connection.disconnect.useraction=No action required.
+

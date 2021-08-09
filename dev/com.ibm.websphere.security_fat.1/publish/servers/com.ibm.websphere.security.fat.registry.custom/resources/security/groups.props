@@ -1,0 +1,23 @@
+###############################################################################
+# Copyright (c) 1997, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# Format:
+# name:gid:users:display name
+# where name   = groupId of the group
+#       gid    = uniqueId of the group
+#       users  = list of all the userIds that the group contains
+#       display name = a (optional) display name for the group.
+admins:567:bob:Administrative group
+operators:678:jay,ted,dave:Operators group
+users:789:jay,jeff,vikas,bobby:
+group0:000::group0
+group1:001:user2
+group2:002:user1,user2

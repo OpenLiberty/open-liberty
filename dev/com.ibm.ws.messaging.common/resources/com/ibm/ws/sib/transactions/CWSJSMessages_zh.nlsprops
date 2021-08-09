@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.transactions.CWSJSMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIG0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/transactions/CWSJSMessages.nlsprops
+#COMPONENTPREFIX CWSJS
+#COMPONENTNAMEFOR CWSJS transactions
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0001=CWSJS0001E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002
+INTERNAL_ERROR_CWSJS0001.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+LOCALTX_FAIL_CWSJS0002=CWSJS0002E: \u5904\u7406\u4e8b\u52a1\u64cd\u4f5c\u671f\u95f4\u4ea7\u751f\u4e86\u5f02\u5e38 {0}\uff0c\u5bfc\u81f4\u8be5\u64cd\u4f5c\u5931\u8d25\u3002
+LOCALTX_FAIL_CWSJS0002.explanation=\u5904\u7406\u4e8b\u52a1\u64cd\u4f5c\u671f\u95f4\u4ea7\u751f\u4e86\u6d88\u606f\u4e2d\u6307\u5b9a\u7684\u5f02\u5e38\u3002\u6b64\u5f02\u5e38\u5bfc\u81f4\u8be5\u4e8b\u52a1\u64cd\u4f5c\u5931\u8d25\u3002
+LOCALTX_FAIL_CWSJS0002.useraction=\u8bf7\u8c03\u67e5\u8be5\u5f02\u5e38\u7684\u539f\u56e0\u3002
+# -------------------------------------------------------------------------------------------------
+DUPLICATE_COMPLETE_CWSJS0003=CWSJS0003E: \u5c1d\u8bd5\u5b8c\u6210\u5df2\u7ecf\u5b8c\u6210\u7684\u672c\u5730\u4e8b\u52a1\u3002
+DUPLICATE_COMPLETE_CWSJS0003.explanation=\u5728\u4e8b\u52a1\u5b8c\u6210\u4e4b\u540e\u8c03\u7528\u4e86\u672c\u5730\u4e8b\u52a1\u7684\u843d\u5b9e\u6216\u56de\u6eda\u65b9\u6cd5\u3002
+DUPLICATE_COMPLETE_CWSJS0003.useraction=\u8bf7\u907f\u514d\u91cd\u590d\u5c1d\u8bd5\u5b8c\u6210\u4e8b\u52a1\u3002
+
+# -------------------------------------------------------------------------------------------------
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004=CWSJS0004E: \u5c1d\u8bd5\u5728\u5df2\u5b8c\u6210\u7684\u672c\u5730\u4e8b\u52a1\u7684\u4f5c\u7528\u57df\u4e2d\u6267\u884c\u5de5\u4f5c\u3002
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.explanation=\u5df2\u5c1d\u8bd5\u4f7f\u7528\u5df2\u843d\u5b9e\u6216\u56de\u6eda\u7684\u672c\u5730\u4e8b\u52a1\u6267\u884c\u53ef\u6062\u590d\u64cd\u4f5c\u3002
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.useraction=\u8bf7\u4e0d\u8981\u5728\u5df2\u5b8c\u6210\u7684\u4e8b\u52a1\u7684\u4f5c\u7528\u57df\u4e2d\u6267\u884c\u65b0\u7684\u4e8b\u52a1\u6027\u5de5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+GLOBAL_ENLIST_NO_TX_CWSJS0005=CWSJS0005E: \u5c1d\u8bd5\u4f7f\u7528\u672a\u52a0\u5165\u5168\u5c40\u4e8b\u52a1\u7684 XAResource \u6765\u6267\u884c\u5de5\u4f5c\u3002
+GLOBAL_ENLIST_NO_TX_CWSJS0005.explanation=\u5c1d\u8bd5\u4f7f\u7528\u672a\u52a0\u5165\u5168\u5c40\u4e8b\u52a1\u4e2d\u7684 XAResource \u6267\u884c\u4e8b\u52a1\u6027\u5de5\u4f5c\u3002
+GLOBAL_ENLIST_NO_TX_CWSJS0005.useraction=\u8bf7\u4e0d\u8981\u5728\u672a\u52a0\u5165\u5168\u5c40\u4e8b\u52a1\u7684 XAResource \u7684\u4f5c\u7528\u57df\u4e2d\u6267\u884c\u4e8b\u52a1\u6027\u5de5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+NO_CLASSPATH_CWSJS0006=CWSJS0006E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u65e0\u6cd5\u786e\u5b9a\u5f53\u524d\u7c7b\u8def\u5f84\u3002
+NO_CLASSPATH_CWSJS0006.explanation=CMSG0001
+NO_CLASSPATH_CWSJS0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNRECOVERABLE_ERROR_CWSJS0007=CWSJS0007E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002XID \u7684\u5b57\u7b26\u4e32\u8868\u793a\u5df2\u635f\u574f\u3002
+UNRECOVERABLE_ERROR_CWSJS0007.explanation=CMSG0001
+UNRECOVERABLE_ERROR_CWSJS0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0008=CWSJS0008E: \u8d85\u51fa\u4e86\u5355\u4e2a\u4e8b\u52a1\u5141\u8bb8\u7684\u6700\u5927\u64cd\u4f5c\u6570 ({0})\u3002
+TX_SIZE_EXCEEDED_CWSJS0008.explanation=\u5c1d\u8bd5\u5728\u5355\u4e2a\u4e8b\u52a1\u7684\u4f5c\u7528\u57df\u4e2d\u6267\u884c\u5927\u4e8e\u5141\u8bb8\u7684\u6700\u5927\u64cd\u4f5c\u6570\u3002
+TX_SIZE_EXCEEDED_CWSJS0008.useraction=\u8bf7\u5c06\u5728\u4efb\u4f55\u4e00\u4e2a\u4e8b\u52a1\u7684\u4f5c\u7528\u57df\u4e2d\u5c1d\u8bd5\u7684\u64cd\u4f5c\u6570\u51cf\u5c11\u5230\u5c0f\u4e8e\u6307\u5b9a\u7684\u9650\u5236\u3002
+
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0009=CWSJS0009E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002
+INTERNAL_ERROR_CWSJS0009.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0009.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations that is permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0010=CWSJS0010E: \u8d85\u51fa\u4e86\u5355\u4e2a\u4e8b\u52a1\u5141\u8bb8\u7684\u6700\u5927\u64cd\u4f5c\u6570\uff08{0}\uff09\u3002
+TX_SIZE_EXCEEDED_CWSJS0010.explanation=\u5c1d\u8bd5\u5728\u5355\u4e2a\u4e8b\u52a1\u7684\u4f5c\u7528\u57df\u4e2d\u6267\u884c\u5927\u4e8e\u5141\u8bb8\u7684\u6700\u5927\u64cd\u4f5c\u6570\u3002
+TX_SIZE_EXCEEDED_CWSJS0010.useraction=\u8bf7\u5c06\u5728\u4efb\u4f55\u4e00\u4e2a\u4e8b\u52a1\u7684\u4f5c\u7528\u57df\u4e2d\u5c1d\u8bd5\u7684\u64cd\u4f5c\u6570\u51cf\u5c11\u5230\u5c0f\u4e8e\u6307\u5b9a\u7684\u9650\u5236\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJS9999=CWSJS9999E: {0}
+TEMPORARY_CWSJS9999.explanation=\u5982\u679c\u8be5\u6d88\u606f\u672a\u63d0\u4f9b\u8db3\u591f\u4fe1\u606f\uff0c\u90a3\u4e48\u8bf7\u67e5\u770b\u5148\u524d\u7684\u6d88\u606f\u4ee5\u83b7\u53d6\u66f4\u591a\u5e2e\u52a9\u3002
+TEMPORARY_CWSJS9999.useraction=\u8bf7\u67e5\u770b\u9644\u5e26\u7684\u9519\u8bef\u4fe1\u606f\u4ee5\u4e86\u89e3\u66f4\u591a\u4fe1\u606f\u3002

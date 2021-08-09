@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.event.logging/resources/com/ibm/ws/event/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR WebSphere Application Server Event Logging
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# Messages in the range TRAS3100 to 3299 are reserved for this messages file.
+# -------------------------------------------------------------------------------------------------
+
+# updated the old TRAS0113I to TRAS3100I
+EVENT_LOGGING_STARTUP_INFO=TRAS3100I: \uc774\ubca4\ud2b8 \ub85c\uae45\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}\uac1c\ub2f9 \ud558\ub098\uc758 \uc694\uccad\uc774 \uc0d8\ud50c\ub9c1\ub429\ub2c8\ub2e4. \uc9c0\uc18d \uc2dc\uac04\uc774 {1}ms\ub97c \ucd08\uacfc\ud558\uba70 \uc720\ud615\uc774 {2}\uc778 \uc774\ubca4\ud2b8\ub9cc \ub85c\uadf8\ub429\ub2c8\ub2e4. 
+EVENT_LOGGING_STARTUP_INFO.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ud45c\uc2dc\ub41c \uad6c\uc131 \uc124\uc815\uc73c\ub85c \uc774\ubca4\ud2b8 \ub85c\uae45 \uae30\ub2a5\uc774 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+EVENT_LOGGING_STARTUP_INFO.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 

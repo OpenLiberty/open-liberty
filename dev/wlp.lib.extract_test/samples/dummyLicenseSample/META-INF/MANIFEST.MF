@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.4
+Created-By: pwa6460sr11-20120806_01 (SR11) (IBM Corporation)
+Applies-To: com.ibm.websphere.appserver
+Archive-Root: wlp/usr/
+Bundle-Vendor: IBM
+Import-Package: javax.xml.parsers,org.w3c.dom
+Main-Class: wlp.lib.extract.SelfExtract
+Map-Based-Self-Extractor: wlp.lib.extract.MapBasedSelfExtractor
+Archive-Content-Type: sample
+License-Agreement: wlp/usr/servers/dummySampleServer/lafiles/LA
+License-Information: wlp/usr/servers/dummySampleServer/lafiles/LI

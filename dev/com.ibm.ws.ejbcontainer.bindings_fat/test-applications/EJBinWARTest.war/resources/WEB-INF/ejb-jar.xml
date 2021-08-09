@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<ejb-jar
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+    version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>XMLDefinedStatelessBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.bindings.ejbinwar.intf.XMLDefinedStatelessInJarInWarInterface</business-local>
+      <business-remote>com.ibm.ws.ejbcontainer.bindings.ejbinwar.intf.XMLDefinedStatelessInJarInWarInterfaceRemote</business-remote>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.ejbinwar.ejbinwar.XMLDefinedStatelessInJarInWarBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>XMLDefinedSingletonBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.bindings.ejbinwar.intf.XMLDefinedLooseSingletonInterface</business-local>
+      <business-remote>com.ibm.ws.ejbcontainer.bindings.ejbinwar.intf.XMLDefinedLooseSingletonInterfaceRemote</business-remote>
+      <ejb-class>com.ibm.ws.ejbcontainer.bindings.ejbinwar.web.XMLDefinedLooseSingletonBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <transaction-type>Container</transaction-type>
+    </session>
+  </enterprise-beans>
+</ejb-jar>
+
+

@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: Un nou client de transfer de fi\u015fiere s-a conectat cu identificatorul de conexiune {0}.
+filetransfer.client.init.explanation=Un nou client de transfer de fi\u015fiere s-a conectat cu identificatorul de conexiune specificat.
+filetransfer.client.init.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+filetransfer.client.error=CWWKX7952E: A ap\u0103rut un mesaj de eroare pe partea de client "{0}" pentru conexiunea {1}.
+filetransfer.client.error.explanation=Partea de client a conectorului JMX REST a \u00eent\u00e2lnit o eroare \u015fi s-a generat mesajul specificat.
+filetransfer.client.error.useraction=Folosi\u0163i mesajul de eroare generat pentru a identifica \u015fi a corecta problema care a cauzat eroarea, apoi rula\u0163i din nou opera\u0163ia.
+
+filetransfer.server.error=CWWKX7953E: A ap\u0103rut un mesaj de eroare pe partea de server "{0}" pentru conexiunea {1}.
+filetransfer.server.error.explanation=Partea de server a conectorului JMX REST a \u00eent\u00e2lnit o eroare \u015fi s-a generat mesajul specificat.
+filetransfer.server.error.useraction=Folosi\u0163i mesajul de eroare generat pentru a identifica \u015fi a corecta problema care a cauzat eroarea, apoi rula\u0163i din nou opera\u0163ia.
+
+filetransfer.client.bad.credentials=CWWKX7954E: Numele de utilizator sau parola specificat(\u0103) nu este autorizat(\u0103). Serverul a r\u0103spuns cu codul {0} \u015fi mesajul "{1}" pentru conexiunea {2}.
+filetransfer.client.bad.credentials.explanation=Acredit\u0103rile furnizate la ob\u0163inerea conexiunii sunt incorecte. Utilizatorul s-ar putea s\u0103 nu existe, s-ar putea s\u0103 nu aib\u0103 autoriza\u0163ia de accesare a serverului sau parola ar putea fi incorect\u0103.
+filetransfer.client.bad.credentials.useraction=Corecta\u0163i numele utilizator sau parola, apoi ob\u0163ine\u0163i o nou\u0103 conexiune.
+
+filetransfer.response.code.error=CWWKX7955E: Clientul de transfer de fi\u015fiere a primi codul de r\u0103spuns {0} cu mesajul "{1}" pentru conexiunea {2}.
+filetransfer.response.code.error.explanation=Clientul de transfer de fi\u015fiere a primit un cod de r\u0103spuns nea\u015fteptat de la server.
+filetransfer.response.code.error.useraction=Folosi\u0163i codul de r\u0103spuns client pentru a identifica \u015fi a rezolva cauza acestei probleme, apoi rula\u0163i din nou opera\u0163ia.
+
+filetransfer.download.file=CWWKX7956I: Cererea de desc\u0103rcare a fi\u015fierului {0} a avt succes \u015fi con\u0163inutul s\u0103u a fost scris \u00een fi\u015fierul {1} folosind conexiunea {2}.
+filetransfer.download.file.explanation=Cererea de desc\u0103rcare a fi\u015fierului specificat a avut succes.
+filetransfer.download.file.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+filetransfer.unsupported.operation=CWWKX7957E: Opera\u0163ia {0} nu este suportat\u0103 de clientul de transfer de fi\u015fiere pentru conexiunea {1}.
+filetransfer.unsupported.operation.explanation=Opera\u0163ia specificat\u0103 nu este suportat\u0103 de clientul de transfer de fi\u015fiere.
+filetransfer.unsupported.operation.useraction=Cere\u0163i o opera\u0163ie care este suportat\u0103 de clientul de transfer de fi\u015fiere.
+
+filetransfer.upload.file=CWWKX7958I: Cererea de \u00eenc\u0103rcare a fi\u015fierului {0} a avut succes \u015fi con\u0163inutul s\u0103u a fost scris \u00een fi\u015fierul {1} folosind conexiunea {2}.
+filetransfer.upload.file.explanation=Cererea de \u00eenc\u0103rcare a fi\u015fierului specificat a avut succes.
+filetransfer.upload.file.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+filetransfer.delete.file=CWWKX7959I: Cererea de \u015ftergere a fi\u015fierului {0} a avut succes folosind conexiunea {1}.
+filetransfer.delete.file.explanation=Cererea de \u015ftergere a fi\u015fierului specificat a avut succes.
+filetransfer.delete.file.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.
+
+filetransfer.delete.all=CWWKX7960I: Cererea de \u015ftergere a tuturor fi\u015fierelor \u015fi folderelor din colec\u0163ia {0} a reu\u015fit prin utilizarea conexiunii {1}.
+filetransfer.delete.all.explanation=Cererea de \u015ftergere a colec\u0163iei specificate a avut succes.
+filetransfer.delete.all.useraction=Acesta este un mesaj informa\u0163ional \u015fi nu este necesar\u0103 nici o ac\u0163iune.

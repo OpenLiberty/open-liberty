@@ -1,0 +1,197 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# 0300 - 0399 com.ibm.ws.kernel.fileinstall.internal.resources.FileInstallMessages
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# 0500 - 0599 com.ibm.ws.product.utility.resources.UtilityMessages
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# 0700 - 0799 com.ibm.ws.logging.internal.resources.OSGiMessages -- OSGi Framework/kernel diagnostics
+# -------------------------------------------------------------------------------------------------
+
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE=CWWKE0500E: Vstupn\u00ed konzola nen\u00ed dostupn\u00e1.
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE.explanation=Neexistuje podpora pro zad\u00e1v\u00e1n\u00ed vstupn\u00edch argument\u016f z aktu\u00e1ln\u00ed konzoly.
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE.useraction=P\u0159epn\u011bte do jin\u00fdch standardn\u00edch konzol, kter\u00e9 akceptuj\u00ed vstupn\u00ed argumenty.
+
+ERROR_UNABLE_READ_FROM_CONSOLE=CWWKE0501E: Nelze na\u010d\u00edst vstup z konzoly. Zpr\u00e1va v\u00fdjimky: {0}.
+ERROR_UNABLE_READ_FROM_CONSOLE.explanation=Nelze na\u010d\u00edst vstup z konzoly.
+ERROR_UNABLE_READ_FROM_CONSOLE.useraction=Zjist\u011bte ko\u0159enovou p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+ERROR_UNKNOWN_COMMAND_TASK=CWWKE0502E: Nezn\u00e1m\u00e1 \u00faloha: {0}.
+ERROR_UNKNOWN_COMMAND_TASK.explanation=\u00daloha nen\u00ed aktu\u00e1ln\u00edm p\u0159\u00edkazem podporov\u00e1na.
+ERROR_UNKNOWN_COMMAND_TASK.useraction=Pomoc\u00ed p\u0159\u00edkazu help zobrazte v\u0161echny dostupn\u00e9 \u00falohy.
+
+ERROR_VERSION_FILE_NOT_EXISTS=CWWKE0503E: Nebyl nalezen soubor verze {0}.
+ERROR_VERSION_FILE_NOT_EXISTS.explanation=Nelze nal\u00e9zt soubor verze serveru.
+ERROR_VERSION_FILE_NOT_EXISTS.useraction=Ov\u011b\u0159te, zda je server pln\u011b nainstalov\u00e1n.
+
+ERROR_UNABLE_READ_FILE=CWWKE0504E: Nelze p\u0159e\u010d\u00edst soubor {0}. Zpr\u00e1va v\u00fdjimky: {1}.
+ERROR_UNABLE_READ_FILE.explanation=Nelze p\u0159e\u010d\u00edst c\u00edlov\u00fd soubor.
+ERROR_UNABLE_READ_FILE.useraction=Zjist\u011bte ko\u0159enovou p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+ERROR_UNABLE_WRITE_FILE=CWWKE0505E: Nelze zapsat soubor {0}. Zpr\u00e1va v\u00fdjimky: {1}.
+ERROR_UNABLE_WRITE_FILE.explanation=Nelze zapsat c\u00edlov\u00fd soubor.
+ERROR_UNABLE_WRITE_FILE.useraction=Zjist\u011bte ko\u0159enovou p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE=CWWKE0506E: Nelze inicializovat \u00falohu {0}. Zpr\u00e1va v\u00fdjimky: {1}.
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE.explanation=Nelze inicializovat c\u00edlovou \u00falohu.
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE.useraction=Zjist\u011bte ko\u0159enovou p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+ERROR_CHECKSUMS_FILE_NOT_EXISTS=CWWKE0507E: Nebyl nalezen soubor kontroln\u00edch sou\u010dt\u016f produktu {0}.
+ERROR_CHECKSUMS_FILE_NOT_EXISTS.explanation=Nelze nal\u00e9zt ur\u010den\u00fd soubor kontroln\u00edch sou\u010dt\u016f produktu.
+ERROR_CHECKSUMS_FILE_NOT_EXISTS.useraction=Ov\u011b\u0159te, zda tento soubor kontroln\u00edch sou\u010dt\u016f existuje.
+
+ERROR_CHECKSUMS_FILE_NOT_LOADED=CWWKE0508E: Nelze na\u010d\u00edst soubor kontroln\u00edch sou\u010dt\u016f {0}.
+ERROR_CHECKSUMS_FILE_NOT_LOADED.explanation=Nelze na\u010d\u00edst ur\u010den\u00fd soubor kontroln\u00edch sou\u010dt\u016f.
+ERROR_CHECKSUMS_FILE_NOT_LOADED.useraction=Ov\u011b\u0159te, zda je soubor kontroln\u00edch sou\u010dt\u016f dob\u0159e formovan\u00fd soubor s dvojic\u00ed \u0159et\u011bzce cesty k souboru a \u0159et\u011bzce MD5.
+
+ERROR_MALFORMED_FILE=CWWKE0509E: V souboru {0} se vyskytuje chybn\u00fd \u0159\u00eddic\u00ed znak k\u00f3dov\u00e1n\u00ed Unicode. Zpr\u00e1va v\u00fdjimky: {1}.
+ERROR_MALFORMED_FILE.explanation=Vyskytl se chybn\u00fd \u0159\u00eddic\u00ed znak k\u00f3dov\u00e1n\u00ed Unicode.
+ERROR_MALFORMED_FILE.useraction=Zjist\u011bte ko\u0159enovou p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+ERROR_NO_PROPERTIES_FILE=CWWKE0510E: V tomto adres\u00e1\u0159i {0} nen\u00ed \u017e\u00e1dn\u00fd soubor vlastnost\u00ed.
+ERROR_NO_PROPERTIES_FILE.explanation=Ve slo\u017ece lib/versions instala\u010dn\u00edho adres\u00e1\u0159e profilu Liberty nelze naj\u00edt soubor vlastnost\u00ed.
+ERROR_NO_PROPERTIES_FILE.useraction=Pomoc\u00ed p\u0159\u00edkazu validate ov\u011b\u0159te, zda je aktu\u00e1ln\u00ed instalace profilu Liberty platn\u00e1.
+
+ERROR_NO_PROPERTIES_DIRECTORY=CWWKE0511E: Adres\u00e1\u0159 vlastnost\u00ed verze {0} neexistuje.
+ERROR_NO_PROPERTIES_DIRECTORY.explanation=Nelze naj\u00edt slo\u017eku lib/versions adres\u00e1\u0159e vlastnost\u00ed verze v instala\u010dn\u00edm adres\u00e1\u0159i profilu Liberty.
+ERROR_NO_PROPERTIES_DIRECTORY.useraction=Pomoc\u00ed p\u0159\u00edkazu validate ov\u011b\u0159te, zda je aktu\u00e1ln\u00ed instalace profilu Liberty platn\u00e1.
+
+ERROR_NOT_PROPERTIES_DIRECTORY=CWWKE0512E: {0} nen\u00ed adres\u00e1\u0159.
+ERROR_NOT_PROPERTIES_DIRECTORY.explanation=lib/versions v instala\u010dn\u00edm adres\u00e1\u0159i profilu Liberty nen\u00ed adres\u00e1\u0159.
+ERROR_NOT_PROPERTIES_DIRECTORY.useraction=Pomoc\u00ed p\u0159\u00edkazu validate ov\u011b\u0159te, zda je aktu\u00e1ln\u00ed instalace profilu Liberty platn\u00e1.
+
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY=CWWKE0513E: Nelze p\u0159e\u010d\u00edst soubor {0}.
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY.explanation=Nelze p\u0159e\u010d\u00edst c\u00edlov\u00fd soubor.
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY.useraction=Prozkoumejte ko\u0159enovou p\u0159\u00ed\u010dinu nemo\u017enosti na\u010dten\u00ed souboru.
+
+ERROR_INVALID_COMMAND_OPTION=CWWKE0514E: Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku byla zad\u00e1na neplatn\u00e1 volba {0}. Platn\u00e9 volby jsou: [{1}]
+ERROR_INVALID_COMMAND_OPTION.explanation=Volba zadan\u00e1 na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku nen\u00ed t\u00edmto p\u0159\u00edkazem podporov\u00e1na.
+ERROR_INVALID_COMMAND_OPTION.useraction=Znovu zadejte p\u0159\u00edkaz bez neplatn\u00e9 volby, p\u0159\u00edpadn\u011b s platnou volbou.
+
+LICENSE_NOT_FOUND=Soubory s licencemi neexistuj\u00ed.
+
+# {0} is the key of a required property in properties file.
+# {1} is the name of properties file.
+version.missing.key=V souboru {1} chyb\u00ed nezbytn\u00fd kl\u00ed\u010d vlastnosti {0}.
+
+# {0} is the productId property key
+# {1} is the properties file name
+# {2} is another properties file name
+version.duplicated.productId=Hodnota {0} mus\u00ed b\u00fdt jedine\u010dn\u00e1, ale stejn\u00e1 je i v {1} a {2}.
+
+# {0} is the productId
+# {1} is the properties file name
+version.replaced.product.not.exist=ID produktu {0} ur\u010den\u00e9 v {1} nelze nal\u00e9zt v \u017e\u00e1dn\u00e9m souboru vlastnost\u00ed verze ve slo\u017ece lib/versions instala\u010dn\u00edho adres\u00e1\u0159e profilu Liberty.
+
+# {0} is the properties file name
+version.replaced.product.can.not.itself=ID nahrazuj\u00edc\u00edho produktu samo nesm\u00ed b\u00fdt v {0}.
+
+# {0} is the value of property with key as com.ibm.websphere.productReplaces
+# {1} is the properties file which defined com.ibm.websphere.productReplaces
+version.replacing.not.exist=ID produktu {0} neexistuje v \u017e\u00e1dn\u00e9m souboru vlastnost\u00ed v adres\u00e1\u0159i {1}.
+
+product.name=N\u00e1zev produktu:
+product.version=Verze produktu:
+product.edition=Vyd\u00e1n\u00ed produktu:
+
+usage=Pou\u017eit\u00ed: {0}
+tasks=Akce:
+
+info.validate.against.file.not.exist=Nebylo zah\u00e1jeno ov\u011b\u0159en\u00ed produktu, proto\u017ee neexistuje soubor kontroln\u00edch sou\u010dt\u016f dan\u00e9ho produktu.
+info.validate.start=Zah\u00e1jit ov\u011b\u0159en\u00ed produktu...
+info.validate.validating.feature=Ov\u011b\u0159en\u00ed platnosti funkce: {0}... 
+info.validate.validating.platform=Ov\u011b\u0159en\u00ed platnosti seznamu bal\u00edk\u016f platformy: {0}... 
+info.validate.deinition.file.not.exist=Soubor definice: {0} neexistuje.
+info.validate.deinition.file.broken=Soubor definice: {0} je zm\u011bn\u011bn\u00fd nebo po\u0161kozen\u00fd.
+info.validate.checksum.file.not.exist=Soubor kontroln\u00edch sou\u010dt\u016f: {0} neexistuje.
+info.validate.checksum.file.broken=Soubor kontroln\u00edch sou\u010dt\u016f: {0} je zm\u011bn\u011bn\u00fd nebo po\u0161kozen\u00fd.
+info.validate.content.file.not.exist=Obsah: {0} neexistuje.
+info.validate.content.file.broken=Obsah: {0} je zm\u011bn\u011bn\u00fd nebo po\u0161kozen\u00fd.
+info.validate.validating.result.error=[CHYBA]
+info.validate.validating.result.pass=\u00daSP\u011aCH!
+info.validate.validating.result.fail=NEZDAR!
+info.validate.exception=Ov\u011b\u0159en\u00ed produktu rozpoznalo v\u00fdjimku: {0}. Podrobn\u00e9 informace naleznete v protokolech chyb.
+info.validate.success=Ov\u011b\u0159en\u00ed produktu \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+info.validate.fail=Ov\u011b\u0159en\u00ed produktu bylo dokon\u010deno a nalezlo {0} chyb.
+info.validate.fixes.need.reapplying=N\u00e1sleduj\u00edc\u00ed opravy mus\u00ed b\u00fdt znovu pou\u017eity: {0}. 
+
+# {0} is the usage message from compare.usage
+compare.no.option.set=Nelze porovnat kv\u016fli neplatn\u00e9mu pou\u017eit\u00ed p\u0159\u00edkazu, mus\u00ed b\u00fdt pou\u017eita volba --target nebo --apars.\n
+
+# {0} is the file location supplied to the command
+compare.to.option.does.not.exist=Instala\u010dn\u00ed soubor {0} neexistuje.
+
+# {0} Is the installation path supplied
+compare.install.not.zip.or.dir=Um\u00edst\u011bn\u00ed instalace {0} nen\u00ed adres\u00e1\u0159 ani archivn\u00ed soubor (.jar nebo .zip)
+# {0} Is the installation path supplied
+# {1} Is the path within the installation location for listing APARs
+# {2} Is the path within the archive for listing APARs that the CSV file containing the list is
+compare.no.csv.entry=Um\u00edst\u011bn\u00ed instalace {0} je neplatn\u00e9. Obsahuje archiv pro vyps\u00e1n\u00ed oprav APAR ({1}), ale nen\u00ed v n\u011bm \u017e\u00e1dn\u00fd soubor vypisuj\u00edc\u00ed opravy APAR {2}.
+compare.error.reading.install=Do\u0161lo k chyb\u011b p\u0159i \u010dten\u00ed um\u00edst\u011bn\u00ed instalace {0}. Text chyby: {1}.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to 
+compare.all.ifixes.present=V obraze na {1} jsou p\u0159\u00edtomny v\u0161echny opravy iFix z obrazu na {0}.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.ifixes.missing=V obraze na {1} chyb\u00ed n\u011bkter\u00e9 opravy iFix z obrazu na {0}.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.list.missing.ifixes=N\u00e1sleduj\u00edc\u00ed opravy iFix se nach\u00e1z\u00ed v obraze na {0}, ale v obraze na {1} chyb\u00ed.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.list.included.ifixes=N\u00e1sleduj\u00edc\u00ed opravy iFix se nach\u00e1z\u00ed v obraze na {0} a v obraze na {1}.
+# {0} Is the APAR 
+# {1} Is the list of iFixes that the APAR is part of
+compare.ifix.apar.info={0} v oprav\u00e1ch iFix: {1}
+# {0} This is a list of which APARs the user inputed are not present in the installation
+compare.missing.apars=N\u00e1sleduj\u00edc\u00ed opravy APAR v instalaci nejsou: {0}.
+compare.all.apars.present=V instalaci jsou v\u0161echny opravy APAR.
+# {0} The iFix ID for the iFix that could not be read
+compare.ifix.file.parse.error=Nelze na\u010d\u00edst informace o prvc\u00edch <file/> opravy iFix pro {0}, tak\u017ee nelze zkontrolovat, zda je oprava iFix je\u0161t\u011b nainstalov\u00e1na.
+compare.no.was.properties.found=Nebyly nalezeny \u017e\u00e1dn\u00e9 vlastnosti pro ID produktu 'com.ibm.websphere.appserver'.
+# {0} The string being parsed
+# {1} The error from the parser
+compare.unable.to.parse.version=Nelze analyzovat verzi {0} pro WebSphere Application Server. Zpr\u00e1va v\u00fdjimky: {1}
+# {0} The error message when we processed the product version
+compare.version.parsing.error=Nelze z\u00edskat verzi pro aktu\u00e1ln\u00ed instalaci, tak\u017ee nelze zkontrolovat, zda jsou pro tuto instalaci dostupn\u00e9 opravy iFix. Zpr\u00e1va v\u00fdjimky: {0}
+# {0} The iFix ID
+compare.unable.to.find.offering=Metadata XML opravy iFix pro {0} neobsahuj\u00ed prvek nab\u00eddky, tak\u017ee nelze zkontrolovat, zda je oprava iFix pro tuto instalaci platn\u00e1.
+# {0} The version
+compare.version.incompatible=Verze produktu pro WebSphere Application Server nen\u00ed v o\u010dek\u00e1van\u00e9m form\u00e1tu. O\u010dek\u00e1v\u00e1na verze d1.d2.d3.d4, ale zji\u0161t\u011bna verze {0}.
+# {0} The iFix id
+compare.no.apar=Oprava iFix {0} nem\u00e1 v prvc\u00edch <problem/> v XML metadat uvedeny \u017e\u00e1dn\u00e9 opravy APAR.
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.missing=N\u00e1sleduj\u00edc\u00ed opravy iFix nebyly zahrnuty do porovn\u00e1n\u00ed, proto\u017ee soubory ulo\u017een\u00e9 v prvku <file/> ji\u017e nejsou p\u0159\u00edtomn\u00e9 nebo jsou zastaral\u00e9: {0}
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.badversion=N\u00e1sleduj\u00edc\u00ed opravy iFix nebyly zahrnuty do porovn\u00e1n\u00ed, proto\u017ee neplat\u00ed pro tuto verzi produktu WebSphere Application Server: {0}
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.bad.xml=N\u00e1sleduj\u00edc\u00ed opravy iFix nebyly zahrnuty do porovn\u00e1n\u00ed, proto\u017ee maj\u00ed neplatn\u00fd k\u00f3d XML (v\u00edce informac\u00ed z\u00edsk\u00e1te, kdy\u017e pou\u017eijete volbu --verbose): {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=P\u0159i \u010dten\u00ed informac\u00ed o oprav\u00e1ch iFix pro aktu\u00e1ln\u00ed instalaci do\u0161lo k chyb\u011b. Zpr\u00e1va v\u00fdjimky: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=Do\u0161lo k v\u00fdjimce p\u0159i \u010dten\u00ed souboru {0}. Zpr\u00e1va v\u00fdjimky: {1}.

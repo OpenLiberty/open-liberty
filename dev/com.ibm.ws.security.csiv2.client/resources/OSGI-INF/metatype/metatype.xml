@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2014, 2015 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<!--  Transport Layer configuration -->
+
+    <OCD id="com.ibm.ws.security.csiv2.clientContainer.transportLayer"
+        name="%transportLayer" description="%transportLayer.desc">
+
+        <AD id="sslEnabled" name="%sslEnabled" description="%sslEnabled.desc"
+            required="false" type="Boolean" default="true" />
+
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientContainer.transportLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientContainer.transportLayer"/>
+    </Designate>
+ 
+<!--  End of Transport Layer configuration -->
+
+<!-- IIOP Client Policy -->
+
+    <OCD id="com.ibm.ws.security.csiv2.clientContainer.clientPolicyCSIV2"
+     ibm:extends="com.ibm.ws.transport.iiop.AbstractClientPolicy" 
+     ibm:extendsAlias="clientContainerCsiv2" 
+     name="%client.csiv2" description="%client.csiv2.desc">
+
+        <AD id="stateful" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false"/>
+
+        <AD id="layers" name="%layers" description="%layers.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.clientContainer.clientPolicyLayers" ibm:flat="true"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientContainer.clientPolicyCSIV2">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientContainer.clientPolicyCSIV2"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.csiv2.clientContainer.clientPolicyLayers"
+        name="%layers" description="%layers.desc">
+
+        <AD id="authenticationLayer" name="%authenticationLayer" description="%clientPolicyAuthenticationLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.clientContainer.clientPolicyAuthenticationLayer" ibm:flat="true"
+            required="false" type="String"/>
+
+        <AD id="transportLayer" name="%transportLayer" description="%transportLayer.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.csiv2.clientContainer.transportLayer" ibm:flat="true"
+            required="false" type="String"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientContainer.clientPolicyLayers">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientContainer.clientPolicyLayers"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.csiv2.clientContainer.clientPolicyAuthenticationLayer"
+        name="%authenticationLayer" description="%clientPolicyAuthenticationLayer.desc">
+
+        <AD id="establishTrustInClient" name="%establishTrustInClient" description="%establishTrustInClient.desc"
+            required="true" type="String" default="Supported">
+            <Option label="%required" value="Required"/>
+            <Option label="%supported" value="Supported"/>
+            <Option label="%never" value="Never"/>
+        </AD>
+
+        <AD id="mechanisms" name="%mechanisms" description="%mechanisms.desc"
+            required="false" type="String" default="GSSUP" cardinality="2"/>
+
+        <AD id="realm" name="internal" description="internal use only"
+            required="false" type="String" default="defaultRealm"/>
+        
+        <AD id="user" name="%user" description="%user.desc"
+            required="false" type="String"/>
+        
+        <AD id="password" name="%password" description="%password.desc"
+            required="false" type="String" ibm:type="password"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.csiv2.clientContainer.clientPolicyAuthenticationLayer">
+        <Object ocdref="com.ibm.ws.security.csiv2.clientContainer.clientPolicyAuthenticationLayer"/>
+    </Designate>
+<!-- End of IIOP Client policy -->
+
+</metatype:MetaData>

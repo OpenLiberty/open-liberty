@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=2.5.21.9,ou=attributeTypes,cn=system,ou=schema
+m-collective: FALSE
+m-singlevalue: TRUE
+m-oid: 2.5.21.9
+m-obsolete: FALSE
+m-description: X.500(93): structural object class of entry
+m-nousermodification: TRUE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.38
+m-usage: DIRECTORY_OPERATION
+m-name: structuralObjectClass
+creatorsname: uid=admin,ou=system
+m-equality: objectIdentifierMatch

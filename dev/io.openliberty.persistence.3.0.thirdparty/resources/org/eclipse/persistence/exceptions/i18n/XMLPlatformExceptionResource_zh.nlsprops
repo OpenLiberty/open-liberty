@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLPlatformExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+27001=\u627e\u4e0d\u5230 XML Platform \u7c7b\uff1a{0}
+
+27002=\u672a\u80fd\u5b9e\u4f8b\u5316 XML Platform\uff1a{0}
+
+27003=\u672a\u80fd\u521b\u5efa\u65b0\u7684 XML \u6587\u6863\u3002
+
+27004=XPath \u65e0\u6548\u3002
+
+27005=\u9a8c\u8bc1\u6587\u6863\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+27006=\u672a\u80fd\u89e3\u6790 XML \u6a21\u5f0f\uff1a{0}
+
+27101=\u89e3\u6790\u6587\u6863\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+27102=\u627e\u4e0d\u5230\u6587\u4ef6\uff1a[{0}]
+
+27103=** \u6b63\u5728\u89e3\u6790\u9519\u8bef\uff0c\u884c\u4e3a [{0}]\uff0cURI \u4e3a [{1}] [{2}]
+
+27201=\u53d8\u6362\u6587\u6863\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+27202=\u9047\u5230\u672a\u77e5\u7c7b\u578b\uff1a{0}
+

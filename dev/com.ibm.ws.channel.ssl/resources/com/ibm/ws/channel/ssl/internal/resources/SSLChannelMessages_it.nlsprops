@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: Impossibile avviare il canale SSL a causa delle seguenti impostazioni non corrette:\n {0}
+invalid.security.properties.explanation=Una o pi\u00f9 impostazioni per la sicurezza nel canale SSL non sono valide.
+invalid.security.properties.useraction=Impostare le opzioni di sicurezza del canale SSL sui valori corretti.
+
+handshake.failure=CWWKO0801E: Impossibile inizializzare la connessione SSL. L''accesso non autorizzato non \u00e8 stato consentito o le impostazioni di sicurezza sono scadute. L''eccezione \u00e8 {0}.
+handshake.failure.explanation=Una nuova connessione non \u00e8 riuscita a completare un handshake sicuro.
+handshake.failure.useraction=Verificare le impostazioni di sicurezza.  Il certificato potrebbe essere scaduto o mancante. In alternativa, una connessione client non autorizzata potrebbe essere stata negata.  Per disabilitare questi messaggi, impostare il parametro suppressHandshakeErrors della configurazione sslOptions su true.
+
+init.failure=CWWKO0802E: Impossibile inizializzare il bundle SSL. L''eccezione \u00e8 {0}.
+init.failure.explanation=\u00c8 stato rilevato un errore durante il tentativo di inizializzare il bundle SSL. Probabilmente, questo problema \u00e8 causato da un errore di dipendenza.
+init.failure.useraction=Ricercare nei log del processo le informazioni relative ai componenti che non sono stati avviati.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Impossibile creare la configurazione del canale SSL predefinita. L''eccezione \u00e8 {0}.
+DEFAULT_OPTIONS_ERROR.explanation=\u00c8 stato rilevato un errore durante la creazione della configurazione predefinita per i canali SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Consultare l'eccezione per informazioni relative al motivo per cui la creazione ha avuto esito negativo.
+
+handshake.failure.stop.logging=CWWKO0804I: \u00c8 stato raggiunto il numero massimo di errori di handshake SSL da registrare. Questi messaggi non verranno pi\u00f9 registrati.
+handshake.failure.stop.logging.explanation=Il numero di errori di handshake SSL registrati \u00e8 limitato per evitare troppe voci di log.
+handshake.failure.stop.logging.useraction=Non sono richieste azioni.

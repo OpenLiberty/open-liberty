@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+   <interceptors>
+      <class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.CDIInterceptor</class>
+      <class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.SFCDIInterceptor</class>
+   </interceptors>
+
+   <Deploy>
+      <Standard/>
+      <Production/>
+   </Deploy>
+
+</beans>

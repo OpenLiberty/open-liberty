@@ -1,0 +1,25 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+    <jwtSso jwtBuilderRef="defaultJWT" />
+
+    <!-- JWK is enabled so we don't have to worry about adding certificates to any keystores used by the tests. This
+         should mean we don't have to worry about expiring certs or finding the right key alias or keystore since the
+         JWK endpoint is configured to handle retrieving the appropriate keys to verify tokens. -->
+
+    <jwtBuilder id="defaultJWT" jwkEnabled="true" />
+
+    <mpJwt id="mpJwt_trustAllIssuers" issuer="ALL_ISSUERS" jwksUri="https://localhost:${bvt.prop.HTTP_default.secure}/jwt/ibm/api/defaultJWT/jwk" />
+
+</server>

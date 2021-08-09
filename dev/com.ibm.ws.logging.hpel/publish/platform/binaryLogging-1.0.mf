@@ -1,0 +1,21 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.binary.logging-1.0; visibility:=private
+Subsystem-Version: 1.0.0
+WebSphere-LogProvider: com.ibm.ws.logging.internal.hpel.HpelLogProviderImpl
+Subsystem-Content: com.ibm.ws.logging.hpel; version="[1,1.0.100)"; type="boot.jar",
+ com.ibm.ws.logging.hpel.osgi; version="[1,1.0.100)"; start-phase:="BOOTSTRAP",
+ com.ibm.websphere.appserver.logging-1.0; location:="lib/platform/defaultLogging-1.0.mf"; type="osgi.subsystem.feature",
+ binaryLog; location:="bin/binaryLog"; type="file",
+ binaryLog.bat; location:="bin/binaryLog.bat"; type="file",
+ ws-binarylogviewer.jar; location:="bin/tools/ws-binarylogviewer.jar"; type="file", 
+ com.ibm.websphere.appserver.api.hpel; version="[2,2.0.100)"; location:="dev/api/ibm/"; type="jar",
+ com.ibm.websphere.appserver.api.hpel_2.0-javadoc.zip; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.hpel_2.0-javadoc.zip"; type="file"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-SPI-Package: com.ibm.websphere.ras,
+ com.ibm.websphere.ras.annotation, 
+ com.ibm.wsspi.logging,
+ com.ibm.ws.ffdc
+IBM-API-Package: com.ibm.websphere.logging.hpel.reader;  type="ibm-api",
+ com.ibm.websphere.logging.hpel.reader.filters;  type="ibm-api",
+ com.ibm.websphere.logging.hpel.writer;  type="ibm-api"

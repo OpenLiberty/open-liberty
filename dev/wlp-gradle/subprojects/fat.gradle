@@ -1,0 +1,538 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks on FAT projects.
+ */
+// Global vars
+ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
+
+ext.testcontainersVersion = '1.15.3'
+
+// Local vars
+File publishDir = new File(autoFvtDir, 'publish')
+
+task cleanFat(type: Delete) {
+  delete autoFvtDir
+}
+
+if (isAutomatedBuild && project.file('fat').exists()) {
+  release {
+    doLast {
+      delete autoFvtDir
+      delete distsDir
+    }
+  }
+}
+
+task cleanBeforeRun(type: Delete) {
+  delete new File(autoFvtDir, 'output')
+  delete new File(autoFvtDir, 'results')
+}
+
+configurations {
+  requiredLibs
+  jdbcDrivers { transitive = false; }
+  testcontainers { transitive = false; }
+  derby
+  jakartaTransformer
+}
+
+dependencies {
+  derby 'org.apache.derby:derby:10.11.1.1'
+  
+  jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
+		'org.postgresql:postgresql:42.2.5',
+		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
+		'org.apache.derby:derbyclient:10.11.1.1',
+		'org.apache.derby:derby:10.11.1.1',
+		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
+
+  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
+       'commons-cli:commons-cli:1.4',
+       'org.slf4j:slf4j-simple:1.7.30',
+       'org.slf4j:slf4j-api:1.7.26',
+       'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
+       'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+       
+  testcontainers project(':io.openliberty.org.testcontainers')
+
+}
+
+task addRequiredLibraries(type: Copy) {
+  mustRunAfter jar
+  from configurations.requiredLibs
+  into new File(autoFvtDir, 'lib')
+}
+
+task addJakartaTransformerRules(type: Copy) {
+  mustRunAfter jar
+  from project(':wlp-jakartaee-transform').file('rules')
+  include 'jakarta*.properties'
+  into new File(autoFvtDir, 'autoFVT-templates')
+}
+
+task addJakartaTransformer(type: Copy) {
+  mustRunAfter jar
+  dependsOn addJakartaTransformerRules
+  from configurations.jakartaTransformer
+  into new File(autoFvtDir, 'lib')
+}
+
+task copyTestContainers(type: Copy) {
+  mustRunAfter jar
+  from configurations.testcontainers
+  into new File(autoFvtDir, 'lib')
+}
+
+task addDerby(type: Copy) {
+  mustRunAfter jar
+  from configurations.derby
+  into new File(autoFvtDir, 'publish/shared/resources/derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task copyJdbcDrivers(type: Copy) {
+  mustRunAfter jar
+  from configurations.jdbcDrivers
+  into new File(autoFvtDir, 'publish/shared/resources/jdbc')
+  rename 'jcc.*.jar', 'jcc.jar'
+  rename 'derby-.*.jar', 'derby.jar'
+  rename 'derbyclient-.*.jar', 'derbyclient.jar'
+  rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
+  rename 'postgresql.*.jar', 'postgresql.jar'
+  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
+}
+
+task copyFeatureBundles {
+  dependsOn assemble
+  enabled project.file('test-bundles').exists()
+  doLast {
+    new File(project.buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(project.name + ".jar")) {
+        copy {
+          from line
+          into new File(autoFvtDir, 'publish/files/bundles')
+        }
+      }
+    }
+  }
+}
+
+task autoFVT {
+  dependsOn jar
+  dependsOn ':cnf:copyMavenLibs'
+  dependsOn addRequiredLibraries
+  dependsOn copyFeatureBundles
+  enabled project.file('fat').exists()
+
+  // For now we are just forcing the autoFVT create every time, this will be fixed
+  // TODO: Be smart about when to recreate the autoFVT.zip
+  doLast {
+    // Copy the compiled classes
+    copy {
+      from compileJava.destinationDir
+      into new File(autoFvtDir, 'build/classes')
+    }
+
+    // Copy the buildtask jars
+    copy {
+      from cnf.file('mavenlibs')
+      into new File(autoFvtDir, 'build/lib')
+      include 'asm-all-5.2.jar'
+      include 'org.apache.aries.util-*.jar'
+      include 'osgi.core*.jar'
+      include 'jackson*.jar'
+    }
+
+    // Copy the com.ibm.ws.junit.extensions jar
+    copy {
+      from project(':com.ibm.ws.junit.extensions').buildDir
+      include 'com.ibm.ws.junit.extensions.jar'
+      into new File(autoFvtDir, 'build/lib')
+    }
+      
+    // Copy the infra jar
+    copy {
+      from cnf.file('mavenlibs/infra.buildtasks-core-4.0.0.jar')
+      into new File(autoFvtDir, 'build/lib')
+    }
+
+    // Copy the bundle jar
+    copy {
+      from buildDir
+      include '*.jar'
+      into new File(autoFvtDir, 'build/lib')
+    }
+    
+    // Include JSON-P processor implementation
+    copy {
+      from project(':com.ibm.ws.org.glassfish.json').buildDir
+      include '*.jar'
+      into new File(autoFvtDir, 'lib')
+    }
+
+    // Copy the DDL files
+    // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
+    copy {
+      from project.file('ddl')
+      include '**/*'
+      into new File(autoFvtDir, 'ddl')
+    }
+
+    // Copy the static autoFVT-defaults
+    copy {
+      from new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults')
+      include '**/*'
+      into autoFvtDir
+    }
+
+    // Copy the dynamic autoFVT-defaults
+    copy {
+      from new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults')
+      include '**/*'
+      into autoFvtDir
+    }
+
+    // Create a fat.bnd.properties file that contains metadata about the FAT
+    def bndProps = new Properties()
+    
+    // By default, load up all properties with certain prefixes from bndWorkspace
+    bndWorkspace.getProject(project.getProjectDir()).getProperties().each { k, v ->
+      if(k.startsWith("test.") || k.startsWith("fat."))
+        bndProps.setProperty(k, v);
+    }
+    
+    // Check for minimum java level for test execution:
+    def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
+    bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
+    
+    File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
+    def bndWriter = new FileWriter(bndPropsFile)
+    try {
+    	bndProps.store(bndWriter, null)
+    } finally {
+      bndWriter.close()
+    }
+    
+    // Create a fat.sys.properties file that contains metadata about the FAT
+    def sysProps = new Properties()
+    
+    // By default, load up all properties with certain prefixes from System
+    System.getProperties().each { k, v ->
+      if(k.startsWith("test.") || k.startsWith("fat.") || k.startsWith("fattest."))
+        sysProps.setProperty(k, v);
+    }
+    
+    File sysPropsFile = new File(autoFvtDir, 'fat.sys.properties')
+    def sysWriter = new FileWriter(sysPropsFile)
+    try {
+    	sysProps.store(sysWriter, null)
+    } finally {
+      sysWriter.close()
+    }
+
+    // Copy the component test libs
+    // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
+    copy {
+      from project(':com.ibm.ws.componenttest').buildDir
+      include 'com.ibm.ws.componenttest.jar'
+      rename 'com.ibm.ws.componenttest.jar', 'componenttest.app.jar'
+      into new File(autoFvtDir, 'lib')
+    }
+
+    // Copy the fattest libs
+    copy {
+      from project(':fattest.simplicity').buildDir
+      include 'fattest*.*'
+      into new File(autoFvtDir, 'lib')
+    }
+
+    // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
+    copy {
+      from project(':com.ibm.ws.common.encoder').buildDir
+      include 'com.ibm.ws.common.encoder.jar'
+      rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
+      into new File(autoFvtDir, 'lib')
+    }
+
+    // Copy the published files
+    copy {
+      from project.file('publish/files'), new File(publishDir, 'files')
+      include '**/*'
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    }
+
+    // Copy the publish directory (minus the 'files' directory)
+    copy {
+      from project.file('publish')
+      include '**/*'
+      exclude 'files'
+      into publishDir
+    }
+
+    // Copy the logging libraries over for use while running FATs
+    copy {
+      from project(':com.ibm.ws.logging.core').buildDir
+      include 'com.ibm.ws.logging.core.jar'
+      into new File(autoFvtDir, 'lib')
+    }
+    
+    // Copy all non-java app resources, such as *.html or *.jsp
+    copy {
+      includeEmptyDirs = false
+      from projectDir
+      into autoFvtDir
+      include 'test-applications/**', 'test-bundles/**', 'test-resourceadapters/**'
+      exclude '**/*.java'
+    }
+
+    // Copy any locally cloned git repositories' files
+    // This omits all git metadata by default (see gradle issue:1348).
+    File gitReposDir = new File(project.buildDir, 'gitRepos')
+    copy {
+      from gitReposDir
+      into new File(autoFvtDir, 'publish/gitRepos/')
+    }
+    delete gitReposDir
+
+    // Produce a list of features tested by this FAT
+    def featureDeps = [] as Set
+    // Include features added explictly via bnd.bnd
+    def testedFeatures = bnd('tested.features')
+    if(testedFeatures != null)
+      testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
+    // Scan publish/ dir for features
+    if(publishDir.exists()) {
+      publishDir.eachFileRecurse(groovy.io.FileType.FILES) {
+        if(it.name.endsWith('.xml')) {
+          file(it).eachLine { line ->
+            if(line.contains("<feature>")) {
+              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
+              featureDeps.add(feature.trim().toLowerCase())
+            }
+          }
+        }
+      }
+    }
+    // Scan FAT files dir for features
+    if(new File(autoFvtDir, 'lib/LibertyFATTestFiles').exists()){
+      new File(autoFvtDir, 'lib/LibertyFATTestFiles').eachFileRecurse(groovy.io.FileType.FILES) {
+        if(it.name.endsWith('.xml')) {
+          file(it).eachLine { line ->
+            if(line.contains("<feature>")) {
+              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
+              featureDeps.add(feature.trim().toLowerCase())
+            }
+          }
+        }
+      }
+    }
+    if(featureDeps.size() > 0) {
+      println "This FAT tests the following features: " + featureDeps
+      def fatDeps = new groovy.json.JsonBuilder()
+      def root = fatDeps { 
+    	  "feature-deps" featureDeps
+      }
+      new File(autoFvtDir, 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
+    } else {
+      println "This FAT does not test any features."
+    }
+  }
+}
+
+task customizeAutoFVT {
+  dependsOn autoFVT
+  enabled project.file('fat').exists()
+  // no-op task that allows buckets to override behavior of default autoFVT task
+}
+
+task zipAutoFVT(type: Zip) {
+  dependsOn customizeAutoFVT
+  from autoFvtDir
+  into 'autoFVT'
+  archiveName 'autoFVT.zip'
+}
+
+task zipProjectFVT(type: Zip) {
+  dependsOn zipAutoFVT
+  baseName project.name
+  into project.name + '/build/lib', {from "${distsDir}/autoFVT.zip"}
+  into project.name, {from 'build-test.xml'}
+}
+
+if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        artifactId project.name + '_autoFVT'
+        groupId 'test'
+        version project.version
+        artifact zipProjectFVT
+      }
+    }
+  }
+}
+
+task trySkipFat(type: JavaExec) {
+  enabled = System.getProperty('git_diff') != null
+  dependsOn autoFVT
+  dependsOn ':build.changeDetector:assemble'
+  inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
+  
+  main = 'com.ibm.ws.infra.depchain.ChangeDetector'
+  classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
+    
+  args '--wlp', project(':build.image').projectDir.toString() + '/wlp',
+       '--git-diff', System.getProperty('git_diff', 'UNSET'),
+       '--deps', autoFvtDir.toString() + '/fat-metadata.json',
+       '--fat-name', project.name,
+       '--output', autoFvtDir.toString() + '/canSkipFat'
+       
+  doLast {
+    if (new File(autoFvtDir, 'canSkipFat').exists()) {
+      println "Disabling FAT bucket " + project.name + " from running based on modified files"
+      tasks['runfat'].enabled = false
+    }
+  }
+}
+
+task runfat(type: Exec) {
+  dependsOn cleanBeforeRun
+  dependsOn trySkipFat
+  mustRunAfter buildfat
+  mustRunAfter cleanBeforeRun
+  environment System.getProperties()
+  environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
+  //Add fat.test.localrun to JVM environment.
+  //Not accessible during builds since tests are run on child systems with a different JVM
+  environment "fat.test.localrun", "true"
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    executable "cmd"
+    args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
+  } else {
+    executable "ant"
+    args "-f", new File(autoFvtDir, 'TestBuild.xml')
+  }
+
+  doLast {    
+    // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
+    // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
+    // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
+    if(new File(autoFvtDir, "output/fail.log").exists())
+      throw new GradleException("The FAT bucket has test failures! See the logs and results for details.")
+  }
+}
+
+// Building a FAT is disabled by default, and enabled only when the gradle command contains "fat"
+// For example './gradlew buildfat' (to build all FATs) or './gradlew build.example_fat:buildandrun'
+def buildFatEnabled = false;
+if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
+  buildFatEnabled = true;
+} else {
+  gradle.startParameter.taskNames.each {
+    if(it.contains("fat")) {
+      buildFatEnabled = true;
+    }
+  }
+}
+
+assemble {
+  // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
+  if(!buildFatEnabled) {
+    enabled = false;
+    dependsOn = [];
+  }
+}
+
+ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com', org = 'eclipse' ->
+
+  // We need to know which MP project at least
+  if( proj == null || proj.length() == 0 ){
+    project.logger.lifecycle("The first parameter to task clone is the project name and cannot be defaulted");
+    return
+  }
+
+  // Default the branch to release but allow -Dbranch= or a parameter coming in
+  if( "NOT_SET".equals( branch ) ){
+    String branchProp = System.getProperty('branch')
+    if( branchProp != null && branchProp.length() > 0 ){
+       branch = branchProp
+    }else{
+       branch = "release"
+    }
+  }
+  
+  // Default the destination folder to the project name
+  if( folder == null || folder.length() == 0 ){
+    folder = proj
+  }
+
+  //Staging area parent folder to enable copying all subfolders.
+  File gitReposDir = new File(project.buildDir, 'gitRepos')
+
+  // Intended Behavior: If running locally use git directly
+  // TODO add conditional here once EBC cloning is implemented.
+  // Suggestion: !isAutomatedBuild - do not use [fat.test.localrun] as this is only know at runtime and not build time. 
+  if( true ) { 
+    File repoDir = new File(gitReposDir, folder)
+    String into = repoDir.getAbsolutePath()
+     
+    String url = " " + site + ":" + org + "/" + proj + ".git "
+    String cmd = "git clone --depth 1 --single-branch --branch " + branch + " " + url + " " + into
+      
+    delete into
+    mkdir into
+    
+    def proc = cmd.execute()
+    proc.in.eachLine { line -> println cmd + ':\n' + line }
+    proc.err.eachLine { line -> println cmd + ':\n' + line }
+    proc.waitFor()
+    
+  } else { // TODO Non-local cloning is not implemented for now 
+    // Make use of the EBC clone mechanism
+    project.logger.lifecycle('ebc clone')
+    ebcClone(url) 
+    
+    //EBC clones in dev/../../../<repo>
+    File ebcCloneDir = new File( project, "./../../../" )
+    copy {
+      from ebcCloneDir
+      include proj
+      into gitReposDir
+    }
+  }
+}
+
+def ebcClone(String url, String branch, String repoPath){
+  // TODO Non-local cloning is not implemented for now  
+}
+
+build {
+  // Skip out on 'build' unless top-level gradle invocation contains "fat"
+  if(!buildFatEnabled) {
+    enabled = false;
+    dependsOn = [];
+  }
+}
+
+buildfat {
+ dependsOn cleanFat
+ dependsOn assemble
+ dependsOn build
+ dependsOn zipProjectFVT
+}
+
+task buildandrun {
+ dependsOn buildfat
+ dependsOn runfat
+}

@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.ejb/resources/com/ibm/ws/jaxws/ejb/internal/resources/JaxWsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS EJB Code
+#RANGE 0500 - 0599
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+#{0} is the handler class name
+#{1} is the exception message
+warn.could.not.find.handler=CWWKW0500W: {1}(\uc73c)\ub85c \uc778\ud574 {0} \ud578\ub4e4\ub7ec \ud074\ub798\uc2a4\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+warn.could.not.find.handler.explanation=\uc9c0\uc815\ub41c \ud578\ub4e4\ub7ec \ud074\ub798\uc2a4\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+warn.could.not.find.handler.useraction=\ud578\ub4e4\ub7ec \ud074\ub798\uc2a4\ub97c \ud3ec\ud568\ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+

@@ -1,0 +1,58 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  mongo10
+  mongo210
+  mongo213
+  mongo29
+}
+
+dependencies {
+  mongo10  'org.mongodb:mongo-java-driver:1.0'
+  mongo210 'org.mongodb:mongo-java-driver:2.10.1'
+  mongo213 'org.mongodb:mongo-java-driver:2.13.3'
+  mongo29  'org.mongodb:mongo-java-driver:2.9.3'
+}
+
+task addMongoDriver {
+  doLast {
+    // Put the version of Mongo we want on the classpath into autoFVT/build/lib/
+    copy {
+      from configurations.mongo213
+      into "${buildDir}/autoFVT/build/lib"
+    }
+    copy {
+      from configurations.mongo10
+      into "${buildDir}/autoFVT/publish/shared/resources/mongo-1.0"
+    }
+    copy {
+      from configurations.mongo210
+      into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.10"
+    }
+    copy {
+      from configurations.mongo213
+      into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.13"
+    }
+    copy {
+      from configurations.mongo213
+      into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.13-updated"
+    }
+    copy {
+      from configurations.mongo29
+      into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.9"
+    }
+  }
+}
+
+addRequiredLibraries {
+  dependsOn addMongoDriver
+}

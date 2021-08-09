@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client Security
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal.client.security/resources/io/openliberty/grpc/internal/client/security/resources/grpcclientsecuritymessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.ssl.protocol=CWWKT0305W: A(z) {1} protokollk\u00e9nt be\u00e1ll\u00edtott {0} SSL protokoll gRPC eset\u00e9n nem \u00e9rv\u00e9nyes. TLSv1.2 vagy \u00fajabb v\u00e1ltozatot kell haszn\u00e1lni.
+invalid.ssl.protocol.explanation=A be\u00e1ll\u00edtott SSL protokoll gRPC eset\u00e9n nem \u00e9rv\u00e9nyes.
+invalid.ssl.protocol.useraction=\u00c1ll\u00edtson be TLSv1.2 vagy \u00fajabb SSL protokoll \u00e9rt\u00e9ket.
+
+client.ssl.failed=CWWKT0306W: Nem j\u00f6tt l\u00e9tre gRPC \u00fcgyf\u00e9l SSL kapcsolat {0} SSL hivatkoz\u00e1ssal a k\u00f6vetkez\u0151 miatt: {1}.
+client.ssl.failed.explanation=A gRPC \u00fcgyf\u00e9l SSL kontextus l\u00e9trehoz\u00e1sa meghi\u00fasult.
+client.ssl.failed.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes SSL tulajdons\u00e1gokat a gRPC szolg\u00e1ltat\u00e1shoz.

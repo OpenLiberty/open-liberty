@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!ELEMENT cache ( display-name?, description?, cache-entry*, cache-instance*, group*, skip-cache-attribute? ) >
+
+<!ELEMENT cache-instance (cache-entry+, skip-cache-attribute? ) >
+<!ATTLIST cache-instance name CDATA #REQUIRED >
+
+<!ELEMENT skip-cache-attribute ( #PCDATA ) >
+
+<!ELEMENT cache-entry ( cache-id | class | dependency-id | invalidation | name | property | sharing-policy )* >
+
+<!ELEMENT cache-id ( display-name?, (component | idgenerator | metadatagenerator | priority | property | timeout | inactivity )*) >
+
+<!ELEMENT class ( #PCDATA ) >
+
+<!ELEMENT component ( field | method | not-value | required | value | index)* >
+<!ATTLIST component id CDATA #REQUIRED >
+<!ATTLIST component ignore-value (true|false) #IMPLIED >
+<!ATTLIST component type ( session | cookie | SOAPAction | attribute | SOAPEnvelope | header | parameter | pathinfo | serviceOperation | serviceOperationParameter | servletpath | locale | method | field | parameter-list | operation | part | SOAPHeaderEntry | requestType | tiles_attribute | portletSession | portletWindowId | portletMode | portletWindowState | sessionId) #REQUIRED >
+<!ATTLIST component multipleIDs (true|false) #IMPLIED >
+
+<!ELEMENT dependency-id ( #PCDATA | component )* >
+
+<!ELEMENT field ( #PCDATA | method | field)* >
+
+<!ELEMENT idgenerator ( #PCDATA ) >
+
+<!ELEMENT invalidation ( #PCDATA | component | invalidationgenerator )* >
+
+<!ELEMENT metadatagenerator ( #PCDATA ) >
+
+<!ELEMENT method ( #PCDATA | field | method)* >
+
+<!ELEMENT name ( #PCDATA ) >
+
+<!ELEMENT not-value ( #PCDATA |range)* >
+
+<!ELEMENT priority ( #PCDATA ) >
+
+<!ELEMENT property ( #PCDATA | exclude )* >
+<!ATTLIST property name ( do-not-consume | consume-subfragments | applicationname | ApplicationName | applicationName | Edgeable | edgeable | edgecacheable | EdgeCacheable | edgeCacheable | Description | description | externalcache | ExternalCache | externalCache | alternate_url | persist-to-disk | save-attributes | store-cookies | delay-invalidations | ignore-get-post | ignore-char-encoding | do-not-cache | primary-storage ) #REQUIRED >
+<!ELEMENT exclude ( #PCDATA ) >
+
+<!ELEMENT required ( #PCDATA ) >
+
+<!ELEMENT sharing-policy ( #PCDATA ) >
+
+<!ELEMENT timeout ( #PCDATA ) >
+
+<!ELEMENT inactivity ( #PCDATA ) >
+
+<!ELEMENT invalidationgenerator ( #PCDATA ) >
+
+<!ELEMENT value ( #PCDATA | range)* >
+
+<!ELEMENT index ( #PCDATA ) >
+
+<!ELEMENT group ( description ) >
+
+<!ATTLIST group name CDATA #REQUIRED >
+
+<!ELEMENT description ( #PCDATA ) >
+
+<!ELEMENT display-name ( #PCDATA ) >
+
+<!ELEMENT range EMPTY >
+<!ATTLIST range low CDATA #REQUIRED >
+<!ATTLIST range high CDATA #REQUIRED >

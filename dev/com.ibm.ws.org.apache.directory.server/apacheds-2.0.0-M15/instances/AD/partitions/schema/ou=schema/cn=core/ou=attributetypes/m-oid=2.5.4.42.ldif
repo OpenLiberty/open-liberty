@@ -1,0 +1,23 @@
+version: 1
+dn: m-oid=2.5.4.42,ou=attributeTypes,cn=core,ou=schema
+m-supattributetype: name
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.42
+m-name: givenName
+m-name: gn
+m-description: RFC2256: first name(s) for which the entity is known by
+m-obsolete: FALSE
+entryUUID: 7ce2cae3-f56f-462c-bbc1-de8ea62a01d3
+entryCSN: 20130919081858.582000Z#000002#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081908.211Z

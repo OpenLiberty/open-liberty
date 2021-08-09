@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.1.53,ou=attributeTypes,cn=cosine,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.23
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 0.9.2342.19200300.100.1.53
+m-name: personalSignature
+m-description: RFC1274: Personal Signature (G3 fax)
+m-obsolete: FALSE
+entryUUID: ab59daa7-979b-45be-942a-35a3b3453f9d
+entryCSN: 20130919065345.119000Z#000000#000#000000
+entryParentId: ff19462c-ed76-427c-b184-c1080239b9f5
+createTimestamp: 20130919065351.852Z

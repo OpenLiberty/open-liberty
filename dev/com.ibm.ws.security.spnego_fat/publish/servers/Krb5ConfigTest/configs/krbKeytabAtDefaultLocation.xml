@@ -1,0 +1,34 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<include location="imports/spnego/serversettings/standard_config.xml"/>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+	</featureManager>
+
+	<authFilter id="myAuthFilter" >
+		<requestUrl id="myRequestUrl" urlPattern="/snoop" matchType="equals" />
+		<host id="myHost" name="myhost.kdcdomain.com" matchType="contains" />
+		<remoteAddess id="myAddr" ip="9.97.3.52" matchType="equals" />
+		<userAgent id="myAgent" agent="FireFox" matchType="notContain" />
+	</authFilter>
+
+	<spnego id="spnegoConfig"
+		authFilterRef="myAuthFilter"
+		canonicalHostName="false"
+       	servicePrincipalNames="HTTP/${security.spnego.test.system.host.name}"
+		krb5Config="${server.config.dir}/resources/security/kerberos/krb5.conf"/>
+
+</server>

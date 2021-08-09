@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Server for testing the behavior of JaxRS and ManagedBeans">
+
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>managedBeans-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+</server>

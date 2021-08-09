@@ -1,0 +1,161 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+#------------------------------------------------------------------------------
+# Global options used multiple times when help operation is used. 
+#------------------------------------------------------------------------------
+global.description=Description:
+global.actions=Actions:
+global.options=Options:
+global.usage=Usage:
+global.options.statement=\
+\tUse help [action] for detailed option information of each action.
+
+help.desc=\
+\tPrint help information for the specified action.
+
+help.usage.options=\
+\t{0} help [actionName]
+
+#------------------------------------------------------------------------------
+# generate operation options (generateWebServerPluginTask)
+#------------------------------------------------------------------------------
+generateWebServerPluginTask.required-option-key.serverName=\
+\ \ \ \ <serverName>
+generateWebServerPluginTask.required-option-desc.serverName=\
+\tOptional. The name of the local WebSphere Liberty Server for which the\n\
+\twebserver plugin configuration file needs to be generated. If the\n\
+\t<servername> is not specified, then "defaultServer" is used for the \n\
+\t<servername>. Server is started if it is not running \n\
+\tand is stopped after the plugin configuration file is generated.
+
+generateWebServerPluginTask.required-option-key.targetPath=\
+\ \ \ \ --targetPath=path
+generateWebServerPluginTask.required-option-desc.targetPath=\
+\tOptional. The valid path of the directory where the webserver\n\
+\tplugin configuration file needs to be generated. If the value for\n\
+\t--targetPath is not specified, then the current working directory is used.
+
+generateWebServerPluginTask.usage.options=\
+\t{0} get [options]
+
+generateWebServerPluginTask.desc=\
+\tGenerates the webserver plugin configuration file for\n\
+\tthe specified WebSphere Liberty Server.
+
+#------------------------------------------------------------------------------
+# merge operation options (MergePluginFilesTask)
+#------------------------------------------------------------------------------
+MergePluginFilesTask.usage.options=\
+\t{0} merge [options]
+
+MergePluginFilesTask.required-option-key.sourcePath=\
+\ \ \ \ --sourcePath=directory|(comma-separated list of plugin files)
+MergePluginFilesTask.required-option-desc.sourcePath=\
+\tRequired. Location of the source directory where all the plugin files\n\
+\tare located (or) comma separated list of source plugin file names with\n\
+\trespective full file path.
+
+MergePluginFilesTask.required-option-key.targetPath=\
+\ \ \ \ --targetPath=directory|(file name with full directory path)
+MergePluginFilesTask.required-option-desc.targetPath=\
+\tOptional. By default the merged plugin configuration file is generated\n\
+\tin the current directory by the name  merged-plugin-cfg.xml. Users can either\n\
+\tspecify the directory name where the merged-plugin-cfg.xml file must be \n\
+\tplaced, or a fully qualified file name. In case there is \n\
+\talready a file named merged-plugin-cfg.xml or the specified file specified \n\
+\tfile name is already present, then the contents of the file\n\
+\twill be overwritten.
+
+MergePluginFilesTask.desc=\
+\tMerges the multiple web server plugin configuration files into a single file.
+
+#------------------------------------------------------------------------------
+# generate operation options (GeneratePluginTask)
+#------------------------------------------------------------------------------
+GeneratePluginTask.desc=\
+\tThis command generates a plugin configuration file for an application\n\
+\tserver or a cluster of servers. 
+
+GeneratePluginTask.usage.options=\
+\t{0} generate [options]
+
+
+GeneratePluginTask.required-option-key.serverLoginAddress=\
+\ \ \ \ --server=<server id>
+
+GeneratePluginTask.required-option-desc.serverLoginAddress=\
+\tRequired. The server must be running.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal1=\
+\tFor a local server: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal2=\
+\t\tThe name of the server.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote1=\
+\tFor a remote server: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2=\
+\t\t<user>:<password>@<host>:<port>
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.User=\
+\n\t\t<user>: An administrator for the target server. The utility prompts\n\
+\t\tyou for a value if you do not provide one. Do not use a colon (:) in\n\
+\t\tthe <user>.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Password=\
+\n\t\t<password>: The password for the administrator user for the target\n\
+\t\tserver. The utility prompts you twice for a value if you do not provide\n\
+\t\tone. Your password entries must match.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Host=\
+\n\t\t<host>: The host for the target server. Do not use the @ symbol in the\n\
+\t\thost value. A missing host value results in a failure.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Port=\
+\n\t\t<port>: The port number for the target server. A missing port value\n\
+\t\tresults in a failure.
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress=\
+\ \ \ \ --collective=<user>:<password>@<host>:<port>
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress1=\
+\ \ \ \ --collective=<server id>
+
+GeneratePluginTask.required-option-key.cluster=\
+\ \ \ \ --cluster=<clusterName>
+GeneratePluginTask.required-option-desc.cluster=\
+\tOptional. Name of the cluster of servers. If you provide a cluster\n\
+\tname, the server option must specify a collective controller.  
+
+
+GeneratePluginTask.optional-option-key.targetPath=\
+\ \ \ \ --targetPath=directory|(file name with full directory path)
+GeneratePluginTask.optional-option-desc.targetPath=\
+\tOptional. By default, the plugin configuration file is generated in the\n\
+\tcurrent directory with the name, <clusterName>-plugin-cfg.xml, for a cluster \n\
+\tor plugin-cfg.xml for a server. You can either specify the directory\n\
+\tname where the file must be placed, or specify a fully-qualified file name.\n\
+\tThe new file replaces an existing file.
+
+GeneratePluginTask.optionl-option-key.local=\
+\ \ \ \ --local
+
+GeneratePluginTask.optionl-option-desc.local=\
+\tOptional. Indicates that the --server option specifies a local server.
+
+#------------------------------------------------------------------------------

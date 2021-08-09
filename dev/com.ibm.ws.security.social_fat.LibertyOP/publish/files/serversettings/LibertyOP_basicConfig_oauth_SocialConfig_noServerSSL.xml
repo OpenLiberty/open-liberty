@@ -1,0 +1,83 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<oauth2Login
+		id="oidcLogin_jvmprops_goodTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://3.4.5.6:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://4.5.6.7:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
+		authFilterRef="authFilter_jvmprops_goodTrust"
+		sslRef="SpecificSSLSettings"
+		useSystemPropertiesForHttpClientConnections="true"
+	>
+	</oauth2Login>
+	
+		<oauth2Login
+		id="oidcLogin_goodTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
+		authFilterRef="authFilter_goodTrust"
+		sslRef="SpecificSSLSettings"
+	>
+	</oauth2Login>
+
+	<oauth2Login
+		id="oidcLogin_badTrust"
+		signatureAlgorithm="RS256"
+		scope="profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
+		authFilterRef="authFilter_badTrust"
+		sslRef="DefaultSSLSettings"
+	>
+	</oauth2Login>
+
+
+	<authFilter id="authFilter_goodTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_goodTrust"
+			matchType="contains" />
+	</authFilter>
+	
+		<authFilter id="authFilter_jvmprops_goodTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_jvmprops_goodTrust"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="authFilter_badTrust">
+		<requestUrl
+			id="myRequestUrlc"
+			urlPattern="helloworld_badTrust"
+			matchType="contains" />
+	</authFilter>
+
+</server>

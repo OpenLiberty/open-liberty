@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: Ten sam typ kontekstu w\u0105tku ({0}) jest udost\u0119pniany przez wielu dostawc\u00f3w kontekstu w\u0105tk\u00f3w dost\u0119pnych dla aplikacji. Dostawcy kontekstu w\u0105tku to: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=Specyfikacja MicroProfile Context Propagation zezwala na nie wi\u0119cej ni\u017c jednego dostawc\u0119 kontekstu w\u0105tk\u00f3w dla ka\u017cdego typu kontekstu.
+CWWKC1150.duplicate.context.useraction=Zaktualizuj dost\u0119pn\u0105 aplikacj\u0119 i biblioteki w taki spos\u00f3b, aby nie istnia\u0142 wi\u0119cej ni\u017c jeden dostawca kontekstu w\u0105tk\u00f3w podanego typu.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: Konfiguracja klasy ManagedExecutor obejmuje nast\u0119puj\u0105ce typy kontekstu w\u0105tku skonfigurowane jednocze\u015bnie do czyszczenia i propagowania: {0}.
+CWWKC1151.context.lists.overlap.explanation=Typ kontekstu w\u0105tk\u00f3w nie mo\u017ce by\u0107 skonfigurowany w wi\u0119cej ni\u017c jednej kategorii podczas budowania lub wstrzykiwania klasy ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Przejrzyj i popraw klasyfikacj\u0119 typ\u00f3w kontekstu w\u0105tk\u00f3w w programie buduj\u0105cym ManagedExecutor lub w adnotacji ManagedExecutorConfig.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: Nast\u0119puj\u0105ce typy kontekstu w\u0105tk\u00f3w s\u0105 skonfigurowane w wi\u0119cej ni\u017c jednej kategorii (wyczyszczone, propagowane, niezmienione): {0}.
+CWWKC1152.context.lists.overlap.explanation=Typ kontekstu w\u0105tk\u00f3w nie mo\u017ce by\u0107 skonfigurowany w wi\u0119cej ni\u017c jednej kategorii podczas budowania lub wstrzykiwania instancji ThreadContext.
+CWWKC1152.context.lists.overlap.useraction=Przejrzyj i popraw klasyfikacj\u0119 typ\u00f3w kontekstu w\u0105tk\u00f3w w programie buduj\u0105cym ThreadContext lub w adnotacji ThreadContextConfig.
+
+CWWKC1155.unknown.context=CWWKC1155E: Typy kontekst\u00f3w w\u0105tk\u00f3w {0} s\u0105 skonfigurowane jako czyszczone lub propagowane, ale \u017caden dostawca kontekstu w\u0105tk\u00f3w tych typ\u00f3w nie jest dost\u0119pny dla aplikacji. Dost\u0119pne typy kontekstu w\u0105tk\u00f3w to: {1}.
+CWWKC1155.unknown.context.explanation=Dla ka\u017cdego skonfigurowanego typu kontekstu w\u0105tk\u00f3w, kt\u00f3ry nie jest udost\u0119pniany przez serwer, dostawca kontekstu w\u0105tk\u00f3w musi by\u0107 dost\u0119pny w programie \u0142aduj\u0105cym klasy kontekstu w\u0105tk\u00f3w aplikacji. Typy kontekst\u00f3w w\u0105tk\u00f3w udost\u0119pniane przez serwer to mi\u0119dzy innymi: Application (aplikacja), CDI, Security (zabezpieczenia), Transaction (transakcja).
+CWWKC1155.unknown.context.useraction=Zaktualizuj aplikacj\u0119 i biblioteki, do\u0142\u0105czaj\u0105c dostawc\u0119 kontekstu w\u0105tk\u00f3w dla ka\u017cdego skonfigurowanego typu kontekstu w\u0105tk\u00f3w, kt\u00f3ry nie jest udost\u0119pniany przez serwer. Mo\u017cna te\u017c zaktualizowa\u0107 aplikacj\u0119 w taki spos\u00f3b, aby korzysta\u0142a tylko z dost\u0119pnych typ\u00f3w kontekstu.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: Propagowanie transakcji do dzia\u0142a\u0144 i zada\u0144 kontekstowych nie jest obs\u0142ugiwane.
+CWWKC1157.cannot.propagate.tx.explanation=Klasa ManagedExecutor lub ThreadContext skonfigurowana do propagowania kontekst\u00f3w transakcji mo\u017ce propagowa\u0107 tylko puste konteksty transakcji. Dlatego nie mo\u017cna utworzy\u0107 dzia\u0142a\u0144 i zada\u0144 kontekstowych w transakcji.
+CWWKC1157.cannot.propagate.tx.useraction=Utw\u00f3rz dzia\u0142anie lub zadanie kontekstowe poza transakcj\u0105. Inna mo\u017cliwo\u015b\u0107 to skonfigurowanie klasy ManagedExecutor lub ThreadContext w taki spos\u00f3b, aby konteksty transakcji nie by\u0142y propagowane.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

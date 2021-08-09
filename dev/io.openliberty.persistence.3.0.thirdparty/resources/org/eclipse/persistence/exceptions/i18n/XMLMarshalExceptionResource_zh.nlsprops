@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=\u4ee5\u4e0b XPath \u5b57\u7b26\u4e32\u65e0\u6548\uff1a{0}
+
+25002=\u672a\u80fd\u4ece\u4ee5\u4e0b XPath \u5b57\u7b26\u4e32\u89e3\u6790\u6574\u6570\u7d22\u5f15\uff1a{0}
+
+25003=\u7f16\u7ec4\u5bf9\u8c61\u65f6\u53d1\u751f\u9519\u8bef
+
+25004=\u53d6\u6d88\u7f16\u7ec4\u6587\u6863\u65f6\u53d1\u751f\u9519\u8bef
+
+25005=\u9a8c\u8bc1\u5bf9\u8c61\u65f6\u53d1\u751f\u9519\u8bef
+
+25006=\u672a\u5bf9\u6620\u5c04\u5230 {0} \u7684 XMLDescriptor \u6307\u5b9a\u7f3a\u7701\u6839\u5143\u7d20
+
+25007=\u9879\u76ee\u4e2d\u627e\u4e0d\u5230\u7c7b {0} \u7684\u63cf\u8ff0\u7b26\u3002\u5bf9\u4e8e JAXB\uff0c\u5982\u679c\u4f7f\u7528 TypeMappingInfo[] \u5bf9 JAXBContext \u8fdb\u884c\u4e86\u5f15\u5bfc\uff0c\u90a3\u4e48\u5fc5\u987b\u8c03\u7528\u53cd\u5e8f\u5217\u5316\u65b9\u6cd5\uff08\u5b83\u63a5\u53d7 TypeMappingInfo \u4f5c\u4e3a\u8f93\u5165\u53c2\u6570\uff09\u3002
+
+25008=\u5728\u9879\u76ee\u4e2d\u627e\u4e0d\u5230\u5177\u6709\u7f3a\u7701\u6839\u5143\u7d20 {0} \u7684\u63cf\u8ff0\u7b26
+
+25010=\u672a\u5bf9\u6620\u5c04\u5230 {0} \u7684 XMLDescriptor \u6a21\u5f0f\u5f15\u7528
+
+25011=\u9047\u5230\u7a7a\u53c2\u6570
+
+25012=\u89e3\u6790 XML \u6a21\u5f0f\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+25013=\u5c1d\u8bd5\u8bbe\u7f6e\u6a21\u5f0f\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+25014=\u5c1d\u8bd5\u5b9e\u4f8b\u5316\u6a21\u5f0f\u5e73\u53f0\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+25015=\u5c1d\u8bd5\u89e3\u6790 {0} \u7684\u540d\u79f0\u7a7a\u95f4 URI \u65f6\u53d1\u751f\u9519\u8bef\u3002\u672a\u5728\u63cf\u8ff0\u7b26\u4e0a\u6307\u5b9a\u540d\u79f0\u7a7a\u95f4\u89e3\u6790\u5668\u3002
+
+25016=\u5728\u540d\u79f0\u7a7a\u95f4\u89e3\u6790\u5668\u4e2d\u627e\u4e0d\u5230\u524d\u7f00 {0} \u7684\u540d\u79f0\u7a7a\u95f4\u3002
+
+25017=\u5fc5\u987b\u5728 JAXBTypesafeEnumConverter \u4e0a\u8bbe\u7f6e enumClass \u6216 enumClassName\u3002
+
+25018=\u679a\u4e3e\u7c7b {0} \u4e0a\u7684 fromString \u65b9\u6cd5\u4e0d\u5b58\u5728\u6216\u672a\u80fd\u8c03\u7528\u3002
+
+25019=\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u679a\u4e3e\u7c7b {0}\u3002
+
+25020=\u5728\u8c03\u7528\u201cendDocument()\u201d\u4e8b\u4ef6\u4e4b\u524d\uff0c\u4e0d\u80fd\u8c03\u7528\u65b9\u6cd5\u201cgetResult()\u201d\u3002
+
+25021=\u7c7b {0} \u5bf9\u4e8e SwaRef \u65e0\u6548\u3002\u5fc5\u987b\u662f javax.activation.DataHandler\u3002
+
+25022=\u65e0\u6cd5\u5bf9\u6620\u50cf\u53cd\u5e8f\u5217\u5316\u3002\u6ca1\u6709\u4efb\u4f55\u7f16\u7801\u5668\u53ef\u7528\u4e8e mimeType {0}\u3002
+
+25023=\u53d6\u6d88\u7f16\u7ec4\u6620\u5c04\u5230\u5c5e\u6027 {0} \u7684\u5143\u7d20\u65f6\uff0c\u627e\u4e0d\u5230\u4efb\u4f55\u63cf\u8ff0\u7b26\u3002
+
+25024=\u5b9e\u4f8b\u5316 UnmappedContentHandler \u7c7b {0} \u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+25025=XMLUnmarshaller \u4e0a\u8bbe\u7f6e\u7684 UnmappedContentHandler \u7c7b {0} \u5fc5\u987b\u5b9e\u73b0 org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler\u3002
+
+25026=\u65e0\u6cd5\u66f4\u65b0\u8282\u70b9 [{0}]\uff0c\u5728\u9ad8\u901f\u7f13\u5b58\u4e2d\u627e\u4e0d\u5230\u5bf9\u8c61\u3002
+
+25027=\u65e0\u6cd5\u68c0\u7d22\u5230 cid \u4e3a {0} \u7684\u9644\u4ef6\uff0c\u56e0\u4e3a\u6ca1\u6709\u8bbe\u7f6e\u4efb\u4f55 AttachmentUnmarshaller\u3002
+
+25028=\u7531\u4e8e\u4ee5\u4e0b xsi:type \u503c\u672a\u77e5\uff0c\u56e0\u6b64\u5bf9\u4e8e\u6620\u5c04 {1}\uff0c\u627e\u4e0d\u5230\u4efb\u4f55\u5f15\u7528\u63cf\u8ff0\u7b26\uff1a{0}\u3002
+
+25029=\u5bf9\u4e8e\u524d\u7f00 [{0}]\uff0c\u7c7b [{1}] \u5df2\u5c1d\u8bd5\u5206\u914d\u540d\u79f0\u7a7a\u95f4 URI [{2}]\uff0c\u4f46\u662f\u5176\u7236\u7c7b [{3}] \u5df2\u5206\u914d\u540d\u79f0\u7a7a\u95f4 URI [{4}]\u3002
+
+25030=\u8c03\u7528\u4ee5\u4e0b\u5b9a\u5236 NamespacePrefixMapper \u4e0a\u7684 {0} \u65b9\u6cd5\u65f6\u53d1\u751f\u9519\u8bef\uff1a{1}\u3002
+
+25031=\u5904\u7406\u4ee5\u4e0b\u540d\u79f0\u7a7a\u95f4\u524d\u7f00\u6620\u5c04\u5668\u65f6\u53d1\u751f\u9519\u8bef\uff1a{1}\u3002\u627e\u4e0d\u5230\u65b9\u6cd5 {0}\u3002
+
+25032=\u8c03\u7528\u4ee5\u4e0b\u5b9a\u5236 CharacterEscapeHandler \u4e0a\u7684 {0} \u65b9\u6cd5\u65f6\u53d1\u751f\u9519\u8bef\uff1a{1}\u3002
+
+25033=\u5904\u7406\u4ee5\u4e0b CharacterEscapeHandler \u65f6\u53d1\u751f\u9519\u8bef\uff1a{1}\u3002\u627e\u4e0d\u5230\u65b9\u6cd5 {0}\u3002
+
+25034=\u8c03\u7528\u4ee5\u4e0b\u5b9a\u5236 IDResolver \u4e0a\u7684 {0} \u65b9\u6cd5\u65f6\u53d1\u751f\u9519\u8bef\uff1a{1}\u3002
+
+25035=\u5904\u7406\u4ee5\u4e0b IDResolver \u65f6\u53d1\u751f\u9519\u8bef\uff1a{1}\u3002\u627e\u4e0d\u5230\u65b9\u6cd5 {0}\u3002
+
+25036=\u5b9a\u5236 IDResolver {1} \u4e0d\u652f\u6301\u591a\u4e2a XML \u6807\u8bc6 {0}\u3002\u5982\u679c\u4f7f\u7528\u4e86\u591a\u4e2a\u6807\u8bc6\uff0c\u90a3\u4e48\u5b9a\u5236 IDResolver \u5fc5\u987b\u662f\u5b50\u7c7b org.eclipse.persistence.jaxb.IDResolver\u3002
+
+25037=\u5728\u5bf9\u8c61\u56fe\u5f62\u4e2d\u68c0\u6d4b\u5230\u5faa\u73af\u3002\u8fd9\u5c06\u5bfc\u81f4\u65e0\u9650\u5faa\u73af\uff1a{0}
+
+25038=DOMPlatform \u4e0d\u53d7\u4ecb\u8d28\u7c7b\u578b application/json \u652f\u6301\u3002
+
+25039=\u4ece {0} \u53d6\u6d88\u7f16\u7ec4\u65f6\u53d1\u751f\u9519\u8bef
+
+25040=\u627e\u4e0d\u5230\u7c7b\u578b\u4e3a {0} \u4e14\u6807\u8bc6\u4e3a {1} \u7684\u5bf9\u8c61\u3002
+
+25041=\u6ca1\u6709\u4e3a\u7c7b {1} \u5b9a\u4e49\u6307\u5b9a\u7684\u5c5e\u6027\u7ec4 {0}\u3002
+
+25042=\u7c7b {1} \u4e0a\u7684\u53d8\u91cf\u5c5e\u6027 {0} \u7684\u503c\u4e0d\u80fd\u4e3a\u7a7a\u503c\u3002
+

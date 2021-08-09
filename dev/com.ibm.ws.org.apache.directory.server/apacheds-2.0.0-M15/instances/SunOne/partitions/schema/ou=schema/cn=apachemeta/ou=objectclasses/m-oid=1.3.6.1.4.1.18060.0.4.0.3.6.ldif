@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.6,ou=objectClasses,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.6
+m-name: metaDITStructureRule
+m-description: meta definition of the DITStructureRule object
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: top
+m-typeobjectclass: STRUCTURAL
+m-must: m-ruleId
+m-must: m-form
+m-may: m-name
+m-may: m-obsolete
+m-may: m-supDITStructureRule
+creatorsname: uid=admin,ou=system

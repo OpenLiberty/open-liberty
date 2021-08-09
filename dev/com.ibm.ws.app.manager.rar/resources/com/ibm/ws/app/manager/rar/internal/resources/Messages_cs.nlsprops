@@ -1,0 +1,120 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: Adapt\u00e9r prost\u0159edku {0} nainstalov\u00e1n za {1} sekund/y.
+J2CA7001.adapter.install.successful.explanation=Server \u00fasp\u011b\u0161n\u011b nainstaloval adapt\u00e9r prost\u0159edku.
+J2CA7001.adapter.install.successful.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: P\u0159i instalaci adapt\u00e9ru prost\u0159edku {0} do\u0161lo k v\u00fdjimce. Zpr\u00e1va v\u00fdjimky: {1}
+J2CA7002.adapter.install.failed.explanation=Server nem\u016f\u017ee nainstalovat adapt\u00e9r prost\u0159edku.
+J2CA7002.adapter.install.failed.useraction=Informace naleznete ve zpr\u00e1v\u011b v\u00fdjimky.
+
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=J2CA7006E: Server nem\u016f\u017ee vytvo\u0159it um\u00edst\u011bn\u00ed pro stahov\u00e1n\u00ed v {0} pro adapt\u00e9r prost\u0159edku {1}.
+J2CA7006.cannot.create.directory.explanation=P\u0159i pokusu o sta\u017een\u00ed adapt\u00e9ru prost\u0159edku, kter\u00fd se m\u011bl nainstalovat, nemohl server vytvo\u0159it adres\u00e1\u0159 pro stahov\u00e1n\u00ed.
+J2CA7006.cannot.create.directory.useraction=Ujist\u011bte se, \u017ee je dostatek m\u00edsta na disku ke sta\u017een\u00ed.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: Adapt\u00e9r prost\u0159edku {0} byl \u00fasp\u011b\u0161n\u011b odinstalov\u00e1n.
+J2CA7009.adapter.uninstalled.explanation=Server \u00fasp\u011b\u0161n\u011b odinstaloval adapt\u00e9r prost\u0159edku.
+J2CA7009.adapter.uninstalled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: P\u0159i odinstalov\u00e1n\u00ed adapt\u00e9ru prost\u0159edku {0} do\u0161lo k v\u00fdjimce. Zpr\u00e1va v\u00fdjimky: {1}
+J2CA7010.adapter.uninstall.failed.explanation=Server nem\u016f\u017ee odinstalovat adapt\u00e9r prost\u0159edku.
+J2CA7010.adapter.uninstall.failed.useraction=Zkontrolujte, zda je adapt\u00e9r prost\u0159edku ve stavu, kdy jej lze odinstalovat.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: Adapt\u00e9r prost\u0159edku {0} nebyl nainstalov\u00e1n.
+J2CA7012.adapter.not.installed.explanation=Adapt\u00e9r prost\u0159edku nelze nainstalovat kv\u016fli p\u0159edchoz\u00edm chyb\u00e1m. 
+J2CA7012.adapter.not.installed.useraction=Zkontrolujte konfiguraci adapt\u00e9ru prost\u0159edku a p\u0159\u00edpadn\u00e9 chyby p\u0159i instalaci adapt\u00e9ru prost\u0159edku uveden\u00e9 v protokolech.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: Nelze nainstalovat v\u00edce adapt\u00e9r\u016f prost\u0159edku \u010di jin\u00fdch artefakt\u016f s n\u00e1zvem {0}.
+J2CA7013.duplicate.adapter.name.explanation=N\u00e1zev adapt\u00e9ru prost\u0159edku mus\u00ed b\u00fdt jedine\u010dn\u00fd. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt nakonfigurov\u00e1n\u00ed v\u00edce adapt\u00e9r\u016f prost\u0159edku \u010di jin\u00fdch artefakt\u016f se stejn\u00fdm n\u00e1zvem, nebo implementace jednoho adapt\u00e9ru prost\u0159edku prost\u0159ednictv\u00edm konfigurace v souboru server.xml a z\u00e1rove\u0148 jeho vlo\u017een\u00edm do adres\u00e1\u0159e dropins.
+J2CA7013.duplicate.adapter.name.useraction=Pokud m\u00e1 v\u00edce adapt\u00e9r\u016f prost\u0159edku \u010di jin\u00fdch artefakt\u016f stejn\u00fd n\u00e1zev, jeden z nich odeberte \u010di p\u0159ejmenujte. Pokud byl jeden adapt\u00e9r prost\u0159edku implementov\u00e1n dv\u011bma r\u016fzn\u00fdmi zp\u016fsoby, zm\u011b\u0148te konfiguraci tak, aby pou\u017e\u00edvala pouze jeden zp\u016fsob implementace.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: Adapt\u00e9r prost\u0159edku {0} nelze nainstalovat, proto\u017ee se nenach\u00e1z\u00ed v um\u00edst\u011bn\u00ed {1}.
+J2CA7014.adapter.not.found.explanation=Server nena\u0161el adapt\u00e9r prost\u0159edku v ur\u010den\u00e9m um\u00edst\u011bn\u00ed (nebo v relativn\u00edch um\u00edst\u011bn\u00edch, pokud \u0161lo o relativn\u00ed cestu).
+J2CA7014.adapter.not.found.useraction=Zkontrolujte, zda je definov\u00e1no spr\u00e1vn\u00e9 um\u00edst\u011bn\u00ed adapt\u00e9ru prost\u0159edku.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: Prob\u00edh\u00e1 instalace adapt\u00e9ru prost\u0159edku {0}.
+J2CA7018.installing.adapter.explanation=Adapt\u00e9r prost\u0159edku je pr\u00e1v\u011b instalov\u00e1n.
+J2CA7018.installing.adapter.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: Adapt\u00e9r prost\u0159edku {0} nebyl aktualizov\u00e1n.
+J2CA7020.adapter.not.updated.explanation=Adapt\u00e9r prost\u0159edku nelze nainstalovat kv\u016fli p\u0159edchoz\u00edm chyb\u00e1m. 
+J2CA7020.adapter.not.updated.useraction=Zkontrolujte konfiguraci adapt\u00e9ru prost\u0159edku a p\u0159\u00edpadn\u00e9 chyby p\u0159i instalaci adapt\u00e9ru prost\u0159edku uveden\u00e9 v protokolech.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: Adapt\u00e9r prost\u0159edku {1} v um\u00edst\u011bn\u00ed {0} je neplatn\u00fd.
+J2CA7021.adapter.at.location.not.valid.explanation=Archiv nebo adres\u00e1\u0159 v zadan\u00e9m um\u00edst\u011bn\u00ed je neplatn\u00fd, tak\u017ee adapt\u00e9r prost\u0159edku nelze nainstalovat.
+J2CA7021.adapter.at.location.not.valid.useraction=Zkontrolujte, zda je identifikovan\u00fd archiv nebo adres\u00e1\u0159 platn\u00fd.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: Adapt\u00e9r prost\u0159edku {0} nebyl nainstalov\u00e1n za {1} sekund.
+J2CA7022.adapter.slow.install.explanation=Adapt\u00e9r prost\u0159edku nebyl nainstalov\u00e1n za o\u010dek\u00e1vanou dobu. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt p\u0159et\u00ed\u017een\u00ed serveru nebo velk\u00fd objem adapt\u00e9ru prost\u0159edku. Pokud je adapt\u00e9r prost\u0159edku instalov\u00e1n v r\u00e1mci spou\u0161t\u011bn\u00ed serveru, server se spust\u00ed a nebude \u010dekat na instalaci adapt\u00e9ru prost\u0159edku.
+J2CA7022.adapter.slow.install.useraction=Pokud m\u00e1 adapt\u00e9ru prost\u0159edku dlouhou instalaci, nen\u00ed \u017e\u00e1dn\u00e1 akce nutn\u00e1, jinak ale zkontrolujte, zda protokoly serveru neobsahuj\u00ed jin\u00e9 zpr\u00e1vy, kter\u00e9 by v\u00e1m pomohly ur\u010dit p\u0159\u00ed\u010dinu.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: P\u0159i pokusu o automatick\u00e9 odinstalov\u00e1n\u00ed adapt\u00e9ru prost\u0159edku {0} do\u0161lo k v\u00fdjimce.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=Nainstalovan\u00fd adapt\u00e9r prost\u0159edku nebyl na serveru nalezen.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: P\u0159i pokusu o automatickou instalaci adapt\u00e9ru prost\u0159edku {0} do\u0161lo k v\u00fdjimce.
+J2CA7056.monitor.adapter.install.fail.explanation=Server nemohl adapt\u00e9r prost\u0159edku nainstalovat.
+J2CA7056.monitor.adapter.install.fail.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: Adapt\u00e9r prost\u0159edku {0} nainstalovan\u00fd z um\u00edst\u011bn\u00ed {1} byl odstran\u011bn b\u011bhem sv\u00e9 konfigurace.
+J2CA7059.invalid.delete.of.adapter.explanation=Adapt\u00e9r prost\u0159edku, kter\u00fd je v sou\u010dasn\u00e9 dob\u011b nakonfigurov\u00e1n v souboru server.xml, byl odstran\u011bn.
+J2CA7059.invalid.delete.of.adapter.useraction=Pokud se jednalo o \u00famysln\u00e9 odstran\u011bn\u00ed, odeberte konfiguraci adapt\u00e9ru prost\u0159edku ze souboru server.xml.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: Aplika\u010dn\u00ed server nem\u016f\u017ee monitorovat adapt\u00e9r prost\u0159edku {0}.
+J2CA7060.adapter.monitoring.fail.explanation=Byl nainstalov\u00e1n adapt\u00e9r prost\u0159edku, ale nebylo spu\u0161t\u011bno jeho monitorov\u00e1n\u00ed. Pokud bude v r\u00e1mci adapt\u00e9ru prost\u0159edku aktualizov\u00e1n soubor, server tuto zm\u011bnu nezjist\u00ed. 
+J2CA7060.adapter.monitoring.fail.useraction=P\u0159i aktualizaci soubor\u016f v tomto adapt\u00e9ru prost\u0159edku tento adapt\u00e9r ru\u010dn\u011b odinstalujte a znovu nainstalujte na serveru.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: Aplika\u010dn\u00ed server nem\u016f\u017ee nainstalovat adapt\u00e9r prost\u0159edku {0}.
+error.not.installed.explanation=Instalaci adapt\u00e9ru prost\u0159edku zabr\u00e1nila d\u0159\u00edv\u011bj\u0161\u00ed chyba.
+error.not.installed.useraction=Zkontrolujte um\u00edst\u011bn\u00ed uveden\u00e9 v prvku konfigurace adapt\u00e9ru prost\u0159edku.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=J2CA7702E: Aplikace {0} rozpoznala chybu anal\u00fdzy p\u0159i zpracov\u00e1n\u00ed deskriptoru aplikace {1}: {2}
+error.application.parse.descriptor.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze deskriptoru aplikace. Pro aplikaci nebudou dostupn\u00e9 \u017e\u00e1dn\u00e9 moduly.
+error.application.parse.descriptor.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. Zkontrolujte obsah deskriptoru aplikace a ujist\u011bte se, \u017ee obsah je platn\u00fd jako data XML.

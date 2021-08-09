@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSUTMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSUT0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSUT
+#COMPONENTNAMEFOR CWSUT ObjectManager.Utils
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by UtilsException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSUT1001E: Mened\u017cer \
+ObjectManager wychwyci\u0142 nieoczekiwany wyj\u0105tek {0} (Exception). 
+UnexpectedExceptionException_info.explanation=Mened\u017cer \
+ObjectManager wychwyci\u0142 zg\u0142oszony wyj\u0105tek, ale nie m\u00f3g\u0142 wykona\u0107 \u017cadnego \
+dzia\u0142ania w odpowiedzi na ten wyj\u0105tek.
+UnexpectedExceptionException_info.useraction=Sprawd\u017a przyczyn\u0119 \
+bazowego wyj\u0105tku.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIUT9999=CWSUT9999E: {0}
+TEMPORARY_SIUT9999.explanation=Je\u015bli te informacje s\u0105 \
+niewystarczaj\u0105ce, przejrzyj wcze\u015bniejsze komunikaty, aby uzyska\u0107 dodatkow\u0105 \
+pomoc.
+TEMPORARY_SIUT9999.useraction=Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 \
+w poprzednich komunikatach.

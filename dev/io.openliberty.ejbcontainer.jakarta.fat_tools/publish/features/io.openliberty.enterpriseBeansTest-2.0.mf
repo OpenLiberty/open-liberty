@@ -1,0 +1,13 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: enterpriseBeansTest-2.0
+IBM-Test-Feature: true
+Subsystem-SymbolicName: io.openliberty.enterpriseBeansTest-2.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: io.openliberty.ejbcontainer.jakarta.fat_tools; version="[1,1.0.100)"; type="osgi.subsystem.feature"
+IBM-Feature-Version: 2
+IBM-API-Package: io.openliberty.ejbcontainer.jakarta.test.tools,
+ io.openliberty.ejbcontainer.jakarta.test.osgi.pmi
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Name: Jakarta Enterprise Beans test function
+Subsystem-Description: %description
+Subsystem-Localization: OSGI-INF/l10n/subsystem

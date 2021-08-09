@@ -1,0 +1,76 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+
+	<httpEndpoint
+		id="defaultHttpEndpoint"
+		host="*"
+		httpPort="${bvt.prop.security_1_HTTP_default}"
+		httpsPort="${bvt.prop.security_1_HTTP_default.secure}" />
+
+	<featureManager>
+		<feature>openidConnectServer-1.0</feature>
+		<feature>timedexit-1.0</feature>
+		<feature>ssl-1.0</feature>
+	</featureManager>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="testuser"
+			password="testuserpwd" />
+	</basicRegistry>
+
+	<sslDefault sslRef="DefaultSSLSettings" />
+	<ssl
+		id="DefaultSSLSettings"
+		keyStoreRef="myKeyStore"
+		trustStoreRef="myTrustStore"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="myKeyStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonBasicKeyStore.jks" />
+	<keyStore
+		id="myTrustStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/commonTrustStore.jks" />
+
+	<oauth-roles>
+		<authenticated>
+			<special-subject type="ALL_AUTHENTICATED_USERS" />
+		</authenticated>
+	</oauth-roles>
+
+	<openidConnectProvider
+		id="OidcConfigSample"
+		oauthProviderRef="OAuthConfigSample" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="rp"
+				scope="ALL_SCOPES"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client01" />
+		</localStore>
+	</oauthProvider>
+
+</server>

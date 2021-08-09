@@ -1,0 +1,13 @@
+<server description="Server for testing a CDI app that contains a beans.xml file and it's own XML parser factory">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>cdi-1.2</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>jaxb-2.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+</server>

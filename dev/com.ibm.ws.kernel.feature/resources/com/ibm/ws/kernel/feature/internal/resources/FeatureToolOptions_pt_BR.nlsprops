@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/feature/internal/resources/FeatureToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso: {0}
+
+global.description=Descri\u00e7\u00e3o:
+global.actions=A\u00e7\u00f5es:
+global.options=Op\u00e7\u00f5es:
+global.options.lower=op\u00e7\u00f5es
+global.usage=Uso:
+global.options.statement=\tUse help [actionName] para obter informa\u00e7\u00f5es de op\u00e7\u00e3o detalhadas de cada a\u00e7\u00e3o.
+task.unknown=A\u00e7\u00e3o Desconhecida: {0}
+
+# -------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprima informa\u00e7\u00f5es da ajuda para a a\u00e7\u00e3o especificada.
+install.desc=\tInstale um recurso empacotado como um Archive de Subsistema (esa) para o tempo de execu\u00e7\u00e3o.
+uninstall.desc=\tDesinstale um recurso do tempo de execu\u00e7\u00e3o.
+featureList.desc=\tGere um relat\u00f3rio XML sobre todos os recursos instalados no tempo de execu\u00e7\u00e3o.
+classpath.desc=\tGere um JAR que possa ser inclu\u00eddo em um caminho de classe do compilador a fim de\n\
+\tusar as APIs de uma lista de recursos.
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\tEspecifique onde instalar o recurso. O recurso pode ser instalado em\n\
+\tqualquer local de extens\u00e3o de produto configurado, ou como um recurso do usu\u00e1rio. Se  \n\
+\tessa op\u00e7\u00e3o n\u00e3o for especificada, o recurso ser\u00e1 instalado como um recurso do \n\
+\tusu\u00e1rio.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--user=\ \ \ \ --user
+install.option-desc.--user=\tEspecifique o ID do usu\u00e1rio v\u00e1lido para o WebSphere Liberty Repository.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--password=\ \ \ \ --password
+install.option-desc.--password=\tEspecifique a senha para o ID do usu\u00e1rio especificado na op\u00e7\u00e3o --user.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--passwordFile=\ \ \ \ --passwordFile
+install.option-desc.--passwordFile=\tForne\u00e7a um arquivo que contenha a senha para o ID do usu\u00e1rio especificado na    \n\
+\top\u00e7\u00e3o --user.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name=\ \ \ \ name
+install.option-desc.name=\tEspecifique o local do archive de Subsistema a ser usado.  Este pode  \n\
+\tser um arquivo esa, um IBM-Shortname ou o Subsystem-SymbolicName do\n\
+\tarchive de Subsistema.  O valor pode ser um nome de arquivo ou uma URL para  \n\
+\to arquivo esa. Se um IBM-Shortname ou Subsystem-SymbolicName for      \n\
+\tespecificado, o arquivo esa ser\u00e1 instalado a partir de um reposit\u00f3rio online  \n\
+\thospedado pela IBM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tUse esta op\u00e7\u00e3o para exibir qualquer informa\u00e7\u00e3o adicional dispon\u00edvel quando \n \ta a\u00e7\u00e3o \u00e9 \
+executada.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name=\ \ \ \ name
+uninstall.option-desc.name=\tEspecifique o recurso a ser desinstalado.                                    \n\
+\tEste pode ser um IBM-Shortname ou o Subsystem-SymbolicName do    \n\
+\tarchive de Subsistema.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tSuprime mensagens de confirma\u00e7\u00e3o para remover recursos e desinstala     \n\
+\trecursos sem quaisquer intera\u00e7\u00f5es com o usu\u00e1rio.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tDesinstale o recurso \
+independentemente de outros recursos instalados terem\n\
+\tdepend\u00eancias nele ou n\u00e3o.  Desinstalar um recurso que \u00e9 necess\u00e1rio para outros\n \trecursos instalados pode fazer com que esses recursos \
+parem de funcionar e pode\n \timpedir que os servidores executem \
+corretamente.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tUse esta op\u00e7\u00e3o \
+para exibir qualquer informa\u00e7\u00e3o adicional dispon\u00edvel quando \n \ta \
+a\u00e7\u00e3o \u00e9 executada.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--when-file-exists=\ \ \ \ --when-file-exists=[fail|ignore|replace]
+install.option-desc.--when-file-exists=\tSe um arquivo que \u00e9 parte do ESA j\u00e1 existe no sistema, deve-se  \n\
+\tespecificar quais a\u00e7\u00f5es a se tomar. As op\u00e7\u00f5es v\u00e1lidas s\u00e3o: falhar - interromper \n\
+\ta instala\u00e7\u00e3o; ignorar - continuar a instala\u00e7\u00e3o e ignorar o \n\
+\tarquivo que existe; substituir - sobrescrever o arquivo existente. N\u00e3o use \n\
+\ta op\u00e7\u00e3o de substitui\u00e7\u00e3o para reinstalar recursos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadOnly=\ \ \ \ --downloadOnly=[all|required*|none]
+install.option-desc.--downloadOnly=\tFa\u00e7a download de um recurso para um diret\u00f3rio local sem instal\u00e1-lo. \u00c9   \n\
+\tposs\u00edvel configurar essa op\u00e7\u00e3o para fazer download de todos os recursos dependentes, apenas   \n\
+\tdos recursos dependentes exigidos ou de nenhum dos recursos dependentes.  \n\
+\tA configura\u00e7\u00e3o padr\u00e3o \u00e9 fazer o download de todos os recursos dependentes     \n\
+\texigidos. O diret\u00f3rio \u00e9 especificado com a op\u00e7\u00e3o --location.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--location=\ \ \ \ --location=directoryPath
+install.option-desc.--location=\tSe voc\u00ea estiver instalando um recurso de um diret\u00f3rio local, use essa     \n\
+\top\u00e7\u00e3o para especificar o local do diret\u00f3rio local. Se estiver    \n\
+\tefetuando download de um recurso usando a op\u00e7\u00e3o --downloadOnly, use essa      \n\
+\top\u00e7\u00e3o para especificar o diret\u00f3rio de destino do recurso transferido por       \n\
+\tdownload. Essa op\u00e7\u00e3o \u00e9 exigida ao usar --downloadOnly e       \n\
+\t--offlineOnly.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--offlineOnly=\ \ \ \ --offlineOnly
+install.option-desc.--offlineOnly=\tEspecifique essa op\u00e7\u00e3o se n\u00e3o desejar se conectar ao IBM         \n \tWebSphere Liberty Repository e estiver instalando recursos somente do    \n\
+\tdiret\u00f3rio local. O diret\u00f3rio local \u00e9 especificado com a op\u00e7\u00e3o      \n\
+\t--location.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+
+featureList.option-key.--encoding=\ \ \ \ --encoding=charset
+featureList.option-desc.--encoding=\tEspecifique o conjunto de caracteres a ser usado ao gravar o arquivo XML da lista   \n\
+\tde recursos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--locale=\ \ \ \ --locale=idioma
+featureList.option-desc.--locale=\tEspecifique o idioma a ser usado ao gravar a lista de recursos. Ele      \n\
+\tconsiste no c\u00f3digo de idioma ISO-639 com duas letras min\u00fasculas,          \n\
+\tseguido, opcionalmente, por um sublinhado e pelo c\u00f3digo ISO-3166      \n\
+\tde duas letras mai\u00fasculas do pa\u00eds.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.fileName=\ \ \ \ nome_do_Arquivo
+featureList.option-desc.fileName=\tO nome do arquivo no qual o xml da lista de recursos deve ser gravado.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+featureList.option-key.--productextension=\ \ \ \ --productExtension=name
+featureList.option-desc.--productextension=\tEspecifique o nome da extens\u00e3o de produto cujos recursos devem ser listados.  \n\
+\tSe a extens\u00e3o do produto estiver instalada no local do usu\u00e1rio padr\u00e3o,  \n\
+\tuse a palavra-chave: usr.                                                  \n\
+\t \
+Se essa op\u00e7\u00e3o n\u00e3o estiver especificada, a a\u00e7\u00e3o ser\u00e1 executada no n\u00facleo do Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.desc=\tLocalize recursos aplic\u00e1veis a partir do IBM WebSphere Liberty Repository.
+# -------- OPTIONS ----------------------------------------------------#
+find.option-key.searchString=\ \ \ \ searchString
+find.option-desc.searchString=\tUse a sequ\u00eancia de procura para localizar recursos aplic\u00e1veis no IBM         \n   \tWebSphere Liberty Repository.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--viewInfo=\ \ \ \ --viewInfo
+find.option-desc.--viewInfo=\tVisualize informa\u00e7\u00f5es detalhadas.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tUse esta op\u00e7\u00e3o para \
+exibir qualquer informa\u00e7\u00e3o adicional dispon\u00edvel quando \n \ta a\u00e7\u00e3o \u00e9 \
+executada.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.--features=\ \ \ \ --features=value,value,...
+classpath.option-desc.--features=\tA lista de recursos a partir da qual obter a lista de JARs API.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+classpath.option-key.fileName=\ \ \ \ nome_do_Arquivo
+classpath.option-desc.fileName=\tO nome do arquivo JAR no qual gravar os caminhos de classe.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#

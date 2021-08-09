@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="EndSupTokens" 
+    targetNamespace="http://endsuptokens.wssecfvt.test" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:tns="http://endsuptokens.wssecfvt.test"
+    xmlns:x1="http://endsuptokens.wssecfvt.test/types"
+    xmlns:di="http://endsuptokens.wssecfvt.test"
+    xmlns:t="http://docs.oasis-open.org/ws-sx/ws-trust/200512"
+    xmlns:wsp="http://www.w3.org/ns/ws-policy"
+    xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+    xmlns:wsaws="http://www.w3.org/2005/08/addressing" 
+    xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+    xmlns:sp13="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802">
+     
+    <wsp:Policy wsu:Id="EndSupTokensUNTEndorsingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssX509V3Token10 />
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp:Basic128/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:EndorsingSupportingTokens>
+                  <wsp:Policy>
+                       <sp:UsernameToken
+                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                            <wsp:Policy>
+                               <sp:WssUsernameToken10/>
+                            </wsp:Policy>
+                       </sp:UsernameToken>
+                   </wsp:Policy>
+              </sp:EndorsingSupportingTokens>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>     
+
+    <wsp:Policy wsu:Id="EndSupTokensUNTSignedEndorsingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssX509V3Token10 />
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp:Basic128/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedEndorsingSupportingTokens>
+                  <wsp:Policy>
+                       <sp:UsernameToken
+                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                            <wsp:Policy>
+                               <sp:WssUsernameToken10/>
+                            </wsp:Policy>
+                       </sp:UsernameToken>
+                   </wsp:Policy>
+              </sp:SignedEndorsingSupportingTokens>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+    <wsp:Policy wsu:Id="EndSupTokensUNTEndorsingEncryptedPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssX509V3Token10 />
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp:Basic128/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:EndorsingEncryptedSupportingTokens>
+                  <wsp:Policy>
+                       <sp:UsernameToken
+                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                            <wsp:Policy>
+                               <sp:WssUsernameToken10/>
+                            </wsp:Policy>
+                       </sp:UsernameToken>
+                   </wsp:Policy>
+              </sp:EndorsingEncryptedSupportingTokens>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+    <wsp:Policy wsu:Id="EndSupTokensUNTSignedEndorsingEncryptedPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssX509V3Token10 />
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp:Basic128/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedEndorsingEncryptedSupportingTokens>
+                  <wsp:Policy>
+                       <sp:UsernameToken
+                            sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                            <wsp:Policy>
+                               <sp:WssUsernameToken10/>
+
+                            </wsp:Policy>
+                       </sp:UsernameToken>
+                   </wsp:Policy>
+              </sp:SignedEndorsingEncryptedSupportingTokens>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+
+<!--  -->
+    <wsp:Policy wsu:Id="EndSupTokensX509EndorsingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>           
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128Sha256/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                <sp:EndorsingSupportingTokens xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+                   <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                    </wsp:Policy>
+                </sp:EndorsingSupportingTokens>               
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+
+     <!-- bax11.https mig -->
+     <wsp:Policy wsu:Id="EndSupTokensX509EndorsingBodyPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128Sha256/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                <sp:EndorsingSupportingTokens xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+                   <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                        <sp:SignedParts>
+                            <sp:Body/>
+                        </sp:SignedParts>
+                    </wsp:Policy>
+                </sp:EndorsingSupportingTokens>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+     <!-- bax12.https mig -->
+    <wsp:Policy wsu:Id="EndSupTokensX509SignedEndorsingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128Sha256/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                <sp:SignedEndorsingSupportingTokens>
+                   <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                    </wsp:Policy>
+                </sp:SignedEndorsingSupportingTokens>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>                
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+     <!-- bax13.https mig -->
+    <wsp:Policy wsu:Id="EndSupTokensX509EndorsingEncryptedPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>
+            <sp:SymmetricBinding>
+               <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                             <wsp:Policy>
+                                <sp:WssX509V3Token10 />
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:IncludeTimestamp/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:SymmetricBinding>
+                <sp:EndorsingEncryptedSupportingTokens>
+                   <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                    </wsp:Policy>
+                </sp:EndorsingEncryptedSupportingTokens>             
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+     <!-- bax14.https mig -->
+    <wsp:Policy wsu:Id="EndSupTokensX509SignedEndorsingEncryptedPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128Sha256/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                <sp:SignedEndorsingEncryptedSupportingTokens>
+                   <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                    </wsp:Policy>
+                </sp:SignedEndorsingEncryptedSupportingTokens>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+              <sp:EncryptedParts>
+                  <sp:Body/>
+              </sp:EncryptedParts>                
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+     <!-- bax15.https mig -->
+    <wsp:Policy wsu:Id="EndSupTokensX509EndorsingBodySignElementPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128Sha256/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                <sp:EndorsingSupportingTokens>
+                   <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                        <sp:SignedParts>
+                            <sp:Body/>
+                        </sp:SignedParts>
+                        <sp:SignedElements>
+                            <sp:XPath>//*[local-name()='ReplyTo']</sp:XPath>
+                        </sp:SignedElements>
+                    </wsp:Policy>
+                </sp:EndorsingSupportingTokens>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+     <!-- bax16.https mig -->
+    <wsp:Policy wsu:Id="EndSupTokensX509EndorsingKeyPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10/>
+                              <sp:RequireIssuerSerialReference/>
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Lax/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128Sha256/> 
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                <sp:EndorsingSupportingTokens>
+                   <wsp:Policy>
+                        <sp:KeyValueToken
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RsaKeyValue/>
+                           </wsp:Policy>
+                        </sp:KeyValueToken>
+                    </wsp:Policy>
+                </sp:EndorsingSupportingTokens>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+        
+    <wsdl:types>
+        <schema targetNamespace="http://endsuptokens.wssecfvt.test/types" 
+            xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+            <element name="getVer">
+                <complexType>
+                    <sequence>
+                        <element name="requestType" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="getVerResponse">
+                <complexType>
+                    <sequence>
+                        <element name="responseType" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+   	    <element name="faultDetail">
+		<complexType>
+			<sequence>
+				<element name="minor" type="xsd:short"/>
+				<element name="major" type="xsd:short"/>
+			</sequence>
+		</complexType>
+	    </element>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="getVerRequest">
+        <wsdl:part element="x1:getVer" name="in"/>
+    </wsdl:message>
+    <wsdl:message name="getVerResponse">
+        <wsdl:part element="x1:getVerResponse" name="out"/>
+    </wsdl:message>
+    
+    <wsdl:portType name="EndSupTokensPortType">
+        <wsdl:operation name="invoke">
+            <wsdl:input message="tns:getVerRequest" name="getVerRequest"/>
+            <wsdl:output message="tns:getVerResponse" name="getVerResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="EndSupTokensX509EndorsingBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509EndorsingPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="EndSupTokensX509EndorsingBodyBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509EndorsingBodyPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="EndSupTokensX509EndorsingBodySingElementBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509EndorsingBodySignElementPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:binding name="EndSupTokensX509EndorsingKeyBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509EndorsingKeyPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>    
+
+    <wsdl:binding name="EndSupTokensX509SignedEndorsingBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509SignedEndorsingPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:binding name="EndSupTokensX509EndorsingEncryptedBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509EndorsingEncryptedPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="EndSupTokensX509SignedEndorsingEncryptedBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensX509SignedEndorsingEncryptedPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+            
+    <wsdl:binding name="EndSupTokensUNTEndorsingBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensUNTEndorsingPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:binding name="EndSupTokensUNTSignedEndorsingBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensUNTSignedEndorsingPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:binding name="EndSupTokensUNTEndorsingEncryptedBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensUNTEndorsingEncryptedPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:binding name="EndSupTokensUNTSignedEndorsingEncryptedBinding" type="tns:EndSupTokensPortType">
+        <wsp:PolicyReference URI="#EndSupTokensUNTSignedEndorsingEncryptedPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="EndSupTokensService0">
+        <wsdl:port name="EndSupTokensX509EndorsingPort" 
+                   binding="tns:EndSupTokensX509EndorsingBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService0" />
+        </wsdl:port>
+    </wsdl:service>
+ 
+    <wsdl:service name="EndSupTokensService0Body">
+        <wsdl:port name="EndSupTokensX509EndorsingBodyPort" 
+                   binding="tns:EndSupTokensX509EndorsingBodyBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService0Body" />
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:service name="EndSupTokensService0BodyElement">
+        <wsdl:port name="EndSupTokensX509EndorsingBodySignElementPort" 
+                   binding="tns:EndSupTokensX509EndorsingBodySingElementBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService0BodyElement" />
+        </wsdl:port>
+    </wsdl:service>
+    
+    <wsdl:service name="EndSupTokensService0Key">
+        <wsdl:port name="EndSupTokensX509EndorsingKeyPort" 
+                   binding="tns:EndSupTokensX509EndorsingKeyBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService0Key" />
+        </wsdl:port>
+    </wsdl:service>
+                
+    <wsdl:service name="EndSupTokensService1">
+        <wsdl:port name="EndSupTokensX509SignedEndorsingPort" 
+                   binding="tns:EndSupTokensX509SignedEndorsingBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService1" />
+        </wsdl:port>
+    </wsdl:service>
+    
+    <wsdl:service name="EndSupTokensService2">
+        <wsdl:port name="EndSupTokensX509EndorsingEncryptedPort" 
+                   binding="tns:EndSupTokensX509EndorsingEncryptedBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService2" />
+        </wsdl:port>
+    </wsdl:service>        
+
+    <wsdl:service name="EndSupTokensService3">
+        <wsdl:port name="EndSupTokensX509SignedEndorsingEncryptedPort" 
+                   binding="tns:EndSupTokensX509SignedEndorsingEncryptedBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService3" />
+        </wsdl:port>
+    </wsdl:service>
+
+    <wsdl:service name="EndSupTokensService4">
+        <wsdl:port name="EndSupTokensUNTEndorsingPort" 
+                   binding="tns:EndSupTokensUNTEndorsingBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService4" />
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:service name="EndSupTokensService5">
+        <wsdl:port name="EndSupTokensUNTSignedEndorsingPort" 
+                   binding="tns:EndSupTokensUNTSignedEndorsingBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService5" />
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:service name="EndSupTokensService6">
+        <wsdl:port name="EndSupTokensUNTEndorsingEncryptedPort" 
+                   binding="tns:EndSupTokensUNTEndorsingEncryptedBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService6" />
+        </wsdl:port>
+    </wsdl:service>        
+    <wsdl:service name="EndSupTokensService7">
+        <wsdl:port name="EndSupTokensUNTSignedEndorsingEncryptedPort" 
+                   binding="tns:EndSupTokensUNTSignedEndorsingEncryptedBinding">
+            <soap:address location="http://localhost:8010/endsuptokens/EndSupTokensService7" />
+        </wsdl:port>
+    </wsdl:service>
+    
+</wsdl:definitions>

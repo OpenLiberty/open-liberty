@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloader.context/resources/com/ibm/ws/classloader/context/internal/resources/ClassLoaderContextMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loader Context
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+
+####################################################################################
+# NOTE: This message bundle has only reserved CWWKL0090-CWWKL0099 if more messages #
+#       are needed, reserve a new block of messages in the classloading bundle     #
+####################################################################################
+cannot.apply.classloader.context=CWWKL0090E: Nu poate fi aplicat contextul de \u00eenc\u0103rc\u0103tor de clas\u0103 la un fir de execu\u0163ie negestionat {0}. Asigura\u0163i-v\u0103 c\u0103 lucrul ruleaz\u0103 pe un fir de execu\u0163ie gestionat de server sau care permite opera\u0163ia setContextClassLoader.
+cannot.apply.classloader.context.explanation=Lucrul a fost trimis la un fir negestionat, care nu suport\u0103 setarea ClassLoader.
+cannot.apply.classloader.context.useraction=Asigura\u0163i-v\u0103 c\u0103 lucrul ruleaz\u0103 pe un fir de execu\u0163ie gestionat de server sau care permite opera\u0163ia setContextClassLoader.

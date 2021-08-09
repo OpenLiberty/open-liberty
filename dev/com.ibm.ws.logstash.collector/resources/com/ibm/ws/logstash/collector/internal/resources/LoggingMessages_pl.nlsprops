@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: Kolektor Logstash nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z serwerem Logstash na podanym ho\u015bcie {0} i pod podanym numerem portu {1}. 
+LOGSTASH_CONNECTION_FAILED.explanation=Nawi\u0105zanie po\u0142\u0105czenia z serwerem Logstash nie powiod\u0142o si\u0119, poniewa\u017c serwer Logstash nie dzia\u0142a na podanym ho\u015bcie, informacje o konfiguracji (takie jak nazwa hosta i numer portu) s\u0105 niepoprawne lub wej\u015bcie Lumberjack nie jest skonfigurowane na serwerze Logstash.  
+LOGSTASH_CONNECTION_FAILED.useraction=Sprawd\u017a informacje o konfiguracji i uruchom serwer Logstash na podanym ho\u015bcie. Upewnij si\u0119, \u017ce wej\u015bcie Lumberjack jest poprawnie skonfigurowane oraz \u017ce host i numer portu podane w konfiguracji kolektora Logstash w pliku server.xml s\u0105 zgodne z odpowiedni\u0105 konfiguracj\u0105 serwera Logstash.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: Kolektor Logstash nie mo\u017ce wys\u0142a\u0107 zdarze\u0144 do serwera Logstash. Po\u0142\u0105czenie z serwerem Logstash jest wymagane w celu wysy\u0142ania zdarze\u0144.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Nie mo\u017cna wys\u0142a\u0107 zdarze\u0144, poniewa\u017c po\u0142\u0105czenie z serwerem Logstash jest niedost\u0119pne. Po\u0142\u0105czenie mog\u0142o by\u0107 nawi\u0105zane wcze\u015bniej, ale obecnie jest roz\u0142\u0105czone. System b\u0119dzie podejmowa\u0142 kolejne pr\u00f3by i nawi\u0105\u017ce po\u0142\u0105czenie z serwerem Logstash, gdy stanie si\u0119 on dost\u0119pny.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Upewnij si\u0119, \u017ce serwer Logstash dzia\u0142a na ho\u015bcie.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: Kolektor Logstash jest po\u0142\u0105czony z serwerem Logstash na podanym ho\u015bcie {0} i pod podanym numerem portu {1}.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=Kolektor Logstash jest pomy\u015blnie po\u0142\u0105czony z serwerem Logstash.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: Kolektor Logstash zosta\u0142 roz\u0142\u0105czony z serwerem Logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=Kolektor Logstash zamyka i nawi\u0105zuje ponownie po\u0142\u0105czenie z serwerem Logstash podczas aktualizowania konfiguracji kolektora Logstash. Dotyczy to tak\u017ce wszystkich zmian wprowadzanych w zale\u017cnym repertuarze SSL i konfiguracji sk\u0142adnicy kluczy. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: Kolektor Logstash nie rozpoznaje podanego \u017ar\u00f3d\u0142a {0}.
+LOGSTASH_SOURCE_UNKNOWN.explanation=Podane \u017ar\u00f3d\u0142o nie jest jednym z domy\u015blnych \u017ar\u00f3de\u0142 udost\u0119pnionych przez \u015brodowisko wykonawcze serwera Liberty. \u0179r\u00f3d\u0142o mo\u017ce by\u0107 cz\u0119\u015bci\u0105 sk\u0142adnika Liberty, kt\u00f3ry nie zosta\u0142 dodany do konfiguracji serwera.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Sprawd\u017a informacje konfiguracyjne.  Upewnij si\u0119, \u017ce dla kolektora podano jedno z obs\u0142ugiwanych \u017ar\u00f3de\u0142.
+

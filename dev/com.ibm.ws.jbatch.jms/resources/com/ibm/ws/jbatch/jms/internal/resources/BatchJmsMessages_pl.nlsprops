@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: Typ komunikatu {0} dla tego komunikatu JMS zadania wsadowego nie jest obs\u0142ugiwany.  To \u017c\u0105danie nie zostanie przetworzone. Tre\u015b\u0107 tego komunikatu jest nast\u0119puj\u0105ca: {1}
+warning.unsupported.message.type.explanation=Ten typ komunikatu nie jest obs\u0142ugiwany, poniewa\u017c nie jest to typ JMS MapMessage. 
+warning.unsupported.message.type.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+ 
+warning.unsupported.operation=CWWKY0201W: Operacja {0} jest nieobs\u0142ugiwan\u0105 operacj\u0105 komunikatu JMS zadania wsadowego. To \u017c\u0105danie nie zostanie przetworzone. Tre\u015b\u0107 tego komunikatu jest nast\u0119puj\u0105ca: {1}
+warning.unsupported.operation.explanation=Obs\u0142ugiwane s\u0105 tylko operacje Start i Restart.
+warning.unsupported.operation.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: Punkt ko\u0144cowy komunikat\u00f3w dla procesu nas\u0142uchuj\u0105cego JMS zadania wsadowego {0} nie mo\u017ce zosta\u0107 aktywowany, poniewa\u017c specyfikacja aktywowania zadania wsadowego {1} nie istnieje w konfiguracji serwera. Ten punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w zadania wsadowego, dop\u00f3ki specyfikacja aktywowania zadania wsadowego nie stanie si\u0119 dost\u0119pna. 
+warning.batch.activation.spec.not.found.explanation=Serwer uruchamia proces nas\u0142uchuj\u0105cy JMS zadania wsadowego, ale nie mo\u017ce aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w, poniewa\u017c nie mo\u017cna znale\u017a\u0107 specyfikacji aktywowania w konfiguracji serwera. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w zadania wsadowego, dop\u00f3ki nie b\u0119dzie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego.
+warning.batch.activation.spec.not.found.useraction=Utw\u00f3rz specyfikacj\u0119 aktywowania o okre\u015blonej nazwie w konfiguracji serwera r\u0119cznie lub przy u\u017cyciu Centrum administracyjnego.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: Punkt ko\u0144cowy komunikat\u00f3w dla procesu nas\u0142uchuj\u0105cego JMS zadania wsadowego {0} nie mo\u017ce zosta\u0107 aktywowany, poniewa\u017c nie istnieje kolejka docelowa {1}. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w JMS zadania wsadowego, dop\u00f3ki kolejka docelowa nie stanie si\u0119 dost\u0119pna.
+warning.batch.destination.queue.not.found.explanation=Serwer uruchamia proces nas\u0142uchuj\u0105cy JMS zadania wsadowego, ale nie mo\u017ce aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w, poniewa\u017c nie mo\u017cna znale\u017a\u0107 kolejki docelowej. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w JMS zadania wsadowego, dop\u00f3ki nie b\u0119dzie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego.
+warning.batch.destination.queue.not.found.useraction=Utw\u00f3rz kolejk\u0119 docelow\u0105 o okre\u015blonej nazwie w konfiguracji serwera r\u0119cznie lub przy u\u017cyciu Centrum administracyjnego.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie mo\u017ce zosta\u0107 uruchomiony, poniewa\u017c nie istnieje fabryka po\u0142\u0105cze\u0144 {0}.  Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie b\u0119dzie wysy\u0142a\u0142 komunikat\u00f3w JMS zadania wsadowego, dop\u00f3ki fabryka po\u0142\u0105cze\u0144 nie stanie si\u0119 dost\u0119pna. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=Serwer uruchamia program rozsy\u0142aj\u0105cy JMS zadania wsadowego, ale nie mo\u017ce go uruchomi\u0107, poniewa\u017c nie mo\u017cna znale\u017a\u0107 fabryki po\u0142\u0105cze\u0144 JMS zadania wsadowego.  Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie b\u0119dzie wysy\u0142a\u0142 komunikat\u00f3w JMS zadania wsadowego, dop\u00f3ki fabryka po\u0142\u0105cze\u0144 nie stanie si\u0119 dost\u0119pna.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Utw\u00f3rz fabryk\u0119 po\u0142\u0105cze\u0144 o okre\u015blonej nazwie w konfiguracji serwera r\u0119cznie lub przy u\u017cyciu Centrum administracyjnego.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie mo\u017ce zosta\u0107 uruchomiony, poniewa\u017c nie istnieje kolejka {0}.  Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie b\u0119dzie wysy\u0142a\u0142 komunikat\u00f3w JMS zadania wsadowego, dop\u00f3ki kolejka nie stanie si\u0119 dost\u0119pna.
+warning.batch.dispatcher.queue.not.found.explanation=Serwer uruchamia program rozsy\u0142aj\u0105cy JMS zadania wsadowego, ale nie mo\u017ce go uruchomi\u0107, poniewa\u017c nie mo\u017cna znale\u017a\u0107 kolejki JMS zadania wsadowego.  Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie b\u0119dzie wysy\u0142a\u0142 komunikat\u00f3w JMS zadania wsadowego, dop\u00f3ki kolejka nie stanie si\u0119 dost\u0119pna.
+warning.batch.dispatcher.queue.not.found.useraction=Utw\u00f3rz kolejk\u0119 o okre\u015blonej nazwie w konfiguracji serwera r\u0119cznie lub przy u\u017cyciu Centrum administracyjnego.
+
+error.unable.to.rollback.start=CWWKY0206E: Program rozsy\u0142aj\u0105cy JMS zadania wsadowego napotka\u0142 wyj\u0105tek podczas rozsy\u0142ania \u017c\u0105dania uruchomienia dla instancji zadania {0} i nie m\u00f3g\u0142 wycofa\u0107 tej operacji.  Wyj\u0105tek: {1}.
+error.unable.to.rollback.start.explanation=Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie m\u00f3g\u0142 wycofa\u0107 operacji.
+error.unable.to.rollback.start.useraction=Wprowad\u017a zadanie ponownie.
+
+error.unable.to.rollback.restart=CWWKY0207E: Program rozsy\u0142aj\u0105cy JMS zadania wsadowego napotka\u0142 wyj\u0105tek podczas rozsy\u0142ania wykonania zadania \u017c\u0105dania restartowania {0} i nie m\u00f3g\u0142 wycofa\u0107 tej operacji.  Wyj\u0105tek: {1}.
+error.unable.to.rollback.restart.explanation=Program rozsy\u0142aj\u0105cy JMS zadania wsadowego nie m\u00f3g\u0142 wycofa\u0107 operacji.
+error.unable.to.rollback.restart.useraction=Wprowad\u017a zadanie ponownie.
+
+error.endpoint.unable.process.message=CWWKY0208E: Proces nas\u0142uchuj\u0105cy JMS zadania wsadowego napotka\u0142 wyj\u0105tek podczas przetwarzania komunikatu {0}.  Wyj\u0105tek: {1}.
+error.endpoint.unable.process.message.explanation=Proces nas\u0142uchuj\u0105cy JMS zadania wsadowego nie m\u00f3g\u0142 przetworzy\u0107 komunikatu \u017c\u0105dania JMS zadania wsadowego.
+error.endpoint.unable.process.message.useraction=Wprowad\u017a zadanie ponownie. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: Proces nas\u0142uchuj\u0105cy JMS zadania wsadowego napotka\u0142 wyj\u0105tek podczas przetwarzania operacji uruchamiania zadania dla instancji zadania {0}.  Wyj\u0105tek: {1}.
+error.endpoint.unable.process.start.request.explanation=Proces nas\u0142uchuj\u0105cy JMS zadania wsadowego nie m\u00f3g\u0142 przetworzy\u0107 \u017c\u0105dania uruchomienia zadania.
+error.endpoint.unable.process.start.request.useraction=Wprowad\u017a zadanie ponownie.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: Proces nas\u0142uchuj\u0105cy JMS zadania wsadowego napotka\u0142 wyj\u0105tek podczas przetwarzania operacji restartowania zadania dla wykonania zadania {0}.  Wyj\u0105tek: {1}.
+error.endpoint.unable.process.restart.request.explanation=Proces nas\u0142uchuj\u0105cy JMS zadania wsadowego nie m\u00f3g\u0142 przetworzy\u0107 \u017c\u0105dania restartowania zadania.
+error.endpoint.unable.process.restart.request.useraction=Wprowad\u017a zadanie ponownie.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: \u015arodowisko wykonawcze zada\u0144 wsadowych nie mo\u017ce opublikowa\u0107 zdarzenia w temacie {0} dla obiektu {1}.  Wyj\u0105tek: {2}.
+warning.batch.events.unable.to.publish.explanation=Nie mo\u017cna opublikowa\u0107 zdarzenia z powodu wyj\u0105tku.
+warning.batch.events.unable.to.publish.useraction=Przejrzyj dzienniki serwera pod k\u0105tem pokrewnych b\u0142\u0119d\u00f3w.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Nie mo\u017cna utworzy\u0107 zasobu JMS dla publikatora zdarze\u0144 zada\u0144 wsadowych.  Wyj\u0105tek: {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Nie mo\u017cna utworzy\u0107 zasobu JMS w celu aktywacji publikatora zdarze\u0144 zada\u0144 wsadowych z powodu wyj\u0105tku. 
+error.batch.events.publisher.jms.resource.activate.useraction=Sprawd\u017a konfiguracj\u0119 fabryki po\u0142\u0105cze\u0144 JMS utworzonej przez element batchJmsDispatcher (domy\u015blnej fabryki batchConnectionFactory lub jawnie przywo\u0142ywanej).  Sprawd\u017a po\u0142\u0105czenia JMS i przejrzyj dzienniki serwera pod k\u0105tem pokrewnych b\u0142\u0119d\u00f3w.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Nie mo\u017cna utworzy\u0107 zasobu JMS dla programu rozsy\u0142aj\u0105cego zadania wsadowe.  Wyj\u0105tek: {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Nie mo\u017cna utworzy\u0107 zasobu JMS w celu aktywacji programu rozsy\u0142aj\u0105cego zadania wsadowe z powodu wyj\u0105tku, w wyniku kt\u00f3rego serwer nie mo\u017ce rozsy\u0142a\u0107 zada\u0144 ani partycji za po\u015brednictwem us\u0142ugi JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Sprawd\u017a konfiguracj\u0119 fabryki po\u0142\u0105cze\u0144 JMS i kolejki utworzonej przez element batchJmsDispatcher (domy\u015blnej fabryki batchConnectionFactory lub jawnie przywo\u0142ywanej).  Sprawd\u017a po\u0142\u0105czenia JMS i przejrzyj dzienniki serwera pod k\u0105tem pokrewnych b\u0142\u0119d\u00f3w.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Komunikat z identyfikatorem powi\u0105zanego wykonania zadania {0} zosta\u0142 odrzucony, poniewa\u017c to nie by\u0142o najnowsze wykonanie.
+warning.endpoint.listener.stale.message.explanation=Nieaktualny komunikat powi\u0105zanego wykonania zadania zosta\u0142 odrzucony, poniewa\u017c to nie by\u0142o najnowsze wykonanie.
+warning.endpoint.listener.stale.message.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.start.partition.request=CWWKY0215E: Nie mo\u017cna uruchomi\u0107 partycji zada\u0144 wsadowych z powodu wyst\u0105pienia wyj\u0105tku.  Wyj\u0105tek: {0}.
+error.start.partition.request.explanation=Nie mo\u017cna uruchomi\u0107 partycji zada\u0144 wsadowych z powodu wyst\u0105pienia wyj\u0105tku.  
+error.start.partition.request.useraction=Zatrzymaj powi\u0105zane zadanie i sprawd\u017a po\u0142\u0105czenia JMS oraz konfiguracj\u0119, a tak\u017ce przejrzyj dzienniki serwera pod k\u0105tem pokrewnych b\u0142\u0119d\u00f3w.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Nie mo\u017cna utworzy\u0107 fabryki po\u0142\u0105cze\u0144 JMS na potrzeby wykonywania partycji zdalnych.  Wyj\u0105tek: {0}
+error.batch.executor.jms.create.failure.explanation=Niepowodzenie po\u0142\u0105czenia z fabryk\u0105 po\u0142\u0105cze\u0144 JMS odpowiedzi u\u017cywan\u0105 do wysy\u0142ania odpowiedzi na potrzeby wykonywania partycji zdalnych.  Do czasu rozwi\u0105zania problemu serwer nie b\u0119dzie m\u00f3g\u0142 wykonywa\u0107 zada\u0144 ani partycji rozsy\u0142anych za po\u015brednictwem us\u0142ugi JMS.
+error.batch.executor.jms.create.failure.useraction=Sprawd\u017a konfiguracj\u0119 fabryki po\u0142\u0105cze\u0144 JMS utworzonej przez element batchJmsDispatcher (domy\u015blnej fabryki batchConnectionFactory lub jawnie przywo\u0142ywanej).  Je\u015bli u\u017cytkownik nie korzysta z partycji, konfiguracj\u0119 zwi\u0105zan\u0105 ze zdaln\u0105 partycj\u0105 JMS mo\u017cna usun\u0105\u0107 z konfiguracji serwera.
+
+error.batch.executor.activate.failure=CWWKY0217E: Nie mo\u017cna aktywowa\u0107 wykonawcy JMS w punkcie ko\u0144cowym z powodu wyst\u0105pienia wyj\u0105tku {0}
+error.batch.executor.activate.failure.explanation=Niepowodzenie aktywacji wykonawcy JMS w punkcie ko\u0144cowym z powodu wyst\u0105pienia wyj\u0105tku.
+error.batch.executor.activate.failure.useraction=Do czasu rozwi\u0105zania problemu serwer nie b\u0119dzie m\u00f3g\u0142 wykonywa\u0107 zada\u0144 ani partycji rozsy\u0142anych za po\u015brednictwem us\u0142ugi JMS.  Sprawd\u017a konfiguracj\u0119 fabryki po\u0142\u0105cze\u0144 JMS utworzonej przez element batchJmsDispatcher (domy\u015blnej fabryki batchConnectionFactory lub jawnie przywo\u0142ywanej).  Sprawd\u017a po\u0142\u0105czenia JMS oraz konfiguracj\u0119 punktu ko\u0144cowego i przejrzyj dzienniki serwera pod k\u0105tem pokrewnych b\u0142\u0119d\u00f3w.
+
+info.batch.events.publish.topic=CWWKY0218I: \u015arodowisko wykonawcze zada\u0144 wsadowych b\u0119dzie publikowa\u0107 zdarzenia w elemencie g\u0142\u00f3wnym tematu JMS {0}.
+info.batch.events.publish.topic.explanation=Komunikat informacyjny. \u015arodowisko wykonawcze zada\u0144 wsadowych b\u0119dzie publikowa\u0107 zdarzenia w wymienionym elemencie g\u0142\u00f3wnym tematu JMS zadania wsadowego.
+info.batch.events.publish.topic.useraction=Mo\u017cna zmodyfikowa\u0107 element g\u0142\u00f3wny tematu JMS zadania wsadowego. Sprawd\u017a skonfigurowane opcje, kt\u00f3re s\u0105 u\u017cywane na potrzeby batchJmsEvents.

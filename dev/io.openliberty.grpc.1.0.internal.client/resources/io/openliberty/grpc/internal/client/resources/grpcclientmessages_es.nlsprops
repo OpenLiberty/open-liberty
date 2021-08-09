@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: No se ha podido cargar el interceptor gRPC definido en clientInterceptors {0}
+invalid.clientinterceptor.explanation=No se ha podido cargar un interceptor gRPC definido en clientInterceptors.
+invalid.clientinterceptor.useraction=Verifique el nombre del interceptor configurado y la v\u00eda de acceso de clases de la aplicaci\u00f3n.
+
+invalid.keepalive.time=CWWKT0302E: El valor keepAliveTime {0} del cliente GRPC no es v\u00e1lido. Los valores deben ser mayores que 0.
+invalid.keepalive.time.explanation=El valor configurado para keepAliveTime no es v\u00e1lido.
+invalid.keepalive.time.useraction=Configure un valor v\u00e1lido para keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: El valor keepAliveTimeout {0} del cliente GRPC no es v\u00e1lido.  Los valores deben ser mayores que 0.
+invalid.keepalive.timeout.explanation=El valor configurado para keepAliveTimeout no es v\u00e1lido.
+invalid.keepalive.timeout.useraction=Configure un valor v\u00e1lido para keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: El valor maxInboundMessageSize {0} del cliente GRPC no es v\u00e1lido. Los valores deben ser mayores que 0.
+invalid.client.inbound.msg.size.explanation=El valor configurado de maxInboundMessageSize no es v\u00e1lido.
+invalid.client.inbound.msg.size.useraction=Configure un valor v\u00e1lido para maxInboundMessageSize.

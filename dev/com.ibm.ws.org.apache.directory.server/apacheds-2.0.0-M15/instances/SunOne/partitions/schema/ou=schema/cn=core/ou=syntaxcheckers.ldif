@@ -1,0 +1,6 @@
+version: 1
+dn: ou=syntaxCheckers,cn=core,ou=schema
+ou: syntaxcheckers
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

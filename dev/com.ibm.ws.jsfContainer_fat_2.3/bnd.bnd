@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+quietTransformer=true
+
+tested.features: \
+  enterprisebeanslite-4.0, \
+  facesContainer-3.0, \
+  cdi-3.0, \
+  xmlBinding-3.0, \
+  concurrent-2.0, \
+  persistenceContainer-3.0, \
+  beanvalidation-3.0, \
+  faces-3.0
+
+src: \
+    fat/src,\
+    test-applications/jsfApp/src,\
+    test-applications/BeanValidationTests/src,\
+    test-applications/CDIManagedProperty/src,\
+    test-applications/ConverterValidatorBehaviorInjectionTarget/src,\
+    test-applications/ELImplicitObjectsViaCDI/src,\
+    test-applications/JSF22FacesFlows/src,\
+    test-applications/JSF22CDIFacesFlows/src,\
+    test-applications/JSF22StatelessView/src,\
+    test-applications/noJsfApp/src,\
+    test-applications/PostRenderViewEvent/src,\
+    test-applications/ViewHandlerTest/src,\
+    test-applications/WebSocket/src,\
+    test-applications/ConversationScopedTest/src
+
+fat.project: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version=2.20,\
+	xml-apis:xml-apis;version=1.4.01

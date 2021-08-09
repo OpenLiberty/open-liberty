@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.event.logging/resources/com/ibm/ws/event/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR WebSphere Application Server Event Logging
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# Messages in the range TRAS3100 to 3299 are reserved for this messages file.
+# -------------------------------------------------------------------------------------------------
+
+# updated the old TRAS0113I to TRAS3100I
+EVENT_LOGGING_STARTUP_INFO=TRAS3100I: Protokolov\u00e1n\u00ed ud\u00e1lost\u00ed je povoleno. Jeden po\u017eadavek z ka\u017ed\u00fdch {0} po\u017eadavk\u016f bude vzorkov\u00e1n. Protokolov\u00e1ny budou pouze ud\u00e1losti del\u0161\u00ed ne\u017e {1} ms a typu {2}. 
+EVENT_LOGGING_STARTUP_INFO.explanation=Funkce protokolov\u00e1n\u00ed ud\u00e1lost\u00ed je spu\u0161t\u011bna s nastaven\u00edm konfigurace ozna\u010den\u00e9 ve zpr\u00e1v\u011b. 
+EVENT_LOGGING_STARTUP_INFO.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

@@ -1,0 +1,11 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>featureH-1.0</feature>
+        <feature>featureI-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+
+</server>

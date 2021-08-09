@@ -1,0 +1,642 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 284561          10-Aug-05 pnickoll Added extra data to the exception thrown when validating an activation spec
+# 320291                  04-Nov-05 ajw          Problem in message 1181
+# 344741                  08-Feb-06 ajw          Removed msgs CWSJR1115 and CWSJR1116
+# 342029                  09-Feb-06 ajw          Removed unused msgs
+# 352462          04-Jul-06 matrober SVT:CWSJR1067E has a misspelling
+# 387921          04-Sep-06 pnickoll Fixed misspellings and incorrect message ID
+# SIB0048c.ra.6   22-Jan-07 vaughton Tidy up policing of xa connections msgs
+# 446227          18-Jun-07 pnickoll merge updated from UT
+# 468221          19-Sep-07 pnickoll Changed 1072 so that it uses {0} instead of {1}
+# 99986           13-Jun-13 Chetan   Correcting nls message
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.api.jmsra.CWSJRMessages.nlsprops
+#
+# SIB.api.jmsra component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJR0001=CWSJR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes: TODO: CONFIRM THIS RANGE DOESN'T OVERLAP THE JMS API TEAMS RANGE
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSJR1000-CWSJR1500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSJR1001-CWSJR1020   com.ibm.ws.sib.api.jmsra.impl.JmsJcaResourceAdapterImpl
+#   CWSJR1021-CWSJR1040   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl
+#   CWSJR1041-CWSJR1060   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl / JmsJcaManagedTopicConnectionFactoryImpl
+#   CWSJR1061-CWSJR1080   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionFactoryImpl
+#   CWSJR1081-CWSJR1100   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionImpl
+#   CWSJR1101-CWSJR1120   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnection
+#   CWSJR1121-CWSJR1160   com.ibm.ws.sib.api.jmsra.impl.JmsJcaSessionImpl
+#   CWSJR1161-CWSJR1180   com.ibm.ws.sib.api.jmsra.JmsJcaReferenceUtils
+#   CWSJR1181-CWSJR1200   com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl
+#   CWSJR1201-CWSJR1220   com.ibm.ws.sib.api.jmsra.impl.JmsJcaDispatcher
+#   CWSJR1221-CWSJR1240   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointActivation
+#   CWSJR1241-CWSJR1260   com.ibm.ws.sib.api.jmsra.impl.JmsJcaTransactionalDispatcher
+#   CWSJR1441-CWSJR1460   com.ibm.ws.sib.api.jmsra.JmsJcaFactory
+#   CWSJR1461-CWSJR1480   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionSynchronizationProvider
+#   CWSJR1481-CWSJR1500   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointInvokerImpl
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.61,0,07/01/24,10:58:20
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jmsra/CWSJRMessages.nlsprops
+#COMPONENTPREFIX CWSJR
+#COMPONENTNAMEFOR CWSJR SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#
+# JmsJcaResourceAdapterImpl
+# -------------------------------------------------------------------------------------------------
+
+#
+# JmsJcaManagedConnectionFactoryImpl
+#
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1021=CWSJR1021E: Byla vygenerov\u00e1na intern\u00ed v\u00fdjimka. V\u00fdjimka {0} v metod\u011b{1}.
+EXCEPTION_RECEIVED_CWSJR1021.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1021.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1022=CWSJR1022E: B\u011bhem vol\u00e1n\u00ed metody {0} do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Byl p\u0159ijat neo\u010dek\u00e1van\u00fd typ objektu ConnectionRequest {2} m\u00edsto {1}.
+EXCEPTION_RECEIVED_CWSJR1022.explanation=Byla vygenerov\u00e1na intern\u00ed v\u00fdjimka. Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1022.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+SICORECONNECTION_ERROR_CWSJR1023=CWSJR1023E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze na\u010d\u00edst platnou tov\u00e1rnu SICoreConnectionFactory b\u011bhem vol\u00e1n\u00ed metody {0}.
+SICORECONNECTION_ERROR_CWSJR1023.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1023.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+JMS_CONNECTION_FAIL_CWSJR1024=CWSJR1024E: Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem vol\u00e1n\u00ed metody {0} byl p\u0159ijat neo\u010dek\u00e1van\u00fd typ objektu {2} m\u00edsto {1}.
+JMS_CONNECTION_FAIL_CWSJR1024.explanation=Byla vygenerov\u00e1na intern\u00ed v\u00fdjimka. Metoda JmsFactoryFactory.getInstance()nep\u0159ijala spr\u00e1vn\u00fd typ JMSRAFactoryFactory, jak se o\u010dek\u00e1valo.
+JMS_CONNECTION_FAIL_CWSJR1024.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1025=CWSJR1025E: Prefix {0} je del\u0161\u00ed ne\u017e 12 znak\u016f.
+DESTINATION_PREFIX_LONG_CWSJR1025.explanation=Prefix pro do\u010dasn\u00e9 n\u00e1zvy m\u00edsta ur\u010den\u00ed nesm\u00ed b\u00fdt del\u0161\u00ed ne\u017e dvan\u00e1ct znak\u016f.
+DESTINATION_PREFIX_LONG_CWSJR1025.useraction=Zadejte prefix, kter\u00fd je dlouh\u00fd dvan\u00e1ct nebo m\u00e9n\u011b znak\u016f.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1026=CWSJR1026E: Do\u0161lo k intern\u00ed chyb\u011b. V metod\u011b {1} byla p\u0159ijata v\u00fdjimka {0}.
+EXCEPTION_RECEIVED_CWSJR1026.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1026.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1027=CWSJR1027E: Do\u0161lo k intern\u00ed chyb\u011b. V metod\u011b {1} byla p\u0159ijata v\u00fdjimka {0}.
+EXCEPTION_RECEIVED_CWSJR1027.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1027.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1028=CWSJR1028E: Do\u0161lo k intern\u00ed chyb\u011b. V metod\u011b {1} byla p\u0159ijata v\u00fdjimka {0}.
+EXCEPTION_RECEIVED_CWSJR1028.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1028.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1029=CWSJR1029E: Prefix {0} je del\u0161\u00ed ne\u017e 12 znak\u016f.
+DESTINATION_PREFIX_LONG_CWSJR1029.explanation=Prefix pro do\u010dasn\u00e9 n\u00e1zvy m\u00edsta ur\u010den\u00ed nesm\u00ed b\u00fdt del\u0161\u00ed ne\u017e dvan\u00e1ct znak\u016f.
+DESTINATION_PREFIX_LONG_CWSJR1029.useraction=Zadejte prefix, kter\u00fd je dlouh\u00fd dvan\u00e1ct nebo m\u00e9n\u011b znak\u016f.
+
+#
+# JmsJcaConnectionFactoryImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1061=CWSJR1061E: Do\u0161lo k intern\u00ed chyb\u011b v metod\u011b {0}. Nebylo vytvo\u0159eno platn\u00e9 p\u0159ipojen\u00ed; byl p\u0159ijat objekt {2} m\u00edsto {1}.
+EXCEPTION_RECEIVED_CWSJR1061.explanation=CMSG0001
+EXCEPTION_RECEIVED_CWSJR1061.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1064=CWSJR1064E: Do\u0161lo k intern\u00ed chyb\u011b. V metod\u011b {1} byla p\u0159ijata v\u00fdjimka {0}.
+EXCEPTION_RECEIVED_CWSJR1064.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1064.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1065=CWSJR1065E: Do\u0161lo k intern\u00ed chyb\u011b. V metod\u011b {1} byla p\u0159ijata v\u00fdjimka {0}.
+EXCEPTION_RECEIVED_CWSJR1065.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1065.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+SICORECONNECTION_ERROR_CWSJR1066=CWSJR1066E: Nelze na\u010d\u00edst platnou tov\u00e1rnu SICoreConnectionFactory b\u011bhem vol\u00e1n\u00ed metody {0}.
+SICORECONNECTION_ERROR_CWSJR1066.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1066.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSJR1067=CWSJR1067E: P\u0159i pokusu o z\u00edsk\u00e1n\u00ed p\u0159ipojen\u00ed do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b p\u0159ipojov\u00e1n\u00ed architektury JCA. Na\u010d\u00edt\u00e1n\u00ed p\u0159ipojen\u00ed bude zopakov\u00e1no. V\u00fdjimka: {0}.
+CONNECTION_ERROR_RETRY_CWSJR1067.explanation=B\u011bhem z\u00edsk\u00e1v\u00e1n\u00ed p\u0159ipojen\u00ed byla vygenerov\u00e1na v\u00fdjimka. Syst\u00e9m uvoln\u00ed p\u0159ipojen\u00ed a pot\u00e9 se pokus\u00ed o z\u00edsk\u00e1n\u00ed dal\u0161\u00edho.
+CONNECTION_ERROR_RETRY_CWSJR1067.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1068=CWSJR1068E: Nebylo mo\u017en\u00e9 prov\u00e9st ov\u011b\u0159en\u00ed s pou\u017eit\u00edm p\u0159edan\u00e9ho aliasu ov\u011b\u0159ov\u00e1n\u00ed {0}.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 kontejnerem, p\u0159idru\u017een\u00e9 \u00fadaje o ov\u011b\u0159ov\u00e1n\u00ed v\u0161ak byly neplatn\u00e9.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.useraction=Ov\u011b\u0159te, \u017ee alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159idru\u017een\u00fd k tomuto odkazu na prost\u0159edek obsahuje platn\u00e1 pov\u011b\u0159en\u00ed pro sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1069=CWSJR1069E: Zadan\u00e9 jm\u00e9no u\u017eivatele {0} se nezda\u0159ilo ov\u011b\u0159it.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 aplikac\u00ed, p\u0159idru\u017een\u00e9 \u00fadaje o aliasu ov\u011b\u0159ov\u00e1n\u00ed komponenty v\u0161ak byly neplatn\u00e9.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.useraction=Ov\u011b\u0159te, \u017ee alias ov\u011b\u0159ov\u00e1n\u00ed komponenty obsahuje platn\u00e1 pov\u011b\u0159en\u00ed pro sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1070=CWSJR1070E: Nebylo mo\u017en\u00e9 prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee nebyl ur\u010den \u017e\u00e1dn\u00fd alias ov\u011b\u0159ov\u00e1n\u00ed.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 kontejnerem, alias ov\u011b\u0159ov\u00e1n\u00ed v\u0161ak nebyl p\u0159idru\u017een k odkazu na prost\u0159edek.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.useraction=Ov\u011b\u0159te, \u017ee je alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159idru\u017een k tomuto odkazu na prost\u0159edek.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1071=CWSJR1071E: Nebylo mo\u017en\u00e9 prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee nebylo zad\u00e1no \u017e\u00e1dn\u00e9 pov\u011b\u0159en\u00ed.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 aplikac\u00ed, nebyly v\u0161ak zad\u00e1ny \u017e\u00e1dn\u00e9 \u00fadaje o aliasu ov\u011b\u0159ov\u00e1n\u00ed komponenty.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.useraction=Ov\u011b\u0159te, \u017ee je alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159idru\u017een k tomuto odkazu na prost\u0159edek.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1072=CWSJR1072E: Zadan\u00e9 jm\u00e9no u\u017eivatele {0} nebylo mo\u017en\u00e9 ov\u011b\u0159it.
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 aplikac\u00ed, aplikace v\u0161ak p\u0159edala neplatn\u00e1 pov\u011b\u0159en\u00ed. 
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.useraction=Ov\u011b\u0159te, \u017ee jsou p\u0159i vytv\u00e1\u0159en\u00ed p\u0159ipojen\u00ed p\u0159ed\u00e1na spr\u00e1vn\u00e1 pov\u011b\u0159en\u00ed.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1073=CWSJR1073E: Nebylo mo\u017en\u00e9 prov\u00e9st ov\u011b\u0159en\u00ed s pou\u017eit\u00edm p\u0159edan\u00e9ho aliasu ov\u011b\u0159ov\u00e1n\u00ed {0}.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 kontejnerem, p\u0159idru\u017een\u00e9 \u00fadaje o ov\u011b\u0159ov\u00e1n\u00ed v\u0161ak byly neplatn\u00e9.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.useraction=Ov\u011b\u0159te, \u017ee alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159idru\u017een\u00fd k tomuto odkazu na prost\u0159edek obsahuje platn\u00e1 pov\u011b\u0159en\u00ed pro sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1074=CWSJR1074E: Zadan\u00e9 jm\u00e9no u\u017eivatele {0} se nezda\u0159ilo ov\u011b\u0159it.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 aplikac\u00ed, p\u0159idru\u017een\u00e9 \u00fadaje o aliasu ov\u011b\u0159ov\u00e1n\u00ed komponenty v\u0161ak byly neplatn\u00e9.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.useraction=Ov\u011b\u0159te, \u017ee alias ov\u011b\u0159ov\u00e1n\u00ed komponenty obsahuje platn\u00e1 pov\u011b\u0159en\u00ed pro sb\u011brnici.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1075=CWSJR1075E: Nebylo mo\u017en\u00e9 prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee nebyl ur\u010den \u017e\u00e1dn\u00fd alias ov\u011b\u0159ov\u00e1n\u00ed.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 kontejnerem, alias ov\u011b\u0159ov\u00e1n\u00ed v\u0161ak nebyl p\u0159idru\u017een k odkazu na prost\u0159edek.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.useraction=Ov\u011b\u0159te, \u017ee je alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159idru\u017een k tomuto odkazu na prost\u0159edek.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1076=CWSJR1076E: Nebylo mo\u017en\u00e9 prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee nebylo zad\u00e1no \u017e\u00e1dn\u00e9 pov\u011b\u0159en\u00ed.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.explanation=Aplikace pou\u017eila odkaz na prost\u0159edek k vyhled\u00e1n\u00ed tov\u00e1rny p\u0159ipojen\u00ed. Odkaz na prost\u0159edek byl konfigurov\u00e1n tak, aby pou\u017e\u00edval ov\u011b\u0159ov\u00e1n\u00ed spravovan\u00e9 aplikac\u00ed, nebyly v\u0161ak zad\u00e1ny \u017e\u00e1dn\u00e9 \u00fadaje o aliasu ov\u011b\u0159ov\u00e1n\u00ed komponenty.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.useraction=Ov\u011b\u0159te, \u017ee je alias ov\u011b\u0159ov\u00e1n\u00ed p\u0159idru\u017een k tomuto odkazu na prost\u0159edek.
+# -------------------------------------------------------------------------------------------------
+AUTHENTICATION_EXCEPTION_1077=CWSJR1077E: Ov\u011b\u0159en\u00ed zadan\u00e9ho jm\u00e9na u\u017eivatele neprob\u011bhlo \u00fasp\u011b\u0161n\u011b.
+AUTHENTICATION_EXCEPTION_1077.explanation=Ov\u011b\u0159ov\u00e1n\u00ed pro zadan\u00e9 podrobnosti se nezda\u0159ilo, proto\u017ee jm\u00e9no u\u017eivatele nebo heslo jsou chybn\u00e9.
+AUTHENTICATION_EXCEPTION_1077.useraction=V p\u0159ipojen\u00e9 chybov\u00e9 zpr\u00e1v\u011b si p\u0159e\u010dt\u011bte dal\u0161\u00ed informace. Ov\u011b\u0159te, zda jsou jm\u00e9no u\u017eivatele a heslo spr\u00e1vn\u00e9 a zda byly v syst\u00e9mu definov\u00e1ny.
+
+#
+# JmsJcaConnectionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the number of sessions found
+EXCEPTION_RECEIVED_CWSJR1082=CWSJR1082E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. Byla o\u010dek\u00e1v\u00e1na p\u0159esn\u011b jedna relace, ale po\u010det nalezen\u00fdch relac\u00ed je {1}.
+EXCEPTION_RECEIVED_CWSJR1082.explanation=Sada relac\u00ed v p\u0159ipojen\u00ed obsahuje v\u00edce ne\u017e jednu relaci na m\u00edst\u011b, kde m\u00e1 b\u00fdt pouze jedna relace.
+EXCEPTION_RECEIVED_CWSJR1082.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1083=CWSJR1083E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. Byl nalezen objekt {1}, ale o\u010dek\u00e1val se objekt {2}.
+EXCEPTION_RECEIVED_CWSJR1083.explanation=Objekt nalezen\u00fd v sad\u011b relac\u00ed nebyl po\u017eadovan\u00e9ho typu.
+EXCEPTION_RECEIVED_CWSJR1083.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1084=CWSJR1084E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. Byl nalezen objekt {1}, ale o\u010dek\u00e1val se objekt {2}.
+EXCEPTION_RECEIVED_CWSJR1084.explanation=Objekt nalezen\u00fd v sad\u011b relac\u00ed nebyl po\u017eadovan\u00e9ho typu.
+EXCEPTION_RECEIVED_CWSJR1084.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1085=CWSJR1085E: Do\u0161lo k intern\u00ed chyb\u011b. Bylo provedeno vol\u00e1n\u00ed metody {0} po ukon\u010den\u00ed p\u0159ipojen\u00ed.
+ILLEGAL_STATE_CWSJR1085.explanation=Metodu nelze volat po ukon\u010den\u00ed p\u0159ipojen\u00ed.
+ILLEGAL_STATE_CWSJR1085.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1086=CWSJR1086E: Do\u0161lo k intern\u00ed chyb\u011b. Bylo provedeno vol\u00e1n\u00ed metody {0} po ukon\u010den\u00ed p\u0159ipojen\u00ed.
+ILLEGAL_STATE_CWSJR1086.explanation=Metodu nelze volat po ukon\u010den\u00ed p\u0159ipojen\u00ed.
+ILLEGAL_STATE_CWSJR1086.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnection
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+EXCEPTION_RECEIVED_CWSJR1101=CWSJR1101E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. P\u0159ipojen\u00ed se nezda\u0159ilo, proto\u017ee byl nalezen objekt {2}, ale o\u010dek\u00e1val se objekt {1}.
+EXCEPTION_RECEIVED_CWSJR1101.explanation=Po\u017eadovan\u00e9 informace nejsou spr\u00e1vn\u00e9ho typu.
+EXCEPTION_RECEIVED_CWSJR1101.useraction=CMSG0002
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+EXCEPTION_RECEIVED_CWSJR1102=CWSJR1102E: Do\u0161lo k intern\u00ed chyb\u011b. Byla vyvol\u00e1na v\u00fdjimka {0}.
+EXCEPTION_RECEIVED_CWSJR1102.explanation=Vol\u00e1n\u00ed metody lazyEnlist ve spr\u00e1vci p\u0159ipojen\u00ed bylo ne\u00fasp\u011b\u0161n\u00e9.
+EXCEPTION_RECEIVED_CWSJR1102.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+# {1} The username that was used in the objects constructor
+# {2} The username passed to the method
+AUTHENTICATION_ERROR_CWSJR1103=CWSJR1103E: Pov\u011b\u0159en\u00ed({2}) p\u0159edan\u00e1 metod\u011b {0} neodpov\u00eddala pov\u011b\u0159en\u00edm p\u0159edan\u00fdm konstruktoru ({1}).
+AUTHENTICATION_ERROR_CWSJR1103.explanation=P\u0159edan\u00e1 pov\u011b\u0159en\u00ed nepro\u0161la kontrolou ov\u011b\u0159ov\u00e1n\u00ed.
+AUTHENTICATION_ERROR_CWSJR1103.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+INVALID_SESSION_CWSJR1104=CWSJR1104E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. Byl p\u0159ijat objekt {2} m\u00edsto objektu {1}.
+INVALID_SESSION_CWSJR1104.explanation=Byl p\u0159ijat objekt nespr\u00e1vn\u00e9ho typu.
+INVALID_SESSION_CWSJR1104.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSJR1105=CWSJR1105E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k pokusu spustit m\u00edstn\u00ed transakci, p\u0159i\u010dem\u017e tato transakce ji\u017e existovala.
+INVALID_SESSION_CWSJR1105.explanation=Nen\u00ed mo\u017en\u00e9 spustit m\u00edstn\u00ed transakci, pokud ji\u017e existuje.
+INVALID_SESSION_CWSJR1105.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1106=CWSJR1106E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. Po\u017eadovan\u00fd objekt SICoreConnection nebyl nalezen.
+EXCEPTION_RECEIVED_CWSJR1106.explanation=Objekt SICoreConnection je po\u017eadov\u00e1n, ale nelze jej nal\u00e9zt.
+EXCEPTION_RECEIVED_CWSJR1106.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1107=CWSJR1107E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vol\u00e1n\u00ed metody {0}. Po\u017eadovan\u00fd objekt SICoreConnection nebyl nalezen.
+EXCEPTION_RECEIVED_CWSJR1107.explanation=Objekt SICoreConnection je po\u017eadov\u00e1n, ale nelze jej nal\u00e9zt.
+EXCEPTION_RECEIVED_CWSJR1107.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSJR1108=CWSJR1108E: Aby bylo mo\u017en\u00e9 v transakci pou\u017e\u00edvat prost\u0159edky rozhran\u00ed JMS, mus\u00ed b\u00fdt ur\u010den specifick\u00fd stroj syst\u00e9mu zpr\u00e1v. Vlastnost p\u0159ipojen\u00ed {0} mus\u00ed b\u00fdt nastavena na hodnotu {1}.
+ME_NAME_REQUIRED_CWSJR1108.explanation=Chcete-li povolit zotavov\u00e1n\u00ed transakc\u00ed, mus\u00ed b\u00fdt c\u00edlem tov\u00e1rny p\u0159ipojen\u00ed specifick\u00fd stroj syst\u00e9mu zpr\u00e1v ve sb\u011brnici.
+ME_NAME_REQUIRED_CWSJR1108.useraction=Zm\u011b\u0148te hodnotu vlastnosti tov\u00e1rny p\u0159ipojen\u00ed C\u00edl na hodnotu \u0159et\u011bzce s n\u00e1zvem c\u00edlov\u00e9ho stroje syst\u00e9mu zpr\u00e1v. Pro vlastnost Typ c\u00edle vyberte z rozev\u00edrac\u00edho seznamu hodnotu N\u00e1zev stroje syst\u00e9mu zpr\u00e1v a pro vlastnost V\u00fdznamnost c\u00edle vyberte z rozev\u00edrac\u00edho seznamu hodnotu Vy\u017eadov\u00e1no.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1110=CWSJR1110E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}; v metod\u011b: {1}
+EXCEPTION_RECEIVED_CWSJR1110.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1110.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1111=CWSJR1111E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}; v metod\u011b: {1}
+EXCEPTION_RECEIVED_CWSJR1111.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1111.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1112=CWSJR1112E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}; v metod\u011b: {1}
+EXCEPTION_RECEIVED_CWSJR1112.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1112.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1113=CWSJR1113E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}; v metod\u011b: {1}
+EXCEPTION_RECEIVED_CWSJR1113.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1113.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1114=CWSJR1114E: Do\u0161lo k intern\u00ed chyb\u011b. V\u00fdjimka: {0}; v metod\u011b: {1}
+EXCEPTION_RECEIVED_CWSJR1114.explanation=Ke zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny je mo\u017en\u00e9 pou\u017e\u00edt informace obsa\u017een\u00e9 ve v\u00fdjimce.
+EXCEPTION_RECEIVED_CWSJR1114.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+AUTHENTICATION_ERROR_CWSJR1117=CWSJR1117E: Do\u0161lo k intern\u00ed chyb\u011b. Pov\u011b\u0159en\u00ed p\u0159edan\u00e1 metod\u011b {0} neodpov\u00eddala pov\u011b\u0159en\u00edm p\u0159edan\u00fdm konstruktoru.
+AUTHENTICATION_ERROR_CWSJR1117.explanation=P\u0159edan\u00e1 pov\u011b\u0159en\u00ed nepro\u0161la kontrolou ov\u011b\u0159ov\u00e1n\u00ed.
+AUTHENTICATION_ERROR_CWSJR1117.useraction=CMSG0002
+
+#
+# JmsJcaSessionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the linked exception
+EXCEPTION_RECEIVED_CWSJR1121=CWSJR1121E: Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem vol\u00e1n\u00ed metody {0} byla vyvol\u00e1na v\u00fdjimka {1}.
+EXCEPTION_RECEIVED_CWSJR1121.explanation=Jakmile se relace pokusila znovu p\u0159ipojit ke spr\u00e1vci p\u0159ipojen\u00ed, byla vygenerov\u00e1na neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+EXCEPTION_RECEIVED_CWSJR1121.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the object we received
+# {2} is the object type we expected.
+EXCEPTION_RECEIVED_CWSJR1122=CWSJR1122E: Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem vol\u00e1n\u00ed metody {0} jsme o\u010dek\u00e1vali p\u0159ijet\u00ed {2}, ale p\u0159ijali {1}.
+EXCEPTION_RECEIVED_CWSJR1122.explanation=Ve spr\u00e1vci p\u0159ipojen\u00ed nelze pou\u017e\u00edt metodu lazyEnlist.
+EXCEPTION_RECEIVED_CWSJR1122.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1123=CWSJR1123E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1123.explanation=Metodu nelze volat po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1123.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1124=CWSJR1124E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zru\u0161en\u00ed platnosti relace.
+ILLEGAL_STATE_CWSJR1124.explanation=Po zru\u0161en\u00ed platnosti relace nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1124.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1125=CWSJR1125E: Do\u0161lo k intern\u00ed chyb\u011b. Bylo provedeno vol\u00e1n\u00ed {0}, ale neexistuj\u00ed \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce.
+ILLEGAL_STATE_CWSJR1125.explanation=Neexistuj\u00ed-li \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce, nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1125.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+EXCEPTION_RECEIVED_CWSJR1126=CWSJR1126E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} nen\u00ed povoleno kv\u016fli nespravovan\u00e9mu prost\u0159ed\u00ed. 
+EXCEPTION_RECEIVED_CWSJR1126.explanation=Vol\u00e1n\u00ed nen\u00ed v nespravovan\u00e9m prost\u0159ed\u00ed povoleno.
+EXCEPTION_RECEIVED_CWSJR1126.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1130=CWSJR1130E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1130.explanation=Metodu nelze volat po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1130.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1131=CWSJR1131E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1131.explanation=Metodu nelze volat po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1131.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1132=CWSJR1132E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1132.explanation=Metodu nelze volat po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1132.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1133=CWSJR1133E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1133.explanation=Metodu nelze volat po zav\u0159en\u00ed relace.
+ILLEGAL_STATE_CWSJR1133.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1134=CWSJR1134E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zru\u0161en\u00ed platnosti relace.
+ILLEGAL_STATE_CWSJR1134.explanation=Po zru\u0161en\u00ed platnosti relace nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1134.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1135=CWSJR1135E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zru\u0161en\u00ed platnosti relace.
+ILLEGAL_STATE_CWSJR1135.explanation=Po zru\u0161en\u00ed platnosti relace nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1135.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1136=CWSJR1136E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zru\u0161en\u00ed platnosti relace.
+ILLEGAL_STATE_CWSJR1136.explanation=Po zru\u0161en\u00ed platnosti relace nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1136.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1137=CWSJR1137E: Do\u0161lo k intern\u00ed chyb\u011b. Vol\u00e1n\u00ed metody {0} bylo provedeno po zru\u0161en\u00ed platnosti relace.
+ILLEGAL_STATE_CWSJR1137.explanation=Po zru\u0161en\u00ed platnosti relace nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1137.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1138=CWSJR1138E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Bylo provedeno vol\u00e1n\u00ed {0}, ale neexistuj\u00ed \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce.
+ILLEGAL_STATE_CWSJR1138.explanation=Je-li aktivn\u00ed glob\u00e1ln\u00ed transakce, nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1138.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1139=CWSJR1139E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Bylo provedeno vol\u00e1n\u00ed {0}, ale neexistuj\u00ed \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce.
+ILLEGAL_STATE_CWSJR1139.explanation=Neexistuj\u00ed-li \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce, nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1139.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1140=CWSJR1140E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Bylo provedeno vol\u00e1n\u00ed {0}, ale neexistuj\u00ed \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce.
+ILLEGAL_STATE_CWSJR1140.explanation=Je-li aktivn\u00ed glob\u00e1ln\u00ed transakce, nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1140.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1141=CWSJR1141E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Bylo provedeno vol\u00e1n\u00ed {0}, ale neexistuj\u00ed \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce.
+ILLEGAL_STATE_CWSJR1141.explanation=Neexistuj\u00ed-li \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce, nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1141.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1142=CWSJR1142E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Bylo provedeno vol\u00e1n\u00ed {0}, ale neexistuj\u00ed \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce.
+ILLEGAL_STATE_CWSJR1142.explanation=Neexistuj\u00ed-li \u017e\u00e1dn\u00e9 lok\u00e1ln\u00ed transakce, nen\u00ed vol\u00e1n\u00ed metody povoleno.
+ILLEGAL_STATE_CWSJR1142.useraction=CMSG0002
+
+#
+# JmsJcaReferenceUtils
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the class where the error occurred
+EXCEPTION_RECEIVED_CWSJR1161=CWSJR1161E: Do\u0161lo k intern\u00ed chyb\u011b p\u0159i inicializaci t\u0159\u00eddy {1}. V\u00fdjimka: {0}.
+EXCEPTION_RECEIVED_CWSJR1161.explanation=T\u0159\u00edda JmsJcaReferenceUtils nebyla inicializov\u00e1na.
+EXCEPTION_RECEIVED_CWSJR1161.useraction=CMSG0002
+
+#
+# JmsJcaActivationSpecImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179=CWSJR1179E: N\u00e1sleduj\u00edc\u00ed pole v\u00fdznamnosti c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed JMS je neplatn\u00e9 [{2}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}] nebo [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee vlastnost v\u00fdznamnosti c\u00edle je neplatn\u00e1.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.useraction=Opravte hodnotu vlastnosti v\u00fdznamnosti c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180=CWSJR1180E: N\u00e1sleduj\u00edc\u00ed pole typu c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed JMS je neplatn\u00e9 [{3}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}], [{1}] nebo [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee typ c\u00edle je neplatn\u00fd.
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.useraction=Opravte hodnotu vlastnosti typu c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is a list of invalid properties
+INVALID_PROPERTIES_CWSJR1181=CWSJR1181E: Specifikace aktivace rozhran\u00ed JMS obsahuje neplatn\u00e9 hodnoty - p\u0159\u00ed\u010diny selh\u00e1n\u00ed ov\u011b\u0159ov\u00e1n\u00ed specifikace aktivace rozhran\u00ed JMS: {0}.
+INVALID_PROPERTIES_CWSJR1181.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee jedna nebo n\u011bkolik vlastnost\u00ed je neplatn\u00fdch.
+INVALID_PROPERTIES_CWSJR1181.useraction=Opravte hodnoty vlastnost\u00ed v r\u00e1mci specifikace aktivace JMS a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1182=CWSJR1182E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed n\u00e1sleduj\u00edc\u00ed v\u00fdjimky p\u0159i pokusu o z\u00edsk\u00e1n\u00ed obslu\u017en\u00e9 t\u0159\u00eddy: {0}.
+EXCEPTION_RECEIVED_CWSJR1182.explanation=B\u011bhem aktivace koncov\u00e9ho bodu se adapt\u00e9r prost\u0159edk\u016f rozhran\u00ed JMS pokou\u0161el z\u00edskat obslu\u017enou t\u0159\u00eddu a byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+EXCEPTION_RECEIVED_CWSJR1182.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_CLIENTID_CWSJR1183=CWSJR1183E: Je t\u0159eba nastavit pole ID klienta ve specifikaci aktivace JMS.
+INVALID_PROPERTY_CLIENTID_CWSJR1183.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee ID klienta je neplatn\u00e9.
+INVALID_PROPERTY_CLIENTID_CWSJR1183.useraction=Opravte hodnotu vlastnosti ID klienta v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1185=CWSJR1185E: Do\u0161lo k intern\u00ed chyb\u011b b\u011bhem ov\u011b\u0159ov\u00e1n\u00ed specifikace aktivace rozhran\u00ed JMS {0}.
+EXCEPTION_RECEIVED_CWSJR1185.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed specifikace aktivace byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+EXCEPTION_RECEIVED_CWSJR1185.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSJR1186=CWSJR1186E: Do\u0161lo k intern\u00ed chyb\u011b b\u011bhem registrace klasifik\u00e1toru WLM pro adapt\u00e9r prost\u0159edku {0}.
+WLM_CLASSIFIER_REG_CWSJR1186.explanation=B\u011bhem registrace klasifik\u00e1toru WLM pro adapt\u00e9r prost\u0159edk\u016f JMS s registrem obslu\u017en\u00e9 rutiny byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+WLM_CLASSIFIER_REG_CWSJR1186.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSJR1187=CWSJR1187E: N\u00e1zev sb\u011brnice ve specifikaci aktivace rozhran\u00ed JMS mus\u00ed m\u00edt p\u0159i\u0159azenu hodnotu.
+INVALID_PROPERTY_BUSNAME_CWSJR1187.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee n\u00e1zev sb\u011brnice je neplatn\u00fd.
+INVALID_PROPERTY_BUSNAME_CWSJR1187.useraction=Opravte hodnotu vlastnosti n\u00e1zvu sb\u011brnice v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DESTINATION_CWSJR1188=CWSJR1188E: M\u00edsto ur\u010den\u00ed ve specifikaci aktivace rozhran\u00ed JMS mus\u00ed m\u00edt p\u0159i\u0159azenu hodnotu.
+INVALID_PROPERTY_DESTINATION_CWSJR1188.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee m\u00edsto ur\u010den\u00ed je neplatn\u00e9.
+INVALID_PROPERTY_DESTINATION_CWSJR1188.useraction=Opravte hodnotu vlastnosti m\u00edsta ur\u010den\u00ed v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189=CWSJR1189E: N\u00e1sleduj\u00edc\u00ed typ c\u00edle v r\u00e1mci specifikace aktivace rozhran\u00ed JMS je neplatn\u00fd [{2}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}] nebo [{1}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee typ c\u00edle je neplatn\u00fd.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.useraction=Opravte hodnotu vlastnosti typu c\u00edle v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the acknowledge mode
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190=CWSJR1190E: N\u00e1sleduj\u00edc\u00ed re\u017eim potvrzen\u00ed ve specifikaci aktivace JMS je neplatn\u00fd [{2}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}] nebo [{1}].
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee re\u017eim ozn\u00e1men\u00ed je neplatn\u00fd.
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.useraction=Opravte hodnotu vlastnosti re\u017eimu ozn\u00e1men\u00ed v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the read ahead
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191=CWSJR1191E: N\u00e1sleduj\u00edc\u00ed hodnota dop\u0159edn\u00e9ho \u010dten\u00ed v r\u00e1mci specifikaci aktivace JMS je neplatn\u00e1 [{3}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}], [{1}] nebo [{2}].
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee hodnota dop\u0159edn\u00e9ho \u010dten\u00ed je neplatn\u00e1.
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.useraction=Opravte hodnotu vlastnosti dop\u0159edn\u00e9ho \u010dten\u00ed v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the queue class expected
+# {1} is the queue class we were passed
+INVALID_PROPERTY_QUEUE_CWSJR1192=CWSJR1192E: Specifikace aktivace rozhran\u00ed JMS pomoc\u00ed typu c\u00edle fronty mus\u00ed m\u00edt m\u00edsto ur\u010den\u00ed typu [{0}], av\u0161ak zadan\u00e9 m\u00edsto ur\u010den\u00ed bylo typu [{1}].
+INVALID_PROPERTY_QUEUE_CWSJR1192.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee m\u00edsto ur\u010den\u00ed je neplatn\u00e9.
+INVALID_PROPERTY_QUEUE_CWSJR1192.useraction=Opravte hodnotu vlastnosti m\u00edsta ur\u010den\u00ed v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic class expected
+# {1} is the topic class we were passed
+INVALID_PROPERTY_TOPIC_CWSJR1193=CWSJR1193E: Specifikace aktivace rozhran\u00ed JMS pomoc\u00ed typu c\u00edle t\u00e9matu mus\u00ed m\u00edt m\u00edsto ur\u010den\u00ed typu [{0}], zadan\u00e9 m\u00edsto ur\u010den\u00ed v\u0161ak bylo typu [{1}].
+INVALID_PROPERTY_TOPIC_CWSJR1193.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee m\u00edsto ur\u010den\u00ed je neplatn\u00e9.
+INVALID_PROPERTY_TOPIC_CWSJR1193.useraction=Opravte hodnotu vlastnosti m\u00edsta ur\u010den\u00ed v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the subscription durability
+INVALID_PROPERTY_SUBDUR_CWSJR1194=CWSJR1194E: N\u00e1sleduj\u00edc\u00ed trvalost odb\u011bru ve specifikaci aktivace JMS je neplatn\u00e1 [{2}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}] nebo [{1}].
+INVALID_PROPERTY_SUBDUR_CWSJR1194.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee trvalost odb\u011bru je neplatn\u00e1.
+INVALID_PROPERTY_SUBDUR_CWSJR1194.useraction=Opravte hodnotu vlastnosti trvalosti odb\u011bru v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195=CWSJR1195E: Domov trval\u00fdch odb\u011br\u016f v r\u00e1mci specifikace aktivace JMS mus\u00ed m\u00edt p\u0159i pou\u017eit\u00ed trval\u00fdch odb\u011br\u016f zad\u00e1nu hodnotu.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee domov trval\u00fdch odb\u011br\u016f je neplatn\u00fd.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.useraction=Opravte hodnotu vlastnosti domova trval\u00fdch odb\u011br\u016f v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SUBNAME_CWSJR1196=CWSJR1196E: N\u00e1zev odb\u011bru v r\u00e1mci specifikace aktivace JMS mus\u00ed m\u00edt p\u0159i pou\u017eit\u00ed trval\u00fdch odb\u011br\u016f zad\u00e1nu hodnotu.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee n\u00e1zev odb\u011bru je neplatn\u00fd.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.useraction=Opravte hodnotu vlastnosti n\u00e1zvu odb\u011bru v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197=CWSJR1197E: N\u00e1sleduj\u00edc\u00ed pole sd\u00edlen\u00ed trval\u00fdch odb\u011br\u016f ve specifikaci aktivace JMS je neplatn\u00e9 [{3}]. Byly o\u010dek\u00e1v\u00e1ny hodnoty [{0}], [{1}] nebo [{2}].
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee vlastnost sd\u00edlen\u00ed trval\u00fdch odb\u011br\u016f je neplatn\u00e1.
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.useraction=Opravte hodnotu vlastnosti sd\u00edlen\u00ed trval\u00fdch odb\u011br\u016f v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSJR1198=CWSJR1198E: Maxim\u00e1ln\u00ed soub\u011b\u017enost ve specifikaci aktivace rozhran\u00ed JMS mus\u00ed m\u00edt p\u0159i\u0159azenu kladnou hodnotu.
+INVALID_PROPERTY_MAXCONC_CWSJR1198.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee hodnota maxim\u00e1ln\u00ed soub\u011b\u017enosti je neplatn\u00e1.
+INVALID_PROPERTY_MAXCONC_CWSJR1198.useraction=Opravte hodnotu vlastnosti maxim\u00e1ln\u00ed soub\u011b\u017enosti v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSJR1199=CWSJR1199E: Maxim\u00e1ln\u00ed velikost d\u00e1vky ve specifikaci aktivace rozhran\u00ed JMS mus\u00ed m\u00edt p\u0159i\u0159azenu kladnou hodnotu.
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee maxim\u00e1ln\u00ed velikost d\u00e1vky je neplatn\u00e1.
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.useraction=Opravte hodnotu vlastnosti maxim\u00e1ln\u00ed velikost d\u00e1vky v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SHARECMP_CWSJR1200=CWSJR1200E: Je t\u0159eba nastavit sd\u00edlen\u00ed zdroje dat s entitou CMP ve specifikaci aktivace JMS.
+INVALID_PROPERTY_SHARECMP_CWSJR1200.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed vlastnost\u00ed konfigurovan\u00fdch ve specifikaci aktivace rozhran\u00ed JMS bylo zji\u0161t\u011bno, \u017ee vlastnost sd\u00edlen\u00ed zdroje dat s entitou CMP je neplatn\u00e1.
+INVALID_PROPERTY_SHARECMP_CWSJR1200.useraction=Opravte hodnotu vlastnosti sd\u00edlen\u00ed zdroje dat s entitou CMP v r\u00e1mci specifikace aktivace a pot\u00e9 restartujte server.
+
+#
+# JmsJcaFactory
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+EXCEPTION_DURING_INIT_CWSJR1441=CWSJR1441E: Do\u0161lo k intern\u00ed chyb\u011b. Vytvo\u0159en\u00ed objektu JmsJcaFactory se nezda\u0159ilo s v\u00fdjimkou: {0}.
+EXCEPTION_DURING_INIT_CWSJR1441.explanation=P\u0159i vytv\u00e1\u0159en\u00ed objektu JmsJcaFactory do\u0161lo k probl\u00e9mu. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+EXCEPTION_DURING_INIT_CWSJR1441.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnectionSynchronizationProvider
+#
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461=CWSJR1461E: Do\u0161lo k intern\u00ed chyb\u011b. Vytvo\u0159en\u00ed objektu SIUncoordinatedTransaction se nezda\u0159ilo s v\u00fdjimkou: {0}.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.explanation=Adapt\u00e9r prost\u0159edk\u016f JMS technologi\u00ed integrace slu\u017eeb se pokusil vytvo\u0159it transakci SIUncoordinatedTransaction za \u00fa\u010delem registrace transakce jako synchronizace, kdy\u017e byla obdr\u017eena v\u00fdjimka.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+NOT_SUPPORTED_EXCEPTION_CWSJR1462=CWSJR1462E: P\u0159ipojen\u00ed ke stroji syst\u00e9mu zpr\u00e1v nepodporuje optimalizaci sd\u00edlen\u00ed perzistence spravovan\u00e9 kontejnerem.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.explanation=P\u0159ipojen\u00ed, kter\u00e9 obdr\u017eel adapt\u00e9r prost\u0159edk\u016f JMSWebSphere technologi\u00ed integrace slu\u017eeb, nepodporuje optimalizaci perzistence spravovanou kontejnerem, proto\u017ee se vztahuje ke vzd\u00e1len\u00e9mu stroji syst\u00e9mu zpr\u00e1v.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.useraction=Zajist\u011bte dostupnost m\u00edstn\u00edho stroje syst\u00e9mu zpr\u00e1v, k n\u011bmu\u017e se adapt\u00e9r prost\u0159edk\u016f m\u016f\u017ee p\u0159ipojovat nebo zaka\u017ete optimalizaci sd\u00edlen\u00ed v definici tov\u00e1rny p\u0159ipojen\u00ed prost\u0159ednictv\u00edm administrativn\u00ed konzoly.
+# -------------------------------------------------------------------------------------------------
+# {0} the managed connection
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463=CWSJR1463E: Do\u0161lo k intern\u00ed chyb\u011b. Spravovan\u00e9 p\u0159ipojen\u00ed {0} ji\u017e je registrov\u00e1no jako synchronizace v transakci.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.explanation=Do\u0161lo k vol\u00e1n\u00ed getSynchronization v dob\u011b, kdy ji\u017e je synchronizovan\u00e9 p\u0159ipojen\u00ed registrov\u00e1no jako synchronizace v transakci.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.useraction=CMSG0002
+
+#
+# JmsJcaEndpointInvokerImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+UTILITY_CLASS_CWSJR1481=CWSJR1481E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed n\u00e1sleduj\u00edc\u00ed v\u00fdjimky p\u0159i pokusu o z\u00edsk\u00e1n\u00ed obslu\u017en\u00e9 t\u0159\u00eddy: {0}.
+UTILITY_CLASS_CWSJR1481.explanation=B\u011bhem aktivace koncov\u00e9ho bodu se adapt\u00e9r prost\u0159edk\u016f rozhran\u00ed JMS pokou\u0161el z\u00edskat obslu\u017enou t\u0159\u00eddu a byla p\u0159ijata neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+UTILITY_CLASS_CWSJR1481.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSJR1482=CWSJR1482E: Do\u0161lo k intern\u00ed chyb\u011b. Koncov\u00fd bod zpr\u00e1v {0} neimplementuje o\u010dek\u00e1van\u00e9 rozhran\u00ed {1}.
+UNEXPECTED_ENDPOINT_CWSJR1482.explanation=Tov\u00e1rna koncov\u00e9ho bodu zpr\u00e1vy vr\u00e1tila koncov\u00fd bod zpr\u00e1vy, kter\u00fd neimplementuje rozhran\u00ed MessageListener o\u010dek\u00e1van\u00fdm zp\u016fsobem.
+UNEXPECTED_ENDPOINT_CWSJR1482.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSJR1483=CWSJR1483E: Do\u0161lo k intern\u00ed chyb\u011b. Do\u0161lo k vyvol\u00e1n\u00ed v\u00fdjimky {0} p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance metody onMessage.
+ON_MESSAGE_CWSJR1483.explanation=Byla vygenerov\u00e1na v\u00fdjimka p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance metody onMessage.
+ON_MESSAGE_CWSJR1483.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJR9999=CWSJR9999E: {0}
+TEMPORARY_CWSJR9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed informace v okoln\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSJR9999.useraction=Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.

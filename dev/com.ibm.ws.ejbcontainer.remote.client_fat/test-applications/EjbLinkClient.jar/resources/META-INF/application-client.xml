@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
+<application-client id="Application-client_ID">
+   <display-name>EjbLinkClient</display-name>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/OtherJarStyle1</ejb-ref-name>
+      <ejb-ref-type>Session</ejb-ref-type>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>OtherJarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/OtherJarStyle2</ejb-ref-name>
+      <ejb-ref-type>Session</ejb-ref-type>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>../EjbLinkOtherBean.jar#OtherJarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/OtherJarStyle3</ejb-ref-name>
+      <ejb-ref-type>Session</ejb-ref-type>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>logicalOther/OtherJarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/WarStyle1</ejb-ref-name>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>OtherWarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/WarStyle2</ejb-ref-name>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>../EjbLinkInOtherWar.war#OtherWarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/WarStyle3</ejb-ref-name>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>logicalOtherWar/OtherWarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/OtherWarStyle1</ejb-ref-name>
+      <ejb-ref-type>Session</ejb-ref-type>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>OtherWarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/OtherWarStyle2</ejb-ref-name>
+      <ejb-ref-type>Session</ejb-ref-type>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>../EjbLinkInOtherWar.war#OtherWarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/OtherWarStyle3</ejb-ref-name>
+      <ejb-ref-type>Session</ejb-ref-type>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>logicalOtherWar/OtherWarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/JarStyle1</ejb-ref-name>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>OtherJarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/JarStyle2</ejb-ref-name>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>../EjbLinkOtherBean.jar#OtherJarBean</ejb-link>
+   </ejb-ref>
+
+   <ejb-ref>
+      <ejb-ref-name>ejb/JarStyle3</ejb-ref-name>
+      <remote>com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote</remote>
+      <ejb-link>logicalOther/OtherJarBean</ejb-link>
+   </ejb-ref>
+
+</application-client>

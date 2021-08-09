@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+bVersion=1.0
+
+Bundle-Name: WebSphere SIP Container servlet 3.1 
+Bundle-SymbolicName: com.ibm.ws.sipcontainer.servlet.3.1
+Bundle-Description:  WebSphere SIP Container servlet 3.1  Support, version ${bVersion}
+
+Export-Package: com.ibm.ws.sip.container.was.servlet31.*
+
+Import-Package: \
+    *
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.sip.container.was.servlet31.SipMessageFactory31, \
+				com.ibm.ws.sip.container.was.servlet31.converged.SessionContextRegistryImplFactoryImpl31Converged, \
+
+-buildpath: \
+	com.ibm.websphere.appserver.api.servlet;version=latest,\
+	com.ibm.websphere.appserver.spi.servlet;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.sip.1.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.session;version=latest,\
+	com.ibm.ws.sipcontainer;version=latest,\
+	com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

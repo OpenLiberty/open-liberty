@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Arbortext, Inc., 1988-2006, v.4002-->
+<?Pub Sty _display FontColor="red"?>
+<map id="threading_toc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="http://docs.oasis-open.org/dita/v1.0.1/schema/map.xsd">
+
+     <topicref format="html" href="threading.html" id="threadingDev" navtitle="Threading Services Developer Documentation">
+         <topicref format="html" href="threading_cd.html" id="threadingConcepts" navtitle="Threading Services Conceptual Design" />
+     </topicref>
+
+</map>
+<?Pub *0000007040?>

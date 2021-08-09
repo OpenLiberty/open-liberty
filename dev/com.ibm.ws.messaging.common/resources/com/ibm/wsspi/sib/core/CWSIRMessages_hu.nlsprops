@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.wsspi.sib.core.CWSIRMessages.nlsprops
+#
+# SIB.common component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIR0001=CWSIR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIR9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/CWSIRMessages.nlsprops
+#COMPONENTPREFIX CWSIR
+#COMPONENTNAMEFOR CWSIR SIBus Core
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+BROWSE_METHOD_CWSIR0001=CWSIR0001E: A destinationAddress (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+BROWSE_METHOD_CWSIR0001.explanation=A createBrowserSession (b\u00f6ng\u00e9sz\u0151-munkamenet l\u00e9trehoz\u00e1sa) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destinationAddress argumentum sz\u00e1m\u00e1ra.  A destinationAddress nem lehet null\u00e9rt\u00e9k\u0171.
+BROWSE_METHOD_CWSIR0001.useraction=\u00c9rv\u00e9nyes destinationAddress \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destAddr is a argument name for a method call
+CREATE_CONSUMER_CWSIR0021=CWSIR0021E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_CONSUMER_CWSIR0021.explanation=A createConsumerSession (feldolgoz\u00f3-munkamenet l\u00e9trehoz\u00e1sa) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_CONSUMER_CWSIR0021.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0031=CWSIR0031E: A destinationAddress (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0031.explanation=A createConsumerSessionForDurableSubscription (feldolgoz\u00f3-munkamenet l\u00e9trehoz\u00e1sa a tart\u00f3s el\u0151fizet\u00e9shez) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destinationAddress argumentum sz\u00e1m\u00e1ra.  A destinationAddress nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0031.useraction=\u00c9rv\u00e9nyes destinationAddress \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0032=CWSIR0032E: A subscriptionName (el\u0151fizet\u00e9sn\u00e9v) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0032.explanation=A createConsumerSessionForDurableSubscription (feldolgoz\u00f3-munkamenet l\u00e9trehoz\u00e1sa a tart\u00f3s el\u0151fizet\u00e9shez) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a subscriptionName argumentum sz\u00e1m\u00e1ra.  A subscriptionName nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0032.useraction=\u00c9rv\u00e9nyes subscriptionName \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0041=CWSIR0041E: A destinationAddress (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0041.explanation=A createDurableSubscription (tart\u00f3s el\u0151fizet\u00e9s l\u00e9trehoz\u00e1sa) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destinationAddress argumentum sz\u00e1m\u00e1ra.  A destinationAddress nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0041.useraction=\u00c9rv\u00e9nyes destinationAddress \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0042=CWSIR0042E: A subscriptionName (el\u0151fizet\u00e9sn\u00e9v) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0042.explanation=A createDurableSubscription (tart\u00f3s el\u0151fizet\u00e9s l\u00e9trehoz\u00e1sa) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a subscriptionName argumentum sz\u00e1m\u00e1ra.  A subscriptionName nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_DURABLE_SUB_CWSIR0042.useraction=\u00c9rv\u00e9nyes subscriptionName \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0051=CWSIR0051E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_PRODUCER_CWSIR0051.explanation=A createProducerSession (el\u0151\u00e1ll\u00edt\u00f3-munkamenet l\u00e9trehoz\u00e1sa) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_PRODUCER_CWSIR0051.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+DELETE_DURABLE_SUB_CWSIR0061=CWSIR0061E: A subscriptionName (el\u0151fizet\u00e9sn\u00e9v) argumentum null\u00e9rt\u00e9k\u0171.
+DELETE_DURABLE_SUB_CWSIR0061.explanation=A deleteDurableSubscription (tart\u00f3s el\u0151fizet\u00e9s t\u00f6rl\u00e9se) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a subscriptionName argumentum sz\u00e1m\u00e1ra.  A subscriptionName nem lehet null\u00e9rt\u00e9k\u0171.
+DELETE_DURABLE_SUB_CWSIR0061.useraction=\u00c9rv\u00e9nyes subscriptionName \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0071=CWSIR0071E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+CREATE_PRODUCER_CWSIR0071.explanation=A deleteTemporaryDestination (ideiglenes c\u00e9l t\u00f6rl\u00e9se) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+CREATE_PRODUCER_CWSIR0071.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+GET_DEST_CONFIG_CWSIR0081=CWSIR0081E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+GET_DEST_CONFIG_CWSIR0081.explanation=A getDestinationConfiguration (c\u00e9lmeghat\u00e1roz\u00e1s lek\u00e9r\u00e9se) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+GET_DEST_CONFIG_CWSIR0081.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_NO_WAIT_CWSIR0091=CWSIR0091E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+RECEIVE_NO_WAIT_CWSIR0091.explanation=A receiveNoWait (fogad\u00e1s v\u00e1rakoz\u00e1s n\u00e9lk\u00fcl) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+RECEIVE_NO_WAIT_CWSIR0091.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_WITH_WAIT_CWSIR0101=CWSIR0101E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+RECEIVE_WITH_WAIT_CWSIR0101.explanation=A receiveWithWait (fogad\u00e1s v\u00e1rakoz\u00e1ssal) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+RECEIVE_WITH_WAIT_CWSIR0101.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+SEND_CWSIR0111=CWSIR0111E: A destAddr (c\u00e9lc\u00edm) argumentum null\u00e9rt\u00e9k\u0171.
+SEND_CWSIR0111.explanation=A receiveWithWait (fogad\u00e1s v\u00e1rakoz\u00e1ssal) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott meg a destAddr argumentum sz\u00e1m\u00e1ra.  A destAddr nem lehet null\u00e9rt\u00e9k\u0171.
+SEND_CWSIR0111.useraction=\u00c9rv\u00e9nyes destAddr \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_CWSIR0112=CWSIR0112E: Az \u00fczenet argumentuma null \u00e9rt\u00e9k\u0171.
+SEND_CWSIR0112.explanation=Az elk\u00fcldend\u0151 h\u00edv\u00e1s null \u00e9rt\u00e9ket adott meg az \u00fczenet argumentumak\u00e9nt. Az \u00fczenet nem lehet null \u00e9rt\u00e9k\u0171.
+SEND_CWSIR0112.useraction=Adjon meg \u00e9rv\u00e9nyes \u00fczenet \u00e9rt\u00e9ket.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_EXCEPTION_DEST_CWSIR0121=CWSIR0121E: Az \u00fczenet argumentuma null \u00e9rt\u00e9k\u0171.
+SEND_EXCEPTION_DEST_CWSIR0121.explanation=A sendToExceptionDestination h\u00edv\u00e1sa null \u00e9rt\u00e9ket adott meg az \u00fczenet argumentumak\u00e9nt. Az \u00fczenet nem lehet null \u00e9rt\u00e9k\u0171.
+SEND_EXCEPTION_DEST_CWSIR0121.useraction=Adjon meg \u00e9rv\u00e9nyes \u00fczenet \u00e9rt\u00e9ket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the internal method name called on the SPI.
+LME_ERROR_CWSIR0131=CWSIR0131E: A(z) {0} met\u00f3dus h\u00edv\u00e1sa \u00e9rv\u00e9nytelen ebben az id\u0151pontban.
+LME_ERROR_CWSIR0131.explanation=A megadott h\u00edv\u00e1s csak az AsynchConsumerCallback.consumeMessages met\u00f3dusb\u00f3l \u00e9rv\u00e9nyes.
+LME_ERROR_CWSIR0131.useraction=Adja ki \u00fajra a h\u00edv\u00e1st az AsynchConsumerCallback.consumeMessages met\u00f3dusb\u00f3l, vagy haszn\u00e1ljon egy megfelel\u0151 ConsumerSession h\u00edv\u00e1st, ha lehets\u00e9ges.
+
+# -------------------------------------------------------------------------------------------------
+# 
+LME_ERROR_CWSIR0132=CWSIR0132E: Az msgHandles (\u00fczenetkezel\u0151k) t\u00f6mbben l\u00e9v\u0151 n\u00e9h\u00e1ny \u00e9rt\u00e9k null\u00e9rt\u00e9k\u0171.
+LME_ERROR_CWSIR0132.explanation=Az msgHandles argumentumt\u00f6mb nem tartalmazhat null\u00e9rt\u00e9k\u0171 elemeket, ez\u00e9rt a ConsumerSession vagy a BifurcatedConsumerSession h\u00edv\u00e1sa visszautas\u00edt\u00e1sra ker\u00fclt.
+LME_ERROR_CWSIR0132.useraction=Adja ki \u00fajra a h\u00edv\u00e1st a null\u00e9rt\u00e9k\u0171 elemek t\u00f6mbb\u0151l elt\u00e1vol\u00edt\u00e1s\u00e1t k\u00f6vet\u0151en.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141=CWSIR0141E: A(z) {0} maxActiveMessages (akt\u00edv \u00fczenetek maxim\u00e1lis sz\u00e1ma) argumentum \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.explanation=A maxActiveMessages \u00e9rt\u00e9ke nem lehet kisebb, mint 0.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.useraction=\u00c9rv\u00e9nyes maxActiveMessages \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142=CWSIR0142E: A(z) {0} messageLockExpiry (\u00fczenet z\u00e1rol\u00e1s\u00e1nak lej\u00e1rata) argumentum \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.explanation=A messageLockExpiry \u00e9rt\u00e9ke nem lehet kisebb, mint 0.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.useraction=\u00c9rv\u00e9nyes messageLockExpiry \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143=CWSIR0143E: A(z) {0} maxBatchSize (maxim\u00e1lis k\u00f6tegm\u00e9ret) argumentum \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.explanation=A maxBatchSize \u00e9rt\u00e9k\u00e9nek nagyobbnak kell lennie, mint 0.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.useraction=\u00c9rv\u00e9nyes maxBatchSize \u00e9rt\u00e9ket adjon meg.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIR9999=CWSIR9999E: {0}
+TEMPORARY_CWSIR9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor ellen\u0151rizze a kor\u00e1bbi \u00fczeneteket a tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_CWSIR9999.useraction=Tekintse meg a kor\u00e1bbi \u00fczeneteket tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.

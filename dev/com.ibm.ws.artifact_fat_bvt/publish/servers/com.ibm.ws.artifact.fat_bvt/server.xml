@@ -1,0 +1,22 @@
+<server>
+
+  <logging
+    traceSpecification="*=info:archive.artifact=FINER:archive.artifact.zip=FINER"
+    traceFileName="trace.log"
+    maxFileSize="20"
+    maxFiles="10"
+    traceFormat="BASIC"/>
+
+   <!-- traceSpecification="*=info:archive.artifact=FINER:archive.adaptable=FINER" -->
+
+  <featureManager>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>servlet-3.1</feature>
+    <feature>artifactinternals-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="artifactapi.war"/>
+        
+</server>

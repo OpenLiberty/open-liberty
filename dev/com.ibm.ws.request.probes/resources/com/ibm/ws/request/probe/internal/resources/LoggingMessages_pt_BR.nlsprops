@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: A inst\u00e2ncia da instrumenta\u00e7\u00e3o Java n\u00e3o est\u00e1 dispon\u00edvel, assim, os recursos de monitoramento e diagn\u00f3stico n\u00e3o funcionar\u00e3o. Configure o arquivo ws-javaagent.jar com a op\u00e7\u00e3o -javaagent JVM.
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=A inst\u00e2ncia da instrumenta\u00e7\u00e3o \u00e9 necessaria para transformar classes injetando c\u00f3digo de byte. A inje\u00e7\u00e3o de c\u00f3digo de byte \u00e9 usada pelo Liberty para gerar informa\u00e7\u00f5es de monitoramento e diagn\u00f3stico.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=Configura\u00e7\u00f5es JVM adicionais s\u00e3o necess\u00e1rias para ativar a instrumenta\u00e7\u00e3o Java. Configure o arquivo ws-javaagent.jar com a op\u00e7\u00e3o -javaagent JVM. O arquivo ws-javaagent.jar est\u00e1 no diret\u00f3rio ${wlp.install.dir}/bin/tools da instala\u00e7\u00e3o do perfil Liberty.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=Dura\u00e7\u00e3o
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=Opera\u00e7\u00e3o

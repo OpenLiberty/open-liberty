@@ -1,0 +1,10 @@
+<server description="new server">
+
+  <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+  	  </featureManager>
+	
+ 	<include location="../fatTestPorts.xml"/>
+  	
+</server>

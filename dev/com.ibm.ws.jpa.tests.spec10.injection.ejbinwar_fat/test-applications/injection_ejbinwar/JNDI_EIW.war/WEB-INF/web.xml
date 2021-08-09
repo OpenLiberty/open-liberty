@@ -1,0 +1,59 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+
+    <servlet>
+        <servlet-name>JNDI_EIW_SL_EJBTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.jpa.fvt.ejbinwar.tests.web.jndi.JNDI_EIW_SL_EJBTestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>JNDI_EIW_SF_EJBTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.jpa.fvt.ejbinwar.tests.web.jndi.JNDI_EIW_SF_EJBTestServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JNDI_EIW_SL_EJBTestServlet</servlet-name>
+        <url-pattern>/JNDI_EIW_SL_EJBTestServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JNDI_EIW_SF_EJBTestServlet</servlet-name>
+        <url-pattern>/JNDI_EIW_SF_EJBTestServlet</url-pattern>
+    </servlet-mapping>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/jndi/AnnotatedJNDISLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISLEJBLocal</local>
+        <ejb-link>AnnotatedJNDISLEJB</ejb-link>
+    </ejb-local-ref>
+
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/jndi/DDJNDISLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISLEJBLocal</local>
+        <ejb-link>DDJNDISLEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/jndi/AnnotatedJNDISFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEJBLocal</local>
+        <ejb-link>AnnotatedJNDISFEJB</ejb-link>
+    </ejb-local-ref>
+
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/jndi/DDJNDISFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEJBLocal</local>
+        <ejb-link>DDJNDISFEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/jndi/AnnotatedJNDISFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEXEJBLocal</local>
+        <ejb-link>AnnotatedJNDISFEXEJB</ejb-link>
+    </ejb-local-ref>
+
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/jndi/DDJNDISFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEXEJBLocal</local>
+        <ejb-link>DDJNDISFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+</web-app>

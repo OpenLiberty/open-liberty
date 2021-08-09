@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: El servicio de cifrado de contrase\u00f1as personalizadas se ha iniciado. El nombre de la clase es {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=Este mensaje es meramente informativo.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=No es necesaria ninguna acci\u00f3n.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: El servicio de cifrado de contrase\u00f1as personalizadas se ha detenido. El nombre de la clase es {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=Este mensaje es meramente informativo.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=No es necesaria ninguna acci\u00f3n.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: Se ha producido una excepci\u00f3n inesperada durante el descifrado de la contrase\u00f1a utilizando el servicio de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=Se ha producido una excepci\u00f3n inesperada al procesar el descifrado utilizando el servicio de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=Revise los registros del servicio de cifrado de contrase\u00f1as personalizadas y los registros del servidor para obtener m\u00e1s informaci\u00f3n acerca de la causa de la excepci\u00f3n.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: Se ha producido una excepci\u00f3n inesperada durante el cifrado de la contrase\u00f1a utilizando el servicio de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=Se ha producido una excepci\u00f3n inesperada al procesar el cifrado utilizando el servicio de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=Revise los registros del servicio de cifrado de contrase\u00f1as personalizadas y los registros del servidor para obtener m\u00e1s informaci\u00f3n acerca de la causa de la excepci\u00f3n.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: El servicio de contrase\u00f1as personalizadas de terceros no est\u00e1 disponible para procesar la contrase\u00f1a codificada personalizada.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=La contrase\u00f1a codificada personalizada no se puede procesar porque el servicio de contrase\u00f1as personalizadas no est\u00e1 disponible.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=Aseg\u00farese de que la caracter\u00edstica de usuario de contrase\u00f1a personalizada que implementa la interfaz com.ibm.wsspi.security.crypto.CustomPasswordEncryption est\u00e9 configurada e iniciada.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: La contrase\u00f1a no se ha procesado porque el nombre de algoritmo de contrase\u00f1a {0} no est\u00e1 soportado. Los tipos soportados son {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=La contrase\u00f1a no se ha cifrado ni descifrado porque el nombre de algoritmo de contrase\u00f1a suministrado no est\u00e1 soportado.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Aseg\u00farese de utilizar uno de los algoritmos soportados.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: La contrase\u00f1a no se ha procesado porque se ha informado de una excepci\u00f3n de algoritmo de contrase\u00f1a desconocido.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=El algoritmo especificado no est\u00e1 soportado.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Compruebe el registro del servidor y, si se utiliza el cifrado de contrase\u00f1as personalizadas, compruebe si hay m\u00e1s informaci\u00f3n en los registros de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: La contrase\u00f1a no se ha procesado porque se ha informado de una excepci\u00f3n de cifrado de contrase\u00f1a no v\u00e1lido.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=La contrase\u00f1a no se ha cifrado ni descifrado porque se ha enviado una excepci\u00f3n al procesar la contrase\u00f1a.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Compruebe el registro del servidor y, si se utiliza el cifrado de contrase\u00f1as personalizadas, compruebe si hay m\u00e1s informaci\u00f3n en los registros de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: La contrase\u00f1a no se ha procesado porque se ha informado de una excepci\u00f3n de codificaci\u00f3n no soportada.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=La contrase\u00f1a no se ha cifrado ni descifrado porque se ha enviado una excepci\u00f3n al procesar la contrase\u00f1a.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Compruebe el registro del servidor y, si se utiliza el cifrado de contrase\u00f1as personalizadas, compruebe si hay m\u00e1s informaci\u00f3n en los registros de cifrado de contrase\u00f1as personalizadas.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: La contrase\u00f1a no se ha descifrado porque se ha informado de un error de codificaci\u00f3n.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=La contrase\u00f1a cifrada no se ha codificado correctamente.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Aseg\u00farese de que la contrase\u00f1a cifrada no est\u00e9 truncada y est\u00e9 codificada utilizando la codificaci\u00f3n Base64.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Se ha detectado m\u00e1s de una implementaci\u00f3n de CustomPasswordEncryption. S\u00f3lo est\u00e1 permitida una sola implementaci\u00f3n de CustomPasswordEncryption. La lista de implementaciones detectadas de CustomPasswordEncryption es la siguiente:
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Se ha notificado un error al procesar el archivo de manifiesto de extensi\u00f3n {0}. Este archivo se ha pasado por alto. El cifrado personalizado no est\u00e1 disponible. El mensaje de error es {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=No se ha encontrado la cabecera necesaria {0} en el archivo de manifiesto de extensi\u00f3n {1}. El cifrado personalizado no est\u00e1 disponible.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=No se ha encontrado el archivo de manifiesto de caracter\u00edstica correspondiente al archivo de manifiesto de extensi\u00f3n {0}. El cifrado personalizado no est\u00e1 disponible.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=El algoritmo hash no permite la operaci\u00f3n de descifrado.

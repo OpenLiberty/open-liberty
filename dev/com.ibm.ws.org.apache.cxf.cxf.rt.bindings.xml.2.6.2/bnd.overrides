@@ -1,0 +1,54 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.2.6.2
+Bundle-Activator: com.ibm.ws.cxf.rt.bindings.xml.NoOpActivator
+
+
+Export-Package: \
+  !schemas.wsdl,\
+  com.ibm.ws.cxf.rt.bindings.xml,\
+  org.apache.cxf.binding.xml;version="2.6.2", \
+  org.apache.cxf.binding.xml.interceptor;version="2.6.2", \
+  org.apache.cxf.binding.xml.wsdl11;version="2.6.2", \
+  org.apache.cxf.bindings.xformat;version="2.6.2"
+
+Import-Package: \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  javax.wsdl, \
+  javax.wsdl.extensions, \
+  javax.wsdl.extensions.http, \
+  javax.xml.bind;version="[2.2,3)", \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.xml.namespace, \
+  javax.xml.stream, \
+  org.apache.cxf;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.xml;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.binding.xml.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.bindings.xformat;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.logging;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.common.util;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.endpoint;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.helpers;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.interceptor;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.message;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.service.model;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.staxutils;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.tools.common;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.tools.validator;resolution:=optional;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.transport;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.wsdl.http;version="[2.6.2,2.6.3)", \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.w3c.dom, \
+
+Private-Package: \
+  schemas.wsdl

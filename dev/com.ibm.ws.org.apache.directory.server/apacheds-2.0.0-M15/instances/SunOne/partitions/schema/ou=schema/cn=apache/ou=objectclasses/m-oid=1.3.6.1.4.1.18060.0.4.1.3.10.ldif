@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.10,ou=objectClasses,cn=apache,ou=schema
+m-must: ou
+m-must: subschemaSubentryName
+m-must: schemaModifyTimestamp
+m-must: schemaModifiersName
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.10
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: a special entry tracking schema modification attributes
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: schemaModificationAttributes
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,24 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>cloudant-1.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <library id="CloudantLib">
+    <fileset dir="${shared.resource.dir}/cloudant-2.16"/>
+  </library>
+
+  <authData id="cloudantAuth" user="${cloudant_username}" password="${cloudant_password}"/>
+
+  <cloudant id="builder" jndiName="cloudant/builder" libraryRef="CloudantLib" url="${cloudant_url}" containerAuthDataRef="cloudantAuth"/>
+  <cloudantDatabase id="myCloudantDB" jndiName="cloudant/cfgmoddb" databaseName="${cloudant_databaseName}" create="true" cloudantRef="builder"/>
+
+  <application location="cloudantconfigmodfat.war">
+    <classloader commonLibraryRef="CloudantLib" />
+  </application>
+
+</server>

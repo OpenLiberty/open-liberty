@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=SessionLoaderExceptions [{0}]\uac1c\uac00 \uc608\uc678 \ucc98\ub9ac(throw)\ub428:
+
+9001=XML \ub178\ub4dc: [{1}]\uc5d0\uc11c \ud0dc\uadf8 \uc774\ub984 [{0}]\uc744(\ub97c) \uc54c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+9002=\ud504\ub85c\uc81d\ud2b8 \ud074\ub798\uc2a4 [{0}]\uc744(\ub97c) \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+9003=[{1}] \uac12\uc73c\ub85c XML \ud0dc\uadf8 [{0}]\uc744(\ub97c) \ucc98\ub9ac\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+9004=project-xml \ud30c\uc77c [{0}]\uc744(\ub97c) \ud074\ub798\uc2a4 \uacbd\ub85c \ubc0f \ud30c\uc77c \uc2dc\uc2a4\ud15c\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+9005=project-xml \ud30c\uc77c [{0}]\uc744(\ub97c) \ub85c\ub4dc\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+9006={0}\uc774(\uac00) XML \ud30c\uc77c\uc744 \uad6c\ubb38 \ubd84\uc11d\ud558\ub294 \uc911\uc5d0 \uc608\uc678 \ucc98\ub9ac(throw)\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub294 XML \ubb38\uc11c\uc758 \ud589 {1} \ubc0f \uc5f4 {2}\uc5d0\uc11c \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+
+9007=XML \ud30c\uc77c\uc744 \uad6c\ubb38 \ubd84\uc11d\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+9008=\uc608\uc0c1\ud558\uc9c0 \ubabb\ud55c \ud0dc\uadf8 [{1}]\uc758 \uac12 [{0}]\uc785\ub2c8\ub2e4.
+
+9009=\ud0dc\uadf8 [{0}]\uc5d0 \uc54c \uc218 \uc5c6\ub294 \uc18d\uc131\uc774 \uc788\uc2b5\ub2c8\ub2e4.
+
+9010={0}\uc774(\uac00) XML \uc2a4\ud0a4\ub9c8\uc5d0 \ub300\ud574 XML \ud30c\uc77c\uc744 \uad6c\ubb38 \ubd84\uc11d\ud558\ub294 \uc911\uc5d0 \uc608\uc678 \ucc98\ub9ac(throw)\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+
+9011=\uc11c\ubc84 \ud50c\ub7ab\ud3fc \ud074\ub798\uc2a4 {0}\uc774(\uac00) \uc81c\uac70\ub418\uc5c8\uace0 \ud574\ub2f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84 \ubc84\uc804\uc774 \ub354 \uc774\uc0c1 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc74c
+
+9012=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ud615\uc2dd\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uac70\ub098 XML \ud615\uc2dd\uc774 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc73c\ubbc0\ub85c session-xml \ud30c\uc77c\uc744 \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+

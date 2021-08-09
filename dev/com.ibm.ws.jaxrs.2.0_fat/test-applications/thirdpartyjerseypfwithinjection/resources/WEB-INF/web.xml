@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="HelloworldServlet" version="3.0" 
+     xmlns="http://java.sun.com/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+     
+  <display-name>Third Party Jersey</display-name>
+  <description>Server-side application to test Hello world with third party jersey lib.</description>
+  
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+  	<servlet-name>JerseyServlet</servlet-name>
+  	<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+  	<init-param>
+  		<param-name>javax.ws.rs.Application</param-name>
+  		<param-value>com.ibm.ws.jaxrs.fat.jerseywithinjection.JerseyApplication</param-value>
+  	</init-param>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+  
+
+  <servlet id="Servlet_2">
+  	<servlet-name>JerseyWithInjectionServlet</servlet-name>
+  	<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+  	<init-param>
+  		<param-name>javax.ws.rs.Application</param-name>
+  		<param-value>com.ibm.ws.jaxrs.fat.jerseywithinjection.JerseyApplication</param-value>
+  	</init-param>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>JerseyServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_2">
+    <servlet-name>JerseyWithInjectionServlet</servlet-name>
+    <url-pattern>/rest2/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>

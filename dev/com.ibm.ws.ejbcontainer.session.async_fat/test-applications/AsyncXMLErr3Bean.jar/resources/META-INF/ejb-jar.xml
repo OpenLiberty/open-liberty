@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	version="3.1" metadata-complete="false">
+
+	<enterprise-beans>
+		<session>
+			<ejb-name>EmptyMethNameXMLBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.session.async.err.shared.EmptyMethNameXMLLocal</business-local>
+			<ejb-class>
+				com.ibm.ws.ejbcontainer.session.async.err.xmlerr3.ejb.EmptyMethNameXMLBean
+			</ejb-class>
+			<session-type>Stateless</session-type>
+			<async-method>
+				<method-name></method-name>
+			</async-method>
+			<transaction-type>Container</transaction-type>
+		</session>
+	</enterprise-beans>
+</ejb-jar>

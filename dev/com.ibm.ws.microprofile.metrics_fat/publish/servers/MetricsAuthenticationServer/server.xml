@@ -1,0 +1,20 @@
+<server description="mpMetrics authentication server">
+    <featureManager />
+    
+    <include location="../fatTestPorts.xml" />
+
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+	
+    <basicRegistry>
+        <user name="admin" password="adminpwd" />
+        <user name="reader" password="readerpwd" />
+        <user name="user" password="userpwd" />
+    </basicRegistry>
+    <administrator-role>
+        <user>admin</user>
+    </administrator-role>
+    <reader-role>
+        <user>reader</user>
+    </reader-role>
+
+</server>

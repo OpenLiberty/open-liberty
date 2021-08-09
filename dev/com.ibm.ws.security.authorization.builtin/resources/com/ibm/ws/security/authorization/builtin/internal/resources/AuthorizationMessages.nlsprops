@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.builtin/resources/com/ibm/ws/security/authorization/builtin/internal/resources/AuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Built-in Authorization Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2100 - CWWKS2199
+
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME=CWWKS2100E: Multiple resources have the name {0}. Authorization policy can not be determined.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.explanation=There are multiple resources with the same name, and the correct authorization policy can not be determined. Resource names must be unique.
+AUTHZ_MULTIPLE_RESOURCES_WITH_SAME_NAME.useraction=Change the name of one of the resource names so that all resources are unique.
+
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION=CWWKS2101E: The role definition is not valid: {0}
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.explanation=The syntax for defining a role is <{1} name="..." />.
+AUTHZ_TABLE_INVALID_ROLE_DEFINITION.useraction=Change the role definition in the configuration.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION=CWWKS2102E: Multiple {0} elements with the name {1} were found
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.explanation=Only one definition of a given role is allowed
+AUTHZ_TABLE_DUPLICATE_ROLE_DEFINITION.useraction=Remove the duplicate role definition(s) in the configuration.
+
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER=CWWKS2103E: Role {0} has a user, group, or special subject added more than once
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.explanation=Only one definition of a member is allowed per role
+AUTHZ_TABLE_DUPLICATE_ROLE_MEMBER.useraction=Remove the duplicate role member definition(s) in the configuration.
+
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME=CWWKS2104I: The authorization decision for resources in application {0} will be made by using the group names of the user that matches the role names required to access that resource.
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.explanation=The application does not have any authorization table defined so the role name required to access the resource will be treated as the group name for the access check. For example, if the role name required to access the resource is Manager, then if the authenticated user belongs to the group Manager, access will be granted.  
+AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME.useraction=The implicit authorization check can be disabled by setting the useGroupToRoleName attribute of the authorization element to false in the server.xml.   

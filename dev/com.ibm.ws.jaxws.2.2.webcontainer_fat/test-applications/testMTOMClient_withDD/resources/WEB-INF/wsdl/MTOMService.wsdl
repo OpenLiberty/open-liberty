@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://MTOMService/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="MTOMService" targetNamespace="http://MTOMService/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://MTOMService/" elementFormDefault="unqualified" targetNamespace="http://MTOMService/" version="1.0">
+<xs:element name="getAttachment" type="tns:getAttachment"/>
+<xs:element name="getAttachmentResponse" type="tns:getAttachmentResponse"/>
+<xs:element name="sendAttachment" type="tns:sendAttachment"/>
+<xs:element name="sendAttachmentResponse" type="tns:sendAttachmentResponse"/>
+<xs:complexType name="getAttachment">
+    <xs:sequence/>
+  </xs:complexType>
+<xs:complexType name="getAttachmentResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:base64Binary"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="sendAttachment">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:base64Binary"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="sendAttachmentResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>  </wsdl:types>
+  <wsdl:message name="getAttachmentResponse">
+    <wsdl:part element="tns:getAttachmentResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sendAttachment">
+    <wsdl:part element="tns:sendAttachment" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sendAttachmentResponse">
+    <wsdl:part element="tns:sendAttachmentResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getAttachment">
+    <wsdl:part element="tns:getAttachment" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="MTOMInter">
+    <wsdl:operation name="getAttachment">
+      <wsdl:input message="tns:getAttachment" name="getAttachment">
+    </wsdl:input>
+      <wsdl:output message="tns:getAttachmentResponse" name="getAttachmentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendAttachment">
+      <wsdl:input message="tns:sendAttachment" name="sendAttachment">
+    </wsdl:input>
+      <wsdl:output message="tns:sendAttachmentResponse" name="sendAttachmentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MTOMServiceSoapBinding" type="tns:MTOMInter">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getAttachment">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getAttachment">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getAttachmentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendAttachment">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sendAttachment">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sendAttachmentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MTOMService">
+    <wsdl:port binding="tns:MTOMServiceSoapBinding" name="MTOMServicePort">
+      <soap:address location="http://localhost:8010/testMTOM/MTOMService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

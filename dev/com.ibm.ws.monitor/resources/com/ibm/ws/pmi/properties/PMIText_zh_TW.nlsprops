@@ -1,0 +1,2290 @@
+
+###############################################################################
+# Copyright (c) 2001, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIText.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# EPM Names
+epm.moduleName.epm=\u6548\u80fd\u6a21\u7d44
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.beanData=Enterprise Bean
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.beanMethodData=Enterprise Bean \u65b9\u6cd5
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.orbThreadPool=ORB \u57f7\u884c\u7dd2\u5132\u5b58\u5340
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.connectionMgr=\u8cc7\u6599\u5eab\u9023\u7dda\u5132\u5b58\u5340 (4.0)
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.objectPools=Bean \u7269\u4ef6\u5132\u5b58\u5340
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.servletEngine=Servlet \u5f15\u64ce
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.sessions=Servlet \u968e\u6bb5\u4f5c\u696d
+
+# -------------------------------------------------------------------------------------------------
+# EPM Names
+epm.moduleName.transactionData=\u4ea4\u6613
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+pmiroot=WebSphere \u7ba1\u7406\u7db2\u57df
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+pmi=\u6548\u80fd
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+beanModule=Enterprise Bean
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+connectionPoolModule=JDBC \u9023\u7dda\u5132\u5b58\u5340
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+j2cModule=JCA \u9023\u7dda\u5132\u5b58\u5340
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+threadPoolModule=\u57f7\u884c\u7dd2\u5132\u5b58\u5340
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+transactionModule=\u4ea4\u6613\u7ba1\u7406\u7a0b\u5f0f
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+webAppModule=Web \u61c9\u7528\u7a0b\u5f0f
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+servletSessionsModule=Servlet \u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+jvmRuntimeModule=JVM \u57f7\u884c\u6642\u671f
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+jvmpiModule=JVMPI \u8a2d\u5b9a\u6a94
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+relationalResourceAdapterModule=\u95dc\u806f\u5f0f\u8cc7\u6e90\u914d\u63a5\u5668
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+orbPerfModule=ORB
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+wlmModule=\u5de5\u4f5c\u91cf\u7ba1\u7406
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+webServicesModule=Web \u670d\u52d9
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+wsgwModule=Web \u670d\u52d9\u9598\u9053
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+cacheModule= \u52d5\u614b\u5feb\u53d6
+
+# -------------------------------------------------------------------------------------------------
+# PMI Names
+#   - If there is any name key confliction, we will have to add "pmi" as prefix.
+#   - It also means we need to update all the PMI xml files accordingly.
+#   - module name: use short name
+systemModule=\u7cfb\u7d71\u8cc7\u6599
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Web \u5132\u5b58\u5668
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+ORB.thread.pool=Object Request Broker
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+MessageListenerThreadPool=\u8a0a\u606f\u63a5\u807d\u5668
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+pmiroot.desc=\u4f3a\u670d\u5668\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+beanModule.desc=\u5728\u4f3a\u670d\u5668\u7684\u6240\u6709 Bean Home \u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+connectionPoolModule.desc=JDBC \u8cc7\u6599\u5eab\u9023\u7dda\u5132\u5b58\u5340\uff084.0 \u8cc7\u6599\u4f86\u6e90\u548c 5.0 \u8cc7\u6599\u4f86\u6e90\uff09\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+j2cModule.desc=JCA \u9023\u7dda\u5132\u5b58\u5340\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+threadPoolModule.desc=\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+transactionModule.desc=\u4ea4\u6613\u7ba1\u7406\u7a0b\u5f0f\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Web \u61c9\u7528\u7a0b\u5f0f\u3001Servlet \u548c JSP \u6a94\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+servletSessionsModule.desc=Servlet \u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+jvmRuntimeModule.desc=Java \u865b\u64ec\u6a5f\u5668\u57f7\u884c\u6642\u671f\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+jvmpiModule.desc=JVMPI Profiler \u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+wlmModule.desc=\u5de5\u4f5c\u91cf\u7ba1\u7406 (WLM) \u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webServicesModule.desc=Web \u670d\u52d9\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webServicesModule.services.desc=Web \u670d\u52d9\u7aef\u9ede\u4e2d\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+cacheModule.desc=\u52d5\u614b\u5feb\u53d6\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+orbPerfModule.desc=Object Request Broker \u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+relationalResourceAdapterModule.desc=\u95dc\u806f\u5f0f\u8cc7\u6e90\u914d\u63a5\u5668\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+systemModule.desc=\u4f5c\u696d\u7cfb\u7d71\u7684\u7cfb\u7d71\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+beanModule.desc.col=\u5728\u4f3a\u670d\u5668\u7684 Bean Home \u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+connectionPoolModule.desc.col=\u8cc7\u6599\u4f86\u6e90\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+threadPoolModule.desc.col=\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+transactionModule.desc.col=\u4ea4\u6613\u7ba1\u7406\u7a0b\u5f0f\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+webAppModule.desc.col=Web \u61c9\u7528\u7a0b\u5f0f\u53ca\u5176 Servlet \u548c JSP \u6a94\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+servletSessionsModule.desc.col=Servlet \u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+jvmRuntimeModule.desc.col=Java \u865b\u64ec\u6a5f\u5668\u57f7\u884c\u6642\u671f\u7684\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+jvmpiModule.desc.col=JVMPI Profiler \u7684\u6548\u80fd\u8cc7\u6599
+
+# -------------------------------------------------------------------------------------------------
+# Collection (Instance) Description
+systemModule.desc.col=\u4f5c\u696d\u7cfb\u7d71\u7684\u7cfb\u7d71\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.creates.desc=Bean \u7684\u5efa\u7acb\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.removes.desc=Bean \u7684\u79fb\u9664\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.activates.desc=Bean \u7684\u555f\u52d5\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.passivates.desc=Bean \u7684\u53d6\u6d88\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.passivationCount.desc=\u5728\u53d6\u6d88\u72c0\u614b\u7684 Bean \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.instantiates.desc=Bean \u5be6\u4f8b\u5316\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.destroys.desc=Bean \u7684\u91cb\u51fa\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.loads.desc=\u5f9e\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u4e2d\u8f09\u5165 Bean \u8cc7\u6599\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.stores.desc=Bean \u8cc7\u6599\u5132\u5b58\u5728\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule  (for Entity beans)
+beanModule.readyCount.desc=\u5728\u5099\u59a5\u72c0\u614b\u7684 Bean \u5be6\u4f8b\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule (for Session beans - same counter as readyCount but different name)
+beanModule.methodReadyCount.desc=\u5728\u65b9\u6cd5\u5099\u59a5\u72c0\u614b\u7684 Bean \u5be6\u4f8b\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.concurrentLives.desc=\u540c\u6642\u5b58\u6d3b\u7684\u5e73\u5747 Bean \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.totalMethodCalls.desc=Bean \u9060\u7aef\u65b9\u6cd5\u7684\u547c\u53eb\u6578\u76ee
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgMethodRt.desc=\u5728 Bean \u9060\u7aef\u65b9\u6cd5\u4e0a\u7684\u5e73\u5747\u56de\u61c9\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgMethodTotalRt.desc=\u5f9e\u4f48\u7dda\u4e2d\u6536\u5230\u65b9\u6cd5\u5230\u9001\u56de\u56de\u8986\u4e4b\u9593\uff0c\u8655\u7406\u65b9\u6cd5\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgCreateTime.desc=Bean \u5efa\u7acb\u547c\u53eb\u6240\u9700\u8981\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff0c\u9700\u8981\u8f09\u5165\u7684\u8a71\uff0c\u5305\u62ec\u8f09\u5165\u6642\u9593\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgRemoveTime.desc=beanRemove \u547c\u53eb\u6240\u9700\u8981\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff0c\u5982\u679c\u5305\u62ec\u5728\u8cc7\u6599\u5eab\u7684\u90e8\u5206\uff0c\u4e5f\u5305\u62ec\u5728\u8cc7\u6599\u5eab\u7684\u6642\u9593\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.loadTime.desc=\u5f9e\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u8f09\u5165 Bean \u8cc7\u6599\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.storeTime.desc=\u5c07 Bean \u8cc7\u6599\u5132\u5b58\u81f3\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.activationTime.desc=\u555f\u52d5 Bean \u7269\u4ef6\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.passivationTime.desc=\u53d6\u6d88 Bean \u7269\u4ef6\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.messageCount.desc=\u905e\u9001\u7d66 Bean \u7684 onMessage \u65b9\u6cd5\u7684\u8a0a\u606f\u6578\u76ee\uff08\u9069\u7528\u65bc\uff1a\u8a0a\u606f\u9a45\u52d5 Bean\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.messageBackoutCount.desc=\u7121\u6cd5\u905e\u9001\u7d66 Bean \u7684 onMessage \u65b9\u6cd5\u7684\u53d6\u6d88\u8a0a\u606f\u6578\u76ee\uff08\u9069\u7528\u65bc\uff1a\u8a0a\u606f\u9a45\u52d5 Bean\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgSrvSessionWaitTime.desc=\u5f9e\u5132\u5b58\u5340\u53d6\u5f97\u4f3a\u670d\u5668\u968e\u6bb5\u4f5c\u696d\u6240\u9700\u8981\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\uff08\u9069\u7528\u65bc\uff1a\u8a0a\u606f\u9a45\u52d5 Bean\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.serverSessionUsage.desc=\u4f7f\u7528\u4e2d\u7684 ServerSession \u5132\u5b58\u5340\u767e\u5206\u6bd4\uff08\u9069\u7528\u65bc\uff1a\u8a0a\u606f\u9a45\u52d5 Bean\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.activeMethods.desc=\u540c\u6642\u5728\u4f5c\u7528\u4e2d\u7684\u5e73\u5747\u65b9\u6cd5\u6578\u76ee\uff08\u4e5f\u5c31\u662f\u540c\u6642\u547c\u53eb\u7684\u65b9\u6cd5\u6578\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.getsFromPool.desc=\u5f9e\u5132\u5b58\u5340\u4e2d\u64f7\u53d6\u7269\u4ef6\u7684\u547c\u53eb\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.getsFound.desc=\u64f7\u53d6\u4f5c\u696d\u5728\u5132\u5b58\u5340\u627e\u5230\u53ef\u7528\u7269\u4ef6\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.returnsToPool.desc=\u5c07\u7269\u4ef6\u50b3\u56de\u5132\u5b58\u5340\u7684\u547c\u53eb\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.returnsDiscarded.desc=\u56e0\u5132\u5b58\u5340\u5df2\u6eff\u800c\u6368\u68c4\u50b3\u56de\u4e4b\u7269\u4ef6\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.drainsFromPool.desc=\u5e38\u99d0\u7a0b\u5f0f\u767c\u73fe\u5132\u5b58\u5340\u5728\u9592\u7f6e\u4e2d\u4e26\u8a66\u5716\u52a0\u4ee5\u6e05\u9664\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.avgDrainSize.desc=\u6bcf\u6b21\u6392\u9664\u6240\u6368\u68c4\u7684\u5e73\u5747\u7269\u4ef6\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.poolSize.desc=\u5132\u5b58\u5340\u4e2d\u7684\u5e73\u5747\u7269\u4ef6\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.desc=\u5305\u542b\u8ffd\u8e64\u5404\u65b9\u6cd5\u6548\u80fd\u7684\u6240\u6709\u6548\u80fd\u8cc7\u6599\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.methodCalls.desc=\u65b9\u6cd5\u547c\u53eb\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.methodRt.desc=\u5e73\u5747\u65b9\u6cd5\u56de\u61c9\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In beanModule
+beanModule.methods.methodLoad.desc=\u547c\u53eb\u76f8\u540c\u65b9\u6cd5\u7684\u4e26\u884c\u547c\u53eb\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numCreates.desc=\u5efa\u7acb\u7684\u9023\u7dda\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numDestroys.desc=\u95dc\u9589\u7684\u9023\u7dda\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numAllocates.desc=\u914d\u7f6e\u7684\u9023\u7dda\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numReturns.desc=\u50b3\u56de\u5132\u5b58\u5340\u7684\u9023\u7dda\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.poolSize.desc=\u9023\u7dda\u5132\u5b58\u5340\u7684\u5927\u5c0f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.freePoolSize.desc=\u5132\u5b58\u5340\u4e2d\u7684\u53ef\u7528\u9023\u7dda\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.concurrentWaiters.desc=\u540c\u6642\u7b49\u5f85\u9023\u7dda\u7684\u5e73\u5747\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.avgWaitTime.desc=\u6388\u4e88\u9023\u7dda\u4e4b\u524d\u7684\u5e73\u5747\u7b49\u5f85\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.avgUseTime.desc=\u9023\u7dda\u7684\u5e73\u5747\u4f7f\u7528\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002\u914d\u7f6e\u548c\u50b3\u56de\u9023\u7dda\u7684\u6642\u9593\u5dee\u3002\u9019\u500b\u503c\u5305\u62ec JDBC \u4f5c\u696d\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.faults.desc=\u5132\u5b58\u5340\u4e2d\u7684\u9023\u7dda\u903e\u6642\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.percentUsed.desc=\u4f7f\u7528\u4e2d\u4e4b\u5132\u5b58\u5340\u7684\u5e73\u5747\u767e\u5206\u6bd4\u3002\u9019\u500b\u503c\u4fc2\u53d6\u6c7a\u65bc ConnectionPool \u4e2d\u914d\u7f6e\u7684\u7e3d\u9023\u7dda\u6578\uff0c\u800c\u975e\u73fe\u884c\u9023\u7dda\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.percentMaxed.desc=\u6240\u6709\u9023\u7dda\u90fd\u5728\u4f7f\u7528\u4e2d\u7684\u5e73\u5747\u6642\u9593\u767e\u5206\u6bd4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.prepStmtCacheDiscards.desc=\u56e0\u5feb\u53d6\u8a18\u61b6\u9ad4\u5df2\u6eff\u800c\u6368\u68c4\u7684\u9673\u8ff0\u5f0f\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numManagedConnections.desc=\u7279\u5b9a\u9023\u7dda\u5132\u5b58\u5340\u5728\u4f7f\u7528\u4e2d\u7684 ManagedConnection \u7269\u4ef6\u6578\u76ee\u3002\uff08\u53ea\u9069\u7528\u65bc 5.0 \u7248\u8cc7\u6599\u4f86\u6e90\u3002\uff09
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In Connection Pool Module
+connectionPoolModule.numConnectionHandles.desc=\u7279\u5b9a\u9023\u7dda\u5132\u5b58\u5340\u6240\u7528\u7684 Connection \u7269\u4ef6\u6578\u76ee\u3002\uff08\u53ea\u9069\u7528\u65bc 5.0 \u7248\u8cc7\u6599\u4f86\u6e90\u3002\uff09
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For RRA in JDBC Connection Pool Module
+connectionPoolModule.jdbcOperationTimer.desc=\u57f7\u884c JDBC \u547c\u53eb\u6642\u6240\u82b1\u8cbb\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\uff0c\u5728 JDBC \u9a45\u52d5\u7a0b\u5f0f\u3001\u7db2\u8def\u548c\u8cc7\u6599\u5eab\u4e2d\u82b1\u7684\u6642\u9593\u90fd\u5305\u62ec\u5728\u5167\u3002\uff08\u53ea\u9069\u7528\u65bc 5.0 \u7248\u8cc7\u6599\u4f86\u6e90\u3002\uff09
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnections.desc=\u7279\u5b9a\u9023\u7dda\u5132\u5b58\u5340\u6240\u80fd\u4f7f\u7528\u7684 ManagedConnection \u7269\u4ef6\u6578\u76ee\u3002\u9019\u500b\u6578\u76ee\u5305\u62ec\u5df2\u5efa\u7acb\u800c\u672a\u6bc0\u640d\u7684\u6240\u6709 ManagedConnection \u7269\u4ef6\u3002
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numConnectionHandles.desc=\u9019\u500b\u5132\u5b58\u5340\u4e2d\u7684 ManagedConnection\uff08\u5be6\u9ad4\u9023\u7dda\uff09\u6240\u95dc\u806f\u7684\u9023\u7dda\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsCreated.desc=\u5efa\u7acb\u7684\u53d7\u7ba1\u7406\u9023\u7dda\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsDestroyed.desc=\u6bc0\u640d\u7684\u53d7\u7ba1\u7406\u9023\u7dda\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsAllocated.desc=\u53d7\u7ba1\u7406\u9023\u7dda\u914d\u7f6e\u7d66\u7528\u6236\u7aef\u7684\u7e3d\u6b21\u6578\u3002\u9019\u500b\u7e3d\u6578\u5c31\u6574\u500b\u5132\u5b58\u5340\u4f86\u7dad\u8b77\uff0c\u800c\u4e0d\u662f\u5c31\u500b\u5225\u9023\u7dda\u4f86\u7dad\u8b77\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.numManagedConnectionsReleased.desc=\u53d7\u7ba1\u7406\u9023\u7dda\u91cb\u51fa\u9084\u7d66\u5132\u5b58\u5340\u7684\u7e3d\u6b21\u6578\u3002\u9019\u500b\u7e3d\u6578\u5c31\u6574\u500b\u5132\u5b58\u5340\u4f86\u7dad\u8b77\uff0c\u800c\u4e0d\u662f\u5c31\u500b\u5225\u9023\u7dda\u4f86\u7dad\u8b77\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.faults.desc=\u9019\u500b\u9023\u7dda\u5132\u5b58\u5340\u4e2d\u7684\u932f\u8aa4\u6578\u76ee\uff08\u5982\u903e\u6642\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.freePoolSize.desc=\u76ee\u524d\u5728\u5132\u5b58\u5340\u4e2d\u7684\u53ef\u7528\u53d7\u7ba1\u7406\u9023\u7dda\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.poolSize.desc=\u5728\u5132\u5b58\u5340\u4e2d\u7684\u5e73\u5747\u53d7\u7ba1\u7406\u9023\u7dda\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.concurrentWaiters.desc=\u540c\u6642\u7b49\u5f85\u9023\u7dda\u7684\u5e73\u5747\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.percentUsed.desc=\u4f7f\u7528\u4e2d\u4e4b\u5132\u5b58\u5340\u7684\u5e73\u5747\u767e\u5206\u6bd4\u3002\u9019\u500b\u503c\u4fc2\u53d6\u6c7a\u65bc ConnectionPool \u4e2d\u914d\u7f6e\u7684\u7e3d\u9023\u7dda\u6578\uff0c\u800c\u975e\u73fe\u884c\u9023\u7dda\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.percentMaxed.desc=\u6240\u6709\u9023\u7dda\u90fd\u5728\u4f7f\u7528\u4e2d\u7684\u6642\u9593\u767e\u5206\u6bd4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.avgWait.desc=\u6388\u4e88\u9023\u7dda\u4e4b\u524d\u7684\u5e73\u5747\u7b49\u5f85\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+j2cModule.useTime.desc=\u9023\u7dda\u5728\u4f7f\u7528\u4e2d\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\u6578\uff0c\u5f9e\u914d\u7f6e\u9023\u7dda\u958b\u59cb\u6e2c\u91cf\uff0c\u76f4\u5230\u91cb\u51fa\u9023\u7dda\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.threadCreates.desc=\u5efa\u7acb\u7684\u57f7\u884c\u7dd2\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.threadDestroys.desc=\u6bc0\u640d\u7684\u57f7\u884c\u7dd2\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.activeThreads.desc=\u540c\u6642\u5728\u4f5c\u7528\u4e2d\u7684\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.poolSize.desc=\u5132\u5b58\u5340\u4e2d\u7684\u5e73\u5747\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.percentMaxed.desc=\u6240\u6709\u57f7\u884c\u7dd2\u90fd\u5728\u4f7f\u7528\u4e2d\u7684\u5e73\u5747\u6642\u9593\u767e\u5206\u6bd4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.activeTime.desc=\u57f7\u884c\u7dd2\u5728\u4f5c\u7528\u72c0\u614b\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.concurrentlyHungThreads.desc=\u540c\u6642\u5728\u505c\u6b62\u72c0\u614b\u7684\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.declaredThreadHangCleared.desc=\u6e05\u9664\u7684\u57f7\u884c\u7dd2\u505c\u6b62\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Thread Pool Module
+threadPoolModule.declaredThreadHung.desc=\u5ba3\u544a\u5df2\u505c\u6b62\u7684\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransBegun.desc=\u5728\u4f3a\u670d\u5668\u4e2d\u958b\u59cb\u7684\u5ee3\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransInvolved.desc=\u4f3a\u670d\u5668\u4e2d\u6240\u5305\u542b\u7684\u5ee3\u57df\u4ea4\u6613\u6578\u76ee\uff08\u4e5f\u5c31\u662f\u8d77\u59cb\u548c\u532f\u5165\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransBegun.desc=\u5728\u4f3a\u670d\u5668\u4e2d\u958b\u59cb\u7684\u5340\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.activeGlobalTrans.desc=\u540c\u6642\u5728\u4f5c\u7528\u4e2d\u7684\u5ee3\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.activeLocalTrans.desc=\u540c\u6642\u5728\u4f5c\u7528\u4e2d\u7684\u5340\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTranDuration.desc=\u5ee3\u57df\u4ea4\u6613\u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTranDuration.desc=\u5340\u57df\u4ea4\u6613\u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalBeforeCompletionDuration.desc=\u5ee3\u57df\u4ea4\u6613\u4e4b before_completion \u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalPrepareDuration.desc=\u5ee3\u57df\u4ea4\u6613\u6e96\u5099\u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalCommitDuration.desc=\u5ee3\u57df\u4ea4\u6613\u78ba\u5b9a\u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localBeforeCompletionDuration.desc=\u5340\u57df\u4ea4\u6613\u4e4b before_completion \u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localCommitDuration.desc=\u5340\u57df\u4ea4\u6613\u78ba\u5b9a\u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.numOptimization.desc=\u8f49\u63db\u6210\u55ae\u968e\u6bb5\u6700\u4f73\u5316\u7684\u5ee3\u57df\u4ea4\u6613\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransCommitted.desc=\u78ba\u5b9a\u7684\u5ee3\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransCommitted.desc=\u78ba\u5b9a\u7684\u5340\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransRolledBack.desc=\u56de\u5fa9\u7684\u5ee3\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransRolledBack.desc=\u56de\u5fa9\u7684\u5340\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.globalTransTimeout.desc=\u903e\u6642\u7684\u5ee3\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.numCheckpoints.desc=\u4ea4\u6613\u65e5\u8a8c\u6709\u6838\u5c0d\u9ede\u4f5c\u696d\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.checkpointTime.desc=\u5169\u9023\u7e8c\u4ea4\u6613\u65e5\u8a8c\u6838\u5c0d\u9ede\u4e4b\u9593\u7684\u5e73\u5747\u9593\u9694\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranStartInChkPnt.desc=\u5728\u5169\u9023\u7e8c\u4ea4\u6613\u65e5\u8a8c\u6838\u5c0d\u9ede\u4e4b\u9593\u6240\u555f\u52d5\u7684\u5e73\u5747\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranEndInChkPnt.desc=\u5728\u5169\u9023\u7e8c\u4ea4\u6613\u65e5\u8a8c\u6838\u5c0d\u9ede\u4e4b\u9593\u6240\u5b8c\u6210\u7684\u5e73\u5747\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.localTransTimeout.desc=\u903e\u6642\u7684\u5340\u57df\u4ea4\u6613\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=\u8f09\u5165\u7684 Servlet \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=\u91cd\u65b0\u8f09\u5165\u7684 Servlet \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=\u542b\u6709\u5404 Servlet \u548c JSP \u6a94\u6548\u80fd\u8cc7\u6599\u7684\u96c6\u5408\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=Servlet \u6240\u8655\u7406\u7684\u8981\u6c42\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=\u540c\u6642\u8655\u7406\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=Servlet \u8981\u6c42\u5b8c\u6210\u7684\u5e73\u5747\u56de\u61c9\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=Servlet \u548c JSP \u6a94\u4e2d\u7684\u932f\u8aa4\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.loadedSince.desc=\u8f09\u5165 Servlet \u548c JSP \u6a94\u7684\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.createdSessions.desc=\u5efa\u7acb\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.invalidatedSessions.desc=\u5931\u6548\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.finalizedSessions.desc=\u5b8c\u6210\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.sessionLifeTime.desc=\u968e\u6bb5\u4f5c\u696d\u751f\u547d\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\uff08\u5931\u6548\u6642\u9593 - \u5efa\u7acb\u6642\u9593\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.sessionInvalidateTime.desc=\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u5728\u5931\u6548\u72c0\u614b\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\uff08\u7d42\u6b62\u6642\u9593 - \u5931\u6548\u6642\u9593\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.activeSessions.desc=\u8981\u6c42\u76ee\u524d\u6240\u5b58\u53d6\u7684\u968e\u6bb5\u4f5c\u696d\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.liveSessions.desc=\u76ee\u524d\u7684\u5b58\u6d3b\u968e\u6bb5\u4f5c\u696d\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.noRoomForNewSession.desc=\u53ea\u9069\u7528\u65bc\u8a18\u61b6\u9ad4\u5167\u8a2d\u5b9a AllowOverflow=false \u7684\u968e\u6bb5\u4f5c\u696d\u3002\u56e0\u9019\u500b\u503c\u8d85\u51fa\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u4e0a\u9650\u800c\u7121\u6cd5\u8655\u7406\u5c0d\u65b0\u968e\u6bb5\u4f5c\u696d\u8981\u6c42\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.cacheDiscards.desc=\u5df2\u5f37\u5236\u9000\u51fa\u5feb\u53d6\u8a18\u61b6\u9ad4\u7684\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u6578\u76ee\u3002LRU \u6f14\u7b97\u6cd5\u6703\u79fb\u9664\u820a\u9805\u76ee\uff0c\u5c07\u7a7a\u9593\u63d0\u4f9b\u7d66\u65b0\u968e\u6bb5\u4f5c\u696d\u548c\u5feb\u53d6\u907a\u6f0f\u3002\u53ea\u9069\u7528\u65bc\u6301\u7e8c\u6027\u968e\u6bb5\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalReadTime.desc=\u8b80\u53d6\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u6642\u6240\u82b1\u7684\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002\u5982\u679c\u662f\u591a\u5217\uff0c\u9019\u4e9b\u5ea6\u91cf\u662f\u91dd\u5c0d\u5c6c\u6027\uff1b\u5982\u679c\u662f\u55ae\u5217\uff0c\u9019\u4e9b\u5ea6\u91cf\u5c31\u662f\u91dd\u5c0d\u6574\u500b\u968e\u6bb5\u4f5c\u696d\u3002\u53ea\u9069\u7528\u65bc\u6301\u7e8c\u6027\u968e\u6bb5\u4f5c\u696d\u3002\u7576\u4f7f\u7528 JMS \u6301\u7e8c\u6027\u5132\u5b58\u5eab\u6642\uff0c\u5982\u679c\u60a8\u9078\u64c7\u4e0d\u5e8f\u5217\u5316\u8cc7\u6599\uff0c\u8a08\u6578\u5668\u5c31\u7121\u6cd5\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalReadSize.desc=\u5f9e\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u4e2d\u8b80\u53d6\u7684\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u5927\u5c0f\u3002\u53ea\u9069\u7528\u65bc\uff08\u5e8f\u5217\u5316\uff09\u6301\u7e8c\u6027\u968e\u6bb5\u4f5c\u696d\uff0c\u985e\u4f3c\u65bc externalReadTime\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalWriteTime.desc=\u5f9e\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u4e2d\u5beb\u5165\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u6642\u6240\u82b1\u7684\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002\u53ea\u9069\u7528\u65bc\uff08\u5e8f\u5217\u5316\uff09\u6301\u7e8c\u6027\u968e\u6bb5\u4f5c\u696d\uff0c\u985e\u4f3c\u65bc externalReadTime\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalWriteSize.desc=\u5beb\u5165\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u5927\u5c0f\u3002\u53ea\u9069\u7528\u65bc\uff08\u5e8f\u5217\u5316\uff09\u6301\u7e8c\u6027\u968e\u6bb5\u4f5c\u696d\uff0c\u985e\u4f3c\u65bc externalReadTime\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.affinityBreaks.desc=\u4e2d\u65b7\u7684 HTTP \u968e\u6bb5\u4f5c\u696d\u89aa\u7de3\u6027\u6578\u76ee\uff0cWebSphere Application Server \u6709\u610f\u4e2d\u65b7\u7684\u968e\u6bb5\u4f5c\u696d\u89aa\u7de3\u6027\u4e0d\u8a08\u7b97\u5728\u5167\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.timeSinceLastActivated.desc=\u5148\u524d\u7684\u5b58\u53d6\u6642\u9593\u622a\u8a18\u548c\u76ee\u524d\u7684\u5b58\u53d6\u6642\u9593\u6233\u8a18\u4e4b\u9593\u7684\u5dee\u7570\uff08\u6beb\u79d2\uff09\u3002\u4e0d\u5305\u62ec\u968e\u6bb5\u4f5c\u696d\u903e\u6642\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.invalidatedViaTimeout.desc=\u56e0\u903e\u6642\u800c\u5931\u6548\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.activateNonExistSessions.desc=\u5c0d\u5df2\u4e0d\u5b58\u5728\u7684\u968e\u6bb5\u4f5c\u696d\u7684\u8981\u6c42\u6578\uff0c\u53ef\u80fd\u662f\u56e0\u70ba\u968e\u6bb5\u4f5c\u696d\u903e\u6642\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.serializableSessObjSize.desc=\u968e\u6bb5\u4f5c\u696d\u5c64\u6b21\u7684\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u5e73\u5747\u5927\u5c0f\uff0c\u53ea\u5305\u62ec\u5feb\u53d6\u8a18\u61b6\u9ad4\u5167\u53ef\u5e8f\u5217\u5316\u7684\u5c6c\u6027\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.totalMemory.desc=Java \u865b\u64ec\u6a5f\u5668\u57f7\u884c\u6642\u671f\u4e2d\u7684\u7e3d\u8a18\u61b6\u9ad4 (KB)\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.freeMemory.desc=Java \u865b\u64ec\u6a5f\u5668\u57f7\u884c\u6642\u671f\u4e2d\u7684\u53ef\u7528\u8a18\u61b6\u9ad4 (KB)\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.usedMemory.desc=Java \u865b\u64ec\u6a5f\u5668\u57f7\u884c\u6642\u671f\u4e2d\u7684\u5df2\u7528\u8a18\u61b6\u9ad4\u91cf (KB)\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.upTime.desc=Java \u865b\u64ec\u6a5f\u5668\u5df2\u57f7\u884c\u7684\u6642\u9593\u91cf\uff08\u79d2\uff09
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Process CPU Usage
+jvmRuntimeModule.cpuUsage.desc=Java \u865b\u64ec\u6a5f\u5668\u7684 CPU \u4f7f\u7528\u7387\uff08\u767e\u5206\u6bd4\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numGcCalls.desc=\u8a18\u61b6\u9ad4\u56de\u6536\u547c\u53eb\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.avgTimeBetweenGcCalls.desc=\u5169\u6b21\u8a18\u61b6\u9ad4\u56de\u6536\u547c\u53eb\u7684\u5e73\u5747\u9593\u9694\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.avgGcDuration.desc=\u8a18\u61b6\u9ad4\u56de\u6536\u547c\u53eb\u7684\u5e73\u5747\u6301\u7e8c\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numObjectsAllocated.desc=\u914d\u7f6e\u7684\u7269\u4ef6\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numObjectsFreed.desc=\u91cb\u51fa\u7684\u7269\u4ef6\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numObjectsMoved.desc=\u8cc7\u6599\u5806\u4e2d\u6240\u79fb\u52d5\u7684\u7269\u4ef6\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numThreadsStarted.desc=\u555f\u52d5\u7684\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numThreadsDead.desc=\u7d50\u675f\u7684\u57f7\u884c\u7dd2\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.numWaitsForLock.desc=\u57f7\u884c\u7dd2\u7b49\u5f85\u9396\u5b9a\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For JVM Runtime Module
+jvmRuntimeModule.avgTimeWaitForLock.desc=\u57f7\u884c\u7dd2\u7b49\u5f85\u9396\u5b9a\u7684\u5e73\u5747\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Relational Resource Adapter Module
+RRAModule.jdbcOperationTimer.desc=\u5728 JDBC \u9a45\u52d5\u7a0b\u5f0f\u4e2d\u57f7\u884c\u6642\u6240\u82b1\u8cbb\u7684\u6642\u9593\u91cf\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Relational Resource Adapter Module
+RRAModule.numDiscardedStatements.desc=\u5099\u59a5\u9673\u8ff0\u5f0f\u5feb\u53d6\u8a18\u61b6\u9ad4\u7684 LRU \u6f14\u7b97\u6cd5\u6240\u6368\u68c4\u7684\u9673\u8ff0\u5f0f\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.referenceLookupTime.desc=\u5728\u65b9\u6cd5\u5206\u6d3e\u80fd\u5920\u5b8c\u6210\u4e4b\u524d\uff0c\u7528\u4f86\u67e5\u95b1\u7269\u4ef6\u53c3\u7167\u7684\u6642\u9593\u91cf\uff08\u6beb\u79d2\u6578\uff0c\u901a\u5e38\u5c0f\u65bc 10 \u6beb\u79d2\uff09\u3002\u6642\u9593\u592a\u9577\u53ef\u80fd\u8868\u793a EJB \u5132\u5b58\u5668\u7684\u67e5\u95b1\u6709\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.requestMarshallingTime.desc=\u914d\u7f6e\u7528\u6236\u7aef\u8981\u6c42\u6240\u82b1\u7684\u6642\u9593\u91cf\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.percentUsingIndirectIORs.desc=\u5728\u6240\u6709\u8981\u6c42\u4e2d\uff0c\u4f7f\u7528\u9593\u63a5 IOR \u8981\u6c42\u4f4d\u7f6e\u5e38\u99d0\u7a0b\u5f0f\u67e5\u95b1\u7684\u767e\u5206\u6bd4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.numPortableInterceptors.desc=\u767b\u9304\u7684\u53ef\u651c\u6027\u6514\u622a\u7a0b\u5f0f\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.totalRequests.desc=\u50b3\u9001\u7d66 Object Request Broker \u7684\u8981\u6c42\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.concurrentRequests.desc=Object Request Broker \u540c\u6642\u8655\u7406\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.LSDLookups.desc=\u8655\u7406\u8981\u6c42\u6642\u6240\u9700\u8981\u7684\u4f4d\u7f6e\u670d\u52d9\u5e38\u99d0\u7a0b\u5f0f\u67e5\u95b1\u7684\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.interceptors.desc=Object Request Broker \u6514\u622a\u7a0b\u5f0f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For OrbPerf Module
+orbPerfModule.interceptors.processingTime.desc=\u57f7\u884c\u5df2\u767b\u9304\u7684\u53ef\u651c\u6027\u6514\u622a\u7a0b\u5f0f\u6642\u6240\u82b1\u7684\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingRequests.desc=\u9019\u500b\u4f3a\u670d\u5668\u6536\u5230\u7684\u9001\u5165 IIOP \u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingStrongAffinityRequests.desc=\u9019\u500b\u4f3a\u670d\u5668\u6240\u6536\u5230\u542b\u5f37\u89aa\u7de3\u6027\u7684\u9001\u5165 IIOP \u8981\u6c42\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingWeakAffinityRequests.desc=\u9019\u500b\u4f3a\u670d\u5668\u6240\u6536\u5230\u542b\u5f31\u89aa\u7de3\u6027\u7684\u9001\u5165 IIOP \u8981\u6c42\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingNonAffinityRequests.desc=\u9019\u500b\u4f3a\u670d\u5668\u6240\u6536\u5230\u4e0d\u542b\u89aa\u7de3\u6027\u7684\u9001\u5165 IIOP \u8981\u6c42\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numIncomingNonWLMObjectRequests.desc=\u9019\u500b\u4f3a\u670d\u5668\u672a\u555f\u7528\u5de5\u4f5c\u91cf\u7ba1\u7406\u6240\u6536\u5230\u7684\u9001\u5165 IIOP \u8981\u6c42\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numServerClusterUpdates.desc=\u9019\u500b\u4f3a\u670d\u5668\u6536\u5230\u65b0\u4f3a\u670d\u5668\u53e2\u96c6\u8cc7\u8a0a\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numOfWLMClientsServiced.desc=\u9019\u500b\u4f3a\u670d\u5668\u5df2\u8655\u7406\u7684\u555f\u7528\u5de5\u4f5c\u91cf\u7ba1\u7406\u7684\u7528\u6236\u7aef\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.numOfConcurrentRequests.desc=\u76ee\u524d\u9019\u500b\u4f3a\u670d\u5668\u6b63\u5728\u8655\u7406\u7684 IIOP \u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.server.serverResponseTime.desc=\u9019\u500b\u4f3a\u670d\u5668\u6240\u8655\u7406\u7684 IIOP \u8981\u6c42\u56de\u61c9\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.client.numOfOutgoingRequests.desc=\u9019\u500b\u7528\u6236\u7aef\u6240\u50b3\u9001\u7684\u9001\u51fa IIOP \u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.client.numClientClusterUpdates.desc=\u9019\u500b\u7528\u6236\u7aef\u6536\u5230\u65b0\u4f3a\u670d\u5668\u53e2\u96c6\u8cc7\u8a0a\u7684\u6b21\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WLMPerf Module
+wlmModule.client.clientResponseTime.desc=\u9019\u500b\u7528\u6236\u7aef\u6240\u50b3\u9001\u7684 IIOP \u8981\u6c42\u7684\u56de\u61c9\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.numLoadedServices.desc=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u8f09\u5165\u7684 Web \u670d\u52d9\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.numberReceived.desc=\u670d\u52d9\u6536\u5230\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.numberDispatched.desc=\u670d\u52d9\u5206\u6d3e\u7d66\u76ee\u6a19\u7a0b\u5f0f\u78bc\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.numberSuccessfull.desc=\u96a8\u8457\u9806\u5229\u50b3\u56de\u7684\u5c0d\u61c9\u56de\u8986\u800c\u5206\u6d3e\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.responseTime.desc=\u63a5\u6536\u8981\u6c42\u548c\u50b3\u56de\u56de\u8986\u4e4b\u9593\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.requestResponseTime.desc=\u63a5\u6536\u8981\u6c42\u548c\u5206\u6d3e\u8655\u7406\u8981\u6c42\u4e4b\u9593\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.dispatchResponseTime.desc=\u5206\u6d3e\u8981\u6c42\u548c\u63a5\u6536\u56de\u8986\u4e4b\u9593\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.replyResponseTime.desc=\u5206\u6d3e\u56de\u8986\u548c\u50b3\u56de\u56de\u8986\u4e4b\u9593\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.size.desc=\u6536\u5230\u7684\u8981\u6c42\u548c\u56de\u8986\u7684\u5e73\u5747\u5167\u5bb9\u5927\u5c0f\uff08\u4f4d\u5143\u7d44\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.requestSize.desc=\u8981\u6c42\u7684\u5e73\u5747\u5167\u5bb9\u5927\u5c0f\uff08\u4f4d\u5143\u7d44\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web services Module
+webServicesModule.services.replySize.desc=\u56de\u8986\u7684\u5e73\u5747\u5167\u5bb9\u5927\u5c0f\uff08\u4f4d\u5143\u7d44\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.synchronousRequests.desc=\u5df2\u767c\u51fa\u7684\u540c\u6b65\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.synchronousResponses.desc=\u5df2\u767c\u51fa\u7684\u540c\u6b65\u56de\u61c9\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.asynchronousRequests.desc=\u5df2\u767c\u51fa\u7684\u975e\u540c\u6b65\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For WSGW Module
+wsgwModule.asynchronousResponses.desc=\u5df2\u767c\u51fa\u7684\u975e\u540c\u6b65\u56de\u61c9\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.maxInMemoryCacheEntryCount.desc=\u8a18\u61b6\u9ad4\u5167\u5feb\u53d6\u9805\u76ee\u7684\u6578\u76ee\u4e0a\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynamic Cache
+cacheModule.inMemoryCacheEntryCount.desc=\u8a18\u61b6\u9ad4\u5167\u5feb\u53d6\u9805\u76ee\u7684\u73fe\u884c\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynamic Cache
+cacheModule.objectsOnDisk.desc=\u78c1\u789f\u4e2d\u7684\u73fe\u884c\u5feb\u53d6\u9805\u76ee\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.hitsOnDisk.desc=\u5c0d\u65bc\u78c1\u789f\u6240\u63d0\u4f9b\u7684\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitInvalidationFromDisk.desc=\u9020\u6210\u5f9e\u78c1\u789f\u4e2d\u79fb\u9664\u9805\u76ee\u7684\u660e\u78ba\u5931\u6548\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.timeoutInvalidationsFromDisk.desc=\u78c1\u789f\u903e\u6642\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.pendingRemovalFromDisk.desc=\u8981\u5f9e\u78c1\u789f\u4e2d\u79fb\u9664\u7684\u73fe\u884c\u64f1\u7f6e\u9805\u76ee\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdsOnDisk.desc=\u78c1\u789f\u4e2d\u7684\u73fe\u884c\u76f8\u4f9d ID \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdsBufferedForDisk.desc=\u78c1\u789f\u7684\u73fe\u884c\u7de9\u885d\u76f8\u4f9d ID \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdsOffloadedToDisk.desc=\u5378\u8f09\u5230\u78c1\u789f\u4e2d\u7684\u76f8\u4f9d ID \u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.dependencyIdBasedInvalidationsFromDisk.desc=\u4ee5\u76f8\u4f9d ID \u70ba\u57fa\u790e\u7684\u5931\u6548\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templatesOnDisk.desc=\u78c1\u789f\u4e2d\u7684\u73fe\u884c\u7bc4\u672c\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templatesBufferedForDisk.desc=\u78c1\u789f\u7684\u73fe\u884c\u7de9\u885d\u7bc4\u672c\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templatesOffloadedToDisk.desc=\u5378\u8f09\u5230\u78c1\u789f\u4e2d\u7684\u7bc4\u672c\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.templateBasedInvalidationsFromDisk.desc=\u4ee5\u7bc4\u672c\u70ba\u57fa\u790e\u7684\u5931\u6548\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.garbageCollectorInvalidationsFromDisk.desc=\u7531\u65bc\u5df2\u9054\u9ad8\u81e8\u754c\u503c\uff0c\u56e0\u6b64\u8a18\u61b6\u9ad4\u56de\u6536\u5668\u5931\u6548\u7684\u6578\u76ee\u9020\u6210\u5f9e\u78c1\u789f\u5feb\u53d6\u4e2d\u79fb\u9664\u9805\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.overflowInvalidationsFromDisk.desc=\u7531\u65bc\u8d85\u51fa\u78c1\u789f\u5feb\u53d6\u5927\u5c0f\u6216\u78c1\u789f\u5feb\u53d6\u5927\u5c0f (GB) \u7684\u9650\u5236\uff0c\u56e0\u6b64\u5931\u6548\u7684\u6578\u76ee\u6703\u5f9e\u78c1\u789f\u4e2d\u79fb\u9664\u9805\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.hitsInMemoryCount.desc=\u5c0d\u65bc\u8a18\u61b6\u9ad4\u6240\u63d0\u4f9b\u7684\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.hitsOnDiskCount.desc=\u5c0d\u65bc\u78c1\u789f\u6240\u63d0\u4f9b\u7684\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitInvalidationCount.desc=\u660e\u78ba\u5931\u6548\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.lruInvalidationCount.desc=\u4f9d\u6700\u4e45\u6c92\u7528 (LRU) \u6f14\u7b97\u6cd5\u5f9e\u8a18\u61b6\u9ad4\u4e2d\u79fb\u9664\u7684\u5feb\u53d6\u9805\u76ee\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.timeoutInvalidationCount.desc=\u56e0\u903e\u6642\u904e\u671f\u800c\u5f9e\u8a18\u61b6\u9ad4\u548c\u78c1\u789f\u4e2d\u79fb\u9664\u7684\u5feb\u53d6\u9805\u76ee\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.inMemoryAndDiskCacheEntryCount.desc=\u8a18\u61b6\u9ad4\u548c\u78c1\u789f\u4e2d\u6240\u7528\u7684\u5feb\u53d6\u9805\u76ee\u73fe\u884c\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.remoteHitCount.desc=\u5c0d\u65bc\u6284\u5beb\u7db2\u57df\u5167\u5176\u4ed6 Java \u865b\u64ec\u6a5f\u5668\u6240\u63d0\u4f9b\u7684\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.missCount.desc=\u5c0d\u65bc\u5728\u5feb\u53d6\u8a18\u61b6\u9ad4\u5167\u627e\u4e0d\u5230\u7684\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.clientRequestCount.desc=\u5c0d\u65bc\u5728\u9019\u500b\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u57f7\u884c\u7684\u61c9\u7528\u7a0b\u5f0f\u6240\u7522\u751f\u4e4b\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.distributedRequestCount.desc=\u5c0d\u65bc\u5728\u9019\u500b\u6284\u5beb\u7db2\u57df\u4e2d\u7684\u5354\u540c\u4f5c\u696d\u5feb\u53d6\u8a18\u61b6\u9ad4\u6240\u7522\u751f\u4e4b\u53ef\u5feb\u53d6\u7269\u4ef6\u7684\u8981\u6c42\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitMemoryInvalidationCount.desc=\u9020\u6210\u5f9e\u8a18\u61b6\u9ad4\u4e2d\u79fb\u9664\u9805\u76ee\u7684\u660e\u78ba\u5931\u6548\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.explicitDiskInvalidationCount.desc=\u9020\u6210\u5f9e\u78c1\u789f\u4e2d\u79fb\u9664\u9805\u76ee\u7684\u660e\u78ba\u5931\u6548\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.localExplicitInvalidationCount.desc=\u5728\u672c\u7aef\u74b0\u5883\u5167\u7522\u751f\u7684\u660e\u78ba\u5931\u6548\u6578\u76ee\uff0c\u53ef\u80fd\u662f\u4f9d\u7a0b\u5f0f\u7684\u65b9\u5f0f\u7522\u751f\uff0c\u4e5f\u53ef\u80fd\u662f\u5feb\u53d6\u539f\u5247\u6240\u7522\u751f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.remoteExplicitInvalidationCount.desc=\u5f9e\u9019\u500b\u6284\u5beb\u7db2\u57df\u5167\u5354\u540c\u4f5c\u696d\u7684 Java \u865b\u64ec\u6a5f\u5668\u6536\u5230\u7684\u660e\u78ba\u5931\u6548\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Dynacache Module
+cacheModule.remoteCreationCount.desc=\u5f9e\u5354\u540c\u4f5c\u696d\u7684\u52d5\u614b\u5feb\u53d6\u8a18\u61b6\u9ad4\u6536\u5230\u7684\u5feb\u53d6\u9805\u76ee\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For System Module
+systemModule.cpuUtilization.desc=\u524d\u6b21\u67e5\u8a62\u4e4b\u5f8c\u7684\u5e73\u5747 CPU \u4f7f\u7528\u7387\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For System Module
+systemModule.avgCpuUtilization.desc=\u4f3a\u670d\u5668\u555f\u52d5\u4e4b\u5f8c\u7684\u5e73\u5747 CPU \u4f7f\u7528\u7387\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For System Module
+systemModule.freeMemory.desc=\u53ef\u7528\u8a18\u61b6\u9ad4\u7684 Snapshot (KB)\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.creates=Num Creates
+beanModule.creates=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.removes=Num Removes
+beanModule.removes=RemoveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.activates=Num Activates
+beanModule.activates=ActivateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (PMI - passivate / countstatistic)
+#beanModule.passivates=Num Passivates
+beanModule.passivates=PassivateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+beanModule.passivationCount=PassiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.instantiates=Num Instantiates
+beanModule.instantiates=InstantiateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.destroys=Num Destroys
+beanModule.destroys=FreedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.loads=Num Loads
+beanModule.loads=LoadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.stores=Num Stores
+beanModule.stores=StoreCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77 - Entity beans)
+#beanModule.readyCount=Ready Beans
+beanModule.readyCount=ReadyCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77 - Session beans, same counter as readyCount but different name)
+beanModule.methodReadyCount=MethodReadyCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.concurrentLives=Concurrent Lives
+beanModule.concurrentLives=LiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.totalMethodCalls=Total Method Calls
+beanModule.totalMethodCalls=MethodCallCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgMethodRt=Avg Method RT (ms)
+beanModule.avgMethodRt=MethodResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgMethodTotalRt=Avg Method Total RT (ms)
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgCreateTime=Avg Create Time (ms)
+beanModule.avgCreateTime=CreateTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgRemoveTime=Avg Remove Time (ms)
+beanModule.avgRemoveTime=RemoveTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgLoadTime=Avg Load Time (ms)
+beanModule.avgLoadTime=LoadTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgStoreTime=Avg Store Time (ms)
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.activeMethods=Active Methods
+beanModule.activeMethods=ActiveMethodCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.getsFromPool=Gets From Pool
+beanModule.getsFromPool=RetrieveFromPoolCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.getsFound=Gets Found
+beanModule.getsFound=RetrieveFromPoolSuccessCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.returnsToPool=Returns To Pool
+beanModule.returnsToPool=ReturnsToPoolCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.returnsDiscarded=Returns Discarded
+beanModule.returnsDiscarded=ReturnsDiscardCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.drainsFromPool=Drains From Pool
+beanModule.drainsFromPool=DrainsFromPoolCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgDrainSize=Avg Drain Size
+beanModule.avgDrainSize=DrainSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.poolSize=Pool Size
+beanModule.poolSize=PooledCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.methods=\u65b9\u6cd5
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.methods.methodCalls=Method Calls
+beanModule.methods.methodCalls=MethodLevelCallCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.methods.methodRt=Method Response Time (ms)
+beanModule.methods.methodRt=MethodLevelResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.methods.methodLoad=Concurrent Invocations
+beanModule.methods.methodLoad=MethodLevelConcurrentInvocations
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.activationTime=Activation Time (ms)
+beanModule.activationTime=ActivationTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.passivationTime=Passivation Time (ms)
+beanModule.passivationTime=PassivationTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.loadTime=Load Time (ms)
+beanModule.loadTime=LoadTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.storeTime=Store Time (ms)
+beanModule.storeTime=StoreTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule (JSR77)
+#beanModule.messageCount=Message Count
+beanModule.messageCount=MessageCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.messageBackoutCount=Message Backout Count
+beanModule.messageBackoutCount=MessageBackoutCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.avgSrvSessionWaitTime=Wait Time (ms)
+beanModule.avgSrvSessionWaitTime=WaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+#beanModule.serverSessionUsage=Session Usage
+beanModule.serverSessionUsage=ServerSessionPoolUsage
+
+# F743-9001 F1031-27071 -START
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.readLockTime=ReadLockTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.writeLockTime=WriteLockTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.lockCancelCount=LockCancelCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncWaitTime=AsyncWaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncQSize=AsyncQSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncCancelCount=AsyncCancelCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFNFFailCount=AsyncFNFFailCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFutureObjectCount=AsyncFutureObjectCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.discards=\u6368\u68c4
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.readLockTime.desc=\u57f7\u884c\u7dd2\u5728\u547c\u53eb\u300c\u55ae\u614b\u300d\u65b9\u6cd5\u4e4b\u524d\u7b49\u5f85\u8b80\u53d6\u9396\u5b9a\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.writeLockTime.desc=\u57f7\u884c\u7dd2\u5728\u547c\u53eb\u300c\u55ae\u614b\u300d\u65b9\u6cd5\u4e4b\u524d\u7b49\u5f85\u5beb\u5165\u9396\u5b9a\u7684\u5e73\u5747\u6642\u9593\uff08\u6beb\u79d2\uff09\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.lockCancelCount.desc=\u7531\u65bc\u8d85\u51fa\u6307\u5b9a\u7684\u300c\u5b58\u53d6\u903e\u6642\u503c\u300d\u800c\u906d\u5230\u53d6\u6d88\u7684\u300c\u55ae\u614b\u300d\u65b9\u6cd5\u547c\u53eb\u7e3d\u6578\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncWaitTime.desc=\u975e\u540c\u6b65\u65b9\u6cd5\u5728\u65b9\u6cd5\u57f7\u884c\u4e4b\u524d\u65bc\u5de5\u4f5c\u7ba1\u7406\u54e1\u4f47\u5217\u4e0a\u7b49\u5f85\u7684\u5e73\u5747\u6642\u9593\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncQSize.desc=\u975e\u540c\u6b65\u65b9\u6cd5\u4e4b\u5de5\u4f5c\u7ba1\u7406\u54e1\u4f47\u5217\u7684\u5e73\u5747\u5927\u5c0f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncCancelCount.desc=\u5df2\u53d6\u6d88\u7684\u975e\u540c\u6b65\u65b9\u6cd5\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFNFFailCount.desc=\u5931\u6557\u7684\u767c\u52d5\u53ca forget \u975e\u540c\u6b65\u65b9\u6cd5\u7684\u6578\u76ee\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.asyncFutureObjectCount.desc=\u5728\u5176\u4e2d\u50b3\u56de\u7d50\u679c\u7684\u300c\u975e\u540c\u6b65\u65b9\u6cd5\u300d\u4e2d\u7684\u4f3a\u670d\u5668\u7aef Future \u7269\u4ef6\u6578\u76ee\u3002\u9019\u50c5\u9069\u7528\u65bc\u5229\u7528\u9060\u7aef\u5546\u696d\u4ecb\u9762\u547c\u53eb Enterprise Bean \u7684\u7528\u6236\u7aef\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Data Name in beanModule
+beanModule.discards.desc=\u5df2\u6368\u68c4\u7684 Bean \u6578\u76ee\u3002
+
+# F743-9001 F1031-27071 -End
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.numCreates=Num Creates
+connectionPoolModule.numCreates=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.numDestroys=Num Closes
+connectionPoolModule.numDestroys=CloseCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.numAllocates=Num Allocates
+connectionPoolModule.numAllocates=AllocateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.numReturns=Num Returns
+connectionPoolModule.numReturns=ReturnCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.poolSize=Pool Size
+connectionPoolModule.poolSize=PoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.concurrentWaiters=Concurrent Waiters
+connectionPoolModule.concurrentWaiters=WaitingThreadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.freePoolSize=Free Pool Size
+connectionPoolModule.freePoolSize=FreePoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.avgWaitTime=Avg Wait Time (ms)
+connectionPoolModule.avgWaitTime=WaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module (JSR77)
+#connectionPoolModule.avgUseTime=Avg Use Time (ms)
+connectionPoolModule.avgUseTime=UseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+connectionPoolModule.faults=FaultCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.percentUsed=Percent Used
+connectionPoolModule.percentUsed=PercentUsed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.percentMaxed=Percent Maxed
+connectionPoolModule.percentMaxed=PercentMaxed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.prepStmtCacheDiscards=PrepStmt Cache Discards
+connectionPoolModule.prepStmtCacheDiscards=PrepStmtCacheDiscardCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In Connection Pool Module
+#connectionPoolModule.numManagedConnections=Num Managed Connections
+connectionPoolModule.numManagedConnections=ManagedConnectionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In JDBC Connection Pool Module
+#connectionPoolModule.numConnectionHandles=Num Connection Handles
+connectionPoolModule.numConnectionHandles=ConnectionHandleCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For RRA in JDBC Connection Pool Module
+#connectionPoolModule.jdbcOperationTimer=JDBC Time
+connectionPoolModule.jdbcOperationTimer=JDBCTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.threadCreates=Thread Creates
+threadPoolModule.threadCreates=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.threadDestroys=Thread Destroys
+threadPoolModule.threadDestroys=DestroyCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.activeThreads=Active Threads
+threadPoolModule.activeThreads=ActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.poolSize=Pool Size
+threadPoolModule.poolSize=PoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+#threadPoolModule.percentMaxed=Percent Maxed
+threadPoolModule.percentMaxed=PercentMaxed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.declaredThreadHung=DeclaredThreadHungCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.declaredThreadHangCleared=ClearedThreadHangCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.concurrentlyHungThreads=ConcurrentHungThreadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Thread Pool Module
+threadPoolModule.activeTime=ActiveTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTransBegun=GlobalBegunCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTransInvolved=GlobalInvolvedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransBegun=LocalBegunCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module (JSR77)
+#transactionModule.activeGlobalTrans=Active Global Trans
+transactionModule.activeGlobalTrans=ActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.activeLocalTrans=LocalActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTranDuration=GlobalTranTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTranDuration=LocalTranTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalBeforeCompletionDuration=GlobalBeforeCompletionTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalPrepareDuration=GlobalPrepareTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalCommitDuration=GlobalCommitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localBeforeCompletionDuration=LocalBeforeCompletionTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localCommitDuration=LocalCommitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.numOptimization=OptimizationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module (JSR77)
+#transactionModule.globalTransCommitted=Global Trans Committed
+transactionModule.globalTransCommitted=CommittedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransCommitted=LocalCommittedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module (JSR77)
+#transactionModule.globalTransRolledBack=Global Trans RolledBack
+transactionModule.globalTransRolledBack=RolledbackCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransRolledBack=LocalRolledbackCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.globalTransTimeout=GlobalTimeoutCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Transaction Module
+transactionModule.localTransTimeout=LocalTimeoutCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.numCheckpoints=NumCheckPoints
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.checkpointTime=CheckPointDuration
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranStartInChkPnt=TranStartedBetweenCheckPoints
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Transaction Module
+transactionModule.tranEndInChkPnt=TranFinishedBetweenCheckPoints
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servlet
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.createdSessions=Created Sessions
+servletSessionsModule.createdSessions=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.invalidatedSessions=Invalidated Sessions
+servletSessionsModule.invalidatedSessions=InvalidateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.finalizedSessions=Finalized Sessions
+servletSessionsModule.finalizedSessions=FinalizeCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.sessionLifeTime=Session Life Time (ms)
+servletSessionsModule.sessionLifeTime=LifeTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.sessionInvalidateTime=Session Invalidate Time (ms)
+servletSessionsModule.sessionInvalidateTime=InvalidateTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.activeSessions=Active Sessions
+servletSessionsModule.activeSessions=ActiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+#servletSessionsModule.liveSessions=Live Sessions
+servletSessionsModule.liveSessions=LiveCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.noRoomForNewSession=NoRoomForNewSessionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.cacheDiscards=CacheDiscardCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Servlet Sessions Module
+servletSessionsModule.externalReadTime=ExternalReadTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.externalReadSize=ExternalReadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.externalWriteTime=ExternalWriteTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.externalWriteSize=ExternalWriteSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.affinityBreaks=AffinityBreakCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.timeSinceLastActivated=TimeSinceLastActivated
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.invalidatedViaTimeout=TimeoutInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.activateNonExistSessions=ActivateNonExistSessionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Servlet Sessions Module
+servletSessionsModule.serializableSessObjSize=SessionObjectSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module (JSR77)
+#jvmRuntimeModule.totalMemory=Total Memory (KB)
+jvmRuntimeModule.totalMemory=HeapSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.freeMemory=FreeMemory
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.usedMemory=UsedMemory
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module (JSR77)
+#jvmRuntimeModule.upTime=JVM Up Time (seconds)
+jvmRuntimeModule.upTime=UpTime
+
+# Data Name For JVM Process Usage
+jvmRuntimeModule.cpuUsage=ProcessCpuUsage
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numGcCalls=GCCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.avgTimeBetweenGcCalls=GCIntervalTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.avgGcDuration=GCTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numObjectsAllocated=ObjectAllocateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numObjectsFreed=ObjectFreedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numObjectsMoved=ObjectMovedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numThreadsStarted=ThreadStartedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numThreadsDead=ThreadEndedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.numWaitsForLock=WaitsForLockCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For JVM Runtime Module
+jvmRuntimeModule.avgTimeWaitForLock=WaitForLockTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For RRA
+RRAModule.jdbcOperationTimer=JDBCTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For RRA
+RRAModule.numDiscardedStatements=NumDiscardedStatements
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.referenceLookupTime=LookupTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.requestMarshallingTime=MarshallingTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.percentUsingIndirectIOR=PercentIndirectIOR
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.numPortableInterceptors=NumPortableInterceptors
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.concurrentRequests=ConcurrentRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.LSDLookups=LSDLookups
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.interceptors=\u6514\u622a\u7a0b\u5f0f
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For OrbPerfModule
+orbPerfModule.interceptors.processingTime=ProcessingTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingRequests=IIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingStrongAffinityRequests=StrongAffinityIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingWeakAffinityRequests=WeakAffinityIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingNonAffinityRequests=NoAffinityIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numIncomingNonWLMObjectRequests=NonWLMEnabledIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numServerClusterUpdates=ServerClusterUpdateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numOfWLMClientsServiced=WLMClientsServicedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.numOfConcurrentRequests=ConcurrentRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.server.serverResponseTime=ServerResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.client.numOfOutgoingRequests=OutgoingIIOPRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.client.numClientClusterUpdates=ClientClusterUpdateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For wlmModule
+wlmModule.client.clientResponseTime=ClientResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.numLoadedServices=LoadedWebServiceCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.numberReceived=ReceivedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.numberDispatched=DispatchedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.numberSuccessfull=ProcessedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.responseTime=ResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.requestResponseTime=RequestResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.dispatchResponseTime=DispatchResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.replyResponseTime=ReplyResponseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.size=PayloadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.requestSize=RequestPayloadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Names For webServicesModule
+webServicesModule.services.replySize=ReplyPayloadSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.maxInMemoryCacheEntryCount=MaxInMemoryCacheEntryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.inMemoryCacheEntryCount=InMemoryCacheEntryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.objectsOnDisk=ObjectsOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.hitsOnDisk=HitsOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitInvalidationFromDisk=ExplicitInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.timeoutInvalidationsFromDisk=TimeoutInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.pendingRemovalFromDisk=PendingRemovalFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdsOnDisk=DependencyIDsOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdsBufferedForDisk=DependencyIDsBufferedForDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdsOffloadedToDisk=DependencyIDsOffloadedToDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.dependencyIdBasedInvalidationsFromDisk=DependencyIDBasedInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templatesOnDisk=TemplatesOnDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templatesBufferedForDisk=TemplatesBufferedForDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templatesOffloadedToDisk=TemplatesOffloadedToDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.templateBasedInvalidationsFromDisk=TemplateBasedInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.garbageCollectorInvalidationsFromDisk=GarbageCollectorInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.overflowInvalidationsFromDisk=OverflowInvalidationsFromDisk
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.hitsInMemoryCount=HitsInMemoryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.hitsOnDiskCount=HitsOnDiskCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitInvalidationCount=ExplicitInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.lruInvalidationCount=LruInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.timeoutInvalidationCount=TimeoutInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.inMemoryAndDiskCacheEntryCount=InMemoryAndDiskCacheEntryCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.remoteHitCount=RemoteHitCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.missCount=MissCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.clientRequestCount=ClientRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.distributedRequestCount=DistributedRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitMemoryInvalidationCount=ExplicitMemoryInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.explicitDiskInvalidationCount=ExplicitDiskInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.localExplicitInvalidationCount=LocalExplicitInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.remoteExplicitInvalidationCount=RemoteExplicitInvalidationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Dynacache Module
+cacheModule.remoteCreationCount=RemoteCreationCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For System Module
+systemModule.cpuUtilization=CPUUsageSinceLastMeasurement
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For System Module
+systemModule.avgCpuUtilization=CPUUsageSinceServerStarted
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For System Module
+systemModule.freeMemory=FreeMemory
+
+# -------------------------------------------------------------------------------------------------
+# Load Data Average
+pmi.avg=\u5e73\u5747\u503c
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.maximum=\u4e0a\u9650
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.high=\u9ad8
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.medium=\u4e2d
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.low=\u4f4e
+
+# -------------------------------------------------------------------------------------------------
+# Level
+pmi.none=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+jvm.memory=\u8a18\u61b6\u9ad4
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+GC=\u8a18\u61b6\u9ad4\u56de\u6536
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+Monitor=\u76e3\u8996\u5668
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+Thread=\u57f7\u884c\u7dd2
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in jvmRuntimeModule
+Object=\u7269\u4ef6
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in wlmModule
+wlmModule.server=\u4f3a\u670d\u5668
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in webServicesModule
+webServicesModule.services=\u670d\u52d9
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in wlmModule
+wlmModule.client=\u7528\u6236\u7aef
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.object=\u7269\u4ef6\u5feb\u53d6
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.servlet=Servlet \u5feb\u53d6
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.template=\u7bc4\u672c
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.disk=\u78c1\u789f
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.diskOffloadEnabled=\u555f\u7528\u78c1\u789f\u5378\u8f09
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.objectCache=\u7269\u4ef6\u5feb\u53d6
+
+# -------------------------------------------------------------------------------------------------
+# Submodule Names in cacheStatsModule
+cacheModule.counters=\u8a08\u6578\u5668
+
+# -------------------------------------------------------------------------------------------------
+# Data Description In J2C Module
+#j2cModule.numManagedConnections=Num Managed Connections
+j2cModule.numManagedConnections=ManagedConnectionCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numConnectionHandles=Num Connection Handles
+j2cModule.numConnectionHandles=ConnectionHandleCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsCreated=Num Connections Created
+j2cModule.numManagedConnectionsCreated=CreateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsDestroyed=Num Connections Destroyed
+j2cModule.numManagedConnectionsDestroyed=CloseCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsAllocated=Num Connections Allocated
+j2cModule.numManagedConnectionsAllocated=AllocateCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.numManagedConnectionsReleased=Num Connections Freed
+j2cModule.numManagedConnectionsReleased=FreedCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.faults=Num faults
+j2cModule.faults=FaultCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.freePoolSize=Free Pool Size
+j2cModule.freePoolSize=FreePoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.poolSize=Pool Size
+j2cModule.poolSize=PoolSize
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.concurrentWaiters=Concurrent Waiters
+j2cModule.concurrentWaiters=WaitingThreadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.percentUsed=Percent Used
+j2cModule.percentUsed=PercentUsed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.percentMaxed=Percent Maxed
+j2cModule.percentMaxed=PercentMaxed
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.avgWait=Avg Wait Time
+j2cModule.avgWait=WaitTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In J2C Module
+#j2cModule.useTime=Avg Use Time
+j2cModule.useTime=UseTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.synchronousRequests=SynchronousRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.synchronousResponses=SynchronousResponseCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.asynchronousRequests=AsynchronousRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name In WSGW Module
+wsgwModule.asynchronousResponses=AsynchronousResponseCount
+
+# -------------------------------------------------------------------------------------------------
+# Name for EJB types
+ejb.entity=Entity Bean
+ejb.stateful=Stateful Session Bean
+ejb.stateless=Stateless Session Bean
+ejb.messageDriven=\u8a0a\u606f\u9a45\u52d5 Bean
+ejb.singleton=\u55ae\u614b\u968e\u6bb5\u4f5c\u696d Bean
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=N/A
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=\u6beb\u79d2
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.second=second (JSR77)
+unit.second=SECOND
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.byte=BYTE
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.kbyte=kilobyte (JSR77)
+unit.kbyte=KILOBYTE
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.mbyte=MEGABYTE
+
+# -------------------------------------------------------------------------------------------------
+# JMS Connection Factories in J2C module
+jmsConnections=JMS Connection Factory

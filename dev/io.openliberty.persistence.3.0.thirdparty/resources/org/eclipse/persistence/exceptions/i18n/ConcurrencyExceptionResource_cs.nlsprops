@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=\u010cek\u00e1n\u00ed bylo p\u0159eru\u0161eno. {0} Zpr\u00e1va: [{1}]
+
+2002=Selh\u00e1n\u00ed \u010dek\u00e1n\u00ed na relaci serveru.
+
+2003=Selh\u00e1n\u00ed \u010dek\u00e1n\u00ed na relaci klienta.
+
+2004=Byl proveden pokus o z\u00edsk\u00e1n\u00ed sign\u00e1lu p\u0159ed \u010dek\u00e1n\u00edm wait() na t\u0159\u00edd\u011b ConcurrencyManager. To obvykle znamen\u00e1, \u017ee byl u\u010din\u011bn pokus prov\u00e9st potvrzen\u00ed nebo odvol\u00e1n\u00ed transakce {0} p\u0159ed spu\u0161t\u011bn\u00edm anebo prov\u00e9st dvoj\u00ed odvol\u00e1n\u00ed transakce.
+
+2005=Selh\u00e1n\u00ed \u010dek\u00e1n\u00ed u obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed posloupnosti pro relaci datab\u00e1ze.
+
+2006=Byl proveden pokus o z\u00edsk\u00e1n\u00ed hodnot posloupnosti p\u0159es jedno p\u0159ipojen\u00ed ({0}) sou\u010dasn\u011b ve v\u00edce podprocesech
+
+2007=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt: {0}. Nezda\u0159ilo se klonovat objekt.
+
+2008=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt: {0}. Nezda\u0159ilo se slou\u010dit transakci.
+
+2009=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt. Nezda\u0159ilo se sestavit objekt. Podproces: {0} m\u00e1 z\u00e1mek na objektu, ale podproces: {1} je sestavuj\u00edc\u00edm objektem.
+
+2010=Z\u00e1mek je ji\u017e p\u0159eveden na odlo\u017een\u00fd z\u00e1mek. Druh\u00fd pokus o p\u0159eveden\u00ed z\u00e1mku byl vy\u017e\u00e1d\u00e1n podprocesem: {0} b\u011bhem slou\u010den\u00ed.
+

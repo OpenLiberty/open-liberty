@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE Stats SYSTEM "stats.dtd">
+
+<Stats type="com.ibm.ws.monitors.threadPoolModule">
+    <description>threadPoolModule.desc</description>
+    <resourceBundle>com.ibm.ws.pmi.properties.PMIText</resourceBundle>
+    <BoundedRangeStatistic name="threadPoolModule.activeThreads" ID="3">
+        <level>high</level>
+        <unit>unit.none</unit>
+		<description>threadPoolModule.activeThreads.desc</description>		
+        <comment>The number of concurrently active threads</comment>        
+		<updateOnRequest>true</updateOnRequest>
+        <statisticSet>basic</statisticSet>
+    </BoundedRangeStatistic>
+    <BoundedRangeStatistic name="threadPoolModule.poolSize" ID="4">
+        <level>high</level>
+        <unit>unit.none</unit>
+		<description>threadPoolModule.poolSize.desc</description>
+        <comment>Average number of threads in Pool</comment>
+		<updateOnRequest>true</updateOnRequest>        
+        <statisticSet>basic</statisticSet>
+    </BoundedRangeStatistic>
+</Stats>

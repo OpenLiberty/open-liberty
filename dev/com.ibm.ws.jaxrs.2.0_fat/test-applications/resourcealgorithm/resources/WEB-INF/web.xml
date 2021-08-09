@@ -1,0 +1,24 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    version="3.0">
+    <servlet>
+        <servlet-name>com.ibm.ws.jaxrs.fat.resourcealgorithm.ContinuedSearchPolicyApplication</servlet-name>
+        <init-param>
+            <param-name>propertiesLocation</param-name>
+            <param-value>/WEB-INF/my_wink.properties</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>com.ibm.ws.jaxrs.fat.resourcealgorithm.NormalApplication</servlet-name>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>com.ibm.ws.jaxrs.fat.resourcealgorithm.NormalApplication</servlet-name>
+        <url-pattern>/normal/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.ibm.ws.jaxrs.fat.resourcealgorithm.ContinuedSearchPolicyApplication</servlet-name>
+        <url-pattern>/continued/*</url-pattern>
+    </servlet-mapping>
+</web-app>

@@ -1,0 +1,187 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.wsspi.sib.core.CWSIRMessages.nlsprops
+#
+# SIB.common component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIR0001=CWSIR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIR9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/CWSIRMessages.nlsprops
+#COMPONENTPREFIX CWSIR
+#COMPONENTNAMEFOR CWSIR SIBus Core
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+BROWSE_METHOD_CWSIR0001=CWSIR0001E: destinationAddress \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+BROWSE_METHOD_CWSIR0001.explanation=createBrowserSession\uc73c\ub85c \ud638\ucd9c\uc774 destinationAddress \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destinationAddress\ub294 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+BROWSE_METHOD_CWSIR0001.useraction=\uc720\ud6a8\ud55c destinationAddress \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destAddr is a argument name for a method call
+CREATE_CONSUMER_CWSIR0021=CWSIR0021E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_CONSUMER_CWSIR0021.explanation=createConsumerSession\uc73c\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_CONSUMER_CWSIR0021.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0031=CWSIR0031E: destinationAddress \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0031.explanation=createConsumerSessionForDurableSubscription\uc73c\ub85c \ud638\ucd9c\uc774 destinationAddress \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destinationAddress\ub294 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0031.useraction=\uc720\ud6a8\ud55c destinationAddress \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0032=CWSIR0032E: subscriptionName \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0032.explanation=createConsumerSessionForDurableSubscription\uc73c\ub85c \ud638\ucd9c\uc774 subscriptionName \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. subscriptionName\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0032.useraction=\uc720\ud6a8\ud55c subscriptionName \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0041=CWSIR0041E: destinationAddress \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0041.explanation=createDurableSubscription\uc73c\ub85c \ud638\ucd9c\uc774 destinationAddress \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destinationAddress\ub294 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0041.useraction=\uc720\ud6a8\ud55c destinationAddress \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+CREATE_DURABLE_SUB_CWSIR0042=CWSIR0042E: subscriptionName \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0042.explanation=createDurableSubscription\uc73c\ub85c \ud638\ucd9c\uc774 subscriptionName \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. subscriptionName\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_DURABLE_SUB_CWSIR0042.useraction=\uc720\ud6a8\ud55c subscriptionName \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0051=CWSIR0051E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_PRODUCER_CWSIR0051.explanation=createProducerSession\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_PRODUCER_CWSIR0051.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# subscriptionName is a argument name for a method call
+DELETE_DURABLE_SUB_CWSIR0061=CWSIR0061E: subscriptionName \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+DELETE_DURABLE_SUB_CWSIR0061.explanation=deleteDurableSubscription\uc73c\ub85c \ud638\ucd9c\uc774 subscriptionName \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. subscriptionName\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+DELETE_DURABLE_SUB_CWSIR0061.useraction=\uc720\ud6a8\ud55c subscriptionName \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+CREATE_PRODUCER_CWSIR0071=CWSIR0071E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+CREATE_PRODUCER_CWSIR0071.explanation=deleteTemporaryDestination\uc73c\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CREATE_PRODUCER_CWSIR0071.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+GET_DEST_CONFIG_CWSIR0081=CWSIR0081E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+GET_DEST_CONFIG_CWSIR0081.explanation=getDestinationConfiguration\uc73c\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+GET_DEST_CONFIG_CWSIR0081.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_NO_WAIT_CWSIR0091=CWSIR0091E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+RECEIVE_NO_WAIT_CWSIR0091.explanation=receiveNoWait\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+RECEIVE_NO_WAIT_CWSIR0091.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+RECEIVE_WITH_WAIT_CWSIR0101=CWSIR0101E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+RECEIVE_WITH_WAIT_CWSIR0101.explanation=receiveWithWait\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+RECEIVE_WITH_WAIT_CWSIR0101.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# destinationAddress is a argument name for a method call
+SEND_CWSIR0111=CWSIR0111E: destAddr \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+SEND_CWSIR0111.explanation=receiveWithWait\ub85c \ud638\ucd9c\uc774 destAddr \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. destAddr\uc740 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+SEND_CWSIR0111.useraction=\uc720\ud6a8\ud55c destAddr \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_CWSIR0112=CWSIR0112E: \uba54\uc2dc\uc9c0 \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+SEND_CWSIR0112.explanation=\uc804\uc1a1\uc5d0 \ub300\ud55c \ud638\ucd9c\uc774 \uba54\uc2dc\uc9c0 \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
+SEND_CWSIR0112.useraction=\uc62c\ubc14\ub978 \uba54\uc2dc\uc9c0 \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# msg is a argument name for a method call
+SEND_EXCEPTION_DEST_CWSIR0121=CWSIR0121E: \uba54\uc2dc\uc9c0 \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+SEND_EXCEPTION_DEST_CWSIR0121.explanation=sendToExceptionDestination\uc5d0 \ub300\ud55c \ud638\ucd9c\uc774 \uba54\uc2dc\uc9c0 \uc778\uc218\uc5d0 \ub110\uac12\uc744 \uc81c\uacf5\ud588\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
+SEND_EXCEPTION_DEST_CWSIR0121.useraction=\uc62c\ubc14\ub978 \uba54\uc2dc\uc9c0 \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the internal method name called on the SPI.
+LME_ERROR_CWSIR0131=CWSIR0131E: {0} \uba54\uc18c\ub4dc\ub85c \ud638\ucd9c\uc774 \uc774\ubc88\uc5d0 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+LME_ERROR_CWSIR0131.explanation=\uc9c0\uc815\ub41c \uc140\uc740 AsynchConsumerCallback.consumeMessages \uba54\uc18c\ub4dc \ub0b4\ubd80\uc5d0\uc11c\ub9cc \uc720\ud6a8\ud569\ub2c8\ub2e4.
+LME_ERROR_CWSIR0131.useraction=AsynchConsumerCallback.consumeMessages \uba54\uc18c\ub4dc \ub0b4\ubd80\uc5d0\uc11c \ud638\ucd9c\uc744 \ub2e4\uc2dc \ubc1c\ud589\ud558\uac70\ub098 \uac00\ub2a5\ud55c \uacbd\uc6b0, \uc801\uc808\ud55c ConsumerSession \ud638\ucd9c\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 
+LME_ERROR_CWSIR0132=CWSIR0132E: msgHandles \ubc30\uc5f4\uc5d0\uc11c \ud558\ub098 \uc774\uc0c1\uc758 \uac12\uc774 \ub110\uc785\ub2c8\ub2e4.
+LME_ERROR_CWSIR0132.explanation=\uc778\uc218 \ubc30\uc5f4 msgHandles\uac00 \ub110 \uc694\uc18c\ub97c \ud3ec\ud568\ud558\uc9c0 \uc54a\uc544\uc57c \ud558\ubbc0\ub85c ConsumerSession \ub610\ub294 BifurcatedConsumerSession\uc5d0 \ub300\ud55c \ud638\ucd9c\uc774 \uac70\ubd80\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+LME_ERROR_CWSIR0132.useraction=\ubc30\uc5f4\uc5d0\uc11c \ubaa8\ub4e0 \ub110 \uc694\uc18c\ub97c \uc81c\uac70\ud55c \ud6c4 \ub2e4\uc2dc \ud638\ucd9c\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141=CWSIR0141E: maxActiveMessages \uc778\uc218 {0}\uc774(\uac00) \uc720\ud6a8\uac12\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.explanation=maxActiveMessages \uac12\uc774 0\ubcf4\ub2e4 \ud06c\uac70\ub098 \uac19\uc544\uc57c \ud569\ub2c8\ub2e4.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0141.useraction=\uc720\ud6a8\ud55c maxActiveMessages \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142=CWSIR0142E: messageLockExpiry \uc778\uc218 {0}\uc774(\uac00) \uc720\ud6a8\uac12\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.explanation=messageLockExpiry \uac12\uc774 0\ubcf4\ub2e4 \ud06c\uac70\ub098 \uac19\uc544\uc57c \ud569\ub2c8\ub2e4.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0142.useraction=\uc720\ud6a8\ud55c messageLockExpiry \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# 
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143=CWSIR0143E: maxBatchSize \uc778\uc218 {0}\uc774(\uac00) \uc720\ud6a8\uac12\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.explanation=maxBatchSize \uac12\uc774 0\ubcf4\ub2e4 \ucee4\uc57c \ud569\ub2c8\ub2e4.
+REG_ASYNCH_CONSUMER_ERROR_CWSIR0143.useraction=\uc720\ud6a8\ud55c maxBatchSize \uac12\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIR9999=CWSIR9999E: {0}
+TEMPORARY_CWSIR9999.explanation=\uba54\uc2dc\uc9c0\uc5d0 \ucda9\ubd84\ud55c \uc815\ubcf4\uac00 \uc5c6\ub294 \uacbd\uc6b0, \ucd94\uac00 \ub3c4\uc6c0\ub9d0\uc744 \ubcf4\ub824\uba74 \uc774\uc804 \uba54\uc2dc\uc9c0\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+TEMPORARY_CWSIR9999.useraction=\ucd94\uac00 \uc815\ubcf4\ub294 \uc774\uc804 \uba54\uc2dc\uc9c0\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.

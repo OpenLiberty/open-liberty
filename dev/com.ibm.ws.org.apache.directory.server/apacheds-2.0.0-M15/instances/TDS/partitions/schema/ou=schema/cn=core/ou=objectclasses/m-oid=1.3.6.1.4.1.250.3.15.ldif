@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.250.3.15,ou=objectClasses,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.250.3.15
+m-name: labeledURIObject
+m-description: RFC2079: object that contains the URI attribute type
+m-obsolete: FALSE
+m-supobjectclass: top
+entryUUID: 26616e7e-44d9-4509-9ce4-16d083f9fca9
+m-may: labeledURI
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.063000Z#000002#000#000000
+entryParentId: ac5601d1-10d2-4835-811d-55bb5203ca74
+createTimestamp: 20130919065353.824Z

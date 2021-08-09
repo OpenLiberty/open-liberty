@@ -1,0 +1,113 @@
+<!--
+The alt-dd element specifies an optional URI to the post-assembly
+version of the deployment descriptor file for a
+particular J2EE module. The URI must specify the full pathname
+of the deployment descriptor file relative to the application's
+root directory. If alt-dd is not specified, the deployer must
+read the deployment descriptor from the default location and
+file name required by the respective component specification.
+-->
+<!ELEMENT alt-dd (#PCDATA)>
+<!--
+The application element is the root element of a J2EE
+application deployment descriptor.
+-->
+<!ELEMENT application (icon?, display-name, description?,
+module+, security-role*)>
+<!--
+The context-root element specifies the context root of a web
+application
+-->
+<!ELEMENT context-root (#PCDATA)>
+<!--
+The description element provides a human readable description
+of the application. The description element should include any
+information that the application assembler wants to provide the
+deployer.
+-->
+<!ELEMENT description (#PCDATA)>
+<!--
+The display-name element specifies an application name.
+The application name is assigned to the application by the
+application assembler and is used to identify the application
+to the deployer at deployment time.
+-->
+<!ELEMENT display-name (#PCDATA)>
+<!--
+The ejb element specifies the URI of a ejb-jar, relative to the
+top level of the application package.
+-->
+<!ELEMENT ejb (#PCDATA)>
+<!--
+The icon element contains a small-icon and large-icon element
+which specify the URIs for a small and a large GIF or JPEG icon
+image to represent the application in a GUI.
+-->
+<!ELEMENT icon (small-icon?, large-icon?)>
+<!--
+The java element specifies the URI of a java application client
+module, relative to the top level of the application package.
+-->
+<!ELEMENT java (#PCDATA)>
+<!--
+The large-icon element specifies the URI for a large GIF or
+JPEG icon image to represent the application in a GUI.
+-->
+<!ELEMENT large-icon (#PCDATA)>
+<!--
+The module element represents a single J2EE module and contains
+an ejb, java, or web element, which indicates the module type
+and contains a path to the module file, and an optional alt-dd
+element, which specifies an optional URI to the post-assembly
+version of the deployment descriptor.
+The application deployment descriptor must have one module
+element for each J2EE module in the application package.
+-->
+<!ELEMENT module ((ejb | java | web), alt-dd?)>
+<!--
+The role-name element contains the name of a security role.
+-->
+<!ELEMENT role-name (#PCDATA)>
+<!--
+The security-role element contains the definition of a security
+role which is global to the application. The definition
+consists of a description of the security role, and the
+security role name. The descriptions at this level override
+those in the component level security-role definitions and must
+be the descriptions tool display to the deployer.
+-->
+<!ELEMENT security-role (description?, role-name)>
+<!--
+The small-icon element specifies the URI for a small GIF or
+JPEG icon image to represent the application in a GUI.
+-->
+<!ELEMENT small-icon (#PCDATA)>
+<!--
+The web element contains the web-uri and context-root of a web
+application module.
+-->
+<!ELEMENT web (web-uri, context-root)>
+<!--
+The web-uri element specifies the URI of a web application
+file, relative to the top level of the application package.
+-->
+<!ELEMENT web-uri (#PCDATA)>
+<!--
+The ID mechanism is to allow tools to easily make tool-specific
+references to the elements of the deployment descriptor.
+-->
+<!ATTLIST alt-dd id ID #IMPLIED>
+<!ATTLIST application id ID #IMPLIED>
+<!ATTLIST context-root id ID #IMPLIED>
+<!ATTLIST description id ID #IMPLIED>
+<!ATTLIST display-name id ID #IMPLIED>
+<!ATTLIST ejb id ID #IMPLIED>
+<!ATTLIST icon id ID #IMPLIED>
+<!ATTLIST java id ID #IMPLIED>
+<!ATTLIST large-icon id ID #IMPLIED>
+<!ATTLIST module id ID #IMPLIED>
+<!ATTLIST role-name id ID #IMPLIED>
+<!ATTLIST security-role id ID #IMPLIED>
+<!ATTLIST small-icon id ID #IMPLIED>
+<!ATTLIST web id ID #IMPLIED>
+<!ATTLIST web-uri id ID #IMPLIED>

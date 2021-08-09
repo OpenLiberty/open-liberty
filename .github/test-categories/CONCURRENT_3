@@ -1,0 +1,14 @@
+com.ibm.ws.concurrent.persistent_fat_retry
+com.ibm.ws.concurrent.persistent_fat_simctrl
+com.ibm.ws.concurrent.persistent_fat_timers
+com.ibm.ws.concurrent_fat
+com.ibm.ws.concurrent_fat_cdi
+com.ibm.ws.concurrent_fat_config
+com.ibm.ws.concurrent_fat_db
+com.ibm.ws.concurrent_fat_demo
+com.ibm.ws.concurrent_fat_ejb
+com.ibm.ws.concurrent_fat_policy
+com.ibm.ws.concurrent_fat_work
+com.ibm.ws.context_fat
+com.ibm.ws.context_fat_customproviders
+com.ibm.ws.context_fat_serialization

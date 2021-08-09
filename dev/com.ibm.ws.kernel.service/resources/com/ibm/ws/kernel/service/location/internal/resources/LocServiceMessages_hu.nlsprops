@@ -1,0 +1,56 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: A megadott hely el\u00e9rhetetlen. Nem lesz\u00e1rmazottja egy ismert vagy be\u00e1ll\u00edtott \u00fatvonalnak; \u00fatvonal={0}.
+unreachableLocation.explanation=Az oper\u00e1ci\u00f3s rendszer szimbolikus \u00fatvonalak haszn\u00e1lat\u00e1val biztos\u00edt elemi v\u00e9delmet a f\u00e1jlrendszer tetsz\u0151leges el\u00e9r\u00e9se ellen, amikor a hely szolg\u00e1ltat\u00e1s ker\u00fcl felhaszn\u00e1l\u00e1sra a megadott \u00fatvonalak felold\u00e1shoz. \
+A szimbolikus \u00fatvonalak konfigur\u00e1l\u00e1s\u00e1r\u00f3l a README.TXT f\u00e1jl tartalmaz inform\u00e1ci\u00f3kat.
+unreachableLocation.useraction=Ellen\u0151rizze a bootstrap.properties f\u00e1jlban a konfigur\u00e1lt \u00fatvonalakat, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1lt \u00fatvonal megl\u00e9v\u0151 szimb\u00f3lumok lesz\u00e1rmazottja, vagy t\u00e1rs\u00edtva van egy kifejezetten defini\u00e1lt szimb\u00f3lummal.
+
+invalidResourceType=CWWKE0201E: A szimb\u00f3lum nem hozhat\u00f3 l\u00e9tre; a megadott hely l\u00e9tezik, \u00e9s \u00fctk\u00f6zik a sz\u00fcks\u00e9ges t\u00edpussal: {0}={1}.
+invalidResourceType.explanation=A szimb\u00f3lumhoz megadott \u00fatvonal l\u00e9tezik, \u00e9s az er\u0151forr\u00e1s t\u00edpusa elt\u00e9r az \u00fatvonal \u00e1ltal megadott t\u00edpust\u00f3l (p\u00e9ld\u00e1ul a szimb\u00f3lum egy f\u00e1jlt \u00edr le, de az er\u0151forr\u00e1s egy k\u00f6nyvt\u00e1r).
+invalidResourceType.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fatvonal helyesen van megadva. \
+A k\u00f6nyvt\u00e1r-\u00fatvonalnak egy / jellel kell v\u00e9gz\u0151dnie. \
+Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fatvonal egy olyan er\u0151forr\u00e1sra hivatkozik, ami nem l\u00e9tezik, vagy egy olyan er\u0151forr\u00e1sra, amely l\u00e9tezik, \u00e9s a sz\u00fcks\u00e9ges t\u00edpus\u00fa.
+
+missingTmpDir=CWWKE0202E: A megadott ideiglenes k\u00f6nyvt\u00e1rhely nem l\u00e9tezik \u00e9s nem hozhat\u00f3 l\u00e9tre: {0}.
+missingTmpDir.explanation=A java.io.tmpdir form\u00e1ban (rendszertulajdons\u00e1gon vagy platform-specifikus k\u00f6rnyezeti v\u00e1ltoz\u00f3n kereszt\u00fcl) megadott k\u00f6nyvt\u00e1r nem l\u00e9tezik \u00e9s nem hozhat\u00f3 l\u00e9tre.
+missingTmpDir.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott k\u00f6nyvt\u00e1r l\u00e9tezik \u00e9s olvas\u00e1si/\u00edr\u00e1si jogosults\u00e1ga van hozz\u00e1.
+
+relativeTmpDir=CWWKE0203I: A java.io.tempdir relat\u00edv \u00fatvonallal lett megadva. A feloldott \u00fatvonal: {0}.
+relativeTmpDir.explanation=A java.io.tmpdir form\u00e1ban (rendszertulajdons\u00e1gon vagy platform-specifikus k\u00f6rnyezeti v\u00e1ltoz\u00f3n kereszt\u00fcl) megadott k\u00f6nyvt\u00e1r \u00fatvonala relat\u00edv volt, \u00e9s az ind\u00edt\u00e1si k\u00f6nyvt\u00e1rhoz k\u00e9pest lett feloldva.
+relativeTmpDir.useraction=Nincs teend\u0151.
+
+locationInitializationError=CWWKE0204E: A platform hely szolg\u00e1ltat\u00e1s nem inicializ\u00e1lhat\u00f3; ok={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: A keretrendszer egy kor\u00e1bbi inicializ\u00e1l\u00e1si hiba miatt le\u00e1ll.
+frameworkShutdown.explanation=A keretrendszer egy kor\u00e1bbi, az inicializ\u00e1l\u00e1s sor\u00e1n bek\u00f6vetkezett hiba miatt le\u00e1ll.
+frameworkShutdown.useraction=Oldja meg a hib\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.

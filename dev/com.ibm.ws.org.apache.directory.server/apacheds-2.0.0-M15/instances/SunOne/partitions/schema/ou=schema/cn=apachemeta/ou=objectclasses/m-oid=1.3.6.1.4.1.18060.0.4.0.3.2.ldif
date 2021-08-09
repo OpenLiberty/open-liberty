@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.2,ou=objectClasses,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.2
+m-name: metaObjectClass
+m-description: meta definition of the objectclass object
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: metaTop
+m-typeobjectclass: STRUCTURAL
+m-must: m-oid
+m-may: m-name
+m-may: m-obsolete
+m-may: m-supObjectClass
+m-may: m-typeObjectClass
+m-may: m-must
+m-may: m-may
+creatorsname: uid=admin,ou=system

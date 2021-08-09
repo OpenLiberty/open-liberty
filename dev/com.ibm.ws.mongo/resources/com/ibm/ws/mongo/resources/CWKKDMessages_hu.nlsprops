@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: A(z) {0} tulajdons\u00e1g a(z) {1} szolg\u00e1ltat\u00e1son {2} azonos\u00edt\u00f3val \u00e9s {3} \u00e9rt\u00e9kkel nem konfigur\u00e1lhat\u00f3.
+CWKKD0010.prop.error.explanation=A konfigur\u00e1lt tulajdons\u00e1g egy hiba miatt nem ismerhet\u0151 fel vagy nem \u00e1ll\u00edthat\u00f3 be.
+CWKKD0010.prop.error.useraction=Jav\u00edtsa vagy t\u00e1vol\u00edtsa el a konfigur\u00e1lt tulajdons\u00e1got.
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: A(z) {1} azonos\u00edt\u00f3val rendelkez\u0151 {0} szolg\u00e1ltat\u00e1s elt\u00e9r\u0151 sz\u00e1m\u00fa hosztn\u00e9vvel ({2}) \u00e9s porttal ({3}) ker\u00fclt meghat\u00e1roz\u00e1sra.
+CWKKD0011.hosts.ports.mismatch.explanation=A hosztn\u00e9v \u00e9s a portsz\u00e1m list\u00e1nak egyez\u0151 sz\u00e1m\u00fa elemet kell tartalmaznia. 
+CWKKD0011.hosts.ports.mismatch.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3t \u00fagy, hogy a hosztn\u00e9v \u00e9s port attrib\u00fatumok egyez\u0151 sz\u00e1m\u00fa elemet tartalmazzanak.
+
+CWKKD0012.authentication.error=CWKKD0012E: A(z) {1} azonos\u00edt\u00f3val rendelkez\u0151 {0} szolg\u00e1ltat\u00e1s nem tud hiteles\u00edteni a(z) {2} adatb\u00e1zishoz.
+CWKKD0012.authentication.error.explanation=Az adatb\u00e1zis visszautas\u00edtotta a hiteles\u00edt\u00e9si k\u00eds\u00e9rletet.
+CWKKD0012.authentication.error.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t a helyes felhaszn\u00e1l\u00f3n\u00e9vvel \u00e9s jelsz\u00f3val.
+
+CWKKD0013.unsupported.driver=CWKKD0013E: A(z) {0} szolg\u00e1ltat\u00e1s a MongoDB illeszt\u0151program nem t\u00e1mogatott v\u00e1ltozat\u00e1t \u00e9szlelte a(z) {1} megosztott f\u00fcggv\u00e9nyt\u00e1rban. Az elv\u00e1rt minim\u00e1lis szint {2}, az \u00e9szlelt szint: {3}.
+CWKKD0013.unsupported.driver.explanation=A MongoDB szolg\u00e1ltat\u00e1s \u00e9rv\u00e9nytelen illeszt\u0151program f\u00fcggv\u00e9nyt\u00e1rral rendelkezik.
+CWKKD0013.unsupported.driver.useraction=Friss\u00edtse a megosztott f\u00fcggv\u00e9nyt\u00e1rat egy t\u00e1mogatott szintre.
+
+CWKKD0014.missing.driver=CWKKD0014E: A(z) {0} szolg\u00e1ltat\u00e1s nem tal\u00e1lja a sz\u00fcks\u00e9ges MongoDB illeszt\u0151program oszt\u00e1lyokat a(z) {1} megosztott f\u00fcggv\u00e9nyt\u00e1rban.
+CWKKD0014.missing.driver.explanation=A MongoDB nem tal\u00e1lja a sz\u00fcks\u00e9ges oszt\u00e1lyt a be\u00e1ll\u00edtott megosztott f\u00fcggv\u00e9nyt\u00e1rban.
+CWKKD0014.missing.driver.useraction=Friss\u00edtse a megosztott f\u00fcggv\u00e9nyt\u00e1rat egy t\u00e1mogatott szintre.
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s SSL protokollt pr\u00f3b\u00e1l haszn\u00e1lni \u00fagy, hogy a server.xml f\u00e1jlban nincs enged\u00e9lyezve az ssl-1.0 szolg\u00e1ltat\u00e1s.
+CWKKD0015.ssl.feature.missing.explanation=Az SSL konfigur\u00e1ci\u00f3 nem haszn\u00e1lhat\u00f3 az ssl-1.0 szolg\u00e1ltat\u00e1s enged\u00e9lyez\u00e9se n\u00e9lk\u00fcl.
+CWKKD0015.ssl.feature.missing.useraction=Adja hozz\u00e1 az ssl-1.0 szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlhoz.
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s a MongoDB illeszt\u0151program egy inkompatibilis v\u00e1ltozat\u00e1t \u00e9szlelte a(z) {2} megosztott f\u00fcggv\u00e9nyt\u00e1rban. Az SSL szolg\u00e1ltat\u00e1shoz legal\u00e1bb {3} szint sz\u00fcks\u00e9ges, azonban a szolg\u00e1ltat\u00e1s a(z) {4} szintet \u00e9szlelte.
+CWKKD0017.ssl.incompatible.driver.explanation=A MongoDB szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra \u00e9rv\u00e9nytelen illeszt\u0151program f\u00fcggv\u00e9nyt\u00e1r volt megadva az SSL haszn\u00e1lat\u00e1hoz.
+CWKKD0017.ssl.incompatible.driver.useraction=Friss\u00edtse a megosztott f\u00fcggv\u00e9nyt\u00e1rat egy t\u00e1mogatott szintre.
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s hiteles\u00edt\u00e9si be\u00e1ll\u00edt\u00e1sok inkompatibilis kombin\u00e1ci\u00f3j\u00e1t \u00e9szlelt. A useCertificateAuthentication nem kompatibilis felhaszn\u00e1l\u00f3val \u00e9s jelsz\u00f3val.
+CWKKD0018.ssl.user.pswd.certificate.explanation=A MongoDB szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra inkompatibilis hiteles\u00edt\u00e9si be\u00e1ll\u00edt\u00e1sok voltak megadva az SSL haszn\u00e1lat\u00e1hoz.
+CWKKD0018.ssl.user.pswd.certificate.useraction=Friss\u00edtse a server.xml f\u00e1jlban l\u00e9v\u0151 mongo elemet, \u00e9s adja meg a felhaszn\u00e1l\u00f3t \u00e9s jelsz\u00f3t vagy a useCertificateAuthentication be\u00e1ll\u00edt\u00e1st, de ne mindkett\u0151t.
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s tan\u00fas\u00edtv\u00e1ny alap\u00fa hiteles\u00edt\u00e9s haszn\u00e1lat\u00e1ra lett be\u00e1ll\u00edtva, de az SSL nem enged\u00e9lyezett.
+CWKKD0019.ssl.certificate.no.ssl.explanation=A MongoDB szolg\u00e1ltat\u00e1s tan\u00fas\u00edtv\u00e1ny alap\u00fa hiteles\u00edt\u00e9shez lett be\u00e1ll\u00edtva SSL n\u00e9lk\u00fcl.
+CWKKD0019.ssl.certificate.no.ssl.useraction=Friss\u00edtse a mongo elemet a server.xml f\u00e1jlban az sslEnabled=true \u00e9rt\u00e9kkel, vagy t\u00e1vol\u00edtsa el a useCertificateAuthentication be\u00e1ll\u00edt\u00e1st.
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s kiv\u00e9telt kapott az \u00fcgyf\u00e9lkulcs \u00e9s tan\u00fas\u00edtv\u00e1ny beolvas\u00e1sakor a biztos\u00edtott kulcst\u00e1rol\u00f3b\u00f3l. A be\u00e1gyazott kiv\u00e9tel: {2}
+CWKKD0020.ssl.get.certificate.user.explanation=A MongoDB szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lta beolvasni az \u00fcgyf\u00e9lkulcsot \u00e9s tan\u00fas\u00edtv\u00e1nyt a kulcst\u00e1rol\u00f3b\u00f3l, \u00e9s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt a kulcst\u00e1rol\u00f3val vagy a benne l\u00e9v\u0151 tan\u00fas\u00edtv\u00e1nnyal kapcsolatban. 
+CWKKD0020.ssl.get.certificate.user.useraction=A be\u00e1gyazott kiv\u00e9tel tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmaz.
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s a MongoDB illeszt\u0151program egy inkompatibilis v\u00e1ltozat\u00e1t \u00e9szlelte a(z) {2} megosztott f\u00fcggv\u00e9nyt\u00e1rban. A tan\u00fas\u00edtv\u00e1ny alap\u00fa hiteles\u00edt\u00e9shez legal\u00e1bb {3} szint sz\u00fcks\u00e9ges, azonban a szolg\u00e1ltat\u00e1s a(z) {4} szintet \u00e9szlelte.
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=A MongoDB szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra \u00e9rv\u00e9nytelen illeszt\u0151program f\u00fcggv\u00e9nyt\u00e1r volt megadva a tan\u00fas\u00edtv\u00e1ny alap\u00fa hiteles\u00edt\u00e9s haszn\u00e1lat\u00e1hoz.
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=Friss\u00edtse a megosztott f\u00fcggv\u00e9nyt\u00e1rat egy t\u00e1mogatott szinttel.
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s sslRef tulajdons\u00e1ga be van \u00e1ll\u00edtva a server.xml f\u00e1jlban, azonban az sslEnabled nem true \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+CWKKD0024.ssl.sslref.no.ssl.explanation=Az sslRef be\u00e1ll\u00edt\u00e1sa ssl n\u00e9lk\u00fcl \u00e9rv\u00e9nytelen.
+CWKKD0024.ssl.sslref.no.ssl.useraction=\u00c1ll\u00edtsa be az sslEnabled=true tulajdons\u00e1got, vagy t\u00e1vol\u00edtsa el az sslRef tulajdons\u00e1got.
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: A(z) {1} azonos\u00edt\u00f3j\u00fa {0} szolg\u00e1ltat\u00e1s nem tudta kinyerni az \u00fcgyf\u00e9lkulcsot \u00e9s tan\u00fas\u00edtv\u00e1nyt a kulcst\u00e1rol\u00f3b\u00f3l. A kulcst\u00e1rol\u00f3ban nincsenek tan\u00fas\u00edtv\u00e1nyok, vagy t\u00f6bb kulcs van, \u00e9s az ssl elemben nem lett megadva a clientKeyAlias.
+CWKKD0026.ssl.certificate.exception.explanation=A hivatkozott kulcst\u00e1rol\u00f3nak tartalmaznia kell legal\u00e1bb egy \u00fcgyf\u00e9lkulcs \u00e9s tan\u00fas\u00edtv\u00e1ny p\u00e1rt, \u00e9s ha t\u00f6bb, mint egyet tartalmaz, akkor a clientKeyAlias param\u00e9ter haszn\u00e1lat\u00e1val kell azonos\u00edtani a haszn\u00e1land\u00f3t.
+CWKKD0026.ssl.certificate.exception.useraction=Vizsg\u00e1lja meg a haszn\u00e1latban l\u00e9v\u0151 kulcst\u00e1rol\u00f3t a Java keytool seg\u00e9dprogrammal. P\u00e9ld\u00e1ul "keytool -list -keystore keystorename.jks" megjelen\u00edti a kulcst\u00e1rol\u00f3ban l\u00e9v\u0151 bejegyz\u00e9seket \u00e9s azok \u00e1lneveit. Adja meg ezen \u00e1lnevek egyik\u00e9t a clientKeyAlias param\u00e9terrel az ssl elemhez.
+

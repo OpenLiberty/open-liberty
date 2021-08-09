@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: Impossibile caricare l''intercettatore gRPC definito in clientInterceptors {0}
+invalid.clientinterceptor.explanation=Non \u00e8 stato possibile caricare un intercettatore gRPC definito in clientInterceptors.
+invalid.clientinterceptor.useraction=Verificare il nome intercettatore configurato e il percorso di classe dell'applicazione.
+
+invalid.keepalive.time=CWWKT0302E: keepAliveTime {0} del client gRPC non valido.  I valori devono essere maggiori di 0.
+invalid.keepalive.time.explanation=Il valore configurato per keepAliveTime non \u00e8 valido.
+invalid.keepalive.time.useraction=Configurare un valore valido per keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: keepAliveTimeout {0} del client gRPC non valido.  I valori devono essere maggiori di 0.
+invalid.keepalive.timeout.explanation=Il valore configurato per keepAliveTimeout non \u00e8 valido.
+invalid.keepalive.timeout.useraction=Configurare un valore valido per keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: maxInboundMessageSize {0} del client gRPC non valido.  I valori devono essere maggiori di 0.
+invalid.client.inbound.msg.size.explanation=Il valore configurato per maxInboundMessageSize non \u00e8 valido.
+invalid.client.inbound.msg.size.useraction=Configurare un valore valido per maxInboundMessageSize.

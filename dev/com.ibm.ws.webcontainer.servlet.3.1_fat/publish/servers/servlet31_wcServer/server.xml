@@ -1,0 +1,28 @@
+<!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Server for testing Webcontainer">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+
+    <logging
+        traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HttpTransport=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all:com.ibm.ws.session.*=all:com.ibm.ws.runtime.update.internal*=all:ChannelFramework=all"
+        maxFileSize="20"
+        maxFiles="10"
+        traceFormat="BASIC"/>
+
+    <webContainer servlet31.private.buffersizeforlargepostdata="32" allowqueryparamwithnoequal="true" decodeparamviareqencoding="true"/>
+
+</server>

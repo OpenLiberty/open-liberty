@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Zapytania SQL z kursorami musz\u0105 udost\u0119pnia\u0107 dodatkowe zapytanie, aby mo\u017cliwe by\u0142o pobranie wielko\u015bci tabeli wynikowej.
+
+6002=Zagregowanych obiekt\u00f3w nie mo\u017cna zapisywa\u0107, usuwa\u0107 ani odpytywa\u0107 niezale\u017cnie od ich w\u0142a\u015bcicieli. {1}Deskryptor: [{0}]
+
+6003=Liczba argument\u00f3w podanych w zapytaniu, kt\u00f3re ma zosta\u0107 wykonane, jest niezgodna z liczb\u0105 argument\u00f3w w definicji zapytania.
+
+6004=Obiekt [{0}] klasy [{1}] z kodem mieszaj\u0105cym to\u017csamo\u015bci, System.identityHashCode(), [{2}], {3}nie pochodzi z tej pami\u0119ci obiektu UnitOfWork, ale z sesji nadrz\u0119dnej.  Obiekt nie by\u0142 nigdy zarejestrowany w tym interfejsie UnitOfWork, {3}lecz zosta\u0142 odczytany z sesji nadrz\u0119dnej i powi\u0105zany z obiektem zarejestrowanym w interfejsie UnitOfWork.  Upewnij si\u0119, \u017ce obiekty s\u0105 {3}poprawnie rejestrowane.  Je\u015bli nadal wyst\u0119puj\u0105 problemy, mo\u017cna u\u017cy\u0107 metody UnitOfWork.validateObjectSpace(), aby {3}pom\u00f3c w debugowaniu miejsca wyst\u0105pienia b\u0142\u0119du.  Wi\u0119cej informacji zawiera podr\u0119cznik lub sekcja cz\u0119sto zadawanych pyta\u0144.
+
+6005=Obiekt [{0}] klasy [{1}] z kodem mieszaj\u0105cym to\u017csamo\u015bci (System.identityHashCode()) [{2}] {3}jest orygina\u0142em wzgl\u0119dem nowego zarejestrowanego obiektu.  Interfejs UnitOfWork klonuje nowe zarejestrowane obiekty, wi\u0119c nale\u017cy upewni\u0107 si\u0119, \u017ce obiekt {3}jest zarejestrowany, zanim zostanie on przywo\u0142any przez inny obiekt.  Aby nowe obiekty nie by\u0142y klonowane, mo\u017cna u\u017cy\u0107 funkcji API {3}UnitOfWork.registerNewObject(Object).  Je\u015bli nadal wyst\u0119puj\u0105 problemy, mo\u017cna u\u017cy\u0107 metody UnitOfWork.validateObjectSpace(), {3}aby pom\u00f3c w debugowaniu miejsca wyst\u0105pienia b\u0142\u0119du.  Wi\u0119cej informacji zawiera podr\u0119cznik lub sekcja cz\u0119sto zadawanych pyta\u0144.
+
+6006=Odwzorowanie [{0}] nie obs\u0142uguje odczytu wsadowego.
+
+6007=Brak deskryptora dla elementu [{0}].
+
+6008=Brak deskryptora dla elementu [{0}] zapytania o nazwie [{1}].
+
+6013=Do obiektu CursoredStream przekazano zapytanie o niepoprawnej wielko\u015bci.
+
+6014=Nie mo\u017cna zapisywa\u0107 obiekt\u00f3w w czasie dzia\u0142ania interfejsu UnitOfWork, musz\u0105 one by\u0107 rejestrowane.
+
+6015=Niepoprawny klucz zapytania [{0}] w wyra\u017ceniu.
+
+6016=Nie mo\u017cna zmieni\u0107 obiekt\u00f3w lub bazy danych za po\u015brednictwem obiektu ServerSession.  Wszystkie zmiany musz\u0105 by\u0107 dokonywane za po\u015brednictwem interfejsu UnitOfWork obiektu ClientSession.
+
+6020=Nie wskazano klasy konkretnej dla typu w wierszu [{0}].
+
+6021=Kursory nie s\u0105 obs\u0142ugiwane w przypadku deskryptor\u00f3w interfejs\u00f3w ani deskryptor\u00f3w klas abstrakcyjnych z wieloma tabelami, kt\u00f3re u\u017cywaj\u0105 wyra\u017ce\u0144.  Nale\u017cy rozwa\u017cy\u0107 u\u017cycie niestandardowego kodu SQL lub wielu zapyta\u0144.
+
+6023=Lista p\u00f3l do wstawienia do tabeli [{0}] jest pusta.  Nale\u017cy zdefiniowa\u0107 co najmniej jedno odwzorowanie dla tej tabeli.
+
+6024=Modyfikowanie zapyta\u0144 wymaga obiektu do zmodyfikowania.
+
+6026=Zapytanie o nazwie [{0}] nie jest zdefiniowane. Klasa domeny: [{1}]
+
+6027=Zapytanie zosta\u0142o wys\u0142ane do nieaktywnego interfejsu UnitOfWork.
+
+6028=Podj\u0119to pr\u00f3b\u0119 odczytu poza ko\u0144cem strumienia.
+
+6029=Nale\u017cy poda\u0107 klas\u0119 odwo\u0142ania.
+
+6030=Od\u015bwie\u017canie nie jest mo\u017cliwe, je\u015bli nie jest w\u0142\u0105czone buforowanie.
+
+6031=Opcja size() jest obs\u0142ugiwana tylko w przypadku zapyta\u0144 o wyra\u017cenia, chyba \u017ce podane zostanie zapytanie o wielko\u015b\u0107.
+
+6032=Instrukcja SQL nie zosta\u0142a poprawnie ustawiona.
+
+6034=Niepoprawne wyra\u017cenie elementu zapytania [{0}].
+
+6041=Obiekt wyboru przekazany do obiektu ReadObjectQuery mia\u0142 warto\u015b\u0107 NULL.
+
+6042=Nale\u017cy poda\u0107 nazw\u0119 sesji w przypadku zapyta\u0144 innych ni\u017c na poziomie obiektu.  Wi\u0119cej informacji zawiera opis metody setSessionName(String).
+
+6043=Obiekty ReadQuery bez kluczy podstawowych nie mog\u0105 u\u017cywa\u0107 metody readObject(). {1}ReportQueryResult: [{0}].
+
+6044=Wykryto, \u017ce klucz podstawowy odczytany z wiersza [{0}] podczas wykonywania zapytania ma warto\u015b\u0107 NULL.  Klucze podstawowe nie mog\u0105 zawiera\u0107 warto\u015bci NULL.
+
+6045=Podklasa [{0}] wskazana w wierszu podczas budowania obiektu nie ma zdefiniowanego deskryptora.
+
+6046=Nie mo\u017cna usun\u0105\u0107 obiektu klasy tylko do odczytu.  Klasa [{0}] jest zadeklarowana jako tylko do odczytu w tym interfejsie UnitOfWork.
+
+6047=Niepoprawny operator [{0}] w wyra\u017ceniu.
+
+6048=Niedozwolone u\u017cycie metody getField() [{0}] w wyra\u017ceniu.
+
+6049=Niedozwolone u\u017cycie metody getTable() [{0}] w wyra\u017ceniu.
+
+6050=Niezgodno\u015b\u0107 wielko\u015bci wyniku obiektu ReportQuery.  Oczekiwano warto\u015bci [{0}], a pobrano warto\u015b\u0107 [{1}].
+
+6051=Zapytania o obiekty cz\u0119\u015bciowe nie mog\u0105 obs\u0142ugiwa\u0107 pami\u0119ci podr\u0119cznej i nie mog\u0105 by\u0107 edytowane.  Nale\u017cy u\u017cy\u0107 metody dontMaintainCache().
+
+6052=\u0141\u0105czenie zewn\u0119trzne (getAllowingNull lub anyOfAllowingNone) jest poprawne tylko dla odwzorowa\u0144 OneToOne, OneToMany, ManyToMany, AggregateCollection i DirectCollection. Nie mo\u017cna go u\u017cy\u0107 dla odwzorowania [{0}].
+
+6054=Nie mo\u017cna doda\u0107 obiektu [{0}] klasy [{1}] do klasy kontenera [{2}] przy u\u017cyciu strategii [{3}].
+
+6055=Wywo\u0142anie metody [{0}] dla obiektu [{1}] klasy [{2}] wyzwoli\u0142o wyj\u0105tek.
+
+6056=Nie mo\u017cna sklonowa\u0107 obiektu [{0}] klasy [{1}] przy u\u017cyciu [{2}].
+
+6057=Wywo\u0142anie metody [{0}] wzgl\u0119dem obiektu [{1}] nie jest poprawne.
+
+6058=Nie znaleziono metody [{0}] w klasie [{1}].
+
+6059=Nie mo\u017cna u\u017cy\u0107 klasy [{0}] jako kontenera dla wynik\u00f3w zapytania, poniewa\u017c nie mo\u017cna utworzy\u0107 jej instancji.
+
+6060=Nie mo\u017cna u\u017cy\u0107 obiektu [{0}] typu [{1}] jako klucza dla elementu [{2}] typu [{3}].  Klucza nie mo\u017cna por\u00f3wna\u0107 z kluczami aktualnie znajduj\u0105cymi si\u0119 w odwzorowaniu.
+
+6061=Nie mo\u017cna uzyska\u0107 w spos\u00f3b refleksyjny dost\u0119pu do metody [{0}] dla obiektu [{1}] klasy [{2}].
+
+6062=Metoda [{0}] wywo\u0142ana w spos\u00f3b refleksyjny dla obiektu [{1}] klasy [{2}] wyzwoli\u0142a wyj\u0105tek.
+
+6063=Niepoprawna operacja [{0}] na kursorze.
+
+6064=Nie mo\u017cna usun\u0105\u0107 obiektu [{0}] klasy [{1}] z klasy kontenera [{2}] przy u\u017cyciu strategii [{3}].
+
+6065=Nie mo\u017cna doda\u0107 obiektu [{0}] klasy [{1}] do kontenera [{2}].
+
+6066=Obiekt [{0}] klasy [{1}] z kodem mieszaj\u0105cym to\u017csamo\u015bci, System.identityHashCode(), [{2}] {3}zosta\u0142 usuni\u0119ty, ale nadal ma odwo\u0142ania.  Nie mo\u017cna odwo\u0142ywa\u0107 si\u0119 do usuni\u0119tych obiekt\u00f3w po ich usuni\u0119ciu. {3}Upewnij si\u0119, \u017ce obiekty s\u0105 poprawnie rejestrowane.  Je\u015bli nadal wyst\u0119puj\u0105 problemy, mo\u017cna u\u017cy\u0107 metody UnitOfWork.validateObjectSpace(), {3}aby pom\u00f3c w debugowaniu miejsca wyst\u0105pienia b\u0142\u0119du.  Wi\u0119cej informacji zawiera podr\u0119cznik lub sekcja cz\u0119sto zadawanych pyta\u0144.
+
+6067=Nie mo\u017cna w refleksyjny spos\u00f3b uzyska\u0107 dost\u0119pu do pola [{0}] obiektu [{1}] klasy [{2}].
+
+6068=Nie mo\u017cna por\u00f3wna\u0107 odwo\u0142ania do tabeli z elementem [{0}] w wyra\u017ceniu.
+
+6069=Pole [{0}] w tym wyra\u017ceniu ma tabel\u0119, kt\u00f3ra jest niepoprawna w tym kontek\u015bcie.
+
+6070=Niepoprawne u\u017cycie klucza zapytania [{0}] reprezentuj\u0105cego relacj\u0119 \u201edo wielu\u201d w wyra\u017ceniu.  Nale\u017cy u\u017cy\u0107 metody anyOf(), a nie get().
+
+6071=Niepoprawne u\u017cycie metody anyOf() dla klucza zapytania [{0}], kt\u00f3ry nie reprezentuje relacji \u201edo wielu\u201d w wyra\u017ceniu.  Nale\u017cy u\u017cy\u0107 metody get(), a nie anyOf().
+
+6072=Wykonywanie zapyta\u0144 w ramach obiektu VariableOneToOneMapping nie jest obs\u0142ugiwane. {2}Deskryptor: [{0}] {2}Odwzorowanie: [{1}]
+
+6073=Zniekszta\u0142cone wyra\u017cenie w zapytaniu.  Zostanie podj\u0119ta pr\u00f3ba wypisania odwo\u0142ania do obiektu w instrukcji SQL dla klucza zapytania [{0}].
+
+6074=To wyra\u017cenie nie mo\u017ce okre\u015bli\u0107, czy obiekt jest zgodny w pami\u0119ci.  Nale\u017cy ustawi\u0107 zapytanie tak, aby sprawdza\u0142o baz\u0119 danych.
+
+6075=Por\u00f3wnania obiekt\u00f3w mog\u0105 u\u017cywa\u0107 tylko operator\u00f3w equal() lub notEqual().  Inne por\u00f3wnania musz\u0105 by\u0107 wykonywane za po\u015brednictwem kluczy zapyta\u0144 lub bezpo\u015brednich por\u00f3wna\u0144 na poziomie atrybutu. {1}Wyra\u017cenie: [{0}]
+
+6076=Por\u00f3wnania obiekt\u00f3w mog\u0105 by\u0107 u\u017cywane tylko z obiektami OneToOneMapping.  Inne por\u00f3wnania odwzorowa\u0144 musz\u0105 by\u0107 wykonywane za po\u015brednictwem kluczy zapyta\u0144 lub bezpo\u015brednich por\u00f3wna\u0144 na poziomie atrybutu. {2}Odwzorowanie: [{0}] {2}Wyra\u017cenie: [{1}]
+
+6077=Por\u00f3wnania obiekt\u00f3w nie mog\u0105 by\u0107 u\u017cywane w zapytaniach o parametry.  Wyra\u017cenie musi by\u0107 budowane dynamicznie. {1}Wyra\u017cenie: [{0}]
+
+6078=Klasa argumentu dla por\u00f3wnania obiekt\u00f3w jest niepoprawna. {3}Wyra\u017cenie: [{0}] {3}Odwzorowanie: [{1}] {3}Argument: [{2}]
+
+6079=Nie mo\u017cna u\u017cywa\u0107 por\u00f3wnania obiektu z warto\u015bci\u0105 NULL w przypadku relacji z docelowym kluczem obcym.  Zamiast tego wykonaj zapytanie wzgl\u0119dem \u017ar\u00f3d\u0142owego klucza podstawowego. {3}Wyra\u017cenie: [{0}] {3}Odwzorowanie: [{1}] {3}Argument: [{2}]
+
+6080=Niepoprawne wywo\u0142anie bazy danych [{0}].  Wywo\u0142anie musi by\u0107 instancj\u0105 klasy DatabaseCall.
+
+6081=Niepoprawny obiekt korzystaj\u0105cy z bazy danych [{0}].  Obiekt korzystaj\u0105cy musi by\u0107 instancj\u0105 klasy DatabaseAccessor.
+
+6082=Nie mo\u017cna wywo\u0142a\u0107 metody [{0}] z typami argument\u00f3w [{1}] wzgl\u0119dem wyra\u017cenia.
+
+6083=Nie mo\u017cna parametryzowa\u0107 zapyta\u0144 u\u017cywaj\u0105cych metody in().  Wy\u0142\u0105cz przygotowywanie zapytania lub powi\u0105zanie.
+
+6084=Zapytanie przekierowania nie zosta\u0142o poprawnie skonfigurowane.  Nie ustawiono nazwy metody lub klasy.
+
+6085=Metoda zapytania przekierowania nie jest zdefiniowana lub jest zdefiniowana z niepoprawnymi argumentami.  Musi by\u0107 zadeklarowana jako public static i mie\u0107 argumenty (DatabaseQuery, Record, Session) lub (Session, Vector). {2}Klasa: [{0}] {2}Metoda: [{1}]
+
+6086=Wywo\u0142anie metody zapytania przekierowania wyzwoli\u0142o wyj\u0105tek.
+
+6087=Przyk\u0142adowa klasa obiektu [{0}] jest niezgodna z klas\u0105 obiektu odwo\u0142ania [{1}].
+
+6088=Brak atrybut\u00f3w dla obiektu ReportQuery.
+
+6089=Wyra\u017cenie nie zosta\u0142o poprawnie zainicjowane.  Nale\u017cy u\u017cy\u0107 pojedynczego obiektu ExpressionBuilder dla zapytania. {1}W przypadku wyra\u017ce\u0144 r\u00f3wnoleg\u0142ych nale\u017cy poda\u0107 klas\u0119 zapytania dla konstruktora obiektu ExpressionBuilder, a obiekt ExpressionBuilder zapytania musi {1}zawsze znajdowa\u0107 si\u0119 po lewej stronie wyra\u017cenia. {1}Wyra\u017cenie: [{0}]
+
+6090=Nie mo\u017cna ustawi\u0107 obiektu ReportQuery tak, aby wykonywane by\u0142o tylko sprawdzanie pami\u0119ci podr\u0119cznej.
+
+6091=Typ sta\u0142ej [{0}] u\u017cytej na potrzeby por\u00f3wnania w wyra\u017ceniu jest niezgodny z typem atrybutu [{1}].
+
+6092=Wykryto klas\u0119 ValueHolder bez utworzonej instancji. Nale\u017cy utworzy\u0107 instancje odpowiednich klas ValueHolder, aby wykona\u0107 to zapytanie w pami\u0119ci.
+
+6093=Niepoprawne wyra\u017cenie typu dla elementu [{0}].  Klasa nie ma deskryptora lub ma deskryptor, kt\u00f3ry nie u\u017cywa dziedziczenia lub u\u017cywa obiektu ClassExtractor na potrzeby dziedziczenia.
+
+6094=Nazwa parametru [{0}] w kryteriach wyboru zapytania nie jest zgodna z \u017cadn\u0105 nazw\u0105 parametru zdefiniowan\u0105 w zapytaniu.
+
+6095=Wymagana jest publiczna metoda klonowania.
+
+6096=Metoda klonowania jest niedost\u0119pna.
+
+6097=Metoda klonowania zg\u0142osi\u0142a wyj\u0105tek: {0}.
+
+6098=Wyj\u0105tek nieoczekiwanego wywo\u0142ania: {0}.
+
+6099=\u0141\u0105czenie mi\u0119dzy klasami dziedziczenia z wieloma podklasami tabeli nie jest obs\u0142ugiwane: {0}, {1}
+
+6100=Wykryto wiele warto\u015bci dla zapytania odczytu pojedynczego obiektu.
+
+6101=Wykonanie tego zapytania mo\u017ce naruszy\u0107 integralno\u015b\u0107 globalnej pami\u0119ci podr\u0119cznej sesji, kt\u00f3ra mo\u017ce zawiera\u0107 tylko najnowsze wersje obiekt\u00f3w.  Aby wykona\u0107 zapytanie, kt\u00f3re zwraca obiekty z przesz\u0142o\u015bci, nale\u017cy spr\u00f3bowa\u0107 nast\u0119puj\u0105cej metody: u\u017cy\u0107 obiektu HistoricalSession (acquireSessionAsOf), a wszystkie odczytane obiekty zostan\u0105 zbuforowane i automatycznie odczytane w tym samym czasie.  B\u0119dzie to mia\u0142o zastosowanie nawet w przypadku wyzwalania relacji obiekt\u00f3w.  Ustaw warto\u015b\u0107 false w polu shouldMaintainCache.  Ka\u017cde wyra\u017cenie obiektu mo\u017ce by\u0107 ustawione jako dotycz\u0105ce przesz\u0142o\u015bci, o ile \u017cadne jego pole nie jest reprezentowane w tabeli wynikowej (tzn. s\u0105 one u\u017cywane tylko w klauzuli where).
+
+6102=Aktualnie zapytania historyczne dzia\u0142aj\u0105 tylko z bazami danych Oracle w wersji 9R2 lub nowszymi, poniewa\u017c u\u017cywana jest funkcja Flashback bazy danych Oracle.
+
+6103=Nie mo\u017cna wykona\u0107 metody WriteQuery z wewn\u0105trz obiektu HistoricalSession.  Aby odtworzy\u0107 obiekty z przesz\u0142o\u015bci, nale\u017cy spr\u00f3bowa\u0107 nast\u0119puj\u0105cej metody: odczyta\u0107 ten sam obiekt w stanie obecnym za pomoc\u0105 interfejsu UnitOfWork i zatwierdzi\u0107 interfejs UnitOfWork.
+
+6104=Obiekt {0} nie istnieje w pami\u0119ci podr\u0119cznej.
+
+6105=Zapytanie wymaga ponownego zainicjowania ze strategi\u0105 strumienia kursora.
+
+6106=Obiekt typu [{0}] z kluczem podstawowym [{1}] nie istnieje w pami\u0119ci podr\u0119cznej.
+
+6107=Brak instrukcji aktualizacji dla obiektu UpdateAllQuery.
+
+6108=Zapytanie aktualizacji wszystkiego nie obs\u0142uguje dziedziczenia z wieloma tabelami.
+
+6109=Grupa pobierania o okre\u015blonej nazwie ({0}) nie jest zdefiniowana na poziomie deskryptora.
+
+6110=Zapytanie odczytu nie mo\u017ce uzgodni\u0107 niepobranego atrybutu ({0}) cz\u0119\u015bciowo pobranego obiektu w odwzorowaniu to\u017csamo\u015bci jednostki pracy.
+
+6111=Atrybut grupy pobierania ({0}) jest niezdefiniowany lub nieodwzorowany.
+
+6112=Grupy pobierania nie mo\u017cna ustawi\u0107 w zapytaniu raportu.
+
+6113=Grupy pobierania nie mo\u017cna u\u017cywa\u0107 wraz z odczytywaniem atrybut\u00f3w cz\u0119\u015bciowych.
+
+6114=Nale\u017cy zdefiniowa\u0107 mened\u017cer grupy pobierania w deskryptorze ({0}), aby mo\u017cliwe by\u0142o ustawienie grupy pobierania dla zapytania ({1}).
+
+6115=Zapytania dotycz\u0105ce izolowanych klas lub zapytania ustawione tak, aby u\u017cywa\u0107 po\u0142\u0105cze\u0144 wy\u0142\u0105cznych, nie mog\u0105 by\u0107 wykonywane w ramach obiektu ServerSession ani komponentu CMP poza transakcj\u0105.
+
+6116=Nie okre\u015blono wywo\u0142ania ani interakcji dla podejmowanej operacji.
+
+6117=Nie mo\u017cna ustawi\u0107 zapytania, kt\u00f3re u\u017cywa wyniku z kursorem, aby buforowa\u0142o wyniki zapytania.
+
+6118=Zapytanie wzgl\u0119dem izolowanej klasy nie mo\u017ce buforowa\u0107 wynik\u00f3w zapytania.
+
+6119=Wyra\u017cenie \u0142\u0105czenia {0} nie jest poprawne lub dotyczy typu odwzorowania, kt\u00f3ry nie obs\u0142uguje \u0142\u0105czenia.
+
+6120=Atrybut cz\u0119\u015bciowy {0} nie jest poprawnym atrybutem klasy {1}.
+
+6121=Zapytanie nie zosta\u0142o poprawnie zdefiniowane. Brakuje programu buduj\u0105cego wyra\u017cenia.  W przypadku zapyta\u0144 podrz\u0119dnych i r\u00f3wnoleg\u0142ych nale\u017cy upewni\u0107 si\u0119, \u017ce program buduj\u0105cy wyra\u017cenia zawsze znajduje si\u0119 po lewej stronie.
+
+6122=Wyra\u017cenie nie jest poprawne. {0}
+
+6123=Nie mo\u017cna u\u017cy\u0107 okre\u015blonej klasy kontenera [{0}], poniewa\u017c kontener musi implementowa\u0107 element {1}.
+
+6124=Wymagane jest zapytanie: {0}, znaleziono: {1}
+
+6125=Nie mo\u017cna ju\u017c wywo\u0142ywa\u0107 metody ReadQuery.clearQueryResults(). Wywo\u0142anie metody clearQueryResults wymaga teraz podania sesji. Nale\u017cy wywo\u0142a\u0107 metod\u0119 clearQueryResults(session).
+
+6126=Wykonywane jest zapytanie, kt\u00f3re u\u017cywa zar\u00f3wno zgodnych, jak i buforowanych wynik\u00f3w zapytania.  Te dwa ustawienia s\u0105 niezgodne ze sob\u0105.
+
+6127=Nie powiod\u0142o si\u0119 wywo\u0142anie refleksyjne klasy EclipseLink {0}. \u015arodowisko musi by\u0107 skonfigurowane tak, aby dozwolona by\u0142a refleksja Java.
+
+6128=Odczytywanie wsadowe nie jest obs\u0142ugiwane w przypadku zapyta\u0144 u\u017cywaj\u0105cych wywo\u0142a\u0144 niestandardowych.
+
+6129=Od\u015bwie\u017canie nie jest mo\u017cliwe, je\u015bli zapytanie nie odnosi si\u0119 do bazy danych.
+
+6130=Niestandardowy kod SQL nie poda\u0142 kolumny wyr\u00f3\u017cnika: {0} zgodnie z definicj\u0105 w obiekcie SQLResultSetMapping: {1}.
+
+6131=Obiekt DeleteAllQuery, kt\u00f3ry definiuje obiekty do usuni\u0119cia przy u\u017cyciu metody setObjects z argumentem o warto\u015bci innej ni\u017c NULL, musi r\u00f3wnie\u017c definiowa\u0107 odpowiednie kryteria wyboru. {1}Obiekty: [{2}]{1}Deskryptor: [{0}]
+
+6132=Nie znaleziono argumentu zapytania {0} na li\u015bcie parametr\u00f3w podanych podczas wykonywania zapytania.
+
+6133=Pierwszy argument metody addUpdate definiuje pole, kt\u00f3remu ma zosta\u0107 przypisana nowa warto\u015b\u0107. Ta warto\u015b\u0107 nie mo\u017ce by\u0107 warto\u015bci\u0105 NULL.
+
+6134=Nazwa atrybutu lub wyra\u017cenie przekazane jako pierwszy parametr do metody addUpdate nie definiuje pola. {1}Nazwa atrybutu lub wyra\u017cenie: [{2}]{1}Deskryptor: [{0}]
+
+6135=Nazwa atrybutu lub wyra\u017cenie przekazane jako pierwszy parametr do metody addUpdate definiuje pole z tabeli, kt\u00f3re nie jest odwzorowane na deskryptor zapytania. {1}Nazwa atrybutu lub wyra\u017cenie: [{2}]{1}Niepoprawne pole: [{3}]{1}Deskryptor: [{0}]
+
+6136=Klasy odwzorowane z dziedziczeniem wielu tabel nie mog\u0105 by\u0107 elementami ReportQuery. Element: {0}, wyra\u017cenie: {1}.
+
+6137=Zg\u0142oszono wyj\u0105tek podczas wykonywania obiektu ReportQuery z wyra\u017ceniem konstruktora: {0}
+
+6138=Zapytanie wymaga pami\u0119ci tymczasowej, ale element {0} nie obs\u0142uguje tabel tymczasowych.
+
+6139=Wyst\u0105pi\u0142 problem podczas znajdowania odwzorowania dla elementu {0} zdefiniowanego w wyniku pola o nazwie {1}.
+
+6140=Podj\u0119to pr\u00f3b\u0119 przypisania wyra\u017ce\u0144 \u0142\u0105czenia do elementu raportu {1} typu {0}.  Wyra\u017cenia \u0142\u0105czenia maj\u0105 zastosowanie tylko do element\u00f3w, kt\u00f3re zwracaj\u0105 obiekty trwa\u0142e.
+
+6141=Zg\u0142oszono wyj\u0105tek ClassCastException podczas pr\u00f3by przekszta\u0142cenia elementu {0} w klas\u0119 we wskaz\u00f3wce zapytania.
+
+6142=Warto\u015b\u0107 {1} podana dla wskaz\u00f3wki zapytania {0} przechodzi\u0142a przez niedozwolon\u0105 relacj\u0119.  Relacja {2} nie jest relacj\u0105 typu OneToOne ani OneToMany.
+
+6143=Warto\u015b\u0107 {1} podana dla wskaz\u00f3wki zapytania {0} przechodzi\u0142a przez nieistniej\u0105c\u0105 relacj\u0119.  Relacja {2} nie istnieje.
+
+6144=Warto\u015b\u0107 {1} podana dla wskaz\u00f3wki zapytania {0} nie zawiera wystarczaj\u0105cej liczby znacznik\u00f3w.  \u0141\u0105czenie musi rozpoczyna\u0107 si\u0119 od zmiennej identyfikacji zapytania.  Na przyk\u0142ad w zapytaniu \u201eSELECT x from X x\u201d, aby odwo\u0142a\u0107 si\u0119 do elementu y nale\u017c\u0105cego do elementu x, nale\u017cy u\u017cy\u0107 wskaz\u00f3wki \u201ex.y\u201d.
+
+6145=Liczenie unikalnych warto\u015bci w z\u0142o\u017conej klasie klucza podstawowego [{0}] nie jest obs\u0142ugiwane. Deskryptor [{1}] 
+
+6146=Warto\u015b\u0107 {1} podana dla wskaz\u00f3wki zapytania {0} nie jest poprawn\u0105 warto\u015bci\u0105. Poprawne warto\u015bci to liczby ca\u0142kowite lub \u0142a\u0144cuchy, dla kt\u00f3rych wynikiem analizy s\u0105 liczby ca\u0142kowite.
+
+6147=Wyra\u017cenie {0} nie jest poprawne dla odczytywania atrybut\u00f3w cz\u0119\u015bciowych.
+
+6148=Dodawanie elementu {0} do obiektu PLSQLStoredProcedureCall nie jest obs\u0142ugiwane.
+
+6149=Obiekt PLSQLStoredProcedureCall nie mo\u017ce u\u017cywa\u0107 argumentu bez nazwy.
+
+6150=Nie mo\u017cna u\u017cy\u0107 warto\u015bci NULL jako klucza w kontenerze typu [{1}]. Upewnij si\u0119, \u017ce warto\u015bci klucza dla obiekt\u00f3w typu [{0}] nie s\u0105 warto\u015bciami NULL.
+
+6151=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by ustawienia programu przekierowuj\u0105cego {0} przekazywanego przez wskaz\u00f3wk\u0119 zapytania JPA {1}.  Sprawd\u017a, czy podany program przekierowuj\u0105cy implementuje interfejs org.eclipse.persistence.queries.QueryRedirector.
+
+6152=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by utworzenia instancji klasy {0} przekazanej przez wskaz\u00f3wk\u0119 zapytania JPA {1}.  Upewnij si\u0119, \u017ce klasa ma konstruktor domy\u015blny.
+
+6153=Dla typu z\u0142o\u017conego musi by\u0107 ustawiony obiekt CompatibleType: {0}.
+
+6154=Dla typu z\u0142o\u017conego musi by\u0107 ustawiony obiekt TypeName: {0}.
+
+6155=Nie znaleziono tabeli relacji w elemencie {0}. {2}Wyra\u017cenie joinCriteria: [{1}]
+
+6156=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by ustawienia odczytywania klucza odwzorowania dla elementu [{0}]: [{1}].
+
+6157=Element [{0}] jest dodawany do odwzorowania bez klucza.  Oznacza to zazwyczaj, \u017ce baza danych nie zawiera oczekiwanego klucza.
+
+6158=Za\u017c\u0105dano, aby obiekt MapContainerPolicy odpakowa\u0142 element [{0}], kt\u00f3ry nie jest elementem odwzorowania.  Oznacza to, \u017ce u\u017cywana jest niepoprawna strategia kontenera.
+
+6159=Nie mo\u017cna znale\u017a\u0107 odwzorowania dla obiektu MapEntryExpression z podstaw\u0105: [{0}].
+
+6160=Obiekt MapEntryExpression z podstaw\u0105: [{0}] odwo\u0142uje si\u0119 do odwzorowania [{1}], kt\u00f3re nie jest odwzorowaniem kolekcji.  Odwzorowania mog\u0105 istnie\u0107 tylko w odwzorowaniach kolekcji.
+
+6161=Obiekt MapEntryExpression z podstaw\u0105: [{0}] odwo\u0142uje si\u0119 do odwzorowania [{1}], kt\u00f3re nie odwo\u0142uje si\u0119 do odwzorowania.
+
+6162=Kolumna kolejno\u015bci listy [{0}] zawiera niepoprawne warto\u015bci: {2}{1}
+
+6163=Metoda index() wymaga obiektu QueryKeyExpression i nie mo\u017ce by\u0107 stosowana do elementu [{0}].
+
+6164=Metoda index() wymaga obiektu QueryKeyExpression z obiektem CollectionMapping, kt\u00f3ry ma kolumn\u0119 kolejno\u015bci listy o warto\u015bci innej ni\u017c NULL. Element [{1}] nie spe\u0142nia tego warunku w elemencie [{0}].
+
+6165=Pobieranie wsadowe przy u\u017cyciu klauzuli IN wymaga pojedynczego klucza podstawowego.
+
+6166=Podj\u0119to pr\u00f3b\u0119 rzutowania poza hierarchi\u0105 dziedziczenia.  Element [{0}] nie wyst\u0119puje w hierarchii klasy dla elementu [{1}]. Uwaga: ten wyj\u0105tek mo\u017ce r\u00f3wnie\u017c wskazywa\u0107, \u017ce wykonano rzutowanie dla relacji dziedziczenia tabeli dla klasy, kt\u00f3ra nie jest obs\u0142ugiwana w przypadku rzutowania.
+
+6167=Wywo\u0142ano rzutowanie dla wyra\u017cenia, kt\u00f3re nie u\u017cywa dziedziczenia: [{0}].
+
+6168=Przygotowywanie zapytania nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d: [{0}].
+
+6169=Odwzorowanie zosta\u0142o skonfigurowane na potrzeby u\u017cycia pobierania wsadowego za pomoc\u0105 klauzuli IN, ale oryginalne zapytanie nie zosta\u0142o skonfigurowane na potrzeby u\u017cyciu pobierania wsadowego za pomoc\u0105 klauzuli IN i musi by\u0107 nast\u0119puj\u0105ce: [{0}].
+
+6171=Partycjonowanie nie jest obs\u0142ugiwane dla typu sesji [{0}]. Obs\u0142ugiwane s\u0105 tylko obiekty ServerSession i ClientSession.
+
+6172=Brak puli po\u0142\u0105cze\u0144 dla partycjonowania [{0}].
+
+6173=Prze\u0142\u0105czenie awaryjne puli po\u0142\u0105cze\u0144 [{0}] nie powiod\u0142o si\u0119, wszystkie serwery s\u0105 nieaktywne.
+
+6174=Nie podano warto\u015bci dla w\u0142a\u015bciwo\u015bci sesji [{0}]. Ten wyj\u0105tek jest mo\u017cliwy w przypadku u\u017cywania dodatkowych kryteri\u00f3w lub kolumn wyr\u00f3\u017cnika klienta bez okre\u015blania powi\u0105zanej w\u0142a\u015bciwo\u015bci kontekstowej. Te w\u0142a\u015bciwo\u015bci musz\u0105 by\u0107 ustawione za po\u015brednictwem interfejsu EntityManager lub EntityManagerFactory albo w\u0142a\u015bciwo\u015bci jednostki trwa\u0142o\u015bci. W przypadku u\u017cywania rodzimego produktu EclipseLink te w\u0142a\u015bciwo\u015bci powinny by\u0107 ustawione bezpo\u015brednio w sesji.
+
+6175=Rodzime zapytania SQL zosta\u0142y wy\u0142\u0105czone. Mo\u017cna to zrobi\u0107, ustawiaj\u0105c w\u0142a\u015bciwo\u015b\u0107 jednostki trwa\u0142o\u015bci eclipselink.jdbc.allow-native-sql-queries na warto\u015b\u0107 false lub definiuj\u0105c co najmniej jedn\u0105 jednostk\u0119 z wieloma klientami w jednostce trwa\u0142o\u015bci. Sprawd\u017a specyfikacj\u0119 jednostki trwa\u0142o\u015bci. Aby rodzime zapytania SQL by\u0142y dozwolone, nale\u017cy ustawi\u0107 t\u0119 w\u0142a\u015bciwo\u015b\u0107 na warto\u015b\u0107 true. Pojedyncze zapytania mog\u0105 obchodzi\u0107 to ustawienie poprzez ustawienie wskaz\u00f3wki zapytania eclipselink.jdbc.allow-native-sql-query na warto\u015b\u0107 true.
+
+6176=Zg\u0142oszono wyj\u0105tek podczas inicjowania konstruktora z klasy [{0}]: [{1}]
+
+6177=Nie znaleziono wyniku kolumny [{0}] w wynikach zapytania.
+
+6178=Pole isResultSetAccessOptimizedQuery ustawione na warto\u015b\u0107 true powoduje konflikt z innymi ustawieniami zapytania.
+
+6179=Przekszta\u0142cenie obiektu sopObject z postaci szeregowej z [{0}] w [{1}] nie powiod\u0142o si\u0119.
+
+6180=Nie znaleziono obiektu sopObject przekszta\u0142conego do postaci szeregowej w [{0}] w [{1}]
+
+6181=Obiekt sopObject ma niepoprawn\u0105 wersj\u0119 [{0}] w [{1}] w [{2}]
+
+6182=Obiekt sopObject ma niepoprawny klucz podstawowy [{0}] w [{1}] w [{2}]
+
+6183=Typ odwzorowania {1} dla atrybutu {2} z {0} nie jest obs\u0142ugiwany w przypadku funkcji zapytania wed\u0142ug przyk\u0142adu.  Je\u015bli atrybut mo\u017cna bezpiecznie zignorowa\u0107, dodaj go do listy ignorowanych lub ustaw sprawdzanie poprawno\u015bci przyk\u0142ad\u00f3w w strategii na warto\u015b\u0107 false.
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd">
+
+   <ejb-jar id="ejb-jar_ID">
+      <enterprise-beans>
+         <session id="Session_1051542150766">
+            <ejb-name>TargetBean</ejb-name>
+            <local-home>com.ibm.bnd.err.ejb.error27.ejb.LocalTargetHome</local-home>
+            <local>com.ibm.bnd.err.ejb.error27.ejb.LocalTargetCompBiz</local>
+            <ejb-class>com.ibm.bnd.err.ejb.error27.ejb.TargetBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session> 
+         
+       </enterprise-beans>
+   </ejb-jar>

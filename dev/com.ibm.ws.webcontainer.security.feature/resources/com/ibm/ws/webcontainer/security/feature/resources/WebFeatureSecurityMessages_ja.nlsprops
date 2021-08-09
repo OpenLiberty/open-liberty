@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security.feature/resources/com/ibm/ws/webcontainer/security/feature/resources/WebFeatureSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Feature Web Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9200 - CWWKS9249
+
+FEATURE_ROLE_CONFIG_PROCESSED=CWWKS9120I: \u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u30fb\u30ed\u30fc\u30eb\u30fb\u30de\u30c3\u30d7 id="{0}" \u304c\u6b63\u5e38\u306b\u51e6\u7406\u3055\u308c\u307e\u3057\u305f\u3002
+FEATURE_ROLE_CONFIG_PROCESSED.explanation=\u8a31\u53ef\u30ed\u30fc\u30eb\u30fb\u30de\u30c3\u30d4\u30f3\u30b0\u304c\u6b63\u5e38\u306b\u51e6\u7406\u3055\u308c\u307e\u3057\u305f\u3002
+FEATURE_ROLE_CONFIG_PROCESSED.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002
+AUTHZ_ROLE_ID_IS_NULL=CWWKS9121E: <authorization-roles> \u30a8\u30ec\u30e1\u30f3\u30c8\u306b id \u5c5e\u6027\u304c\u3042\u308a\u307e\u305b\u3093\u3002
+AUTHZ_ROLE_ID_IS_NULL.explanation=<authorization-roles> \u30a8\u30ec\u30e1\u30f3\u30c8\u3092\u51e6\u7406\u3059\u308b\u306b\u306f\u3001id \u5c5e\u6027\u304c\u5fc5\u8981\u3067\u3059\u3002
+AUTHZ_ROLE_ID_IS_NULL.useraction=<authorization-roles> \u30a8\u30ec\u30e1\u30f3\u30c8\u306e id \u5c5e\u6027\u306b\u9069\u5207\u306a\u5024\u3092\u5b9a\u7fa9\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+

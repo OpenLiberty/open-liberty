@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.2.7,ou=objectClasses,cn=samba,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+creatorsname: uid=admin,ou=system
+m-oid: 1.3.6.1.4.1.7165.2.2.7
+m-name: sambaUnixIdPool
+m-description: Pool for allocating UNIX uids/gids
+m-supobjectclass: top
+m-must: gidNumber
+m-must: uidNumber
+entryUUID: 104e01fe-fc72-4b3f-836f-18469f045e8f
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.626000Z#000000#000#000000
+entryParentId: 8e14d1f0-66fb-4720-9d3a-d644eb1f3fd6
+createTimestamp: 20130919065351.288Z

@@ -1,0 +1,20 @@
+<server description="new server">
+
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		ldapType="BadLdapType"
+		searchTimeout="8m">
+		<failoverServers name="failoverLdapServers">
+			<server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
+       	</failoverServers>
+	</ldapRegistry>   		
+    
+
+</server>

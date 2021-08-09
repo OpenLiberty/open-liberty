@@ -1,0 +1,94 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/fat.gradle'
+
+dependencies {
+  requiredLibs project(':io.openliberty.org.apache.commons.codec'),
+				project(':io.openliberty.org.apache.commons.logging'),
+				'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+				'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+				'net.sourceforge.htmlunit:htmlunit:2.44.0',
+        'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+        'net.sourceforge.htmlunit:webdriver:2.6',
+        'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+        'org.brotli:dec:0.1.2',
+        'xalan:xalan:2.7.2',
+        project(':com.ibm.ws.org.apache.commons.io'),
+				'org.apache.commons:commons-lang3:3.5',
+				'org.apache.commons:commons-lang3:3.8',
+				project(':com.ibm.ws.org.apache.httpcomponents'),
+				'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+				'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+				'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+				'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+				'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+				'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+				'xerces:xercesImpl:2.11.0',
+				'xml-apis:xml-apis:1.4.01'
+      
+      
+}
+
+
+
+/*
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+task jwtbuilder(type: War, dependsOn: classes) {
+  def appName = "jwtbuilder"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ('build/classes/java/main') {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/**/*.class"
+    include "com/ibm/ws/security/fat/common/jwt/JwtConstants.class"
+    include "com/ibm/ws/security/fat/common/jwt/HeaderConstants.class"
+    include "com/ibm/ws/security/fat/common/jwt/utils/JWTApiApplicationUtils.class"
+    into "WEB-INF/classes"
+  }
+    /* copy needed files from jwt common fat into our app */
+  from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
+    include 'com/ibm/ws/security/fat/common/Constants.class', 'com/ibm/ws/security/fat/common/utils/KeyTools.class'
+    into "WEB-INF/classes"
+  }
+  /* start of jose4j copy */  
+  /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
+    into "WEB-INF/classes"
+  }
+  /* end of jose4j copy */    
+    
+}
+
+task helloworld(type: War, dependsOn: classes) {
+  def appName = "helloworld"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from("test-applications/${appName}/resources") {
+    include "**/*"
+    exclude "**/userProfileUserInfoApiTest.jsp"
+  }
+  from ('build/classes/java/main') {
+    include "com/ibm/ws/jaxrs/fat/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+}
+assemble {
+  dependsOn \
+    jwtbuilder,
+    helloworld
+}

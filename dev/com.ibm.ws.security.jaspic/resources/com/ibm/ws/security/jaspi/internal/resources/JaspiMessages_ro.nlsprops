@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.jaspic-1.1/resources/com/ibm/ws/security/jaspi/resources/JaspiMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JASPI Authentication
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1650 - CWWKS1699
+
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED=CWWKS1650I: A fost ad\u0103ugat\u00ee o clas\u0103 Java Authentication SPI for Containers (JASPIC) AuthConfigProvider via API-ul AuthConfigFactory.registerConfigProvider. Numele clasei AuthConfigProvider este {0}.
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED.explanation=Clasa JASPIC AuthConfigProvider este acum disponibil\u0103 pentru autentificarea cererilor de intrare web.
+JASPI_PROVIDER_PROGRAMATICALLY_ADDED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED=CWWKS1651I: A fost \u00eenl\u0103turat\u0103 o clas\u0103 Java Authentication SPI for Containers (JASPIC) AuthConfigProvider via API-ul AuthConfigFactory.removeRegistration. Numele clasei AuthConfigProvider este {0}.
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED.explanation=Clasa JASPIC AuthConfigProvider nu mai este disponibil\u0103 pentru autentificarea cererilor de intrare web.
+JASPI_PROVIDER_PROGRAMATICALLY_REMOVED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JASPI_PROVIDER_FAILED_AUTHENTICATE=CWWKS1652A: Autentificarea a e\u015fuat cu starea {0} pentru cererea web {1}. Serviciul Java Authentication SPI for Containers (JASPIC) definit de utilizator {2} a determinat c\u0103 datele de autentificare nu sunt valide.
+JASPI_PROVIDER_FAILED_AUTHENTICATE.explanation=Autentificarea pentru cererea web a fost e\u015fuat\u0103 de c\u0103tre furnizorul JASPIC (Java Authentication SPI for Containers) definit de utilizator, cu numele de clas\u0103 dat.
+JASPI_PROVIDER_FAILED_AUTHENTICATE.useraction=Verifica\u0163i c\u0103 cererea web are date de autentificare valide pentru furnizorul JASPIC definit de utilizator. C\u0103uta\u0163i mesajele emise de furnizorul JASPIC \u015fi consulta\u0163i-v\u0103 administrator de sistem cu privire la cerin\u0163ele de date de autentificare ale furnizorului JASPIC.
+
+JASPI_PROVIDER_SERVICE_ACTIVATED=CWWKS1653I: A fost activat\u0103 o caracteristic\u0103 definit\u0103 de utilizator ce implementeaz\u0103 un serviciu de furnizor Java Authentication SPI for Containers (JASPIC). Numele clasei de serviciu este {0}.
+JASPI_PROVIDER_SERVICE_ACTIVATED.explanation=Caracteristica definit\u0103 de utilizator care implementeaz\u0103 un serviciu de furnizor JASPIC cu acest nume de clas\u0103 este acum disponibil\u0103 pentru autentificarea cererilor de intrare web.
+JASPI_PROVIDER_SERVICE_ACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JASPI_PROVIDER_SERVICE_DEACTIVATED=CWWKS1654I: A fost dezactivat\u0103 o caracteristic\u0103 definit\u0103 de utilizator ce implementeaz\u0103 un serviciu de furnizor Java Authentication SPI for Containers (JASPIC). Numele clasei de serviciu este {0}.
+JASPI_PROVIDER_SERVICE_DEACTIVATED.explanation=Caracteristica definit\u0103 de utilizator care implementeaz\u0103 un serviciu de furnizor JASPIC cu acest nume de clas\u0103 este acum disponibil\u0103 pentru autentificarea cererilor de intrare web.
+JASPI_PROVIDER_SERVICE_DEACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY=CWWKS1655I: Este utilizat\u0103 clasa Java Authentication SPI for Containers (JASPIC) AuthConfigFactory implicit\u0103 {0}, deoarece proprietatea de securitate Java authconfigprovider.factory nu este setat\u0103. 
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY.explanation=Este utilizat\u0103 clasa implicit\u0103 JASPIC AuthConfigFactory deoarece nu este setat\u0103 proprietatea de securitate Java authconfigprovider.factory.
+JASPI_DEFAULT_AUTH_CONFIG_FACTORY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+JASPI_AUTH_CONFIG_FACTORY=CWWKS1656I: Clasa Java Authentication SPI for Containers (JASPIC) AuthConfigFactory utilizat\u0103 este {0}. Numele clasei este valoarea propriet\u0103\u0163ii de securitate Java authconfigprovider.factory.  
+JASPI_AUTH_CONFIG_FACTORY.explanation=Este utilizat\u0103 clasa specificat\u0103 de proprietatea de securitate Java authconfigprovider.factory ca clas\u0103 JASPIC AuthConfigFactory. 
+JASPI_AUTH_CONFIG_FACTORY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

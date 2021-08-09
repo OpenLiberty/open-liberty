@@ -1,0 +1,92 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: \u5728 JNDI \u4e2d\u67e5\u627e\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u65f6\u672a\u8fd4\u56de\u503c\u3002\u5c06\u5bf9 Opentracing \u670d\u52a1\u540d\u79f0\u4f7f\u7528\u7f3a\u7701\u540d\u79f0\u3002
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=\u6b64\u529f\u80fd\u4e3a\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory \u5b9e\u73b0\u6307\u5b9a\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u3002JNDI \u67e5\u627e\u201cjava:app/AppName\u201d\u68c0\u7d22\u4e0d\u5230\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u3002\u5df2\u63d0\u4f9b\u7f3a\u7701\u670d\u52a1\u540d\u79f0\u3002
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=\u786e\u5b9a\u65e0\u6cd5\u901a\u8fc7 JNDI \u67e5\u627e\u201cjava:app/AppName\u201d\u83b7\u53d6\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u7684\u539f\u56e0\u3002
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: \u8c03\u7528\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory.newInstance(...) \u65b9\u6cd5\u5931\u8d25\uff0c\u53d1\u751f\u4e86\u5f02\u5e38\u3002\u6d88\u606f = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=\u6b64\u529f\u80fd\u4f7f\u7528\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory \u6784\u9020\u8ddf\u8e2a\u5668\u5b9e\u73b0\u3002OpentracingTracerFactory.newInstance \u65b9\u6cd5\u8fd4\u56de\u4e86\u5f02\u5e38\u3002
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=\u786e\u5b9a\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory newInstance \u65b9\u6cd5\u8fd4\u56de\u5f02\u5e38\u7684\u539f\u56e0\u3002
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: \u8c03\u7528\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory.newInstance(...) \u65b9\u6cd5\u8fd4\u56de\u7a7a\u503c
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=\u6b64\u529f\u80fd\u4f7f\u7528\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory \u6784\u9020\u8ddf\u8e2a\u5668\u5b9e\u73b0\u3002OpentracingTracerFactory.newInstance \u65b9\u6cd5\u8fd4\u56de\u7a7a\u503c\u3002
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\u786e\u5b9a\u7528\u6237\u63d0\u4f9b\u7684 OpentracingTracerFactory newInstance \u65b9\u6cd5\u8fd4\u56de\u7a7a\u503c\u7684\u539f\u56e0\u3002
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing \u65e0\u6cd5\u8ddf\u8e2a JAX-RS \u8bf7\u6c42\uff0c\u56e0\u4e3a\u672a\u63d0\u4f9b OpentracingTracerFactory \u7c7b\u3002
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing \u5c06\u4e0d\u4f1a\u6b63\u5e38\u8fd0\u884c\uff0c\u56e0\u4e3a\u672a\u63d0\u4f9b OpentracingTracerFactory \u7c7b\u3002\u5c06\u6b63\u5e38\u6267\u884c JAX-RS \u8bf7\u6c42\uff0c\u4f46\u662f\u5c06\u4e0d\u4f1a\u8ddf\u8e2a\u8fd9\u4e9b\u8bf7\u6c42\u3002
+OPENTRACING_NO_TRACERFACTORY.useraction=\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u6709\u5173\u5982\u4f55\u542f\u7528 OpenTracing \u5206\u5e03\u5f0f\u8ddf\u8e2a\u7684\u6587\u6863\u3002
+
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: OpenTracing \u5f02\u5e38\u6620\u5c04\u5668\u68c0\u6d4b\u5230\u6765\u81ea JAX-RS \u5e94\u7528\u7a0b\u5e8f\u7684\u672a\u5904\u7406\u5f02\u5e38\uff0c\u5e76\u4e14\u6b63\u5728\u5904\u7406\u6b64\u5f02\u5e38\u3002
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=\u57fa\u4e8e JAX-RS \u7684\u5e94\u7528\u7a0b\u5e8f\u53d1\u751f\u4e86\u672a\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5904\u7406\u7684\u5f02\u5e38\u3002OpenTracing \u4ee3\u7801\u5904\u7406\u6b64\u5f02\u5e38\u7684\u65b9\u5f0f\u662f\u8bb0\u5f55\u5f02\u5e38\u5806\u6808\u8ddf\u8e2a\u5e76\u8fd4\u56de\u201c500 \u5185\u90e8\u670d\u52a1\u5668\u9519\u8bef\u201d\u54cd\u5e94\u3002
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=\u6b64\u884c\u4e3a\u53ef\u80fd\u662f\u53ef\u63a5\u53d7\u7684\u3002\u8981\u4ee5\u4e0d\u540c\u65b9\u5f0f\u5904\u7406\u6b64\u5f02\u5e38\uff0c\u5e94\u7528\u7a0b\u5e8f\u5f00\u53d1\u8005\u53ef\u4ee5\u6dfb\u52a0\u7528\u4e8e\u5904\u7406\u6b64\u5f02\u5e38\u7684 ExceptionMapper \u63a5\u53e3\uff0c\u5e76\u5c06\u8be5\u63a5\u53e3\u6620\u5c04\u5230\u4e0d\u540c\u54cd\u5e94\u3002
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpenTracing \u65e0\u6cd5\u8ddf\u8e2a JAX-RS \u8bf7\u6c42\uff0c\u56e0\u4e3a\u672a\u63d0\u4f9b OpentracingTracerFactory \u7c7b\uff0c\u6216\u8005\u7528\u4e8e\u8ddf\u8e2a\u540e\u7aef\u7684\u5ba2\u6237\u673a\u5e93\u4e0d\u5728\u7c7b\u8def\u5f84\u4e2d\u3002
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS \u8bf7\u6c42\u6b63\u5e38\u8fd0\u884c\uff0c\u4f46\u662f\u672a\u8ddf\u8e2a\u8fd9\u4e9b\u8bf7\u6c42\u3002
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=\u8bf7\u53c2\u9605\u6709\u5173\u5982\u4f55\u542f\u7528\u548c\u914d\u7f6e OpenTracing \u5206\u5e03\u5f0f\u8ddf\u8e2a\u7684\u6587\u6863\u3002\u5982\u679c\u672a\u4f7f\u7528 OpenTracing\uff0c\u90a3\u4e48\u53ef\u4ee5\u653e\u5fc3\u5730\u5ffd\u7565\u6b64\u8b66\u544a\u3002
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: \u53d1\u751f\u4e86\u5f00\u653e\u5f0f\u8ddf\u8e2a API \u9519\u8bef\uff1a{0}
+temporary.CWMOT9999E.explanation=\u53d1\u751f\u4e86\u5f00\u653e\u5f0f\u8ddf\u8e2a API \u9519\u8bef\uff0c\u5bfc\u81f4\u65e0\u6cd5\u6267\u884c\u6b63\u5e38\u64cd\u4f5c\u3002
+temporary.CWMOT9999E.useraction=\u8bf7\u67e5\u770b FFDC \u65e5\u5fd7\u548c\u5f02\u5e38\u6587\u672c\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

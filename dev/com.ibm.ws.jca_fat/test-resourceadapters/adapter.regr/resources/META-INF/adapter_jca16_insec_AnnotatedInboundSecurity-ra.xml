@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <connector version="1.6" xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd">
+    <description>WebSphere J2C Inbound Outbound Testing Resource Adapter</description>
+    <display-name>adapter_jca16_insec_AnnotatedInboundSecurity</display-name>
+    <vendor-name>IBM</vendor-name>
+    <eis-type>Test EIS</eis-type>
+    <resourceadapter-version>1.1</resourceadapter-version>
+    <license>
+        <description></description>
+        <license-required>true</license-required>
+    </license>
+    <resourceadapter>
+        <resourceadapter-class>com.ibm.adapter.FVTAdapterImpl</resourceadapter-class>
+
+        <!--Resource Adapter default configuration properties -->
+        <config-property>
+            <config-property-name>adapterName</config-property-name>
+            <config-property-type>java.lang.String</config-property-type>
+            <config-property-value>adapter_jca16_insec_AnnotatedInboundSecurity</config-property-value>
+        </config-property>
+
+        <!--Outbound resource adapter -->
+        <outbound-resourceadapter>
+            <!--  remove after ann processing in place begin  -->
+            <connection-definition>
+                <managedconnectionfactory-class>com.ibm.inout.adapter.InoutManagedConnectionFactoryImpl</managedconnectionfactory-class>
+                <config-property>
+                    <description>Name of database table</description>
+                    <config-property-name>createDatabase</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                </config-property>
+                <config-property>
+                    <description>Name of backing Database</description>
+                    <config-property-name>databaseName</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                    <config-property-value>jtest1</config-property-value>
+                </config-property>
+                <config-property>
+                    <description>The dataSource class</description>
+                    <config-property-name>dataSourceClass</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                    <config-property-value>com.ibm.db2.jcc.DB2XADataSource</config-property-value>
+                </config-property>
+                <config-property>
+                    <description>Transaction Resource Registration</description>
+                    <config-property-name>transactionResourceRegistration</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                    <config-property-value>dynamic</config-property-value>
+                </config-property>
+                <config-property>
+                    <description>Inactive Connection Support</description>
+                    <config-property-name>inactiveConnectionSupport</config-property-name>
+                    <config-property-type>java.lang.Boolean</config-property-type>
+                    <config-property-value>true</config-property-value>
+                </config-property>
+                <config-property>
+                    <description>Driver Type</description>
+                    <config-property-name>driverType</config-property-name>
+                    <config-property-type>java.lang.String</config-property-type>
+                </config-property>
+                <connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface>
+                <connectionfactory-impl-class>com.ibm.adapter.jdbc.JdbcDataSource</connectionfactory-impl-class>
+                <connection-interface>java.sql.Connection</connection-interface>
+                <connection-impl-class>com.ibm.adapter.jdbc.JdbcConnection</connection-impl-class>
+            </connection-definition>
+            <!--  remove after ann processing in place end  -->
+            <transaction-support>XATransaction</transaction-support>
+            <authentication-mechanism>
+                <authentication-mechanism-type>BasicPassword</authentication-mechanism-type>
+                <credential-interface>javax.resource.spi.security.PasswordCredential</credential-interface>
+            </authentication-mechanism>
+            <reauthentication-support>false</reauthentication-support>
+        </outbound-resourceadapter>
+        <!--  remove after ann processing in place begin  -->
+        <inbound-resourceadapter>
+            <messageadapter>
+                <messagelistener>
+                    <messagelistener-type>javax.jms.MessageListener</messagelistener-type>
+                    <activationspec>
+                        <activationspec-class>com.ibm.inout.adapter.ActivationSpecImpl</activationspec-class>
+                        <config-property>
+                            <description>Name</description>
+                            <config-property-name>name</config-property-name>
+                            <config-property-type>java.lang.String</config-property-type>
+                            <config-property-value>InoutEndPoint</config-property-value>
+                        </config-property>
+                    </activationspec>
+                </messagelistener>
+            </messageadapter>
+        </inbound-resourceadapter>
+        <adminobject>
+            <adminobject-interface>com.ibm.adapter.message.FVTMessageProvider</adminobject-interface>
+            <adminobject-class>com.ibm.inout.adapter.AdministeredObjectImpl</adminobject-class>
+        </adminobject>
+        <!--  remove after ann processing in place end  -->
+        <security-permission>
+            <description>We need to do a login in this RA so granting it all permissions
+	        </description>
+            <security-permission-spec>
+      		    grant {
+      		        permission java.security.AllPermission;
+      	        };
+            </security-permission-spec>
+        </security-permission>
+
+    </resourceadapter>
+</connector>

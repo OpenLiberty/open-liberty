@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: The {0} message type of this batch JMS message is not supported.  This request will not be processed. The content of this message is {1}
+warning.unsupported.message.type.explanation=This message type was not supported because it is not a JMS MapMessage type. 
+warning.unsupported.message.type.useraction=No action is required. 
+ 
+warning.unsupported.operation=CWWKY0201W: The {0} operation is an unsupported operation of a batch JMS message. This request will not be processed. The content of this message is {1}
+warning.unsupported.operation.explanation=Only 'Start' and 'Restart' operations are supported.
+warning.unsupported.operation.useraction=No action is required.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: The message endpoint for the batch {0} JMS listener cannot be activated because the batch {1} activation specification does not exist in the server configuration. The message endpoint will not receive batch messages until the batch activation specification becomes available. 
+warning.batch.activation.spec.not.found.explanation=The server is starting the batch JMS listener but is unable to activate the message endpoint because the activation specification could not be found in the server configuration. The message endpoint will not receive batch messages until the endpoint can be activated.
+warning.batch.activation.spec.not.found.useraction=Create the activation specification with the specified name in the server configuration manually or using the Admin Center.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: The message endpoint for the batch {0} JMS listener cannot be activated because the {1} destination queue does not exist. The message endpoint will not receive batch JMS messages until the destination queue becomes available.
+warning.batch.destination.queue.not.found.explanation=The server is starting the batch JMS listener but is unable to activate the message endpoint because the destination queue could not be found. The message endpoint will not receive batch JMS messages until the endpoint can be activated.
+warning.batch.destination.queue.not.found.useraction=Create the destination queue with the specified name in the server configuration manually or using the Admin Center.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: The batch JMS dispatcher cannot be started because the {0} connection factory does not exist.  The batch JMS dispatcher will not send batch JMS messages until the connection factory becomes available. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=The server is starting the batch JMS dispatcher but is unable to start because the batch JMS connection factory could not be found.  The batch JMS dispatcher will not send batch JMS messages until the connection factory becomes available.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Create the connection factory with the specified name in the server configuration manually or using the Admin Center.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: The batch JMS dispatcher cannot be started because the {0} queue does not exist.  The batch JMS dispatcher will not send batch JMS messages until the queue becomes available.
+warning.batch.dispatcher.queue.not.found.explanation=The server is starting the batch JMS dispatcher but is unable to start because the batch JMS queue could not be found.  The batch JMS dispatcher will not send batch JMS messages until the queue becomes available.
+warning.batch.dispatcher.queue.not.found.useraction=Create the queue with the specified name in the server configuration manually or using the Admin Center.
+
+error.unable.to.rollback.start=CWWKY0206E: The batch JMS dispatcher encountered an exception when dispatching the start request for job instance {0} and was unable to rollback the operation.  The exception is {1}.
+error.unable.to.rollback.start.explanation=The batch JMS dispatcher was unable to roll back its operation.
+error.unable.to.rollback.start.useraction=Submit the job again.
+
+error.unable.to.rollback.restart=CWWKY0207E: The batch JMS dispatcher encountered an exception when dispatching the restart request job execution {0} and was unable to rollback the operation.  The exception is {1}.
+error.unable.to.rollback.restart.explanation=The batch JMS dispatcher was unable to roll back its operation.
+error.unable.to.rollback.restart.useraction=Submit the job again.
+
+error.endpoint.unable.process.message=CWWKY0208E: The batch JMS listener encountered an exception when processing message {0}.  The exception is {1}.
+error.endpoint.unable.process.message.explanation=The batch JMS listener was unable to process the batch JMS request message.
+error.endpoint.unable.process.message.useraction=Submit the job again. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: The batch JMS listener encountered an exception when processing the start job operation for job instance {0}.  The exception is {1}.
+error.endpoint.unable.process.start.request.explanation=The batch JMS listener was unable to process the start job request.
+error.endpoint.unable.process.start.request.useraction=Submit the job again.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: The batch JMS listener encountered an exception when processing the restart job operation for job execution {0}.  The exception is {1}.
+error.endpoint.unable.process.restart.request.explanation=The batch JMS listener was unable to process the restart job request.
+error.endpoint.unable.process.restart.request.useraction=Submit the job again.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: The batch runtime cannot publish event to topic {0} for object {1}.  The exception is {2}.
+warning.batch.events.unable.to.publish.explanation=The event cannot be published because of an exception.
+warning.batch.events.unable.to.publish.useraction=Review server logs for related error.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Unable to create JMS resource for batch events publisher.  The exception is {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Unable to create JMS resource to activate batch event publisher because of an exception. 
+error.batch.events.publisher.jms.resource.activate.useraction=Check the configuration of the JMS connection factory configured by the batchJmsDispatcher element (either the default batchConnectionFactory or the one explicitly referenced).  Check for JMS connectivity, and review server logs for related error.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Unable to create JMS resource for batch dispatcher.  The exception is {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Unable to create JMS resource to activate batch dispatcher because of an exception thus the server is unable to dispatch jobs or partitions via JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Check the configuration of the JMS connection factory and queue configured by the batchJmsDispatcher element (either the default batchConnectionFactory or the one explicitly referenced).  Check for JMS connectivity, and review server logs for related error.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Discarding message with associated job execution id {0} since it was not the newest execution.
+warning.endpoint.listener.stale.message.explanation=Discarding stale associated job execution message since it was not the newest execution.
+warning.endpoint.listener.stale.message.useraction=No action required.
+
+error.start.partition.request=CWWKY0215E: The batch partition could not be started due to an exception.  The exception is {0}.
+error.start.partition.request.explanation=The batch partition could not be started because of an exception.  
+error.start.partition.request.useraction=Stop the associated job and check the JMS connectivity, configuration, and review server logs for related error.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Unable to create JMS Connection factory for executing remote partitions.  The exception is {0}
+error.batch.executor.jms.create.failure.explanation=Failure connecting to the reply JMS Connection Factory used to send back replies for remote partition executions.  This server will be unable to execute jobs or partitions dispatched via JMS until the problem is resolved.
+error.batch.executor.jms.create.failure.useraction=Check the configuration of the JMS connection factory configured by the batchJmsDispatcher element (either the default batchConnectionFactory or the one explicitly referenced).  If the user is not utilizing partitions, the remote JMS partition related configuration can be removed from the server configuration.
+
+error.batch.executor.activate.failure=CWWKY0217E: Unable to activate JMS Executor on endpoint due to an exception {0}
+error.batch.executor.activate.failure.explanation=Failure to activate the JMS Executor on the endpoint due to an Exception.
+error.batch.executor.activate.failure.useraction=This server will be unable to execute jobs or partitions dispatched via JMS until the problem is resolved.  Check the configuration of the JMS connection factory configured by the batchJmsDispatcher element (either the default batchConnectionFactory or the one explicitly referenced).  Check JMS connectivity, endpoint configuration, and review server logs for related error.
+
+info.batch.events.publish.topic=CWWKY0218I: The batch runtime will publish events to JMS topic root {0}.
+info.batch.events.publish.topic.explanation=Informational. The batch runtime will publish events to the listed batch JMS topic root.
+info.batch.events.publish.topic.useraction=The batch JMS topic root can be modified. Check the configured options that are used for batchJmsEvents.

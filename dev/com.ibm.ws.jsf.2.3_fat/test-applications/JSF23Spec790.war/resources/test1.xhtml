@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Test JSF 2.3 Spec Issue 790</title>
+</h:head>
+<h:body>
+    JSF 2.3 Spec Issue 790. 
+	<h:form id="a">
+        <h:outputText value="This is 'form a' " />
+        <h:outputLabel for="input1" value="Enter a new value for input1: " />
+        <h:inputText id="input1" value="#{simpleBean.input}" />
+        <h:commandButton id="submitButton1" value="Click here to execute 'form a' and 'form b' but re-render 'form b'">
+            <f:ajax execute="a :b" render=":b" />
+        </h:commandButton>
+    </h:form>
+    <h:form id="b">
+        <h:outputText value="This is 'form b' " />
+        <h:outputLabel for="input2" value="Enter a new value for input2: " />
+        <h:inputText id="input2" value="#{simpleBean.input}" />
+        <h:commandLink id="commandLink1" value="Click here to execute 'form a' and 'form b'  but re-render 'form a'">
+            <f:ajax execute="b :a" render=":a" />
+        </h:commandLink>
+    </h:form>
+</h:body>
+</html>

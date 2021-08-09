@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: Le type de message {0} de ce message JMS par lots n''est pas pris en charge.  Cette demande ne sera pas trait\u00e9e. Le contenu de ce message est {1}
+warning.unsupported.message.type.explanation=Ce type de message n'a pas \u00e9t\u00e9 pris en charge car il ne s'agit pas d'un type JMS MapMessage. 
+warning.unsupported.message.type.useraction=Aucune action n'est requise. 
+ 
+warning.unsupported.operation=CWWKY0201W: L''op\u00e9ration {0} n''est pas une op\u00e9ration prise en charge d''un message JMS par lots. Cette demande ne sera pas trait\u00e9e. Le contenu de ce message est {1}
+warning.unsupported.operation.explanation=Seules les op\u00e9rations 'D\u00e9marrer' et 'Red\u00e9marrer' sont prises en charge.
+warning.unsupported.operation.useraction=Aucune action n'est requise.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: Le noeud final du message {0} par lots ne peut pas \u00eatre activ\u00e9 car la sp\u00e9cification d''activation {1} par lots n''existe pas dans la configuration de serveur. Le noeud final de message ne recevra pas les messages par lots tant que la sp\u00e9cification d''activation par lots n''est pas disponible. 
+warning.batch.activation.spec.not.found.explanation=Le serveur d\u00e9marre le programme d'\u00e9coute JMS Batch mais il ne peut pas activer le noeud final de message car la sp\u00e9cification d'activation est introuvable dans la configuration du serveur. Le noeud final de message ne recevra pas les messages Batch tant que le noeud final n'aura pas \u00e9t\u00e9 activ\u00e9.
+warning.batch.activation.spec.not.found.useraction=Cr\u00e9ez la sp\u00e9cification d'activation avec le nom sp\u00e9cifi\u00e9 dans la configuration de serveur manuellement ou en utilisant Admin Center.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: Le noeud final du message {0} par lots ne peut pas \u00eatre activ\u00e9 car la file d''attente de destination {1} n''existe pas. Le noeud final de message ne recevra pas les messages JMS par lots tant que la file d''attente de destination ne deviendra pas disponible.
+warning.batch.destination.queue.not.found.explanation=Le serveur d\u00e9marre le programme d'\u00e9coute JMS Batch mais il ne peut pas activer le noeud final de message car la file d'attente de destination est introuvable. Le noeud final de message ne recevra pas les messages JMS Batch tant que le noeud final n'aura pas \u00e9t\u00e9 activ\u00e9.
+warning.batch.destination.queue.not.found.useraction=Cr\u00e9ez la file d'attente de destination avec le nom sp\u00e9cifi\u00e9 dans la configuration de serveur manuellement ou en utilisant Admin Center.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: Le r\u00e9partiteur JMS par lots ne peut pas \u00eatre d\u00e9marr\u00e9 car la fabrique de connexions {0} n''existe pas.  Le r\u00e9partiteur JMS par lots n''enverra pas de messages JMS par lots tant que la fabrique de connexions ne sera pas disponible. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=Le serveur d\u00e9marre le r\u00e9partiteur JMS Batch mais il ne peut pas d\u00e9marrer car la fabrique de connexion JMS Batch est introuvable.  Le r\u00e9partiteur JMS Batch n'enverra pas de messages JMS Batch tant que la fabrique de connexions ne sera pas disponible.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Cr\u00e9ez la fabrique de connexions avec le nom sp\u00e9cifi\u00e9 dans la configuration de serveur manuellement ou en utilisant Admin Center.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: Le r\u00e9partiteur JMS par lots ne peut pas \u00eatre d\u00e9marr\u00e9 car la file d''attente {0} n''existe pas.  Le r\u00e9partiteur JMS par lots n''enverra pas de messages JMS par lots tant que la file d''attente ne sera pas disponible.
+warning.batch.dispatcher.queue.not.found.explanation=Le serveur d\u00e9marre le r\u00e9partiteur JMS Batch mais il ne peut pas d\u00e9marrer car la file d'attente JMS Batch est introuvable.  Le r\u00e9partiteur JMS Batch n'enverra pas de messages JMS Batch tant que la file d'attente ne sera pas disponible.
+warning.batch.dispatcher.queue.not.found.useraction=Cr\u00e9ez la file d'attente avec le nom sp\u00e9cifi\u00e9 dans la configuration de serveur manuellement ou en utilisant Admin Center.
+
+error.unable.to.rollback.start=CWWKY0206E: Le r\u00e9partiteur JMS par lots a d\u00e9tect\u00e9 une exception lors de la r\u00e9partition de la demande de d\u00e9marrage pour l''instance de travail {0} et il n''a pas pu annuler l''op\u00e9ration.  L''exception est {1}.
+error.unable.to.rollback.start.explanation=Le r\u00e9partiteur JMS Batch n'a pas pu annuler son op\u00e9ration.
+error.unable.to.rollback.start.useraction=Soumettez de nouveau le travail.
+
+error.unable.to.rollback.restart=CWWKY0207E: Le r\u00e9partiteur JMS par lots a d\u00e9tect\u00e9 une exception lors de la r\u00e9partition de l''ex\u00e9cution de travail {0} de la demande de d\u00e9marrage et il n''a pas pu annuler l''op\u00e9ration.  L''exception est {1}.
+error.unable.to.rollback.restart.explanation=Le r\u00e9partiteur JMS Batch n'a pas pu annuler son op\u00e9ration.
+error.unable.to.rollback.restart.useraction=Soumettez de nouveau le travail.
+
+error.endpoint.unable.process.message=CWWKY0208E: Le programme d''\u00e9coute JMS par lots a d\u00e9tect\u00e9 une exception lors du traitement du message {0}. L''exception est {1}.
+error.endpoint.unable.process.message.explanation=Le programme d'\u00e9coute JMS Batch n'a pas pu traiter le message de demande JMS Batch.
+error.endpoint.unable.process.message.useraction=Soumettez de nouveau le travail. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: Le programme d''\u00e9coute JMS par lots a d\u00e9tect\u00e9 une exception lors du traitement de l''op\u00e9ration de d\u00e9marrage pour l''instance de travail {0}.  L''exception est {1}.
+error.endpoint.unable.process.start.request.explanation=Le programme d'\u00e9coute JMS Batch n'a pas pu traiter la demande de travail de d\u00e9marrage.
+error.endpoint.unable.process.start.request.useraction=Soumettez de nouveau le travail.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: Le programme d''\u00e9coute JMS par lots a d\u00e9tect\u00e9 une exception lors du traitement du travail de red\u00e9marrage pour l''ex\u00e9cution de travail {0}. L''exception est {1}.
+error.endpoint.unable.process.restart.request.explanation=Le programme d'\u00e9coute JMS Batch n'a pas pu traiter la demande de travail de red\u00e9marrage.
+error.endpoint.unable.process.restart.request.useraction=Soumettez de nouveau le travail.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: L''ex\u00e9cution par lots ne peut pas l''\u00e9v\u00e9nement dans la rubrique {0} pour l''objet {1}.  L''exception est {2}.
+warning.batch.events.unable.to.publish.explanation=L'\u00e9v\u00e9nement ne peut pas \u00eatre publi\u00e9 en raison d'une exception.
+warning.batch.events.unable.to.publish.useraction=Consultez les journaux du serveur pour des d\u00e9tails sur l'erreur.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Impossible de cr\u00e9er la ressource JMS pour le diffuseur d''\u00e9v\u00e9nements par lot.  L''exception est {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Impossible de cr\u00e9er la ressource JMS pour activer le diffuseur d'\u00e9v\u00e9nements par lots en raison d'une exception. 
+error.batch.events.publisher.jms.resource.activate.useraction=V\u00e9rifiez la configuration de la fabrique de connexions JMS d\u00e9finie par l'\u00e9l\u00e9ment batchJmsDispatcher (la fabrique batchConnectionFactory par d\u00e9faut ou celle r\u00e9f\u00e9renc\u00e9e explicitement).  V\u00e9rifiez la connectivit\u00e9 JMS et passez en revue les journaux serveur pour rechercher l'erreur associ\u00e9e.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Impossible de cr\u00e9er la ressource JMS pour le r\u00e9partiteur par lots.  L''exception est : {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Impossible de cr\u00e9er la ressource JMS pour activer le r\u00e9partiteur par lots en raison d'une exception ; le serveur ne peut donc r\u00e9partir les travaux ou les partitions via JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=V\u00e9rifiez la configuration et la file d'attente de la fabrique de connexions JMS d\u00e9finie par l'\u00e9l\u00e9ment batchJmsDispatcher (la fabrique batchConnectionFactory par d\u00e9faut ou celle r\u00e9f\u00e9renc\u00e9e explicitement).  V\u00e9rifiez la connectivit\u00e9 JMS et passez en revue les journaux serveur pour l'erreur associ\u00e9e.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Suppression du message portant l''ID d''ex\u00e9cution de travail {0} associ\u00e9 car il ne s''agissait pas de l''ex\u00e9cution la plus r\u00e9cente.
+warning.endpoint.listener.stale.message.explanation=Suppression de l'\u00e9tat associ\u00e9 au message d'ex\u00e9cution de travail car il ne s'agissait pas de l'ex\u00e9cution la plus r\u00e9cente.
+warning.endpoint.listener.stale.message.useraction=Aucune action n'est requise.
+
+error.start.partition.request=CWWKY0215E: La partition par lots n''a pas pu \u00eatre d\u00e9marr\u00e9e en raison d''une exception.  L''exception est {0}.
+error.start.partition.request.explanation=La partition par lots n'a pas pu \u00eatre d\u00e9marr\u00e9e en raison d'une exception.  
+error.start.partition.request.useraction=Arr\u00eatez le travail associ\u00e9 et v\u00e9rifiez la connectivit\u00e9, la configuration, puis passez en revue les journaux serveur pour rechercher l'erreur associ\u00e9e.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Impossible de cr\u00e9er la fabrique de connexions JMS pour l''ex\u00e9cution de partitions distantes.  L''exception est : {0}
+error.batch.executor.jms.create.failure.explanation=Echec de la connexion \u00e0 la fabrique de connexions JMS de r\u00e9ponse utilis\u00e9e pour l'envoi de r\u00e9pondes pour les ex\u00e9cutions de partition distante.  Le serveur ne pourra pas ex\u00e9cuter les travaux ou les partitions r\u00e9partis via JMS tant que le probl\u00e8me n'aura pas \u00e9t\u00e9 r\u00e9solu.
+error.batch.executor.jms.create.failure.useraction=V\u00e9rifiez la configuration de la fabrique de connexions JMS d\u00e9finie par l'\u00e9l\u00e9ment batchJmsDispatcher (la fabrique batchConnectionFactory par d\u00e9faut ou celle r\u00e9f\u00e9renc\u00e9e explicitement).  Si l'utilisateur n'utilise pas des partitions, la configuration associ\u00e9e \u00e0 la partition JMS distante peut \u00eatre supprim\u00e9e de la configuration de serveur.
+
+error.batch.executor.activate.failure=CWWKY0217E: Impossible d''activer le programme d''ex\u00e9cution JMS sur le noeud final en raison d''une exception {0}
+error.batch.executor.activate.failure.explanation=Echec de l'activation du programme d'ex\u00e9cution JMS sur le noeud final en raison d'une exception.
+error.batch.executor.activate.failure.useraction=Le serveur ne pourra pas ex\u00e9cuter les travaux ou les partitions r\u00e9partis via JMS tant que le probl\u00e8me n'aura pas \u00e9t\u00e9 r\u00e9solu.  V\u00e9rifiez la configuration de la fabrique de connexions JMS d\u00e9finie par l'\u00e9l\u00e9ment batchJmsDispatcher (la fabrique batchConnectionFactory par d\u00e9faut ou celle r\u00e9f\u00e9renc\u00e9e explicitement).  V\u00e9rifiez la connectivit\u00e9 JMS, la configuration de noeud final, et passez en revue les journaux serveur pour rechercher l'erreur associ\u00e9e.
+
+info.batch.events.publish.topic=CWWKY0218I: L''environnement d''ex\u00e9cution par lots publiera les \u00e9v\u00e9nements sous la racine de rubrique JMS {0}.
+info.batch.events.publish.topic.explanation=Message d'information. L'environnement d'ex\u00e9cution par lots publiera les \u00e9v\u00e9nements sous la racine de rubrique JMS d'ex\u00e9cution par lots indiqu\u00e9e.
+info.batch.events.publish.topic.useraction=La racine de rubrique JMS d'ex\u00e9cution par lots peut \u00eatre modifi\u00e9e. V\u00e9rifiez les options configur\u00e9es utilis\u00e9es pour batchJmsEvents.

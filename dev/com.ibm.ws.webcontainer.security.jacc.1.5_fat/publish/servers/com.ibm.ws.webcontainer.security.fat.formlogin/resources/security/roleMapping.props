@@ -1,0 +1,20 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)):
+formlogin::Employee::USER::user:BasicRealm/user1
+formlogin::Employee::USER::user:BasicRealm/http://user.employee-realm.com/
+formlogin::Employee::USER::user:BasicRealm/https://user.test-realm.com:1234/`~!@#$%^&*()-_=+[{]}\|;:'",<.>/?/end/
+formlogin::Employee::GROUP::group:BasicRealm/group1
+formlogin::Manager::USER::user:BasicRealm/user2
+formlogin::Manager::USER::user:BasicRealm/http://user.manager-realm.com/
+formlogin::Manager::GROUP::group:BasicRealm/group2
+formlogin::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS

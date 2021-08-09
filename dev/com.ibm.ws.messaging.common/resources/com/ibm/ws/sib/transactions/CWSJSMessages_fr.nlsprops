@@ -1,0 +1,107 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.transactions.CWSJSMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0000=CWSIG0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/transactions/CWSJSMessages.nlsprops
+#COMPONENTPREFIX CWSJS
+#COMPONENTNAMEFOR CWSJS transactions
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0001=CWSJS0001E: Une erreur interne s'est produite.
+INTERNAL_ERROR_CWSJS0001.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+LOCALTX_FAIL_CWSJS0002=CWSJS0002E: Une exception {0} a \u00e9t\u00e9 cr\u00e9\u00e9e lors du traitement d''une op\u00e9ration transactionnelle, provoquant l''\u00e9chec de l''op\u00e9ration.
+LOCALTX_FAIL_CWSJS0002.explanation=L'exception sp\u00e9cifi\u00e9e a \u00e9t\u00e9 cr\u00e9\u00e9e lors du traitement d'une op\u00e9ration transactionnelle.  Cette exception a provoqu\u00e9 l'\u00e9chec de l'op\u00e9ration transactionnelle.
+LOCALTX_FAIL_CWSJS0002.useraction=D\u00e9terminez la cause de l'exception.
+
+# -------------------------------------------------------------------------------------------------
+DUPLICATE_COMPLETE_CWSJS0003=CWSJS0003E: Une tentative a \u00e9t\u00e9 faite pour terminer une transaction locale d\u00e9j\u00e0 termin\u00e9e.
+DUPLICATE_COMPLETE_CWSJS0003.explanation=La m\u00e9thode de validation ou d'annulation d'une transaction locale a \u00e9t\u00e9 appel\u00e9e apr\u00e8s l'ach\u00e8vement de la transaction.
+DUPLICATE_COMPLETE_CWSJS0003.useraction=Evitez de faire des tentatives en double pour terminer une transaction.
+
+# -------------------------------------------------------------------------------------------------
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004=CWSJS0004E: Une tentative a \u00e9t\u00e9 effectu\u00e9e de r\u00e9aliser des travaux dans la port\u00e9e d'une transaction locale termin\u00e9e.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.explanation=Une tentative a \u00e9t\u00e9 effectu\u00e9e de r\u00e9aliser une action  r\u00e9cup\u00e9rable \u00e0 l'aide d'une transaction locale qui est d\u00e9j\u00e0 valid\u00e9e ou annul\u00e9e.
+LOCAL_ENLIST_INTO_COMPLETED_CWSJS0004.useraction=N'essayez pas d'effectuer un nouveau travail transactionnel dans la port\u00e9e d'une transaction termin\u00e9e.
+
+# -------------------------------------------------------------------------------------------------
+GLOBAL_ENLIST_NO_TX_CWSJS0005=CWSJS0005E: Une tentative de r\u00e9alisation d'un travail au moyen d'une ressource XAResource non plac\u00e9e dans une liste a \u00e9t\u00e9 effectu\u00e9e. 
+GLOBAL_ENLIST_NO_TX_CWSJS0005.explanation=Une tentative de r\u00e9alisation d'un travail transactionnel avec une ressource XAResource non plac\u00e9e dans la liste d'une transaction globale a \u00e9t\u00e9 effectu\u00e9e.
+GLOBAL_ENLIST_NO_TX_CWSJS0005.useraction=N'essayez pas d'effectuer un nouveau travail transactionnel dans la port\u00e9e d'une XAResource non r\u00e9pertori\u00e9e.
+# -------------------------------------------------------------------------------------------------
+NO_CLASSPATH_CWSJS0006=CWSJS0006E: Une erreur interne s'est produite.  Impossible de d\u00e9terminer le chemin de classes en cours.
+NO_CLASSPATH_CWSJS0006.explanation=CMSG0001
+NO_CLASSPATH_CWSJS0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNRECOVERABLE_ERROR_CWSJS0007=CWSJS0007E: Une erreur interne s'est produite.  La repr\u00e9sentation sous forme de cha\u00eene d'un ID d'\u00e9change est corrompue.
+UNRECOVERABLE_ERROR_CWSJS0007.explanation=CMSG0001
+UNRECOVERABLE_ERROR_CWSJS0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0008=CWSJS0008E: Le nombre maximal d''op\u00e9rations autoris\u00e9 pour une m\u00eame transaction ({0}) est d\u00e9pass\u00e9.
+TX_SIZE_EXCEEDED_CWSJS0008.explanation=Une tentative pour r\u00e9aliser davantage d'op\u00e9rations que le nombre maximal admis d'op\u00e9rations dans la port\u00e9e d'une m\u00eame transaction a \u00e9t\u00e9 effectu\u00e9e.
+TX_SIZE_EXCEEDED_CWSJS0008.useraction=R\u00e9duisez le nombre d'op\u00e9rations qui sont tent\u00e9es dans la port\u00e9e d'une m\u00eame transaction \u00e0 un nombre inf\u00e9rieur \u00e0 la limite sp\u00e9cifi\u00e9e.
+
+# -------------------------------------------------------------------------------------------------
+INTERNAL_ERROR_CWSJS0009=CWSJS0009E: Une erreur interne s'est produite.
+INTERNAL_ERROR_CWSJS0009.explanation=CMSG0001
+INTERNAL_ERROR_CWSJS0009.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of operations that is permitted within a single transaction.
+TX_SIZE_EXCEEDED_CWSJS0010=CWSJS0010E: Le nombre maximal d''op\u00e9rations autoris\u00e9 pour une m\u00eame transaction ({0}) est d\u00e9pass\u00e9.
+TX_SIZE_EXCEEDED_CWSJS0010.explanation=Une tentative pour r\u00e9aliser davantage d'op\u00e9rations que le nombre maximal admis d'op\u00e9rations dans la port\u00e9e d'une m\u00eame transaction a \u00e9t\u00e9 effectu\u00e9e.
+TX_SIZE_EXCEEDED_CWSJS0010.useraction=R\u00e9duisez le nombre d'op\u00e9rations qui sont tent\u00e9es dans la port\u00e9e d'une m\u00eame transaction \u00e0 un nombre inf\u00e9rieur \u00e0 la limite sp\u00e9cifi\u00e9e.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJS9999=CWSJS9999E: {0}
+TEMPORARY_CWSJS9999.explanation=Si le message ne fournit pas suffisamment d'informations, consultez les messages \u00e9mis pr\u00e9c\u00e9demment pour obtenir plus de d\u00e9tails.
+TEMPORARY_CWSJS9999.useraction=Pour plus d'informations, consultez les messages d'erreur associ\u00e9s.

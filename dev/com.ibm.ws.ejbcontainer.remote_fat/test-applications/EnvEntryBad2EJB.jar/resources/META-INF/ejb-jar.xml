@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>Bad2XmlBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.Bad2XmlBean</ejb-class>
+      <session-type>Stateless</session-type>
+       
+      <env-entry>
+        <description>E2x - Non-existent enum type specified in XML only</description>
+        <env-entry-name>EnvEntry_Non-existentEnumType_EntryName</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.NoSuchEnumType</env-entry-type>
+        <env-entry-value>EV0</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.Bad2XmlBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_NoSuchEnumType</injection-target-name>
+        </injection-target>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>Bad2AnnBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.Bad2AnnBean</ejb-class>
+      <session-type>Stateless</session-type>
+       
+      <env-entry>
+        <description>E2a - Non-existent enum type specified in XML, with annotation</description>
+        <env-entry-name>EnvEntry_Non-existentEnumType_EntryName</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.NoSuchEnumType</env-entry-type>
+        <env-entry-value>EV0</env-entry-value>
+      </env-entry>
+    </session> 
+  </enterprise-beans>
+</ejb-jar>

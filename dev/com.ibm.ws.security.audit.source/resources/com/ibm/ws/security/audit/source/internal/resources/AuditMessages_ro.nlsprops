@@ -1,0 +1,45 @@
+#*******************************************************************************
+# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * All rights reserved. This program and the accompanying materials
+# * are made available under the terms of the Eclipse Public License v1.0
+# * which accompanies this distribution, and is available at
+# * http://www.eclipse.org/legal/epl-v10.html
+# *
+# * Contributors:
+# *     IBM Corporation - initial API and implementation
+# *******************************************************************************/
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.security.audit.source/resources/com/ibm/ws/security/audit/source/internal/resources/AuditMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Auditing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5800 - CWWKS5899
+
+AUDIT_SERVICE_STARTING=CWWKS5850I: Serviciul de auditare porne\u015fte.
+AUDIT_SERVICE_STARTING.explanation=Serviciul de auditare este \u00een proces de pornire. Aceasta poate dura c\u00e2teva minute dac\u0103 ini\u0163ializarea one-time este necesar s\u0103 apar\u0103.
+AUDIT_SERVICE_STARTING.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+AUDIT_SERVICE_READY=CWWKS5851I: Serviciul de auditare este gata.
+AUDIT_SERVICE_READY.explanation=Acest mesaj este doar \u00een scop informativ.
+AUDIT_SERVICE_READY.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+AUDIT_SERVICE_STOPPED=CWWKS5852I: Serviciul de auditare s-a oprit.
+AUDIT_SERVICE_STOPPED.explanation=Acest mesaj este doar \u00een scop informativ.
+AUDIT_SERVICE_STOPPED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+INCORRECT_AUDIT_EVENT_CONFIGURATION=CWWKS5853E: Numele evenimentului de audit {0} specificat \u00een configura\u0163ia evenimentelor handler-e de audit nu este suportat, deci a fost oprit serviciul de auditare.  Corecta\u0163i numele de eveniment \u00een configura\u0163ia handler-ului de auditare {2} pentru a specifica unul dintre urm\u0103toarele nume de evenimente: {3}
+INCORRECT_AUDIT_EVENT_CONFIGURATION.explanation=Numele evenimentului de audit furnizat \u00een configura\u0163ia evenimentelor este incorect \u015fi serviciul de audit va fi oprit. Analiza\u0163i excep\u0163ia men\u0163ionat\u0103 \u00een mesaj \u015fi specifica\u0163i un nume valid de eveniment de audit.
+INCORRECT_AUDIT_EVENT_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 c\u0103 numele evenimentului de audit furnizat ca parte din configura\u0163ia evenimentelor este corect.
+
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION=CWWKS5854E: Numele rezultatului de auditare {0} specificat \u00een configura\u0163ia evenimentelor handler-e de audit nu este suportat, deci a fost oprit serviciul de auditare.  Corecta\u0163i numele rezultatului \u00een configura\u0163ia handler-ului de auditare {2} pentru a specifica unul dintre urm\u0103toarele nume de rezultate: {3}
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.explanation=Numele de ie\u015fire al auditului furnizat \u00een configura\u0163ia evenimentelor este incorect \u015fi serviciul de audit va fi oprit. Analiza\u0163i excep\u0163ia men\u0163ionat\u0103 \u00een mesaj \u015fi specifica\u0163i un nume valid de ie\u015fire de audit.
+INCORRECT_AUDIT_OUTCOME_CONFIGURATION.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de ie\u015fire de audit furnizat ca parte din configura\u0163ia evenimentelor este corect.
+
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME=CWWKS5855E: Configura\u0163ia evenimentelor handler-e de audit nu este complet\u0103, deci a fost oprit serviciul de auditare. Configura\u0163ia trebuie s\u0103 specifice un nume de eveniment pentru rezultatul {0}. Corecta\u0163i configura\u0163ia handler-ului de auditare {1} pentru a specifica unul dintre urm\u0103toarele nume de evenimente: {2}
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.explanation=Numele evenimentului de audit care este specificat \u00een configura\u0163ia evenimentelor este incorect sau lipse\u015fte \u015fi serviciul de audit va fi oprit.  Analiza\u0163i excep\u0163ia men\u0163ionat\u0103 \u00een mesaj \u015fi specifica\u0163i un nume valid de eveniment de audit.
+INCORRECT_AUDIT_CONFIGURATION_OUTCOME_SPECIFIED_MISSING_EVENTNAME.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un nume valid de eveniment odat\u0103 cu tipul de ie\u015fire valid.

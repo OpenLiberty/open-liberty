@@ -1,0 +1,6 @@
+version: 1
+dn: ou=objectClasses,cn=krb5kdc,ou=schema
+ou: objectclasses
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

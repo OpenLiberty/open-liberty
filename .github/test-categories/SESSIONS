@@ -1,0 +1,6 @@
+com.ibm.ws.jcache_fat
+com.ibm.ws.session.cache_fat
+com.ibm.ws.session.cache_fat_config
+com.ibm.ws.session.cache_fat_config_infinispan
+com.ibm.ws.session.cache_fat_infinispan
+com.ibm.ws.session.cache_fat_infinispan_container

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<wsdl:definitions 
+	targetNamespace="http://samlwebsso.idpinitiated.websso01.service"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:apachesoap="http://xml.apache.org/xml-soap"
+	xmlns:impl="http://samlwebsso.idpinitiated.websso01.service"
+	xmlns:intf="http://samlwebsso.idpinitiated.websso01.service"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+<wsdl:types/>
+
+   <wsdl:message name="getVersionRequest">
+      <wsdl:part name="getVersion" element="xsd:string"/>
+   </wsdl:message>
+   <wsdl:message name="getVersionResponse">
+      <wsdl:part name="getVersionReturn" element="xsd:string"/>
+   </wsdl:message>
+
+   <wsdl:portType name="WebSSOSrvlt01">
+      <wsdl:operation name="invoke">
+         <wsdl:input message="intf:getVersionRequest" name="getVersionRequest"/>
+         <wsdl:output message="intf:getVersionResponse" name="getVersionResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="UrnWebSSOSrvlt01SoapBinding" type="intf:WebSSOSrvlt01">
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="WebSSOSrvlt01Service">
+      <wsdl:port name="UrnWebSSOSrvlt01" binding="intf:UrnWebSSOSrvlt01SoapBinding">
+         <wsdlsoap:address location="http://localhost:8010/WebSSOSrvlt01/WebSSOSrvlt01Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+</wsdl:definitions>
+
+
