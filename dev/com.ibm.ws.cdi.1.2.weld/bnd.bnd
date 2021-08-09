@@ -20,7 +20,6 @@ Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
-                com.ibm.ws.cdi.impl.weld, \
                 com.ibm.ws.cdi.proxy
 
 Import-Package: *
