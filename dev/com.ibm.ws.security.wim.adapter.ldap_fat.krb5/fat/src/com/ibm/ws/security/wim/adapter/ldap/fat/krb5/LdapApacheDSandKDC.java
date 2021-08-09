@@ -52,7 +52,7 @@ public class LdapApacheDSandKDC extends ApacheDSandKDC {
 
         setupService();
 
-        addBasicUserAndGroup();
+        addApplicationUserAndGroup();
     }
 
     @AfterClass
@@ -64,8 +64,8 @@ public class LdapApacheDSandKDC extends ApacheDSandKDC {
      * Add a starter user and group for general servlet login and searches
      *
      */
-    public static void addBasicUserAndGroup() throws Exception {
-        Log.info(c, "addBasicUserAndGroup", "Adding basic user and group");
+    public static void addApplicationUserAndGroup() throws Exception {
+        Log.info(c, "addApplicationUserAndGroup", "Adding basic user and group");
         Entry entry = directoryService.newEntry(new Dn(vmmUser1DN));
         entry.add("objectclass", "inetorgperson");
         entry.add("uid", vmmUser1);
@@ -78,7 +78,7 @@ public class LdapApacheDSandKDC extends ApacheDSandKDC {
         entry.add("objectclass", "groupOfNames");
         entry.add("member", vmmUser1DN);
         session.add(entry);
-        Log.info(c, "addBasicUserAndGroup", "Adding basic user and group");
+        Log.info(c, "addApplicationUserAndGroup", "Adding basic user and group");
     }
 
 }

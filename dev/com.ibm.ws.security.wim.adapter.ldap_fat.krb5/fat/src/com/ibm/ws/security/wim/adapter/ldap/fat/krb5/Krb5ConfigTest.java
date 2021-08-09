@@ -59,7 +59,7 @@ public class Krb5ConfigTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecksConfigJVM_TicketCache() throws Exception {
+    public void loginChecksConfigJVM_TicketCache() throws Exception {
         Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
@@ -67,7 +67,7 @@ public class Krb5ConfigTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
     /**
@@ -79,7 +79,7 @@ public class Krb5ConfigTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecksConfigJVM_keytab() throws Exception {
+    public void loginChecksConfigJVM_keytab() throws Exception {
         Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryForKeytab();
@@ -87,7 +87,7 @@ public class Krb5ConfigTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
     /**
