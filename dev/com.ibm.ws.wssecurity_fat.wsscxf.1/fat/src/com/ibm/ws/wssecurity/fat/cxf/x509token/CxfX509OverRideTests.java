@@ -179,7 +179,7 @@ public class CxfX509OverRideTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX50NegativeServiceEE8Only() throws Exception {
 
         String thisMethod = "testCxfX509Service";

@@ -494,7 +494,7 @@ public class CxfX509SigTests extends CommonTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientBadSrvKeyStorePswdEE8Only() throws Exception {
 
         // use server config with bad server pwd
