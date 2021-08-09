@@ -98,7 +98,6 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
     @MinimumJavaLevel(javaLevel = 9)
     public void testSecureHelloWorldWithTls() throws Exception {
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, serverConfigurationFile, DEFAULT_CONFIG_FILE, clientAppName, LOG);
-
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
@@ -112,13 +111,9 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
     @Test
     @AllowedFFDC("io.grpc.StatusRuntimeException")
     public void testSecureHelloWorldWOTls() throws Exception {
-        Exception clientException = null;
-
-        // make a backup of the original configuration so we can restore it later
-        RemoteFile backup = new RemoteFile(secureHelloWorldServer.getMachine(), new File(secureHelloWorldServer.getServerRoot(), "server-backup.xml").getPath());
-        backup.copyFromSource(secureHelloWorldServer.getServerConfigurationFile());
-
+        // set <grpcClient ... usePlaintext="true" /> to disable the Liberty TLS config on the client
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, serverConfigurationFile, SECURITY_PLAIN_TEXT, clientAppName, LOG);
+        Exception clientException = null;
         try {
             runHelloWorldTest();
         } catch (Exception e) {
@@ -126,8 +121,5 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
             Log.info(c, name.getMethodName(), "exception caught: " + e);
         }
         assertTrue("An error is expected for this case", clientException != null);
-
-        // restore the original configuration
-        GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, backup, clientAppName, LOG);
     }
 }
