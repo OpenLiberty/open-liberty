@@ -116,7 +116,6 @@ public class GenericOidcClientConsentTests extends CommonTest {
     //@Mode(TestMode.LITE)
     //@Test
     public void OidcClientTestGetMainPathWithoutResponseMode() throws Exception {
-        //        testRPServer.reconfigServer("rp_server_nonce_enabled_implicit.xml", _testName, false, null);
 
         WebConversation wc = new WebConversation();
 
