@@ -58,7 +58,7 @@ public class PartitionReducerTest extends BatchFATHelper {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKY0011W", "CWWKY0041W");
+            server.stopServer("CWWKY0011W", "CWWKY0041W","CWWKS9582E");
         }
     }
 
