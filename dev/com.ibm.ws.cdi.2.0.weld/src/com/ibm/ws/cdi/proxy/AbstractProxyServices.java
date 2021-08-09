@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.impl.weld;
+package com.ibm.ws.cdi.proxy;
 
 import java.lang.reflect.Method;
 import java.net.URLClassLoader;
@@ -37,7 +37,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public abstract class AbstractProxyServices implements ProxyServices {
 
 	private static final ManifestElement[] WELD_PACKAGES;
-	private static final ClassLoader CLASS_LOADER_FOR_SYSTEM_CLASSES = org.jboss.weld.proxy.WeldConstruct.class.getClassLoader(); //I'm using this classloader because we'll need the weld classes to proxy anything.
+	private static final ClassLoader CLASS_LOADER_FOR_SYSTEM_CLASSES = org.jboss.weld.bean.ManagedBean.class.getClassLoader(); //I'm using this classloader because we'll need the weld classes to proxy anything.
 
 	private static enum ClassLoaderMethods {
 		;//No enum instances

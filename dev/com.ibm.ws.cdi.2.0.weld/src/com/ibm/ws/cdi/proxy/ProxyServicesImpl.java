@@ -20,13 +20,9 @@ import org.jboss.weld.serialization.spi.ProxyServices;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
 
-import com.ibm.ws.cdi.impl.weld.AbstractProxyServices;
-
 /**
  * This service is used to load proxy classes. We need a special classloader so that
  * we can load both weld classes and app classes.
- *
- *
  */
 public class ProxyServicesImpl extends AbstractProxyServices implements ProxyServices {
 
