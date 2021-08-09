@@ -33,8 +33,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 /**
  * This service is used to load proxy classes. We need a special classloader so that
  * we can load both weld classes and app classes.
- *
- *
  */
 public abstract class AbstractProxyServices implements ProxyServices {
 
@@ -117,11 +115,11 @@ public abstract class AbstractProxyServices implements ProxyServices {
 				// MUST have visibility to the weld packages before this reflective
 				// call to defineClass.
 				ClassLoader cl = proxiedBeanType.getClassLoader();
-				if (cl instanceof BundleReference) {
+				if (cl == null) {
+					cl = CLASS_LOADER_FOR_SYSTEM_CLASSES;
+				} else if (cl instanceof BundleReference) {
 					Bundle b = ((BundleReference) cl).getBundle();
 					addWeldDynamicImports(b, WELD_PACKAGES);
-				} else if (cl == null) {
-					return CLASS_LOADER_FOR_SYSTEM_CLASSES;
 				}
 				return cl;
 			}
@@ -178,15 +176,6 @@ public abstract class AbstractProxyServices implements ProxyServices {
 	private Class<?> loadClass​(String classBinaryName, ClassLoader cl) throws ClassNotFoundException {
 		return Class.forName(classBinaryName, true, cl);
 	}
-
-	/*    @FFDCIgnore(ClassNotFoundException.class)
-    public Class<?> loadClass​(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
-         if (originalClassToProxyClass.containsKey(originalClass)) {
-             return originalClassToProxyClass.get(originalClass);
-         } else {
-             throw new ClassNotFoundException("We failed to find a proxy class " + classBinaryName);
-         }
-    }*/
 
 	public boolean supportsClassDefining() {
 		return true;
