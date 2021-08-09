@@ -35,7 +35,7 @@ public class HelloWorldResourceForC {
 
     private final String type = "PerRequest";
 
-    public HelloWorldResourceForC() {}
+//    public HelloWorldResourceForC() {}
 
     public String getType() {
         return type;

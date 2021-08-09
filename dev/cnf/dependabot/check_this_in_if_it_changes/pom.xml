@@ -2034,11 +2034,6 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>3.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.asm</artifactId>
       <version>9.1.0</version>
     </dependency>
     <dependency>

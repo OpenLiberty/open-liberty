@@ -33,9 +33,7 @@ public class ResourceContextCDISingletonApplication extends Application {
     
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        classes.add(HelloResource.class);
-        return classes;
+        return Collections.singleton(HelloResource.class);
     }
 
     @Override

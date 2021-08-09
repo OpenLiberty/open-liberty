@@ -34,7 +34,7 @@ public class HelloWorldResource2 {
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
     private String type;
@@ -47,8 +47,8 @@ public class HelloWorldResource2 {
         this.type = type;
     }
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;
@@ -56,9 +56,10 @@ public class HelloWorldResource2 {
     Person person;
 
     UriInfo uriinfoForC;
+    
+    @Inject
     Person personForC;
 
-    @Inject
     public void setPerson(Person person) {
         this.person = person;
         System.out.println(type + " Injection successful...");
@@ -158,6 +159,7 @@ public class HelloWorldResource2 {
 
         InitialContext ic = new InitialContext();
         BeanManager bm = (BeanManager) ic.lookup("java:comp/BeanManager");
+        System.out.println("bm=" + bm);
 
         Set<Bean<?>> allBeans = bm.getBeans(Object.class,
                                             new AnnotationLiteral<Any>() {});
@@ -177,6 +179,7 @@ public class HelloWorldResource2 {
                       + "bean.getBeanClass().getAnnotations(): " + anno + "\n"
                       + "bean.toStirng():\n" + bean.toString() + ", <br>\n\n\n\n";
         }
+        System.out.println(result);
         return result;
     }
 }

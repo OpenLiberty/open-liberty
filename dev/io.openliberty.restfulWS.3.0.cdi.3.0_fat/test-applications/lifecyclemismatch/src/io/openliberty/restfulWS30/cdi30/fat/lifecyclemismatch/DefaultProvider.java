@@ -57,8 +57,8 @@ public class DefaultProvider implements ExceptionMapper<DefaultException>, Seria
 
     Person person;
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     public String getTest() {
         String s = this.getClass().getName() + " inject test start...";

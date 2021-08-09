@@ -28,6 +28,5 @@ public class SimpleBean {
     @PreDestroy
     public void destruct() {
         System.out.println(this + " Pre Destroy called on " + this);
-
     }
 }

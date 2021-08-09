@@ -59,8 +59,8 @@ public class ApplicationScopedProvider implements ExceptionMapper<ApplicationSco
 
     Person person;
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     public String getTest() {
         String s = this.getClass().getName() + " inject test start...";

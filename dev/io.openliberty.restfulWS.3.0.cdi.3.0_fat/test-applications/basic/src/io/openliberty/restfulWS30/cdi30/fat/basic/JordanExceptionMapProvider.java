@@ -11,6 +11,7 @@
 package io.openliberty.restfulWS30.cdi30.fat.basic;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -20,19 +21,18 @@ import jakarta.ws.rs.ext.Provider;
 public class JordanExceptionMapProvider implements ExceptionMapper<JordanException> {
 
     private UriInfo uriinfo;
-    //todo add back after provider context injection is ready.
-//    @Context
-//    public void setUriInfo(UriInfo ui) {
-//        uriinfo = ui;
-//    }
+
+    @Context
+    public void setUriInfo(UriInfo ui) {
+        uriinfo = ui;
+    }
 
     @Inject
     SimpleBean simplebean;
 
     @Override
     public Response toResponse(JordanException arg0) {
-        //todo add back after provider context injection is ready.
-//        System.out.println("Provider Context uriinfo: " + uriinfo.getPath());
+        System.out.println("Provider Context uriinfo: " + uriinfo.getPath());
         System.out.println("Provider Inject simplebean: " + simplebean.getMessage());
         return Response.status(200).build();
     }

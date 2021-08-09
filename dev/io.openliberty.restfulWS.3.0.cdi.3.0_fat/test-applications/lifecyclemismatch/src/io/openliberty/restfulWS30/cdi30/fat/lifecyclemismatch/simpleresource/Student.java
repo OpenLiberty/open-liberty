@@ -21,6 +21,6 @@ public class Student implements Person, Serializable{
 
 	@Override
 	public String talk() {
-		return "I'm a Studnet.";
+		return "I'm a Student.";
 	}
 }

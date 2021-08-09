@@ -20,7 +20,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
 
 /**
- * <code>HelloWorldApplication</code> is a {@link jakarta.ws.rs.core.Application} subclass which contains configuration information for the JAX-RS application.
+ * {@code HelloWorldApplication} is a {@link jakarta.ws.rs.core.Application} subclass which contains configuration information for the JAX-RS application.
  * Any JAX-RS resources or providers that are to be used must be returned in
  * either the {@link #getClasses()} or {@link #getSingletons()} methods. Note
  * that providers are always singletons according to the JavaDoc.

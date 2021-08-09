@@ -64,9 +64,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         p.put("resourcePath", "ApplicationScopedResource");
 
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 1");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 1");
     }
 
     @Test
@@ -74,9 +74,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "DefaultResource");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
     }
 
     @Test
@@ -84,9 +84,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "DependentResource");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
     }
 
     @Test
@@ -94,9 +94,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "RequestScopedResource");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
     }
 
     @Test
@@ -104,9 +104,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "SessionScopedResource");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
     }
 
     @Test
@@ -115,9 +115,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         p.put("resourcePath", "ApplicationScopedSingleton");
 
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 1");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 1");
     }
 
     @Test
@@ -125,9 +125,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "DefaultSingleton");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 1");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 1");
     }
 
     @Test
@@ -135,9 +135,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "DependentSingleton");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 1");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 1");
     }
 
     @Test
@@ -145,9 +145,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "RequestScopedSingleton");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
 
     }
 
@@ -156,9 +156,9 @@ public class LifeCycleMismatch12Test extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("resourcePath", "SessionScopedSingleton");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
         this.runTestOnServer(target, "testResource", p,
-                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Studnet. counter: 0");
+                             "inject test start...injected is NOT null...injected.getMessage returned...Hello from SimpleBean, I'm a Student. counter: 0");
     }
 
     @Test

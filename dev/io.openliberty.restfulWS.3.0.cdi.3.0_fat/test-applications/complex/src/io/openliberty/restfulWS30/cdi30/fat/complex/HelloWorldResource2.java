@@ -23,16 +23,15 @@ public class HelloWorldResource2 {
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;
 
-    // private @Inject
     Person person;
 
     @Inject

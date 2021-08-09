@@ -71,7 +71,6 @@ public class DisableTest extends AbstractTest {
 
     @Test
     public void testPerRequestInjectInResource_DisableCDI() throws IOException {
-//        runGetMethod("/rest/helloworldc/simplebean", 200, classesType + " Resource Inject: simpleBean is null", true);
         runGetMethod("/rest/helloworldc/simplebean", 200, "PerRequest Resource Inject: Hello from SimpleBean", true);
     }
 
@@ -92,7 +91,6 @@ public class DisableTest extends AbstractTest {
 
     @Test
     public void testSingletonInjectInResource_DisableCDI() throws IOException {
-//        runGetMethod("/rest/helloworlds/simplebean", 200, singletonsType + " Resource Inject: simpleBean is null", true);
         runGetMethod("/rest/helloworldc/simplebean", 200, "PerRequest Resource Inject: Hello from SimpleBean", true);
     }
 

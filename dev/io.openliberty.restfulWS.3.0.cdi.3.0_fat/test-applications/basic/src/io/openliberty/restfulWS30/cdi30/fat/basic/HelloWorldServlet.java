@@ -24,11 +24,11 @@ public class HelloWorldServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
-    private @Inject
-    HelloWorldResourceForC resource;
+    @Inject
+    private HelloWorldResourceForC resource;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

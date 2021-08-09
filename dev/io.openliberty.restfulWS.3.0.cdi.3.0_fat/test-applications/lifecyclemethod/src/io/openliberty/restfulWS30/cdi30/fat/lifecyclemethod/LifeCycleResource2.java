@@ -29,7 +29,7 @@ public class LifeCycleResource2 {
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
     private String type;
@@ -42,8 +42,8 @@ public class LifeCycleResource2 {
         this.type = type;
     }
 
-    private @Inject
-    LifeCycleSimpleBean simpleBean;
+    @Inject
+    private LifeCycleSimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;

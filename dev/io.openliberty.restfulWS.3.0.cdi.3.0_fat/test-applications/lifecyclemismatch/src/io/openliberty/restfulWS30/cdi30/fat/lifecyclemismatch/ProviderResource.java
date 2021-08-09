@@ -28,12 +28,12 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 /**
- * <code>HelloWorldResource</code> is a simple POJO which is annotated with
+ * {@code HelloWorldResource} is a simple POJO which is annotated with
  * JAX-RS annotations to turn it into a JAX-RS resource.
  * <p/>
  * This class has a {@link Path} annotation with the value "helloworld" which
  * means the resource will be available at:
- * <code>http://&lt;hostname&gt;:&lt;port&gt/&lt;context root&gt;/&lt;servlet path&gt;/helloworld</code>
+ * {@code http://&lt;hostname&gt;:&lt;port&gt/&lt;context root&gt;/&lt;servlet path&gt;/helloworld}
  * <p/>
  * Remember to add this resource class to the {@link HelloWorldApplication#getClasses()} method.
  */
@@ -44,15 +44,15 @@ public class ProviderResource implements Serializable {
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
     private static volatile String message = "Hello World for jaxrs-1.1!";
 
     private UriInfo uiFromConstructor;
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;

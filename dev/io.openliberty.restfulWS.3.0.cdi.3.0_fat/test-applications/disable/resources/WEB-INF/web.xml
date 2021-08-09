@@ -4,9 +4,7 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-     
-  <display-name>JAX-RS Basic Jaxrs-2.0 without CDI-1.2(Disable) Sample</display-name>
- 
+
   <!-- SERVLET DEFINITIONS -->
   <servlet id="Servlet_1">
   	<servlet-name>DisableServlet</servlet-name>

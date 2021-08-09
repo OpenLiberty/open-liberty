@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.restfulWS30.cdi30.fat.applicationsingleton.application.cdisingleton;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,16 +27,12 @@ public class CDISingletonApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        classes.add(HelloResource.class);
-        return classes;
+        return Collections.singleton(HelloResource.class);
     }
 
     @Override
     public Set<Object> getSingletons() {
-        Set<Object> singletons = new HashSet<Object>();
-        singletons.add(cdiFilter);
-        return singletons;
+        return Collections.singleton(cdiFilter);
     }
     
     @Inject

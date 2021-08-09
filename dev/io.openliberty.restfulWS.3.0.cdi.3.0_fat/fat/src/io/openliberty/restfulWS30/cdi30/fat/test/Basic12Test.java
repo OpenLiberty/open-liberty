@@ -93,145 +93,124 @@ public class Basic12Test extends AbstractTest {
     @Test
     public void testPerRequestInjectInResource() throws IOException {
         runGetMethod("/rest/helloworldc/simplebean", 200, classesType + " Resource Inject: Hello from SimpleBean", true);
-//        assertLibertyMessage(classesType + " Injection successful...", 8, "less");
     }
 
     @Test
     public void testPerRequestInjectSetInResource() throws IOException {
         runGetMethod("/rest/helloworldc/person", 200, classesType + " Resource Inject: I am a Student.", true);
-//        assertLibertyMessage(classesType + " Injection successful...", 8, "less");
     }
+    
+  @Test
+  public void testPerRequestInjectSetInResourceInChild() throws IOException {
+      runGetMethod("/rest/injectionInChild/person", 200, classesType + " Resource Inject: I am a Student.", true);
+  }
 
-//    @Test
-//    public void testPerRequestInjectSetInResourceInChild() throws IOException {
-//        runGetMethod("/rest/injectionInChild/person", 200, classesType + " Resource Inject: I am a Student.", true);
-////        assertLibertyMessage(classesType + " Injection successful...", 8, "less");
-//    }
+  @Test
+  public void testPerRequestContextInApplication() throws IOException {
+      runGetMethod("/rest/helloworlds", 200, singletonsType + " Resource: Hello World", true);
+      assertLibertyMessage("@Context in getClasses Application: true", 1, "equal");
+  }
 
-//    @Test
-//    public void testPerRequestContextInApplication() throws IOException {
-//        runGetMethod("/rest/helloworlds", 200, singletonsType + " Resource: Hello World", true);
-//        assertLibertyMessage("@Context in getClasses Application: true", 1, "equal");
-//    }
-//
-//    @Test
-//    public void testPerRequestInjectInApplication() throws IOException {
-//        runGetMethod("/rest/helloworlds", 200, singletonsType + " Resource: Hello World", true);
-//        assertLibertyMessage("@Inject in getClasses Application: true", 1, "equal");
-//    }
-//
-//    @Test
-//    public void testSingletonHelloworld() throws IOException {
-//        runGetMethod("/rest/helloworlds", 200, singletonsType + " Resource: Hello World", true);
-//        assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
-//    }
-//
-//    @Test
-//    public void testSingletonContextInResource() throws IOException {
-//        runGetMethod("/rest/helloworlds/uriinfo", 200, singletonsType + " Resource Context: helloworlds", true);
-//        assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
-//    }
-//
-//    @Test
-//    public void testSingletonInjectInResource() throws IOException {
-//        runGetMethod("/rest/helloworlds/simplebean", 200, singletonsType + " Resource Inject: Hello from SimpleBean", true);
-//        assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
-//    }
-//
-//    @Test
-//    public void testSingletonInjectSetInResource() throws IOException {
-//        runGetMethod("/rest/helloworlds/person", 200, singletonsType + " Resource Inject: I am a Student.", true);
-//        assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
-//    }
-//
-//    // @Test
-//    //todo: need add back when provider context injection is available
-//    public void testSingletonContextInProvider() throws IOException {
-//        runGetMethod("/rest/helloworlds/provider/jordan", 200, "", true);
-//        assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
-//        assertLibertyMessage("Provider Context uriinfo: helloworlds/provider/jordan", 0, "more");
-//    }
-//
-//    @Test
-//    public void testSingletonInjectInProvider() throws IOException {
-//        runGetMethod("/rest/helloworlds/provider/jordan", 200, "", true);
-//        assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
-//        assertLibertyMessage("Filter Injection successful...", 1, "equal");
-//        assertLibertyMessage("Provider Inject simplebean: Hello from SimpleBean", 0, "more");
-//    }
-//
-//    // @Test
-//    //todo: need add back when provider context injection is available
-//    public void testSingletonContextInjectInFilter() throws IOException {
-//        runGetMethod("/rest/helloworlds", 200, "", true);
-//        assertLibertyMessage("RequestFilter Context uriinfo: helloworlds", 0, "more");
-//        assertLibertyMessage("RequestFilter Inject person: I am a Student.", 0, "more");
-//    }
-//
-//    @Test
-//    public void testSingletonContextInApplication() throws IOException {
-//        runGetMethod("/rest/helloworld2/contextfromapp", 200, singletonsType + "2 Resource Application Context: helloworld2/contextfromapp", true);
-//    }
-//
-//    @Test
-//    public void testSingletonInjectInApplication() throws IOException {
-//        runGetMethod("/rest/helloworld2/personfromapp", 200, singletonsType + "2 Resource Application Inject: I am a Student.", true);
-//        assertLibertyMessage("Application Injection successful...", 1, "equal");
-//    }
-//
-//    @Test
-//    public void testAlternativeIsNotInCDIBeans() throws IOException {
-//        String result = runGetMethod("/rest/helloworldc/cdibeans", 200, "", false).toString();
-//        System.out.println("testAlternativeIsNotInCDIBeans Result: " + result);
-//        assertTrue(!result.contains("Teacher"));
-//    }
-//
-//    @Test
-//    public void testSingletonConstrutorWithParamter() throws IOException {
-//        String result = runGetMethod("/rest/helloworld2/cdibeans", 200, "", false).toString();
-////        System.out.println("testSingletonConstrutorWithParamter Result: " + result);
-//        assertTrue(!result.contains("HelloWorldResource2"));
-//    }
-//
-//    @Test
-//    public void testSingletonConstrutorInjection() throws IOException {
-//        runGetMethod("/rest/helloworld2/simplebean", 200, singletonsType + "2 Resource Inject: simpleBean is null", true);
-//    }
-//
-//    @Test
-//    public void testInjectionInConstructor_1() throws IOException {
-//        String result = runGetMethod("/rest/helloworldt1?type=test", 200, "", false).toString();
-//        System.out.println("testInjectionInConstructor_1 Result: " + result);
-//        assertTrue(result.contains("test"));
-//    }
-//
-//    @Test
-//    public void testInjectionInConstructor_2() throws IOException {
-//        String result = runGetMethod("/rest/helloworldt2", 200, "", false).toString();
-//        System.out.println("testInjectionInConstructor_2 Result: " + result);
-//        assertTrue(result.contains("helloworldt2"));
-//    }
-//
-//    @Test
-//    public void testInjectionInConstructor_3() throws IOException {
-//        String result = runGetMethod("/rest/helloworldt3", 200, "", false).toString();
-//        System.out.println("testInjectionInConstructor_3 Result: " + result);
-//        assertTrue(result.contains("helloworldt3"));
-//    }
-//
-//    // @Test
-//    public void testServletResourceAreSameInstance() throws IOException {
-//        runGetMethod("/rest/helloworld", 200, "Hello from SimpleBean=Hello from SimpleBean", true);
-//        String result = runGetMethod("/rest/helloworldc/cdibeans", 200, "", false).toString();
-//
-//        String str = "bean.getBeanClass(): class com.ibm.ws.jaxrs20.cdi.fat.basic.SimpleBean";
-//        assertTrue(result.indexOf(str) == result.lastIndexOf(str));
-//    }
-//
-//    @Test
-//    public void testCdiConstructorInjectionInResource() throws IOException {
-//        String result = runGetMethod("/rest/cdiresource/get", 200, "", false).toString();
-//        System.out.println("testCdiConstructorInjectionInResource Result: " + result);
-//        assertTrue(result.contains("Hello World!"));
-//    }
+  @Test
+  public void testPerRequestInjectInApplication() throws IOException {
+      runGetMethod("/rest/helloworlds", 200, singletonsType + " Resource: Hello World", true);
+      assertLibertyMessage("@Inject in getClasses Application: true", 1, "equal");
+  }
+
+  @Test
+  public void testSingletonHelloworld() throws IOException {
+      runGetMethod("/rest/helloworlds", 200, singletonsType + " Resource: Hello World", true);
+      assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
+  }
+
+//  @Test RESTEASY003410: It is illegal to inject a @QueryParam into a singleton
+  public void testSingletonContextInResource() throws IOException {
+      runGetMethod("/rest/helloworlds/uriinfo", 200, singletonsType + " Resource Context: helloworlds", true);
+      assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
+  }
+
+  @Test
+  public void testSingletonInjectInResource() throws IOException {
+      runGetMethod("/rest/helloworlds/simplebean", 200, singletonsType + " Resource Inject: Hello from SimpleBean", true);
+      assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
+  }
+
+  @Test
+  public void testSingletonInjectSetInResource() throws IOException {
+      runGetMethod("/rest/helloworlds/person", 200, singletonsType + " Resource Inject: I am a Student.", true);
+      assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
+  }
+
+  @Test
+  public void testSingletonInjectInProvider() throws IOException {
+      runGetMethod("/rest/helloworlds/provider/jordan", 200, "", true);
+      assertLibertyMessage(singletonsType + " Injection successful...", 1, "equal");
+      assertLibertyMessage("Filter Injection successful...", 1, "equal");
+      assertLibertyMessage("Provider Inject simplebean: Hello from SimpleBean", 0, "more");
+  }
+
+  @Test
+  public void testSingletonContextInApplication() throws IOException {
+      runGetMethod("/rest/helloworld2/contextfromapp", 200, "Singleton2 Resource Application Context: /helloworld2/contextfromapp", true);
+  }
+
+  @Test
+  public void testSingletonInjectInApplication() throws IOException {
+      runGetMethod("/rest/helloworld2/personfromapp", 200, singletonsType + "2 Resource Application Inject: I am a Student.", true);
+      assertLibertyMessage("Application Injection successful for Person", 1, "equal");
+  }
+
+  @Test
+  public void testAlternativeIsNotInCDIBeans() throws IOException {
+      String result = runGetMethod("/rest/helloworldc/cdibeans", 200, "", false).toString();
+      System.out.println("testAlternativeIsNotInCDIBeans Result: " + result);
+      assertTrue(!result.contains("Teacher"));
+  }
+
+  @Test
+  public void testSingletonConstrutorWithParamter() throws IOException {
+      runGetMethod("/rest/helloworld2/cdibeans", 200, "", false).toString();
+  }
+
+  @Test
+  public void testSingletonConstrutorInjection() throws IOException {
+      runGetMethod("/rest/helloworld2/simplebean", 200, "Singleton2 Resource Inject: Hello from SimpleBean", true);
+  }
+
+  @Test
+  public void testInjectionInConstructor_1() throws IOException {
+      String result = runGetMethod("/rest/helloworldt1?type=test", 200, "", false).toString();
+      System.out.println("testInjectionInConstructor_1 Result: " + result);
+      assertTrue(result.contains("test"));
+  }
+
+  @Test
+  public void testInjectionInConstructor_2() throws IOException {
+      String result = runGetMethod("/rest/helloworldt2", 200, "", false).toString();
+      System.out.println("testInjectionInConstructor_2 Result: " + result);
+      assertTrue(result.contains("helloworldt2"));
+  }
+
+  @Test
+  public void testInjectionInConstructor_3() throws IOException {
+      String result = runGetMethod("/rest/helloworldt3", 200, "", false).toString();
+      System.out.println("testInjectionInConstructor_3 Result: " + result);
+      assertTrue(result.contains("helloworldt3"));
+  }
+
+  // @Test
+  public void testServletResourceAreSameInstance() throws IOException {
+      runGetMethod("/rest/helloworld", 200, "Hello from SimpleBean=Hello from SimpleBean", true);
+      String result = runGetMethod("/rest/helloworldc/cdibeans", 200, "", false).toString();
+
+      String str = "bean.getBeanClass(): class com.ibm.ws.jaxrs20.cdi.fat.basic.SimpleBean";
+      assertTrue(result.indexOf(str) == result.lastIndexOf(str));
+  }
+
+  @Test
+  public void testCdiConstructorInjectionInResource() throws IOException {
+      String result = runGetMethod("/rest/cdiresource/get", 200, "", false).toString();
+      System.out.println("testCdiConstructorInjectionInResource Result: " + result);
+      assertTrue(result.contains("Hello World!"));
+  }
 }

@@ -27,7 +27,7 @@ public class LifeCycleResource1 {
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
     private String type;
@@ -40,8 +40,8 @@ public class LifeCycleResource1 {
         this.type = type;
     }
 
-    private @Inject
-    LifeCycleSimpleBean simpleBean;
+    @Inject
+    private LifeCycleSimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;
@@ -69,7 +69,6 @@ public class LifeCycleResource1 {
 
     @PostConstruct
     public void method1() {
-//        Thread.dumpStack();
         System.out.println("postConstruct method is called on " + this.getClass().getName());
     }
 

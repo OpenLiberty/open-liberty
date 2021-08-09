@@ -13,13 +13,14 @@ package io.openliberty.restfulWS30.cdi30.fat.complex;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -33,7 +34,7 @@ public class JordanResource {
 
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
     @Context

@@ -26,12 +26,12 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 /**
- * <code>HelloWorldResource</code> is a simple POJO which is annotated with
+ * {@code HelloWorldResource} is a simple POJO which is annotated with
  * JAX-RS annotations to turn it into a JAX-RS resource.
  * <p/>
  * This class has a {@link Path} annotation with the value "helloworld" which
  * means the resource will be available at:
- * <code>http://&lt;hostname&gt;:&lt;port&gt/&lt;context root&gt;/&lt;servlet path&gt;/helloworld</code>
+ * {@code http://&lt;hostname&gt;:&lt;port&gt/&lt;context root&gt;/&lt;servlet path&gt;/helloworld}
  * <p/>
  * Remember to add this resource class to the {@link HelloWorldApplication#getClasses()} method.
  */
@@ -41,10 +41,10 @@ public class DefaultResource implements Serializable {
     private static final long serialVersionUID = 663911461107548545L;
     /**
      * A static variable to hold a message. Note that for this sample, the field
-     * is static because a new <code>HelloWorldResource</code> object is created
+     * is static because a new {@code HelloWorldResource} object is created
      * per request.
      */
-    private static volatile String message = "Hello World for jaxrs-2.0!";
+    private static volatile String message = "Hello World from restfulWS-3.0!";
 
     private @Inject
     SimpleBean injected;
