@@ -28,7 +28,7 @@ public class AccessTokenCacheHelper {
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
     public ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
-        if (!clientConfig.getAccessTokenCacheEnabled() || !clientConfig.getTokenReuse()) {
+        if (!clientConfig.getAccessTokenCacheEnabled()) {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
@@ -58,6 +58,9 @@ public class AccessTokenCacheHelper {
             }
             return true;
         }
+        if (!doesPropertyExistInAccessTokenInfo("exp", customProperties)) {
+            return false;
+        }
         long tokenExp = getTokenExpirationFromCustomProperties(customProperties);
         long clockSkew = clientConfig.getClockSkewInSeconds();
         long now = System.currentTimeMillis() / 1000;
@@ -72,21 +75,35 @@ public class AccessTokenCacheHelper {
 
     @FFDCIgnore(Exception.class)
     @SuppressWarnings("unchecked")
-    long getTokenExpirationFromCustomProperties(Hashtable<String, Object> customProperties) {
+    boolean doesPropertyExistInAccessTokenInfo(String propertyName, Hashtable<String, Object> customProperties) {
         if (customProperties == null || customProperties.isEmpty()) {
-            return 0;
+            return false;
         }
         if (!customProperties.containsKey(Constants.ACCESS_TOKEN_INFO)) {
-            return 0;
+            return false;
         }
         try {
             Map<String, Object> tokenInfoMap = (Map<String, Object>) customProperties.get(Constants.ACCESS_TOKEN_INFO);
             if (tokenInfoMap == null) {
-                return 0;
+                return false;
             }
-            if (!tokenInfoMap.containsKey("exp")) {
-                return 0;
+            if (!tokenInfoMap.containsKey(propertyName)) {
+                return false;
             }
+            return tokenInfoMap.get(propertyName) != null;
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to check " + propertyName + " from customer properties: " + e);
+            }
+            return false;
+        }
+    }
+
+    @FFDCIgnore(Exception.class)
+    @SuppressWarnings("unchecked")
+    long getTokenExpirationFromCustomProperties(Hashtable<String, Object> customProperties) {
+        try {
+            Map<String, Object> tokenInfoMap = (Map<String, Object>) customProperties.get(Constants.ACCESS_TOKEN_INFO);
             return (long) tokenInfoMap.get("exp");
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {

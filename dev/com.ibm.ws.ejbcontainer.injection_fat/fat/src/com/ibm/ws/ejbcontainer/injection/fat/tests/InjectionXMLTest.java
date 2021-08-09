@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.injection.xml.web.AdvSLEJBInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.xml.web.BasicSFEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.xml.web.BasicSFRemoteEnvInjectionServlet;
@@ -57,7 +58,7 @@ public class InjectionXMLTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -78,7 +79,7 @@ public class InjectionXMLTest {
         EJB3INJSXTestApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EJB3INJSXTestApp, "test-applications/EJB3INJSXTestApp.ear/resources");
         EJB3INJSXTestApp.addAsModule(EJB3INJEJBXBeanJar).addAsModule(EJB3INJSXBeanJar).addAsModule(OtherEJBJar).addAsModule(EJB3INJSXWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB3INJSXTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB3INJSXTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

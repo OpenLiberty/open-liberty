@@ -574,6 +574,23 @@ public class WCServerTest extends LoggingTest {
         }
     }
 
+    /**
+     * This test case verifies that writing Strings with more than one bytes per char to the ServletOutputStream
+     * works as expected.
+     */
+    @Test
+    public void test_ServletOutputStream_MultiByteCharEncoding() throws Exception {
+        this.verifyResponse("/TestServlet31/MultiByteEncodingServlet?isAsync=false", "Привет мир");
+    }
+
+    /**
+     * This test case verifies that writing Strings with more than one bytes per char to the ServletOutputStream
+     * via a WriteListener works as expected.
+     */
+    @Test
+    public void test_ServletOutputStream_MultiByteCharEncoding_WriteListener() throws Exception {
+        this.verifyResponse("/TestServlet31/MultiByteEncodingServlet?isAsync=true", "Привет мир");
+    }
     /*
      * (non-Javadoc)
      *

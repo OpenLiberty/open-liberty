@@ -31,7 +31,6 @@ import javax.management.ObjectName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * Provides information about the memory of the underlying operating system.
@@ -896,7 +895,7 @@ public class MemoryInformation {
         try {
             ensureInitializedMBean();
 
-            if (JavaInfo.vendor() == Vendor.IBM) {
+            if (JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
                 return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemory");
             } else {
                 return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemorySize");

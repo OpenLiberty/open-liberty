@@ -54,7 +54,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
@@ -853,7 +852,7 @@ public class OracleHelper extends DatabaseHelper {
         
         if (useKerb != KerbUsage.NONE) {
             try {
-                checkIBMJava8();
+                assertIBMKerberosSupported();
                 setKerberosDatasourceProperties(ds);
             } catch (ResourceException ex) {
                 throw AdapterUtil.toSQLException(ex);
@@ -873,7 +872,7 @@ public class OracleHelper extends DatabaseHelper {
                      cri, useKerberos, gssCredential);
         
         if (useKerberos != KerbUsage.NONE) {
-            checkIBMJava8();
+            assertIBMKerberosSupported();
             setKerberosDatasourceProperties(ds);
         }
         ConnectionResults results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);
@@ -884,8 +883,8 @@ public class OracleHelper extends DatabaseHelper {
     }
 
     @FFDCIgnore(Exception.class)
-    private void checkIBMJava8() throws ResourceException {
-        if (JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
+    private void assertIBMKerberosSupported() throws ResourceException {
+        if (JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule")) {
             // The Oracle JDBC driver prior to 21c does not support kerberos authentication on IBM JDK 8 because
             // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
             boolean ibmJdkSupported;

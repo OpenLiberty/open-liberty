@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.injection.misc.web.InjectionMiscServlet;
 
 import componenttest.annotation.Server;
@@ -42,7 +43,7 @@ public class InjectionMiscTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.InjectionMiscServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.InjectionMiscServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.InjectionMiscServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.InjectionMiscServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.InjectionMiscServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -53,7 +54,7 @@ public class InjectionMiscTest extends FATServletClient {
         InjectionMiscTestApp.addAsModule(InjectionMiscBean).addAsModule(InjectionMiscWeb);
         ShrinkHelper.addDirectory(InjectionMiscTestApp, "test-applications/InjectionMiscTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, InjectionMiscTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, InjectionMiscTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
