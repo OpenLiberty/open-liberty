@@ -315,7 +315,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      */
     @Override
     public <T> CompletionStage<T> copy(CompletionStage<T> stage) {
-        if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
+        if (!MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
             throw new UnsupportedOperationException();
 
         final CompletableFuture<T> copy = ManagedCompletableFuture.JAVA8 //
