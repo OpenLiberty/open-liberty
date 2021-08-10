@@ -1055,7 +1055,7 @@ public class LibertyServer implements LogMonitorClient {
             socket.setReuseAddress(true);
             socket.bind(new InetSocketAddress(getHttpDefaultPort()));
         } catch (Exception ex) {
-            Log.error(c, "checkPortsOpen", ex, "http default port is currently bound");
+            Log.error(c, "checkPortsOpen", ex, "http default port (" + httpDefaultPort + ") is currently bound");
             printProcessHoldingPort(getHttpDefaultPort());
             if (retry) {
                 Log.info(c, "checkPortsOpen", "Waiting 5 seconds and trying again");

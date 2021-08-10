@@ -17,14 +17,14 @@
       <feature>componentTest-1.0</feature>
       <feature>txtest-1.0</feature>
       <feature>cdi-2.0</feature>
-      <feature>timedexit-1.0</feature>
     </featureManager>
-    
-  	<httpEndpoint
-		httpPort="9992"
-		httpsPort="9996"
-		id="defaultHttpEndpoint"
-	/>  
+
+  <include location="../fatTestCommon.xml" />
+
+  <httpEndpoint id="defaultHttpEndpoint"
+        host="*"
+        httpPort="${bvt.prop.HTTP_secondary}"
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 	    
     <transaction
       recoverOnStartup="true"
