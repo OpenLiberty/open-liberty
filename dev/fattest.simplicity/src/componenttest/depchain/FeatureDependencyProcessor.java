@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class FeatureDependencyProcessor {
         File featureListFile = FeatureList.get(server);
         Set<String> testedFeatures = getTestedFeatures(testedFeaturesFile, featureListFile);
 
-        if (testedFeatures.contains("ALL_FEATURES"))
+        if (testedFeatures.contains("all_features"))
             return;
 
         Set<String> untestedFeatures = new HashSet<String>();
@@ -113,11 +113,15 @@ public class FeatureDependencyProcessor {
         // Continue to iterate auto-feature resolution until no more features are enabled
         boolean featuresAdded = true;
         while (featuresAdded) {
+            featuresAdded = false;
             for (Feature f : featureMap.values()) {
                 if (DEBUG && f.getFeatureType() == Type.AUTO_FEATURE)
                     Log.info(c, m, "Found auto feature: " + f);
-                if (f.getFeatureType() == Type.AUTO_FEATURE && f.isProvisioned(featureMap, testedFeatures))
-                    featuresAdded = testedFeatures.addAll(getEnabledFeatures(f.getSymbolicName(), testedFeatures, featureMap));
+                if (f.getFeatureType() == Type.AUTO_FEATURE && f.isProvisioned(featureMap, testedFeatures)) {
+                    if (testedFeatures.addAll(getEnabledFeatures(f.getSymbolicName(), testedFeatures, featureMap))) {
+                        featuresAdded = true;
+                    }
+                }
             }
             if (DEBUG)
                 Log.info(c, m, "After auto-feature calculation: " + testedFeatures);

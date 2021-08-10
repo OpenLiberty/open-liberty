@@ -68,7 +68,7 @@ public class InjectionMIXTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithCDI.WithRepeatWithCDI().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithEE9CDI.EE9CDI_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithCDI.WithRepeatWithCDI().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithEE9CDI.EE9CDI_FEATURES().fullFATOnly().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
