@@ -285,6 +285,7 @@ public class AccessLogSource implements Source {
                 case "%B": fieldSetters.add((ald, alrd) -> ald.setBytesReceived(alrd.getBytesWritten())); break;
                 case "%m": fieldSetters.add((ald, alrd) -> ald.setRequestMethod(alrd.getRequest().getMethod())); break;
                 case "%p": fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort())); break;
+                case "%e": fieldSetters.add((ald, alrd) -> ald.setRemotePort(alrd.getRemotePort())); break;
                 case "%q": fieldSetters.add((ald, alrd) -> ald.setQueryString(alrd.getRequest().getQueryString())); break;
                 case "%{R}W": fieldSetters.add((ald, alrd) -> ald.setElapsedTime(alrd.getElapsedTime())); break;
                 case "%s": fieldSetters.add((ald, alrd) -> ald.setResponseCode(alrd.getResponse().getStatusCodeAsInt())); break;
@@ -340,6 +341,7 @@ public class AccessLogSource implements Source {
                     case "%B": builder.add(addBytesReceivedField     (format)); break;
                     case "%m": builder.add(addRequestMethodField     (format)); break;
                     case "%p": builder.add(addRequestPortField       (format)); break;
+                    case "%e": builder.add(addRemotePortField        (format)); break;
                     case "%q": builder.add(addQueryStringField       (format)); break;
                     case "%{R}W": builder.add(addElapsedTimeField    (format)); break;
                     case "%s": builder.add(addResponseCodeField      (format)); break;
@@ -390,6 +392,7 @@ public class AccessLogSource implements Source {
         .add(addBytesReceivedField    (format))  // %B
         .add(addRequestMethodField    (format))  // %m
         .add(addRequestPortField      (format))  // %p
+        .add(addRemotePortField       (format))  // %e
         .add(addQueryStringField      (format))  // %q
         .add(addElapsedTimeField      (format))  // %{R}W
         .add(addResponseCodeField     (format))  // %s
@@ -514,6 +517,12 @@ public class AccessLogSource implements Source {
     private static JsonFieldAdder addRequestPortField(int format) {
         return (jsonBuilder, ald) -> {
             return jsonBuilder.addField(AccessLogData.getRequestPortKey(format), ald.getRequestPort(), false, true);
+        };
+    }
+
+    private static JsonFieldAdder addRemotePortField(int format) {
+        return (jsonBuilder, ald) -> {
+            return jsonBuilder.addField(AccessLogData.getRemotePortKey(format), ald.getRemotePort(), false, true);
         };
     }
 

@@ -99,7 +99,7 @@ public class CustomAccessLogFieldsTest {
     public static LibertyServer multipleHttpEndpointServer;
 
     private final String[] newFields = { "ibm_remoteIP", "ibm_bytesSent", "ibm_cookie", "ibm_requestElapsedTime", "ibm_requestHeader",
-                                         "ibm_responseHeader", "ibm_requestFirstLine", "ibm_requestStartTime", "ibm_accessLogDatetime", "ibm_remoteUserID" };
+                                         "ibm_responseHeader", "ibm_requestFirstLine", "ibm_requestStartTime", "ibm_accessLogDatetime", "ibm_remoteUserID", "ibm_remotePort" };
 
     private final String[] defaultFields = { "ibm_remoteHost", "ibm_requestProtocol", "ibm_requestHost", "ibm_bytesReceived", "ibm_requestMethod", "ibm_requestPort",
                                              "ibm_queryString", "ibm_elapsedTime", "ibm_responseCode", "ibm_uriPath", "ibm_userAgent" };

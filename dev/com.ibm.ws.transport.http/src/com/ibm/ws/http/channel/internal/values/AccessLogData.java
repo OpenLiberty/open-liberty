@@ -32,6 +32,7 @@ public abstract class AccessLogData extends GenericKeys {
         new AccessLogFirstLine();
         new AccessLogLocalIP();
         new AccessLogLocalPort();
+        new AccessLogRemotePort();
         new AccessLogQueryString();
         new AccessLogRemoteHost();
         new AccessLogRemoteIP();
@@ -51,7 +52,7 @@ public abstract class AccessLogData extends GenericKeys {
 
     /**
      * Constructor for a generic access log data object.
-     * 
+     *
      * @param name
      */
     public AccessLogData(String name) {
@@ -62,7 +63,7 @@ public abstract class AccessLogData extends GenericKeys {
 
     /**
      * Get the next ordinal value.
-     * 
+     *
      * @return int
      */
     private static synchronized int nextOrdinal() {
@@ -71,7 +72,7 @@ public abstract class AccessLogData extends GenericKeys {
 
     /**
      * Allow access to the list containing all of the enumerated values.
-     * 
+     *
      * @return List<AccessLogData>
      */
     public static List<AccessLogData> getAllKeys() {
@@ -82,7 +83,7 @@ public abstract class AccessLogData extends GenericKeys {
      * Find the enumerated object that matchs the input name using the given
      * offset and length into that name. If none exist, then a null value is
      * returned.
-     * 
+     *
      * @param name
      * @param offset - starting point in that name
      * @param length - length to use from that starting point
@@ -98,7 +99,7 @@ public abstract class AccessLogData extends GenericKeys {
      * Find the enumerated object that matchs the input name using the given
      * offset and length into that name. If none exist, then a null value is
      * returned.
-     * 
+     *
      * @param name
      * @param offset - starting point in that name
      * @param length - length to use from that offset
@@ -119,10 +120,10 @@ public abstract class AccessLogData extends GenericKeys {
      * classes that implement their own set method. For instance the
      * AccessLogFirst class will implement the set method to set the
      * first line of the request in the access log entry
-     * 
+     *
      * @param accessLogEntry StringBuilder for the line being built
-     * @param response HttpResponseMessage to populate the fields in the line
-     * @param request HttpRequestMessage to populate the fields in the line
+     * @param response       HttpResponseMessage to populate the fields in the line
+     * @param request        HttpRequestMessage to populate the fields in the line
      * @return Indicates if the status worked or not
      */
     public abstract boolean set(StringBuilder accessLogEntry, HttpResponseMessage response, HttpRequestMessage request, Object initData);
