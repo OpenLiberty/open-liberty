@@ -48,7 +48,10 @@ public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
             System.out.println("Must set the JVM option: -XX:+EnableCRIUSupport");
             return -50;
         }
-        CRIUResult result = CRIUSupport.checkPointJVM(directory.toPath());
+        CRIUSupport criuSupport = new CRIUSupport(directory.toPath());
+        criuSupport.setShellJob(true);
+        criuSupport.setFileLocks(true);
+        CRIUResult result = criuSupport.checkpointJVM();
         if (result.getType() == CRIUResultType.SUCCESS) {
             return 1;
         }
