@@ -1383,15 +1383,15 @@ case "$ACTION" in
     echo Start server from image.
     echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
     if [ -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand ]; then
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/restore.log &
     else 
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/logs/restore.log
     fi
     rc=$?
     if [ $rc != 0 ]; then
        echo The criu restore command exited with error code $rc        
        #TODO check if server really not running and if not launch it normally.  
-    fi        
+    fi
   ;; 
   
   version)
