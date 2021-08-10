@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+# IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.rest.client.3.0; singleton:=true
+
+Export-Package: \
+  org.eclipse.microprofile.rest.client,\
+  org.eclipse.microprofile.rest.client.annotation,\
+  org.eclipse.microprofile.rest.client.ext,\
+  org.eclipse.microprofile.rest.client.inject,\
+  org.eclipse.microprofile.rest.client.spi
+
+Import-Package: \
+  org.eclipse.microprofile.rest.client,\
+  org.eclipse.microprofile.rest.client.spi,\
+  *
+
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;3.0}

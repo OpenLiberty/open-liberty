@@ -59,6 +59,7 @@ Export-Package: \
   org.jboss.resteasy.annotations.providers.img;version=${resteasy-version}, \
   org.jboss.resteasy.annotations;version=${resteasy-version}, \
   org.jboss.resteasy.api.validation;version=${resteasy-version}, \
+  org.jboss.resteasy.client.exception;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.cache;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.engines;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.i18n;version=${resteasy-version}, \
