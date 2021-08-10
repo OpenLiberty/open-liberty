@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.sse.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -20,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -80,6 +83,7 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(EE9_FEATURES) // per spec discussions, only unrecoverable connection-related errors should trigger onError
     public void testErrorSse() throws Exception {
         runTest(server, SERVLET_PATH, "testErrorSse");
     }
