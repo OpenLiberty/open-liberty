@@ -15,7 +15,7 @@
   
   <variable name="oracle.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=${ORACLE_HOSTNAME})(PORT=${ORACLE_PORT}))(CONNECT_DATA=(SERVICE_NAME=${ORACLE_DBNAME})))"/>
   
-  <dataSource jndiName="jdbc/krb/basic">
+  <dataSource jndiName="jdbc/krb/basic" sendGSSCredentialOnOracleBuilder="true">
     <jdbcDriver libraryRef="OracleLib"/>
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
@@ -27,13 +27,13 @@
     <containerAuthData krb5Principal="${KRB5_USER}" password="password"/>
   </dataSource>
   
-  <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
+  <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource" sendGSSCredentialOnOracleBuilder="true">
     <jdbcDriver libraryRef="OracleLib" />
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
+  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource" sendGSSCredentialOnOracleBuilder="true">
     <jdbcDriver libraryRef="OracleLib" />
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
