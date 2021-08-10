@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -108,7 +110,7 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfBodyNotSignedEE7Only() throws Exception {
 
@@ -143,7 +145,7 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testCxfBodyNotSignedEE8Only() throws Exception {
 
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlSigNoClientSig.wsdl",
@@ -306,12 +308,10 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfClientSignWithExpKeyEE7Only() throws Exception {
 
-        // use server config with expired cert
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_expcert.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert.xml");
 
         genericTest(
@@ -339,13 +339,15 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testCxfClientSignWithExpKeyEE8Only() throws Exception {
 
-        // use server config with expired cert
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_wss4j.xml");
 
         genericTest(
@@ -372,15 +374,16 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfClientBadClKeyStorePswdEE7Only() throws Exception {
 
-        // use server config with bad client pw
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_badclpwd.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd.xml");
 
         genericTest(
@@ -408,17 +411,14 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        // restore original server config
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testCxfClientBadClKeyStorePswdEE8Only() throws Exception {
 
-        // use server config with bad client pwd
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_wss4j.xml");
 
         genericTest(
@@ -445,20 +445,15 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        // restore original server config
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfClientBadSrvKeyStorePswdEE7Only() throws Exception {
 
-        // use server config with bad server pw
-
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_badsvrpwd.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd.xml");
 
         genericTest(
@@ -486,18 +481,16 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        // restore original server config
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientBadSrvKeyStorePswdEE8Only() throws Exception {
 
-        // use server config with bad server pwd
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_wss4j.xml");
 
         genericTest(
@@ -520,12 +513,10 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    "Cannot create Crypto class", //@AV999
+                    "Cannot create Crypto class",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
-        // restore original server config
-        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
 
     }
@@ -561,7 +552,8 @@ public class CxfX509SigTests extends CommonTests {
                 newWsdl = null;
                 newClientWsdl = null;
             }
-            restoreServer();
+            //Removed to resolve RTC 285315
+            //restoreServer();
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }

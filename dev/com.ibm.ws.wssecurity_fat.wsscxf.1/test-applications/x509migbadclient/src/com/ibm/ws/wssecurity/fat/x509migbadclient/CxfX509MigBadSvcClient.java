@@ -96,7 +96,6 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
     String methodFull = null;
     SOAPMessage soapReq = null;
 
-    //2/2021
     String errMsgVersion = "";
 
     private StringReader reqMsg = null;
@@ -173,20 +172,17 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadCxfX509AsymIssuerSerialMigService")) {
                 service = new FatBAX02Service();
                 strExpect = "LIBERTYFAT X509 bax02";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
-                    //Orig:
                     strSubErrMsg = "Cannot encrypt data"; // Because we specify Basic256 in the client. It needs JDK un-restricted Security Policy
-                    //2/2021
                     System.out.println("From CxfX509MigBadSvcClient, unlimitCryptoKeyLength:" + unlimitCryptoKeyLength);
-                    //Orig:
                     if (unlimitCryptoKeyLength) {
                         strSubErrMsg = "These policy alternatives can not be satisfied";
                     }
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509IssuerSerialMigSymNoEncryptSignatureService")) {
                 service = new FatBAX03Service();
                 strExpect = "LIBERTYFAT X509 bax03";
@@ -209,33 +205,33 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509AsymProtectTokensMigService")) {
                 service = new FatBAX08Service();
                 strExpect = "LIBERTYFAT X509 bax08";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "EncryptedParts: {http://schemas.xmlsoap.org/soap/envelope/}Body not ENCRYPTED"; //
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "EncryptedParts: Soap Body is not ENCRYPTED";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509ProtectTokensMigSymService")) {
                 service = new FatBAX09Service();
                 strExpect = "LIBERTYFAT X509 bax09";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "SignedParts: {http://schemas.xmlsoap.org/soap/envelope/}Body not SIGNED";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "SignedParts: Soap Body is not SIGNED";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509TransportEndorsingMigService")) {
                 service = new FatBAX10Service();
                 strExpect = "LIBERTYFAT X509 bax10";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "Signature creation failed"; //"Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "list of references must contain at least one entry";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509TransportEndorsingSP11MigService")) {
                 service = new FatBAX11Service();
                 strExpect = "LIBERTYFAT X509 bax11";
@@ -247,13 +243,13 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509TransportEndorsingEncryptedMigService")) {
                 service = new FatBAX13Service();
                 strExpect = "LIBERTYFAT X509 bax13";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "Signature creation failed"; //"Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "list of references must contain at least one entry";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509TransportSignedEndorsingEncryptedMigService")) {
                 service = new FatBAX14Service();
                 strExpect = "LIBERTYFAT X509 bax14";
@@ -265,13 +261,13 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509TransportKVTMigService")) {
                 service = new FatBAX16Service();
                 strExpect = "LIBERTYFAT X509 bax16";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "Signature creation failed"; // "Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "Received Timestamp does not match the requirements";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureMigService")) {
                 service = new FatBAX17Service();
                 strExpect = "LIBERTYFAT X509 bax17";
@@ -292,13 +288,13 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadWsComplexService")) {
                 service = new FatBAX21Service();
                 strExpect = "LIBERTYFAT X509 bax21";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "Not signed before encrypted";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "Not encrypted before signed";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testBadX509KeyIdentifierUNTService")) {
                 service = new FatBAX24Service();
                 strExpect = "LIBERTYFAT X509 bax24";
@@ -330,43 +326,43 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadBasic192Service")) {
                 service = new FatBAX31Service();
                 strExpect = "LIBERTYFAT X509 bax31";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "The symmetric key length does not match the requirement"; // Test basic128 against Basic192
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testBadTripleDesService")) {
                 service = new FatBAX32Service();
                 strExpect = "LIBERTYFAT X509 bax32";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "AsymmetricBinding: The encryption algorithm does not match the requirement";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                } //End 2/2201
+                }
             } else if (thisMethod.equals("testBadInclusiveC14NService")) {
                 service = new FatBAX33Service();
                 strExpect = "LIBERTYFAT X509 bax33";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "SignedSupportingTokens: The received token does not match the signed supporting token requirement";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testBadBasic128Service")) {
                 service = new FatBAX34Service();
                 strExpect = "LIBERTYFAT X509 bax34";
-                //2/2021
+
                 if (errMsgVersion.equals("EE8")) {
                     //testMode = "negative";
                     //the test method runs on EE8 as negative test
                     //newErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
                     strSubErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testBadSymmetricEndorsingUNTPolicy")) {
                 service = new FatBAX35Service();
                 strExpect = "LIBERTYFAT X509 bax35";

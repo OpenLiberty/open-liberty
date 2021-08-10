@@ -50,7 +50,6 @@ import componenttest.topology.impl.LibertyServer;
 public class SSLTestCommon {
 
     static private final Class<?> thisClass = SSLTestCommon.class;
-    //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.ssl";
     @Server(serverName)
 
@@ -78,12 +77,10 @@ public class SSLTestCommon {
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
     final static String replayAttack = "An error happened processing a Username Token \"A replay attack has been detected\"";
-    //2/2021
-    final static String replayAttackNew = "An error happened processing a Username Token: \"A replay attack has been detected\""; //@AV999
 
+    final static String replayAttackNew = "An error happened processing a Username Token: \"A replay attack has been detected\"";
     final static String timestampReqButMissing = "An invalid security token was provided (WSSecurityEngine: Invalid timestamp";
-    //2/2021
-    final static String morethanOneTimestamp = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP"; //@AV999
+    final static String morethanOneTimestamp = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP";
 
     // "RequireClientCertificate is set, but no local certificates were negotiated.";
 
@@ -106,7 +103,6 @@ public class SSLTestCommon {
     public static void setUp() throws Exception {
         //String thisMethod = "setup";
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
 
@@ -115,9 +111,6 @@ public class SSLTestCommon {
 
     protected static void initServer() throws Exception {
         String thisMethod = "initServer";
-
-        //commented out 10/16/2020, it's deprecated in CL and does not exist in OL
-        //HttpUtils.enableSSLv3();
 
         Log.info(thisClass, "initServer", "before server.startServer() inside SSLTestCommon");
         server.startServer();// will check CWWKS0008I: The security service is ready.
@@ -292,7 +285,6 @@ public class SSLTestCommon {
         System.err.println("*****************************" + strMethod);
     }
 
-    //4/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

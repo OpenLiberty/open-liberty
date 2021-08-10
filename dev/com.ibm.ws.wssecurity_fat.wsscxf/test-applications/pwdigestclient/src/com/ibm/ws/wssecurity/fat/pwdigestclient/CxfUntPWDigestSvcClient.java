@@ -77,7 +77,6 @@ public class CxfUntPWDigestSvcClient extends HttpServlet {
         String clientWsdlFile = request.getParameter("clientWsdl");
         String theWsdl = request.getParameter("theWsdl");
 
-        //2/2021
         String pwdCBHVersion = request.getParameter("pwdCallBackhandlerVersion");
 
         // set default WSDL parms
@@ -187,7 +186,7 @@ public class CxfUntPWDigestSvcClient extends HttpServlet {
             Map<String, Object> requestContext = dispSOAPMsg.getRequestContext();
 
             System.out.println("setTheId: " + setTheId);
-            //2/2021
+
             System.out.println("pwdCBHVersion: " + pwdCBHVersion);
 
             // Set username token in reqcontext for non-ibm clients.
@@ -223,21 +222,11 @@ public class CxfUntPWDigestSvcClient extends HttpServlet {
             if (setTheId.equals("NoIdBadPw")) {
                 requestContext.put("ws-security.password", "BadPW22");
             }
-            /*
-             * orig from CL
-             * if (setTheId.equals("altCallback1")) {
-             * requestContext.put("ws-security.username", "user2");
-             * requestContext.put("ws-security.password", "security"); //@av
-             * requestContext
-             * .put("ws-security.callback-handler",
-             * "com.ibm.ws.wssecurity.fat.pwdigest.AltClientPWDigestCallbackHandler");
-             * }
-             */
-            //Added 11/2020 to use client package pwdigestclient.AltClientPWDigestCallbackHandler
+
             if (setTheId.equals("altCallback1")) {
                 requestContext.put("ws-security.username", "user2");
                 requestContext.put("ws-security.password", "security");
-                //2/2021
+
                 if (pwdCBHVersion.equals("EE7")) {
                     requestContext.put("ws-security.callback-handler",
                                        "com.ibm.ws.wssecurity.fat.pwdigestclient.AltClientPWDigestCallbackHandler");
@@ -245,19 +234,9 @@ public class CxfUntPWDigestSvcClient extends HttpServlet {
                 if (pwdCBHVersion.equals("EE8")) {
                     requestContext.put("ws-security.callback-handler",
                                        "com.ibm.ws.wssecurity.fat.pwdigestclient.AltClientPWDigestCallbackHandlerWss4j");
-                } //End 2/2021
+                }
             }
 
-            /*
-             * orig from CL
-             * if (setTheId.equals("altCallback2")) {
-             * requestContext.put("ws-security.username", "user4");
-             * requestContext
-             * .put("ws-security.callback-handler",
-             * "com.ibm.ws.wssecurity.fat.pwdigest.AltClientPWDigestCallbackHandler");
-             * }
-             */
-            //Added 11/2020 to use client package pwdigestclient.AltClientPWDigestCallbackHandler
             if (setTheId.equals("altCallback2")) {
                 requestContext.put("ws-security.username", "user4");
                 if (pwdCBHVersion.equals("EE7")) {
@@ -267,7 +246,7 @@ public class CxfUntPWDigestSvcClient extends HttpServlet {
                 if (pwdCBHVersion.equals("EE8")) {
                     requestContext.put("ws-security.callback-handler",
                                        "com.ibm.ws.wssecurity.fat.pwdigestclient.AltClientPWDigestCallbackHandlerWss4j");
-                } //End 2/2021
+                }
             }
 
             if (setTheId.equals("badCallback")) {

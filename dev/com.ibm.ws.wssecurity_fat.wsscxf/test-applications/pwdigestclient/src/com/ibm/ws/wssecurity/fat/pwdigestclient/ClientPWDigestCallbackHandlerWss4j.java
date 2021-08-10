@@ -39,9 +39,9 @@ public class ClientPWDigestCallbackHandlerWss4j implements CallbackHandler {
 
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-        System.out.println("in Handle of client callback");
+        System.out.println("in Handle of client callback-wss4j");
         for (int i = 0; i < callbacks.length; i++) {
-            System.out.println("Client Callback processing");
+            System.out.println("Client Callback-wss4j processing");
             WSPasswordCallback pc = (WSPasswordCallback) callbacks[i];
 
             String pass = passwords.get(pc.getIdentifier());

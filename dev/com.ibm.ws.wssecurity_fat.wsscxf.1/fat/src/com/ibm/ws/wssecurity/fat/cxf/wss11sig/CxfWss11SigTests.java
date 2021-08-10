@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11sig;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -269,7 +271,7 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientBasicEncryptedElementMisMatchEE7Only() throws Exception {
 
@@ -307,7 +309,7 @@ public class CxfWss11SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicEncryptedElementMisMatchEE8Only() throws Exception {
 
@@ -362,7 +364,7 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientBasicEncryptedElementEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElement";
@@ -396,7 +398,7 @@ public class CxfWss11SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicEncryptedElementEE8Only() throws Exception {
 
@@ -444,7 +446,7 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientBasicSigSignedElementMisMatchEE7Only() throws Exception {
 
@@ -455,6 +457,7 @@ public class CxfWss11SigTests extends CommonTests {
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -482,7 +485,7 @@ public class CxfWss11SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigSignedElementMisMatchEE8Only() throws Exception {
 
@@ -533,10 +536,11 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientBasicSigSignedElementEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -564,7 +568,7 @@ public class CxfWss11SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigSignedElementEE8Only() throws Exception {
 
@@ -607,7 +611,7 @@ public class CxfWss11SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";
@@ -616,6 +620,8 @@ public class CxfWss11SigTests extends CommonTests {
                                          defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServerUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
+
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -643,7 +649,7 @@ public class CxfWss11SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE8Only() throws Exception {
 
@@ -653,6 +659,7 @@ public class CxfWss11SigTests extends CommonTests {
                                          defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServerUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -711,7 +718,8 @@ public class CxfWss11SigTests extends CommonTests {
                 newWsdl = null;
                 newClientWsdl = null;
             }
-            restoreServer();
+            //Removed to resolve RTC 285315
+            //restoreServer();
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }

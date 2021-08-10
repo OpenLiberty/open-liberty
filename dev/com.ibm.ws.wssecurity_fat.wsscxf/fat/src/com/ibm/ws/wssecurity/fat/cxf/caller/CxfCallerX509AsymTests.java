@@ -171,8 +171,6 @@ public class CxfCallerX509AsymTests {
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerX509TransportEndorsingPolicy() throws Exception {
-        // In case, the sequence on test cases are random... then need to unmark next line
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
         String thisMethod = "testCxfCallerX509TransportEndorsingPolicy";
         methodFull = "testCxfCallerX509TransportEndorsingPolicy";
@@ -206,9 +204,6 @@ public class CxfCallerX509AsymTests {
     @Test
     public void testCxfCallerHttpPolicyInX509() throws Exception {
 
-        // In case, the sequence on test cases are random... then need to unmark next line
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
         String thisMethod = "testCxfCallerHttpPolicy";
         methodFull = "testCxfCallerHttpPolicyInx509";
 
@@ -241,9 +236,6 @@ public class CxfCallerX509AsymTests {
     @Test
     public void testCxfCallerHttpsPolicyInx509() throws Exception {
 
-        // In case, the sequence on test cases are random... then need to unmark next line
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
         String thisMethod = "testCxfCallerHttpsPolicy";
         methodFull = "testCxfCallerHttpsPolicyInX509";
 
@@ -275,9 +267,6 @@ public class CxfCallerX509AsymTests {
     @Test
     public void testCxfCallerNoPolicyInX509() throws Exception {
 
-        // In case, the sequence on test cases are random... then need to unmark next line
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
         String thisMethod = "testCxfCallerNoPolicy";
         methodFull = "testCxfCallerNoPolicyInX509";
 
@@ -308,9 +297,6 @@ public class CxfCallerX509AsymTests {
 
     @Test
     public void testCxfCallerHttpsNoUntPolicyInX509() throws Exception {
-
-        // In case, the sequence on test cases are random... then need to unmark next line
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
         String thisMethod = "testCxfCallerHttpsNoUntPolicy";
         methodFull = "testCxfCallerHttpsNoUntPolicyInX509";
@@ -620,7 +606,6 @@ public class CxfCallerX509AsymTests {
             e.printStackTrace(System.out);
         }
 
-        //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");

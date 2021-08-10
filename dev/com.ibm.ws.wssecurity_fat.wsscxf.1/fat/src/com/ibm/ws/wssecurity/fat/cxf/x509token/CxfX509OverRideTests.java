@@ -157,30 +157,8 @@ public class CxfX509OverRideTests {
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testCxfX50NegativeServiceEE7Only() throws Exception {
-
-        String thisMethod = "testCxfX509Service";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "negative", // testMode: positive, positive-1, negative, negative-1....
-                        portNumber, //String portNumber,
-                        "", //String portNumberSecure
-                        "FVTVersionBAXService", //String strServiceName,
-                        "UrnX509Token" //String strServicePort
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testCxfX50NegativeServiceEE8Only() throws Exception {
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    public void testCxfX50NegativeService() throws Exception {
 
         String thisMethod = "testCxfX509Service";
 

@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -214,32 +216,10 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    //2/2021
-    //The following 4 test methods:
-    //testPWDigestCXFSvcClientBadPWOnClientSSL
-    //testPWDigestCXFSvcClientBadPWOnBothSidesSSL
-    //testPWDigestCXFSvcMissingIdInCallbackSSL
-    //testPWDigestCXFSvcClientBadIdSSL
-    //can't work with the combined exceptions:
-    //@ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //EE7 test will fail with [An FFDC reporting org.apache.wss4j.common.ext.WSSecurityException was expected but none was found.]
-    //EE8 test will fail with [An FFDC reporting org.apache.ws.security.WSSecurityException was expected but none was found.]
-    //So split them for EE7only an EE8only respectively
-
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testPWDigestCXFSvcClientBadPWOnClientSSLEE7Only() throws Exception {
-
-        genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user5", "UsrTokenPWDigestWebSvcSSL",
-                    couldNotAuth, "Bad password specified by the client - Expected Exception \"");
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testPWDigestCXFSvcClientBadPWOnClientSSLEE8Only() throws Exception {
+    public void testPWDigestCXFSvcClientBadPWOnClientSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user5", "UsrTokenPWDigestWebSvcSSL",
                     couldNotAuth, "Bad password specified by the client - Expected Exception \"");
@@ -256,19 +236,10 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testPWDigestCXFSvcClientBadPWOnBothSidesSSLEE7Only() throws Exception {
-
-        genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user3", "UsrTokenPWDigestWebSvcSSL",
-                    couldNotAuth, "Bad password specified for user3 from the client and callback - Expected Exception \"");
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testPWDigestCXFSvcClientBadPWOnBothSidesSSLEE8Only() throws Exception {
+    public void testPWDigestCXFSvcClientBadPWOnBothSidesSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user3", "UsrTokenPWDigestWebSvcSSL",
                     couldNotAuth, "Bad password specified for user3 from the client and callback - Expected Exception \"");
@@ -312,21 +283,10 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testPWDigestCXFSvcMissingIdInCallbackSSLEE7Only() throws Exception {
-
-        genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user4", "UsrTokenPWDigestWebSvcSSL",
-                    couldNotAuth, "Callback could not return a pw for user4 - Expected Exception \"");
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testPWDigestCXFSvcMissingIdInCallbackSSLEE8Only() throws Exception {
+    public void testPWDigestCXFSvcMissingIdInCallbackSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user4", "UsrTokenPWDigestWebSvcSSL",
                     couldNotAuth, "Callback could not return a pw for user4 - Expected Exception \"");
@@ -343,19 +303,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testPWDigestCXFSvcClientBadIdSSLEE7Only() throws Exception {
-
-        genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user77", "UsrTokenPWDigestWebSvcSSL",
-                    couldNotAuth, "Bad password specified for user77 in the server callback - Expected Exception \"");
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testPWDigestCXFSvcClientBadIdSSLEE8Only() throws Exception {
+    public void testPWDigestCXFSvcClientBadIdSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user77", "UsrTokenPWDigestWebSvcSSL",
                     couldNotAuth, "Bad password specified for user77 in the server callback - Expected Exception \"");
@@ -446,42 +396,49 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testPWDigestCXFSvcClientaltCallbackEE7Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback1", "UsrTokenPWDigestWebSvc",
                     "This is WSSECFVT CXF Web Service (Password Digest)", "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
         return;
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testPWDigestCXFSvcClientaltCallbackEE8Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback1", "UsrTokenPWDigestWebSvc",
                     "This is WSSECFVT CXF Web Service (Password Digest)", "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
         return;
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testPWDigestCXFSvcClientaltCallbackSSLEE7Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback1", "UsrTokenPWDigestWebSvcSSL",
                     "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
 
         return;
 
@@ -489,39 +446,26 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testPWDigestCXFSvcClientaltCallbackSSLEE8Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback1", "UsrTokenPWDigestWebSvcSSL",
                     "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
-        return;
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID })
-    public void testPWDigestCXFSvcClientaltCallbackBadUserEE7Only() throws Exception {
-
-        genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback2", "UsrTokenPWDigestWebSvc",
-                    couldNotAuth, "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
-
-        return;
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testPWDigestCXFSvcClientaltCallbackBadUserEE8Only() throws Exception {
-
-        //2/2021
+        //Added to resolve RTC 285305
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
+        return;
+
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
+    public void testPWDigestCXFSvcClientaltCallbackBadUser() throws Exception {
+
         genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback2", "UsrTokenPWDigestWebSvc",
                     couldNotAuth, "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
@@ -530,25 +474,11 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
-    public void testPWDigestCXFSvcClientaltCallbackBadUserSSLEE7Only() throws Exception {
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    public void testPWDigestCXFSvcClientaltCallbackBadUserSSL() throws Exception {
 
-        genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback2", "UsrTokenPWDigestWebSvcSSL",
-                    couldNotAuth, "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
-
-        return;
-
-    }
-
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.io.IOException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    public void testPWDigestCXFSvcClientaltCallbackBadUserSSLEE8Only() throws Exception {
-
-        //2/2021
-        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback2", "UsrTokenPWDigestWebSvcSSL",
                     couldNotAuth, "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
@@ -591,45 +521,51 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testPWDigestCXFSvcClientClCallbackInServerXmlEE7Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "user88", "UsrTokenPWDigestWebSvc",
                     "This is WSSECFVT CXF Web Service (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
 
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
         return;
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testPWDigestCXFSvcClientClCallbackInServerXmlEE8Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "user88", "UsrTokenPWDigestWebSvc",
                     "This is WSSECFVT CXF Web Service (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
 
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
         return;
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testPWDigestCXFSvcClientClCallbackInServerXmlSSLEE7Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback.xml");
 
         genericTest(testName.getMethodName(), clientHttpUrl, httpsPortNumber, "user88", "UsrTokenPWDigestWebSvcSSL",
                     "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
 
         return;
 
@@ -637,15 +573,17 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testPWDigestCXFSvcClientClCallbackInServerXmlSSLEE8Only() throws Exception {
 
-        // reconfig server
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_withClCallback_wss4j.xml");
 
         genericTest(testName.getMethodName(), clientHttpUrl, httpsPortNumber, "user88", "UsrTokenPWDigestWebSvcSSL",
                     "This is WSSECFVT CXF Web Service with SSL (Password Digest)",
                     "The " + testName.getMethodName() + " test failed - did not receive the correct response");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
 
         return;
 
@@ -658,7 +596,6 @@ public class CxfPasswordDigestTests extends CommonTests {
                                                 defaultClientWsdlLoc + "UsrTokenPWDigestWebSvcNoHashUpdated.wsdl");
         Log.info(thisClass, "testPWDigestCXFSvcClientClNoHash", "Using " + newClientWsdl);
 
-        //2/2021
         genericTest(testName.getMethodName(), clientHttpUrl, "", "user1", "UsrTokenPWDigestWebSvc", newClientWsdl,
                     "[Password hashing policy not enforced]", "The " + testName.getMethodName() + " test failed - did not receive the correct response", pwdCBHVersion);
 
