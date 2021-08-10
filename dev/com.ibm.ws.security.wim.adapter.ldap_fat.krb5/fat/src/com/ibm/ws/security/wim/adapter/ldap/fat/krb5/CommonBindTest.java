@@ -164,11 +164,11 @@ public class CommonBindTest {
     }
 
     /**
-     * A series of "Basics" that all the variations of config should pass, good login, bad login, isvalid, getusers/getgroups.
+     * Variations that should pass for all Ldap bindAuth configs, good login, bad login, isvalid, getusers/getgroups.
      *
      * @throws Exception
      */
-    public void baselineTests() throws Exception {
+    public void baselineLoginAndGetTests() throws Exception {
         String methodName = "baselineTests";
         Log.info(c, methodName, "Checking good credentials");
         loginUser();
@@ -219,7 +219,7 @@ public class CommonBindTest {
     }
 
     /**
-     * Run a checkpassword on a basic user from the ApacheDS server.
+     * Run a checkpassword on a user from the ApacheDS server.
      *
      * @throws Exception
      */
@@ -229,7 +229,7 @@ public class CommonBindTest {
     }
 
     /**
-     * Run a checkpassword on a basic user from the ApacheDS server, but expect it to fail. This
+     * Run a checkpassword on a user from the ApacheDS server, but expect it to fail. This
      * could fail with a null user or an exception.
      */
     public void loginUserShouldFail() throws Exception {
@@ -246,20 +246,20 @@ public class CommonBindTest {
     }
 
     /**
-     * Run a checkpassword on a basic user from the UnboundID server.
+     * Run a checkpassword on a user from the UnboundID server.
      *
      * @throws Exception
      */
-    public void loginUserUnboundID() throws Exception {
+    public void assertLoginUserUnboundID() throws Exception {
         assertDNsEqual("Authentication should succeed for " + UNBOUNDID_USER,
                        UNBOUNDID_USER_DN, servlet.checkPassword(UNBOUNDID_USER, UNBOUNDID_PWD));
     }
 
     /**
-     * Run a checkpassword on a basic user from the UnboundID server, but expect it to fail. This
+     * Run a checkpassword on a user from the UnboundID server, but expect it to fail. This
      * could fail with a null user or an exception.
      */
-    public void loginUserShouldFailUnboundID() throws Exception {
+    public void assertLoginUserShouldFailUnboundID() throws Exception {
         try {
             String dnReturned = servlet.checkPassword(UNBOUNDID_USER, UNBOUNDID_USER);
             if (dnReturned == null) {
@@ -348,14 +348,14 @@ public class CommonBindTest {
         ApacheDSandKDC.stopAllServers();
 
         Log.info(c, testName.getMethodName(), "With allowOp=false, both registries should fail to login");
-        loginUserShouldFailUnboundID();
+        assertLoginUserShouldFailUnboundID();
         loginUserShouldFail();
 
         Log.info(c, testName.getMethodName(), "Start all of the ApacheDS servers");
         ApacheDSandKDC.startAllServers();
 
         Log.info(c, testName.getMethodName(), "After apacheDS restart, all logins should succeed.");
-        loginUserUnboundID();
+        assertLoginUserUnboundID();
         loginUser();
     }
 
@@ -380,13 +380,13 @@ public class CommonBindTest {
         // Stop ApacheDS, with default behavior, we should not fail on the other registry
         ApacheDSandKDC.stopAllServers();
 
-        loginUserUnboundID();
+        assertLoginUserUnboundID();
         loginUserShouldFail();
 
         // Start Apache DS, should succeed
         ApacheDSandKDC.startAllServers();
 
-        loginUserUnboundID();
+        assertLoginUserUnboundID();
         loginUser();
 
     }
@@ -401,7 +401,7 @@ public class CommonBindTest {
     }
 
     /**
-     * Return a basic LdapRegistry with the default ticketCacheFile, caches and context pool disabled
+     * Return an LdapRegistry element with the default ticketCacheFile, caches and context pool disabled
      *
      * @return
      */
@@ -410,7 +410,7 @@ public class CommonBindTest {
     }
 
     /**
-     * Return a basic LdapRegistry with the default ticketCacheFile, caches and context pool enabled
+     * Return an LdapRegistry element with the default ticketCacheFile, caches and context pool enabled
      *
      * @return
      */
@@ -419,7 +419,7 @@ public class CommonBindTest {
     }
 
     /**
-     * Return a basic LdapRegistry with the default ticketCacheFile, context pool enabled and caches disabled
+     * Return an LdapRegistry element with the default ticketCacheFile, context pool enabled and caches disabled
      *
      * @return
      */
@@ -428,21 +428,21 @@ public class CommonBindTest {
     }
 
     /**
-     * Return a basic LdapRegistry with the krb5Principal, ready to add a keytab to the Kerberos config, caches and context pool disabled
+     * Return an LdapRegistry element with the krb5Principal, ready to add a keytab to the Kerberos config, caches and context pool disabled
      *
      * @return
      */
     protected LdapRegistry getLdapRegistryForKeytab() {
-        return LdapKerberosUtils.getKrb5PrincipalNameWithoutContextPool(ldapServerHostName, LDAP_PORT);
+        return LdapKerberosUtils.getLdapRegistryWithKrb5EnabledWithoutContextPool(ldapServerHostName, LDAP_PORT);
     }
 
     /**
-     * Return a basic LdapRegistry with the krb5Principal, ready to add a keytab to the Kerberos config, caches and context pool disabled
+     * Return an LdapRegistry element with the krb5Principal, ready to add a keytab to the Kerberos config, caches and context pool disabled
      *
      * @return
      */
     protected LdapRegistry getLdapRegistryForKeytabWithContextPool() {
-        return LdapKerberosUtils.getKrb5PrincipalName(ldapServerHostName, LDAP_PORT, false, false);
+        return LdapKerberosUtils.getLdapRegistryWithKrb5Enabled(ldapServerHostName, LDAP_PORT, false, false);
     }
 
     /**
@@ -451,7 +451,7 @@ public class CommonBindTest {
      *
      * @throws Exception
      */
-    public void bodyOfRestartServer() throws Exception {
+    public void innerRestartApacheServersTest() throws Exception {
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Stop all of the ApacheDS servers");
