@@ -26,8 +26,6 @@ import java.util.logging.LogRecord;
 import com.ibm.ejs.ras.Untraceable;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.DataFormatHelper;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.collector.DateFormatHelper;
@@ -41,8 +39,6 @@ import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
  *
  */
 public class BaseTraceFormatter extends Formatter {
-
-    private static final TraceComponent tc = Tr.register(BaseTraceFormatter.class);
 
     public static final String banner = "********************************************************************************";
 
@@ -74,8 +70,6 @@ public class BaseTraceFormatter extends Formatter {
     static final String EXIT = "Exit ";
     static final String SYSOUT = "SystemOut";
     static final String SYSERR = "SystemErr";
-
-    private static Boolean isBetaEdition;
 
     /**
      * Array used to convert integers to hex values
@@ -214,10 +208,10 @@ public class BaseTraceFormatter extends Formatter {
      *
      * @param logRecord
      * @param id
-     * @param formattedMsg        the result of {@link #formatMessage}, or null if that
-     *                                method was not previously called
+     * @param formattedMsg the result of {@link #formatMessage}, or null if that
+     *            method was not previously called
      * @param formattedVerboseMsg the result of {@link #formatVerboseMessage},
-     *                                or null if that method was not previously called
+     *            or null if that method was not previously called
      * @return
      */
     public String traceLogFormat(LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -265,7 +259,7 @@ public class BaseTraceFormatter extends Formatter {
      * formatObj(...) to the log record message.
      *
      * @param logRecord
-     * @param logParams         the parameters for the message
+     * @param logParams the parameters for the message
      * @param useResourceBundle
      * @return
      */
@@ -318,8 +312,8 @@ public class BaseTraceFormatter extends Formatter {
      * reused if specified and no parameters need to be modified.
      *
      * @param logRecord
-     * @param msg       the result of {@link #formatMessage}, or null if that method
-     *                      was not previously called
+     * @param msg the result of {@link #formatMessage}, or null if that method
+     *            was not previously called
      * @return
      */
     public String formatVerboseMessage(LogRecord logRecord, String msg) {
@@ -333,8 +327,8 @@ public class BaseTraceFormatter extends Formatter {
      * reused if specified and no parameters need to be modified.
      *
      * @param logRecord
-     * @param formattedMsg      the result of {@link #formatMessage}, or null if that
-     *                              method was not previously called
+     * @param formattedMsg the result of {@link #formatMessage}, or null if that
+     *            method was not previously called
      * @param useResourceBundle
      * @return the formatted message
      */
@@ -406,7 +400,7 @@ public class BaseTraceFormatter extends Formatter {
      * messages
      *
      * @param logRecord
-     * @param txt       the result of {@link #formatMessage}
+     * @param txt the result of {@link #formatMessage}
      * @return Formatted string for the console
      */
     public String consoleLogFormat(LogRecord logRecord, String txt) {
@@ -552,19 +546,6 @@ public class BaseTraceFormatter extends Formatter {
         }
 
         return sb.toString();
-    }
-
-    public Boolean betaFenceCheck() {
-        if (isBetaEdition == null) {
-            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                isBetaEdition = true;
-            } else {
-                Tr.warning(tc, "The 'tbasic' logging format option is in beta and is not available in this version of OpenLiberty.");
-                isBetaEdition = false;
-
-            }
-        }
-        return isBetaEdition;
     }
 
     /**
@@ -1041,7 +1022,7 @@ public class BaseTraceFormatter extends Formatter {
         // Pad amount changes based on trace format
         if (TraceFormat.ADVANCED.equals(traceFormat)) {
             nlPad = nlAdvancedPadding;
-        } else if (TraceFormat.BASIC.equals(traceFormat) || (TraceFormat.TBASIC.equals(traceFormat) && betaFenceCheck())) {
+        } else if (TraceFormat.BASIC.equals(traceFormat) || TraceFormat.TBASIC.equals(traceFormat)) {
             nlPad = nlBasicPadding;
         } else {
             nlPad = nlEnhancedPadding;
