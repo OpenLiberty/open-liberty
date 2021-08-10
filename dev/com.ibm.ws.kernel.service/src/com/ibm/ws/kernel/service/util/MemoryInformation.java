@@ -879,7 +879,7 @@ public class MemoryInformation {
     private static ObjectName osObjectName;
     private static String totalPhysicalMemoryAttribute;
 
-    @FFDCIgnore({ MalformedObjectNameException.class, InstanceNotFoundException.class, AttributeNotFoundException.class, ReflectionException.class, MBeanException.class })
+    @FFDCIgnore({ MalformedObjectNameException.class, MBeanException.class })
     private synchronized void ensureInitializedMBean() throws MemoryInformationException {
         if (osMxBean == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
