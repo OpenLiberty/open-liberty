@@ -74,6 +74,10 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
+        // If not set to null, test failures may occur (since the incorrect server.xml could be used)
+        serverConfigurationFile = null;
+
         // SRVE0777E for testSecureHelloWorldWOTls case
         secureHelloWorldServer.stopServer("SRVE0777E", "CWWKE1102W", "CWWKE1107W", "CWWKE1106W");
     }
