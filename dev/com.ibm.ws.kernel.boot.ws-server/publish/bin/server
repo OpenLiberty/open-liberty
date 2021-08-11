@@ -1385,7 +1385,7 @@ case "$ACTION" in
     if [ -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand ]; then
       criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/restore.log &
     else 
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/logs/restore.log
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/restore.log
     fi
     rc=$?
     if [ $rc != 0 ]; then
