@@ -251,8 +251,7 @@ public class Krb5ConfigTest extends CommonBindTest {
         kerb.configFile = ApacheDSandKDC.createInvalidConfigFile("invalidConfig-", KDC_PORT);
         updateConfigDynamically(server, newServer);
 
-        assertNotNull("Should have created the contextPool after the config update. Trace msg expected: " + LdapConstants.KERBEROS_UDPATE_MSG,
-                      server.waitForStringInTrace(LdapConstants.KERBEROS_UDPATE_MSG));
+        assertContextPoolUpdate();
 
         Log.info(c, testName.getMethodName(), "User login should fail -- search cache should also be cleared on keytab update");
         loginUserShouldFail();
@@ -261,8 +260,7 @@ public class Krb5ConfigTest extends CommonBindTest {
         kerb.configFile = configFile;
         updateConfigDynamically(server, newServer);
 
-        assertNotNull("Should have created the contextPool after the config update. Trace msg expected: " + LdapConstants.KERBEROS_UDPATE_MSG,
-                      server.waitForStringInTrace(LdapConstants.KERBEROS_UDPATE_MSG));
+        assertContextPoolUpdate();
 
         loginUser();
     }
@@ -355,8 +353,7 @@ public class Krb5ConfigTest extends CommonBindTest {
         updateConfigDynamically(server, newServer);
 
         if (contextPool) {
-            assertNotNull("Should have created the contextPool after the config update. Trace msg expected: " + LdapConstants.KERBEROS_UDPATE_MSG,
-                          server.waitForStringInTrace(LdapConstants.KERBEROS_UDPATE_MSG));
+            assertContextPoolUpdate();
         }
 
         loginUserShouldFail();
@@ -375,9 +372,19 @@ public class Krb5ConfigTest extends CommonBindTest {
         updateConfigDynamically(server, newServer);
 
         if (contextPool) {
-            assertNotNull("Should have created the contextPool after the config update. Trace msg expected: " + LdapConstants.KERBEROS_UDPATE_MSG,
-                          server.waitForStringInTrace(LdapConstants.KERBEROS_UDPATE_MSG));
+            assertContextPoolUpdate();
         }
         loginUser();
+    }
+
+    /**
+     * Check that we logged we need to recreated the context pool, then waitFor/Check that we've completed the updateKerberosService actions.
+     */
+    private void assertContextPoolUpdate() {
+        assertNotNull("Should have created the contextPool after the config update. Trace msg expected: " + LdapConstants.KERBEROS_UDPATE_MSG,
+                      server.waitForStringInTrace(LdapConstants.KERBEROS_UDPATE_MSG));
+        assertNotNull("Should have completed the contextPool update after the config update. Trace msg expected: " + "updateKerberosService Exit",
+                      server.waitForStringInTrace("updateKerberosService Exit", 120000));
+
     }
 }
