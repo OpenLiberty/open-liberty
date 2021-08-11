@@ -111,6 +111,7 @@ public final class BootstrapConstants {
 
     public static final String LOC_PROPERTY_SRVCFG_DIR = "server.config.dir";
     public static final String LOC_PROPERTY_SRVOUT_DIR = "server.output.dir";
+    public static final String LOC_PROPERTY_SRVLOGS_DIR = "server.logs.dir";
 
     public static final String LOC_PROPERTY_CLIENTCFG_DIR = "client.config.dir";
     public static final String LOC_PROPERTY_CLIENTOUT_DIR = "client.output.dir";
