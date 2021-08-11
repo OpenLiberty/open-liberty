@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -69,18 +70,27 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
     private final StringUtils stringUtils = new StringUtils();
 
-    // variables defined on the files system in $SERVICE_BINDING_ROOT
-    private final HashMap<String, ServiceBindingVariable> serviceBindingVariables;
+    // variables defined on the files system in $VARIABLE_SOURCE_DIRS
+    private final HashMap<String, FileSystemVariable> fileSystemVariables;
 
-    private final String bindingRoot;
+    private final List<String> fileVariableRootDirs = new ArrayList<String>();
 
-    private final File bindingRootDirectoryFile;
+    private final List<File> fsVarRootDirectoryFiles = new ArrayList<File>();
 
     public ConfigVariableRegistry(VariableRegistry registry, String[] cmdArgs, File variableCacheFile, WsLocationAdmin locationService) {
         this.registry = registry;
-        this.bindingRoot = locationService.resolveString(WsLocationConstants.SYMBOL_SERVICE_BINDING_ROOT);
-        this.bindingRootDirectoryFile = new File(bindingRoot);
-        this.serviceBindingVariables = new HashMap<String, ServiceBindingVariable>();
+        String fileVariableDirString = locationService.resolveString(WsLocationConstants.SYMBOL_VARIABLE_SOURCE_DIRS);
+        StringTokenizer st = new StringTokenizer(fileVariableDirString, File.pathSeparator);
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            fileVariableRootDirs.add(token);
+            fsVarRootDirectoryFiles.add(new File(token));
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adding file system variable source: " + token);
+            }
+        }
+
+        this.fileSystemVariables = new HashMap<String, FileSystemVariable>();
         this.configVariables = Collections.emptyMap();
         this.defaultConfigVariables = Collections.emptyMap();
         this.variableCacheFile = variableCacheFile;
@@ -102,15 +112,16 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             }
         }
 
-        File bindings = new File(bindingRoot);
-        if (bindings.exists() && bindings.isDirectory()) {
-            for (File f : bindings.listFiles()) {
-                if (f.isFile()) {
-                    serviceBindingVariables.put(f.getName(), new ServiceBindingVariable(f));
-                } else if (f.isDirectory()) {
-                    for (File varFile : f.listFiles()) {
-                        if (varFile.isFile()) {
-                            serviceBindingVariables.put(f.getName() + "/" + varFile.getName(), new ServiceBindingVariable(varFile));
+        for (File bindings : fsVarRootDirectoryFiles) {
+            if (bindings.exists() && bindings.isDirectory()) {
+                for (File f : bindings.listFiles()) {
+                    if (f.isFile()) {
+                        fileSystemVariables.put(f.getName(), new FileSystemVariable(f));
+                    } else if (f.isDirectory()) {
+                        for (File varFile : f.listFiles()) {
+                            if (varFile.isFile()) {
+                                fileSystemVariables.put(f.getName() + "/" + varFile.getName(), new FileSystemVariable(varFile));
+                            }
                         }
                     }
                 }
@@ -172,21 +183,21 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         @Override
         public String toString() {
             // Value is intentionally omitted
-            StringBuilder builder = new StringBuilder("ServiceBindingVariable[");
+            StringBuilder builder = new StringBuilder("CommandLineVariable[");
             builder.append("name=").append(name).append(", ");
             builder.append("value=").append(getObscuredValue()).append(", ");
-            builder.append("source=").append(Source.SERVICE_BINDING);
+            builder.append("source=").append(Source.COMMAND_LINE);
             builder.append("]");
             return builder.toString();
         }
     }
 
-    // The value for a ServiceBindingVariable is only read when it is used
-    protected final class ServiceBindingVariable extends AbstractLibertyVariable {
+    // The value for a FileSystemVariable is only read when it is used
+    protected final class FileSystemVariable extends AbstractLibertyVariable {
         final File variableFile;
         String value;
 
-        public ServiceBindingVariable(File varFile) {
+        public FileSystemVariable(File varFile) {
             this.variableFile = varFile;
         }
 
@@ -207,7 +218,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
         @Override
         public String getName() {
-            return getServiceBindingVariableName(variableFile);
+            return getFileSystemVariableName(variableFile);
         }
 
         @Override
@@ -217,7 +228,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
         @Override
         public Source getSource() {
-            return Source.SERVICE_BINDING;
+            return Source.FILE_SYSTEM;
         }
 
         @Override
@@ -228,9 +239,9 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         @Override
         public String toString() {
             // Value is intentionally omitted
-            StringBuilder builder = new StringBuilder("ServiceBindingVariable[");
-            builder.append("name=").append(getServiceBindingVariableName(variableFile)).append(", ");
-            builder.append("source=").append(Source.SERVICE_BINDING);
+            StringBuilder builder = new StringBuilder("FileSystemVariable[");
+            builder.append("name=").append(getFileSystemVariableName(variableFile)).append(", ");
+            builder.append("source=").append(Source.FILE_SYSTEM);
             builder.append("]");
             return builder.toString();
         }
@@ -278,8 +289,8 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             registry.replaceVariable(clv.getName(), clv.getValue());
         }
 
-        // Add Service Binding Variables ( if not present)
-        for (LibertyVariable v : serviceBindingVariables.values()) {
+        // Add File System Variables ( if not present)
+        for (LibertyVariable v : fileSystemVariables.values()) {
             registry.addVariable(v.getName(), v.getValue());
         }
     }
@@ -404,8 +415,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         String resolvedVar = registry.resolveRawString(varReference);
 
         if (varReference.equalsIgnoreCase(resolvedVar)) {
-            LibertyVariable var = serviceBindingVariables.get(variableName);
-            return var == null ? null : var.getValue();
+            return null;
         }
 
         return resolvedVar;
@@ -531,7 +541,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     public Map<String, String> getUserDefinedVariables() {
         HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
 
-        for (Entry<String, ServiceBindingVariable> entry : serviceBindingVariables.entrySet()) {
+        for (Entry<String, FileSystemVariable> entry : fileSystemVariables.entrySet()) {
             userDefinedVariables.put(entry.getKey(), entry.getValue().getValue());
         }
 
@@ -601,43 +611,53 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     public Collection<LibertyVariable> getAllLibertyVariables() {
         Collection<LibertyVariable> variables = new ArrayList<LibertyVariable>();
         variables.addAll(configVariables.values());
-        variables.addAll(serviceBindingVariables.values());
+        variables.addAll(fileSystemVariables.values());
         variables.addAll(commandLineVariables);
         return Collections.unmodifiableCollection(variables);
     }
 
-    public boolean removeServiceBindingVariable(File f) {
-        return removeServiceBindingVariable(getServiceBindingVariableName(f));
+    public boolean removeFileSystemVariable(File f) {
+        return removeFileSystemVariable(getFileSystemVariableName(f));
     }
 
-    public boolean removeServiceBindingVariable(String name) {
-        LibertyVariable var = serviceBindingVariables.remove(name);
-        return var == null ? false : true;
+    public boolean removeFileSystemVariable(String name) {
+        LibertyVariable var = fileSystemVariables.remove(name);
+        if (var == null)
+            return false;
+
+        registry.removeVariable(name);
+        return true;
     }
 
-    public ServiceBindingVariable addServiceBindingVariable(File value) {
-        ServiceBindingVariable sbv = new ServiceBindingVariable(value);
-        serviceBindingVariables.put(sbv.getName(), sbv);
+    public FileSystemVariable addFileSystemVariable(File value) {
+        FileSystemVariable sbv = new FileSystemVariable(value);
+        fileSystemVariables.put(sbv.getName(), sbv);
         return sbv;
     }
 
-    public ServiceBindingVariable modifyServiceBindingVariable(File f) {
-        ServiceBindingVariable var = new ServiceBindingVariable(f);
-        serviceBindingVariables.put(var.getName(), var);
+    public FileSystemVariable modifyFileSystemVariable(File f) {
+        FileSystemVariable var = new FileSystemVariable(f);
+        fileSystemVariables.put(var.getName(), var);
+        // The variable will be added back by updateSystemVariables, but remove it for now.
+        registry.removeVariable(var.getName());
         return var;
     }
 
     @Override
-    public String getServiceBindingRootDirectory() {
-        return this.bindingRoot;
+    public List<String> getFileSystemVariableRootDirectories() {
+        return this.fileVariableRootDirs;
     }
 
-    public String getServiceBindingVariableName(File f) {
+    public String getFileSystemVariableName(File f) {
         String name = f.getName();
 
-        if (f.getParentFile().compareTo(bindingRootDirectoryFile) == 0)
-            return name;
+        // If the parent file is one of our root directories, just return the file name
+        for (File fsVarRootDirectoryFile : this.fsVarRootDirectoryFiles) {
+            if (f.getParentFile().compareTo(fsVarRootDirectoryFile) == 0)
+                return name;
+        }
 
+        // Otherwise, return the parent directory name + / + file name
         return f.getParentFile().getName() + "/" + name;
     }
 }
