@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,10 +16,10 @@ Bundle-SymbolicName: io.openliberty.jakarta.servlet.5.0; singleton:=true
 Bundle-Description: Jakarta Servlet, version 5.0
 
 Export-Package: \
-   	jakarta.servlet;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="5.0.0",\
-   	jakarta.servlet.annotation;uses:="jakarta.servlet";version="5.0.0",\
-   	jakarta.servlet.descriptor;version="5.0.0",\
-   	jakarta.servlet.http;uses:="jakarta.servlet";version="5.0.0",\
+   	jakarta.servlet;thread-context=true;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="5.0.0",\
+   	jakarta.servlet.annotation;thread-context=true;uses:="jakarta.servlet";version="5.0.0",\
+   	jakarta.servlet.descriptor;thread-context=true;version="5.0.0",\
+   	jakarta.servlet.http;thread-context=true;uses:="jakarta.servlet";version="5.0.0",\
    	jakarta.servlet.resources;thread-context=true;version="5.0.0"
 
 instrument.disabled: true

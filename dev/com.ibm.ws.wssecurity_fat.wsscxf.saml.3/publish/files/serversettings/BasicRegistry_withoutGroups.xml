@@ -1,0 +1,30 @@
+<server>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="testuser"
+			password="testuserpwd" />
+		<user
+			name="diffuser"
+			password="diffuserpwd" />
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+		<user
+			name="test_userIdentifier"
+			password="somePass" />
+		<user
+			name="test_userUniqueIdentifier"
+			password="somePass" />
+
+	</basicRegistry>
+
+	<!--keyStore id="defaultKeyStore" password="keyspass" / -->
+
+</server>

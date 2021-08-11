@@ -50,6 +50,17 @@ public class SingleTableCacheTest extends CommonTestClass {
     }
 
     @Test
+    public void test_constructor_negativeTimeout() {
+        try {
+            SingleTableCache cache = new SingleTableCache(-5);
+            assertEquals("Cache size did not equal the expected value.", 50000, cache.size());
+            assertEquals("Cache timeout duration did not equal the expected value.", 5 * 60 * 1000, cache.getTimeoutInMilliseconds());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_constructor_zeroTimeout() {
         try {
             SingleTableCache cache = new SingleTableCache(0);
@@ -221,7 +232,6 @@ public class SingleTableCacheTest extends CommonTestClass {
     public void test_rescheduleCleanup() {
         try {
             long originalTimeout = 100;
-            long newTimeout = originalTimeout * 3;
             SingleTableCache cache = new SingleTableCache(10, originalTimeout);
 
             String key = "key";
@@ -245,6 +255,7 @@ public class SingleTableCacheTest extends CommonTestClass {
             returnedValue = (String) cache.get(key);
             assertEquals("Returned value did not match the inputted value.", value, returnedValue);
 
+            long newTimeout = originalTimeout * 3;
             cache.rescheduleCleanup(newTimeout);
 
             // Make sure the value remains in the cache even after the reschedule

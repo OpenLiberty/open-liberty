@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ tested.features: needsNewEe-1.0, newEe-1.0, \
 	jaxrsClient-2.1, jaxws-2.2, jca-1.7, jcaInboundSecurity-1.0, jdbc-4.2, jms-2.0, jndi-1.0, \
 	jpa-2.2, jpaContainer-2.2, jpaContainer-2.1, jpa-2.1, persistenceContainer-3.0, jdbc-4.2, jsp-2.2, \
 	jsfContainer-2.3, jsf-2.3, jsonb-1.0, jsonp-1.1, jsp-2.3, \
-	managedBeans-1.0, mdb-3.2, \
+	managedBeans-1.0, mdb-3.2, mdb-4.0, \
 	servlet-5.0, ssl-1.0, \
 	wasJmsClient-2.0, wasJmsSecurity-1.0, wasJmsServer-1.0, webProfile-8.0, websocket-1.1, \
 	featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-1.0, featuree-1.0, productauto:pfeaturel-1.0, featureg-1.0, productauto:pfeaturef-1.0, productauto:pfeatureg-1.0, productauto:pfeaturee-1.0, capabilityc-1.0, badpathtool-1.0, emptyiconheader-1.0, goldenpathtool-1.0, icondirectivestool-1.0, noheadertool-1.0, missingiconstool-1.0, jwt-1.0, servlet-3.1, \

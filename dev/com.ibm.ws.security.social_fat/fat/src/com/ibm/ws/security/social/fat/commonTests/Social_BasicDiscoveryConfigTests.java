@@ -116,7 +116,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badClientId.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badClientId");
@@ -140,7 +140,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_blankClientSecret.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_blankClientSecret");
@@ -161,7 +161,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicDiscoveryConfigTests_enabledTrue() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_enabledTrue");
@@ -185,7 +185,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         extraMsgs.add(SocialMessageConstants.CWWKG0033W_ATTRIBUTE_VALUE_NOT_FOUND);
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badAuthFilterRef.xml", extraMsgs);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badAuthFilterRef");
@@ -212,7 +212,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodTrust.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodTrust");
@@ -235,7 +235,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tEAM_clientSecretBasic.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_tEAM_clientSecretBasic");
@@ -257,7 +257,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tEAM_clientSecretPost.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_tEAM_clientSecretPost");
@@ -278,7 +278,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_realmName.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_realmName");
@@ -300,7 +300,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_mapToUserRegistryFalse.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_mapToUserRegistryFalse");
@@ -322,7 +322,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_mapToUserRegistryTrue_userNotInRegistry.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_mapToUserRegistryTrue");
@@ -347,7 +347,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodJwt_builder.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_good_jwt_builder");
@@ -371,7 +371,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_jwt_builder_HS256.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_jwt_builder_HS256");
@@ -399,7 +399,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badScope.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
         String[] steps = inovke_social_login_actions;
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
@@ -428,7 +428,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_addParms.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_addParms");
@@ -451,7 +451,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_addBadParms.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_addBadParms");
@@ -475,7 +475,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_forwardLoginParameter.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_forwardLoginParameter?login_hint=bob@example.com");

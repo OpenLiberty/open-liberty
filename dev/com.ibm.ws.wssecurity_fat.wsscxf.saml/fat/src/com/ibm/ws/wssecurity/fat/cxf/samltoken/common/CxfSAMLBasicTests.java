@@ -11,13 +11,17 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-//import com.ibm.ws.security.fat.common.tooling.ValidationData.validationData;
+
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
@@ -27,9 +31,12 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -47,11 +54,8 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//1/20/2021 the FULL mode at class level was already in CL FAT and will not work for LITE in OL, instead, we mix the FULL modes in the test case level below
-//with the existing LITE mode
-//@Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLBasicTests extends SAMLCommonTest {
 
@@ -73,9 +77,8 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserPw_test() throws Exception {
 
@@ -100,8 +103,9 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
+    
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @Test
     public void CxfSAMLBasicTests_noUserPw_test() throws Exception {
 
@@ -128,9 +132,9 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
+
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserBadPw_test() throws Exception {
 
@@ -158,9 +162,9 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
+
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_badUserValidPw_test() throws Exception {
 
@@ -186,10 +190,10 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
+
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @SkipForRepeat({ EE9_FEATURES })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_SAMLTokenMissingSignature_test() throws Exception {
 
@@ -216,8 +220,8 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      *
      */
 
-    //1/20/2021 added the FULL mode
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_clientUserNameTokenPolicy_test() throws Exception {
 

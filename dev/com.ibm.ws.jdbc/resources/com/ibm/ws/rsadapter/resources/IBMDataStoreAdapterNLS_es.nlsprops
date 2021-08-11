@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: La caracter\u00edstica no est\u00e1 implement
 FEATURE_NOT_IMPLEMENTED.explanation=La caracter\u00edstica solicitada no est\u00e1 disponible.
 FEATURE_NOT_IMPLEMENTED.useraction=Evite el uso de la caracter\u00edstica o cambie a una versi\u00f3n de controlador que tenga soporte para la caracter\u00edstica, si fuera posible.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualice el origen de dat
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: No existe el archivo de rastreo {0} especificado; se generar\u00e1 una excepci\u00f3n en la base de datos si no se corrige el problema.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: El acceso a los metadatos de la base de datos ha 
 META_DATA_EXCEPTION.explanation=Se ha producido una excepci\u00f3n cuando el servidor de aplicaciones intentaba obtener o acceder al objeto de metadatos para la base de datos.
 META_DATA_EXCEPTION.useraction=Compruebe que los metadatos est\u00e1n habilitados en la base de datos de fondo.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=Se ha intentado realizar una operaci\u00f3n en un obje
 OBJECT_CLOSED.useraction=Recupere una nueva instancia del objeto en el que realizar la operaci\u00f3n.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0} no envuelve objetos del tipo {1}.
 NO_WRAPPED_OBJECT.explanation=La envoltura especificada no contiene el tipo de objeto de envoltura que se ha especificado.
 NO_WRAPPED_OBJECT.useraction=Compruebe que la envoltura y los par\u00e1metros para el objeto envuelto est\u00e9n correctamente especificados.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Compruebe que la envoltura y los par\u00e1metros pa
 NOT_AN_INTERFACE=DSRA9124E: No se puede desenvolver el objeto en {0} porque {0} no es una clase de interfaz.
 NOT_AN_INTERFACE.explanation=El m\u00e9todo de desenvoltura s\u00f3lo permite desenvolver en una clase de interfaz.
 NOT_AN_INTERFACE.useraction=Desenvuelva en una clase que sea una interfaz en lugar de una clase concreta.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

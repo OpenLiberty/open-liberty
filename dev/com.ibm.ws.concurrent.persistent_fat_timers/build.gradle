@@ -8,9 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
- dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
- }
- 
+addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDrivers

@@ -13,8 +13,9 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.common
 
-resteasy-version=4.6.0.Final
+resteasy-version=4.7.0.Final
 resteasy-tracing-api-version=1.0.0.Final
+apache-mime4j-version=0.8.5
 
 src: src, resources
 
@@ -50,7 +51,6 @@ Export-Package: \
   com.ibm.ws.jaxrs20.providers.api, \
   com.ibm.ws.resteasy.cdi.component;version=${resteasy-version};thread-context=true, \
   io.openliberty.restfulWS.client, \
-  io.openliberty.restfulWS.config;thread-context=true, \
   io.openliberty.org.jboss.resteasy.common.client;thread-context=true, \
   io.openliberty.restfulWS.providers;thread-context=true, \
   org.jboss.resteasy.annotations.cache;version=${resteasy-version}, \
@@ -160,9 +160,9 @@ Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-core;0.8.3;EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-dom;0.8.3;EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-storage;0.8.3;EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
   @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
@@ -175,9 +175,9 @@ Include-Resource:\
 	org.jboss.resteasy:resteasy-core;strategy=exact;version=${resteasy-version},\
 	org.jboss.resteasy:resteasy-multipart-provider;strategy=exact;version=${resteasy-version},\
 	org.jboss.resteasy:resteasy-tracing-api;strategy=exact;version=${resteasy-tracing-api-version},\
-	org.apache.james:apache-mime4j-core;strategy=exact;version=0.8.3, \
-    org.apache.james:apache-mime4j-dom;strategy=exact;version=0.8.3, \
-    org.apache.james:apache-mime4j-storage;strategy=exact;version=0.8.3, \
+	org.apache.james:apache-mime4j-core;strategy=exact;version=${apache-mime4j-version}, \
+    org.apache.james:apache-mime4j-dom;strategy=exact;version=${apache-mime4j-version}, \
+    org.apache.james:apache-mime4j-storage;strategy=exact;version=${apache-mime4j-version}, \
 	com.ibm.ws.org.apache.commons.io,\
 	com.ibm.ws.org.apache.httpcomponents,\
 	com.ibm.websphere.javaee.annotation.1.3,\

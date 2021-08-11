@@ -106,7 +106,7 @@ securitySchemeInvalidURL=O Objeto de esquema de seguran\u00e7a deve conter uma U
 
 schemaTypeArrayNullItems=O Objeto de esquema do tipo \"array\" deve ter a propriedade \"items\" definida
 schemaReadOnlyOrWriteOnly=O Objeto de esquema n\u00e3o deve ter ambos os campos \"readOnly\" e \"writeOnly\" configurados como true
-schemaMultipleOfLessThanOne=O Objeto de esquema deve ter a propriedade \"multipleOf\" configurada como um n\u00famero estritamente maior que zero
+schemaMultipleOfNotGreaterThanZero=O Objeto de esquema deve ter a propriedade \"multipleOf\" configurada como um n\u00famero estritamente maior que zero
 schemaPropertyLessThanZero=A propriedade \"{0}\" do Objeto de esquema deve ser maior ou igual a zero
 schemaTypeDoesNotMatchProperty=A propriedade \"{0}\" n\u00e3o \u00e9 apropriada para o Objeto de esquema de tipo \"{1}\"
 

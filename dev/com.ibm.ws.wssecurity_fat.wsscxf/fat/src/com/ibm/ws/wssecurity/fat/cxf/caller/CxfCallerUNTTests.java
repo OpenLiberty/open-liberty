@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,21 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.caller;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -29,27 +33,25 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 10/2020
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//12/2020 Setting this test class for LITE bucket
-//@Mode(TestMode.FULL)
-//Added 10/2020
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfCallerUNTTests {
 
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.caller";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-    //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.caller";
     @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfCallerUNTTests.class;
+
+    private static String errMsgVersion = "";
 
     static boolean debugOnHttp = true;
 
@@ -76,18 +78,27 @@ public class CxfCallerUNTTests {
 
         String thisMethod = "setup";
 
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            errMsgVersion = "EE7";
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            errMsgVersion = "EE8";
+        }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         server.addInstalledAppForValidation("callerclient");
         server.addInstalledAppForValidation("callertoken");
 
         server.startServer(); // check CWWKS0008I: The security service is ready.
+
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");
         portNumber = "" + server.getHttpDefaultPort();
         portNumberSecure = "" + server.getHttpDefaultSecurePort();
@@ -105,9 +116,7 @@ public class CxfCallerUNTTests {
         // using the original port to send the parameters
         callerUNTClientUrl = "http://localhost:" + portNumber +
                              "/callerclient/CxfCallerSvcClient";
-        // using the original port to send the parameters
-        callerBadUNTClientUrl = "http://localhost:" + portNumber +
-                                "/callerclient/CxfCallerBadUNTClient";
+
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -122,9 +131,10 @@ public class CxfCallerUNTTests {
      *
      */
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerHttpPolicy";
         methodFull = "testCxfCallerHttpPolicy";
 
@@ -137,7 +147,7 @@ public class CxfCallerUNTTests {
                         "", //String portNumberSecure
                         "FatBAC01Service", //String strServiceName,
                         "UrnCallerToken01", //String strServicePort
-                        "test1", // Execting User ID
+                        "test1", // Expecting User ID
                         "test1" // Password
             );
         } catch (Exception e) {
@@ -153,9 +163,10 @@ public class CxfCallerUNTTests {
      *
      */
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerHttpsPolicy";
         methodFull = "testCxfCallerHttpsPolicy";
 
@@ -168,9 +179,9 @@ public class CxfCallerUNTTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAC02Service", //String strServiceName,
                         "UrnCallerToken02", //String strServicePort
-                        "test2", // Execting User ID
-                        "test2" // Password
-            );
+                        "test2", // Expecting User ID
+                        "test2", // Password
+                        errMsgVersion);
         } catch (Exception e) {
             throw e;
         }
@@ -186,7 +197,7 @@ public class CxfCallerUNTTests {
 
     @Test
     public void testCxfCallerNoPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerNoPolicy";
         methodFull = "testCxfCallerNoPolicy";
 
@@ -199,7 +210,7 @@ public class CxfCallerUNTTests {
                         "", //String portNumberSecure
                         "FatBAC03Service", //String strServiceName,
                         "UrnCallerToken03", //String strServicePort
-                        "UNAUTHENTICATED", // Execting User ID
+                        "UNAUTHENTICATED", // Expecting User ID
                         "UserIDForVerifyOnly" // Password (Bad)
             );
         } catch (Exception e) {
@@ -217,7 +228,7 @@ public class CxfCallerUNTTests {
 
     @Test
     public void testCxfCallerHttpsNoUntPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         String thisMethod = "testCxfCallerHttpsNoUntPolicy";
         methodFull = "testCxfCallerHttpsNoUntPolicy";
 
@@ -230,8 +241,9 @@ public class CxfCallerUNTTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAC04Service", //String strServiceName,
                         "UrnCallerToken04", //String strServicePort
-                        "test4", // Execting User ID
-                        "test4" // Password
+                        "test4", // Expecting User ID
+                        "test4", // Password
+                        errMsgVersion //2/2021
             );
         } catch (Exception e) {
             throw e;
@@ -249,6 +261,7 @@ public class CxfCallerUNTTests {
      * Though this test is not enforced it yet.
      *
      */
+
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -270,7 +283,36 @@ public class CxfCallerUNTTests {
                        callerUNTClientUrl,
                        "",
                        untID,
-                       untPassword);
+                       untPassword,
+                       null); //2/2021
+
+        return;
+    }
+
+    protected void testRoutine(
+                               String thisMethod,
+                               String callerPolicy,
+                               String testMode, // Positive, positive-1, negative or negative-1... etc
+                               String portNumber,
+                               String portNumberSecure,
+                               String strServiceName,
+                               String strServicePort,
+                               String untID,
+                               String untPassword,
+                               String errMsgVersion) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       callerPolicy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       callerUNTClientUrl,
+                       "",
+                       untID,
+                       untPassword,
+                       errMsgVersion);
 
         return;
     }
@@ -284,6 +326,7 @@ public class CxfCallerUNTTests {
      * Though this test is not enforced it yet.
      *
      */
+
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -305,7 +348,36 @@ public class CxfCallerUNTTests {
                        callerBadUNTClientUrl,
                        "Bad",
                        untID,
-                       untPassword);
+                       untPassword,
+                       null);
+
+        return;
+    }
+
+    protected void testBadRoutine(
+                                  String thisMethod,
+                                  String callerPolicy,
+                                  String testMode, // Positive, positive-1, negative or negative-1... etc
+                                  String portNumber,
+                                  String portNumberSecure,
+                                  String strServiceName,
+                                  String strServicePort,
+                                  String untID,
+                                  String untPassword,
+                                  String errMsgVersion) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       callerPolicy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       callerBadUNTClientUrl,
+                       "Bad",
+                       untID,
+                       untPassword,
+                       errMsgVersion);
 
         return;
     }
@@ -330,7 +402,8 @@ public class CxfCallerUNTTests {
                                   String strClientUrl,
                                   String strBadOrGood,
                                   String untID,
-                                  String untPassword) throws Exception {
+                                  String untPassword,
+                                  String errMsgVersion) throws Exception { //2/2021
         try {
 
             WebRequest request = null;
@@ -354,6 +427,8 @@ public class CxfCallerUNTTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
+
+            request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
             response = wc.getResponse(request);
@@ -391,8 +466,12 @@ public class CxfCallerUNTTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
     }
 
     private static void printMethodName(String strMethod) {
@@ -400,4 +479,18 @@ public class CxfCallerUNTTests {
                                        + strMethod);
         System.err.println("*****************************" + strMethod);
     }
+
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.app_exception.ann.web.InheritedRTExRemoteServerServlet;
 import com.ibm.ws.ejbcontainer.app_exception.ann.web.InheritedRTExServlet;
 import com.ibm.ws.ejbcontainer.app_exception.ann.web.InheritedThrownExRemoteServerServlet;
@@ -49,7 +50,7 @@ public class InheritedApplicationExceptionTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.AppExceptionServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.AppExceptionServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.exception.fat.AppExceptionServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.AppExceptionServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.AppExceptionServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -61,7 +62,7 @@ public class InheritedApplicationExceptionTest {
         EJB31AppExAnnApp.addAsModule(EJB31AppExAnnBean).addAsModule(EJB31AppExAnnWeb);
         EJB31AppExAnnApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EJB31AppExAnnApp, "test-applications/EJB31AppExAnnApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB31AppExAnnApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB31AppExAnnApp, DeployOptions.SERVER_ONLY);
 
         // Use ShrinkHelper to build the annotation and xml override based ear
         JavaArchive EJB31AppExMixBean = ShrinkHelper.buildJavaArchive("EJB31AppExMixBean.jar", "com.ibm.ws.ejbcontainer.app_exception.mix.ejb.");
@@ -70,7 +71,7 @@ public class InheritedApplicationExceptionTest {
         EnterpriseArchive EJB31AppExMixApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB31AppExMixApp.ear");
         EJB31AppExMixApp.addAsModule(EJB31AppExMixBean).addAsModule(EJB31AppExMixWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB31AppExMixApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB31AppExMixApp, DeployOptions.SERVER_ONLY);
 
         // Use ShrinkHelper to build the xml based ear
         JavaArchive EJB31AppExXmlBean = ShrinkHelper.buildJavaArchive("EJB31AppExXmlBean.jar", "com.ibm.ws.ejbcontainer.app_exception.xml.ejb.");
@@ -79,7 +80,7 @@ public class InheritedApplicationExceptionTest {
         EnterpriseArchive EJB31AppExXmlApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB31AppExXmlApp.ear");
         EJB31AppExXmlApp.addAsModule(EJB31AppExXmlBean).addAsModule(EJB31AppExXmlWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB31AppExXmlApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB31AppExXmlApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

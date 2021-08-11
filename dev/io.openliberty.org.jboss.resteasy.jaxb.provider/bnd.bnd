@@ -13,7 +13,7 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.jaxb.provider
 
-resteasy-version=4.6.0.Final
+resteasy-version=4.7.0.Final
 
 app-resources= \
   META-INF/services/javax.ws.rs.ext.Providers

@@ -64,7 +64,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodyOfRestartServer();
+        innerRestartApacheServersTest();
     }
 
     /**
@@ -84,7 +84,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodyOfRestartServer();
+        innerRestartApacheServersTest();
     }
 
     /**

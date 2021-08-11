@@ -72,6 +72,11 @@ INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: La propiedad de cliente {0} debe
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Las propiedades de cliente, como por ejemplo si se deben seguir autom\u00e1ticamente las redirecciones, se deben configurar como un booleano o como una serie que se puede convertir en un booleano. Este mensaje indica que una propiedad de cliente se ha establecido en un valor no v\u00e1lido. Esta propiedad se ignorar\u00e1.
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Revise el c\u00f3digo de la aplicaci\u00f3n y la configuraci\u00f3n del servidor para determinar d\u00f3nde se ha establecido incorrectamente esta propiedad y elimine la propiedad o c\u00e1mbiela por un valor booleano v\u00e1lido.
 
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: El servidor ignora el proveedor {0} porque no es v\u00e1lido.
+INVALID_PROVIDER_CWWKW1305W.explanation=La clase de proveedor especificada probablemente no contiene un constructor p\u00fablico v\u00e1lido o no implementa una interfaz de proveedor REST de Jakarta. Los requisitos para una implementaci\u00f3n de proveedor v\u00e1lida se describen en la secci\u00f3n 4 de la especificaci\u00f3n de Jakarta RESTful Web Services.
+INVALID_PROVIDER_CWWKW1305W.useraction=Revise el c\u00f3digo de aplicaci\u00f3n para asegurarse de que el proveedor especificado implementa correctamente la interfaz de proveedor y contiene un constructor p\u00fablico v\u00e1lido por cada uno de los requisitos de especificaci\u00f3n.
+
+
 # Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
 warn_missing_mpjwt_token=CWWKW0707W: El atributo [{0}] en la configuraci\u00f3n [{1}] se ha establecido en [{2}], pero la se\u00f1al web JSON (JWT) MicroProfile no est\u00e1 disponible. La solicitud no contiene una cabecera Authorization con la se\u00f1al.
 warn_missing_mpjwt_token.explanation=El tiempo de ejecuci\u00f3n no ha encontrado la se\u00f1al JWT MicroProfile en el sujeto runAs. Este error suele indicar un problema con la autenticaci\u00f3n. Aseg\u00farese de que no se produzca ning\u00fan error mientras la caracter\u00edstica JWT MicroProfile autentique a un usuario.

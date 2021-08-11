@@ -70,4 +70,27 @@ public class EJBTestVehicleServlet extends JPATestServlet {
 
         executeTestVehicle(testExecCtx, ejbJNDIName);
     }
+
+    @Override
+    protected void executeTest(String testName, String testMethod, Map<String, String> testResourcesList, Map<String, java.io.Serializable> props) throws Exception {
+        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testClassName, testMethod);
+
+        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
+        for (Map.Entry<String, String> entry : testResourcesList.entrySet()) {
+            jpaPCInfoMap.put(entry.getKey(), jpaPctxMap.get(entry.getValue()));
+        }
+
+        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
+        properties.put("dbMajorVersion", getDbMajorVersion());
+        properties.put("dbMinorVersion", getDbMinorVersion());
+        properties.put("dbProductName", getDbProductName());
+        properties.put("dbProductVersion", getDbProductVersion());
+        properties.put("jdbcDriverVersion", getJdbcDriverVersion());
+
+        if (props != null && !props.isEmpty()) {
+            properties.putAll(props);
+        }
+
+        executeTestVehicle(testExecCtx, ejbJNDIName);
+    }
 }

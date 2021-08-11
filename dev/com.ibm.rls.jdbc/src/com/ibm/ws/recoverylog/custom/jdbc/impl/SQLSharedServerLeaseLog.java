@@ -364,9 +364,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                             // Lease has not expired, are we the owner or is some other server peer recovering
                             // If the latter, then we should barf
                             if (!storedLeaseOwner.equals(recoveryIdentity)) {
+                                final String dbg = storedLeaseOwner + " is recovering our logs, we will fail our recovery";
                                 if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "A peer is recovering, we will fail our recovery and exit");
-                                RecoveryFailedException rex = new RecoveryFailedException(recoveryIdentity);
+                                    Tr.debug(tc, dbg);
+                                final RecoveryFailedException rex = new RecoveryFailedException(dbg);
                                 throw rex;
                             }
                         }

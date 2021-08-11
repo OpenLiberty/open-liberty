@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ import com.ibm.ws.sib.jfapchannel.framework.Framework;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
 import com.ibm.ws.sib.jfapchannel.richclient.impl.octracker.JFapOutboundChannelDefinitionImpl;
-import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 
@@ -193,92 +192,6 @@ public class RichClientFramework extends Framework
 
         //Attempt to clone the original end point to prevent us affecting other users.
         final CFEndPoint endPoint = cloneEndpoint(originalEndPoint);
-
-        // If the endpoint relates to an SSL transport chain - then we need to add
-        // our own SSL properties for things like local keystore and truststore
-        // files.
-        Map sslProps = null; // D232743 
-        if (endPoint.isSSLEnabled())
-        {
-            // begin D223333
-            // Obtain the class of the SSL Channel Factory.  This is used
-            // to identify SSL channel instances by the subsequent code.
-            Class sslChannelFactory = null;
-            try
-            {
-                sslChannelFactory =
-                                Class.forName(JFapChannelConstants.CLASS_SSL_CHANNEL_FACTORY);
-            } catch (ClassNotFoundException cnfe)
-            {
-                FFDCFilter.processException(cnfe, CLASS_NAME + ".prepareEndPoint",
-                                            JFapChannelConstants.RICHCLIENTFRAMEWORK_PREPAREEP_01, this);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                    SibTr.exception(this, tc, cnfe);
-                throw new SIErrorException(
-                                nls.getFormattedMessage("CONNDATAGROUP_INTERNAL_SICJ0062",
-                                                        null,
-                                                        "CONNDATAGROUP_INTERNAL_SICJ0062"),
-                                cnfe);
-            }
-
-            if (RuntimeInfo.isClientContainer() || RuntimeInfo.isThinClient() || RuntimeInfo.isFatClient())
-            {
-                // In the client environment, we take our SSL configuration
-                // from the sib.client.ssl.properties file.                  
-                sslProps = ChannelFrameworkReference.loadSSLProperties();
-            }
-            else
-            {
-                // In the server environment, we obtain the SSL configuration
-                // from a chain with the same name.  E.g. if the endpoint relates
-                // to a remote chain called "SecureMessaging", we look for a locally
-                // defined chain called "SecureMessaging" to obtain our configuration.
-                // Of course, there is no guarentee that this chain will be defined.
-                String chainName = endPoint.getName();
-                ChainData chainData = framework.getChain(chainName);
-
-                if (chainData == null)
-                {
-                    // This application server does not have a suitably named
-                    // chain.  Warn the user.
-                    // Inserts are chain name and hostname
-                    SibTr.warning(tc, "CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066",
-                                  new Object[] { endPoint.getName(), endPoint.getAddress().getHostAddress() });
-                }
-                else
-                {
-                    ChannelData sslChannel = null;
-                    ChannelData[] channelArray = chainData.getChannelList();
-                    for (int i = 0; (i < channelArray.length) && (sslChannel == null); ++i)
-                    {
-                        if (channelArray[i].getFactoryType().equals(sslChannelFactory))
-                            sslChannel = channelArray[i];
-                    }
-
-                    if (sslChannel == null)
-                    {
-                        // Although we have located a suitably named chain, it does
-                        // not contain an SSL channel instance from which we can obtain
-                        // the properties we require.  Warn the user.
-                        SibTr.warning(tc, "CONNDATAGROUP_NOTSSLCHAIN_SICJ0067",
-                                      new Object[] { endPoint.getName(), endPoint.getAddress().getHostAddress() });
-                    }
-                    else
-                    {
-                        sslProps = sslChannel.getPropertyBag();
-                    }
-                }
-
-            }
-
-            // If the endpoint contains an SSL channel - then modifiy its properties by adding a
-            // map containing local SSL configuration information.
-            if (sslProps != null)
-            {
-                modifyEndpointChannelProperties(endPoint, sslChannelFactory, sslProps, true);
-            }
-        }
 
         // If the endpoint contains an TCP channel - then modifiy its properties by overriding
         // the threadpool it will use.
@@ -462,108 +375,7 @@ public class RichClientFramework extends Framework
         return port;
     }
 
-    /**
-     * Outputs a log file warning if the specified chain may not have been correctly defined because
-     * of a missing properties file.
-     * 
-     * @param endPoint the end point to test and see if outputting a warning is appropriate.
-     * 
-     * @see com.ibm.ws.sib.jfapchannel.framework.Framework#warnIfSSLAndPropertiesFileMissing(java.lang.Object)
-     */
-    @Override
-    public void warnIfSSLAndPropertiesFileMissing(Object endPoint)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "warnIfSSLAndPropertiesFileMissing", endPoint);
-
-        // Only output a warning if running in client
-        if (!RuntimeInfo.isServer() && !RuntimeInfo.isClusteredServer())
-        {
-            // Only display a warning if the endpoing is SSL enabled
-            if (((CFEndPoint) endPoint).isSSLEnabled())
-            {
-                // Test to see if the properties file exists.
-                final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                Boolean propertiesFileExists = (Boolean)
-                                AccessController.doPrivileged(
-                                                new PrivilegedAction<Object>()
-                                                {
-                                                    @Override
-                                                    public Object run()
-                                                    {
-                                                        URL url = classLoader.getResource(JFapChannelConstants.CLIENT_SSL_PROPERTIES_FILE);
-                                                        return Boolean.valueOf(url != null);
-                                                    }
-                                                }
-                                                );
-
-                if (!propertiesFileExists.booleanValue())
-                {
-                    SibTr.warning(tc,
-                                  SibTr.Suppressor.ALL_FOR_A_WHILE_SIMILAR_INSERTS,
-                                  "NO_SSL_PROPERTIES_FILE_SICJ0012",
-                                  new Object[] { JFapChannelConstants.CLIENT_SSL_PROPERTIES_FILE });
-                }
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "warnIfSSLAndPropertiesFileMissing");
-    }
-
-    /**
-     * Outputs a log file warning if the specified chain may not have been correctly defined because
-     * of a missing properties file.
-     * 
-     * @param chainName the chain name to test and see if outputting a warning is appropriate.
-     * 
-     * @see com.ibm.ws.sib.jfapchannel.framework.Framework#warnIfSSLAndPropertiesFileMissing(java.lang.String)
-     */
-    @Override
-    public void warnIfSSLAndPropertiesFileMissing(String chainName)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "warnIfSSLAndPropertiesFileMissing", chainName);
-
-        // Only output a warning if running in a client
-        if (!RuntimeInfo.isServer() && !RuntimeInfo.isClusteredServer())
-        {
-            // Determine if the chain is SSL enabled
-            boolean chainIsSSLEnabled = false;
-            ChainData chainData = framework.getChain(chainName);
-            if (chainData != null)
-            {
-                if (chainData.getType() == FlowType.OUTBOUND)
-                {
-                    ChannelData[] channelDataArray = chainData.getChannelList();
-                    if (channelDataArray != null)
-                    {
-                        for (int i = 0; i < channelDataArray.length; ++i)
-                        {
-                            Class channelFactoryType = channelDataArray[i].getFactoryType();
-                            chainIsSSLEnabled |=
-                                            channelFactoryType.getName().equals(JFapChannelConstants.CLASS_SSL_CHANNEL_FACTORY);
-                        }
-                    }
-                }
-            }
-
-            // If the chain is SSL enabled - and if no properties file was found when defining
-            // the outbound SSL chains - output a suitable warning.
-            if (chainIsSSLEnabled && ChannelFrameworkReference.isOutboundSSLChainDefinedWithoutProperties())
-            {
-                SibTr.warning(tc,
-                              SibTr.Suppressor.ALL_FOR_A_WHILE_SIMILAR_INSERTS,
-                              "NO_SSL_PROPERTIES_FILE_SICJ0012",
-                              new Object[] { JFapChannelConstants.CLIENT_SSL_PROPERTIES_FILE });
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "warnIfSSLAndPropertiesFileMissing");
-    }
-
-    /**
+       /**
      * The channel framework EP's don't have their own equals method - so one is implemented here by
      * comparing the various parts of the EP.
      * 

@@ -160,7 +160,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
                 if (format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
                     messageOutput = basicFormatter.messageLogFormat(genData);
-                else if (format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT) && basicFormatter.betaFenceCheck())
+                else if (format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
                     messageOutput = basicFormatter.messageLogFormatTBasic(genData);
                 else
                     messageOutput = basicFormatter.formatStreamOutput(genData);
@@ -178,7 +178,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
                 if (format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
                     messageOutput = basicFormatter.messageLogFormat(genData);
-                else if (format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT) && basicFormatter.betaFenceCheck())
+                else if (format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
                     messageOutput = basicFormatter.messageLogFormatTBasic(genData);
                 else
                     messageOutput = basicFormatter.consoleLogFormat(genData);

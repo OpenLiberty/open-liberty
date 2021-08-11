@@ -279,8 +279,8 @@ public abstract class JPATestServlet extends FATServlet {
             }
         }
 
-        System.out.println("DBMeta DDL Exec Result: ");
-        System.out.println(sb);
+//        System.out.println("DBMeta DDL Exec Result: ");
+//        System.out.println(sb);
 
         System.out.println("*****");
     }

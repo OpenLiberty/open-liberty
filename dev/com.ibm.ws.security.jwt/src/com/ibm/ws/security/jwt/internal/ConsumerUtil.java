@@ -370,11 +370,7 @@ public class ConsumerUtil {
 
     JwtContext getJwtContextFromCache(@Sensitive String jwtString, JwtConsumerConfig config) {
         initializeCache(config);
-        JwtContext jwtCacheObject = (JwtContext) jwtCache.get(jwtString);
-        if (jwtCacheObject == null || jwtCache.isJwtExpired(jwtCacheObject)) {
-            return null;
-        }
-        return jwtCacheObject;
+        return (JwtContext) jwtCache.get(jwtString);
     }
 
     private synchronized void initializeCache(JwtConsumerConfig config) {

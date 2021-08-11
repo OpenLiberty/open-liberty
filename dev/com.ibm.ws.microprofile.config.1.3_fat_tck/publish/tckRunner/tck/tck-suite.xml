@@ -26,6 +26,12 @@
                     }
                     
                     // org.eclipse.microprofile.config.tck.ConfigProviderTest
+                    if(method.getName().startsWith("testPropertyConfigSource")
+                       ){
+                        // Test unreliable due to ConcurrentModificationExcpetion. Fixed in 2.0 by https://github.com/eclipse/microprofile-config/pull/560
+                        return false;
+                    }
+                    // org.eclipse.microprofile.config.tck.ConfigProviderTest
                     String os = System.getProperty("os.name");
                     if (os.contains("Windows") && method.getName().startsWith("testEnvironmentConfigSource")){
                         // Test unreliable in 1.x TCK on Windows due to inconsistent path variable name. See https://github.com/eclipse/microprofile-config/issues/664

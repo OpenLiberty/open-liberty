@@ -36,6 +36,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteResult;
 
@@ -635,7 +636,7 @@ public class CustomStoreSample implements OAuthStore {
         System.out.println("CustomStoreSample isNetworkFailure processing for " + e);
         Throwable causeBy = e;
         while (causeBy != null) {
-            if (causeBy instanceof IOException) {
+            if (causeBy instanceof IOException || causeBy instanceof MongoTimeoutException) {
                 System.out.println("Hit an IOException: " + causeBy);
                 return true;
             } else {

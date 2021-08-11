@@ -219,7 +219,7 @@ public class MsgCtxUtilTest {
         }
     }
 
-    @Test
+    //@Test
     public void testParseIdpMetadataProvider_NullParserPool() throws XMLParserException {
     
         mockery.checking(new Expectations() {

@@ -15,7 +15,6 @@ configurations {
 }
 
 dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
   postgres 'org.postgresql:postgresql:42.2.5'
 }
 
@@ -35,3 +34,4 @@ task copyAnonymousPostgres(type: Copy) {
 
 addRequiredLibraries.dependsOn copySharedPostgres
 addRequiredLibraries.dependsOn copyAnonymousPostgres
+addRequiredLibraries.dependsOn copyTestContainers

@@ -1,0 +1,26 @@
+/* Copyright (c) 2021 IBM Corporation and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     IBM Corporation - initial API and implementation
+*******************************************************************************/
+
+configurations {
+	usrLibs
+}
+
+dependencies {
+  usrLibs 'test.user.test.features:testesa1:19.0.0.8@esa'
+}
+
+task addAppLibs (type: Copy) {
+	from configurations.usrLibs
+	into "publish/repo/userTest/user/test/features/testesa1/19.0.0.8"
+}
+
+addRequiredLibraries {
+	dependsOn addAppLibs
+}

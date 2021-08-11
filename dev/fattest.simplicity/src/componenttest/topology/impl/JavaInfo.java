@@ -16,6 +16,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
@@ -126,7 +129,7 @@ public class JavaInfo {
         String vendor = System.getProperty("java.vendor").toLowerCase();
         if (vendor.contains("openj9"))
             VENDOR = Vendor.OPENJ9;
-        else if (vendor.contains("ibm") || vendor.contains("j9"))
+        else if (detectIBMJava())
             VENDOR = Vendor.IBM;
         else if (vendor.contains("oracle"))
             VENDOR = Vendor.SUN_ORACLE;
@@ -176,6 +179,20 @@ public class JavaInfo {
         FIXPACK = fp;
 
         Log.info(c, "<init>", this.toString());
+    }
+
+    private static boolean detectIBMJava() {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                try {
+                    Class.forName("com.ibm.security.auth.module.Krb5LoginModule");
+                    return true;
+                } catch (ClassNotFoundException e) {
+                    return false;
+                }
+            }
+        });        
     }
 
     public int majorVersion() {

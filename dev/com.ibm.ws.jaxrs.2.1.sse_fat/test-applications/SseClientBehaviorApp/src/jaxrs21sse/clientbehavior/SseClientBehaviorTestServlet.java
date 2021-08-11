@@ -101,7 +101,9 @@ public class SseClientBehaviorTestServlet extends FATServlet {
 
             source.open();
             _log.info("client source open");
+            assertTrue("SseEventSource#isOpen unexpected returned false before confirmation of received event", source.isOpen());
             assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
+            assertTrue("SseEventSource#isOpen unexpected returned false after confirmation of received event", source.isOpen());
 
         } catch (InterruptedException e) {
             // falls through

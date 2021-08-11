@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,36 +11,37 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-//Added 11/2020
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020, this test used to be run as LITE in CL, but takes more than 3 min to run, which is set to run with Full mode now
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
     static private final Class<?> thisClass = CxfSSLUNTNonceTimeOutTests.class;
 
-    //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.ssl";
     @Server(serverName)
     public static LibertyServer server;
@@ -48,14 +49,23 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     @BeforeClass
     public static void setUp() throws Exception {
         String thisMethod = "setup";
-        String copyFromFile = System.getProperty("user.dir") +
-                              File.separator +
-                              server.getPathToAutoFVTNamedServer() +
-                              "server_customize.xml";
-        //orig from CL:
-        //server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat.ssl");
+        String copyFromFile = "";
 
-        //Added 10/2020
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.2")) {
+            copyFromFile = System.getProperty("user.dir") +
+                           File.separator +
+                           server.getPathToAutoFVTNamedServer() +
+                           "server_customize.xml";
+        }
+        if (features.contains("jaxws-2.3")) {
+            copyFromFile = System.getProperty("user.dir") +
+                           File.separator +
+                           server.getPathToAutoFVTNamedServer() +
+                           "server_customize_ee8.xml";
+        }
+
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
         PrepInitServer serverObject = new PrepInitServer();
@@ -63,6 +73,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
         try {
             String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+
             Log.info(thisClass, "reconfigServer", "Copying: " + copyFromFile
                                                   + " to " + serverFileLoc);
             LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
@@ -89,17 +100,15 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      *
      */
     @Test
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
-        //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
         genericTest("testCxfUntReplayOneAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
                     "true", "",
                     "Response: WSSECFVT FVTVersion_ba07",
                     "The test expected a succesful message from the server.");
-        // Make sure the server.xml is set back to server_orig.xml
-        // This will be done by next test case: TwoAndMoreMinutes
-        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     /**
@@ -116,16 +125,15 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      * exception
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntHardcodedReplayTwoAndMoreMinutesSSL() throws Exception {
-        // Make sure the server.xml is set to server_customize.xml
-        // This was done by previous test: OneAndMoreMinutes
-        //  reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
+
         genericTest("testCxfUntReplayTwoAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA6Service", "UrnBasicPlcyBA6",
                     "true", "", msgExpires,
                     "Second call to FVTVersionBA6Service should have failed");
-        //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
 }

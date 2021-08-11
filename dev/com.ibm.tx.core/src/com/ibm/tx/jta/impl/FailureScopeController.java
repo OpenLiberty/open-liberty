@@ -65,8 +65,7 @@ public class FailureScopeController {
 
     protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors().get() > SMP_THRESH;
 
-    protected FailureScopeController() {
-    }
+    protected FailureScopeController() {}
 
     @SuppressWarnings("unused")
     public FailureScopeController(FailureScope fs) throws SystemException {
@@ -235,9 +234,13 @@ public class FailureScopeController {
 
                 if (!partnersLeft) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
-                    // Shutdown is clean, we may delete the home server lease if peer recovery is enabled.
-                    // This is a noop if peer recovery is not enabled.
+                    // Shutdown is clean, we do some housekeeping if peer recovery is enabled.
                     if (_recoveryManager != null) {
+                        // If we are operating in a peer recovery environment this method will delete the home server's
+                        // recovery logs where it has shutdown cleanly.
+                        _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
+
+                        // Delete the home server's lease
                         _recoveryManager.deleteServerLease(serverName());
                     }
                 } else if (tc.isDebugEnabled()) {
@@ -303,10 +306,10 @@ public class FailureScopeController {
      * This method is called to register the creation of a new transaction associated
      * with the managed failure scope.
      *
-     * @param tran      The transaction identity object
+     * @param tran The transaction identity object
      * @param recovered Flag to indicate if the new transaction was created as part
-     *                      of a recovery process for this failure scope (true) or
-     *                      normal running (false)
+     *            of a recovery process for this failure scope (true) or
+     *            normal running (false)
      */
     public void registerTransaction(TransactionImpl tran, boolean recovered) {
         if (tc.isEntryEnabled())

@@ -1126,17 +1126,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             throw new IllegalStateException(cbShutdown + " is already registered");
     }
 
-    // TODO remove once consuming code is switched over to above
-    @Override
-    public void registerShutdownCallback(final Runnable callback) {
-        cbShutdown.set(new Consumer<Set<Object>>() {
-            @Override
-            public void accept(Set<Object> runningTasks) {
-                callback.run();
-            }
-        });
-    }
-
     @Override
     public PolicyExecutor runIfQueueFull(boolean runIfFull) {
         if (state.get() != State.ACTIVE)

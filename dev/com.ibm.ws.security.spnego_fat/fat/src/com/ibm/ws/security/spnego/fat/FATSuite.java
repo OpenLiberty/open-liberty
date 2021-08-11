@@ -69,8 +69,7 @@ public class FATSuite extends ApacheKDCforSPNEGO {
             String thisMethod = "before";
             Log.info(c, thisMethod, "Performing the common setup for all test classes");
 
-            if (!isSupportJDK())
-                return;
+            isSupportJDK();
 
             /*
              * String ip = InetAddress.getByName("localhost").getHostAddress();
@@ -108,6 +107,13 @@ public class FATSuite extends ApacheKDCforSPNEGO {
                 runTests = false;
             }
             Log.info(c, thisMethod, "The JDK vendor used is " + javaInfo.vendor() + " and version: " + javaInfo.majorVersion());
+
+            if (!runTests) {
+                Log.info(c, thisMethod, "=== JDK NOT SUPPORTED FOR SPNEGO FAT TESTS ===");
+                Log.info(c, thisMethod, "=== SKIPPING SPNEGO FAT TESTS ===");
+            }
+
+            InitClass.RUN_TESTS = runTests;
             return runTests;
         };
 

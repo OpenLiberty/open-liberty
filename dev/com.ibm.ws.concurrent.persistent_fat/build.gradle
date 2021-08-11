@@ -8,11 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
- dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
- }
- 
 task copyFeatureBundle(type: Copy) {
   from buildDir
   into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
@@ -26,4 +21,5 @@ autoFVT {
 addRequiredLibraries {
 	dependsOn copyJdbcDrivers
 	dependsOn addJakartaTransformer
+	dependsOn copyTestContainers
 }

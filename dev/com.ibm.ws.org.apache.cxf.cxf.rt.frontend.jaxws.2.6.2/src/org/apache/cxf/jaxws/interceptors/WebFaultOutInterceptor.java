@@ -32,6 +32,7 @@ import javax.xml.ws.WebFault;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.cxf.binding.soap.SoapFault;
+import org.apache.cxf.binding.soap.SoapVersion;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.i18n.BundleUtils;
 import org.apache.cxf.common.logging.LogUtils;
@@ -86,28 +87,37 @@ public class WebFaultOutInterceptor extends FaultOutInterceptor {
             return;
         }
         try {
-            if (f.getCause().getClass().equals(SOAPFaultException.class)) {
-                SOAPFaultException sf = (SOAPFaultException) (f.getCause());
-                if (sf.getFault().getFaultSubcodes().hasNext()
+            Throwable thr = f.getCause();
+            SOAPFaultException sf = null;
+            if (thr instanceof SOAPFaultException) {
+                sf = (SOAPFaultException)thr;
+            } else if (thr.getCause() instanceof SOAPFaultException) {
+                sf = (SOAPFaultException)thr.getCause();
+            }
+            if (sf != null) {
+                SoapVersion soapVersion = (SoapVersion)message.get(SoapVersion.class.getName());
+                if (soapVersion != null && soapVersion.getVersion() != 1.1) {
+                   if (sf.getFault().getFaultSubcodes().hasNext()
                         && f.getClass().equals(SoapFault.class)) {
-                    String subcode = sf.getFault().getFaultSubcodes().next()
+                       String subcode = sf.getFault().getFaultSubcodes().next()
                            .toString();
-                    String nameSpace = subcode.substring(
+                       String nameSpace = subcode.substring(
                            subcode.indexOf("{") + 1, subcode.indexOf("}"));
-                    String localPart = subcode
+                       String localPart = subcode
                            .substring(subcode.indexOf("}") + 1);
-                    QName subcodeQName = new QName(nameSpace, localPart);
-                    ((SoapFault) f).setSubCode(subcodeQName);
-                }
-                if (sf.getFault().getFaultReasonLocales().hasNext()) {
-                    Locale lang = (Locale) sf.getFault()
+                       QName subcodeQName = new QName(nameSpace, localPart);
+                       ((SoapFault) f).setSubCode(subcodeQName);
+                   }
+                   if (sf.getFault().getFaultReasonLocales().hasNext()) {
+                       Locale lang = (Locale) sf.getFault()
                            .getFaultReasonLocales().next();
-                    String convertedLang = lang.getLanguage();
-                    String country = lang.getCountry();
-                    if (country.length() > 0) {
-                        convertedLang = convertedLang + '-' + country;
-                    }
-                    f.setLang(convertedLang);
+                       String convertedLang = lang.getLanguage();
+                       String country = lang.getCountry();
+                       if (country.length() > 0) {
+                           convertedLang = convertedLang + '-' + country;
+                       }
+                       f.setLang(convertedLang);
+                   }
                 }
                 message.setContent(Exception.class, f);
             }

@@ -67,7 +67,7 @@ public interface ServerEndpointControlMBean {
     public boolean isPaused();
 
     /**
-     * Query the state of the specified server endpoints.
+     * Query whether the specified server endpoints have been paused.
      *
      * @param targets Comma separated list of one or more names of endpoints.
      * @return If a single target is specified, returns the state of the specified target, if multiple targets are specified, returns true only
@@ -82,5 +82,15 @@ public interface ServerEndpointControlMBean {
      * @return List of names of all endpoints that can be paused/resumed.
      */
     public List<String> listEndpoints();
+
+    /**
+     * Query the state of the specified server endpoints.
+     *
+     * @param targets Comma separated list of one or more names of endpoints.
+     * @return If a single target is specified, returns true if the target exists, has started, and is not paused. If multiple targets are
+     *         specified, returns true only if all specified targets exist, are started, and are not paused.
+     */
+    @Deprecated
+    public boolean isActive(String targets);
 
 }

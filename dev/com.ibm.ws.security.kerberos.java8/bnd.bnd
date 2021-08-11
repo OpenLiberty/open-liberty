@@ -51,8 +51,6 @@ Include-Resource: \
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations: \
-  com.ibm.ws.security.kerberos.Krb5HelperJdk8,\
-  com.ibm.ws.security.kerberos.Krb5HelperJdk11,\
   com.ibm.ws.security.kerberos.internal.KerberosExtServiceImpl,\
   com.ibm.websphere.security.s4u2proxy.SpnegoHelper
   
@@ -69,6 +67,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.security.kerberos.auth;version=latest,\
 	com.ibm.ws.security.token.s4u2;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security;version=latest,\

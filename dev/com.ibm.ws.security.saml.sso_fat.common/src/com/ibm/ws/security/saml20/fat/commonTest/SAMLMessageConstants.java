@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml20.fat.commonTest;
 
-public class SAMLMessageConstants {
+import com.ibm.ws.security.fat.common.MessageConstants;
+
+public class SAMLMessageConstants extends MessageConstants {
 
     public static final String CWWKS5000I_SAML_CONFIG_PROCESSED = "CWWKS5000I";
     public static final String CWWKS5002I_SAML_SERVICE_ACTIVATED = "CWWKS5002I";
@@ -26,6 +28,7 @@ public class SAMLMessageConstants {
     public static final String CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED = "CWWKS5018E";
 
     public static final String CWWKS5021E_IDP_METADATA_MISSING_ISSUER = "CWWKS5021E";
+    public static final String CWWKS5023E_IDP_METADATA_NOT_VALID = "CWWKS5023E";
     public static final String CWWKS5025E_IDP_METADATA_DOES_NOT_EXIST = "CWWKS5025E";
     public static final String CWWKS5029E_RELAY_STATE_NOT_RECOGNIZED = "CWWKS5029E";
 

@@ -14,8 +14,6 @@ import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
-import io.openliberty.grpc.monitor.GrpcServerStatsMXBean;
-
 /**
  * This is used to report gRPC Server related statistics. </br>
  * Statistic reported:

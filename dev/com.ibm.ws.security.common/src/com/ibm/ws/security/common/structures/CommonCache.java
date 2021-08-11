@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
@@ -28,9 +28,9 @@ public abstract class CommonCache {
     protected long timeoutInMilliSeconds = 5 * 60 * 1000;
 
     /**
-     * Timer to schedule the eviction task.
+     * Scheduled executor to run the eviction task.
      */
-    protected Timer timer;
+    private ScheduledThreadPoolExecutor evictionSchedule;
 
     public int size() {
         return this.entryLimit;
@@ -62,16 +62,11 @@ public abstract class CommonCache {
         if (newTimeoutInMillis > 0) {
             this.timeoutInMilliSeconds = newTimeoutInMillis;
         }
-        timer.cancel();
-        scheduleEvictionTask(timeoutInMilliSeconds);
-    }
-
-    protected void scheduleEvictionTask(long timeoutInMilliSeconds) {
-        EvictionTask evictionTask = new EvictionTask();
-        timer = new Timer(true);
-        long period = timeoutInMilliSeconds;
-        long delay = period;
-        timer.schedule(evictionTask, delay, period);
+        if (evictionSchedule != null) {
+            evictionSchedule.shutdownNow();
+        }
+        evictionSchedule = new ScheduledThreadPoolExecutor(1);
+        evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -79,13 +74,11 @@ public abstract class CommonCache {
      */
     abstract protected void evictStaleEntries();
 
-    private class EvictionTask extends TimerTask {
-        /** {@inheritDoc} */
+    private class EvictionTask implements Runnable {
         @Override
         public void run() {
             evictStaleEntries();
         }
 
     }
-
 }

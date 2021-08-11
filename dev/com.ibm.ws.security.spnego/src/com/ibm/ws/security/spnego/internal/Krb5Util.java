@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class Krb5Util {
 
         try {
             preUseSubjectCredsOnly = Krb5Common.setPropertyAsNeeded(Krb5Common.USE_SUBJECT_CREDS_ONLY, currentUseSubjectCredsOnly);
-            if (Krb5Common.isOtherSupportJDKs) {
+            if (Krb5Common.OTHER_KRB5_LOGIN_MODULE_AVAILABLE) {
                 previousSpn = Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_PRINCIPAL, currentSpn);
                 Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_NAME, currentSpn);
             }
@@ -118,7 +118,7 @@ public class Krb5Util {
             disposeGssContext(gssContext);
         } finally {
             Krb5Common.restorePropertyAsNeeded(Krb5Common.USE_SUBJECT_CREDS_ONLY, preUseSubjectCredsOnly, currentUseSubjectCredsOnly);
-            if (Krb5Common.isOtherSupportJDKs) {
+            if (Krb5Common.OTHER_KRB5_LOGIN_MODULE_AVAILABLE) {
                 Krb5Common.restorePropertyAsNeeded(Krb5Common.KRB5_PRINCIPAL, previousSpn, currentSpn);
                 Krb5Common.restorePropertyAsNeeded(Krb5Common.KRB5_NAME, previousSpn, currentSpn);
             }

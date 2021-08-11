@@ -78,12 +78,10 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
         } else if ((currFormat.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) || currFormat.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)) && basicFormatter != null) {
             messageOutput = basicFormatter.messageLogFormat(genData);
 
-        } else if (currFormat.equals(LoggingConstants.TBASIC_MESSAGE_FORMAT) && basicFormatter != null && basicFormatter.betaFenceCheck()) {
+        } else if (currFormat.equals(LoggingConstants.TBASIC_MESSAGE_FORMAT) && basicFormatter != null) {
             messageOutput = basicFormatter.messageLogFormatTBasic(genData);
 
-        } else
-            messageOutput = basicFormatter.messageLogFormat(genData);
-
+        }
         if (messageOutput != null && traceWriter != null) {
             traceWriter.writeRecord(messageOutput);
         }

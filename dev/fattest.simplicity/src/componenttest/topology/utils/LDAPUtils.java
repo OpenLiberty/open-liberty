@@ -18,6 +18,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -543,6 +544,32 @@ public class LDAPUtils {
         for (int requested = count; requested > 0; requested--) {
             try {
                 List<ExternalTestService> services = new ArrayList<ExternalTestService>(ExternalTestService.getServices(requested, service));
+
+                /*
+                 * Remove services that are not available.
+                 */
+                Set<ExternalTestService> toRemove = new HashSet<ExternalTestService>();
+                for (ExternalTestService serviceToPing : services) {
+                    try {
+                        if (!isLdapServerAvailable(serviceToPing.getAddress(),
+                                                   serviceToPing.getProperties().get(CONSUL_LDAP_PORT_KEY), false,
+
+                                                   serviceToPing.getProperties().get(CONSUL_BIND_DN_KEY),
+                                                   serviceToPing.getProperties().get(CONSUL_BIND_PASSWORD_KEY))) {
+                            Log.warning(c, "For service, " + service + ", Ldap at " + serviceToPing.getAddress() + " failed to ping");
+                            toRemove.add(serviceToPing);
+                        }
+                    } catch (Exception e) {
+                        Log.warning(c, "For service, " + service + ", Ldap at " + serviceToPing.getAddress() + " failed to ping with exception: " + e.getMessage());
+                        toRemove.add(serviceToPing);
+                    }
+                }
+                if (services.size() == toRemove.size()) {
+                    throw new Exception("For service, " + service + ", no LDAPs responded to ping, follow regular failover path which will run local LDAP if possible.");
+                } else if (!toRemove.isEmpty()) {
+                    Log.warning(c, "For service, " + service + ", some LDAPS failed to ping, will remove from services list and run with good LDAPs only.");
+                    services.removeAll(toRemove);
+                }
 
                 /*
                  * Copy unique instances to fill out the requested count of services.

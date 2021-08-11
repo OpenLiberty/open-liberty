@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ejb2x.base.pitt.web.PassivationRegressionServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -42,7 +43,7 @@ public class PassivationRegressionTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.remote"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -59,7 +60,7 @@ public class PassivationRegressionTest extends FATServletClient {
         StatefulPassivationApp.addAsModules(StatefulPassivationEJB, StatefulPassivationWeb);
         ShrinkHelper.addDirectory(StatefulPassivationApp, "test-applications/StatefulPassivationApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatefulPassivationApp);
+        ShrinkHelper.exportDropinAppToServer(server, StatefulPassivationApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

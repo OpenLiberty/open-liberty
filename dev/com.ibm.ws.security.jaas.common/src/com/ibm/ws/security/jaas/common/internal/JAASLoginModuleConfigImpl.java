@@ -43,7 +43,6 @@ import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.security.LoginModuleProxy;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
 import com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -407,7 +406,7 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     }
 
     private static boolean isIBMJdk18() {
-        return (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8);
+        return JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule");
     }
 
 }

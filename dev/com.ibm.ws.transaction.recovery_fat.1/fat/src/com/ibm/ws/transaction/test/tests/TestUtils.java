@@ -51,6 +51,8 @@ public class TestUtils {
 
         assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog("Dump State:"));
 
+        crashingServer.postStopServerArchive(); // must explicitly collect since server start failed
+
         ProgramOutput po = recoveringServer.startServerAndValidate(false, true, true);
         if (po.getReturnCode() != 0) {
             Log.info(TestUtils.class, method, po.getCommand() + " returned " + po.getReturnCode());
@@ -108,10 +110,10 @@ public class TestUtils {
     /**
      * Runs a test in the servlet and returns the servlet output.
      *
-     * @param server      the started server containing the started application
-     * @param path        the url path (e.g. myApp/myServlet)
+     * @param server the started server containing the started application
+     * @param path the url path (e.g. myApp/myServlet)
      * @param queryString query string including at least the test name
-     *                        (e.g. testName or testname&key=value&key=value)
+     *            (e.g. testName or testname&key=value&key=value)
      * @return output of the servlet
      */
     public static StringBuilder runTestWithResponse(LibertyServer server, String path, String queryString) throws Exception {

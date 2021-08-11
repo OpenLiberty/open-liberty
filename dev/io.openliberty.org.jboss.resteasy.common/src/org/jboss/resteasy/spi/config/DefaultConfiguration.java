@@ -32,9 +32,13 @@ import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.jboss.resteasy.spi.ResteasyConfiguration;
 
 /**
- * A default configuration which first attempts to use the Eclipse MicroProfile Config API. If not present on the class
- * path the {@linkplain ResteasyConfiguration configuration} is used to resolve the value, followed by system properties
- * and then environment variables if not found in the previous search.
+ * A default configuration which first attempts to use the Eclipse MicroProfile Config API. If the MicroProfile Config
+ * API is not available value is searched in the following order:
+ * <ol>
+ *     <li>System properties</li>
+ *     <li>Environment variables</li>
+ *     <li>{@link ResteasyConfiguration}</li>
+ * </ol>
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
@@ -166,27 +170,31 @@ public class DefaultConfiguration implements Configuration {
 
         @Override
         public String apply(final String name) {
-            //Liberty change - adding doPriv
-            if (System.getSecurityManager() == null) {
-                String value = System.getProperty(name);
-                if (value == null) {
-                    value = System.getenv(name);
-                    if (value == null && config != null) {
-                        value = config.getInitParameter(name);
+            String value = config == null ? null : config.getInitParameter(name);
+            if (value == null) {
+                //Liberty change - adding doPriv
+                if (System.getSecurityManager() == null) {
+                    value = System.getProperty(name);
+                    if (value == null) {
+                        value = System.getenv(name);
+                        if (value == null && config != null) {
+                            value = config.getInitParameter(name);
+                        }
                     }
+                    return value;
                 }
-                return value;
+                return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+                    String value2 = System.getProperty(name);
+                    if (value2 == null) {
+                        value2 = System.getenv(name);
+                        if (value2 == null && config != null) {
+                            value2 = config.getInitParameter(name);
+                        }
+                    }
+                    return value2;
+                });
             }
-            return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
-                String value = System.getProperty(name);
-                if (value == null) {
-                    value = System.getenv(name);
-                    if (value == null && config != null) {
-                        value = config.getInitParameter(name);
-                    }
-                }
-                return value;
-            });
+            return value;
         }
     }
 }

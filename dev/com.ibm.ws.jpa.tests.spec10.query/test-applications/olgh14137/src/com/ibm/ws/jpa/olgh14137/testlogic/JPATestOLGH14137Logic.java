@@ -61,11 +61,6 @@ public class JPATestOLGH14137Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
-        }
-
         Integer id = new Integer(41);
 
         // Execute Test Case

@@ -311,9 +311,10 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
     volatile boolean _failAssociatedLog = false;
 
     /**
-     * A flag to indicate whether the recovery log belongs to the home server.
+     * A flag that allows the support of the "original" peer recovery behaviour, where recovery logs
+     * would not be deleted.
      */
-    private final boolean _isHomeServer;
+    private boolean _retainLogsInPeerRecoveryEnv;
 
     //------------------------------------------------------------------------------
     // Method: MultiScopeRecoveryLog.MultiScopeRecoveryLog
@@ -358,7 +359,6 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         _clientVersion = recoveryAgent.clientVersion();
         _serverName = fs.serverName();
         _failureScope = fs;
-        _isHomeServer = Configuration.localFailureScope().equals(_failureScope);
 
         // Lookup the system file separator character needed to build path names
         if (_fileSeparator == null) {
@@ -1094,9 +1094,9 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
 
                     // Reset the internal state so that a subsequent open operation
                     // occurs with a "clean" environment.
-                    if (!_isHomeServer) {
+                    if (Configuration.HAEnabled() && !_retainLogsInPeerRecoveryEnv) {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Working with a peer server retain logHandle on close");
+                            Tr.debug(tc, "Working in a peer recovery environment retain logHandle on close");
                     } else
                         _logHandle = null;
 
@@ -2427,25 +2427,36 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "delete", new Object[] { this });
 
-        if (!_isHomeServer) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Attempt to delete the underlying logs");
+        if (failed() || _closesRequired > 0) {
+            // FFDC exception but allow processing to continue
+            Exception e = new Exception();
+            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2431", this);
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Working with a peer server, attempt to delete the underlying logs");
-            if (failed() || _closesRequired > 0) {
-                // FFDC exception but allow processing to continue
-                Exception e = new Exception();
-                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2431", this);
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
-            } else { // the log is in the right state, we can proceed
-                if (_logHandle != null) {
-                    _logHandle.delete();
-                }
+                Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
+        } else { // the log is in the right state, we can proceed
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Attempt to delete log with handle - " + _logHandle);
+            if (_logHandle != null) {
+                _logHandle.delete();
             }
-        } else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Working with home server, do not attempt to delete the underlying logs");
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "delete");
+    }
+
+    @Override
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
+
+        _retainLogsInPeerRecoveryEnv = retainLogs;
+        if (_retainLogsInPeerRecoveryEnv)
+            _logHandle.retainLogsInPeerRecoveryEnv(true);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
 }

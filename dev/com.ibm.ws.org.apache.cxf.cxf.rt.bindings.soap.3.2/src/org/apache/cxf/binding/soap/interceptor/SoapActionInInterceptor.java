@@ -44,6 +44,9 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
 
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty code change
+
+@Trivial // Liberty code change
 public class SoapActionInInterceptor extends AbstractSoapInterceptor {
 
     private static final Logger LOG = LogUtils.getL7dLogger(SoapActionInInterceptor.class);
@@ -251,6 +254,7 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
             if (boi == null) {
                 return;
             }
+            LOG.fine("boi = " + boi + " action = " + action + " message = " + message); // Liberty code change
             if (StringUtils.isEmpty(action)) {
                 return;
             }

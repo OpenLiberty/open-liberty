@@ -24,7 +24,7 @@ import org.jboss.resteasy.client.jaxrs.i18n.Messages;
 import org.jboss.resteasy.client.jaxrs.internal.ClientInvocation;
 import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.jboss.resteasy.client.jaxrs.internal.FinalizedClientResponse;
-import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
+import org.jboss.resteasy.spi.config.ConfigurationFactory;
 import org.jboss.resteasy.util.CaseInsensitiveMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -58,19 +58,20 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
     * Used to build temp file prefix.
     */
    private static final String processId;
-   //Liberty Change:  Add doPriv  
+
    static
    {
       try {
          processId = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
             @Override
-            public String run() throws Exception {
-               return ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^0-9a-zA-Z]", "");
-            }
+            public String run() throws Exception
+            {        return ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^0-9a-zA-Z]", "");        }
+
+
          });
-      } catch (PrivilegedActionException pae) {
-         throw new RuntimeException(pae);
-      }
+      } catch (PrivilegedActionException pae)
+      {      throw new RuntimeException(pae);    }
+
    }
 
    protected final HttpClient httpClient;
@@ -118,8 +119,9 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
     * <br>
     * Defaults to JVM temp directory.
     */
-   protected File fileUploadTempFileDir = getTempDir(); // Liberty Change - remove overlay when changes are in RestEasy
+   protected File fileUploadTempFileDir = getTempDir();
 
+   // Liberty change start - ctor refactored to handle file upload threshold
    public ManualClosingApacheHttpClient43Engine()
    {
       this(null, null, true, null);
@@ -162,9 +164,9 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
       
       try {
           int threshold = Integer.parseInt(
-              ResteasyConfigProvider.getConfig()
-                                    .getOptionalValue("org.jboss.resteasy.client.jaxrs.engines.fileUploadInMemoryThreshold", String.class)
-                                    .orElse("1"));
+              ConfigurationFactory.getInstance().getConfiguration()
+                                  .getOptionalValue("org.jboss.resteasy.client.jaxrs.engines.fileUploadInMemoryThreshold", String.class)
+                                  .orElse("1"));
           if (threshold > -1) {
               this.fileUploadInMemoryThresholdLimit = threshold;
           }
@@ -173,6 +175,7 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
           LogMessages.LOGGER.debug("Exception caught parsing memory threshold. Using default value.", e);
       }
    }
+   // liberty change end
 
    /**
     * Response stream is wrapped in a BufferedInputStream.  Default is 8192.  Value of 0 will not wrap it.
@@ -773,20 +776,16 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
       }
       closed = true;
    }
-   
-   // Liberty Change Start - remove overlay when changes are in RestEasy
-   // https://issues.redhat.com/browse/RESTEASY-2884
-   // https://github.com/resteasy/Resteasy/pull/2778
+
    private static File getTempDir() {
-       if (System.getSecurityManager() == null) {
-          final Optional<String> value = ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class);
-          return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
-       }
-       return AccessController.doPrivileged((PrivilegedAction<File>) () -> {
-          final Optional<String> value = ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class);
-          return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
-       });
-    }
-   // Liberty Change End
+      if (System.getSecurityManager() == null) {
+         final Optional<String> value = ConfigurationFactory.getInstance().getConfiguration().getOptionalValue("java.io.tmpdir", String.class);
+         return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
+      }
+      return AccessController.doPrivileged((PrivilegedAction<File>) () -> {
+         final Optional<String> value = ConfigurationFactory.getInstance().getConfiguration().getOptionalValue("java.io.tmpdir", String.class);
+         return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
+      });
+   }
 
 }

@@ -209,7 +209,11 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 return;
             }
             super.handleRequest(req, res);
-            loadClassInformation();
+            
+            synchronized(this){
+                loadClassInformation();
+                classloaderCreated = false;  
+            }
         }
     }
 
@@ -220,7 +224,6 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
     protected void loadClassInformation() {
         if (classloaderCreated && getTarget() instanceof JspClassInformation) {
 
-            synchronized (this) {
                 JspClassInformation jspClassInformation = (JspClassInformation) getTarget();
                 if (options.isTrackDependencies()) {
                     dependentsList.clear();
@@ -239,8 +242,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
                 debugClassFile = jspClassInformation.isDebugClassFile(); // defect 272935 
                 //}
                 // end 228118: JSP container should recompile if debug enabled
-                // and jsp was not compiled in debug.
-            }
+                // and jsp was not compiled in debug.  
         }
     }
 
@@ -270,7 +272,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE) && versionNumber != null && jspResources != null) {
                 logger.logp(Level.FINE, CLASS_NAME, "checkForTranslation", "Classfile: [" + jspResources.getClassName() + "] version: [" + versionNumber + "]");
             }
-            classloaderCreated = false;
+
             // if (versionNumber !=null && jspResources != null) {
             // System.out.println("Classfile: ["+jspResources.getClassName()+"]
             // version: [" + versionNumber+"]");

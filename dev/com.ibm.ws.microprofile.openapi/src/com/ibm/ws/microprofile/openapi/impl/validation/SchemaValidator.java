@@ -57,8 +57,8 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
-            if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ONE) < 1)) {
-                final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanOne");
+            if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ZERO) <= 0)) {
+                final String message = Tr.formatMessage(tc, "schemaMultipleOfNotGreaterThanZero");
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 

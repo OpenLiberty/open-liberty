@@ -167,8 +167,10 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
                         }
                     }
                 } else {
-                    throw new SamlException("SAML20_IDP_METADATA_PARSE_ERROR", new NullPointerException(), // cause
-                                            new Object[] { strIdpMetadata, samlConfig.getProviderId(), "null" });
+                    String error = Tr.formatMessage(tc, "SAML20_IDP_METADATA_PARSE_ERROR", new Object[] { strIdpMetadata, samlConfig.getProviderId(), "no metadata" });
+                    //throw new SamlException("SAML20_IDP_METADATA_PARSE_ERROR", new NullPointerException(), // cause
+                    //                        new Object[] { strIdpMetadata, samlConfig.getProviderId(), "null" });
+                    throw new SamlException(error, new NullPointerException(), true);
                 }
         } else {
             if (tc.isDebugEnabled()) {

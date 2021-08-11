@@ -11,6 +11,10 @@
 	<classpathentry kind="src" output="bin" path="test-applications/JavaColonInjectionAppClient.jar/src"/>
 	<classpathentry kind="src" output="bin" path="test-applications/JavaColonInjectionAppEJB.jar/src"/>
 	<classpathentry kind="src" output="bin" path="test-applications/ProgrammaticJaasLogin.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/ejb31DD.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/ejb31NoDD.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/helloWorld.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/TestBeans.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

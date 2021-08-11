@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -108,6 +109,26 @@ public class OracleUCPTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    /**
+     * Checks to see if an ExecutionException was caused by a ConnectionWaitTimeoutException.
+     * If it was a ConnectionWaitTimeoutException, a junit failure is produced with a meaningful debug message for future serviceability.
+     *
+     * @param exception - ExecutionException from an async getConnection request.
+     * @param jndiName  - jndiName of datasource involved in getConnectionRequest
+     * @throws ExecutionException - If not caused by ConnectionWaitTimeoutException original ExecutionException is thrown
+     */
+    private static void checkForConnectionWaitTimeoutException(ExecutionException exception, String jndiName) throws ExecutionException {
+        Throwable cause = exception.getCause();
+        if (cause.getClass().getCanonicalName().equals("com.ibm.websphere.ce.cm.ConnectionWaitTimeoutException")) {
+            cause.printStackTrace(System.out);
+            fail("The task returned a ConnectionWaitTimeoutException. "
+                 + "Meaning that slow infrastructure caused the async getConnection call to run longer than the connectionTimeout. "
+                 + "Consider increasing the connectionTimeout for " + jndiName);
+        } else {
+            throw exception;
+        }
+    }
 
     /**
      * Basic test that we can get and use a connection when using Oracle UCP
@@ -344,6 +365,8 @@ public class OracleUCPTestServlet extends FATServlet {
                 fail("The task should not have completed, instead returned " + future.get(10, TimeUnit.SECONDS));
             } catch (TimeoutException ex) {
                 //expected
+            } catch (ExecutionException ee) {
+                checkForConnectionWaitTimeoutException(ee, "jdbc/ucpDS");
             }
 
             //Now try to close one of the connections, which should allow the other task to complete
@@ -398,6 +421,8 @@ public class OracleUCPTestServlet extends FATServlet {
                 fail("The task should not have completed, instead returned " + future.get(10, TimeUnit.SECONDS));
             } catch (TimeoutException ex) {
                 //expected
+            } catch (ExecutionException ee) {
+                checkForConnectionWaitTimeoutException(ee, "jdbc/ucpDSEmbeddedConMgr");
             }
 
             //Now try to close one of the connections, which should allow the other task to complete
@@ -435,6 +460,8 @@ public class OracleUCPTestServlet extends FATServlet {
                 fail("The task should not have completed, instead returned " + future.get(10, TimeUnit.SECONDS));
             } catch (TimeoutException ex) {
                 //expected
+            } catch (ExecutionException ee) {
+                checkForConnectionWaitTimeoutException(ee, "jdbc/oracleDS");
             }
 
             //Now try to close one of the connections, which should allow the other task to complete
@@ -683,6 +710,8 @@ public class OracleUCPTestServlet extends FATServlet {
                 fail("The task should not have completed, instead returned " + future.get(10, TimeUnit.SECONDS));
             } catch (TimeoutException ex) {
                 //expected
+            } catch (ExecutionException ee) {
+                checkForConnectionWaitTimeoutException(ee, "jdbc/oracleDS");
             }
 
             //Now try to close one of the connections, which should allow the other task to complete
@@ -715,6 +744,8 @@ public class OracleUCPTestServlet extends FATServlet {
                 fail("The task should not have completed, instead returned " + future.get(10, TimeUnit.SECONDS));
             } catch (TimeoutException ex) {
                 //expected
+            } catch (ExecutionException ee) {
+                checkForConnectionWaitTimeoutException(ee, "jdbc/oracleDS");
             }
 
             //Now try to close one of the connections, which should allow the other task to complete

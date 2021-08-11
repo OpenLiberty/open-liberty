@@ -15,8 +15,6 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.readEntity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
@@ -41,8 +39,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC({"java.lang.ClassNotFoundException", "java.lang.ClassCastException"})
@@ -64,11 +60,6 @@ public class AnnotationScanTest {
         JavaArchive jar = ShrinkHelper.buildJavaArchive("resourcejar.jar", "com.ibm.ws.jaxrs.fat.resourceinjar");
         app.addAsLibraries(jar);
         ShrinkHelper.exportDropinAppToServer(server, app);
-
-        // Conditionally apply for non-Hotspot JVMs, since Hotspot does not support -Xdump
-        if (JavaInfo.forServer(server).vendor() != Vendor.SUN_ORACLE) {
-            server.setJvmOptions(Collections.singletonList("-Xdump:java+system+snap:events=throw+systhrow,filter=java/lang/reflect/GenericSignatureFormatError"));
-        }
 
         // Make sure we don't fail because we try to start an
         // already started server

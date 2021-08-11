@@ -16,7 +16,6 @@ configurations {
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.spec10.query")
-  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task addJPAFATTools (type: Copy) {
@@ -61,6 +60,7 @@ addRequiredLibraries {
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
   dependsOn copyFAT
+  dependsOn copyTestContainers
 }
 
 jar {

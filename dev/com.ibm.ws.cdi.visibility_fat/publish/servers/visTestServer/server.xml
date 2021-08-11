@@ -12,9 +12,22 @@
         <feature>componentTest-1.0</feature>
     </featureManager>
     
-    <enterpriseApplication location="visTest.ear"
-                           defaultClientModule="visTestAppClient.jar"/>
-                           
+    <enterpriseApplication location="visTest.ear" defaultClientModule="visTestAppClient.jar">
+        <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
+    </enterpriseApplication>
+    
+    <library id="visTestPrivateLib">
+       <fileset includes="visTestPrivateLib.jar"/>
+    </library>
+    
+    <library id="visTestCommonLib">
+       <fileset includes="visTestCommonLib.jar"/>
+       <fileset includes="visTestFramework.jar"/>
+    </library>
+    
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+    
+    <!--Java2 security-->
+    <javaPermission codebase="${server.config.dir}/visTestFramework.jar" className="java.security.AllPermission"  name="*" actions="*" />
 
 </server>

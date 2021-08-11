@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,6 +61,12 @@ public class JCAClassLoadingTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        JavaArchive testlib = ShrinkWrap //
+                        .create(JavaArchive.class, "testlib.jar") //
+                        .addPackage("com.ibm.ws.jca.fat.classloading.sharedlib");
+
+        ShrinkHelper.exportToServer(server, "libraries", testlib);
+
         WebArchive war = ShrinkHelper.buildDefaultApp(WAR_NAME, "web");
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
                         .addAsModule(war);
@@ -85,6 +92,13 @@ public class JCAClassLoadingTest extends FATServletClient {
     public void testLoadResourceAdapterClassFromSingleApp() throws Exception {
         restartWithNewConfig(true);
         runTest();
+    }
+
+    @Test
+    public void testResourceAdapterClassesAccessibleToSharedLibrary() throws Exception {
+        restartWithNewConfig(true);
+        runTest(server, WAR_NAME, "testSharedLibraryClassesAccessibleToApplication");
+        runTest(server, WAR_NAME, "testResourceAdapterClassesAccessibleToSharedLibrary");
     }
 
     @Test

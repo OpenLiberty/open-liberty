@@ -69,6 +69,21 @@ task addEnterpriseBeansTools {
     }
     copy {
       from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.legacy.server.notrace/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.legacy.server.remote/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.legacy.server.remote.noTrace/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.legacy.server.sll/lib/global"
       rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
     }

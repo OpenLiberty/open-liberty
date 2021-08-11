@@ -36,6 +36,11 @@ fat.test.databases: true
 # you may need to run ./gradlew --stop to get a new gradle daemon
 # it has been my experience that these properties are likely to be cached. 
 
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, servlet-5.0 is added programmatically at runtime by the RepeatTests rule.
+tested.features: \
+	servlet-5.0
+
 # io.openliberty.org.testcontainers bundle should have all compile time
 # dependences you need for a testcontainer enabled fat project.
 # If you are creating a fat test that needs a module not currenlty in the

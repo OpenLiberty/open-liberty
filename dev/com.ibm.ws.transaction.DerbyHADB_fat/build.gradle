@@ -12,8 +12,7 @@
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
-               project(':io.openliberty.org.apache.commons.logging'),
-               project(':io.openliberty.org.testcontainers')
+               project(':io.openliberty.org.apache.commons.logging')
 }
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
@@ -36,6 +35,7 @@ autoFVT.dependsOn copyFeatureBundle
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn copyTxJdbcDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers
 
 clean.doLast {
   if (file('build').exists()){

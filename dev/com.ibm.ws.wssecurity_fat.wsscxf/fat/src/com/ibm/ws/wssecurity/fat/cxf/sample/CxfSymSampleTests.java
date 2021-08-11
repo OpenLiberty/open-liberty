@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,23 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLEndpoint;
@@ -32,26 +36,21 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 11/2020
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//12/2020 Setting this test class for LITE bucket
-//@Mode(TestMode.FULL)
-//Added 11/2020
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfSymSampleTests {
 
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //Added 11/2020
     @Server(serverName)
+
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfSymSampleTests.class;
@@ -70,20 +69,34 @@ public class CxfSymSampleTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
-
         String thisMethod = "setup";
         String defaultPort = "8010";
 
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
+        }
 
-        //Added 11/2020
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+
+        //7/2021
+        //JakartaEE9 transforms the sample client applications which exist at '<server>/apps/<appname>'.
+        if (JakartaEE9Action.isActive()) {
+            Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");
+            Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
+            JakartaEE9Action.transformApp(webcontent_archive);
+            JakartaEE9Action.transformApp(WSSampleSeiClient_archive);
+        }
 
         server.addInstalledAppForValidation("WSSampleSei");
         server.addInstalledAppForValidation("webcontentprovider");
@@ -137,6 +150,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho1Service() throws Exception {
         String thisMethod = "testEcho1Service";
@@ -161,6 +175,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho2Service() throws Exception {
         String thisMethod = "testEcho2Service";
@@ -185,6 +200,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho3Service() throws Exception {
         String thisMethod = "testEcho3Service";
@@ -209,6 +225,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho5Service() throws Exception {
         String thisMethod = "testEcho5Service";
@@ -233,6 +250,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho6Service() throws Exception {
         String thisMethod = "testEcho6Service";
@@ -373,6 +391,13 @@ public class CxfSymSampleTests {
         }
         //orig from CL
         //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
+
     }
 
     private static void printMethodName(String strMethod) {
