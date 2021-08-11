@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -84,6 +86,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>("managedObjectService");
 
     private CDIService cdiService;
+
+    //The key is Object to match afterServiceInvoke.
+    private Map<Object, CreationalContext> creationalContextsToRelease = new HashMap<Object, CreationalContext>();
 
     private static List<String> validRequestScopeList = new ArrayList<String>();
     private static List<String> validSingletonScopeList = new ArrayList<String>();
@@ -233,10 +238,11 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         BeanManager manager = getBeanManager();
         Bean<?> bean = getBeanFromCDI(clazz);
         Object obj = null;
+        CreationalContext cc = manager.createCreationalContext(bean);
         if (bean != null && manager != null) {
-            obj = manager.getReference(bean, clazz,
-                                       manager.createCreationalContext(bean));
+            obj = manager.getReference(bean, clazz, cc);
         }
+        creationalContextsToRelease.put(obj, cc);
         return obj;
     }
 
@@ -349,6 +355,11 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
      */
     @Override
     public void afterServiceInvoke(Object serviceObject, boolean isSingleton, Object context) {
+        if (creationalContextsToRelease.containsKey(serviceObject)) {
+            CreationalContext cc = creationalContextsToRelease.remove(serviceObject);
+            cc.release();
+        }
+
         @SuppressWarnings("unchecked")
         Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) (context);
 
