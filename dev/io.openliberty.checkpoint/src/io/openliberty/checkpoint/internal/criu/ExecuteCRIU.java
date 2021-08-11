@@ -17,7 +17,7 @@ import java.io.IOException;
  *
  */
 public interface ExecuteCRIU {
-    int dump(File directory) throws IOException;
+    int dump(File imageDir, String logFileName, File workDir) throws IOException;
 
     boolean isCheckpointSupported();
 }

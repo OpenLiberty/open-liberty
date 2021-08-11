@@ -23,7 +23,7 @@ import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 public class ExecuteCRIU_JNI implements ExecuteCRIU {
 
     @Override
-    public int dump(File directory) throws IOException {
+    public int dump(File directory, String logFileName, File workDir) throws IOException {
         return Jigawatts.saveTheWorld(directory.getAbsolutePath());
     }
     

@@ -42,15 +42,17 @@ public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
     }
 
     @Override
-    public int dump(File directory) throws IOException {
+    public int dump(File imageDir, String logFileName, File workDir) throws IOException {
         if (!CRIUSupport.isCRIUSupportEnabled()) {
             // TODO log appropriate message
             System.out.println("Must set the JVM option: -XX:+EnableCRIUSupport");
             return -50;
         }
-        CRIUSupport criuSupport = new CRIUSupport(directory.toPath());
+        CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
         criuSupport.setShellJob(true);
         criuSupport.setFileLocks(true);
+        criuSupport.setLogFile(logFileName);
+        criuSupport.setWorkDir(workDir.toPath());
         CRIUResult result = criuSupport.checkpointJVM();
         if (result.getType() == CRIUResultType.SUCCESS) {
             return 1;
