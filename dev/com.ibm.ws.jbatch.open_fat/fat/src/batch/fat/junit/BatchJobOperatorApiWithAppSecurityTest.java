@@ -57,6 +57,7 @@ import com.ibm.ws.jbatch.test.dbservlet.DbServletClient;
 
 import batch.fat.util.BatchFatUtils;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -175,6 +176,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     }
 
     @Test
+    @AllowedFFDC({"com.ibm.jbatch.container.exception.PersistenceException"})
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
     public void testAbandonAsSubmitterNotOwner() throws Exception {
@@ -199,6 +201,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     }
 
     @Test
+    @AllowedFFDC({"jakarta.servlet.ServletException"})
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
     public void testAbandonAsMonitor() throws Exception {
