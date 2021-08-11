@@ -866,11 +866,15 @@ public class OracleHelper extends DatabaseHelper {
                 try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "Using Connection Builder path for Kerberos");
-                    Object oracleConnectionBuilder = ds.getClass().getMethod("createConnectionBuilder").invoke(ds);
-                    Object oracleConnectionBuilder2 = oracleConnectionBuilder.getClass().getMethod("gssCredential", GSSCredential.class).invoke(oracleConnectionBuilder, gssCredential);
-                    Method m = oracleConnectionBuilder.getClass().getMethod("build");
-                    m.setAccessible(true);
-                    return (Connection) m.invoke(oracleConnectionBuilder2);
+                        Connection conn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<Connection>() {
+                            public Connection run() throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+                                Object oracleConnectionBuilder = ds.getClass().getMethod("createConnectionBuilder").invoke(ds);
+                                Object oracleConnectionBuilder2 = oracleConnectionBuilder.getClass().getMethod("gssCredential", GSSCredential.class).invoke(oracleConnectionBuilder, gssCredential);
+                                Method m = oracleConnectionBuilder.getClass().getMethod("build");
+                                m.setAccessible(true);
+                                return (Connection) m.invoke(oracleConnectionBuilder2);
+                            }
+                        });
                 } catch (Throwable t) {
                     throw AdapterUtil.toSQLException(t);
                 }
@@ -898,16 +902,22 @@ public class OracleHelper extends DatabaseHelper {
                 try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "Using Connection Builder path for Kerberos");
-                    Object oracleConnectionBuilder;
-                    if (is2Phase) { //XAConnection
-                        oracleConnectionBuilder = ds.getClass().getMethod("createXAConnectionBuilder").invoke(ds);
-                    } else { //PooledConnection
-                        oracleConnectionBuilder = ds.getClass().getMethod("createPooledConnectionBuilder").invoke(ds);    
-                    }
-                    Object oracleConnectionBuilder2 = oracleConnectionBuilder.getClass().getMethod("gssCredential", GSSCredential.class).invoke(oracleConnectionBuilder, gssCredential);
-                    Method m = oracleConnectionBuilder.getClass().getMethod("build");
-                    m.setAccessible(true);
-                    return new ConnectionResults((PooledConnection) m.invoke(oracleConnectionBuilder2), null);
+
+                    PooledConnection pConn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<PooledConnection>() {
+                        public PooledConnection run() throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+                            Object oracleConnectionBuilder;
+                            if (is2Phase) { //XAConnection
+                                oracleConnectionBuilder = ds.getClass().getMethod("createXAConnectionBuilder").invoke(ds);
+                            } else { //PooledConnection
+                                oracleConnectionBuilder = ds.getClass().getMethod("createPooledConnectionBuilder").invoke(ds);    
+                            }
+                            Object oracleConnectionBuilder2 = oracleConnectionBuilder.getClass().getMethod("gssCredential", GSSCredential.class).invoke(oracleConnectionBuilder, gssCredential);
+                            Method m = oracleConnectionBuilder.getClass().getMethod("build");
+                            m.setAccessible(true);
+                            return (PooledConnection) m.invoke(oracleConnectionBuilder2);                          
+                        }
+                    });
+                    return new ConnectionResults(pConn, null);
                 } catch (Throwable e) {
                     throw new ResourceException(e);
                 }

@@ -15,7 +15,7 @@
   
   <variable name="oracle.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=${ORACLE_HOSTNAME})(PORT=${ORACLE_PORT}))(CONNECT_DATA=(SERVICE_NAME=${ORACLE_DBNAME})))"/>
   
-  <dataSource jndiName="jdbc/krb/basic" sendGSSCredentialOnOracleBuilder="true">
+  <dataSource jndiName="jdbc/krb/basic">
     <jdbcDriver libraryRef="OracleLib"/>
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
@@ -27,13 +27,13 @@
     <containerAuthData krb5Principal="${KRB5_USER}" password="password"/>
   </dataSource>
   
-  <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource" sendGSSCredentialOnOracleBuilder="true">
+  <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
     <jdbcDriver libraryRef="OracleLib" />
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource" sendGSSCredentialOnOracleBuilder="true">
+  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
     <jdbcDriver libraryRef="OracleLib" />
     <properties.oracle URL="${oracle.url}"/>
     <containerAuthData krb5Principal="${KRB5_USER}"/>
@@ -52,7 +52,26 @@
     <properties.oracle databaseName="${ORACLE_DBNAME}" serverName="${ORACLE_HOSTNAME}" portNumber="${ORACLE_PORT}" driverType="thin"/>
     <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASS}"/>
   </dataSource>
-    
+  
+  <!-- Datasources for the Connection Builder path-->
+  <dataSource jndiName="jdbc/krbcb/pool" sendGSSCredentialOnOracleBuilder="true">
+    <jdbcDriver libraryRef="OracleLib"/>
+    <properties.oracle URL="${oracle.url}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/krbcb/xa" type="javax.sql.XADataSource" sendGSSCredentialOnOracleBuilder="true">
+    <jdbcDriver libraryRef="OracleLib" />
+    <properties.oracle URL="${oracle.url}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/krbcb/ds" type="javax.sql.DataSource" sendGSSCredentialOnOracleBuilder="true">
+    <jdbcDriver libraryRef="OracleLib" />
+    <properties.oracle URL="${oracle.url}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}"/>
+  </dataSource>
+  
   <javaPermission className="javax.security.auth.kerberos.ServicePermission" name="*" actions="initiate"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>
