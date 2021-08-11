@@ -38,6 +38,7 @@ import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
+import com.ibm.wsspi.kernel.service.location.WsResource;
 
 import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
@@ -114,12 +115,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     void checkpoint(Phase phase) throws CheckpointFailed {
-        doCheckpoint(phase,
-                     locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
-    }
-
-    private void doCheckpoint(Phase phase, File directory) throws CheckpointFailed {
-        directory.mkdirs();
+        File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile();
+        imageDir.mkdirs();
         Object[] factories = cc.locateServices("hookFactories");
         List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
         prepare(checkpointHooks);
@@ -129,16 +126,19 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null, 0);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "criu attempt dump to '" + directory + "' and exit process.");
+                    Tr.debug(tc, "criu attempt dump to '" + imageDir + "' and exit process.");
                 }
 
-                int dumpCode = currentCriu.dump(directory);
+                WsResource logs = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR);
+                logs.create();
+                int dumpCode = currentCriu.dump(imageDir, "checkpoint.log",
+                                                logs.asFile());
                 if (dumpCode < 0) {
                     throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu dump command failed with error: " + dumpCode, null, dumpCode);
                 }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "criu dump to " + directory + " in recovery.");
+                    Tr.debug(tc, "criu dump to " + imageDir + " in recovery.");
                 }
             }
         } catch (Exception e) {

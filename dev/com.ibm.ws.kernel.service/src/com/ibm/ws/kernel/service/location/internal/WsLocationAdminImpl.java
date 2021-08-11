@@ -67,6 +67,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
                     LOC_AREA_NAME_SERVERS = "servers/",
                     LOC_AREA_NAME_CLIENTS = "clients/",
                     LOC_AREA_NAME_WORKING = "workarea/",
+                    LOC_AREA_NAME_LOGS = "logs/",
                     LOC_AREA_NAME_EXTENSION = "extension/";
 
     private volatile static WsLocationAdminImpl instance;
@@ -218,17 +219,18 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * includes some set in response to command line argument parsing).
      *
      * @param config
-     *            Map containing location service configuration information
+     *                   Map containing location service configuration information
      * @throws IllegalArgumentException
-     *             if serverName, instanceRootStr, or bootstrapLibStr are empty or
-     *             null
+     *                                      if serverName, instanceRootStr, or bootstrapLibStr are empty or
+     *                                      null
      * @throws IllegalStateException
-     *             if bootstrap library location or instance root don't exist.
+     *                                      if bootstrap library location or instance root don't exist.
      */
     protected WsLocationAdminImpl(Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
         String serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
         String serverOutDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_OUTPUT_DIR);
+        String serverLogsDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_LOGS_DIR);
         String bootstrapLibStr = (String) config.get(LOC_INTERNAL_LIB_DIR);
         String workareaDirStr = (String) config.get(LOC_INTERNAL_WORKAREA_DIR);
 
@@ -280,6 +282,14 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
             SymbolRegistry.getRegistry().addRootSymbol(WsLocationConstants.LOC_SERVER_OUTPUT_DIR, serverConfigDir);
         } else {
             serverOutputDir = new SymbolicRootResource(serverOutDirStr, WsLocationConstants.LOC_SERVER_OUTPUT_DIR, commonRoot);
+        }
+
+        if (serverLogsDirStr == null) {
+            InternalWsResource serverLogsDir = serverOutputDir.createDescendantResource(LOC_AREA_NAME_LOGS);
+            SymbolRegistry.getRegistry().addResourceSymbol(WsLocationConstants.LOC_SERVER_LOGS_DIR, serverLogsDir);
+        } else {
+            // constructor adds to symbol registry
+            new SymbolicRootResource(serverLogsDirStr, WsLocationConstants.LOC_SERVER_LOGS_DIR, commonRoot);
         }
 
         // Set the process type, either client or server
