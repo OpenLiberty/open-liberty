@@ -153,6 +153,11 @@
             description="%use.oracle.blob.desc" 
             ibmui:group="oracle"
             required="false" type="Boolean" default="false"/>
+        <AD id="rowSizeLimit" 
+            name="%oracle.row.size.name" 
+            description="%oracle.row.size.desc" 
+            ibmui:group="oracle"
+            required="false" type="Integer" default="2"/>            
     </OCD>
 
     <Designate pid="com.ibm.ws.session.db">

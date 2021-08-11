@@ -803,7 +803,11 @@ final public class SessionProperties {
         if (bValue != null) {
             smc.setUsingMultirow(bValue.booleanValue());
         }
-
+        s = "rowSizeLimit";
+        iValue = propertyToInteger(xtpProperties.get(s));
+        if (iValue != null) {
+            smc.setRowSizeLimit(iValue.intValue());
+        }
         // tuning parameters; currently from DatabaseStoreService
         s = "scheduleInvalidation";
         bValue = propertyToBoolean(xtpProperties.get(s));

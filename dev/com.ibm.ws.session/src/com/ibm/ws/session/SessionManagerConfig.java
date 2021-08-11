@@ -61,6 +61,7 @@ public class SessionManagerConfig implements Cloneable {
     private int rowSize = 4;
     private String tableSpaceName = null;
     private boolean usingMultirow = false;
+    private int rowSizeLimit  = 2;
 
     // Object which contains MTM settings
     private Object drsSettings;
@@ -570,6 +571,20 @@ public class SessionManagerConfig implements Cloneable {
         usingMultirow = b;
     }
 
+    /**
+     * @return the rowSizeLimit
+     */
+    public final int getRowSizeLimit() {
+        return rowSizeLimit;
+    }
+
+    /**
+     * @param rowSizeLimit the rowSizeLimit to set
+     */
+    public final void setRowSizeLimit(int rowSizeLimit) {
+        this.rowSizeLimit = rowSizeLimit;
+    }    
+    
     // drsSettings
     public final Object getDRSSettings() {
         return drsSettings;

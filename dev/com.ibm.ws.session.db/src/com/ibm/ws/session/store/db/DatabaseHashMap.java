@@ -310,15 +310,13 @@ public class DatabaseHashMap extends BackedHashMap {
                 int dbCode = DBPortability.getDBCode(dmd);
                 if (dbCode == DBPortability.ORACLE) {
                     smallColSize = SMALLCOL_SIZE_ORACLE;
-                    
-                    if (_smc.isUsingMultirow())
-                        mediumColSize = MEDIUMCOL_SIZE_ORACLE_MR;
-                    else
-                        mediumColSize = MEDIUMCOL_SIZE_ORACLE;
-                    
+                    mediumColSize = MEDIUMCOL_SIZE_ORACLE;                 
+                    if (_smc.isUsingMultirow() && _smc.getRowSizeLimit()*1048576 > mediumColSize) {
+                        mediumColSize = _smc.getRowSizeLimit()*1048576;
+                        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[INIT_DB_SETTINGS], "Oracle row size : " + mediumColSize);
+                    }                    
                     largeColSize = LARGECOL_SIZE_ORACLE;
                     usingOracle = true;
-
                 } else if (dbCode == DBPortability.SYBASE) {
                     smallColSize = SMALLCOL_SIZE_SYBASE;
                     mediumColSize = MEDIUMCOL_SIZE_SYBASE;
