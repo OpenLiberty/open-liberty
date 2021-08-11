@@ -35,14 +35,13 @@ public class HelloWorldResourceForC {
 
     private final String type = "PerRequest";
 
-//    public HelloWorldResourceForC() {}
 
     public String getType() {
         return type;
     }
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;

@@ -46,11 +46,11 @@ public class DefaultResource implements Serializable {
      */
     private static volatile String message = "Hello World from restfulWS-3.0!";
 
-    private @Inject
-    SimpleBean injected;
+    @Inject
+    private SimpleBean injected;
 
-    private @Inject
-    Person person;
+    @Inject
+    private Person person;
     int counter = 0;
 
     /**

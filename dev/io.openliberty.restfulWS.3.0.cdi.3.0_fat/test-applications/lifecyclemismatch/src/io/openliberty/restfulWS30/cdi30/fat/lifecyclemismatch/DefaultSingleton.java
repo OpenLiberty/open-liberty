@@ -50,8 +50,8 @@ public class DefaultSingleton implements Serializable {
     @Inject
     private SimpleBean injected;
 
-    private @Inject
-    Person person;
+    @Inject
+    private Person person;
     int counter = 0;
 
     /**

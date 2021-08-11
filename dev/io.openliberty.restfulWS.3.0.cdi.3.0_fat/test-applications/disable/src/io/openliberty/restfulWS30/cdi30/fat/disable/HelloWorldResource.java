@@ -36,8 +36,8 @@ public class HelloWorldResource {
         this.type = type;
     }
 
-    private @Inject
-    SimpleBean simpleBean;
+    @Inject
+    private SimpleBean simpleBean;
 
     @Context
     private UriInfo uriinfo;
