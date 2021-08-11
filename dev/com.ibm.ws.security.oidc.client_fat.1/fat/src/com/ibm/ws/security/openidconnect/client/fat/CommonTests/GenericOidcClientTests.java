@@ -1192,7 +1192,7 @@ public class GenericOidcClientTests extends CommonTest {
      * </OL>
      */
     // different versions of java issue different exceptions - allow appropriate exceptions from any of our supported java versions
-    @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "com.ibm.security.cert.IBMCertPathBuilderException", "javax.net.ssl.SSLHandshakeException", "java.security.cert.CertificateException", "sun.security.validator.ValidatorException", "java.net.SocketException", "javax.net.ssl.SSLException", "javax.net.ssl.SSLProtocolException" })
+    @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "com.ibm.security.cert.IBMCertPathBuilderException", "javax.net.ssl.SSLHandshakeException", "java.security.cert.CertificateException", "sun.security.validator.ValidatorException", "java.net.SocketException", "javax.net.ssl.SSLException", "javax.net.ssl.SSLProtocolException", "com.ibm.wsspi.channelfw.exception.InvalidChainNameException" })
     @Test
     public void OidcClientSSLTest_BadOPTrustStore() throws Exception {
 
