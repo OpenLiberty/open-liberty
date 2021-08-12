@@ -156,9 +156,9 @@ DatabaseHashMap.selectNoUpdateError.explanation=An exception has been detected w
 DatabaseHashMap.selectNoUpdateError.useraction=If a SQLException has occurred then refer to the appropriate database documentation for your environment. Also, ensure that you have properly configured a data source for the Session Manager.
 
 # -------------------------------------------------------------------------------------------------
-DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: An attempt was made to write more than row size limit to the database column.
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: An attempt was made to write more to the database column than is allowed by the value of the rowSizeLimit property.
 DatabaseHashMapMR.db2LongVarCharErr.explanation=The session data may be too large for the database column.
-DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduce the size of this attribute before attempting to store it in the session or increase the rowSizeLimit property.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Reduce the size of this attribute before attempting to store it in the session or increase the value of the rowSizeLimit property.
 
 
 ControllerSession.Initialized=SESN0126I: {0} service has initialized successfully.
