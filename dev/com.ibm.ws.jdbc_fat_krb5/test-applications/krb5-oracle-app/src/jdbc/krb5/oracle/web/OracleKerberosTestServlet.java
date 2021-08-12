@@ -55,6 +55,15 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/DataSource")
     DataSource krb5RegularDs;
 
+    @Resource(lookup = "jdbc/krbcb/pool")
+    DataSource cbPoolDS;
+
+    @Resource(lookup = "jdbc/krbcb/xa")
+    DataSource cbXADS;
+
+    @Resource(lookup = "jdbc/krbcb/ds")
+    DataSource cbDS;
+
     /**
      * Getting a connection too soon after the initial ticket is obtained can cause intermittent
      * issues where we getConnection() fails with: Oracle Error ORA-12631
@@ -204,6 +213,21 @@ public class OracleKerberosTestServlet extends FATServlet {
 
         assertEquals("Expected two connections from the same datasource to share the same underlying managed connection",
                      managedConn1, managedConn2);
+    }
+
+    public void testGSSCredentialOnOracleBuilder() throws Exception {
+
+        try (Connection con = getConnectionWithRetry(cbDS)) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
+
+        try (Connection con = getConnectionWithRetry(cbPoolDS)) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
+
+        try (Connection con = getConnectionWithRetry(cbXADS)) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
     }
 
     /**
