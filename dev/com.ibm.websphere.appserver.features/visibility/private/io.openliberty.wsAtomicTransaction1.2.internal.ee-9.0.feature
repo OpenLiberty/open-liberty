@@ -10,5 +10,5 @@ visibility = private
   com.ibm.ws.wsat.cxf.utils.3.2.jakarta, \
   com.ibm.ws.wsat.webclient.3.2.jakarta, \
   com.ibm.ws.wsat.webservice.3.2.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=base
