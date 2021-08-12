@@ -115,6 +115,9 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         // Check log was cleared
         assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
         assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
+
+        // Finally stop server1
+        server1.stopServer((String[]) null);
     }
 
     protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
@@ -133,31 +136,32 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         }
     }
 
-    protected void startServers(LibertyServer... servers) {
+    protected void startServers(LibertyServer... servers) throws Exception {
         final String method = "startServers";
 
         for (LibertyServer server : servers) {
             assertNotNull("Attempted to start a null server", server);
             ProgramOutput po = null;
-            try {
+            int attempt = 0;
+            int maxAttempts = 2;
+
+            do {
+                ++attempt;
                 setUp(server);
                 po = server.startServerAndValidate(false, false, false);
                 if (po.getReturnCode() != 0) {
+                    server.resetStarted();
                     Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
                     Log.info(getClass(), method, "Stdout: " + po.getStdout());
                     Log.info(getClass(), method, "Stderr: " + po.getStderr());
-                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                } else {
+                    server.validateAppLoaded(APP_NAME);
                 }
-                server.validateAppLoaded(APP_NAME);
-            } catch (Throwable t) {
-                Log.error(getClass(), method, t);
-                // We need the logs for this server to debug what the problem was
-                try {
-                    server.postStopServerArchive();
-                } catch (Exception e) {
-                    Log.error(getClass(), method, e);
-                }
-                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
+            } while (po.getReturnCode() != 0 && attempt < maxAttempts);
+
+            if (attempt >= maxAttempts) {
+                server.postStopServerArchive();
+                throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
             }
         }
     }
