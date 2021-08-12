@@ -88,12 +88,16 @@ public class CheckpointImplTest {
     }
 
     static class TestCRIU implements ExecuteCRIU {
-        volatile File directory = null;
+        volatile File imageDir = null;
+        volatile String logFilename = null;
+        volatile File workDir = null;
         volatile boolean throwIOException = false;
 
         @Override
-        public int dump(File directory) throws IOException {
-            this.directory = directory;
+        public int dump(File imageDir, String logFileName, File workDir) throws IOException {
+            this.imageDir = imageDir;
+            this.logFilename = logFileName;
+            this.workDir = workDir;
             if (throwIOException) {
                 throw new IOException("Test exception thrown from TestCRIU");
             }
@@ -278,7 +282,7 @@ public class CheckpointImplTest {
         assertEquals("Unexpected Prepare called.", false, f3.hook.prepareCalled);
         assertNull("Wrong cause.", f3.hook.abortPrepareCause);
 
-        assertNull("Unexpected call to criu", criu.directory);
+        assertNull("Unexpected call to criu", criu.imageDir);
     }
 
     @Test
@@ -333,7 +337,7 @@ public class CheckpointImplTest {
         assertEquals("Unexpected Restore called.", false, f3.hook.restoreCalled);
         assertNull("Wrong cause.", f3.hook.abortRestoreCause);
 
-        assertTrue("Expected to have called criu", criu.directory.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
     @Test
@@ -344,7 +348,7 @@ public class CheckpointImplTest {
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext1(true, false, factory), criu, locAdmin);
         checkpoint.check();
         assertEquals("Wrong phase.", Phase.APPLICATIONS, factory.phase);
-        assertTrue("Expected to have called criu", criu.directory.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
     @Test
@@ -359,7 +363,7 @@ public class CheckpointImplTest {
         assertNotNull("Expected to have called onCompletion", cl);
         cl.successfulCompletion(createTestFuture(), Boolean.TRUE);
         assertEquals("Wrong phase.", Phase.FEATURES, factory.phase);
-        assertTrue("Expected to have called criu", criu.directory.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
     private CompletionListener<Boolean> getCompletionListener() {
@@ -381,7 +385,7 @@ public class CheckpointImplTest {
 
     private void checkDirectory(Phase phase, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailed {
         checkpoint.checkpoint(phase);
-        assertTrue("Wrong file.", criu.directory.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertTrue("Wrong file.", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
     private void checkFailDump(Phase phase, CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) {
@@ -393,6 +397,6 @@ public class CheckpointImplTest {
             assertEquals("Wrong type.", Type.SNAPSHOT_FAILED, e.getType());
             assertTrue("Wrong cause.", e.getCause() instanceof IOException);
         }
-        assertTrue("Wrong file.", criu.directory.getAbsolutePath().contains(locAdmin.getServerName()));
+        assertTrue("Wrong file.", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 }
