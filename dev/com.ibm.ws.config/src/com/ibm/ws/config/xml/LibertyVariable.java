@@ -13,7 +13,7 @@ package com.ibm.ws.config.xml;
 public interface LibertyVariable {
 
     public enum Source {
-        XML_CONFIG, BOOTSTRAP, SERVICE_BINDING, COMMAND_LINE
+        XML_CONFIG, BOOTSTRAP, FILE_SYSTEM, COMMAND_LINE
     };
 
     String getName();

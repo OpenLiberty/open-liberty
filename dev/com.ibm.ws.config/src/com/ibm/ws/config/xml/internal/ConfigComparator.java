@@ -38,7 +38,7 @@ public class ConfigComparator {
     private final BaseConfiguration newConfiguration;
     private final MetaTypeRegistry metatypeRegistry;
     private RegistryEntry parentRegistryEntry;
-    private final Map<String, DeltaType> serviceBindingVariableChanges;
+    private final Map<String, DeltaType> fileSystemVariableChanges;
 
     public ConfigComparator(BaseConfiguration oldConfiguration, BaseConfiguration newConfiguration, MetaTypeRegistry registry) {
         this(oldConfiguration, newConfiguration, registry, null);
@@ -48,7 +48,7 @@ public class ConfigComparator {
         this.oldConfiguration = oldConfiguration;
         this.newConfiguration = newConfiguration;
         this.metatypeRegistry = registry;
-        this.serviceBindingVariableChanges = variableDelta;
+        this.fileSystemVariableChanges = variableDelta;
     }
 
     private RegistryEntry getRegistry(RegistryEntry parent, String childNodeName) {
@@ -568,8 +568,8 @@ public class ConfigComparator {
 
     private Map<String, DeltaType> computeVariableDelta() throws ConfigUpdateException {
         // server.xml variables and file system variables can't change at the same time
-        if (this.serviceBindingVariableChanges != null) {
-            return this.serviceBindingVariableChanges;
+        if (this.fileSystemVariableChanges != null) {
+            return this.fileSystemVariableChanges;
         }
 
         Map<String, DeltaType> deltaMap = new HashMap<String, DeltaType>();

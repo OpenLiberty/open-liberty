@@ -152,7 +152,7 @@ public class HDDataStoreHelper {
 
     public PrintWriter getPrintWriter() {
         // Redirects to System.out instead of OpenLiberty trace, which will cause output to go into message.log where the test can scan for it
-        return new PrintWriter(new OutputStreamWriter(System.out));
+        return new PrintWriter(new OutputStreamWriter(System.out), true);
     }
 
     public String getXAExceptionContents(XAException x) {
