@@ -159,7 +159,8 @@ public class JavaInfo {
             @FFDCIgnore(ClassNotFoundException.class)
             public Boolean run() {
                 try {
-                    Class.forName(className);
+                    // passing null to only look at the system classloader
+                    Class.forName(className, false, null);
                     return true;
                 } catch (ClassNotFoundException e) {
                     //No FFDC needed
