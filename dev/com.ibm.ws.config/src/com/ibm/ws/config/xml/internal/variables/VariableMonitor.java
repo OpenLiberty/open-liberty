@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -26,7 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.ConfigRefresher;
-import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry.ServiceBindingVariable;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry.FileSystemVariable;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -50,9 +51,14 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
                            ConfigRefresher refresher, ConfigVariableRegistry variableRegistry) {
         this.bundleContext = bc;
         ServiceReference<WsLocationAdmin> sr = bc.getServiceReference(WsLocationAdmin.class);
-        String serviceBindingRoot = bc.getService(sr).resolveString(WsLocationConstants.SYMBOL_SERVICE_BINDING_ROOT);
         this.monitoredDirectories = new ArrayList<String>();
-        monitoredDirectories.add(serviceBindingRoot);
+        String fileSystemVariableRoot = bc.getService(sr).resolveString(WsLocationConstants.SYMBOL_VARIABLE_SOURCE_DIRS);
+        StringTokenizer st = new StringTokenizer(fileSystemVariableRoot, File.pathSeparator);
+        while (st.hasMoreTokens()) {
+            String directory = st.nextToken();
+            monitoredDirectories.add(directory);
+        }
+
         this.monitorInterval = monitorInterval;
         this.monitorType = fileMonitorType;
         this.configRefresher = refresher;
@@ -75,7 +81,7 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Monitoring of SERVICE_BINDING_ROOT is disabled.");
+            Tr.debug(tc, "Monitoring of VARIABLE_SOURCE_DIRS is disabled.");
         }
     }
 
@@ -121,21 +127,21 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
 
         for (File f : deletedFiles) {
             // Only create a delta if a variable is actually removed (otherwise it's a directory)
-            if (variableRegistry.removeServiceBindingVariable(f)) {
+            if (variableRegistry.removeFileSystemVariable(f)) {
                 deltaMap.put(f.getName(), DeltaType.REMOVED);
             }
 
         }
         for (File f : createdFiles) {
             if (f.isFile()) {
-                ServiceBindingVariable sbv = variableRegistry.addServiceBindingVariable(f);
+                FileSystemVariable sbv = variableRegistry.addFileSystemVariable(f);
                 deltaMap.put(sbv.getName(), DeltaType.ADDED);
             }
         }
 
         for (File f : modifiedFiles) {
             if (f.isFile()) {
-                ServiceBindingVariable sbv = variableRegistry.modifyServiceBindingVariable(f);
+                FileSystemVariable sbv = variableRegistry.modifyFileSystemVariable(f);
                 deltaMap.put(sbv.getName(), DeltaType.MODIFIED);
             }
         }

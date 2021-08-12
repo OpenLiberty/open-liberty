@@ -140,19 +140,22 @@ public class ServiceBindingVarServlet extends HttpServlet {
     public void testNoVariables() {
         Collection<LibertyVariable> vars = getVariables();
         for (LibertyVariable var : vars) {
-            assertFalse("No variables should come from the file system", var.getSource() == Source.SERVICE_BINDING);
+            assertFalse("No variables should come from the file system", var.getSource() == Source.FILE_SYSTEM);
         }
 
     }
 
     private static final String SIMPLE_VAR_NAME = "simple";
     private static final String SIMPLE_VAR_VALUE = "valueFromSimpleFile";
+    private static final String UPDATED_SIMPLE_VAR_VALUE = "updatedValue";
+    private static final String ADDED_VAR_NAME = "simpleTwo";
+    private static final String ADDED_VAR_VALUE = "added";
 
     public void testSimpleFileVariable() {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 assertTrue("The only variable should be named 'simple'", SIMPLE_VAR_NAME.equals(var.getName()));
                 assertTrue("The variable value should be valueFromSimpleFile", SIMPLE_VAR_VALUE.equals(var.getValue()));
@@ -165,6 +168,46 @@ public class ServiceBindingVarServlet extends HttpServlet {
 
     }
 
+    public void testUpdateSimpleFileVariable() {
+        Collection<LibertyVariable> vars = getVariables();
+        int serviceBindingVars = 0;
+        for (LibertyVariable var : vars) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
+                serviceBindingVars++;
+                assertTrue("The only variable should be named 'simple'", SIMPLE_VAR_NAME.equals(var.getName()));
+                assertTrue("The variable value should be updatedValue", UPDATED_SIMPLE_VAR_VALUE.equals(var.getValue()));
+            }
+        }
+        assertEquals("There should be exactly one service binding variable", 1, serviceBindingVars);
+
+        VariableRegistry registry = getRegistry();
+        assertEquals("${simple} should be resolved", UPDATED_SIMPLE_VAR_VALUE, registry.resolveRawString("${" + SIMPLE_VAR_NAME + "}"));
+
+    }
+
+    public void testAddSimpleFileVariable() {
+        Collection<LibertyVariable> vars = getVariables();
+        int serviceBindingVars = 0;
+        for (LibertyVariable var : vars) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
+                serviceBindingVars++;
+                if (SIMPLE_VAR_NAME.equals(var.getName())) {
+                    assertTrue("The variable " + SIMPLE_VAR_NAME + " should be " + SIMPLE_VAR_VALUE, SIMPLE_VAR_VALUE.equals(var.getValue()));
+                } else if (ADDED_VAR_NAME.equals(var.getName())) {
+                    assertTrue("The variable " + ADDED_VAR_NAME + " should be " + ADDED_VAR_VALUE, ADDED_VAR_VALUE.equals(var.getValue()));
+                } else {
+                    fail("Unexpected variable: " + var.getName());
+                }
+            }
+        }
+        assertEquals("There should be exactly two service binding variables", 2, serviceBindingVars);
+
+        VariableRegistry registry = getRegistry();
+        assertEquals("${simple} should be resolved", SIMPLE_VAR_VALUE, registry.resolveRawString("${" + SIMPLE_VAR_NAME + "}"));
+        assertEquals("${simpleTwo} should be resolved", ADDED_VAR_VALUE, registry.resolveRawString("${" + ADDED_VAR_NAME + "}"));
+
+    }
+
     private static final String ACCOUNT_DB_USER = "account_db/username";
     private static final String ACCOUNT_DB_USER_VALUE = "wopr";
     private static final String ACCOUNT_DB_PASSWORD = "account_db/password";
@@ -174,7 +217,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
@@ -195,7 +238,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (BINARY_FILE_NAME.equals(var.getName())) {
                     assertNull("The value for " + BINARY_FILE_NAME + " should be null", var.getValue());
@@ -212,13 +255,41 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 assertTrue("The only variable should be named 'simple'", SIMPLE_VAR_NAME.equals(var.getName()));
                 assertTrue("The variable value should be valueFromSimpleFile", SIMPLE_VAR_VALUE.equals(var.getValue()));
             }
         }
         assertEquals("There should be exactly one service binding variable", 1, serviceBindingVars);
+    }
+
+    public void testMultipleDirectories() {
+        Collection<LibertyVariable> vars = getVariables();
+        int serviceBindingVars = 0;
+        boolean simpleVarFound = false;
+        boolean accountNameFound = false;
+        boolean accountPwdFound = false;
+        for (LibertyVariable var : vars) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
+                serviceBindingVars++;
+
+                if (SIMPLE_VAR_NAME.equals(var.getName())) {
+                    simpleVarFound = true;
+                    assertTrue("The variable value should be valueFromSimpleFile", SIMPLE_VAR_VALUE.equals(var.getValue()));
+                } else if (ACCOUNT_DB_USER.equals(var.getName())) {
+                    accountNameFound = true;
+                    assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
+                } else if (ACCOUNT_DB_PASSWORD.equals(var.getName())) {
+                    accountPwdFound = true;
+                    assertEquals("The value for " + ACCOUNT_DB_PASSWORD + " should be " + ACCOUNT_DB_PASSWORD_VALUE, ACCOUNT_DB_PASSWORD_VALUE, var.getValue());
+                } else {
+                    fail("Unexpected variable: " + var.getName());
+                }
+
+            }
+        }
+        assertEquals("There should be exactly three service binding variables", 3, serviceBindingVars);
     }
 
     private static final String VAR1 = "conflicts/var1";
@@ -231,7 +302,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (VAR1.equals(var.getName())) {
                     assertEquals("The value for " + VAR1 + " should be " + VAR1_SBV_VALUE, VAR1_SBV_VALUE, var.getValue());
@@ -259,7 +330,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (EMPTY_VAR.equals(var.getName())) {
                     assertNull("The value for " + EMPTY_VAR + " should be null", var.getValue());
@@ -277,7 +348,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ORIGINAL_VALUE, ORIGINAL_VALUE, var.getValue());
@@ -298,7 +369,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
@@ -321,7 +392,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
@@ -344,7 +415,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
@@ -363,7 +434,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
@@ -383,7 +454,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());
@@ -405,7 +476,7 @@ public class ServiceBindingVarServlet extends HttpServlet {
         Collection<LibertyVariable> vars = getVariables();
         int serviceBindingVars = 0;
         for (LibertyVariable var : vars) {
-            if (var.getSource() == Source.SERVICE_BINDING) {
+            if (var.getSource() == Source.FILE_SYSTEM) {
                 serviceBindingVars++;
                 if (ACCOUNT_DB_USER.equals(var.getName())) {
                     assertEquals("The value for " + ACCOUNT_DB_USER + " should be " + ACCOUNT_DB_USER_VALUE, ACCOUNT_DB_USER_VALUE, var.getValue());

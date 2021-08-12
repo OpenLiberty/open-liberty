@@ -83,13 +83,13 @@ public class ConfigVariableIntrospection implements Introspector {
         }
         writer.println("---------------------\n");
 
-        writer.println("Service Binding Variables from " + configVariables.getServiceBindingRootDirectory());
+        writer.println("Service Binding Variables from " + configVariables.getFileSystemVariableRootDirectories());
         writer.println("---------------------");
 
         // Write the values
         for (LibertyVariable lv : env) {
 
-            if (lv.getSource() == Source.SERVICE_BINDING) {
+            if (lv.getSource() == Source.FILE_SYSTEM) {
                 writer.print(lv.getName());
                 writer.print("=");
                 writer.println(lv.getObscuredValue().replaceAll("\\\n", "<nl>"));
