@@ -83,6 +83,13 @@ a:visited {
 <title id="explore_tab_title"></title>
 <%@ include file="images/Liberty-Icon-Stack.svg"%>
 <%@ include file="imagesShared/Liberty-Common-Icon-Stack.svg"%>
+    
+   <%
+			// Set security headers	
+			response.setHeader("X-XSS-Protection", "1");	
+			response.setHeader("X-Content-Type-Options", "nosniff");	
+			response.setHeader("X-Frame-Options", "SAMEORIGIN");
+		%>
 </head>
 <body class="oneui" style="height: 100%; width: 100%">
     <noscript>
