@@ -195,6 +195,15 @@ public class JavaInfo {
     }
 
     /**
+     * For debug purposes only
+     *
+     * @return a String containing basic info about the JDK
+     */
+    public static String debugString() {
+        return "Vendor = " + vendor() + ", Version = " + majorVersion() + "." + minorVersion();
+    }
+
+    /**
      * @return the integer value of the string, or 0 if the string cannot be coerced to a string
      */
     private static int parseIntSafe(String str) {
