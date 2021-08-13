@@ -1379,13 +1379,14 @@ case "$ACTION" in
       echo checkpoint image not found at ${SERVER_OUTPUT_DIR}/workarea/checkpoint/image.
       exit 2
     fi  
+    mkdirs ${X_LOG_DIR}/checkpoint
     # invoke criu command
     echo Start server from image.
     echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
     if [ -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand ]; then
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/restore.log &
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log &
     else 
-      exec criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/restore.log
+      exec criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
     fi
     rc=$?
     if [ $rc != 0 ]; then
