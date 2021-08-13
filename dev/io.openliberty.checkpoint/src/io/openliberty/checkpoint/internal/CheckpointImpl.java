@@ -52,6 +52,10 @@ import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
+    private static final String DIR_CHECKPOINT = "checkpoint/";
+    private static final String DIR_CHECKPOINT_IMAGE = DIR_CHECKPOINT + "image/";
+    private static final String CHECKPOINT_LOG_FILE = "checkpoint.log";
+
     private static final TraceComponent tc = Tr.register(CheckpointImpl.class);
     private final ComponentContext cc;
     private final boolean checkpointFeatures;
@@ -115,7 +119,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     void checkpoint(Phase phase) throws CheckpointFailed {
-        File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile();
+        File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + DIR_CHECKPOINT_IMAGE).asFile();
         imageDir.mkdirs();
         Object[] factories = cc.locateServices("hookFactories");
         List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
@@ -129,10 +133,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                     Tr.debug(tc, "criu attempt dump to '" + imageDir + "' and exit process.");
                 }
 
-                WsResource logs = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR);
-                logs.create();
-                int dumpCode = currentCriu.dump(imageDir, "checkpoint.log",
-                                                logs.asFile());
+                WsResource logsCheckpoint = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_LOGS_DIR + DIR_CHECKPOINT);
+                logsCheckpoint.create();
+                int dumpCode = currentCriu.dump(imageDir, CHECKPOINT_LOG_FILE,
+                                                logsCheckpoint.asFile());
                 if (dumpCode < 0) {
                     throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu dump command failed with error: " + dumpCode, null, dumpCode);
                 }
