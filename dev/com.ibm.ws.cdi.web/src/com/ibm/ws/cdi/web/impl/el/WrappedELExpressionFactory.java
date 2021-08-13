@@ -19,7 +19,7 @@ import javax.el.ValueExpression;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.web.factories.WeldListenerFactory;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 /**
  *

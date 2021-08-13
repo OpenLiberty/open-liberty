@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -185,4 +185,6 @@ instrument.ffdc: false
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  io.openliberty.el.internal.cdi;version=latest
+

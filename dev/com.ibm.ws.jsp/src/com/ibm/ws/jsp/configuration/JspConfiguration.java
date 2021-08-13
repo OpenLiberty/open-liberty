@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import javax.el.ExpressionFactory;
 
 import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 public class JspConfiguration { 
 	static protected Logger logger;

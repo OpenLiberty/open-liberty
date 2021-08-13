@@ -16,8 +16,8 @@ import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
 import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
+import io.openliberty.el.internal.cdi.ELFactoryWrapperForCDI;
 
 public class JcdiWrappedJspApplicationContextImpl extends JspApplicationContextImpl implements JspApplicationContext {
 
