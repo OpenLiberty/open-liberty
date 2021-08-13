@@ -13,10 +13,11 @@ package com.ibm.ws.security.fat.common;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -29,6 +30,7 @@ import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 
 public class CommonTest {
@@ -114,7 +116,7 @@ public class CommonTest {
     public static void timeoutChecker() throws Exception {
         String method = "timeoutChecker";
 
-        int timeoutCounter = 0 ;
+        int timeoutCounter = 0;
         boolean timeoutFound = false;
         String outputFile = "./results/output.txt";
         File f = new File(outputFile);
@@ -203,6 +205,15 @@ public class CommonTest {
         LibertyServer myServer = server.getServer();
         Machine machine = myServer.getMachine();
 
+        try {
+            Set<String> beforeAppList = myServer.listAllInstalledAppsForValidation();
+            for (String app : beforeAppList) {
+                Log.info(thisClass, "transformAppsInDefaultDirs", "Before: installed app to check: " + app);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e, "Failed to get the list of applications to validate");
+        }
+
         Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
         RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
 
@@ -214,27 +225,85 @@ public class CommonTest {
         } catch (Exception e) {
             Log.error(thisClass, "transformAppsInDefaultDirs", e);
         }
-        if (list != null) {
-            for (RemoteFile app : list) {
-                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+        try {
+            if (list != null) {
+                Log.info(thisClass, "transformAppsInDefaultDirs", "number of files before cleanup: " + list.length);
+                for (RemoteFile app : list) {
+                    Log.info(thisClass, "transformAppsInDefaultDirs", "Cleanup generic file: file name is: " + app.toString());
+                    if (!app.toString().endsWith(".jakarta") && !app.toString().endsWith(".orig")) {
+                        Log.info(thisClass, "transformAppsInDefaultDirs", "Delete the file " + app + " as it is not needed for this instance");
+                        File fromApp = new File(app.toString());
+                        FileUtils.recursiveDelete(fromApp.getAbsoluteFile());
+
+                    }
+                }
+                // now that the we've removed the original file, we can copy the appropriate jakarta or orig file
+                list = appDir.list(false);
+                if (list != null) {
+                    Log.info(thisClass, "transformAppsInDefaultDirs", "number of files after cleanup: " + list.length);
+                    for (RemoteFile app : list) {
+                        Log.info(thisClass, "transformAppsInDefaultDirs", "file name is: " + app.toString());
+                        File newName = new File(LibertyServerUtils.makeJavaCompatible(app.toString().replace(".jakarta", "").replace(".orig", ""), machine));
+                        File fromApp = new File(app.toString());
+                        if ((JakartaEE9Action.isActive() && app.toString().endsWith(".jakarta")) ||
+                                (!JakartaEE9Action.isActive() && app.toString().endsWith(".orig"))) {
+                            Log.info(thisClass, "transformAppsInDefaultDirs", "Copy " + app.toString() + " to generic app name");
+                            //                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+                            FileUtils.copyFile(fromApp.getAbsoluteFile(), newName.getAbsoluteFile());
+                            FileUtils.recursiveDelete(fromApp.getAbsoluteFile());
+                            // remove the .jakarta or .orig named app from the list of apps to wait for
+                            myServer.removeInstalledAppForValidation(app.getName());
+                            // make sure that the app we will need to start is in the list of installed apps
+                            myServer.addInstalledAppForValidation(newName.getAbsoluteFile().getName().replace(".war", "").replace(".ear", ""));
+                        } else {
+                            Log.info(thisClass, "transformAppsInDefaultDirs", "Delete the file " + app + " as it is not needed for this instance");
+                            FileUtils.recursiveDelete(fromApp.getAbsoluteFile());
+                            myServer.removeInstalledAppForValidation(app.getName());
+                        }
+                    }
+                }
             }
+
+            RemoteFile[] afterList = appDir.list(false);
+            if (afterList != null) {
+                for (RemoteFile app : afterList) {
+                    Log.info(thisClass, "transformAppsInDefaultDirs", "file name after update: " + app.toString());
+                }
+            } else {
+                Log.info(thisClass, "transformAppsInDefaultDirs", "No files after update");
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e);
         }
+
+        try {
+            Set<String> afterAppList = myServer.listAllInstalledAppsForValidation();
+            for (String app : afterAppList) {
+                Log.info(thisClass, "transformAppsInDefaultDirs", "After: installed app to check: " + app);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e, "Failed to get the list of applications to validate");
+        }
+
     }
 
     /**
      * JakartaEE9 transform applications for a specified server.
      *
-     * @param serverName The server to transform the applications on.
+     * @param serverName
+     *            The server to transform the applications on.
      */
-    public static void transformApps(TestServer server) {
-        if (JakartaEE9Action.isActive()) {
+    public static void transformApps(TestServer server) throws Exception {
 
-            transformAppsInDefaultDirs(server, "dropins");
-            transformAppsInDefaultDirs(server, "test-apps");
+        transformAppsInDefaultDirs(server, "dropins");
+        transformAppsInDefaultDirs(server, "test-apps");
 
-        }
+        // we have to handle the idp app differently - as we have to start the idp and sp servers
+        // and exchange config info between them before starting the idp app
+        server.getServer().removeInstalledAppForValidation("idp");
+
     }
-    
+
     @After
     public void endTestCleanup() throws Exception {
 
@@ -247,4 +316,12 @@ public class CommonTest {
             e.printStackTrace(System.out);
         }
     }
+
+    @BeforeClass
+    public static void xyz() {
+
+        CommonAppTransformer.transformAppsInPublish();
+
+    }
+
 }

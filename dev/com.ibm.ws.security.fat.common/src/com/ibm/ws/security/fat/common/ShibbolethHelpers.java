@@ -27,8 +27,10 @@ import javax.naming.directory.InitialDirContext;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LDAPUtils;
 
 public class ShibbolethHelpers {
@@ -478,14 +480,27 @@ public class ShibbolethHelpers {
         String thisMethod = "chooseIdpWarVersion";
         LibertyServer theServer = idpServer.getServer();
 
+        String extension = ".orig";
+        if (JakartaEE9Action.isActive()) {
+            extension = ".jakarta";
+        }
         // copy the appropriate version of the idp.war file
         if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
             Log.info(thisClass, thisMethod, "################## Copying the 3.1.1 version of Shibbolet ##################h");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/test-apps/idp-war-3.3.1.war");
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war" + extension, theServer.getServerRoot() + "/test-apps/idp-war-3.3.1.war" + extension);
         } else {
             Log.info(thisClass, thisMethod, "################## Copying the 4.1.0 version of Shibboleth ##################");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/test-apps/idp-war-4.1.0.war");
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war" + extension, theServer.getServerRoot() + "/test-apps/idp-war-4.1.0.war" + extension);
         }
+        FileUtils.recursiveDelete(new File(theServer.getServerRoot() + "/test-apps/idp-war-3.3.1.war" + ".jakarta"));
+        FileUtils.recursiveDelete(new File(theServer.getServerRoot() + "/test-apps/idp-war-3.3.1.war" + ".orig"));
+        FileUtils.recursiveDelete(new File(theServer.getServerRoot() + "/test-apps/idp-war-4.1.0.war" + ".jakarta"));
+        FileUtils.recursiveDelete(new File(theServer.getServerRoot() + "/test-apps/idp-war-4.1.0.war" + ".orig"));
+        theServer.removeInstalledAppForValidation("idp-war-3.3.1");
+        theServer.removeInstalledAppForValidation("idp-war-4.1.0");
+        // make sure that the app we don't wait for the idp app to automatically start - we need to start that AFTER with
+        // gather server info (port numbers, ... of the SP and put those in the idp config)
+        theServer.removeInstalledAppForValidation("idp");
 
     }
 
