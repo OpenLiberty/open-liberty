@@ -60,7 +60,6 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Shared Servers
                 // TFB:
                 // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
                 // the gradlew 'buildandrun' invocation.
@@ -68,7 +67,6 @@ import componenttest.rules.repeater.RepeatTests;
                 // I'm still determining if this is purely a local problem.
                 //              WCPushBuilderSecurityTest.class,
                 WCApplicationMBeanStatusTest.class,
-                // @Server Annotations
                 WCContextRootPrecedence.class,
                 WCPushBuilderTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,

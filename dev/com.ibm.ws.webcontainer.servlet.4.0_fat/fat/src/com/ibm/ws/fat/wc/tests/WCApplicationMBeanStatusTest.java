@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,29 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  *
@@ -43,18 +45,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  *
  */
 @RunWith(FATRunner.class)
-public class WCApplicationMBeanStatusTest extends LoggingTest {
+public class WCApplicationMBeanStatusTest {
 
     private final static String CLASSNAME = WCApplicationMBeanStatusTest.class.getName();
     private final static Logger LOG = Logger.getLogger(CLASSNAME);
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER;
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    @Server("servlet40_stopAppStartListenerExceptionServer")
+    public static LibertyServer server;
 
     /**
      * @throws Exception
@@ -68,49 +65,23 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
     @BeforeClass
     @ExpectedFFDC({ "java.lang.Exception", "java.lang.RuntimeException" })
     public static void setUp() throws Exception {
-        if (componenttest.rules.repeater.JakartaEE9Action.isActive()) {
-            LOG.info("Setup : Prepare EE9 server");
-            if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-                SHARED_SERVER.getLibertyServer().stopServer("SRVE0283E:.*", "SRVE0265E:.*");
-                LOG.info("Setup : Prepare EE9, STOP the current server");
-            }
-            SHARED_SERVER = new SharedServer("servlet50_stopAppStartListenerExceptionServer");
-        }
-        else {
-            LOG.info("Setup : Prepare EE8 server");
-            SHARED_SERVER = new SharedServer("servlet40_stopAppStartListenerExceptionServer");
-        }
-
         LOG.info("Setup : add TestBadServletContextListener.war to the server if not already present.");
+        ShrinkHelper.defaultDropinApp(server, "TestBadServletContextListener.war", "testbadscl.war.listener");
 
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestBadServletContextListener.war",
-                                                  false,
-                                                  "testbadscl.war.listener");
-        LOG.info("Setup : TestBadServletContextListener.war added to the server");
+        LOG.info("Setup : add TestServlet40.war to the server if not already present.");
+        ShrinkHelper.defaultDropinApp(server, "TestServlet40.war", "testservlet40.war.servlets");
 
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
-                                                  "TestServlet40.war",
-                                                  true,
-                                                  "testservlet40.war.servlets");
+        // We can't start the server like normal as there are application startup errors.
+        // Instead we'll set the log name, start the server and won't validate the applications.
+        // Then we'll validate the applications on our own.
+        server.setConsoleLogName(WCApplicationMBeanStatusTest.class.getSimpleName() + ".log");
+        server.startServerAndValidate(true, true, false);
 
-        LOG.info("Setup : TestServlet40.war added to the server");
+        // Validate the necessary application has started.
+        server.validateAppLoaded("TestServlet40");
 
-        SHARED_SERVER.startIfNotStarted();
-
-        // The ApplicationMBean is added in TestServlet40
-        WCApplicationHelper.waitForAppStart("TestServlet40", CLASSNAME, SHARED_SERVER.getLibertyServer());
-
-        LOG.info("Setup : TestServlet40.war started on the server");
-
-        // The failing servletcontext is added in TestBadServletContextListener
-        WCApplicationHelper.waitForAppFailStart("TestBadServletContextListener", CLASSNAME,
-                                                SHARED_SERVER.getLibertyServer());
-
-        LOG.info("Setup : TestBadServletContextListener failed to start on the server as expected");
-
-        // wait for the three ffdc which are listed above
-        SHARED_SERVER.getLibertyServer().waitForMultipleStringsInLog(3, "FFDC1015I");
+        // wait for the three ffdc which are listed above.
+        server.waitForMultipleStringsInLog(3, "FFDC1015I");
 
         LOG.info("Setup : complete, ready for Tests");
     }
@@ -126,12 +97,9 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE0283E:.*", "SRVE0265E:.*");
+        if (server != null && server.isStarted()) {
+            server.stopServer("SRVE0283E:.*", "SRVE0265E:.*");
         }
-        
-        //Null out the static server to prevent an auto-restart upon repeated tests.
-        SHARED_SERVER = null;
     }
 
     /**
@@ -140,9 +108,9 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
      *                       The result in logs should be INSTALLED
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) 
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void test_AppStatusInstalled() throws Exception {
-        this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
+        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
     }
 
     /**
@@ -151,38 +119,52 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
      *                       The result in logs should be STARTED
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) 
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void test_AppStatusStarted() throws Exception {
-        this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
+        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
     }
 
-    
     /**
      * Rerun the above 2 tests using the default setting of stopappstartuponlistenerexception which is true in servlet 5
      * i.e the main difference is the setting of stopappstartuponlistenerexception NOT explicitly set in the server.xml in servlet 5 (or EE9)
      * TestBadServletContextListener.war should fail to start.
-     * 
+     *
      * Note: though the tests are skipped when running under NO_MODIFICATION (i.e EE8/servlet4), the junit still reports the tests SUCCESS.
-     *        This is due to the junit old framework.
-     *        Example from output.txt during EE8 tests:
-     *        
-     *                  Skipping test method test_AppStatusInstalled_servlet5_default on action NO_MODIFICATION_ACTION
-     *                  Skipping test method test_AppStatusStarted_servlet5_default on action NO_MODIFICATION_ACTION
+     * This is due to the junit old framework.
+     * Example from output.txt during EE8 tests:
+     *
+     * Skipping test method test_AppStatusInstalled_servlet5_default on action NO_MODIFICATION_ACTION
+     * Skipping test method test_AppStatusStarted_servlet5_default on action NO_MODIFICATION_ACTION
      */
-    
-    
+
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) 
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void test_AppStatusInstalled_servlet5_default() throws Exception {
-        this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
+        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
     }
-    
+
     @Test
     @Mode(TestMode.FULL)
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void test_AppStatusStarted_servlet5_default() throws Exception {
-        this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
+        verifyStringInResponse("/TestServlet40", "/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
     }
 
+    private void verifyStringInResponse(String contextRoot, String path, String expectedResponse) throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + path);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Response : " + response.getText());
+
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, response.getResponseCode());
+
+        String responseText = response.getText();
+
+        assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
+
+    }
 }
