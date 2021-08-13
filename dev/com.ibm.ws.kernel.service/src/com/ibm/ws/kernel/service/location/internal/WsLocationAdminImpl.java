@@ -94,7 +94,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * properties provided by the bundle context when running in an osgi
      * framework.
      *
-     * @param initProps
+     * @param ctx
      * @return WsLocationAdmin
      */
     public static WsLocationAdminImpl createLocations(BundleContext ctx) {
@@ -335,7 +335,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         addResourcePath(bootstrapLib.getNormalizedPath());
 
-        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_SERVICE_BINDING_ROOT, (String) config.get(WsLocationConstants.LOC_SERVICE_BINDING_ROOT));
+        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS));
     }
 
     private final void throwInitializationException(RuntimeException t) {

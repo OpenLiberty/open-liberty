@@ -47,7 +47,10 @@ public interface WsLocationConstants {
                     LOC_SHARED_CONFIG_DIR = "shared.config.dir",
                     LOC_SHARED_RESC_DIR = "shared.resource.dir",
                     LOC_SERVER_UUID = "wlp.server.uuid",
-                    LOC_SERVICE_BINDING_ROOT = "wlp.svc.binding.root";
+                    LOC_VARIABLE_SOURCE_DIRS = "wlp.var.src.dirs";
+    @Deprecated
+    String LOC_SERVICE_BINDING_ROOT = "wlp.svc.binding.root";
+    
     /**
      * Pre-constructed symbols for user-configured locations;
      * includes trailing slash.
@@ -67,6 +70,9 @@ public interface WsLocationConstants {
                     SYMBOL_SHARED_CONFIG_DIR = "${shared.config.dir}/",
                     SYMBOL_SHARED_RESC_DIR = "${shared.resource.dir}/",
                     SYMBOL_TMP_DIR = "${tmp}/",
-                    SYMBOL_SERVICE_BINDING_ROOT = "${wlp.svc.binding.root}/";
+                    SYMBOL_VARIABLE_SOURCE_DIRS = "${wlp.var.src.dirs}/";
 
+    @Deprecated
+    String SYMBOL_SERVICE_BINDING_ROOT = "${wlp.svc.binding.root}/";
+ 
 }
