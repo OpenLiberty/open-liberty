@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -803,7 +803,11 @@ final public class SessionProperties {
         if (bValue != null) {
             smc.setUsingMultirow(bValue.booleanValue());
         }
-
+        s = "rowSizeLimit";
+        iValue = propertyToInteger(xtpProperties.get(s));
+        if (iValue != null) {
+            smc.setRowSizeLimit(iValue.intValue());
+        }
         // tuning parameters; currently from DatabaseStoreService
         s = "scheduleInvalidation";
         bValue = propertyToBoolean(xtpProperties.get(s));
