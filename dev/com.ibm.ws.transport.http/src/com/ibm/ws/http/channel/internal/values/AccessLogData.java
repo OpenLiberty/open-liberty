@@ -31,8 +31,7 @@ public abstract class AccessLogData extends GenericKeys {
         new AccessLogElapsedTime();
         new AccessLogFirstLine();
         new AccessLogLocalIP();
-        new AccessLogLocalPort();
-        new AccessLogRemotePort();
+        new AccessLogPort();
         new AccessLogQueryString();
         new AccessLogRemoteHost();
         new AccessLogRemoteIP();

@@ -244,6 +244,15 @@ public class AccessLogSource implements Source {
                         HashSet<Object> data = new HashSet<Object>();
                         if (map.containsKey(s.log.getName())) {
                             data = map.get(s.log.getName());
+                            if (data == null) {
+                                // This can happen if there's a mixture of formats
+                                // that support null and non-null data (see comment below).
+                                // In this case, something like %p was added first with
+                                // null data, thus why we're here, so now we create a new
+                                // HashSet with a null element to represent that.
+                                data = new HashSet<Object>();
+                                data.add(null);
+                            }
                         }
                         if (s.log.getName().equals("%i") || s.log.getName().equals("%o"))
                             // HTTP headers are case insensitive, so we lowercase them all
@@ -262,7 +271,16 @@ public class AccessLogSource implements Source {
                             sb.append(", ").append(s.log.getName());
                         // If previous tokens did have data values, we don't want to overwrite the map, so do nothing after printing warning
                     } else {
-                        map.put(s.log.getName(), null);
+                        // Allow a mixture of formats that have the same name but null and non-null data
+                        // For example, %p and %{remote}p both have %p as the name but the latter
+                        // has "remote" as the data. HashSet allows the null element, so we represent
+                        // the former as null and the latter as "remote" in the HashSet (added above).
+                        // But we only need to bother to do that if %{X}p was found first. Otherwise,
+                        // map.get returns null and we just add null to map as we did before.
+                        HashSet<Object> data = map.get(s.log.getName());
+                        if (data != null)
+                            data.add(null);
+                        map.put(s.log.getName(), data);
                     }
                 }
             }
@@ -284,8 +302,18 @@ public class AccessLogSource implements Source {
                 case "%A": fieldSetters.add((ald, alrd) -> ald.setRequestHost(alrd.getLocalIP())); break;
                 case "%B": fieldSetters.add((ald, alrd) -> ald.setBytesReceived(alrd.getBytesWritten())); break;
                 case "%m": fieldSetters.add((ald, alrd) -> ald.setRequestMethod(alrd.getRequest().getMethod())); break;
-                case "%p": fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort())); break;
-                case "%e": fieldSetters.add((ald, alrd) -> ald.setRemotePort(alrd.getRemotePort())); break;
+                case "%p":
+                    if (fields.get("%p") == null) {
+                        fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort()));
+                    } else {
+                        for (Object data : fields.get("%p")) {
+                            if ("remote".equals(data))
+                                fieldSetters.add((ald, alrd) -> ald.setRemotePort(alrd.getRemotePort()));
+                            else
+                                fieldSetters.add((ald, alrd) -> ald.setRequestPort(alrd.getLocalPort()));
+                        }
+                    }
+                    break;
                 case "%q": fieldSetters.add((ald, alrd) -> ald.setQueryString(alrd.getRequest().getQueryString())); break;
                 case "%{R}W": fieldSetters.add((ald, alrd) -> ald.setElapsedTime(alrd.getElapsedTime())); break;
                 case "%s": fieldSetters.add((ald, alrd) -> ald.setResponseCode(alrd.getResponse().getStatusCodeAsInt())); break;
@@ -340,8 +368,18 @@ public class AccessLogSource implements Source {
                     case "%A": builder.add(addRequestHostField       (format)); break;
                     case "%B": builder.add(addBytesReceivedField     (format)); break;
                     case "%m": builder.add(addRequestMethodField     (format)); break;
-                    case "%p": builder.add(addRequestPortField       (format)); break;
-                    case "%e": builder.add(addRemotePortField        (format)); break;
+                    case "%p":
+                        if (fields.get("%p") == null) {
+                            builder.add(addRequestPortField(format));
+                        } else {
+                            for (Object data : fields.get("%p")) {
+                                if ("remote".equals(data))
+                                    builder.add(addRemotePortField(format));
+                                else
+                                    builder.add(addRequestPortField(format));
+                            }
+                        }
+                        break;
                     case "%q": builder.add(addQueryStringField       (format)); break;
                     case "%{R}W": builder.add(addElapsedTimeField    (format)); break;
                     case "%s": builder.add(addResponseCodeField      (format)); break;
@@ -392,7 +430,6 @@ public class AccessLogSource implements Source {
         .add(addBytesReceivedField    (format))  // %B
         .add(addRequestMethodField    (format))  // %m
         .add(addRequestPortField      (format))  // %p
-        .add(addRemotePortField       (format))  // %e
         .add(addQueryStringField      (format))  // %q
         .add(addElapsedTimeField      (format))  // %{R}W
         .add(addResponseCodeField     (format))  // %s

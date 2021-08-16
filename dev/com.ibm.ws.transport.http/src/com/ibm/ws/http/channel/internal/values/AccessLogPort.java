@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,21 +14,39 @@ import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
-public class AccessLogLocalPort extends AccessLogData {
+public class AccessLogPort extends AccessLogData {
 
-    public AccessLogLocalPort() {
+    public AccessLogPort() {
         super("%p");
         // %p - Local port
+        // %{remote}p - Remote port
+    }
+
+    @Override
+    public Object init(String rawToken) {
+        if (rawToken != null && rawToken.length() == 0) {
+            return null;
+        }
+        return rawToken;
     }
 
     @Override
     public boolean set(StringBuilder accessLogEntry,
                        HttpResponseMessage response, HttpRequestMessage request,
                        Object data) {
-        String localPort = getLocalPort(response, request, data);
-
-        logSafe(accessLogEntry, localPort);
+        logSafe(accessLogEntry, getPort(response, request, data));
         return true;
+    }
+
+    public static String getPort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        // Matching logic in multiple places in com.ibm.ws.http.logging.source.AccessLogSource
+        if ("remote".equals(data)) {
+            // %{remote}p
+            return getRemotePort(response, request, data);
+        } else {
+            // %p
+            return getLocalPort(response, request, data);
+        }
     }
 
     public static String getLocalPort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
@@ -42,6 +60,19 @@ public class AccessLogLocalPort extends AccessLogData {
             localPort = Integer.toString(requestMessageImpl.getServiceContext().getLocalPort());
         }
         return localPort;
+    }
+
+    public static String getRemotePort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        HttpRequestMessageImpl requestMessageImpl = null;
+        String remotePort = null;
+        if (request != null) {
+            requestMessageImpl = (HttpRequestMessageImpl) request;
+        }
+
+        if (requestMessageImpl != null) {
+            remotePort = Integer.toString(requestMessageImpl.getServiceContext().getRemotePort());
+        }
+        return remotePort;
     }
 
 }

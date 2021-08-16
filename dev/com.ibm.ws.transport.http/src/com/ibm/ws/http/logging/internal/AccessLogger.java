@@ -34,8 +34,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.values.AccessLogData;
 import com.ibm.ws.http.channel.internal.values.AccessLogElapsedRequestTime;
 import com.ibm.ws.http.channel.internal.values.AccessLogLocalIP;
-import com.ibm.ws.http.channel.internal.values.AccessLogLocalPort;
-import com.ibm.ws.http.channel.internal.values.AccessLogRemotePort;
+import com.ibm.ws.http.channel.internal.values.AccessLogPort;
 import com.ibm.ws.http.channel.internal.values.AccessLogStartTime;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -518,10 +517,10 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
         localIP = AccessLogLocalIP.getLocalIP(response2, request2, null);
 
         // ** LocalPort
-        localPort = AccessLogLocalPort.getLocalPort(response2, request2, null);
+        localPort = AccessLogPort.getLocalPort(response2, request2, null);
 
         // ** RemotePort
-        remotePort = AccessLogRemotePort.getRemotePort(response2, request2, null);
+        remotePort = AccessLogPort.getRemotePort(response2, request2, null);
 
         // ** AccessLogRecordData
         AccessLogRecordData recordData = new AccessLogRecordData() {
