@@ -3,6 +3,6 @@ symbolicName=io.openliberty.mpCompatible-5.0
 visibility=private
 singleton=true
 -features=com.ibm.websphere.appserver.eeCompatible-9.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
