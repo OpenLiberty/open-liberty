@@ -1,6 +1,7 @@
 com.ibm.ws.concurrent.mp.1.2_fat_tck
 com.ibm.ws.concurrent.mp.1.3_fat_tck
 com.ibm.ws.concurrent.mp_fat
+com.ibm.ws.concurrent.mp_fat_jakarta
 com.ibm.ws.concurrent.mp_fat_tck
 com.ibm.ws.concurrent.persistent_fat
 com.ibm.ws.concurrent.persistent_fat_auto_pollinterval

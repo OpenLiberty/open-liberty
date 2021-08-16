@@ -76,6 +76,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
         longLeaseLengthFSServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 

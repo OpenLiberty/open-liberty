@@ -64,10 +64,4 @@ public class DelaySseTest extends FATServletClient {
         runTest(server, SERVLET_PATH, "testRetrySse");
     }
 
-    @Test
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy will not retry event if delay is set but event does not fail.
-    public void testDelayRetrySse() throws Exception {
-        runTest(server, SERVLET_PATH, "testDelayRetrySse");
-    }
-
 }

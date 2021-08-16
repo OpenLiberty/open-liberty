@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sha2sig;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -84,8 +86,9 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
+
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha2SignSoapBodyEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
@@ -118,7 +121,7 @@ public class CxfSha2SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
 
@@ -160,8 +163,9 @@ public class CxfSha2SigTests extends CommonTests {
      * in the algorithm suite. This is a positive scenario.
      *
      */
+
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -194,7 +198,7 @@ public class CxfSha2SigTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
 
@@ -237,7 +241,7 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha384SigAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testTwasSha384SigAlgorithm";
@@ -267,10 +271,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha384SigAlgorithmEE8Only() throws Exception {
 
@@ -301,6 +308,9 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
     }
 
     /**
@@ -313,7 +323,7 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha512SigAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testTwasSha512SigAlgorithm";
@@ -343,10 +353,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha512SigAlgorithmEE8Only() throws Exception {
 
@@ -377,6 +390,9 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
     }
 
     /**
@@ -392,7 +408,7 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfSha1ToSha2SigAlgorithmEE7Only() throws Exception {
 
@@ -427,10 +443,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
 
@@ -464,6 +483,9 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
     }
 
     /**
@@ -478,7 +500,7 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha256SigAlg2048KeylenEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha256SigAlg2048Keylen";
@@ -508,10 +530,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha256SigAlg2048KeylenEE8Only() throws Exception {
 
@@ -542,6 +567,9 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
     }
 
     /**
@@ -556,7 +584,7 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha384SymBindingEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha384SymBinding";
@@ -586,10 +614,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha384SymBindingEE8Only() throws Exception {
 
@@ -620,6 +651,9 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
     }
 
     /**
@@ -634,7 +668,7 @@ public class CxfSha2SigTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCxfSha512SymBindingEE7Only() throws Exception {
         String thisMethod = "testCxfSha512SymBinding";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");
@@ -663,10 +697,13 @@ public class CxfSha2SigTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha512SymBindingEE8Only() throws Exception {
 
@@ -696,6 +733,9 @@ public class CxfSha2SigTests extends CommonTests {
                     "Response: This is WSSECFVT SHA2 SYM Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
+
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
+import com.ibm.wsspi.logging.Introspector;
 
 /**
  * Immediate component to track prereqs as they appear.
@@ -49,7 +50,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.app.prereqmonitor",
            configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class ApplicationPrereqMonitor implements ConfigurationListener {
+public class ApplicationPrereqMonitor implements ConfigurationListener, Introspector {
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);
     private static final AtomicInteger counter = new AtomicInteger(0);
     private final int version = counter.incrementAndGet();
@@ -169,5 +170,21 @@ public class ApplicationPrereqMonitor implements ConfigurationListener {
     @Override
     public String toString() {
         return ApplicationPrereqMonitor.class.getName() + "#" + version;
+    }
+
+    @Override
+    public String getIntrospectorName() {
+        return getClass().getSimpleName();
+    }
+
+    @Override
+    public String getIntrospectorDescription() {
+        return String.format("List the declared and the realized application prereqs.%n" +
+                             "Application Handlers cannot start until all the declared prereqs become available (i.e. are realized).");
+    }
+
+    @Override
+    public void introspect(PrintWriter out) throws Exception {
+        out.printf("Declared prereqs: %s%nRealised prereqs: %s", declaredPrereqs, realisedPrereqs);
     }
 }

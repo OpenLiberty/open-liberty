@@ -17,10 +17,14 @@
         <feature>jndi-1.0</feature>
         <feature>cdi-2.0</feature>
         <feature>txtest-1.0</feature>
-        <feature>timedexit-1.0</feature>
     </featureManager>
+    
+    <include location="../fatTestCommon.xml" />
 
-    <httpEndpoint httpPort="9992" httpsPort="9996" id="defaultHttpEndpoint"/>
+	<httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
     <application location="transaction.war">
         <classloader commonLibraryRef="AnonymousJDBCLib"/>

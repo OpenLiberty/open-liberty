@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,6 @@ public class DatabaseHashMap extends BackedHashMap {
 
     static final int SMALLCOL_SIZE_ORACLE = 2000;
     static final int MEDIUMCOL_SIZE_ORACLE = 2097152; /* 2M long raw */
-    static final int MEDIUMCOL_SIZE_ORACLE_MR = 10485760; /* 10M long raw */
     static final int LARGECOL_SIZE_ORACLE = 1; /* This shouldn't be used, maybe change this to a BLOB */
 
     static final int SMALLCOL_SIZE_SYBASE = 10485760; /* set to 10M since to force use of small column since no size is associated with a column */
@@ -310,15 +309,15 @@ public class DatabaseHashMap extends BackedHashMap {
                 int dbCode = DBPortability.getDBCode(dmd);
                 if (dbCode == DBPortability.ORACLE) {
                     smallColSize = SMALLCOL_SIZE_ORACLE;
-                    
-                    if (_smc.isUsingMultirow())
-                        mediumColSize = MEDIUMCOL_SIZE_ORACLE_MR;
-                    else
-                        mediumColSize = MEDIUMCOL_SIZE_ORACLE;
-                    
+                    mediumColSize = MEDIUMCOL_SIZE_ORACLE;                 
+                    if (_smc.isUsingMultirow() && _smc.getRowSizeLimit()*1048576 > mediumColSize) {
+                        mediumColSize = _smc.getRowSizeLimit()*1048576;
+                        if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+                            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[INIT_DB_SETTINGS], "Oracle row size limit : " + mediumColSize);
+                        }
+                    }                    
                     largeColSize = LARGECOL_SIZE_ORACLE;
                     usingOracle = true;
-
                 } else if (dbCode == DBPortability.SYBASE) {
                     smallColSize = SMALLCOL_SIZE_SYBASE;
                     mediumColSize = MEDIUMCOL_SIZE_SYBASE;

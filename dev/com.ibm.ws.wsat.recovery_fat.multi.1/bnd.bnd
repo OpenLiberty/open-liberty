@@ -19,7 +19,7 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-4.0, jaxb-2.3, jaxws-2.3, expressionlanguage-4.0, xmlws-3.0, cdi-3.0, pages-3.0
+	servlet-4.0, servlet-5.0, jaxb-2.3, jaxws-2.3, expressionlanguage-4.0, xmlws-3.0, cdi-3.0, pages-3.0
 
 -buildpath: \
   com.ibm.tx.jta;version=latest,\

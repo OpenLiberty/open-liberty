@@ -13,7 +13,6 @@ package com.ibm.ws.transaction.test;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,17 +86,15 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
         defaultAttributesServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         defaultAttributesServer2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        defaultAttributesServer2.setHttpDefaultPort(defaultAttributesServer2.getHttpSecondaryPort());
         longPeerStaleTimeServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         longPeerStaleTimeServer2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
         peerLockingDisabledServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         peerLockingEnabledServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        // server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
     }
 
     @After
@@ -225,7 +222,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
             // Bounce first server to clear log
-            server1.stopServer(null);
+            server1.stopServer();
             server1.startServerAndValidate(false, true, true);
 
             // Check log was cleared
@@ -291,7 +288,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
             // Now start server2
             if (!testFailed) {
-                longPeerStaleTimeServer2.setHttpDefaultPort(Cloud2ServerPort);
+                longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
                 ProgramOutput po = longPeerStaleTimeServer2.startServerAndValidate(false, true, true);
                 if (po.getReturnCode() != 0) {
                     Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
@@ -315,7 +312,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
                 //Stop server2
                 if (!testFailed) {
-                    longPeerStaleTimeServer2.stopServer(null);
+                    longPeerStaleTimeServer2.stopServer();
                 }
             }
 
@@ -409,7 +406,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         String testFailureString = "";
 
         // Start Server2
-        server2.setHttpDefaultPort(Cloud2ServerPort);
+        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
         server2.startServer();
 
         // Set the owner of our recovery logs to a peer in the control row through a servlet
@@ -437,7 +434,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
             //Stop server1
             if (!testFailed) {
-                longPeerStaleTimeServer1.stopServer(null);
+                longPeerStaleTimeServer1.stopServer();
             }
         }
 
@@ -529,7 +526,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
                 // Bounce first server to clear log
-                peerLockingEnabledServer1.stopServer(null);
+                peerLockingEnabledServer1.stopServer();
                 peerLockingEnabledServer1.startServerAndValidate(false, true, true);
 
                 // Check log was cleared
@@ -604,7 +601,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         // Now start server2
         if (!testFailed) {
-            server2.setHttpDefaultPort(Cloud2ServerPort);
+            server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
             ProgramOutput po = server2.startServerAndValidate(false, true, true);
 
             if (po.getReturnCode() != 0) {
@@ -640,7 +637,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             }
 
             //Stop server2
-            server2.stopServer(null);
+            server2.stopServer();
 
             // restart 1st server
             peerLockingDisabledServer1.startServerAndValidate(false, true, true);
@@ -664,7 +661,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
             // Bounce first server to clear log
-            peerLockingDisabledServer1.stopServer(null);
+            peerLockingDisabledServer1.stopServer();
             peerLockingDisabledServer1.startServerAndValidate(false, true, true);
 
             // Check log was cleared
@@ -701,6 +698,114 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         // are created from scratch.
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
         dynamicTest(server1, server2, 7, 2);
+    }
+
+    @Override
+    public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
+        String testSuffix = String.format("%03d", test);
+        dynamicTest(server1, server2, testSuffix, resourceCount);
+    }
+
+    private void dynamicTest(LibertyServer server1, LibertyServer server2, String testSuffix, int resourceCount) throws Exception {
+        final String method = "dynamicTest";
+
+        StringBuilder sb = null;
+        boolean testFailed = false;
+        String testFailureString = "";
+
+        // Start Server1
+        startServers(server1);
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(server1, servletName, "setupRec" + testSuffix);
+        } catch (Throwable e) {
+            // as expected
+            Log.error(this.getClass(), method, e); // TODO remove this
+        }
+        Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
+
+        // wait for 1st server to have gone away
+        if (server1.waitForStringInLog("Dump State:") == null) {
+            testFailed = true;
+            testFailureString = "First server did not crash";
+        }
+
+        // Now start server2
+        if (!testFailed) {
+            ProgramOutput po = server2.startServerAndValidate(false, true, true);
+
+            if (po.getReturnCode() != 0) {
+                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
+                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
+                Exception ex = new Exception("Could not start server2");
+                Log.error(this.getClass(), "dynamicTest", ex);
+                throw ex;
+            }
+
+            // wait for 2nd server to perform peer recovery
+            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
+                testFailed = true;
+                testFailureString = "Second server did not perform peer recovery";
+            }
+        }
+
+        // flush the resource states
+        if (!testFailed) {
+
+            try {
+                sb = runTestWithResponse(server2, servletName, "dumpState");
+                Log.info(this.getClass(), method, sb.toString());
+            } catch (Exception e) {
+                Log.error(this.getClass(), method, e);
+                throw e;
+            }
+
+            //Stop server2
+            server2.stopServer((String[]) null);
+
+            // restart 1st server
+            server1.startServerAndValidate(false, true, true);
+
+            if (server1.waitForStringInTrace("WTRN0133I") == null) {
+                testFailed = true;
+                testFailureString = "Recovery incomplete on first server";
+            }
+        }
+
+        if (!testFailed) {
+
+            // check resource states
+            Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
+            try {
+                sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
+            } catch (Exception e) {
+                Log.error(this.getClass(), "dynamicTest", e);
+                throw e;
+            }
+            Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
+
+            // Bounce first server to clear log
+            server1.stopServer("CWWKN0005W"); // LastingXAResourceImpl handles CWWKN0005W
+            server1.startServerAndValidate(false, true, true);
+
+            // Check log was cleared
+            if (server1.waitForStringInTrace("WTRN0135I") == null) {
+                testFailed = true;
+                testFailureString = "Transactions left in transaction log on first server";
+            }
+            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
+                testFailed = true;
+                testFailureString = "XAResources left in partner log on first server";
+            }
+
+        }
+
+        tidyServersAfterTest(server1, server2);
+        // XA resource data is cleared in setup servlet methods. Probably should do it here.
+        if (testFailed)
+            fail(testFailureString);
     }
 
     @Override

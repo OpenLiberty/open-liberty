@@ -110,7 +110,7 @@ public class SharedLocationManager {
         // Defined in BootstrapConstants.PROCESS_TYPE_SERVER
         map.put("wlp.process.type", isClient ? "client" : "server");
 
-        map.put("wlp.svc.binding.root", usr.getAbsolutePath() + File.separator + "bindings");
+        map.put("wlp.var.src.dirs", usr.getAbsolutePath() + File.separator + "variables");
         Class<?> impl = getLocServiceImpl();
         resetWsLocationAdmin();
 

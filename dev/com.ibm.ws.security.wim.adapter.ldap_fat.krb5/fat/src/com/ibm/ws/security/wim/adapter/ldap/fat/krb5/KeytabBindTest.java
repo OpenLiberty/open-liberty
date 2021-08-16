@@ -59,15 +59,17 @@ public class KeytabBindTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecks() throws Exception {
-        Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
+    public void loginChecks() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run login checks with a standard configuration");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryForKeytab();
         addKerberosConfigAndKeytab(newServer);
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
+
+        assertFalse("Should have run through setKerberosCredentials", server.findStringsInLogsAndTrace("setKerberosCredentials").isEmpty());
     }
 
     /**
@@ -78,15 +80,15 @@ public class KeytabBindTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecksWithContextPool() throws Exception {
-        Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
+    public void loginChecksWithContextPool() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run login checks with a standard configuration");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryForKeytabWithContextPool();
         addKerberosConfigAndKeytab(newServer);
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
     /**
@@ -235,7 +237,7 @@ public class KeytabBindTest extends CommonBindTest {
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
     public void keytabDefinedInConfig() throws Exception {
         assumeTrue(FATRunner.FAT_TEST_LOCALRUN); // Remote build wasn't picking up the keytab set in the config, despite using the same keytab for all the other keytab tests
-        Log.info(c, testName.getMethodName(), "Run basic login checks with the keytab defined in the krb5config file");
+        Log.info(c, testName.getMethodName(), "Run login checks with the keytab defined in the krb5config file");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryForKeytab();
         String altConfigFile = ApacheDSandKDC.createConfigFile("keyTabInConfig-", KDC_PORT, true, true);
@@ -244,7 +246,7 @@ public class KeytabBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        baselineTests();
+        baselineLoginAndGetTests();
     }
 
 }

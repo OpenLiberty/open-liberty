@@ -786,7 +786,8 @@ public class CommonTests {
     public void endTest() throws Exception {
 
         try {
-            restoreServer();
+            //Removed to resolve RTC 285305, 285315
+            //restoreServer();
             String _testName = testName.getMethodName();
             printMethodName(_testName, "Ending TEST ");
             System.out.println("----- End:  " + testName + "   ----------------------------------------------------");

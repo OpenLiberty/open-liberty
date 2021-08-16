@@ -73,15 +73,6 @@
 	>
 	</wsSecurityProvider>
 
-        <!-- orig from CL
-	<wsSecurityClient
-		id="default"
-		ws-security.password="security"
-		ws-security.username="user22"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.fat.pwdigest.ClientPWDigestCallbackHandler"
-	>
-        -->
-        <!-- update to work on OL using client package -->
         <wsSecurityClient
 		id="default"
 		ws-security.password="security"

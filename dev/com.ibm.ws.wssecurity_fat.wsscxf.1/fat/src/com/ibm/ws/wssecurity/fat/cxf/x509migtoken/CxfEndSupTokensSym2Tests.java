@@ -34,14 +34,12 @@ public class CxfEndSupTokensSym2Tests extends CommonTests {
     static final private String serverName = "com.ibm.ws.wssecurity_fat.endsuptokens";
 //    static private String newClientWsdl = null;
 
-    //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "endsuptokensclient", "com.ibm.ws.wssecurity.fat.endsuptokensclient", "test.wssecfvt.endsuptokens",
                                       "test.wssecfvt.endsuptokens.types");
         ShrinkHelper.defaultDropinApp(server, "endsuptokens", "com.ibm.ws.wssecurity.fat.endsuptokens");

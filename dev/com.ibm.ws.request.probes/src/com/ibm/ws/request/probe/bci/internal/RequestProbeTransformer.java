@@ -38,7 +38,7 @@ public class RequestProbeTransformer implements ClassFileTransformer {
 
     private Instrumentation inst = null;
     private static final TraceComponent tc = Tr.register(RequestProbeTransformer.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
-
+    private static final ClassLoader loader = RequestProbeTransformer.class.getClassLoader();
     /**
      * @param instrumentation
      */
@@ -49,7 +49,12 @@ public class RequestProbeTransformer implements ClassFileTransformer {
     /** {@inheritDoc} */
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+        
         byte[] ba = null;
+        if (loader == RequestProbeTransformer.loader) {
+        	// never transform our own classes from this bundle
+        	return null;
+        }
         //Transform the classes for which 'Bridge' class is active.
         if (!RequestProbeHelper.interestedClass(className)) {
             return null;

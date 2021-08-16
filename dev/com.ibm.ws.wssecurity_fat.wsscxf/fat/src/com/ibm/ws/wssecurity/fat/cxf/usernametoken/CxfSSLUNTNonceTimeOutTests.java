@@ -103,15 +103,12 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
-        //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
         genericTest("testCxfUntReplayOneAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
                     "true", "",
                     "Response: WSSECFVT FVTVersion_ba07",
                     "The test expected a succesful message from the server.");
-        // Make sure the server.xml is set back to server_orig.xml
-        // This will be done by next test case: TwoAndMoreMinutes
-        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
     /**
@@ -131,14 +128,12 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntHardcodedReplayTwoAndMoreMinutesSSL() throws Exception {
-        // Make sure the server.xml is set to server_customize.xml
-        // This was done by previous test: OneAndMoreMinutes
-        //  reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
+
         genericTest("testCxfUntReplayTwoAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA6Service", "UrnBasicPlcyBA6",
                     "true", "", msgExpires,
                     "Second call to FVTVersionBA6Service should have failed");
-        //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
     }
 
 }

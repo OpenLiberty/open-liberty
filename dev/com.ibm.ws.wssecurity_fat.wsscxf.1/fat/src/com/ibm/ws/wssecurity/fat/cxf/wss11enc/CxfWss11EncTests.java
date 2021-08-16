@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11enc;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -97,7 +99,7 @@ public class CxfWss11EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientEncryptHeaderNS1EE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
         genericTest(
@@ -123,10 +125,14 @@ public class CxfWss11EncTests extends CommonTests {
                     "Response: This is Wss11EncWebSvc1 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
+
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptHeaderNS1EE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr_wss4j.xml");
@@ -153,6 +159,10 @@ public class CxfWss11EncTests extends CommonTests {
                     "Response: This is Wss11EncWebSvc1 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
+
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
     }
 
     /**
@@ -183,7 +193,7 @@ public class CxfWss11EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientEncryptHeaderNS2EE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
@@ -212,7 +222,7 @@ public class CxfWss11EncTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptHeaderNS2EE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -267,7 +277,7 @@ public class CxfWss11EncTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientEncryptHeaderAnyEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
@@ -296,7 +306,7 @@ public class CxfWss11EncTests extends CommonTests {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptHeaderAnyEE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");

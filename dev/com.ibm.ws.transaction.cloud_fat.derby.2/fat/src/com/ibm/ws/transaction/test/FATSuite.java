@@ -17,11 +17,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.test.dbrotationtests.DBRotationTest;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest2;
+import com.ibm.ws.transaction.test.tests.DualServerDynamicTestBase;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -58,19 +57,12 @@ public class FATSuite {
         testContainer = DatabaseContainerFactory.createType(type);
         Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
         testContainer.start();
+        DualServerDynamicTestBase.setDBType(DatabaseContainerType.Derby);
     }
 
     @AfterClass
     public static void afterSuite() {
         Log.info(FATSuite.class, "afterSuite", "stop test container");
         testContainer.stop();
-    }
-
-    //Private Method: used to setup logging for containers to this class.
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "dbrotation", msg);
     }
 }

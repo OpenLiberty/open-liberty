@@ -4,5 +4,5 @@ singleton=true
 visibility = private
 -features=com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.xmlWS-3.0
-kind=noship
-edition=full
+kind=beta
+edition=base

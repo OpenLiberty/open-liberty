@@ -42,11 +42,6 @@ public class FATSuite {
     //switching between local and remote docker hosts.
     static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-
-        // Filter out any external docker servers in the 'libhpike' cluster
-        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
-            return !svc.getAddress().contains("libhpike-dockerengine");
-        };
     }
 
     public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST;
