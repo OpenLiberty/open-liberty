@@ -144,24 +144,26 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             ProgramOutput po = null;
             int attempt = 0;
             int maxAttempts = 2;
+            int returnCode = 0;
 
             do {
                 ++attempt;
                 setUp(server);
                 po = server.startServerAndValidate(false, false, false);
-                if (po.getReturnCode() != 0) {
+                returnCode = po.getReturnCode();
+                if (returnCode != 0) {
                     server.resetStarted();
-                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                    Log.info(getClass(), method, po.getCommand() + " returned " + returnCode);
                     Log.info(getClass(), method, "Stdout: " + po.getStdout());
                     Log.info(getClass(), method, "Stderr: " + po.getStderr());
                 } else {
                     server.validateAppLoaded(APP_NAME);
                 }
-            } while (po.getReturnCode() != 0 && attempt < maxAttempts);
+            } while (returnCode != 0 && attempt < maxAttempts);
 
-            if (attempt >= maxAttempts) {
+            if (returnCode != 0) {
                 server.postStopServerArchive();
-                throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                throw new Exception(po.getCommand() + " returned " + returnCode);
             }
         }
     }
