@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,37 +10,35 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+/**
+ * The purpose of this test is to work item 88030_PM76009_:
+ * INVALID UTF-8 middle byte error WITH DANISH CHARACTER SET
+ */
 @RunWith(FATRunner.class)
-public class SimpleJsonTest {
+public class UTF8Test extends AbstractTest {
 
-    private static final String CONTEXT_ROOT = "simpleJson";
-    private static final String HTTPCLIENT = "appLibs/httpclient/";
-
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.json")
     public static LibertyServer server;
+
+    private static final String jsonwar = "json";
+    private final String target = jsonwar + "/TestServlet";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
-        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(CONTEXT_ROOT);
+        ShrinkHelper.defaultDropinApp(server, jsonwar, "com.ibm.ws.jaxrs.fat.json");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -56,5 +54,30 @@ public class SimpleJsonTest {
         if (server != null) {
             server.stopServer();
         }
+    }
+
+    @Before
+    public void preTest() {
+        serverRef = server;
+    }
+
+    @After
+    public void afterTest() {
+        serverRef = null;
+    }
+
+    @Test
+    public void testCountriesUpperCase() throws Exception {
+        this.runTestOnServer(target, "testCountriesUpperCase", null, "OK");
+    }
+
+    @Test
+    public void testCountriesLowerCase() throws Exception {
+        this.runTestOnServer(target, "testCountriesLowerCase", null, "OK");
+    }
+
+    @Test
+    public void testInvalidBody() throws Exception {
+        this.runTestOnServer(target, "testInvalidBody", null, "400");
     }
 }

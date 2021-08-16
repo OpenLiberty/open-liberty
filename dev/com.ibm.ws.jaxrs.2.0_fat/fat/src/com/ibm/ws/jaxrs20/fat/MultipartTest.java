@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,37 +10,33 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
+import com.ibm.ws.jaxrs.fat.multipart.MultipartTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class SimpleJsonTest {
+public class MultipartTest extends FATServletClient {
+    private static final String war = "multipart";
 
-    private static final String CONTEXT_ROOT = "simpleJson";
-    private static final String HTTPCLIENT = "appLibs/httpclient/";
-
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.multipart")
+    @TestServlet(servlet = MultipartTestServlet.class, contextRoot = war)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
-        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(CONTEXT_ROOT);
+        ShrinkHelper.defaultDropinApp(server, war, "com.ibm.ws.jaxrs.fat.multipart")
+                    .addAsWebInfResource(new StringAsset("This is a resource file that is part of the app"),
+                                         "resource.txt");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -53,8 +49,6 @@ public class SimpleJsonTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null) {
-            server.stopServer();
-        }
+        server.stopServer(/*"CWWKW0101W", "CWWKW0102W", "SRVE8052E", "SRVE0276E", "SRVE0190E"*/);
     }
 }
