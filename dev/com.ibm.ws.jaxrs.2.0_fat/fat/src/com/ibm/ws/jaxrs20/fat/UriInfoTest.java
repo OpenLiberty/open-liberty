@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,37 +10,33 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
+import com.ibm.ws.jaxrs.fat.uriInfo.ClientTestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class SimpleJsonTest {
+@SkipForRepeat("EE9_FEATURES") // currently broken due to client @Context UriInfo injection failing
+public class UriInfoTest extends FATServletClient {
 
-    private static final String CONTEXT_ROOT = "simpleJson";
-    private static final String HTTPCLIENT = "appLibs/httpclient/";
+    private static final String app = "uriInfo";
 
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.uriInfo")
+    @TestServlet(servlet = ClientTestServlet.class, contextRoot = app)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
-        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(CONTEXT_ROOT);
+        ShrinkHelper.defaultDropinApp(server, app, "com.ibm.ws.jaxrs.fat.uriInfo");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -54,7 +50,7 @@ public class SimpleJsonTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKW1002W");
         }
     }
 }

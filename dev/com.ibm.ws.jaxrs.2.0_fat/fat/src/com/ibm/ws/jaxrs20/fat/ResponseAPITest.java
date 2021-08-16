@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,37 +10,31 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class SimpleJsonTest {
+public class ResponseAPITest extends AbstractTest {
 
-    private static final String CONTEXT_ROOT = "simpleJson";
-    private static final String HTTPCLIENT = "appLibs/httpclient/";
-
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.responseApi")
     public static LibertyServer server;
+
+    private static final String war = "responseAPI";
+    private final String target = war + "/TestServlet";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
-        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(CONTEXT_ROOT);
+        ShrinkHelper.defaultDropinApp(server, war, "com.ibm.ws.jaxrs.fat.response");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -56,5 +50,25 @@ public class SimpleJsonTest {
         if (server != null) {
             server.stopServer();
         }
+    }
+
+    @Before
+    public void preTest() {
+        serverRef = server;
+    }
+
+    @After
+    public void afterTest() {
+        serverRef = null;
+    }
+
+    @Test
+    public void testNullLanguageResponse() throws Exception {
+        this.runTestOnServer(target, "testNullLanguageResponse", null, "OK");
+    }
+
+    @Test
+    public void testSetLanguageResponse() throws Exception {
+        this.runTestOnServer(target, "testSetLanguageResponse", null, "OK");
     }
 }

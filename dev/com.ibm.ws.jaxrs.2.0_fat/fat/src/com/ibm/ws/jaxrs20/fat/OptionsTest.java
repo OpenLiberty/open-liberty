@@ -18,26 +18,26 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
+import com.ibm.ws.jaxrs.fat.options.OptionsTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-@RunWith(FATRunner.class)
-public class SimpleJsonTest {
 
-    private static final String CONTEXT_ROOT = "simpleJson";
+@RunWith(FATRunner.class)
+public class OptionsTest {
+    private static final String CONTEXT_ROOT = "options";
     private static final String HTTPCLIENT = "appLibs/httpclient/";
 
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.options")
+    @TestServlet(servlet = OptionsTestServlet.class, contextRoot = CONTEXT_ROOT)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
+        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.options");
         app.addAsLibraries(new File(HTTPCLIENT).listFiles());
         ShrinkHelper.exportDropinAppToServer(server, app);
         server.addInstalledAppForValidation(CONTEXT_ROOT);
@@ -47,7 +47,7 @@ public class SimpleJsonTest {
         try {
             server.startServer(true);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 

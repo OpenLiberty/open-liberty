@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,34 +13,37 @@ package com.ibm.ws.jaxrs20.fat;
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class SimpleJsonTest {
+public class JacksonPOJOwithUserJacksonLib1xTest extends JacksonBaseTest {
 
-    private static final String CONTEXT_ROOT = "simpleJson";
-    private static final String HTTPCLIENT = "appLibs/httpclient/";
-
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.jackson1x")
     public static LibertyServer server;
+
+    // for comparing json objects on the test servlet
+    private static final String databind = "appLibs/jackson2x/";
+    private static final String jackson = "appLibs/jackson1x/";
+    private static final String jacksonwar = "jackson1x";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
-        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(CONTEXT_ROOT);
+        WebArchive app = ShrinkHelper.buildDefaultApp(jacksonwar, "com.ibm.ws.jaxrs.fat.jackson",
+                                                      "com.ibm.ws.jaxrs.fat.jackson1x");
+        app.addAsLibraries(new File(databind).listFiles());
+        app.addAsLibraries(new File(jackson).listFiles());
+        ShrinkHelper.exportAppToServer(server, app);
+        server.addInstalledAppForValidation(jacksonwar);
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -49,6 +52,9 @@ public class SimpleJsonTest {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+
+        target = jacksonwar + "/TestServlet";
+        params.put("jacksonwar", jacksonwar);
     }
 
     @AfterClass
@@ -56,5 +62,15 @@ public class SimpleJsonTest {
         if (server != null) {
             server.stopServer();
         }
+    }
+
+    @Before
+    public void preTest() {
+        serverRef = server;
+    }
+
+    @After
+    public void afterTest() {
+        serverRef = null;
     }
 }

@@ -10,15 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat;
 
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.simpleJson.JaxrsJsonClientTestServlet;
+import com.ibm.ws.jaxrs.fat.customsecuritycontext.servlet.CustomSecurityContextTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -26,26 +25,26 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class SimpleJsonTest {
+public class CustomSecurityContextTest {
 
-    private static final String CONTEXT_ROOT = "simpleJson";
-    private static final String HTTPCLIENT = "appLibs/httpclient/";
 
-    @Server("com.ibm.ws.jaxrs.fat.simpleJson")
-    @TestServlet(servlet = JaxrsJsonClientTestServlet.class, contextRoot = CONTEXT_ROOT)
+    @Server("com.ibm.ws.jaxrs.fat.customSecurityContext")
+    @TestServlet(servlet = CustomSecurityContextTestServlet.class, contextRoot = "SecurityContext")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs.fat.simpleJson");
-        app.addAsLibraries(new File(HTTPCLIENT).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(CONTEXT_ROOT);
+        ShrinkHelper.defaultApp(server, "SecurityContext", "com.ibm.ws.jaxrs.fat.customsecuritycontext",
+                                                                 "com.ibm.ws.jaxrs.fat.customsecuritycontext.servlet");
+        ShrinkHelper.defaultApp(server, "CustomSecurityContext", "com.ibm.ws.jaxrs.fat.customsecuritycontext",
+                                                                       "com.ibm.ws.jaxrs.fat.customsecuritycontext.filter");
 
         // Make sure we don't fail because we try to start an
         // already started server
         try {
-            server.startServer(true);
+            server.startServer();
+            assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
+            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
         } catch (Exception e) {
             System.out.println(e.toString());
         }
