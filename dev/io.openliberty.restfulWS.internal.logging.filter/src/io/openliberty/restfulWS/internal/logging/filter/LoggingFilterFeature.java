@@ -35,7 +35,6 @@ public class LoggingFilterFeature implements DynamicFeature {
         if (FILTER_TERM.equals(WILDCARD)
             || (resourceInfo.getClass() + "#" + resourceInfo.getResourceMethod()).matches(FILTER_TERM)) {
 
-            System.out.println("configure registering LoggingFilter");
             featureContext.register(LoggingFilter.class);
         }
     }
