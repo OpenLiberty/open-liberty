@@ -330,6 +330,8 @@ public class SseEventSourceImpl implements SseEventSource
          }
 
          SseEventInputImpl eventInput = null;
+         InboundSseEvent event = null; // Liberty change - declaring earlier for invocation in two try blocks
+         final Providers providers = (ClientConfiguration) target.getConfiguration(); //Liberty change
          try
          {
             final Invocation.Builder requestBuilder = buildRequest(mediaTypes);
@@ -365,6 +367,7 @@ public class SseEventSourceImpl implements SseEventSource
                   }
                   return;
                }
+               event = eventInput.read(providers); // Liberty change
             }
             else
             {
@@ -400,15 +403,19 @@ public class SseEventSourceImpl implements SseEventSource
             return;
          }
 
-         final Providers providers = (ClientConfiguration) target.getConfiguration();
          while (!Thread.currentThread().isInterrupted() && state.get() == State.OPEN)
          {
+            // Liberty start
+            if (event == null && eventInput.isClosed()) {
+                reconnect(reconnectDelay);
+                break;
+            }
+            // Liberty end
             if (eventInput != null && eventInput.isClosed()) {
                break;
             }
             try
             {
-               InboundSseEvent event = eventInput.read(providers);
                if (event != null)
                {
                   onEvent(event);
@@ -419,6 +426,13 @@ public class SseEventSourceImpl implements SseEventSource
                   runCompletionListeners(); // Liberty change - just run completion listeners instead of internalClose()
                   break;
                }
+               // Liberty change start - effectively making this a do/while instead of while loop
+               event = eventInput.read(providers);
+               if (event == null) {
+                  runCompletionListeners();
+                  break;
+               }
+               // Liberty change end
             }
             catch (IOException e)
             {

@@ -176,7 +176,7 @@ public class SseEventOutputImpl extends GenericType<OutboundSseEvent> implements
             if (this.closed)
             {
                //jaxrsResponse = (BuiltResponse) Response.noContent().build();
-               jaxrsResponse = (BuiltResponse) Response.ok().build(); //Liberty change - use 200 instead of 204
+               jaxrsResponse = (BuiltResponse) Response.ok(null, MediaType.SERVER_SENT_EVENTS_TYPE).build(); //Liberty change - use 200 instead of 204
             }
             else //set back to client 200 OK to implies the SseEventOutput is ready
             {
