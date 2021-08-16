@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.DiscoveryUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.openidconnect.client.fat.CommonTests.GenericOidcClientTests;
 import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -89,6 +89,8 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_orig.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
+        DiscoveryUtils.waitForDiscoveryToBeReady(testSettings);
+
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rpd", "rp_server_orig.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
                 Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
@@ -120,7 +122,7 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         CommonTestHelpers helpers = new CommonTestHelpers();
         WebConversation wc = new WebConversation();
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        WebResponse response = helpers.rpLoginPage("Setup", wc, testSettings, expectations, Constants.GETMETHOD);
+        helpers.rpLoginPage("Setup", wc, testSettings, expectations, Constants.GETMETHOD);
     }
 
     /**
