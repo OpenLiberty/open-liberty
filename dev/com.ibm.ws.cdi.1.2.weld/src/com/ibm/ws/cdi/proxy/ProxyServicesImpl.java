@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.liberty;
+package com.ibm.ws.cdi.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,13 +20,9 @@ import org.jboss.weld.serialization.spi.ProxyServices;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
 
-import com.ibm.ws.cdi.impl.weld.AbstractProxyServices;
-
 /**
  * This service is used to load proxy classes. We need a special classloader so that
  * we can load both weld classes and app classes.
- *
- *
  */
 public class ProxyServicesImpl extends AbstractProxyServices implements ProxyServices {
 
@@ -57,3 +53,4 @@ public class ProxyServicesImpl extends AbstractProxyServices implements ProxySer
         }
     }
 }
+

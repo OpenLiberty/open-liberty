@@ -19,7 +19,8 @@ Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 -dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService
 
 Export-Package: com.ibm.ws.cdi.executor, \
-                com.ibm.ws.cdi.utils
+                com.ibm.ws.cdi.utils, \
+                com.ibm.ws.cdi.proxy
 
 Import-Package: *
                
@@ -38,4 +39,6 @@ WS-TraceGroup: JCDI
         com.ibm.ws.logging.core,\
         com.ibm.ws.cdi.internal;version=latest,\
         com.ibm.ws.cdi.interfaces;version=latest,\
-        com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.container.service;version=latest,\
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	org.eclipse.osgi

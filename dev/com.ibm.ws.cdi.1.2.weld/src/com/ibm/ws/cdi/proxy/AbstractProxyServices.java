@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.impl.weld;
+package com.ibm.ws.cdi.proxy;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -27,12 +27,12 @@ import com.ibm.ws.cdi.CDIRuntimeException;
 /**
  * This service is used to load proxy classes. We need a special classloader so that
  * we can load both weld classes and app classes.
- *
- *
  */
+//There is a seperate AbstractProxyServices in the weld.1.2 package. This is because trying to have both 1.2 and 2.0 extend a common abstract in com.ibm.ws.cdi.weld resulted in a circular dependency.
 public abstract class AbstractProxyServices implements ProxyServices {
 
     private static final ManifestElement[] WELD_PACKAGES;
+    private static final ClassLoader CLASS_LOADER_FOR_SYSTEM_CLASSES = org.jboss.weld.bean.ManagedBean.class.getClassLoader(); //I'm using this classloader because we'll need the weld classes to proxy anything.
 
     static {
         try {
@@ -77,7 +77,9 @@ public abstract class AbstractProxyServices implements ProxyServices {
                 // MUST have visibility to the weld packages before this reflective
                 // call to defineClass.
                 ClassLoader cl = proxiedBeanType.getClassLoader();
-                if (cl instanceof BundleReference) {
+                if (cl == null) {
+                    cl = CLASS_LOADER_FOR_SYSTEM_CLASSES;
+                } else if (cl instanceof BundleReference) {
                     Bundle b = ((BundleReference) cl).getBundle();
                     addWeldDynamicImports(b, WELD_PACKAGES);
                 }
@@ -105,3 +107,4 @@ public abstract class AbstractProxyServices implements ProxyServices {
     }
 
 }
+
