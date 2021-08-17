@@ -99,7 +99,7 @@ Import-Package: \
    org.apache.el.parser;version="2.2", \
    org.apache.el.util;version="2.2", \
    org.apache.jasper.el;version="2.2", \
-   com.ibm.wsspi.el;version="2.2", \
+   io.openliberty.el.internal.cdi;version="2.2", \
    org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
    org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
    org.eclipse.jdt.internal.compiler.classfmt;version="3.10.2";usage="JSP", \

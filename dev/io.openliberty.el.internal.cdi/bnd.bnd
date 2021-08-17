@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,13 +11,16 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.el.internal.cdi; singleton:=true
+Bundle-SymbolicName: io.openliberty.el.internal.cdi
 Bundle-Description: EL-CDI Internal Bundle
 
 jakartaeeMe: true
 
+Import-Package: \
+	javax.el;version="[2.2,3]"
+
 Export-Package: \
- io.openliberty.el.internal.cdi;version="2.2.0"
+ io.openliberty.el.internal.cdi;version="2.2"
 
 instrument.disabled: true
 
