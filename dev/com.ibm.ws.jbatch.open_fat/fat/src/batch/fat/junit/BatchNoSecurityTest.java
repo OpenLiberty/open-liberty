@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 public class BatchNoSecurityTest {
 
-    protected static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.nosecurity.fat");
+    protected static LibertyServer server;
 
     /**
      * Start the server and setup the DB.
@@ -46,6 +46,7 @@ public class BatchNoSecurityTest {
 
         FatUtils.checkJava7();
 
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.nosecurity.fat");
         BatchAppUtils.addDropinsBatchSecurityWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 

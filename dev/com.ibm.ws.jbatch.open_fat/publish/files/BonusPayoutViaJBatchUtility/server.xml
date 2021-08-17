@@ -4,6 +4,7 @@
 
 	<featureManager>
 		<feature>batchManagement-1.0</feature>
+		<feature>batch-1.0</feature>
 	</featureManager>
 
     <batchPersistence jobStoreRef="BatchDatabaseStore" />

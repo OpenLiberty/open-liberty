@@ -57,8 +57,8 @@ public class JPAPersistenceManagerImplTest extends BatchFATHelper {
 
     public static String BATCH_V4_URL = "/ibm/api/batch/v4/";
 
-    private static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat.jpa.ddl.test");
-    private static final BatchRestUtils batchRestUtils = new BatchRestUtils(server);
+    private static LibertyServer server;
+    private static BatchRestUtils batchRestUtils;
 
     protected final static String ADMIN_NAME = "bob";
     protected final static String ADMIN_PASSWORD = "bobpwd";
@@ -74,6 +74,9 @@ public class JPAPersistenceManagerImplTest extends BatchFATHelper {
 
     @BeforeClass
     public static void setup() throws Exception {
+
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat.jpa.ddl.test");
+        batchRestUtils = new BatchRestUtils(server);
 
         //server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat.jpa.persistence");
 
