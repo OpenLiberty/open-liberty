@@ -12,6 +12,7 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -19,6 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -115,10 +117,15 @@ public class AccessTokenCacheHelper {
 
     Subject recreateSubject(Subject cachedSubject) {
         Subject newSubject = new Subject();
-        if (cachedSubject != null) {
-            newSubject.getPrincipals().addAll(cachedSubject.getPrincipals());
-            newSubject.getPublicCredentials().addAll(cachedSubject.getPublicCredentials());
-            newSubject.getPrivateCredentials().addAll(cachedSubject.getPrivateCredentials());
+        if (cachedSubject == null) {
+            return newSubject;
+        }
+        Set<Object> newPRCreds = newSubject.getPrivateCredentials();
+        Set<Object> cachedPRCreds = cachedSubject.getPrivateCredentials();
+        for (Object cachedPRCred : cachedPRCreds) {
+            if (cachedPRCred instanceof OidcTokenImpl || cachedPRCred instanceof Hashtable) {
+                newPRCreds.add(cachedPRCred);
+            }
         }
         return newSubject;
     }

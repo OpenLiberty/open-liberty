@@ -16,9 +16,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +35,8 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
@@ -49,6 +53,7 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
 
     private final OidcClientConfig clientConfig = mockery.mock(OidcClientConfig.class);
     private final ProviderAuthenticationResult authnResult = mockery.mock(ProviderAuthenticationResult.class);
+    private final Principal principal = mockery.mock(Principal.class);
 
     private static final String ACCESS_TOKEN = "access_token";
     private static final String HTTPS_URL = "https://localhost:8020/root";
@@ -476,6 +481,93 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
 
         long result = cacheHelper.getTokenExpirationFromCustomProperties(customProperties);
         assertEquals("Did not get expected expiration time from the custom properties.", expValue, result);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectNull() {
+        Subject result = cacheHelper.recreateSubject(null);
+        assertEquals("Null cached subject should return a new subject.", new Subject(), result);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectEmpty() {
+        Subject cachedSubject = new Subject();
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertEquals("Empty cached subject should return a new subject.", new Subject(), result);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithOidcTokenImpl() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        OidcTokenImplBase oidcTokenBase = new OidcTokenImplBase(null, null, null, null, null);
+        OidcTokenImpl oidcToken = new OidcTokenImpl(oidcTokenBase);
+        creds.add(oidcToken);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertFalse("OidcTokenImpl in cached subject should be copied into new subject.", result.getPrivateCredentials(OidcTokenImpl.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithHashtable() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put("one", "one");
+        customProperties.put("two", "two");
+        creds.add(customProperties);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertFalse("Hashtable in cached subject should be copied into new subject.", result.getPrivateCredentials(Hashtable.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithOidcTokenImplAndHashtable() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        OidcTokenImplBase oidcTokenBase = new OidcTokenImplBase(null, null, null, null, null);
+        OidcTokenImpl oidcToken = new OidcTokenImpl(oidcTokenBase);
+        creds.add(oidcToken);
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put("one", "one");
+        customProperties.put("two", "two");
+        creds.add(customProperties);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        boolean oidcTokenImplEmpty = result.getPrivateCredentials(OidcTokenImpl.class).isEmpty();
+        boolean hashtableEmpty = result.getPrivateCredentials(Hashtable.class).isEmpty();
+        assertFalse("OidcTokenImpl and Hashtable in cached subject should be copied into new subject.", oidcTokenImplEmpty || hashtableEmpty);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithWrongCredType() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        creds.add("one");
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertTrue("Only OidcTokenImpl's and Hashtables should be copied into new subject.", result.getPrivateCredentials(String.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithOidcTokenImplBase() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        OidcTokenImplBase oidcTokenBase = new OidcTokenImplBase(null, null, null, null, null);
+        creds.add(oidcTokenBase);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertTrue("OidcTokenImplBase should not be copied into new subject.", result.getPrivateCredentials(OidcTokenImplBase.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithPrincipal() {
+        Subject cachedSubject = new Subject();
+        cachedSubject.getPrincipals().add(principal);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertTrue("Cached principal should not be copied into new subject.", result.getPrincipals().isEmpty());
     }
 
     private SingleTableCache getCache() {
