@@ -170,14 +170,19 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 				// Figure out min/max
 				if (elapsedTime >= 0) {
 					long minuteLatestMaximumDuration = stats.getMinuteLatestMaximumDuration();
-					if (elapsedTime > minuteLatestMaximumDuration) {
-						stats.compareAndUpdateMinuteLatestMaximumDuration(minuteLatestMaximumDuration, elapsedTime);
+					while (elapsedTime > minuteLatestMaximumDuration) {
+						if (stats.compareAndUpdateMinuteLatestMaximumDuration(minuteLatestMaximumDuration, elapsedTime)) {
+								break;
+						}
+						minuteLatestMaximumDuration = stats.getMinuteLatestMaximumDuration();
 					}
 
 					long minuteLatestMinimumDuration = stats.getMinuteLatestMinimumDuration();
-					if (elapsedTime < minuteLatestMinimumDuration
-									|| minuteLatestMinimumDuration == 0L) {
-						stats.compareAndUpdateMinuteLatestMinimumDuration(minuteLatestMinimumDuration, elapsedTime);
+					while (elapsedTime < minuteLatestMinimumDuration || minuteLatestMinimumDuration == 0L) {
+						if (stats.compareAndUpdateMinuteLatestMinimumDuration(minuteLatestMinimumDuration, elapsedTime)) {
+							break;
+						}
+						minuteLatestMinimumDuration = stats.getMinuteLatestMinimumDuration();
 					}
 				}
 			}
