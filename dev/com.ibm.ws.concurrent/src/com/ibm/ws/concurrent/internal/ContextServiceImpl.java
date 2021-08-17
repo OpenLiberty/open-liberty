@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
-import javax.enterprise.concurrent.ManagedTask;
 
 import org.eclipse.microprofile.context.ThreadContext;
 import org.osgi.framework.Constants;
@@ -66,6 +65,7 @@ import com.ibm.ws.context.service.serializable.ContextualInvocationHandler;
 import com.ibm.ws.context.service.serializable.ContextualObject;
 import com.ibm.ws.context.service.serializable.ThreadContextManager;
 import com.ibm.ws.javaee.version.JavaEEVersion;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -89,6 +89,8 @@ public class ContextServiceImpl implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
     // Names of references
     private static final String BASE_INSTANCE = "baseInstance",
                     THREAD_CONTEXT_MANAGER = "threadContextManager";
@@ -105,6 +107,7 @@ public class ContextServiceImpl implements ContextService, //
     private static final List<String> SUPPORTED_PROPERTIES = Arrays.asList(BASE_CONTEXT_REF,
                                                                            ResourceFactory.CREATES_OBJECT_CLASS,
                                                                            ID,
+                                                                           "javaCompDefaultName", // for java:comp/DefaultContextService
                                                                            JNDI_NAME,
                                                                            Constants.OBJECTCLASS,
                                                                            OnErrorUtil.CFG_KEY_ON_ERROR);
@@ -407,6 +410,7 @@ public class ContextServiceImpl implements ContextService, //
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
             proxy = AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
+                @Trivial
                 public Object run() {
                     return Proxy.newProxyInstance(instance.getClass().getClassLoader(), interfaces, handler);
                 }
@@ -455,6 +459,7 @@ public class ContextServiceImpl implements ContextService, //
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
             proxy = AccessController.doPrivileged(new PrivilegedAction<T>() {
                 @Override
+                @Trivial
                 public T run() {
                     return intf.cast(Proxy.newProxyInstance(intf.getClassLoader(), new Class<?>[] { intf }, handler));
                 }
@@ -578,6 +583,7 @@ public class ContextServiceImpl implements ContextService, //
         if (contextualProxy != null && Proxy.isProxyClass(contextualProxy.getClass())) {
             InvocationHandler handler = AccessController.doPrivileged(new PrivilegedAction<InvocationHandler>() {
                 @Override
+                @Trivial
                 public InvocationHandler run() {
                     return Proxy.getInvocationHandler(contextualProxy);
                 }
@@ -623,6 +629,7 @@ public class ContextServiceImpl implements ContextService, //
 
                     Constructor<T> con = AccessController.doPrivileged(new PrivilegedExceptionAction<Constructor<T>>() {
                         @Override
+                        @Trivial
                         public Constructor<T> run() throws NoSuchMethodException {
                             return exceptionClassToRaise.getConstructor(String.class);
                         }
@@ -685,12 +692,7 @@ public class ContextServiceImpl implements ContextService, //
         }
 
         // Inherit complementary thread context config from base instance
-        ContextServiceImpl baseInstance = AccessController.doPrivileged(new PrivilegedAction<ContextServiceImpl>() {
-            @Override
-            public ContextServiceImpl run() {
-                return (ContextServiceImpl) componentContext.locateService(BASE_INSTANCE);
-            }
-        });
+        ContextServiceImpl baseInstance = (ContextServiceImpl) priv.locateService(componentContext, BASE_INSTANCE);
         if (baseInstance != null)
             baseInstance.addComplementaryThreadContextConfigurationsTo(this);
 
