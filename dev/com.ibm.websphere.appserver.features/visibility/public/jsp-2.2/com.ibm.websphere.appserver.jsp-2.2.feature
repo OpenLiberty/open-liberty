@@ -38,7 +38,7 @@ Subsystem-Name: JavaServer Pages 2.2
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1", \
   com.ibm.websphere.appserver.eeCompatible-6.0, \
   com.ibm.websphere.appserver.javax.el-2.2
--bundles=com.ibm.ws.org.eclipse.jdt.core.3.22.0, \
+-bundles=com.ibm.ws.org.eclipse.jdt.core, \
  com.ibm.ws.jsp.factories, \
  com.ibm.websphere.javaee.jstl.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet:jstl:1.2", \
  com.ibm.ws.jsp.jasper, \
