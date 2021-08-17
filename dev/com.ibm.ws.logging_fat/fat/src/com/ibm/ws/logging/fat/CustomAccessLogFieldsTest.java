@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -36,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -567,6 +569,57 @@ public class CustomAccessLogFieldsTest {
         hitHttpEndpoint(multipleHttpEndpointServer);
         assertNull("SetterFormatter was found in trace log for secondary http endpoint, but should not have been created a second time.",
                    multipleHttpEndpointServer.waitForStringInTraceUsingMark("createSetterFormatter", WAIT_TIMEOUT));
+    }
+
+    /*
+     * Test port specifications such as %p and %{remote}p
+     */
+    @Test
+    public void testDifferentPortSpecifications() throws Exception {
+        setUp(xmlServer);
+
+        // Test %p and %{remote}p in both orders
+        runPortsTest("accessLogging/server-logformat-ports.xml");
+        runPortsTest("accessLogging/server-logformat-ports2.xml");
+    }
+
+    /**
+     * @throws Exception
+     * @throws MalformedURLException
+     * @throws IOException
+     * @throws ProtocolException
+     */
+    private void runPortsTest(String configFile) throws Exception, MalformedURLException, IOException, ProtocolException {
+        xmlServer.setServerConfigurationFile(configFile);
+        waitForConfigUpdate(xmlServer);
+
+        xmlServer.setMarkToEndOfLog(xmlServer.getDefaultLogFile());
+        xmlServer.setTraceMarkToEndOfDefaultTrace();
+
+        hitHttpEndpoint(xmlServer);
+        String line = xmlServer.waitForStringInLogUsingMark("liberty_accesslog");
+
+        String[] expectedFields = { "ibm_requestPort", "ibm_remotePort" };
+        assertTrue("Expecting two different ports.", areFieldsPresent(line, expectedFields));
+
+        String traceLine = xmlServer.waitForStringInTraceUsingMark(Pattern.quote("read (async) requested for local"));
+        assertNotNull("Expecting TCP trace statement", traceLine);
+
+        // Example:
+        // [8/17/21, 9:31:58:070 PDT] 0000003a id=00000000 com.ibm.ws.tcpchannel.internal.TCPReadRequestContextImpl     1 read (async) requested for local: /127.0.0.1:8010 remote: /127.0.0.1:52709
+
+        String[] pieces = traceLine.split(" ");
+
+        String localPort = pieces[pieces.length - 3];
+        localPort = localPort.substring(localPort.indexOf(':') + 1);
+
+        String remotePort = pieces[pieces.length - 1];
+        remotePort = remotePort.substring(remotePort.indexOf(':') + 1);
+
+        HashMap<String, String> accessLogResults = parseIntoKvp(line);
+
+        assertEquals("Local port doesn't match", localPort, accessLogResults.get("ibm_requestPort"));
+        assertEquals("Remote port doesn't match", remotePort, accessLogResults.get("ibm_remotePort"));
     }
 
     // *** Helper functions ***
