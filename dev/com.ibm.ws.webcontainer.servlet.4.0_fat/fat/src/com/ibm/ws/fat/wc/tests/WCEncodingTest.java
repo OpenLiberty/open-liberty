@@ -68,10 +68,7 @@ public class WCEncodingTest {
         testServlet40War.addPackage("testservlet40.war.servlets");
         testServlet40War.addPackage("testservlet40.war.listeners");
 
-        WebArchive testServlet40Ear = ShrinkWrap.create(WebArchive.class, "TestServlet40.ear");
-        testServlet40Ear.addAsLibrary(testServlet40War);
-
-        ShrinkHelper.exportDropinAppToServer(server, testServlet40Ear);
+        ShrinkHelper.exportDropinAppToServer(server, testServlet40War);
 
         ArrayList<String> expectedErrors = new ArrayList<String>();
         expectedErrors.add("CWWWC0401E:.*");

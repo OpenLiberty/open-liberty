@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,10 +66,7 @@ public class WCServerTest {
         testServlet40War.addPackage("testservlet40.war.servlets");
         testServlet40War.addPackage("testservlet40.war.listeners");
 
-        WebArchive testServlet40Ear = ShrinkWrap.create(WebArchive.class, SERVLET_40_APP_JAR_NAME + ".ear");
-        testServlet40Ear.addAsLibrary(testServlet40War);
-
-        ShrinkHelper.exportDropinAppToServer(server, testServlet40Ear);
+        ShrinkHelper.exportDropinAppToServer(server, testServlet40War);
 
         server.startServer(WCServerTest.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
