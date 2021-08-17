@@ -2454,9 +2454,16 @@ public class LibertyServer implements LogMonitorClient {
 
             int serverStopRC = output.getReturnCode();
             if (serverStopRC != 0) {
-                throw new RuntimeException("Server stop failed with RC " + serverStopRC +
-                                           ".\nStdout:\n" + output.getStdout() +
-                                           "\nStderr:\n" + output.getStderr());
+                if (serverStopRC >= 20) {
+                    ProgramOutput serverStatusOutput = executeServerScript("status", null);
+                    int statusCode = serverStatusOutput.getReturnCode();
+                    Log.warning(c, method + " server status return code=" + statusCode);
+                    if (statusCode != 1) {
+                        throw new RuntimeException("Server stop failed with RC " + serverStopRC +
+                                                   ".\nStdout:\n" + output.getStdout() +
+                                                   "\nStderr:\n" + output.getStderr());
+                    }
+                }
             }
 
             // Now verify that the server is truly stopped by checking server status from the command line.
