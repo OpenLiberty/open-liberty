@@ -608,13 +608,17 @@ public class CustomAccessLogFieldsTest {
         // Example:
         // [8/17/21, 9:31:58:070 PDT] 0000003a id=00000000 com.ibm.ws.tcpchannel.internal.TCPReadRequestContextImpl     1 read (async) requested for local: /127.0.0.1:8010 remote: /127.0.0.1:52709
 
-        String[] pieces = traceLine.split(" ");
+        int localIndex = traceLine.indexOf("local: ");
+        assertTrue(localIndex != -1);
 
-        String localPort = pieces[pieces.length - 3];
-        localPort = localPort.substring(localPort.indexOf(':') + 1);
+        int remoteIndex = traceLine.indexOf("remote: ");
+        assertTrue(remoteIndex != -1 && remoteIndex > localIndex);
 
-        String remotePort = pieces[pieces.length - 1];
-        remotePort = remotePort.substring(remotePort.indexOf(':') + 1);
+        String localPort = traceLine.substring(localIndex, remoteIndex);
+        localPort = localPort.substring(localPort.lastIndexOf(':') + 1).trim();
+
+        String remotePort = traceLine.substring(remoteIndex);
+        remotePort = remotePort.substring(remotePort.lastIndexOf(':') + 1);
 
         HashMap<String, String> accessLogResults = parseIntoKvp(line);
 
