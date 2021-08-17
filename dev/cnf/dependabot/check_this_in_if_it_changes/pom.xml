@@ -1717,9 +1717,9 @@
       <version>4.3.1</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <groupId>org.eclipse.jdt</groupId>
       <artifactId>ecj</artifactId>
-      <version>4.4.2</version>
+      <version>3.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>

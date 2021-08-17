@@ -133,7 +133,7 @@ instrument.classesExcludes: com/ibm/ws/jsp/resources/*.class
 
 -buildpath: \
 	lib/bsf.jar;version=file,\
-	com.ibm.ws.org.eclipse.jdt.core.3.10.2.v20160712-0000;version=latest,\
+	com.ibm.ws.org.eclipse.jdt.core.3.22.0;version=latest,\
 	com.ibm.websphere.javaee.el.2.2;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.2;version=latest,\
 	com.ibm.ws.kernel.service,\
