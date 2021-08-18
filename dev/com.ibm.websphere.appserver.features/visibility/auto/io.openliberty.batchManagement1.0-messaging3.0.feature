@@ -8,6 +8,6 @@ IBM-Provision-Capability: \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.jbatch.jms.jakarta
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel
