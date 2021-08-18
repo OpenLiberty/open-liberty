@@ -34,4 +34,4 @@ Export-Package: \
     com.ibm.ws.kernel.security.thread,\
     com.ibm.ws.kernel.boot.core;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    io.netty.transport;version=latest
+    io.openliberty.io.netty;version=latest
