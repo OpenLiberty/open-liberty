@@ -220,6 +220,7 @@ public class CheckpointImplTest {
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test1");
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin);
         checkDirectory(Phase.FEATURES, checkpoint, criu, locAdmin);
+        checkpoint.resetCheckpointCalled();
         checkFailDump(Phase.FEATURES, checkpoint, criu, locAdmin);
     }
 
@@ -364,6 +365,22 @@ public class CheckpointImplTest {
         cl.successfulCompletion(createTestFuture(), Boolean.TRUE);
         assertEquals("Wrong phase.", Phase.FEATURES, factory.phase);
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
+    }
+
+    @Test
+    public void testMultipleCheckpoints() {
+        TestCRIU criu = new TestCRIU();
+        TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
+        WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, "test9");
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext1(true, false, factory), criu, locAdmin);
+        checkpoint.check();
+        assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
+        checkpoint.check();
+        assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
+        checkpoint.resetCheckpointCalled();
+        assertTrue("Expected to have reset checkpoint", !checkpoint.checkpointCalledAlready());
+        checkpoint.check();
+        assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
     }
 
     private CompletionListener<Boolean> getCompletionListener() {
