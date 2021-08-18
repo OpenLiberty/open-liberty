@@ -8,16 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.netty.internal.codec;
+package io.openliberty.netty.internal;
 
-import io.netty.channel.CombinedChannelDuplexHandler;
+import io.netty.bootstrap.ServerBootstrap;
 
 /**
- * Codec for converting ByteBuf to WsByteBuffer and vice versa
+ * Bootstrap configuration object
  */
-public class WsByteBufferCodec extends CombinedChannelDuplexHandler<ByteBufToWsByteBufferDecoder, WsByteBufferToByteBufEncoder> {
+public interface ServerBootstrapConfiguration {
 
-    public WsByteBufferCodec() {
-        super(new ByteBufToWsByteBufferDecoder(), new WsByteBufferToByteBufEncoder());
-    }
+    /**
+     * Apply this configuration to the given ServerBootstrap
+     * @param bootstrap
+     */
+    void applyConfiguration(ServerBootstrap bootstrap);
+
 }
