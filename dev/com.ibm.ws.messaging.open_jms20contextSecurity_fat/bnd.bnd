@@ -13,12 +13,9 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/JMSConsumer/src, \
-  test-applications/jmsmdb/src, \
-  test-applications/DurableUnshared/src, \
-  test-applications/JMSContextInject/src, \
-  test-applications/JMSDCFSecurity/src, \
-  test-applications/mdbapp/src
+  test-applications/JMSContext/src, \
+  test-applications/TemporaryQueue/src, \
+  test-applications/JMSContextInject/src
 
 fat.project: true
 
