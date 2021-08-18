@@ -610,7 +610,7 @@ public class WCServerTest extends LoggingTest {
         Assert.assertEquals("Expected " + 200 + " status code was not returned!", 200, response.getResponseCode());
 
         String responseText = response.getText().trim();
-        LOG.info("Response text: " + responseText + " length: " + target.length());
+        LOG.info("Response text: " + responseText + " length: " + responseText.length());
 
         Assert.assertTrue("The response length was incorrect: " + responseText.length() + " != " + target.length(), 
             responseText.length() == target.length());
