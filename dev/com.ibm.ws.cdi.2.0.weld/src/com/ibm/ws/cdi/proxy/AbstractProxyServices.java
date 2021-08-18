@@ -128,7 +128,7 @@ public abstract class AbstractProxyServices implements ProxyServices {
 
 	@Override
 	@FFDCIgnore(ClassNotFoundException.class)
-	public Class<?> defineClass​(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+	public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
 
 		ClassLoader loader = loaderMap.get(originalClass);
 		Object classLoaderLock = null;
@@ -168,7 +168,7 @@ public abstract class AbstractProxyServices implements ProxyServices {
 	}
 
 	@Override
-	public Class<?> loadClass​(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
+	public Class<?> loadClass(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
 		ClassLoader cl = loaderMap.get(originalClass);
 		return loadClass​(classBinaryName, cl);
 	}
