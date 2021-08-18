@@ -138,6 +138,10 @@ public class FeatureUtility {
         fine("additional jsons: " + additionalJsons);
         if (additionalJsons != null && !additionalJsons.isEmpty()) {
         	jsonsRequired.addAll(additionalJsons);
+        	if(!additionalJsons.contains(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion))){
+        		//if additionalJson is for user feature, add websphere json for license update
+        		jsonsRequired.add(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion));
+        	}
         	map.put("json.provided", true);
         }
 
