@@ -189,7 +189,7 @@ public class FeatureUtility {
 	private void initializeMap(List<File> jsonPaths) throws IOException {
         map.put("is.feature.utility", true);
         map.put("runtime.install.dir", Utils.getInstallDir());
-        map.put("target.user.directory", new File(Utils.getInstallDir(), "usr/tmp"));
+        map.put("target.user.directory", new File(Utils.getInstallDir(), "usr"));
         map.put("install.local.esa", true);
         
         map.put("single.json.file", jsonPaths);

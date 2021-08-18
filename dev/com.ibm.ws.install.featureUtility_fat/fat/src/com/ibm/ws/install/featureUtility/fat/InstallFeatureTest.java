@@ -65,6 +65,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         // TODO
         resetOriginalWlpProps();
         cleanUpTempFiles();
+        deleteRepo("AfterClassCleanUp");
     }
     
     
@@ -100,7 +101,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output = po.getStdout();
         assertTrue("Should contain json-1.0", output.contains("json-1.0"));
 
-        deleteRepo(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
     }
     
@@ -239,7 +239,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertTrue("Should be edition Base", (edition.contains("BASE")));
 
         deleteProps(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -289,7 +288,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
         deleteProps(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -329,8 +327,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
         deleteEtcFolder(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
-
 
         Log.exiting(c, METHOD_NAME);
     }
