@@ -37,10 +37,11 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class InMemoryPersistenceTest {
 
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat.memory.persistence");
+    private static LibertyServer server;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat.memory.persistence");
         HttpUtils.trustAllCertificates();
 
         FatUtils.checkJava7();

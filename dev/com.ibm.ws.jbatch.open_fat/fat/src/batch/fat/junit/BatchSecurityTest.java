@@ -38,7 +38,7 @@ public class BatchSecurityTest {
 
     private static final Class testClass = BatchSecurityTest.class;
 
-    protected static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
+    protected static LibertyServer server;
 
     /**
      * Start the server and setup the DB.
@@ -48,7 +48,7 @@ public class BatchSecurityTest {
 
         log("setup", "start server and execute DDLs");
 
-        FatUtils.checkJava7();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
 
         BatchAppUtils.addDropinsBatchSecurityWar(server);
 
