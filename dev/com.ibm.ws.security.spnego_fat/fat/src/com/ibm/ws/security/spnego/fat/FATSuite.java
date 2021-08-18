@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServerFactory;
                 BasicAuthTest.class,
                 //CanonicalHostNameTest.class,
                 //IncludeClientGSSCredentialInSubjectTest.class,
-                //IncludeCustomCacheKeyTest.class,
+                IncludeCustomCacheKeyTest.class,
                 //Krb5ConfigTest.class,
                 ///ServicePrincipalNamesTest.class,
                 //SpnegoTokenHelperApiTest.class,

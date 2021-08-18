@@ -985,12 +985,21 @@ public class ApacheKDCCommonTest {
         return setSpnegoConfigElement(newServer, configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, null);
     }
 
+    /**
+     * @return return the Spnego config element object with default value set for {krb5Config, krb5Keytab, servicePrincipalNames, canonicalHostName}
+     * @throws Exception
+     */
+    protected Spnego getDefaultSpnegoConfigElement() throws Exception {
+        return setDefaultSpnegoConfigValues(new Spnego());
+    }
+
     protected Spnego setDefaultSpnegoConfigValues(Spnego spnego) throws Exception {
         spnego.krb5Config = configFile;
         spnego.krb5Keytab = keytabFile;
         spnego.servicePrincipalNames = ApacheKDCforSPNEGO.SPN;
         spnego.canonicalHostName = "false";
         spnego.skipForUnprotectedURI = null;
+        spnego.includeCustomCacheKeyInSubject = null;
         spnego.spnegoAuthenticationErrorPageURL = null;
         spnego.spnegoNotSupportedErrorPageURL = null;
         spnego.ntlmTokenReceivedErrorPageURL = null;
@@ -1020,6 +1029,27 @@ public class ApacheKDCCommonTest {
         return spnego;
     }
 
+    /**
+     * Copies spnego config values from one spnego config object to another.
+     *
+     * this copy method is needed because the ServerConfiguration class does not provide a setSpnego() method, it only provides a getSpnego()
+     *
+     * @param spnego1 - spnego config object to copy values from
+     * @param spnego2 - spnego config object to copy values to
+     *
+     */
+    protected void copySpnegoConfigValues(Spnego spnego1, Spnego spnego2) throws Exception {
+        spnego2.krb5Config = spnego1.krb5Config;
+        spnego2.krb5Keytab = spnego1.krb5Keytab;
+        spnego2.servicePrincipalNames = spnego1.servicePrincipalNames;
+        spnego2.canonicalHostName = spnego1.canonicalHostName;
+        spnego2.skipForUnprotectedURI = spnego1.skipForUnprotectedURI;
+        spnego2.includeCustomCacheKeyInSubject = spnego1.includeCustomCacheKeyInSubject;
+        spnego2.spnegoAuthenticationErrorPageURL = spnego1.spnegoAuthenticationErrorPageURL;
+        spnego2.spnegoNotSupportedErrorPageURL = spnego1.spnegoNotSupportedErrorPageURL;
+        spnego2.ntlmTokenReceivedErrorPageURL = spnego1.ntlmTokenReceivedErrorPageURL;
+    }
+
     protected void setDefaultSpnegoServerConfig() throws Exception {
         setDefaultSpnegoServerConfig(false);
     }
@@ -1042,6 +1072,19 @@ public class ApacheKDCCommonTest {
         Log.info(c, "setSpnegoServerConfig", spnego.toString());
         Log.info(c, "setSpnegoServerConfig", "================== Spnego Config is Set  ==================");
 
+    }
+
+    /**
+     * Update the Server config dynamically passing in new spnego config element object
+     *
+     * @param spnego - object for spnego config element
+     * @throws Exception
+     */
+    protected void updateServerSpnegoConfigDynamically(Spnego spnego) throws Exception {
+        Log.info(c, "updateServerSpnegoConfigDynamically", spnego.toString());
+        ServerConfiguration newServerConfig = emptyConfiguration.clone();
+        copySpnegoConfigValues(spnego, newServerConfig.getSpnego());
+        updateConfigDynamically(myServer, newServerConfig, false);
     }
 
     /**

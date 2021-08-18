@@ -36,6 +36,9 @@ public class Spnego extends ConfigElement {
     public String trimKerberosRealmNameFromPrincipal;
 
     @XmlAttribute
+    public String includeCustomCacheKeyInSubject;
+
+    @XmlAttribute
     public String spnegoAuthenticationErrorPageURL;
 
     @XmlAttribute
@@ -53,6 +56,7 @@ public class Spnego extends ConfigElement {
         buf.append("servicePrincipalNames=").append(servicePrincipalNames).append(",\n");
         buf.append("skipForUnprotectedURI=").append(skipForUnprotectedURI).append(",\n");
         buf.append("trimKerberosRealmNameFromPrincipal=").append(trimKerberosRealmNameFromPrincipal).append(",\n");
+        buf.append("includeCustomCacheKeyInSubject=").append(includeCustomCacheKeyInSubject).append(",\n");
         buf.append("krb5Keytab=").append(krb5Keytab).append(",\n");
         buf.append("krb5Config=").append(krb5Config).append(",\n");
         buf.append("spnegoAuthenticationErrorPageURL=").append(spnegoAuthenticationErrorPageURL).append(",\n");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.security.spnego.fat;
 
-import static org.junit.Assert.fail;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.Spnego;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.spnego.fat.config.CommonTest;
+import com.ibm.ws.security.spnego.fat.config.ApacheKDCCommonTest;
 import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 
 import componenttest.annotation.SkipForRepeat;
@@ -26,10 +27,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
-@Mode(TestMode.QUARANTINE)
+@Mode(TestMode.FULL)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
-public class IncludeCustomCacheKeyTest extends CommonTest {
+public class IncludeCustomCacheKeyTest extends ApacheKDCCommonTest {
 
     private static final Class<?> c = IncludeCustomCacheKeyTest.class;
 
@@ -39,7 +39,31 @@ public class IncludeCustomCacheKeyTest extends CommonTest {
     public static void setUp() throws Exception {
         String thisMethod = "setUp";
         Log.info(c, thisMethod, "Setting up");
-        commonSetUp("IncludeCustomCacheKeyTest", null, SPNEGOConstants.NO_APPS, SPNEGOConstants.NO_PROPS, SPNEGOConstants.DONT_START_SERVER);
+
+        ApacheKDCCommonTest.commonSetUp("IncludeCustomCacheKeyTest", null,
+                                        SPNEGOConstants.NO_APPS,
+                                        SPNEGOConstants.NO_PROPS,
+                                        SPNEGOConstants.DONT_CREATE_SSL_CLIENT,
+                                        SPNEGOConstants.DONT_CREATE_SPN_AND_KEYTAB,
+                                        SPNEGOConstants.DEFAULT_REALM,
+                                        SPNEGOConstants.DONT_CREATE_SPNEGO_TOKEN,
+                                        SPNEGOConstants.DONT_SET_AS_COMMON_TOKEN,
+                                        SPNEGOConstants.USE_CANONICAL_NAME,
+                                        SPNEGOConstants.USE_COMMON_KEYTAB,
+                                        SPNEGOConstants.START_SERVER);
+    }
+
+    @Before
+    public void beforeTestCase() throws Exception {
+        Log.info(c, "beforeTestCase", "============================= BEGIN TEST =============================");
+        preTestCheck();
+    }
+
+    @After
+    public void afterTestCase() {
+        //base config is shared for most testCases so we do not need to log it every time
+        if (myServer.isLogOnUpdate())
+            myServer.setLogOnUpdate(false);
     }
 
     /**
@@ -51,21 +75,16 @@ public class IncludeCustomCacheKeyTest extends CommonTest {
      * Expected results:
      * - Authentication should be successful and access to the protected resource should be granted.
      * - Client subject should contain the custom cache key.
+     *
+     * @throws Exception
      */
 
     @Test
-    public void testIncludeCustomCacheKeyNotSpecified() {
-        try {
-            testHelper.reconfigureServer("includeCustomCacheKey_notSpecified.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
+    public void testIncludeCustomCacheKeyNotSpecified() throws Exception {
+        setDefaultSpnegoServerConfig();
 
-            String response = commonSuccessfulSpnegoServletCall();
-
-            expectation.responseContainsCustomCacheKey(response, CUSTOM_CACHE_KEY);
-        } catch (Exception ex) {
-            String message = CommonTest.maskHostnameAndPassword(ex.getMessage());
-            Log.info(c, name.getMethodName(), "Unexpected exception: " + message);
-            fail("Exception was thrown: " + message);
-        }
+        String response = commonSuccessfulSpnegoServletCall();
+        expectation.responseContainsCustomCacheKey(response, CUSTOM_CACHE_KEY);
     }
 
     /**
@@ -77,21 +96,19 @@ public class IncludeCustomCacheKeyTest extends CommonTest {
      * Expected results:
      * - Authentication should be successful and access to the protected resource should be granted.
      * - Client subject should contain the custom cache key.
+     *
+     * @throws Exception
      */
 
     @Test
-    public void testIncludeCustomCacheKeyTrue() {
-        try {
-            testHelper.reconfigureServer("includeCustomCacheKey_true.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
+    public void testIncludeCustomCacheKeyTrue() throws Exception {
+        Spnego spnego = getDefaultSpnegoConfigElement();
+        spnego.includeCustomCacheKeyInSubject = "true";
 
-            String response = commonSuccessfulSpnegoServletCall();
+        updateServerSpnegoConfigDynamically(spnego);
 
-            expectation.responseContainsCustomCacheKey(response, CUSTOM_CACHE_KEY);
-        } catch (Exception ex) {
-            String message = CommonTest.maskHostnameAndPassword(ex.getMessage());
-            Log.info(c, name.getMethodName(), "Unexpected exception: " + message);
-            fail("Exception was thrown: " + message);
-        }
+        String response = commonSuccessfulSpnegoServletCall();
+        expectation.responseContainsCustomCacheKey(response, CUSTOM_CACHE_KEY);
     }
 
     /**
@@ -103,21 +120,19 @@ public class IncludeCustomCacheKeyTest extends CommonTest {
      * Expected results:
      * - Authentication should be successful and access to the protected resource should be granted.
      * - Client subject should not contain the custom cache key.
+     *
+     * @throws Exception
      */
 
     @Test
-    public void testIncludeCustomCacheKeyFalse() {
-        try {
-            testHelper.reconfigureServer("includeCustomCacheKey_false.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
+    public void testIncludeCustomCacheKeyFalse() throws Exception {
+        Spnego spnego = getDefaultSpnegoConfigElement();
+        spnego.includeCustomCacheKeyInSubject = "false";
 
-            String response = commonSuccessfulSpnegoServletCall();
+        updateServerSpnegoConfigDynamically(spnego);
 
-            expectation.responseContainsNullCacheKey(response, CUSTOM_CACHE_KEY);
-        } catch (Exception ex) {
-            String message = CommonTest.maskHostnameAndPassword(ex.getMessage());
-            Log.info(c, name.getMethodName(), "Unexpected exception: " + message);
-            fail("Exception was thrown: " + message);
-        }
+        String response = commonSuccessfulSpnegoServletCall();
+        expectation.responseContainsNullCacheKey(response, CUSTOM_CACHE_KEY);
     }
 
 }
