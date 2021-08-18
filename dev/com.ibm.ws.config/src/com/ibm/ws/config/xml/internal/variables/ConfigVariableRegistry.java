@@ -272,7 +272,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         public String toString() {
             // Value is intentionally omitted
             StringBuilder builder = new StringBuilder("FileSystemVariable[");
-            builder.append("name=").append(getFileSystemVariableName(variableFile)).append(", ");
+            builder.append("name=").append(getName()).append(", ");
             builder.append("source=").append(Source.FILE_SYSTEM);
             builder.append("]");
             return builder.toString();
@@ -707,15 +707,26 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     public void modifyFileSystemVariables(Collection<File> modifiedFiles, Map<String, DeltaType> deltaMap) {
         for (File f : modifiedFiles) {
             if (f.isFile()) {
-                if ( f.getName().endsWith(".properties")) {
+                if (f.getName().endsWith(".properties")) {
                     try (FileInputStream fis = new FileInputStream(f)) {
                         Properties props = new Properties();
                         props.load(fis);
+
+                        // Remove all existing variables that came from this properties file
+                        Iterator<FileSystemVariable> iter = fileSystemVariables.values().iterator();
+                        while (iter.hasNext()) {
+                            FileSystemVariable var = iter.next();
+                            if (f.getName().equals(var.getPropertiesFileName())) {
+                                iter.remove();
+                                deltaMap.put(var.getName(), DeltaType.REMOVED);
+                                registry.removeVariable(var.getName());
+                            }
+                        }
+
+                        // Add the current values from the properties file
                         for (String key : props.stringPropertyNames()) {
                             FileSystemVariable sbv = new FileSystemVariable(f, key, props.getProperty(key));
                             fileSystemVariables.put(sbv.getName(), sbv);
-                            // The variable will be added back by updateSystemVariables, but remove it for now.
-                            registry.removeVariable(sbv.getName());
                             deltaMap.put(key, DeltaType.MODIFIED);
                         }
                     } catch (IOException ex) {
