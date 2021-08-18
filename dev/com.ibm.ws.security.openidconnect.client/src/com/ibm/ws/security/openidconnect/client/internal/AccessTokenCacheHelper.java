@@ -24,6 +24,7 @@ import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class AccessTokenCacheHelper {
 
@@ -34,21 +35,32 @@ public class AccessTokenCacheHelper {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
-        ProviderAuthenticationResult result = (ProviderAuthenticationResult) cache.get(token);
-        if (result != null) {
-            if (isTokenInCachedResultExpired(result, clientConfig)) {
-                return null;
-            }
-            Subject newSubject = recreateSubject(result.getSubject());
-            return new ProviderAuthenticationResult(result.getStatus(), result.getHttpStatusCode(), result.getUserName(), newSubject, result.getCustomProperties(), result.getRedirectUrl());
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(token);
+        if (cacheEntry == null) {
+            return null;
         }
-        return null;
+        ProviderAuthenticationResult result = cacheEntry.getResult();
+        if (isTokenInCachedResultExpired(result, clientConfig)) {
+            return null;
+        }
+        String uniqueID = cacheEntry.getUniqueID();
+        Hashtable<String, Object> customProperties = result.getCustomProperties();
+        if (customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID) == null && uniqueID != null) {
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
+        }
+        Subject newSubject = recreateSubject(result.getSubject());
+        return new ProviderAuthenticationResult(result.getStatus(), result.getHttpStatusCode(), result.getUserName(), newSubject, customProperties, result.getRedirectUrl());
     }
 
     public void cacheTokenAuthenticationResult(OidcClientConfig clientConfig, String token, ProviderAuthenticationResult result) {
         if (clientConfig.getAccessTokenCacheEnabled()) {
             SingleTableCache cache = clientConfig.getCache();
-            cache.put(token, result);
+            Hashtable<String, Object> customProperties = result.getCustomProperties();
+            String uniqueID = null;
+            if (customProperties != null) {
+                uniqueID = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+            }
+            cache.put(token, new AccessTokenCacheEntry(uniqueID, result));
         }
     }
 
