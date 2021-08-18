@@ -27,9 +27,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import com.ibm.websphere.ras.Tr;
@@ -38,6 +40,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.config.xml.LibertyVariable;
+import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.StringUtils;
 import com.ibm.ws.config.xml.internal.XMLConfigConstants;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
@@ -116,7 +119,19 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             if (bindings.exists() && bindings.isDirectory()) {
                 for (File f : bindings.listFiles()) {
                     if (f.isFile()) {
-                        fileSystemVariables.put(f.getName(), new FileSystemVariable(f));
+                        if (f.getName().endsWith(".properties")) {
+                            try (FileInputStream fis = new FileInputStream(f)) {
+                                Properties props = new Properties();
+                                props.load(fis);
+                                props.forEach((key, value) -> {
+                                    fileSystemVariables.put((String) key, new FileSystemVariable(f, (String) key, (String) value));
+                                });
+                            } catch (IOException ex) {
+                                Tr.error(tc, "error.bad.variable.file", f.getAbsolutePath());
+                            }
+                        } else {
+                            fileSystemVariables.put(f.getName(), new FileSystemVariable(f));
+                        }
                     } else if (f.isDirectory()) {
                         for (File varFile : f.listFiles()) {
                             if (varFile.isFile()) {
@@ -192,13 +207,23 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         }
     }
 
-    // The value for a FileSystemVariable is only read when it is used
+    // The value for a FileSystemVariable is only read when it is used (except for variables from
+    // property files which we process immediately)
     protected final class FileSystemVariable extends AbstractLibertyVariable {
         final File variableFile;
         String value;
+        String name;
+        String propertiesFileName;
 
         public FileSystemVariable(File varFile) {
             this.variableFile = varFile;
+        }
+
+        public FileSystemVariable(File propertiesFile, String name, String value) {
+            this.name = name;
+            this.value = value;
+            this.propertiesFileName = propertiesFile.getName();
+            this.variableFile = null;
         }
 
         @Override
@@ -218,7 +243,10 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
         @Override
         public String getName() {
-            return getFileSystemVariableName(variableFile);
+            if (this.name == null)
+                return getFileSystemVariableName(variableFile);
+
+            return this.name;
         }
 
         @Override
@@ -234,6 +262,10 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         @Override
         public String getDefaultValue() {
             return null;
+        }
+
+        public String getPropertiesFileName() {
+            return this.propertiesFileName;
         }
 
         @Override
@@ -616,11 +648,28 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         return Collections.unmodifiableCollection(variables);
     }
 
-    public boolean removeFileSystemVariable(File f) {
-        return removeFileSystemVariable(getFileSystemVariableName(f));
+    public void removeFileSystemVariableDeletes(Collection<File> deletedFiles, Map<String, DeltaType> deltaMap) {
+        for (File f : deletedFiles) {
+            if (f.getName().endsWith(".properties")) {
+                Iterator<FileSystemVariable> iter = fileSystemVariables.values().iterator();
+                while (iter.hasNext()) {
+                    FileSystemVariable var = iter.next();
+                    if (f.getName().equals(var.getPropertiesFileName())) {
+                        iter.remove();
+                        deltaMap.put(var.getName(), DeltaType.REMOVED);
+                        registry.removeVariable(var.getName());
+                    }
+                }
+            } else {
+                // Only create a delta if a variable is actually removed (otherwise it's a directory)
+                if (removeFileSystemVariable(getFileSystemVariableName(f))) {
+                    deltaMap.put(f.getName(), DeltaType.REMOVED);
+                }
+            }
+        }
     }
 
-    public boolean removeFileSystemVariable(String name) {
+    private boolean removeFileSystemVariable(String name) {
         LibertyVariable var = fileSystemVariables.remove(name);
         if (var == null)
             return false;
@@ -629,18 +678,58 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         return true;
     }
 
-    public FileSystemVariable addFileSystemVariable(File value) {
-        FileSystemVariable sbv = new FileSystemVariable(value);
-        fileSystemVariables.put(sbv.getName(), sbv);
-        return sbv;
+    public void addFileSystemVariableCreates(Collection<File> createdFiles, Map<String, DeltaType> deltaMap) {
+        for (File file : createdFiles) {
+            if (file.isFile()) {
+
+                if (file.getName().endsWith(".properties")) {
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        Properties props = new Properties();
+                        props.load(fis);
+                        for (String key : props.stringPropertyNames()) {
+                            FileSystemVariable sbv = new FileSystemVariable(file, key, props.getProperty(key));
+                            fileSystemVariables.put(sbv.getName(), sbv);
+                            deltaMap.put(key, DeltaType.ADDED);
+                        }
+                    } catch (IOException ex) {
+                        Tr.error(tc, "error.bad.variable.file", file.getAbsolutePath());
+                    }
+                } else {
+                    FileSystemVariable sbv = new FileSystemVariable(file);
+                    fileSystemVariables.put(sbv.getName(), sbv);
+                    deltaMap.put(sbv.getName(), DeltaType.ADDED);
+                }
+            }
+        }
+
     }
 
-    public FileSystemVariable modifyFileSystemVariable(File f) {
-        FileSystemVariable var = new FileSystemVariable(f);
-        fileSystemVariables.put(var.getName(), var);
-        // The variable will be added back by updateSystemVariables, but remove it for now.
-        registry.removeVariable(var.getName());
-        return var;
+    public void modifyFileSystemVariables(Collection<File> modifiedFiles, Map<String, DeltaType> deltaMap) {
+        for (File f : modifiedFiles) {
+            if (f.isFile()) {
+                if ( f.getName().endsWith(".properties")) {
+                    try (FileInputStream fis = new FileInputStream(f)) {
+                        Properties props = new Properties();
+                        props.load(fis);
+                        for (String key : props.stringPropertyNames()) {
+                            FileSystemVariable sbv = new FileSystemVariable(f, key, props.getProperty(key));
+                            fileSystemVariables.put(sbv.getName(), sbv);
+                            // The variable will be added back by updateSystemVariables, but remove it for now.
+                            registry.removeVariable(sbv.getName());
+                            deltaMap.put(key, DeltaType.MODIFIED);
+                        }
+                    } catch (IOException ex) {
+                        Tr.error(tc, "error.bad.variable.file", f.getAbsolutePath());
+                    }
+                } else {
+                    FileSystemVariable var = new FileSystemVariable(f);
+                    fileSystemVariables.put(var.getName(), var);
+                    // The variable will be added back by updateSystemVariables, but remove it for now.
+                    registry.removeVariable(var.getName());
+                    deltaMap.put(var.getName(), DeltaType.MODIFIED);
+                }
+            }
+        }
     }
 
     @Override
