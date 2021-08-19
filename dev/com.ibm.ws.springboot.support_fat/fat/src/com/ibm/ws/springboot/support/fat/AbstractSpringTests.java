@@ -53,6 +53,7 @@ public abstract class AbstractSpringTests {
         SPRING_BOOT_APP_TAG
     }
 
+    public static final String ID_DEFAULT_HOST = "default_host";
     public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
     public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";
     public static final String ID_SSL = "springBootSsl-";
@@ -176,7 +177,7 @@ public abstract class AbstractSpringTests {
         String testMethodName = testName.getMethodName();
         List<String> expectedEndpoints = new ArrayList<String>();
         if (testMethodName != null && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
-            expectedEndpoints.add("default_host");
+            expectedEndpoints.add(ID_DEFAULT_HOST);
         }
         return expectedEndpoints;
     }
