@@ -56,6 +56,7 @@ import componenttest.rules.repeater.RepeatTests;
                 OptionsTest.class,
                 ParamConverterTest.class,
                 ParamsTest.class,
+                PrototypeTest.class,
                 ProviderCacheTest.class,
                 ReaderWriterProvidersTest.class,
                 ResourceInfoTest.class,

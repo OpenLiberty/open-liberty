@@ -17,6 +17,7 @@ configurations {
   jersey
   json
   httpclient
+  prototype
 }
 
 configurations.jersey {
@@ -111,6 +112,11 @@ task createWadlTempDir {
   }
 }
 
+task addPrototypeLibs(type: Copy) {
+  from configurations.prototype
+  into "${buildDir}/autoFVT/appLibs/prototype/"
+}
+
 addRequiredLibraries {
   dependsOn addCXF
   dependsOn addJackson1x
@@ -121,6 +127,7 @@ addRequiredLibraries {
   dependsOn addHttpClient
   dependsOn createWadlTempDir
   dependsOn addDerby
+  dependsOn addPrototypeLibs
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
