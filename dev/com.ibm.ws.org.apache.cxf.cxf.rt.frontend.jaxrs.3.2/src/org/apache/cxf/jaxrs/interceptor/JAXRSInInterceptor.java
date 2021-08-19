@@ -78,7 +78,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         super(Phase.UNMARSHAL);
     }
 
-    @FFDCIgnore(value = { Fault.class, RuntimeException.class })
+    @FFDCIgnore(value = { Fault.class, RuntimeException.class, IOException.class })
     @Override
     public void handleMessage(Message message) {
         final Exchange exchange = message.getExchange();
