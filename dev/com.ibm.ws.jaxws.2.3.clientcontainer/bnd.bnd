@@ -112,6 +112,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
@@ -143,6 +144,6 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.ws.clientcontainer;version=latest,\
 	com.ibm.websphere.appserver.spi.classloading;version=latest,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	
 jakartaeeMe: true

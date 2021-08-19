@@ -148,7 +148,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         }
     }
 
-    protected void customizeLoggingInOutIntercetptor(EndpointInfo libertyEndpointInfo) {
+    protected void enableLogging(EndpointInfo libertyEndpointInfo) {
         Map<String, String> endpointProperties = libertyEndpointInfo.getEndpointProperties();
 
         if (null != endpointProperties && Boolean.valueOf(endpointProperties.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {

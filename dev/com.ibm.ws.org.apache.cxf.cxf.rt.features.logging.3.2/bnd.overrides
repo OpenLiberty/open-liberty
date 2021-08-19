@@ -35,5 +35,11 @@ Import-Package: \
   !org.apache.aries.*, \
   !org.apache.cxf.transport.https, \
   !org.osgi.service.blueprint.*, \
-  !javax.xml.ws.*
+  !javax.xml.ws.*, \
+  org.apache.cxf.*, \
+  org.osgi.*, \
+  org.slf4j.*, \
+  javax.xml.*, \
+  javax.security.*
+
 
