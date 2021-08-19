@@ -43,7 +43,11 @@ import com.ibm.ws.ejbcontainer.remote.server.shared.TxAttrEJBHome;
 import com.ibm.ws.ejbcontainer.remote.server.shared.TxAttrRemote;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import test.TestRemoteInterface;
 
 /**
@@ -310,7 +314,8 @@ public class RemoteTxAttrServlet extends FATServlet {
      *
      * corbaname::localhost:<IIOPSecurePort>#ejb/global/<App>/<Module>/<Bean>!<interface>
      */
-    // @Test - requires additional security configuration
+    @Test //- requires additional security configuration
+    @SkipForRepeat({ EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     public void testDefaultContextLookupWithSecurePort() throws Exception {
         // lookup the bean using default context with corbaname on secure IIOP port
         String jndiName = CorbaNameSecure + "#" + TxAttrBeanJndi + "!" + TxAttrRemote.class.getName();
