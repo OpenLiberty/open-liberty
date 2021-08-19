@@ -59,6 +59,7 @@ import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheEntry;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -548,9 +549,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
 
         // Verify that the result was cached
-        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
-        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
-        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cached authentication result should not have been null but was.", cacheEntry);
+        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cacheEntry.getResult());
     }
 
     @Test
@@ -740,7 +741,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     public void testAuthenticate_resultAlreadyCached() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
-        cache.put(ACCESS_TOKEN, cachedResult);
+        AccessTokenCacheEntry cacheEntry = new AccessTokenCacheEntry("unique id", cachedResult);
+        cache.put(ACCESS_TOKEN, cacheEntry);
 
         mockery.checking(new Expectations() {
             {
