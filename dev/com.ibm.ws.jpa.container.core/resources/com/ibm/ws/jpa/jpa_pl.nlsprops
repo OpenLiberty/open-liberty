@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -302,9 +302,16 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Implementacja {0} - {1} nie jest
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Nie mo\u017cna u\u017cywa\u0107 tego dostawcy trwa\u0142o\u015bci JPA, poniewa\u017c nie zawiera on implementacji metod wymaganych przez specyfikacj\u0119 JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Uzyskaj nowsz\u0105 wersj\u0119 dostawcy trwa\u0142o\u015bci JPA zgodn\u0105 ze specyfikacj\u0105 JPA 2.1.
 
-ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by transformowania klasy Java {0}. Zebrano nast\u0119puj\u0105ce informacje o niepowodzeniu: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by transformowania klasy Java {0}.  Zebrano nast\u0119puj\u0105ce informacje o niepowodzeniu: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas transformowania klasy Java. Ten b\u0142\u0105d jest zwykle spowodowany niepoprawnym kodem bajtowym Java.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=By\u0107 mo\u017ce pami\u0119\u0107 podr\u0119czna klas jest uszkodzona lub aplikacja jest nieprawid\u0142owo spakowana. Najpierw wyczy\u015b\u0107 pami\u0119\u0107 podr\u0119czn\u0105 klas. Je\u015bli to dzia\u0142anie nie rozwi\u0105\u017ce problemu, sprawd\u017a archiwum aplikacji pod k\u0105tem b\u0142\u0119d\u00f3w pakowania.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: W\u0142a\u015bciwo\u015b\u0107 domy\u015blna JPA skonfigurowana w pliku server.xml zawiera pust\u0105 nazw\u0119 lub pust\u0105 warto\u015b\u0107, odpowiednio: name = [{0}], value = [{1}]. W\u0142a\u015bciwo\u015b\u0107 zostanie zignorowana.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Atrybuty name i value w\u0142a\u015bciwo\u015bci domy\u015blnej JPA nie mog\u0105 by\u0107 puste.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Zmie\u0144 konfiguracj\u0119 serwera tak, by nazwa i warto\u015b\u0107 w\u0142a\u015bciwo\u015bci by\u0142y niepuste, albo usu\u0144 w\u0142a\u015bciwo\u015b\u0107.
+
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
 #-------------------------------------------------------------------------------

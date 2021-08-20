@@ -288,4 +288,9 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Nu este valid\u0103 
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A fost primit\u0103 o cerere care include un cookie \u00een format gre\u015fit
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifica\u0163i furnizorul de OpenID Connect \u015fi configura\u0163iile de client. Cookie-ul cu formatul gre\u015fit poate fi cauzat de modificarea cookie-ului la agentul utilizatorului cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 a redirect\u0103rii care este \u00eenregistrat cu furnizorul. Dac\u0103 numele de gazd\u0103 este cel a\u015fteptat, atunci ad\u0103uga\u0163i atributul wasReqURLRedirectDomainNames al elementului webAppSecurity \u00een server.xml.
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Clientul OpenID Connect {0} nu poate extrage revendic\u0103rile JWT (JSON Web Token) din r\u0103spunsul web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=R\u0103spunsul web trebuie s\u0103 fie un JWT \u00een formatul JWE (JSON Web Encryption) sau JWS (JWS Web Signature). R\u0103spunsul ar putea fi formatat gre\u015fit sau clientul OpenID Connect a \u00eent\u00e2lnit o alt\u0103 eroare la procesarea r\u0103spunsului.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 r\u0103spunsul este \u00een format JWT.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

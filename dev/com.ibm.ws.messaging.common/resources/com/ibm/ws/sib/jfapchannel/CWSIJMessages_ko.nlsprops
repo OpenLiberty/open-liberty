@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,6 +74,7 @@
 EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the method that could not be invoked
 # {1} the class to which the method which could not be invoked belongs
@@ -81,12 +82,14 @@ EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
 EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: {2} \uc608\uc678\ub85c \uc778\ud574 {1} \ud074\ub798\uc2a4\uc758 {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the class name where the exception was caught
 # {1} is the value of the Exception
 EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the method that could not be invoked
 # {1} the class to which the method which could not be invoked belongs
@@ -94,6 +97,7 @@ EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
 EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: {2} \uc608\uc678\ub85c \uc778\ud574 {1} \ud074\ub798\uc2a4\uc758 {0} \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: \ud1b5\uc2e0\uc5d0 \uc0ac\uc6a9\ud560 \ucc44\ub110 \ud504\ub808\uc784\uc6cc\ud06c \uc11c\ube44\uc2a4 \uc778\uc2a4\ud134\uc2a4\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 CF_NOT_AVAILABLE_SICJ0005.explanation=\ucc44\ub110 \ud504\ub808\uc784 \uc11c\ube44\uc2a4 \uc778\uc2a4\ud134\uc2a4\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ub124\ud2b8\uc6cc\ud06c \ud1b5\uc2e0\uc774 \ubd88\uac00\ub2a5\ud569\ub2c8\ub2e4.
@@ -129,90 +133,98 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=\uae30\ubcf8 \ud130\ub1
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc758 \uae30\ubcf8 \ud130\ub110\uc744 \ud1b5\uacfc\ud55c \uc544\uc6c3\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778\uc744 \uc815\uc758\ud558\uc2ed\uc2dc\uc624.
 
 # -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: \ud074\ub77c\uc774\uc5b8\ud2b8 \ucd08\uae30 \uba54\uc2dc\uc9d5 \uc804\uc1a1 \ub808\ubca8 \ubcf4\uc548\uc744 \uacb0\uc815\ud558\ub294 \ub370 \uc0ac\uc6a9\ub41c ''{0}'' \ud2b9\uc131 \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=\ubcf4\uc548 \ud074\ub77c\uc774\uc5b8\ud2b8 \uba54\uc2dc\uc9d5 \uc5f0\uacb0\uc744 \uc124\uc815\ud560 \ub54c \uc0ac\uc6a9\ub41c \uc815\ubcf4\uac00 \ub4e4\uc5b4 \uc788\ub294 \ud2b9\uc131 \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uae30\ubcf8\uac12 \uc138\ud2b8\ub85c \uac04\uc8fc\ud569\ub2c8\ub2e4. \ubcf4\uc548 \ud074\ub77c\uc774\uc5b8\ud2b8 \uba54\uc2dc\uc9d5 \uc5f0\uacb0\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=\ud074\ub77c\uc774\uc5b8\ud2b8 \uba54\uc2dc\uc9d5 \uc804\uc1a1 \ub808\ubca8 \ubcf4\uc548\uc5d0 \ub300\ud55c \ud2b9\uc131 \ud30c\uc77c\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
-
-# -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud074\ub798\uc2a4 {0}\uc758 \ud45c\uc2dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
 NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud074\ub798\uc2a4 {0}\uc758 \ud45c\uc2dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
 NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud074\ub798\uc2a4 {0}\uc758 \ud45c\uc2dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
 NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud074\ub798\uc2a4 {0}\uc758 \ud45c\uc2dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
 NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud074\ub798\uc2a4 {0}\uc758 \ud45c\uc2dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
 NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
 CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
 CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
 CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
 CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
 CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: {1} \uc608\uc678\ub85c \uc778\ud574 \uae30\ubcf8 \uc544\uc6c3\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778 {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
 CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: {1} \uc608\uc678\ub85c \uc778\ud574 \ubcf4\uc548 \uc544\uc6c3\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778 {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
 CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: {1} \uc608\uc678\ub85c \uc778\ud574 \ud130\ub110\uc744 \ud1b5\uacfc\ud55c \uc544\uc6c3\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778 {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
 CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: {1} \uc608\uc678\ub85c \uc778\ud574 \ud130\ub110\uc744 \ud1b5\uacfc\ud55c \ubcf4\uc548 \uc544\uc6c3\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778 {0}\uc744(\ub97c) \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
 CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: \uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc5d0 \ub300\ud574 \uc2dc\uc791\ud560 \uc218 \uc788\ub294 \uc778\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
 CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc5d0 \ub300\ud574 \uc815\uc758\ub41c \uc778\ubc14\uc6b4\ub4dc \uba54\uc2dc\uc9d5 \ucc44\ub110 \uccb4\uc778\uc774 \uc5c6\uc73c\ubbc0\ub85c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9d5 \ud074\ub77c\uc774\uc5b8\ud2b8 \ub610\ub294 \uae30\ud0c0 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc740 \uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc5d0 \ub300\ud55c \uc5f0\uacb0\uc744 \uc81c\ub300\ub85c \uc124\uc815\ud558\uc9c0 \ubabb\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
@@ -263,12 +275,14 @@ INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=\uc798\ubabb\ub41c \ud558
 NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
 NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the class name where the exception was caught
 # {1} is the value of the Exception
 NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
 NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the host name / endpoint and {1} is the chain name
 ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: \uc804\uc1a1 \uccb4\uc778 {1}\uc758 {0} \ud638\uc2a4\ud2b8\ub85c\ubd80\ud130 \uc774\uc804\uc5d0 \uc5f0\uacb0\ub41c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc758 \uc5f0\uacb0\uc774 \uc608\uc0c1\uce58 \uc54a\uac8c \ub04a\uc5b4\uc84c\uc2b5\ub2c8\ub2e4.
@@ -321,6 +335,7 @@ CLIENT_NOT_RESPONDING_SICJ0042.useraction=\uc774 \uc624\ub958\ub97c \ud574\uacb0
 CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 CONNECTION_INTERNAL_SICJ0043.explanation=CMSG0001
 CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: \uc774\ubbf8 \ub2eb\uc740 \uc5f0\uacb0\uc5d0 \uc870\uc791\uc744 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4.
 CONNECTION_CLOSED_SICJ0044.explanation=\uc774\uc804\uc5d0 \ub2eb\uc740 \uc5f0\uacb0 \uc790\uc6d0\uc5d0 \uc870\uc791\uc744 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4. \uc774\ub7ec\ud55c \ubb38\uc81c\uc810\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud504\ub85c\uadf8\ub798\ubc0d \uc624\ub958\ub85c \uc778\ud55c \uacb0\uacfc\uc774\uac70\ub098 \uc2dc\uc2a4\ud15c\uc5d0\uc11c \uc624\ub958 \uc870\uac74 \ubc1c\uacac\uc5d0 \ub300\ud55c \uc751\ub2f5\uc73c\ub85c \uc5f0\uacb0 \uc790\uc6d0\uc744 \ub2eb\uc558\uae30 \ub54c\ubb38\uc785\ub2c8\ub2e4.
@@ -336,6 +351,7 @@ CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\u
 CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=CMSG0001
 CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: \uc774\ubbf8 \ub2eb\uc740 \uc5f0\uacb0\uc5d0 \uc870\uc791\uc744 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4.
 CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=\uc774\uc804\uc5d0 \ub2eb\uc740 \uc5f0\uacb0 \uc790\uc6d0\uc5d0 \uc870\uc791\uc744 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4. \uc774\ub7ec\ud55c \ubb38\uc81c\uc810\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud504\ub85c\uadf8\ub798\ubc0d \uc624\ub958\ub85c \uc778\ud55c \uacb0\uacfc\uc774\uac70\ub098 \uc2dc\uc2a4\ud15c\uc5d0\uc11c \uc624\ub958 \uc870\uac74 \ubc1c\uacac\uc5d0 \ub300\ud55c \uc751\ub2f5\uc73c\ub85c \uc5f0\uacb0 \uc790\uc6d0\uc744 \ub2eb\uc558\uae30 \ub54c\ubb38\uc785\ub2c8\ub2e4.
@@ -345,14 +361,17 @@ CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158
 CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=CMSG0001
 CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 EXCHANGERL_INTERNAL_SICJ0049.explanation=CMSG0001
 EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 IDTABLE_INTERNAL_SICJ0050.explanation=CMSG0001
 IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the host name, {1} is the chain name
 INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc870\uac74\uc73c\ub85c \uc778\ud574 \uccb4\uc778 {1}\uc744(\ub97c) \uc0ac\uc6a9\ud558\ub294 \ud638\uc2a4\ud2b8 {0}(\uc73c)\ub85c\ubd80\ud130\uc758 \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
@@ -363,6 +382,7 @@ INBOUNDCONV_INVALIDATE_SICJ0051.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 
 INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 INBOUNDCONV_INTERNAL_SICJ0052.explanation=CMSG0001
 INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the host name and {1} is the chain name.
 TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: \ud53c\uc5b4\uc5d0\uc11c \uc798\ubabb \ud615\uc2dd\ud654\ub41c \uc815\ubcf4\ub97c \uc804\uc1a1\ud55c \ud6c4 \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc774 \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
@@ -373,6 +393,7 @@ TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=\uc774 \uc624\ub958\ub97c \ud574\u
 TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 TRANSPARSER_INTERNAL_SICJ0054.explanation=CMSG0001
 TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: \uc790\uc6d0 \ubd80\uc871\uc73c\ub85c \uc778\ud574 \uc124\uc815 \uc911\uc778 \uc0c8 \uc5f0\uacb0\uc774 \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=\ud544\uc218 \uc790\uc6d0\uc758 \ubd80\uc871\uc73c\ub85c \uc778\ud574 \uc0c8 \uc5f0\uacb0\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774\ub7ec\ud55c \ubb38\uc81c\uc810\uc740 \uc124\uc815\ub41c \uc218\ub9ce\uc740 \ud65c\uc131 \uc5f0\uacb0\ub85c \uc778\ud55c \uac83\uc785\ub2c8\ub2e4.
@@ -388,26 +409,32 @@ OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158
 PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=CMSG0001
 PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 REQIDTABLE_INTERNAL_SICJ0058.explanation=CMSG0001
 REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 SVRCONNMGR_INTERNAL_SICJ0059.explanation=CMSG0001
 SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 TRANSDATA_INTERNAL_SICJ0060.explanation=CMSG0001
 TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 TRANSDATAIT_INTERNAL_SICJ0061.explanation=CMSG0001
 TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 CONNDATAGROUP_INTERNAL_SICJ0062.explanation=CMSG0001
 CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the hostname, {1} is the port.
 CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: \ud638\uc2a4\ud2b8 \uc774\ub984 {0}, \ud3ec\ud2b8 {1}\uc5d0 \ub300\ud55c \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
@@ -418,21 +445,11 @@ CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=\uc9c0\uc815\ub41c \ud638\uc2a4\ud2
 OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=CMSG0001
 OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: \uc774\ub984\uc774 {1}\uc778 \uc6d0\uaca9 \ud638\uc2a4\ud2b8\uc5d0\uc11c \uc5f0\uacb0\uc744 \uc124\uc815\ud558\ub294 \ub370 \ud544\uc694\ud560 \uc218 \uc788\ub294 SSL \uad6c\uc131\uc744 \uac00\uc838\uc62c \uc774\ub984\uc774 {0}\uc778 \uc804\uc1a1 \uccb4\uc778\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=\ud53c\uc5b4 \uc5f0\uacb0\uc5d0 \uae30\ubc18\ud55c SSL(Secure Sockets Layer)\uc744 \uc124\uc815\ud558\ub294 \ub370 \ud544\uc694\ud55c \uc815\ubcf4\uac00 \ud604\uc7ac \uad6c\uc131\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4. \uc77c\ubc18\uc801\uc73c\ub85c \uc801\ud569\ud55c \uc804\uc1a1 \uccb4\uc778 \uc815\uc758\uc5d0\uc11c \uc774 \uc815\ubcf4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4. \uccb4\uc778 \uc815\uc758\uc5d0\ub294 \uc6d0\uaca9 \ud53c\uc5b4\uc5d0 \uc788\ub294 \uccb4\uc778\uacfc \uc77c\uce58\ud558\ub294 \uc774\ub984\uc774 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ub7ec\ud55c \uc804\uc1a1 \uccb4\uc778\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc5f0\uacb0\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=\ucd94\uac00 \uc804\uc1a1 \uccb4\uc778\uc744 \uc815\uc758\ud558\uc2ed\uc2dc\uc624.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: \uc774\ub984\uc774 {0}\uc778 \uc804\uc1a1 \uccb4\uc778\uc5d0 \uc774\ub984\uc774 {1}\uc778 \uc6d0\uaca9 \ud638\uc2a4\ud2b8\uc5d0 \ub300\ud55c \uc5f0\uacb0\uc744 \uc124\uc815\ud558\ub294 \ub370 \ud544\uc694\ud560 \uc218 \uc788\ub294 SSL \uad6c\uc131\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=\ud53c\uc5b4 \uc5f0\uacb0\uc5d0 \uae30\ubc18\ud55c SSL(Secure Sockets Layer)\uc744 \uc124\uc815\ud558\ub294 \ub370 \ud544\uc694\ud55c \uc815\ubcf4\uac00 \ud604\uc7ac \uad6c\uc131\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4. \uc77c\ubc18\uc801\uc73c\ub85c \uc801\ud569\ud55c \uc804\uc1a1 \uccb4\uc778 \uc815\uc758\uc5d0\uc11c \uc774 \uc815\ubcf4\ub97c \uac00\uc838\uc635\ub2c8\ub2e4. \uccb4\uc778 \uc815\uc758\uc5d0\ub294 \uc6d0\uaca9 \ud53c\uc5b4\uc5d0 \uc788\ub294 \uccb4\uc778\uacfc \uc77c\uce58\ud558\ub294 \uc774\ub984\uc774 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ub7ec\ud55c \uc804\uc1a1 \uccb4\uc778\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc5f0\uacb0\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=\uc9c0\uc815\ub41c \uc804\uc1a1 \uccb4\uc778\uc5d0 \ub300\ud55c \ucd94\uac00 SSL \uc804\uc1a1 \ucc44\ub110\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
@@ -440,12 +457,14 @@ CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=\uc9c0\uc815\ub41c \uc804\uc1a1 \u
 CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=CMSG0001
 CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ucc44\ub110\uc758 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=CMSG0001
 CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
 ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: {3}\ucd08\uac00 \uc9c0\ub09c \ud6c4 \uc751\ub2f5\ud558\uc9c0 \uc54a\uc544 \uc804\uc1a1 \uccb4\uc778 {2}\uc744(\ub97c) \uc0ac\uc6a9\ud558\ub294 \ud3ec\ud2b8 {1}\uc5d0 \uc788\ub294 \ud638\uc2a4\ud2b8 {0}\uc5d0 \ub300\ud55c \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 \uc5f0\uacb0\uc774 \uc885\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
@@ -475,14 +494,17 @@ CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=\uc560\ud50c\ub9ac\ucf0
 BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 BUFFER_NOT_VALID_SICJ0074.explanation=CMSG0001
 BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 BUFFER_NOT_PREPARED_SICJ0075.explanation=CMSG0001
 BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 BUFFER_ALREADY_RELEASED_SICJ0076.explanation=CMSG0001
 BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc870\uac74\uc73c\ub85c \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
 PRIORITY_QUEUE_PURGED_SICJ0077.explanation=\uc608\uc0c1\uce58 \uc54a\uc740 \uc870\uac74\uc744 \ubc1c\uacac\ud558\uc5ec \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
@@ -509,11 +531,13 @@ CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc15
 EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub85c \uc778\ud574 {0} \ud074\ub798\uc2a4\uc758 \uc624\ube0c\uc81d\ud2b8\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {1}.
 EXCP_DURING_INIT_SICJ0081.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the value of the Exception
 EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc218\uc2e0\ub41c \uc608\uc678\ub294 {0}\uc785\ub2c8\ub2e4.
 EXCP_DURING_INIT_SICJ0082.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 NETWORK_FAILURE_SICJ0083=CWSIJ0083E: \uc608\uc0c1\uce58 \uc54a\uc740 \uc870\uac74\uc73c\ub85c \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.
 NETWORK_FAILURE_SICJ0083.explanation=\uc608\uc0c1\uce58 \uc54a\uc740 \uc870\uac74\uc744 \ubc1c\uacac\ud558\uc5ec \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0\uc774 \ub2eb\ud614\uc2b5\ub2c8\ub2e4.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -302,9 +302,15 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: La implementaci\u00f3n de {0}, {
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=El proveedor de persistencia JPA no se puede utilizar porque la falta la implementaci\u00f3n de los m\u00e9todos requeridos por la especificaci\u00f3n JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtenga una versi\u00f3n m\u00e1s reciente del proveedor de persistencia JPA que cumpla la especificaci\u00f3n JPA 2.1.
 
-ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Se ha producido un error al intentar transformar la clase Java {0}. Se ha recuperado el detalle de error siguiente: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Se ha producido un error al intentar transformar la clase Java {0}.  Se ha recuperado el detalle de error siguiente: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Se ha producido un error inesperado al transformar la clase Java. Este error suele producirse por un c\u00f3digo de bytes Java no v\u00e1lido.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Es posible que la memoria cach\u00e9 de clase est\u00e9 da\u00f1ada o que la aplicaci\u00f3n puede empaquetarse incorrectamente. En primer lugar, borre la memoria cach\u00e9 de clase. Si esta acci\u00f3n no resuelve el problema, revise el archivo de la aplicaci\u00f3n para encontrar errores de empaquetado.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Una propiedad predeterminada de JPA configurada en el archivo server.xml contiene un nombre vac\u00edo o un valor vac\u00edo: nombre = [{0}], valor = [{1}]. Se ignorar\u00e1 la propiedad.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Los atributos de nombre y valor de una propiedad predeterminada de JPA no pueden estar vac\u00edos.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Cambie la configuraci\u00f3n de servidor para proporcionar un nombre y un valor que o est\u00e9n vac\u00edos para la propiedad o elimine la propiedad.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
