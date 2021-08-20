@@ -825,12 +825,12 @@ javaCmd()
     if [ -n "${option}" ]; then
       if [ -z "${option##-D*}" ] || [ -z "${option##-X*}" ]; then
         JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED '$option'"
+      elif [ $ACTION = "checkpoint" ] && [ -z "${option##-agentlib:*}" ]; then
+        # we allow debug agentlib for checkpoint only
+        JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED '$option'"
+      elif [ $ACTION = "checkpoint" ] && [ -z "${option##--at=*}" ]; then
+        CHECKPOINT_AT=${option#--at=}
       else
-        if [ -z "${option##--checkpoint=*}" ]; then
-          CHECKPOINT=${option#--checkpoint=}
-          # TODO remove below option once JVM handles it automatically
-          JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport"
-        fi
         if [ -z "$REMAINING_ARGS" ] ; then
           REMAINING_ARGS="$option"
         else
@@ -841,37 +841,40 @@ javaCmd()
       REMAINING_ARGS="$REMAINING_ARGS $option"
     fi
   done
+  
+  if [ $ACTION = "checkpoint" ]; then
+    if [ -z "$CHECKPOINT_AT" ]; then
+      CHECKPOINT_AT="features"
+    fi
+    REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
+    # TODO remove below option once JVM handles it automatically
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport"
+  fi
+  
 
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
   eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
   ARGS="$@"
 
-  if [ $ACTION = "run" ] || [ $ACTION = "debug" ] || [ $ACTION = "start" ]; then
-     if [ -n "${CHECKPOINT}" ]; then                                               
-       if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then 
-         echo remove existing checkpoint image
-         rm -r ${SERVER_OUTPUT_DIR}/workarea/checkpoint
-         rc=$? 
-         if [ $rc != 0 ]; then        
-            #TODO issue localized error
-            echo error deleting checkpoint
-            return $rc
-         fi   
-       fi
-     fi
+  if [ $ACTION = "checkpoint" ]; then
+    if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then
+      echo remove existing checkpoint image
+      rm -r ${SERVER_OUTPUT_DIR}/workarea/checkpoint
+      rc=$? 
+      if [ $rc != 0 ]; then
+         #TODO issue localized error
+         echo error deleting checkpoint
+         return $rc
+      fi   
+    fi
   fi
+
   # Do not add extra logic after the commands without preserving $?
   if [ -n "${JAVA_CMD_LOG}" ]; then
     rmIfExist "${JAVA_CMD_LOG}"
     "${JAVA_CMD}" "$@" >> "${JAVA_CMD_LOG}" 2>&1 &
-    rc=$?
-    if [ -n "${CHECKPOINT}" ]; then
-      mkdirs ${SERVER_OUTPUT_DIR}/workarea/checkpoint
-      echo "" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand
-    fi
-    return $rc   
-  elif [ $ACTION = "run" ] || [ $ACTION = "debug" ] ; then
+  elif [ $ACTION = "run" ] || [ $ACTION = "debug" ] || [ $ACTION = "checkpoint" ]; then
     exec "${JAVA_CMD}" "$@"
   else
     "${JAVA_CMD}" "$@"
@@ -1080,24 +1083,14 @@ serverCmd()
     OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
-      if [ -n "${CHECKPOINT}" ]; then
-        #don't wait on process status
-        # issue javacmd to verify checkpoint and do any post checkpoint
-        # fixup here    
-        echo Take checkpoint ${CHECKPOINT}.
-        # invoke platform to verify checkpoint taken
-        # or return an error and issue error message,     
-      else  
-        # Verify/wait for the process to start unless a checkpoint is requested
-        javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
-        rc=$?
-        # write the pid file if return is OK or UNKNOWN
-      fi
+      # Verify/wait for the process to start unless a checkpoint is requested
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
+      rc=$?
+      # write the pid file if return is OK or UNKNOWN
       if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
           safeEcho "${PID}" > "${X_PID_FILE}"
       fi        
-    
-    fi 
+    fi
   fi
   return $rc
 }
@@ -1109,6 +1102,54 @@ checkCriuSupport()
   return 0  
 }
 
+## restoreServer: restore a server from a checkpoint image if it exists
+##
+##           restoreInBackground
+##               If true the restore command will start in the background
+restoreServer()
+{
+    BACKGROUND_RESTORE=$1
+    if $BACKGROUND_RESTORE
+    then
+      # do not restore in the background for now
+      return 1
+    fi
+
+    if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]; then
+      return 1
+    fi
+
+    # must check for --clean option before restoring
+    for option in "$@"; do
+      if [ -n "${option}" ]; then
+        if [ -z "${option##--clean}" ]; then
+          # never restore if --clean is specified
+          return 1
+        fi
+      fi
+    done
+
+    # restore artifacts and environment prior to checkpoint here
+    
+    # no good way to check for criu support since fast startup is imperitive
+    #   just let criu invocation fail with a hopefully informative error message.
+    mkdirs ${X_LOG_DIR}/checkpoint
+    # invoke criu command
+    echo Launch server from image.
+    echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
+    if $BACKGROUND_RESTORE
+    then
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log &
+    else 
+      exec criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
+    fi
+    rc=$?
+    if [ $rc != 0 ]; then
+       echo The criu restore command exited with error code $rc        
+       #TODO check if server really not running and if not launch it normally.  
+    fi
+    return $rc
+}
 
 JAVA_DEBUG=
 JVM_OPTIONS_QUOTED=
@@ -1118,12 +1159,18 @@ export INVOKED
 case "$ACTION" in
 
   # Start the server in the foreground
-  run | debug)
+  run | debug | checkpoint)
+
     if serverEnvAndJVMOptions
     then
       :
     else
       exit $?
+    fi
+
+    if restoreServer false "$@"
+    then
+      exit 0
     fi
 
     if checkServer true
@@ -1178,11 +1225,17 @@ case "$ACTION" in
    
   # Start the server in the background
   start)    
+
     if serverEnvAndJVMOptions
     then
       :
     else
       exit $?
+    fi
+
+    if restoreServer true "$@"
+    then
+      exit 0
     fi
 
     if checkServer true
@@ -1367,34 +1420,7 @@ case "$ACTION" in
       exit 2
     fi    
   ;;
-  
-  # Start from a checkpoint image
-  restore)   
-    serverEnv
-    # restore artifacts and environment prior to checkpoint here
-    
-    # no good way to check for criu support since fast startup is imperitive
-    #   just let criu invocation fail with a hopefully informative error message.
-    if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]; then
-      echo checkpoint image not found at ${SERVER_OUTPUT_DIR}/workarea/checkpoint/image.
-      exit 2
-    fi  
-    mkdirs ${X_LOG_DIR}/checkpoint
-    # invoke criu command
-    echo Start server from image.
-    echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
-    if [ -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand ]; then
-      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log &
-    else 
-      exec criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${X_LOG_DIR}/checkpoint/restore.log
-    fi
-    rc=$?
-    if [ $rc != 0 ]; then
-       echo The criu restore command exited with error code $rc        
-       #TODO check if server really not running and if not launch it normally.  
-    fi
-  ;; 
-  
+
   version)
     installEnv
     javaCmd '' --version
