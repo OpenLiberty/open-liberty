@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
 
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,6 +22,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * This is a test class for the servlet-4.0 feature to test the behavior when servletPathForDefaultMapping
@@ -78,10 +72,7 @@ public class WCServletPathForDefaultMappingFalse {
      */
     @Test
     public void testServletPathForDefaultMapping_False() throws Exception {
-        String expectedResponse = "ServletPath =  PathInfo = /";
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME;
-
-        testServletPathForDefaultMappingFalse(url, expectedResponse);
+        HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME, "ServletPath =  PathInfo = /");
     }
 
     /**
@@ -99,26 +90,6 @@ public class WCServletPathForDefaultMappingFalse {
      */
     @Test
     public void testServletPathForDefaultMapping_False_2() throws Exception {
-        String expectedResponse = "ServletPath =  PathInfo = /index.html";
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/index.html";
-
-        testServletPathForDefaultMappingFalse(url, expectedResponse);
-    }
-
-    private void testServletPathForDefaultMappingFalse(String url, String expectedResponse) throws Exception {
-        LOG.info("url: " + url);
-        LOG.info("expectedResponse: " + expectedResponse);
-
-        HttpGet getMethod = new HttpGet(url);
-
-        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (final CloseableHttpResponse response = client.execute(getMethod)) {
-                String responseText = EntityUtils.toString(response.getEntity());
-                LOG.info("\n" + "Response Text:");
-                LOG.info("\n" + responseText);
-
-                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
-            }
-        }
+        HttpUtils.findStringInReadyUrl(server, "/" + APP_NAME + "/index.html", "ServletPath =  PathInfo = /index.html");
     }
 }
