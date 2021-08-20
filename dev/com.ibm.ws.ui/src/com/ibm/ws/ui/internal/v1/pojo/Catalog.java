@@ -35,6 +35,13 @@ import com.ibm.ws.ui.internal.validation.InvalidCatalogException;
 import com.ibm.ws.ui.internal.validation.InvalidToolException;
 import com.ibm.ws.ui.persistence.IPersistenceProvider;
 
+import java.lang.management.ManagementFactory;
+import javax.management.JMX;
+import javax.management.MalformedObjectNameException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import com.ibm.websphere.kernel.server.ServerInfoMBean;
+
 /**
  * Class design requirements:
  * 1. JSONable POJO. We leverage Jackson to serialize this object into JSON format.
@@ -80,6 +87,12 @@ public class Catalog implements ICatalog {
         _metadata = new HashMap<String, Object>();
         _metadata.put(METADATA_LAST_MODIFIED, new Date().getTime());
         _metadata.put(METADATA_IS_DEFAULT, true);
+
+        // setup version metadata
+        String version = getServerVersion();
+        if (version != null) {
+            _metadata.put(METADATA_SERVER_VERSION, version);
+        }
     }
 
     /**
@@ -435,6 +448,7 @@ public class Catalog implements ICatalog {
     @FFDCIgnore(InvalidToolException.class)
     @Override
     public synchronized void validateSelf() throws InvalidCatalogException {
+        boolean hasChange = false;
         if (featureTools == null) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "The Catalog is not considered valid because it is missing its required 'featureTools' field.");
@@ -481,6 +495,7 @@ public class Catalog implements ICatalog {
             }
         }
         for (String key : keyRemovals) {
+            hasChange = true;
             featureTools.remove(key);
         }
 
@@ -495,10 +510,36 @@ public class Catalog implements ICatalog {
             }
         }
         for (String key : keyRemovals) {
+            hasChange = true;
             bookmarks.remove(key);
         }
 
-        updateMetadataOnChange(true);
+        // should not unconditionally change the catalog default to false
+        if (hasChange) {
+            updateMetadataOnChange(true);
+        }
+    }
+
+    /**
+     * Get the Liberty server version
+     *
+     * @return server version
+     */
+    String getServerVersion() {
+        String version = null;
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            ObjectName serverMBeanON = new ObjectName("WebSphere:feature=kernel,name=ServerInfo");
+            if (mbs.isRegistered(serverMBeanON)) {
+                ServerInfoMBean serverInfoMBean = JMX.newMBeanProxy(mbs, serverMBeanON, ServerInfoMBean.class);
+                version = serverInfoMBean.getLibertyVersion();
+            }
+        } catch (MalformedObjectNameException ex) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception in getting liberty server version, not setting version in metadata");
+            }
+        }
+        return version;
     }
 
     /**

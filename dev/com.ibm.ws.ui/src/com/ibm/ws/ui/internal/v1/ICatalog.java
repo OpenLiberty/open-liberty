@@ -37,6 +37,11 @@ public interface ICatalog extends SelfValidatingPOJO {
     String METADATA_IS_DEFAULT = "isDefault";
 
     /**
+     * Metadata field (String): the version of server loaded for this catalog
+     */
+    String METADATA_SERVER_VERSION = "serverVersion";
+
+    /**
      * Retrieve the catalog metadata. The returned Map is a read-only
      * snapshot of the metadata at the time it was asked for.
      * 
