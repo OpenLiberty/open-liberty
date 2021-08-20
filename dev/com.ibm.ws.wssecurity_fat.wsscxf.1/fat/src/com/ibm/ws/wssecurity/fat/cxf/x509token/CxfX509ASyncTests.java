@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -96,7 +97,7 @@ public class CxfX509ASyncTests extends CommonTests {
 
     //2/2021 this test failed with EE8, see https://github.com/OpenLiberty/open-liberty/issues/16071
     //6/20201 disable the test
-    //@Test
+    @Test
     //skip EE7 test
     //@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
@@ -141,7 +142,8 @@ public class CxfX509ASyncTests extends CommonTests {
      *
      */
 
-    //@Test
+    @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfAsyncInvokeBlocking() throws Exception {
 
         genericAsyncTest(
@@ -182,7 +184,8 @@ public class CxfX509ASyncTests extends CommonTests {
      *
      */
 
-    //@Test
+    @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfAsyncInvokeWithHandler() throws Exception {
 
         genericAsyncTest(
