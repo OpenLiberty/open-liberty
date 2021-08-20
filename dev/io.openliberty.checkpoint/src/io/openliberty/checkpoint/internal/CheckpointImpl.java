@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -61,6 +62,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final boolean checkpointFeatures;
     private final boolean checkpointApplications;
     private final WsLocationAdmin locAdmin;
+
+    private final AtomicBoolean checkpointCalled = new AtomicBoolean(false);
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     private volatile ExecuteCRIU criu;
@@ -119,6 +122,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     void checkpoint(Phase phase) throws CheckpointFailed {
+        // Checkpoint can only be called once
+        if (checkpointCalledAlready()) {
+            return;
+        }
         File imageDir = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + DIR_CHECKPOINT_IMAGE).asFile();
         imageDir.mkdirs();
         Object[] factories = cc.locateServices("hookFactories");
@@ -223,5 +230,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     private static CheckpointFailed failedRestore(Exception cause) {
         return new CheckpointFailed(Type.RESTORE_ABORT, "Failed to restore from checkpoint.", cause, 0);
+    }
+
+    boolean checkpointCalledAlready() {
+        return !checkpointCalled.compareAndSet(false, true);
+    }
+
+    // used by tests only
+    void resetCheckpointCalled() {
+        checkpointCalled.set(false);
     }
 }
