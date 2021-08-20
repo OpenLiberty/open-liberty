@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsumeUserinfoTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieNameTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientEncryptionTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientLTPACookieTests;
@@ -37,7 +38,8 @@ import componenttest.rules.repeater.RepeatTests;
         OidcClientSameSiteTests.class,
         OidcClientWasReqURLTests.class,
         OidcClientSignatureAlgTests.class,
-        OidcClientEncryptionTests.class
+        OidcClientEncryptionTests.class,
+        OidcClientConsumeUserinfoTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
