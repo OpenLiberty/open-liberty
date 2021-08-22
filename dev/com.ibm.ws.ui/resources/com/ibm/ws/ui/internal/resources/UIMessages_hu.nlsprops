@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,11 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Az Installation Manager term\u00e9kaj\
 OSGI_SERVICE_ERROR=CWWKX1066E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
 OSGI_SERVICE_ERROR.explanation=Ez a bels\u0151 kiszolg\u00e1l\u00f3hiba az\u00e9rt keletkezett, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
 OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a clean param\u00e9terrel.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: A(z) {0} felhaszn\u00e1l\u00f3 Admin Center eszk\u00f6zk\u00e9szlete a megmarad\u00f3 t\u00e1rol\u00f3b\u00f3l a r\u00e9gi f\u00e1jln\u00e9v haszn\u00e1lat\u00e1val lett bet\u00f6ltve, \u00e9s \u00e1talak\u00edt\u00e1sra ker\u00fclt az \u00faj f\u00e1jln\u00e9vre.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=A term\u00e9k bet\u00f6lt\u00f6tte az Admin Center eszk\u00f6zk\u00e9szletet a r\u00e9gi f\u00e1jlnev\u00e9vel a megmarad\u00f3 t\u00e1rol\u00f3b\u00f3l, \u00e9s elt\u00e1rolt egy p\u00e9ld\u00e1nyt az \u00faj f\u00e1jln\u00e9ven. Az \u00faj f\u00e1jln\u00e9ven szerepl\u0151 p\u00e9ld\u00e1nyt a rendszer a soron k\u00f6vetkez\u0151 megnyit\u00e1sn\u00e1l bet\u00f6lti az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Nincs teend\u0151.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: A(z) {1} felhaszn\u00e1l\u00f3 {0} eszk\u00f6zadatai a megmarad\u00f3 t\u00e1rol\u00f3b\u00f3l a r\u00e9gi f\u00e1jln\u00e9v haszn\u00e1lat\u00e1val lettek bet\u00f6ltve, \u00e9s \u00e1talak\u00edt\u00e1sra ker\u00fcltek egy \u00faj f\u00e1jln\u00e9vre.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=A term\u00e9k bet\u00f6lt\u00f6tte a megadott felhaszn\u00e1l\u00f3ra \u00e9s eszk\u00f6zre vonatkoz\u00f3 eszk\u00f6zadatokat a megmarad\u00f3 t\u00e1rol\u00f3b\u00f3l a r\u00e9gi f\u00e1jln\u00e9vvel, \u00e9s elt\u00e1rolt egy p\u00e9ld\u00e1nyt egy \u00faj f\u00e1jln\u00e9ven. Az \u00faj f\u00e1jln\u00e9ven szerepl\u0151 p\u00e9ld\u00e1nyt a rendszer a soron k\u00f6vetkez\u0151 megnyit\u00e1sn\u00e1l bet\u00f6lti az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Nincs teend\u0151.

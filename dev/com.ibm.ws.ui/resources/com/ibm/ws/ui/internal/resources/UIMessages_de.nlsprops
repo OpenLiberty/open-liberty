@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,11 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Verwenden Sie eine JVM, die Liberty Pr
 OSGI_SERVICE_ERROR=CWWKX1066E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
 OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler ist aufgetreten, weil der angegebene Service nicht verf\u00fcgbar ist.
 OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option clean erneut.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: Die Admin Center-Toolbox f\u00fcr den Benutzer {0} wurde unter ihrem alten Dateinamen aus dem persistenten Speicher geladen und in den neuen Dateinamen umbenannt.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=Das Produkt hat die Admin Center-Toolbox unter ihrem alten Dateinamen aus dem persistenten Speicher geladen und eine Kopie unter dem neuen Dateinamen gespeichert. Die Kopie mit dem neuen Dateinamen wird bei nachfolgenden Zugriffen auf den persistenten Speicher geladen.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=Es ist keine Aktion erforderlich.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Die Daten des Tools Tool {0} f\u00fcr den Benutzer {1} wurde unter ihrem alten Dateinamen aus dem persistenten Speicher geladen und in den neuen Dateinamen umbenannt.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=Das Produkt hat die Tooldaten f\u00fcr den angegebenen Benutzer und das angegebene Tool unter ihrem alten Dateinamen aus dem persistenten Speicher geladen und eine Kopie unter dem neuen Dateinamen gespeichert. Die Kopie mit dem neuen Dateinamen wird bei nachfolgenden Zugriffen auf den persistenten Speicher geladen.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=Es ist keine Aktion erforderlich.

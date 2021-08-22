@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -301,6 +301,12 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=\u8acb\u53d6\u5f97\u7b26\u5408 JP
 ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: \u5617\u8a66\u8f49\u63db {0} Java \u985e\u5225\u6642\u767c\u751f\u932f\u8aa4\u3002\u5df2\u6536\u96c6\u4e0b\u5217\u5931\u6557\u8a73\u7d30\u8cc7\u6599\uff1a{1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=\u8f49\u63db Java \u985e\u5225\u6642\u767c\u751f\u975e\u9810\u671f\u7684\u932f\u8aa4\u3002\u5c0e\u81f4\u6b64\u932f\u8aa4\u7684\u539f\u56e0\u901a\u5e38\u662f\u56e0\u70ba Java \u4f4d\u5143\u7d44\u78bc\u7121\u6548\u3002
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=\u985e\u5225\u5feb\u53d6\u53ef\u80fd\u5df2\u6bc0\u640d\uff0c\u6216\u8005\u61c9\u7528\u7a0b\u5f0f\u53ef\u80fd\u672a\u6b63\u78ba\u5305\u88dd\u3002\u9996\u5148\uff0c\u8acb\u6e05\u9664\u985e\u5225\u5feb\u53d6\u3002\u5982\u679c\u8a72\u52d5\u4f5c\u672a\u80fd\u89e3\u6c7a\u554f\u984c\uff0c\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\u4fdd\u5b58\u6a94\u4e2d\u662f\u5426\u5b58\u5728\u5305\u88dd\u932f\u8aa4\u3002
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: \u5728 server.xml \u6a94\u4e2d\u914d\u7f6e\u7684 JPA \u9810\u8a2d\u5167\u5bb9\u5305\u542b\u7a7a\u7684\u540d\u7a31\u6216\u7a7a\u7684\u503c\uff1a\u540d\u7a31 = [{0}]\u3001\u503c = [{1}]\u3002\u5c07\u5ffd\u7565\u9019\u500b\u5167\u5bb9\u3002
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=JPA \u9810\u8a2d\u5167\u5bb9\u7684\u540d\u7a31\u53ca\u503c\u5c6c\u6027\u4e0d\u80fd\u662f\u7a7a\u7684\u3002
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=\u8acb\u8b8a\u66f4\u4f3a\u670d\u5668\u914d\u7f6e\uff0c\u70ba\u5167\u5bb9\u63d0\u4f9b\u975e\u7a7a\u540d\u7a31\u53ca\u503c\uff0c\u6216\u8005\u79fb\u9664\u5167\u5bb9\u3002
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
