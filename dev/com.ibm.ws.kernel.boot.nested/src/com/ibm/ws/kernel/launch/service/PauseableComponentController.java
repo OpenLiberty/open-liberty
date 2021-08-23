@@ -64,7 +64,6 @@ public interface PauseableComponentController {
     /**
      * Check if specific endpoints exist, have started, and are not paused.
      */
-    @Deprecated
     boolean isActive(String targets);
 
 }
