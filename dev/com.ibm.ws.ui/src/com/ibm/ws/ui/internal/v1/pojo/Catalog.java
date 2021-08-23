@@ -92,6 +92,8 @@ public class Catalog implements ICatalog {
         String version = getServerVersion();
         if (version != null) {
             _metadata.put(METADATA_SERVER_VERSION, version);
+        } else {
+            _metadata.put(METADATA_SERVER_VERSION, "unknown");
         }
     }
 
