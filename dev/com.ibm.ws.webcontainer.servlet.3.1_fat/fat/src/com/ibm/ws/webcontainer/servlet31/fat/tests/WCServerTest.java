@@ -39,6 +39,9 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
@@ -47,6 +50,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
+
 
 /**
  * All Servlet 3.1 tests with all applicable server features enabled.
@@ -580,7 +584,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     public void test_ServletOutputStream_MultiByteCharEncoding() throws Exception {
-        this.verifyResponse("/TestServlet31/MultiByteEncodingServlet?isAsync=false", "Привет мир");
+        verifyResponseStringLength("/TestServlet31/MultiByteEncodingServlet?isAsync=false", "Привет мир");
     }
 
     /**
@@ -589,8 +593,29 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     public void test_ServletOutputStream_MultiByteCharEncoding_WriteListener() throws Exception {
-        this.verifyResponse("/TestServlet31/MultiByteEncodingServlet?isAsync=true", "Привет мир");
+        verifyResponseStringLength("/TestServlet31/MultiByteEncodingServlet?isAsync=true", "Привет мир");
     }
+
+    /**
+     * Verify that the number of response characters matches the number of characters in a target string
+     */
+    private void verifyResponseStringLength(String path, String target) throws Exception {
+        LOG.info("Expected text: " + target + " length: " + target.length());
+
+        LibertyServer server = SHARED_SERVER.getLibertyServer();
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + path);
+        com.meterware.httpunit.WebResponse response = wc.getResponse(request);
+        Assert.assertEquals("Expected " + 200 + " status code was not returned!", 200, response.getResponseCode());
+
+        String responseText = response.getText().trim();
+        LOG.info("Response text: " + responseText + " length: " + responseText.length());
+
+        Assert.assertTrue("The response length was incorrect: " + responseText.length() + " != " + target.length(), 
+            responseText.length() == target.length());
+    }
+
     /*
      * (non-Javadoc)
      *

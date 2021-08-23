@@ -65,6 +65,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         // TODO
         resetOriginalWlpProps();
         cleanUpTempFiles();
+        deleteRepo("AfterClassCleanUp");
     }
     
     
@@ -100,7 +101,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output = po.getStdout();
         assertTrue("Should contain json-1.0", output.contains("json-1.0"));
 
-        deleteRepo(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
     }
     
@@ -239,7 +239,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertTrue("Should be edition Base", (edition.contains("BASE")));
 
         deleteProps(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -289,7 +288,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
         deleteProps(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -329,8 +327,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
         deleteEtcFolder(METHOD_NAME);
-        deleteRepo(METHOD_NAME);
-
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -580,6 +576,144 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output = po.getStdout();
         assertTrue("Shouldnt pass validation", output.contains("Number of errors"));
 
+
+        deleteEtcFolder(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
+    }
+    
+    /**
+     * Install an user feature with the "--featuresBom" parameters
+     */
+    @Test
+    public void testFeatureInstallUserFeature() throws Exception {
+        final String METHOD_NAME = "testFeatureInstallUserFeature";
+        Log.entering(c, METHOD_NAME);
+
+        replaceWlpProperties("21.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+        
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+        
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
+        
+        String[] filesList = { "usr/extension/lib/features/testesa1.mf",
+								"usr/extension/bin/testesa1.bat" };
+        
+        String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        String output = po.getStdout();
+        
+        assertTrue("Should contain testesa1", output.contains("testesa1"));
+        assertFilesExist(filesList);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        
+        deleteUsrExtFolder(METHOD_NAME);
+        deleteEtcFolder(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
+    }
+    
+    
+    /**
+     * Install an User feature with the "--to=Extension" parameters
+     */
+    @Test
+    public void testFeatureInstallUserFeatureToExtension() throws Exception {
+    	final String METHOD_NAME = "testFeatureInstallUserFeatureToExtension";
+        Log.entering(c, METHOD_NAME);
+
+        replaceWlpProperties("21.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+        
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features-bom/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features-bom/19.0.0.8/features-bom-19.0.0.8.pom");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/features/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/features/19.0.0.8/features-19.0.0.8.json");
+        copyFileToMinifiedRoot("repo/com/ibm/ws/userFeature/testesa1/19.0.0.8",
+                "../../publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+        
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
+        
+        String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--to=ext.test", "--verbose"};
+        
+        createExtensionDirs("ext.test");
+        
+        String[] filesList = { "usr/cik/extensions/ext.test/lib/features/testesa1.mf",
+        						"usr/cik/extensions/ext.test/bin/testesa1.bat" };
+        
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        String output = po.getStdout();
+        
+        assertTrue("Should contain testesa1", output.contains("testesa1"));
+        assertFilesExist(filesList);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+
+        deleteUsrToExtFolder(METHOD_NAME);
+        deleteEtcFolder(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
+    }
+    
+    
+    /**
+     * Test if user Features.json file exists on provided featuresBOM coordinate
+     */
+    @Test
+    public void testNonExistentUserFeaturesJson() throws Exception {
+    	final String METHOD_NAME = "testNonExistentUserFeaturesJson";
+        Log.entering(c, METHOD_NAME);
+
+        replaceWlpProperties("21.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+             
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
+        
+        String[] param1s = { "installFeature", "testesa1", "--featuresBOM=invalid:invalid:19.0.0.8", "--verbose"};
+        
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 21",21, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain CWWKF1409E", output.contains("CWWKF1409E"));
+
+        deleteEtcFolder(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
+    }
+    
+    /**
+     * Test invalid featuresBOM Maven coordinate
+     */
+    @Test
+    public void testInvalidUserFeatureBomCoordinate() throws Exception {
+    	final String METHOD_NAME = "testFearureInstallUserFeatureToExtension";
+        Log.entering(c, METHOD_NAME);
+
+        replaceWlpProperties("21.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+             
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "enable.options", "true");
+        
+        String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:invalid", "--verbose"};
+        
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        String output = po.getStdout();
+        
+        assertTrue("Should contain CWWKF1503E", output.contains("CWWKF1503E"));
+        assertEquals("Exit code should be 21",21, po.getReturnCode());
 
         deleteEtcFolder(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);

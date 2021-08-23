@@ -288,4 +288,9 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Po\u017eadavek na [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd obsahuje chybn\u00fd soubor cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bn\u00fd soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben \u00fapravou soubor\u016f cookie na agentovi u\u017eivatele s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Je-li o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomainNames prvku webAppSecurity v souboru server.xml.
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Klient {0} OpenID Connect nem\u016f\u017ee extrahovat n\u00e1roky JWT (JSON Web Token) z webov\u00e9 odezvy. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=Webov\u00e1 odezva mus\u00ed b\u00fdt JWT bu\u010f ve form\u00e1tu JSON Web Encryption (JWE), nebo ve form\u00e1tu JSON Web Signature (JWS). Odezva m\u016f\u017ee b\u00fdt chybn\u00e1, nebo klient OpenID Connect rozpoznal dal\u0161\u00ed chybu p\u0159i zpracov\u00e1n\u00ed odezvy.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee je odezva ve form\u00e1tu JWT.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

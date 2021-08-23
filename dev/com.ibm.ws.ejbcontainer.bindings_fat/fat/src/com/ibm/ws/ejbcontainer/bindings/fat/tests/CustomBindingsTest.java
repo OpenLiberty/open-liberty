@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2020 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.bindings.bnd.web.BindingsServlet;
 
 import componenttest.annotation.Server;
@@ -57,7 +58,7 @@ public class CustomBindingsTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -72,7 +73,7 @@ public class CustomBindingsTest extends FATServletClient {
         EJB3BndTestApp.addAsModules(EJB3BndBean, EJB3BndWeb);
         ShrinkHelper.addDirectory(EJB3BndTestApp, "test-applications/EJB3BndTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB3BndTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB3BndTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

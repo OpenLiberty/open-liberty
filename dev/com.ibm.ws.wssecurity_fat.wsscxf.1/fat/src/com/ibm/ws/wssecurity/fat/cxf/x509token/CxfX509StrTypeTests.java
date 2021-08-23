@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -84,9 +86,6 @@ public class CxfX509StrTypeTests extends CommonTests {
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientSignThumbPrint() throws Exception {
 
-        // use server config with encryption keystore files
-        //reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enc.xml");
-
         genericTest(
                     // test name for logging
                     "testCxfClientSignThumbPrint",
@@ -123,9 +122,6 @@ public class CxfX509StrTypeTests extends CommonTests {
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientSignIssuerSerial() throws Exception {
 
-        // use server config with encryption keystore files
-        //reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enc.xml");
-
         genericTest(
                     // test name for logging
                     "testCxfClientSignIssuerSerial",
@@ -160,11 +156,10 @@ public class CxfX509StrTypeTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfClientKeysMismatchEE7Only() throws Exception {
 
-        // use server config with encryption keystore files
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc.xml");
 
         genericTest(
@@ -191,17 +186,15 @@ public class CxfX509StrTypeTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        // restore original server config
-        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientKeysMismatchEE8Only() throws Exception {
 
-        // use server config with encryption keystore files
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badenc_wss4j.xml");
 
         genericTest(
@@ -228,8 +221,7 @@ public class CxfX509StrTypeTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
-        // restore original server config
-        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
 
     }
 

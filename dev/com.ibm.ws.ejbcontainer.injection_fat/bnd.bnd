@@ -48,6 +48,7 @@ tested.features: \
 	jdbc-4.0,\
 	jdbc-4.2,\
 	mdb-3.2,\
+	mdb-4.0,\
 	wasJmsClient-2.0,\
 	wasJmsServer-1.0,\
 	messagingClient-3.0,\

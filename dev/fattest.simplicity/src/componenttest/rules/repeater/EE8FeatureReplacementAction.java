@@ -31,7 +31,6 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jpa-2.2",
                                                  "jpaContainer-2.2",
                                                  "batch-1.0",
-                                                 "batchManagement-1.0",
                                                  "beanValidation-2.0",
                                                  "jaxrs-2.1",
                                                  "jaxrsClient-2.1",

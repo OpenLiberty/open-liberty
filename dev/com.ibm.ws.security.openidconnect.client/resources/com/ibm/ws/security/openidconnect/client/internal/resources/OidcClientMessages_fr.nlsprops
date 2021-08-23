@@ -288,4 +288,9 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Une demande envoy\u0
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Une demande incluant un cookie incorrectement form\u00e9 a \u00e9t\u00e9 re\u00e7ue.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Il se peut que le cookie soit incorrectement form\u00e9 suite \u00e0 sa modification au niveau de l'agent utilisateur avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de la redirection enregistr\u00e9 aupr\u00e8s du fournisseur. Si le nom d'h\u00f4te est attendu, ajoutez-le \u00e0 l'attribut wasReqURLRedirectDomainNames de l'\u00e9l\u00e9ment webAppSecurity dans le fichier server.xml.
 
+# 0=OIDC client config ID, 1=Error/exception message
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE=CWWKS1533E: Le client OpenID Connect {0} ne peut pas extraire les demandes JWT (JSON Web Token) de la r\u00e9ponse Web. {1}
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.explanation=La r\u00e9ponse Web doit \u00eatre un jeton JWT au format JWE (JSON Web Encryption) ou JWS (JSON Web Signature). Il se peut que la syntaxe de la r\u00e9ponse soit incorrecte ou que le client OpenID Connect ait rencontr\u00e9 une autre erreur lors du traitement de la r\u00e9ponse.
+OIDC_CLIENT_ERROR_EXTRACTING_JWT_CLAIMS_FROM_WEB_RESPONSE.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que la r\u00e9ponse est au format JWT.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

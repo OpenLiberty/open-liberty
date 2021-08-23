@@ -106,6 +106,10 @@ public class ClientInterceptorTests extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
+        // If not set to null, test failures may occur (since the incorrect server.xml could be used)
+        serverConfigurationFile = null;
+
         Exception excep = null;
         GrpcTestUtils.stopGrpcService(worldChannel);
 

@@ -21,6 +21,7 @@ import com.ibm.ws.jaxrs20.cdi12.fat.test.CDIInjectIntoAppTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.Complex12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.ContextAndClientTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.ContextandCDI12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.DependentIntoJaxTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.DisableTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.InterceptorTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycle12Test;
@@ -42,6 +43,7 @@ import componenttest.rules.repeater.RepeatTests;
                Complex12Test.class,           // Skip for JakartaEE9
                ContextAndClientTest.class,
                ContextandCDI12Test.class,     // Skip for JakartaEE9
+               DependentIntoJaxTest.class,    // Skip for JakartaEE9
                DisableTest.class,             // Skip for JakartaEE9
                InterceptorTest.class,
                LifeCycle12Test.class,         // Skip for JakartaEE9

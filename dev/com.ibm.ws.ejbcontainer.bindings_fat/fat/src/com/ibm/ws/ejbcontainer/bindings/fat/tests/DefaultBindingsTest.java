@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2020 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ejb2x.defbnd.web.EJB2XDefBndTestServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultBindingsServlet;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultComponentBindingsServlet;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultJavaColonBindingsServlet;
@@ -63,7 +64,7 @@ public class DefaultBindingsTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -78,7 +79,7 @@ public class DefaultBindingsTest extends FATServletClient {
         EJB3DefBndTestApp.addAsModules(EJB3DefBndBean, EJB3DefBndWeb);
         ShrinkHelper.addDirectory(EJB3DefBndTestApp, "test-applications/EJB3DefBndTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB3DefBndTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB3DefBndTestApp, DeployOptions.SERVER_ONLY);
 
         //EJB2X
         JavaArchive EJB2XDefBndEJB = ShrinkHelper.buildJavaArchive("EJB2XDefBndEJB.jar", "com.ibm.ejb2x.defbnd.ejb.");
@@ -88,7 +89,7 @@ public class DefaultBindingsTest extends FATServletClient {
         EJB2XDefBndTestApp.addAsModules(EJB2XDefBndEJB, EJB2XDefBndWeb);
         ShrinkHelper.addDirectory(EJB2XDefBndTestApp, "test-applications/EJB2XDefBndTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB2XDefBndTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB2XDefBndTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

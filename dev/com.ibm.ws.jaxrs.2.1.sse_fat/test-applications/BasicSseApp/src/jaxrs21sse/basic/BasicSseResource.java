@@ -321,4 +321,12 @@ public class BasicSseResource extends Application {
         }
         return myList;
     }
+
+    @GET
+    @Path("/noEvents")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void noEvents(@Context SseEventSink sink, @Context Sse sse) {
+        System.out.print("BasicSseResource.noEvents - closing sink without sending any events ");
+        sink.close();
+    }
 }

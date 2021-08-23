@@ -300,7 +300,7 @@ public class CxfX509MigSymTests {
                         "", //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
                         "UrnX509Token01", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -332,7 +332,7 @@ public class CxfX509MigSymTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
                         "UrnX509Token01", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -513,7 +513,7 @@ public class CxfX509MigSymTests {
                         "", //String portNumberSecure
                         "FatBAX03Service", //String strServiceName,
                         "UrnX509Token03", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1488,7 +1488,7 @@ public class CxfX509MigSymTests {
                             "", //String portNumberSecure
                             "FatBAX31Service", //String strServiceName,
                             "UrnX509Token31", //String strServicePort
-                            errMsgVersion //2/2021 CxfX509MigSvcClient
+                            errMsgVersion //CxfX509MigSvcClient
                 );
             } catch (Exception e) {
                 throw e;
@@ -1782,7 +1782,7 @@ public class CxfX509MigSymTests {
                            "", //String portNumberSecure
                            "FatBAX09Service", //String strServiceName,
                            "UrnX509Token09", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;

@@ -48,6 +48,16 @@ task addEJBTools {
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteSessionServer/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
   }
 }
 
@@ -67,6 +77,16 @@ task addEnterpriseBeansTools {
     copy {
       from configurations.enterpriseBeansTools
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteSessionServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient/lib/global"
       rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
     }
   }

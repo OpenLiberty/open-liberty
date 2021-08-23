@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -305,6 +305,12 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Ob\u0163ine\u0163i o versiune mai
 ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a transforma clasa Java {0}.  Au fost adunate urm\u0103toarele detalii ale caracteristicii: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=A ap\u0103rut o eroare nea\u015fteptat\u0103 \u00een timp ce se transforma clasa Java. Aceast\u0103 eroare este de obicei cauzat\u0103 de un octet de cod (bytecode) Java invalid.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Cache-ul de clase poate fi corupt sau aplica\u0163ia este \u00eempachetat\u0103 incorect. Mai \u00eent\u00e2i cur\u0103\u0163a\u0163i cache-ul de clase. Dac\u0103 ac\u0163iunea nu rezolv\u0103 problema, examina\u0163i arhiva aplica\u0163iei pentru gre\u015feli de \u00eempachetare.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: O proprietate implicit\u0103 JPA configurat\u0103 \u00een fi\u015fierul server.xml con\u0163ine un nume gol sau o valoare goal\u0103: name = [{0}], value = [{1}]. Proprietatea va fi ignorat\u0103.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Atributele de nume \u015fi de valoare pentru o proprietate implicit\u0103 JPA nu trebuie s\u0103 fie goale.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=Modifica\u0163i configura\u0163ia serverului pentru a furniza pentru proprietate un nume \u015fi o valoare care nu sunt goale sau \u00eenl\u0103tura\u0163i proprietatea.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

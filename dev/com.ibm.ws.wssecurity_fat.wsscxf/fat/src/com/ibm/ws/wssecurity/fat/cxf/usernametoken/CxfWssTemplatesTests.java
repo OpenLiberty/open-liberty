@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 
@@ -53,7 +55,7 @@ public class CxfWssTemplatesTests extends CommonTests {
     @Test
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
-        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
+
         genericTest(
                     // test name for logging
                     "testCXFUserNameTokenPasswordHashOverSSL",
@@ -180,7 +182,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
         genericTest(
@@ -206,11 +208,15 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc3 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
     }
 
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE8Only() throws Exception {
 
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
@@ -237,6 +243,10 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc3 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
     }
 
     /**
@@ -253,7 +263,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFX509SymmetricAndEndorsingEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
         genericTest(
@@ -279,11 +289,15 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc5 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
     }
 
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testCXFX509SymmetricAndEndorsingEE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
         genericTest(
@@ -309,6 +323,10 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc5 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
     }
 
     /**
@@ -332,7 +350,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFX509SymmetricForMessageAndUntForClientEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
         genericTest(
@@ -358,11 +376,15 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc6 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
     }
 
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     public void testCXFX509SymmetricForMessageAndUntForClientEE8Only() throws Exception {
 
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
@@ -389,6 +411,10 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "Response: This is WSSTemplateWebSvc6 Web Service.",
                     // msg to issue if do NOT get the expected result
                     "The test expected a successful message from the server.");
+
+        //Added to resolve RTC 285305
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
     }
 
 }

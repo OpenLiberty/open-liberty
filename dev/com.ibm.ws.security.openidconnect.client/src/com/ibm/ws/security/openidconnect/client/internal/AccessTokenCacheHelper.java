@@ -12,6 +12,7 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -19,34 +20,47 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class AccessTokenCacheHelper {
 
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
     public ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
-        if (!clientConfig.getAccessTokenCacheEnabled() || !clientConfig.getTokenReuse()) {
+        if (!clientConfig.getAccessTokenCacheEnabled()) {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
-        ProviderAuthenticationResult result = (ProviderAuthenticationResult) cache.get(token);
-        if (result != null) {
-            if (isTokenInCachedResultExpired(result, clientConfig)) {
-                return null;
-            }
-            Subject newSubject = recreateSubject(result.getSubject());
-            return new ProviderAuthenticationResult(result.getStatus(), result.getHttpStatusCode(), result.getUserName(), newSubject, result.getCustomProperties(), result.getRedirectUrl());
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(token);
+        if (cacheEntry == null) {
+            return null;
         }
-        return null;
+        ProviderAuthenticationResult result = cacheEntry.getResult();
+        if (isTokenInCachedResultExpired(result, clientConfig)) {
+            return null;
+        }
+        String uniqueID = cacheEntry.getUniqueID();
+        Hashtable<String, Object> customProperties = result.getCustomProperties();
+        if (customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID) == null && uniqueID != null) {
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
+        }
+        Subject newSubject = recreateSubject(result.getSubject());
+        return new ProviderAuthenticationResult(result.getStatus(), result.getHttpStatusCode(), result.getUserName(), newSubject, customProperties, result.getRedirectUrl());
     }
 
     public void cacheTokenAuthenticationResult(OidcClientConfig clientConfig, String token, ProviderAuthenticationResult result) {
         if (clientConfig.getAccessTokenCacheEnabled()) {
             SingleTableCache cache = clientConfig.getCache();
-            cache.put(token, result);
+            Hashtable<String, Object> customProperties = result.getCustomProperties();
+            String uniqueID = null;
+            if (customProperties != null) {
+                uniqueID = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+            }
+            cache.put(token, new AccessTokenCacheEntry(uniqueID, result));
         }
     }
 
@@ -115,10 +129,15 @@ public class AccessTokenCacheHelper {
 
     Subject recreateSubject(Subject cachedSubject) {
         Subject newSubject = new Subject();
-        if (cachedSubject != null) {
-            newSubject.getPrincipals().addAll(cachedSubject.getPrincipals());
-            newSubject.getPublicCredentials().addAll(cachedSubject.getPublicCredentials());
-            newSubject.getPrivateCredentials().addAll(cachedSubject.getPrivateCredentials());
+        if (cachedSubject == null) {
+            return newSubject;
+        }
+        Set<Object> newPRCreds = newSubject.getPrivateCredentials();
+        Set<Object> cachedPRCreds = cachedSubject.getPrivateCredentials();
+        for (Object cachedPRCred : cachedPRCreds) {
+            if (cachedPRCred instanceof OidcTokenImpl || cachedPRCred instanceof Hashtable) {
+                newPRCreds.add(cachedPRCred);
+            }
         }
         return newSubject;
     }

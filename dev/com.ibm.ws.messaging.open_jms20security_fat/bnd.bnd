@@ -13,10 +13,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/JMSContext/src, \
   test-applications/JMSConsumer/src, \
   test-applications/jmsmdb/src, \
-  test-applications/TemporaryQueue/src, \
   test-applications/DurableUnshared/src, \
   test-applications/JMSContextInject/src, \
   test-applications/JMSDCFSecurity/src, \

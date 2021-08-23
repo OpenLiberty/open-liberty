@@ -123,14 +123,20 @@ public class AccessTokenAuthenticator {
             return oidcResult;
         }
 
-        ProviderAuthenticationResult cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        boolean accessTokenIsJWT = isTokenJWT(accessToken);
+
+        ProviderAuthenticationResult cachedResult = null;
+        if (clientConfig.getTokenReuse() || !accessTokenIsJWT) {
+            cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        }
         if (cachedResult != null) {
+            req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
             return cachedResult;
         }
 
         String validationMethod = clientConfig.getValidationMethod();
 
-        if (isTokenJWT(accessToken)) {
+        if (accessTokenIsJWT) {
             // accessToken is a JWT Token
             validationMethod = ClientConstants.VALIDATION_LOCAL;
             oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
@@ -157,7 +163,7 @@ public class AccessTokenAuthenticator {
                 if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_INTROSPECT)) {
                     oidcResult = introspectToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
                     // put userinfo json on the subject if we can get it, even tho it's not req'd. for authentication
-                    (new UserInfoHelper(clientConfig)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory);
+                    (new UserInfoHelper(clientConfig, sslSupport)).getUserInfoIfPossible(oidcResult, accessToken, oidcResult.getUserName(), sslSocketFactory, oidcClientRequest);
                 } else if (validationMethod.equalsIgnoreCase(ClientConstants.VALIDATION_USERINFO)) {
                     oidcResult = getUserInfoFromToken(clientConfig, accessToken, sslSocketFactory, oidcClientRequest);
                 }

@@ -23,6 +23,7 @@ fat.test.databases: true
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features:\
 	servlet-4.0,\
+	servlet-5.0,\
 	cdi-2.0,\
 	cdi-3.0,\
 	jdbc-4.2

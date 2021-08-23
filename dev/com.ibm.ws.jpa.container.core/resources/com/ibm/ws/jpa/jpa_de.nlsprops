@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2019 IBM Corporation and others.
+# Copyright (c) 2006, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -287,6 +287,12 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Verwenden Sie eine neuere Version
 ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Beim Versuch, die Java-Klasse {0} zu transformieren, ist ein Fehler aufgetreten. Das folgende Fehlerdetail wurde erfasst: {1}
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Beim Transformieren der Java-Klasse ist ein unerwarteter Fehler aufgetreten. Dieser Fehler wird in der Regel durch einen ung\u00fcltigen Java-Bytecode verursacht.
 ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=Der Klassencache ist m\u00f6glicherweise besch\u00e4digt oder die Anwendung wurde m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df gepackt. L\u00f6schen Sie zuerst den Klassencache. Wenn mit dieser Aktion das Problem nicht behoben ist, \u00fcberpr\u00fcfen Sie das Anwendungsarchiv auf Fehler beim Packen.
+
+#-------------------------------------------------------------------------------
+# 0=property name, 1=property value
+EMPTY_PROP_NAME_VALUE_CWWJP0056W=CWWJP0056W: Eine in der Datei server.xml konfigurierte JPA-Standardeigenschaft enth\u00e4lt einen leeren Namen oder einen leeren Wert: Name = [{0}], Wert = [{1}]. Die Eigenschaft wird ignoriert.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.explanation=Die Namens- und Wertattribute f\u00fcr JPA-Standardeigenschaften d\u00fcrfen nicht leer sein.
+EMPTY_PROP_NAME_VALUE_CWWJP0056W.useraction=\u00c4ndern Sie die Serverkonfiguration so, dass ein Name und ein Wert f\u00fcr die Eigenschaft angegeben sind, oder entfernen Sie die Eigenschaft.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point

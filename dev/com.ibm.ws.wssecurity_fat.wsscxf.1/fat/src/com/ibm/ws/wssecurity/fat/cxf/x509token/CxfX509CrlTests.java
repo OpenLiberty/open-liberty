@@ -11,7 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.util.Set;
@@ -95,7 +97,7 @@ public class CxfX509CrlTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     public void testCXFClientCRLPNotInListEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientCRLPNotInList";
@@ -125,10 +127,13 @@ public class CxfX509CrlTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @SkipForRepeat({ NO_MODIFICATION })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientCRLPNotInListEE8Only() throws Exception {
 
@@ -159,6 +164,9 @@ public class CxfX509CrlTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+
     }
 
     /**
@@ -174,7 +182,7 @@ public class CxfX509CrlTests extends CommonTests {
      */
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientCRLNInListEE7Only() throws Exception {
 
@@ -207,11 +215,14 @@ public class CxfX509CrlTests extends CommonTests {
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
+
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientCRLNInListEE8Only() throws Exception {
 
@@ -243,6 +254,9 @@ public class CxfX509CrlTests extends CommonTests {
                     //"myx509certN",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
+
+        //Added to resolve RTC 285315
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
 
     }
 

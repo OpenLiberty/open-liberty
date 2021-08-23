@@ -131,12 +131,6 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=Die Standardkanalkette 
 NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Definieren Sie eine getunnelte Standardkanalkette f\u00fcr sicheres abgehendes Messaging f\u00fcr diesen Anwendungsserver.
 
 # -------------------------------------------------------------------------------------------------
-# {0} the name of the SSL properties file.
-NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Die Eigenschaftendatei ''{0}'', die zum Bestimmen der Anfangstransportsicherheit f\u00fcr das Client-Messaging verwendet wird, wurde nicht gefunden.
-NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Die Eigenschaftendatei, die die Informationen zum Herstellen sicherer Client-Messaging-Verbindungen enth\u00e4lt, wurde nicht gefunden. Es werden die Standardwerte verwendet. M\u00f6glicherweise k\u00f6nnen keine sicheren Client-Messaging-Verbindungen hergestellt werden.
-NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Konfigurieren Sie die Eigenschaftendatei f\u00fcr die Sicherheit des Client-Messagings auf Transportebene.
-
-# -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Es ist ein interner Fehler aufgetreten. Es wurde keine Darstellung der Klasse {0} gefunden.
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
@@ -454,18 +448,6 @@ OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
 CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Es ist ein interner Fehler aufgetreten.
 CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
 CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Es wurde keine Transportkette mit dem Namen {0} gefunden, aus der eine SSL-Konfiguration abgerufen werden k\u00f6nnte, die zum Herstellen einer Verbindung zum fernen Host {1} erforderlich w\u00e4re.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Die erforderlichen Informationen zum Herstellen einer SSL-basierten Verbindung (Secure Sockets Layer) zu einem Peer sind nicht in der aktuellen Konfiguration enthalten. Normalerweise werden diese Informationen aus der Definition einer geeigneten Transportkette verwendet. Diese Kettendefinition hat einen Namen, der einer Kette auf dem fernen Peer entspricht. Eine solche Transportkette wurde nicht gefunden. Es kann keine Verbindung hergestellt werden.
-CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Definieren Sie weitere Transportketten.
-
-# -------------------------------------------------------------------------------------------------
-# {0} is a transport chain name.  {1} is the name of a machine.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: Die Transportkette {0} enth\u00e4lt keine SSL-Konfiguration, die zum Herstellen einer Verbindung zum fernen Host {1} erforderlich w\u00e4re.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Die erforderlichen Informationen zum Herstellen einer SSL-basierten Verbindung (Secure Sockets Layer) zu einem Peer sind nicht in der aktuellen Konfiguration enthalten. Normalerweise werden diese Informationen aus der Definition einer geeigneten Transportkette verwendet. Diese Kettendefinition hat einen Namen, der einer Kette auf dem fernen Peer entspricht. Eine solche Transportkette wurde nicht gefunden. Es kann keine Verbindung hergestellt werden.
-CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Konfigurieren Sie weitere SSL-Transportkan\u00e4le f\u00fcr die angegebene Transportkette.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created

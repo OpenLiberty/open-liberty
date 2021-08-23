@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,8 +51,9 @@ public class PropertiesUtils {
     public final static String PROXY_USER = "proxyUser";
     public final static String PROXY_PASSWORD = "proxyPassword";
     public final static String FEATURE_LOCAL_REPO = "featureLocalRepo";
+    public final static String FEATURES_BOM = ".featuresbom";
     public final static String EQUALS = "=";
-    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO };
+    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO, "enable.options" };
     private static final Logger logger = Logger.getLogger(InstallConstants.LOGGER_NAME);
 
 
@@ -189,6 +190,19 @@ public class PropertiesUtils {
         return validationResults;
 
     }
+    
+    /**
+     * checks if options property is enabled for FAT test
+     * @param properties file
+     * @return true if options property is enabled
+     */
+    private static boolean isOptionsEnabled(Properties repoProperties) {
+    	if(repoProperties.getProperty("enable.options") != null && repoProperties.getProperty("enable.options").equals("true") ){
+    		return true;
+    	}
+    	return false;
+    }	
+
 
 
     /**
@@ -201,7 +215,7 @@ public class PropertiesUtils {
         if (Arrays.asList(SUPPORTED_KEYS).contains(key))
             return true;
         if (key.endsWith(URL_SUFFIX)  ||
-                key.endsWith(USER_SUFFIX) || key.endsWith(PWD_SUFFIX))
+                key.endsWith(USER_SUFFIX) || key.endsWith(PWD_SUFFIX)  || key.endsWith(".options") || key.endsWith(FEATURES_BOM))
             return true;
         return false;
     }
@@ -230,11 +244,15 @@ public class PropertiesUtils {
             }
 
             //key is not supported
-            if (!isKeySupported(key)) {
-                validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
-                        key)));
-                return;
-            }
+            if(key.endsWith(FEATURES_BOM) && !isOptionsEnabled(repoProperties)) {
+             	validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
+                         key)));
+             	return;
+             }else if (!isKeySupported(key)) {
+ 	                validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
+ 	                        key)));
+                 return;
+             }
 
             /**
              * emptyRepoName

@@ -26,7 +26,6 @@ fat.project: true
 
 tested.features: \
     batch-2.0,\
-    batchmanagement-2.0,\
     connectors-2.0,\
     enterprisebeans-4.0,\
     mdb-4.0,\

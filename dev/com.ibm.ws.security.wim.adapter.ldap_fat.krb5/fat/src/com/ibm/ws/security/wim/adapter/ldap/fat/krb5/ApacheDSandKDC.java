@@ -80,6 +80,7 @@ public class ApacheDSandKDC {
 
     public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
 
+    /* The Domain needs to be capitalized for Kerberos, but not necessarily for LDAP. */
     public static String DOMAIN = LdapKerberosUtils.DOMAIN; // default, override in extending class
 
     public static String WHICH_FAT = "LDAP"; // default, override in extending class. options: {LDAP, SPNEGO}

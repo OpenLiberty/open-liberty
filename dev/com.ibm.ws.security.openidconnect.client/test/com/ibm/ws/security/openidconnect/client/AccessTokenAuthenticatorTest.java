@@ -59,6 +59,7 @@ import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheEntry;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -274,6 +275,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 allowing(clientConfig).getValidationMethod();
@@ -322,6 +325,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
@@ -360,6 +365,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
@@ -395,6 +402,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -448,6 +457,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -525,7 +536,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
-                one(clientConfig).getCache();
+                exactly(2).of(clientConfig).getCache();
                 will(returnValue(cache));
             }
         });
@@ -538,9 +549,9 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
 
         // Verify that the result was cached
-        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
-        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
-        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cached authentication result should not have been null but was.", cacheEntry);
+        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cacheEntry.getResult());
     }
 
     @Test
@@ -557,6 +568,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -601,6 +614,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
@@ -631,6 +646,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -700,6 +717,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
@@ -722,12 +741,14 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
     public void testAuthenticate_resultAlreadyCached() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
-        cache.put(ACCESS_TOKEN, cachedResult);
+        AccessTokenCacheEntry cacheEntry = new AccessTokenCacheEntry("unique id", cachedResult);
+        cache.put(ACCESS_TOKEN, cacheEntry);
 
         mockery.checking(new Expectations() {
             {
                 one(req).getHeader(Authorization_Header);
                 will(returnValue(BEARER));
+                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();

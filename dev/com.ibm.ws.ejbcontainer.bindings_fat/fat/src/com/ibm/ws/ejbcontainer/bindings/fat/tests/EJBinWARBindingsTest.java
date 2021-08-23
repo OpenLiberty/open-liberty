@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.bindings.ejbinwar.web.BndTestServlet;
 import com.ibm.ws.ejbcontainer.bindings.ejbinwar.web.InterfaceAndNamespaceTestServlet;
 
@@ -59,7 +60,7 @@ public class EJBinWARBindingsTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -80,7 +81,7 @@ public class EJBinWARBindingsTest extends FATServletClient {
         EJBinWARTestApp.addAsLibrary(EJBinWARIntf);
         ShrinkHelper.addDirectory(EJBinWARTestApp, "test-applications/EJBinWARTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJBinWARTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJBinWARTestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

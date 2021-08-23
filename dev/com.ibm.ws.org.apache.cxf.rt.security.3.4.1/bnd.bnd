@@ -19,7 +19,7 @@
     org/apache/cxf=${bin}/org/apache/cxf
 
 globalize: false
-instrument.ffdc: true
+instrument.ffdc: false
 
 -buildpath: \
 	org.apache.cxf:cxf-rt-security;strategy=exact;version=3.4.1, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -400,12 +400,13 @@ public class RichByteBufferImpl implements WsByteBuffer
    /**
     * @see com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer#release()
     */
-   public void release()
-   {
-      buffer.release();
-      buffer = null;
-      pool.release(this);
-   }
+    public synchronized void release() {
+        if (buffer != null) {
+            buffer.release();
+            buffer = null;
+            pool.release(this);
+        }
+    }
 
    /**
     * @see java.lang.Object#toString()

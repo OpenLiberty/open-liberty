@@ -16,9 +16,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletResponse;
@@ -33,11 +35,14 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl;
+import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import test.common.SharedOutputManager;
 
@@ -49,6 +54,7 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
 
     private final OidcClientConfig clientConfig = mockery.mock(OidcClientConfig.class);
     private final ProviderAuthenticationResult authnResult = mockery.mock(ProviderAuthenticationResult.class);
+    private final Principal principal = mockery.mock(Principal.class);
 
     private static final String ACCESS_TOKEN = "access_token";
     private static final String HTTPS_URL = "https://localhost:8020/root";
@@ -93,28 +99,11 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getCachedTokenAuthenticationResult_tokenReuse_false() {
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-            }
-        });
-
-        ProviderAuthenticationResult result = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
-        assertNull("Result should have been null but wasn't.", result);
-    }
-
-    @Test
     public void test_getCachedTokenAuthenticationResult_cacheEmpty() {
         SingleTableCache cache = getCache();
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
                 will(returnValue(true));
                 one(clientConfig).getCache();
                 will(returnValue(cache));
@@ -129,12 +118,10 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     public void test_getCachedTokenAuthenticationResult_nothingCachedForToken() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
-        cache.put("someToken", cachedResult);
+        cache.put("someToken", new AccessTokenCacheEntry("unqiue id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
                 will(returnValue(true));
                 one(clientConfig).getCache();
                 will(returnValue(cache));
@@ -149,12 +136,10 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     public void test_getCachedTokenAuthenticationResult_resultAlreadyCached() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
-        cache.put(ACCESS_TOKEN, cachedResult);
+        cache.put(ACCESS_TOKEN, new AccessTokenCacheEntry("unique id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
                 will(returnValue(true));
                 one(clientConfig).getCache();
                 will(returnValue(cache));
@@ -167,6 +152,29 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         assertNotNull("Result should not have been null but was.", result);
         assertEquals("Cached result did not match expected object.", cachedResult.getStatus(), result.getStatus());
         assertEquals("Cached result did not match expected object.", cachedResult.getHttpStatusCode(), result.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_getCachedTokenAuthenticationResult_insertsUniqueIDIfMissing() {
+        SingleTableCache cache = getCache();
+        String uniqueID = "unique id";
+        ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
+        cache.put(ACCESS_TOKEN, new AccessTokenCacheEntry(uniqueID, cachedResult));
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+                one(clientConfig).getClockSkewInSeconds();
+                will(returnValue(300L));
+            }
+        });
+
+        ProviderAuthenticationResult result = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
+        String cachedUniqueID = (String) result.getCustomProperties().get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+        assertNotNull("Unique ID should have been inserted into cached result.", cachedUniqueID);
+        assertEquals("Cached unique ID did not match expected unique ID.", uniqueID, cachedUniqueID);
     }
 
     @Test
@@ -184,7 +192,10 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.OAUTH_CHALLENGE, HttpServletResponse.SC_EXPECTATION_FAILED);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cache entry should not have been null but was.", cacheEntry);
+
+        ProviderAuthenticationResult cachedResult = cacheEntry.getResult();
         assertNotNull("Result should not have been null but was.", cachedResult);
         assertEquals("Cached result did not match expected object.", resultToCache.getStatus(), cachedResult.getStatus());
         assertEquals("Cached result did not match expected object.", resultToCache.getHttpStatusCode(), cachedResult.getHttpStatusCode());
@@ -195,7 +206,7 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         SingleTableCache cache = getCache();
         // Create an existing cache entry for a different key
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
-        cache.put("otherEntry", cachedResult);
+        cache.put("otherEntry", new AccessTokenCacheEntry("unique id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -208,7 +219,10 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        ProviderAuthenticationResult newCachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cache entry should not have been null but was.", cacheEntry);
+
+        ProviderAuthenticationResult newCachedResult = cacheEntry.getResult();
         assertNotNull("Result should not have been null but was.", newCachedResult);
         assertEquals("Cached result did not match expected object.", resultToCache.getStatus(), newCachedResult.getStatus());
         assertEquals("Cached result did not match expected object.", resultToCache.getHttpStatusCode(), newCachedResult.getHttpStatusCode());
@@ -218,7 +232,7 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     public void test_cacheTokenAuthenticationResult_entryAlreadyExists() {
         SingleTableCache cache = getCache();
         ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
-        cache.put(ACCESS_TOKEN, cachedResult);
+        cache.put(ACCESS_TOKEN, new AccessTokenCacheEntry("unique id", cachedResult));
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
@@ -231,10 +245,35 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
         cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
 
-        ProviderAuthenticationResult newCachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cache entry should not have been null but was.", cacheEntry);
+
+        ProviderAuthenticationResult newCachedResult = cacheEntry.getResult();
         assertNotNull("Result should not have been null but was.", newCachedResult);
         assertEquals("Cached result did not match expected object.", resultToCache.getStatus(), newCachedResult.getStatus());
         assertEquals("Cached result did not match expected object.", resultToCache.getHttpStatusCode(), newCachedResult.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_cacheTokenAuthenticationResult_cachesUniqueID() {
+        SingleTableCache cache = getCache();
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        String uniqueID = "unique id";
+        ProviderAuthenticationResult resultToCache = createProviderAuthenticationResult(System.currentTimeMillis());
+        resultToCache.getCustomProperties().put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
+        cacheHelper.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
+
+        AccessTokenCacheEntry cacheEntry = (AccessTokenCacheEntry) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cache entry should not have been null but was.", cacheEntry);
+        assertEquals("Unique ID in cache entry should have matched unique ID in custom properties.", uniqueID, cacheEntry.getUniqueID());
     }
 
     @Test
@@ -497,6 +536,93 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
 
         long result = cacheHelper.getTokenExpirationFromCustomProperties(customProperties);
         assertEquals("Did not get expected expiration time from the custom properties.", expValue, result);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectNull() {
+        Subject result = cacheHelper.recreateSubject(null);
+        assertEquals("Null cached subject should return a new subject.", new Subject(), result);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectEmpty() {
+        Subject cachedSubject = new Subject();
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertEquals("Empty cached subject should return a new subject.", new Subject(), result);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithOidcTokenImpl() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        OidcTokenImplBase oidcTokenBase = new OidcTokenImplBase(null, null, null, null, null);
+        OidcTokenImpl oidcToken = new OidcTokenImpl(oidcTokenBase);
+        creds.add(oidcToken);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertFalse("OidcTokenImpl in cached subject should be copied into new subject.", result.getPrivateCredentials(OidcTokenImpl.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithHashtable() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put("one", "one");
+        customProperties.put("two", "two");
+        creds.add(customProperties);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertFalse("Hashtable in cached subject should be copied into new subject.", result.getPrivateCredentials(Hashtable.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithOidcTokenImplAndHashtable() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        OidcTokenImplBase oidcTokenBase = new OidcTokenImplBase(null, null, null, null, null);
+        OidcTokenImpl oidcToken = new OidcTokenImpl(oidcTokenBase);
+        creds.add(oidcToken);
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put("one", "one");
+        customProperties.put("two", "two");
+        creds.add(customProperties);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        boolean oidcTokenImplEmpty = result.getPrivateCredentials(OidcTokenImpl.class).isEmpty();
+        boolean hashtableEmpty = result.getPrivateCredentials(Hashtable.class).isEmpty();
+        assertFalse("OidcTokenImpl and Hashtable in cached subject should be copied into new subject.", oidcTokenImplEmpty || hashtableEmpty);
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithWrongCredType() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        creds.add("one");
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertTrue("Only OidcTokenImpl's and Hashtables should be copied into new subject.", result.getPrivateCredentials(String.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithOidcTokenImplBase() {
+        Subject cachedSubject = new Subject();
+        Set<Object> creds = cachedSubject.getPrivateCredentials();
+        OidcTokenImplBase oidcTokenBase = new OidcTokenImplBase(null, null, null, null, null);
+        creds.add(oidcTokenBase);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertTrue("OidcTokenImplBase should not be copied into new subject.", result.getPrivateCredentials(OidcTokenImplBase.class).isEmpty());
+    }
+
+    @Test
+    public void test_recreateSubject_cachedSubjectWithPrincipal() {
+        Subject cachedSubject = new Subject();
+        cachedSubject.getPrincipals().add(principal);
+
+        Subject result = cacheHelper.recreateSubject(cachedSubject);
+        assertTrue("Cached principal should not be copied into new subject.", result.getPrincipals().isEmpty());
     }
 
     private SingleTableCache getCache() {

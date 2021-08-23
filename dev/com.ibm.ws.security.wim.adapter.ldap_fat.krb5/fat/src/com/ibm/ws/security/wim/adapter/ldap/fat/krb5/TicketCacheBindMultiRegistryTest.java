@@ -71,7 +71,7 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
 
             Log.info(c, testName.getMethodName(), "Since allowOp=false, expected logins on both Ldap repos to fail");
             loginUserShouldFail();
-            loginUserShouldFailUnboundID();
+            assertLoginUserShouldFailUnboundID();
 
             Log.info(c, testName.getMethodName(), "Update to valid TicketCache");
             resetTicketCache(ldap);
@@ -79,7 +79,7 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
 
             Log.info(c, testName.getMethodName(), "Both registries should login again successfully");
             loginUser();
-            loginUserUnboundID();
+            assertLoginUserUnboundID();
         } finally {
             stopUnboundIDLdapServer();
         }
@@ -112,7 +112,7 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
 
             Log.info(c, testName.getMethodName(), "Since allowOp=false, expected login to fail on the Keberos Ldap and succeed on the simple bind Ldap");
             loginUserShouldFail();
-            loginUserUnboundID();
+            assertLoginUserUnboundID();
 
             Log.info(c, testName.getMethodName(), "Update to valid TicketCache");
             resetTicketCache(ldap);
@@ -120,7 +120,7 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
 
             Log.info(c, testName.getMethodName(), "Both registries should login successfully");
             loginUser();
-            loginUserUnboundID();
+            assertLoginUserUnboundID();
         } finally {
             stopUnboundIDLdapServer();
         }

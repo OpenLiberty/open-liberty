@@ -93,7 +93,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * properties provided by the bundle context when running in an osgi
      * framework.
      *
-     * @param initProps
+     * @param ctx
      * @return WsLocationAdmin
      */
     public static WsLocationAdminImpl createLocations(BundleContext ctx) {
@@ -218,12 +218,12 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * includes some set in response to command line argument parsing).
      *
      * @param config
-     *            Map containing location service configuration information
+     *                   Map containing location service configuration information
      * @throws IllegalArgumentException
-     *             if serverName, instanceRootStr, or bootstrapLibStr are empty or
-     *             null
+     *                                      if serverName, instanceRootStr, or bootstrapLibStr are empty or
+     *                                      null
      * @throws IllegalStateException
-     *             if bootstrap library location or instance root don't exist.
+     *                                      if bootstrap library location or instance root don't exist.
      */
     protected WsLocationAdminImpl(Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
@@ -325,7 +325,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         addResourcePath(bootstrapLib.getNormalizedPath());
 
-        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_SERVICE_BINDING_ROOT, (String) config.get(WsLocationConstants.LOC_SERVICE_BINDING_ROOT));
+        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS, (String) config.get(WsLocationConstants.LOC_VARIABLE_SOURCE_DIRS));
     }
 
     private final void throwInitializationException(RuntimeException t) {

@@ -164,7 +164,6 @@ public class CxfCallerX509SymTests {
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicyHttps() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
 
         String thisMethod = "testCxfCallerSymmetricEndorsingPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingPolicyHttps";
@@ -197,7 +196,7 @@ public class CxfCallerX509SymTests {
     //@Test
     // This is not a valid test for now
     public void testCxfCallerSymmetricEndorsingTLSPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
+
         String thisMethod = "testCxfCallerSymmetricEndorsingTLSPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingTLSPolicy";
 

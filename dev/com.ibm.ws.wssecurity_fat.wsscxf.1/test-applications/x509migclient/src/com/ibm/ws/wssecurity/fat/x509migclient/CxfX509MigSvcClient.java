@@ -101,7 +101,6 @@ public class CxfX509MigSvcClient extends HttpServlet {
     String methodFull = null;
     SOAPMessage soapReq = null;
 
-    //2/2021
     String errMsgVersion = "";
 
     private StringReader reqMsg = null;
@@ -175,26 +174,26 @@ public class CxfX509MigSvcClient extends HttpServlet {
             if (thisMethod.equals("testCxfX509KeyIdMigSymService")) {
                 service = new FatBAX01Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax01";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "The signature method does not match the requirement";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509AsymIssuerSerialMigService")) {
                 service = new FatBAX02Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax02";
             } else if (thisMethod.equals("testCxfX509IssuerSerialMigSymService")) {
                 service = new FatBAX03Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax03";
-                //2/2201
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "The signature method does not match the requirement";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                } //End 2/2201
+                }
             } else if (thisMethod.equals("testCxfX509ThumbprintMigSymService")) {
                 service = new FatBAX04Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax04";
@@ -220,13 +219,13 @@ public class CxfX509MigSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509TransportEndorsingSP11MigService")) {
                 service = new FatBAX11Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax11";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted: HttpURLConnection is not a HttpsURLConnection";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "Assertion of type {http://schemas.xmlsoap.org/ws/2005/07/securitypolicy}HttpsToken could not be asserted: Not an HTTPs connection";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509TransportSignedEndorsingMigService")) {
                 service = new FatBAX12Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax12";
@@ -253,13 +252,13 @@ public class CxfX509MigSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureReplayMigService")) {
                 service = new FatBAX17Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax17";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
                     strSubErrMsg = "An invalid security token was provided (WSSecurityEngine: Invalid timestamp {0})";
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureSP11MigService")) {
                 service = new FatBAX18Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax18";
@@ -303,20 +302,17 @@ public class CxfX509MigSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBasic192Service")) {
                 service = new FatBAX31Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax31";
-                //2/2021
+
                 if (errMsgVersion.equals("EE7")) {
-                    //Orig:
                     strSubErrMsg = "Cannot encrypt data";
-                    //2/2021
                     System.out.println("From CxfX509MigSvcClient, unlimitCryptoKeyLength:" + unlimitCryptoKeyLength);
-                    //Orig:
                     if (unlimitCryptoKeyLength) {
                         strSubErrMsg = "xenc:EncryptionMethod/@Algorithm is not supported: http://www.w3.org/2001/04/xmlenc#aes192-cbc";
                     }
                 }
                 if (errMsgVersion.equals("EE8")) {
                     strSubErrMsg = "BSP:R5620: Any ED_ENCRYPTION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/04/xmlenc#tripledes-cbc\", \"http://www.w3.org/2001/04/xmlenc#aes128-cbc\" or \"http://www.w3.org/2001/04/xmlenc#aes256-cbc\"";
-                } //End 2/2021
+                }
             } else if (thisMethod.equals("testTripleDesService")) {
                 service = new FatBAX32Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax32";

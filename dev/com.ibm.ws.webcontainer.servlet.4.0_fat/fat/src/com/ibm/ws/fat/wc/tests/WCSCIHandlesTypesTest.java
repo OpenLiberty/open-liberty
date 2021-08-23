@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,7 +33,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * This tests the functionality of the 
+ * This tests the functionality of the
  * ServletContainerInitializer.onStartup(Set<Class<?>> c, ServletContext ctx) API.
  *
  * @See https://github.com/OpenLiberty/open-liberty/issues/16598
@@ -53,12 +53,10 @@ public class WCSCIHandlesTypesTest {
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestHandlesTypesClasses to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerDropins(server, APP_NAME + ".war", true,
-            "testhandlestypesclasses.war.examples", "testhandlestypesclasses.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "testhandlestypesclasses.war.examples", "testhandlestypesclasses.war.servlets");
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCSCIHandlesTypesTest.class.getSimpleName() + ".log");
-        WCApplicationHelper.waitForAppStart(APP_NAME, WCEncodingTest.class.getName(), server);
         LOG.info("Setup : complete, ready for Tests");
     }
 
@@ -71,16 +69,16 @@ public class WCSCIHandlesTypesTest {
     }
 
     /**
-     * Test to verify that the correct set of Classes is passed via 
+     * Test to verify that the correct set of Classes is passed via
      * ServletContainerInitializer.onStartup(Set<Class<?>> c, ServletContext ctx)
-     * 
+     *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.FULL)
     public void test_ServletContainerInitializer_HandlesTypes_Classes() throws Exception {
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME 
-            + "/GetMappingTestServletSlashStar";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME
+                     + "/GetMappingTestServletSlashStar";
         LOG.info("url: " + url);
         HttpGet getMethod = new HttpGet(url);
 

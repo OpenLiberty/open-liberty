@@ -35,11 +35,6 @@ public class FATSuite {
     //switching between local and remote docker hosts.
     static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-
-        // Filter out any external docker servers in the 'libhpike' cluster
-        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
-            return !svc.getAddress().contains("libhpike-dockerengine");
-        };
     }
 
     // Updated docker image to use TLS1.2 for secure communication
