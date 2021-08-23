@@ -178,11 +178,13 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 					}
 
 					long minuteLatestMinimumDuration = stats.getMinuteLatestMinimumDuration();
-					while (elapsedTime < minuteLatestMinimumDuration || minuteLatestMinimumDuration == 0L) {
-						if (stats.compareAndUpdateMinuteLatestMinimumDuration(minuteLatestMinimumDuration, elapsedTime)) {
-							break;
+					if (!(elapsedTime == 0L && minuteLatestMinimumDuration == 0L)) {
+						while (elapsedTime < minuteLatestMinimumDuration || minuteLatestMinimumDuration == 0L) {
+							if (stats.compareAndUpdateMinuteLatestMinimumDuration(minuteLatestMinimumDuration, elapsedTime)) {
+								break;
+							}
+							minuteLatestMinimumDuration = stats.getMinuteLatestMinimumDuration();
 						}
-						minuteLatestMinimumDuration = stats.getMinuteLatestMinimumDuration();
 					}
 				}
 			}
