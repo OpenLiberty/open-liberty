@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Vector;
@@ -468,37 +469,55 @@ public class MetaTypeXMLConfigTest {
         ConfigElement config = configParser.parseConfigElement(new StringReader("<test>"
                                                                                 //Single config elements
                                                                                 + "<testScheduleSingleInstance>MON 8:00</testScheduleSingleInstance>"
-                                                                                + "<testScheduleSingleRange>MON-TUES 8:00</testScheduleSingleRange>"
+                                                                                + "<testScheduleSingleRange>MON-TUES 8:00 America/Chicago</testScheduleSingleRange>"
                                                                                 + "<testScheduleSingleStartup>startup</testScheduleSingleStartup>"
                                                                                 //Multiple config elements as array
                                                                                 + "<testScheduleMultipleInstances>WED 10:00</testScheduleMultipleInstances> <testScheduleMultipleInstances>THURS 10:30</testScheduleMultipleInstances>"
-                                                                                + "<testScheduleMultipleRanges>FRI 10:00-13:00</testScheduleMultipleRanges> <testScheduleMultipleRanges>MON 10:15-13:00</testScheduleMultipleRanges>"
+                                                                                + "<testScheduleMultipleRanges>FRI 10:00-13:00</testScheduleMultipleRanges> <testScheduleMultipleRanges>MON 10:15-13:00 GMT-6</testScheduleMultipleRanges>"
                                                                                 + "<testScheduleMultipleStartup>startup</testScheduleMultipleStartup> <testScheduleMultipleStartup>sat-tues 23:00</testScheduleMultipleStartup>"
                                                                                 //Single config with cardinality.  Should return as array?
                                                                                 + "<testScheduleCardinalInstances>WED 10:00, THURS 10:30</testScheduleCardinalInstances>"
-                                                                                + "<testScheduleCardinalRanges>FRI 10:00-13:00, MON 10:15-13:00</testScheduleCardinalRanges>"
+                                                                                + "<testScheduleCardinalRanges>FRI 10:00-13:00, MON 10:15-13:00 GMT-6</testScheduleCardinalRanges>"
                                                                                 + "<testScheduleCardinalStartup>startup, sat-tues 23:00</testScheduleCardinalStartup>"
                                                                                 + "</test>"));
 
         Dictionary<String, Object> dict = evaluator.evaluateToDictionary(config, re);
 
         //Single config elements
-        SerializableSchedule expectedSingleInstance = new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(8, 0), null);
-        SerializableSchedule expectedSingleRange = new SerializableSchedule(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, LocalTime.of(8, 0), null);
-        SerializableSchedule expectedSingleStartup = new SerializableSchedule();
+        SerializableSchedule[] expectedSingleInstance = new SerializableSchedule[] {
+                                                                                     new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(8, 0), null, null)
+        };
+        SerializableSchedule[] expectedSingleRange = new SerializableSchedule[] {
+                                                                                  new SerializableSchedule(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, LocalTime.of(8,
+                                                                                                                                                             0), null, ZoneId.of("America/Chicago"))
+        };
+        SerializableSchedule[] expectedSingleStartup = new SerializableSchedule[] {
+                                                                                    new SerializableSchedule()
+        };
 
         //Multiple config elements
-        SerializableSchedule[] expectedMultipleInstances = new SerializableSchedule[] { new SerializableSchedule(DayOfWeek.WEDNESDAY, null, LocalTime.of(10, 0), null),
-                                                                                        new SerializableSchedule(DayOfWeek.THURSDAY, null, LocalTime.of(10, 30), null) };
-        SerializableSchedule[] expectedMultipleRanges = new SerializableSchedule[] { new SerializableSchedule(DayOfWeek.FRIDAY, null, LocalTime.of(10, 0), LocalTime.of(13, 0)),
-                                                                                     new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(10, 15), LocalTime.of(13, 0)) };
-        SerializableSchedule[] expectedMultipleStartup = new SerializableSchedule[] { new SerializableSchedule(),
-                                                                                      new SerializableSchedule(DayOfWeek.SATURDAY, DayOfWeek.TUESDAY, LocalTime.of(23, 0), null) };
+        SerializableSchedule[] expectedMultipleInstances = new SerializableSchedule[] {
+                                                                                        new SerializableSchedule(DayOfWeek.WEDNESDAY, null, //
+                                                                                                        LocalTime.of(10, 0), null, null),
+                                                                                        new SerializableSchedule(DayOfWeek.THURSDAY, null, //
+                                                                                                        LocalTime.of(10, 30), null, null)
+        };
+        SerializableSchedule[] expectedMultipleRanges = new SerializableSchedule[] {
+                                                                                     new SerializableSchedule(DayOfWeek.FRIDAY, null, //
+                                                                                                     LocalTime.of(10, 0), LocalTime.of(13, 0), null),
+                                                                                     new SerializableSchedule(DayOfWeek.MONDAY, null, //
+                                                                                                     LocalTime.of(10, 15), LocalTime.of(13, 0), ZoneId.of("GMT-6"))
+        };
+        SerializableSchedule[] expectedMultipleStartup = new SerializableSchedule[] {
+                                                                                      new SerializableSchedule(),
+                                                                                      new SerializableSchedule(DayOfWeek.SATURDAY, DayOfWeek.TUESDAY, //
+                                                                                                      LocalTime.of(23, 0), null, null)
+        };
 
         //Single config elements
-        assertEquals(expectedSingleInstance, dict.get("testScheduleSingleInstance"));
-        assertEquals(expectedSingleRange, dict.get("testScheduleSingleRange"));
-        assertEquals(expectedSingleStartup, dict.get("testScheduleSingleStartup"));
+        assertArrayEquals(expectedSingleInstance, (SerializableSchedule[]) dict.get("testScheduleSingleInstance"));
+        assertArrayEquals(expectedSingleRange, (SerializableSchedule[]) dict.get("testScheduleSingleRange"));
+        assertArrayEquals(expectedSingleStartup, (SerializableSchedule[]) dict.get("testScheduleSingleStartup"));
         //Multiple config elements as array
         assertArrayEquals(expectedMultipleInstances, (SerializableSchedule[]) dict.get("testScheduleMultipleInstances"));
         assertArrayEquals(expectedMultipleRanges, (SerializableSchedule[]) dict.get("testScheduleMultipleRanges"));

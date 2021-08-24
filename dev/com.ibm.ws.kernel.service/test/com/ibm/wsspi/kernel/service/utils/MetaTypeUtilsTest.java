@@ -12,10 +12,24 @@ package com.ibm.wsspi.kernel.service.utils;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -383,6 +397,220 @@ public class MetaTypeUtilsTest {
         assertEquals(5, (long) MetatypeUtils.evaluateDuration("5mp", TimeUnit.SECONDS)); // hu
 
         assertEquals(5, (long) MetatypeUtils.evaluateDuration("5\u6beb\u79d2", TimeUnit.MILLISECONDS)); // zh_TW
+    }
+
+    @Test
+    public void testScheduleGeneral() throws Exception {
+        SerializableSchedule testSchedule;
+        SerializableSchedule expectedSchedule;
+
+        //Test startup
+        testSchedule = MetatypeUtils.evaluateSchedule("startup")[0];
+        assertTrue(testSchedule.isStartup());
+        assertNull(testSchedule.getValidDays());
+        assertNull(testSchedule.getStartTime());
+        assertNull(testSchedule.getEndTime());
+        assertNull(testSchedule.getTimezone());
+
+        //Test components
+        testSchedule = MetatypeUtils.evaluateSchedule("MON-FRI 8:00-17:00 America/Chicago")[0];
+        assertFalse(testSchedule.isStartup());
+        assertTrue(testSchedule.getValidDays().containsAll(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)));
+        assertEquals(LocalTime.of(8, 0), testSchedule.getStartTime());
+        assertEquals(LocalTime.of(17, 0), testSchedule.getEndTime());
+        assertEquals(ZoneId.of("America/Chicago"), testSchedule.getTimezone());
+
+        //Test equals
+        expectedSchedule = new SerializableSchedule(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(17, 0), ZoneId.of("America/Chicago"));
+        assertEquals(expectedSchedule, testSchedule);
+
+        //Test Days of week
+        testSchedule = MetatypeUtils.evaluateSchedule("MON-SUN 8")[0];
+        assertTrue(testSchedule.getValidDays().containsAll(Arrays.asList(DayOfWeek.values())));
+
+        testSchedule = MetatypeUtils.evaluateSchedule("WED-TUES 8")[0];
+        assertTrue(testSchedule.getValidDays().containsAll(Arrays.asList(DayOfWeek.values())));
+
+        //Test Serializable
+        testSchedule = MetatypeUtils.evaluateSchedule("MON-FRI 8:00-17:00 America/Chicago")[0];
+        try {
+            //Write testSchedule to ByteArray
+            ByteArrayOutputStream bf = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bf);
+            oos.writeObject(testSchedule);
+            oos.close();
+
+            //Read object fromByteArray
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bf.toByteArray()));
+            expectedSchedule = (SerializableSchedule) ois.readObject();
+            assertEquals(expectedSchedule, testSchedule);
+        } catch (Exception e) {
+            fail("Failed to serialize or deserialze SerializableSchedule");
+        }
+    }
+
+    @Test
+    public void testScheduleSanitation() throws Exception {
+        SerializableSchedule testSchedule;
+        SerializableSchedule expectedSchedule;
+
+        try {
+            testSchedule = MetatypeUtils.evaluateSchedule("  mon  8:00  ")[0];
+            expectedSchedule = new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(8, 0), null, null);
+            assertEquals(testSchedule, expectedSchedule);
+        } catch (Exception e) {
+            fail("Leading and trailing space should be sanitized: " + e.getMessage());
+        }
+
+        try {
+            testSchedule = MetatypeUtils.evaluateSchedule("mon   8:00")[0];
+            expectedSchedule = new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(8, 0), null, null);
+            assertEquals(testSchedule, expectedSchedule);
+        } catch (Exception e) {
+            fail("Extra interal space should be sanitized: " + e.getMessage());
+        }
+
+        try {
+            testSchedule = MetatypeUtils.evaluateSchedule("mon - fri  8:00 - 10:00")[0];
+            expectedSchedule = new SerializableSchedule(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(10, 0), null);
+            assertEquals(testSchedule, expectedSchedule);
+        } catch (Exception e) {
+            fail("Spaces surrounding hyphens should be sanitized: " + e.getMessage());
+        }
+
+        try {
+            testSchedule = MetatypeUtils.evaluateSchedule("  mon  -  fri    8:00   -   10:00   GMT-6  ")[0];
+            expectedSchedule = new SerializableSchedule(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(10, 0), ZoneId.of("GMT-6"));
+            assertEquals(testSchedule, expectedSchedule);
+        } catch (Exception e) {
+            fail("All extra space should be sanitized: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testScheduleExceptions() throws Exception {
+
+        //Constructor exceptions
+        try {
+            //At minimum need startDay and startTime
+            new SerializableSchedule(null, null, null, null, null);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+
+        //Component delimit exceptions
+        try {
+            MetatypeUtils.evaluateSchedule("mon 8 GMT -6"); //extra space
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertNull(e.getCause());
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("mon fri 8:00 11:00 GMT-6"); //spaces instead of hyphens
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertNull(e.getCause());
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("mon- fri 8:00-17:00 GMT-6"); //extra space day
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertNull(e.getCause());
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("mon-fri 8:00- 17:00 GMT-6"); //extra space time
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertNull(e.getCause());
+        }
+
+        //Range delimit exceptions
+        try {
+            MetatypeUtils.evaluateSchedule("mon- 8:00-17:00 GMT-6"); //no end day
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertNull(e.getCause());
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("mon-fri 8:00- GMT-6"); //no end time
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertNull(e.getCause());
+        }
+
+        //Parse Exceptions
+        try {
+            MetatypeUtils.evaluateSchedule("BLAH 8:00 GMT-6"); //invalid day
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertTrue(e.getCause() instanceof IllegalArgumentException);
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("MON 8:356 GMT-6"); //invalid time
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertTrue(e.getCause() instanceof DateTimeParseException);
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("MON 8:00 gmt-6"); //invalid zone
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertTrue(e.getCause() instanceof DateTimeException);
+        }
+
+        try {
+            MetatypeUtils.evaluateSchedule("MON 8:00 AMERICA/CHICAGO"); //invalid zone
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertTrue(e.getCause() instanceof DateTimeException);
+        }
+    }
+
+    @Test
+    public void testScheduleWithin() throws Exception {
+        //Test now
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+        LocalTime now = ZonedDateTime.now().toLocalTime();
+        ZoneId here = ZonedDateTime.now().getZone();
+
+        SerializableSchedule validNow = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
+        SerializableSchedule invalidNowDate = new SerializableSchedule(today.plusDays(1).getDayOfWeek(), today.plusDays(2).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
+        SerializableSchedule invalidNowTime = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.plusHours(1), now.plusHours(2), here);
+
+        assertTrue(validNow.withinSchedule());
+        assertFalse(invalidNowDate.withinSchedule());
+        assertFalse(invalidNowTime.withinSchedule());
+
+        //Test LocalDateTime
+        today = LocalDate.of(2021, 8, 25);
+        now = LocalTime.of(5, 0);
+        LocalDateTime testDateTime = LocalDateTime.of(today, now);
+
+        SerializableSchedule validLDT = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
+        SerializableSchedule invalidLDTDate = new SerializableSchedule(today.plusDays(1).getDayOfWeek(), today.plusDays(2).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
+        SerializableSchedule invalidLDTTime = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.plusHours(1), now.plusHours(2), here);
+
+        assertTrue(validLDT.withinSchedule(testDateTime));
+        assertFalse(invalidLDTDate.withinSchedule(testDateTime));
+        assertFalse(invalidLDTTime.withinSchedule(testDateTime));
+
+        //Test ZonedDateTime
+        here = ZoneId.of("GMT-6");
+        ZonedDateTime testZonedDateTime = ZonedDateTime.of(today, now, here);
+
+        SerializableSchedule validZDT = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
+        SerializableSchedule invalidZDTDate = new SerializableSchedule(today.plusDays(1).getDayOfWeek(), today.plusDays(2).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
+        SerializableSchedule invalidZDTTime = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.plusHours(1), now.plusHours(2), here);
+
+        assertTrue(validZDT.withinSchedule(testZonedDateTime));
+        assertFalse(invalidZDTDate.withinSchedule(testZonedDateTime));
+        assertFalse(invalidZDTTime.withinSchedule(testZonedDateTime));
     }
 
 }

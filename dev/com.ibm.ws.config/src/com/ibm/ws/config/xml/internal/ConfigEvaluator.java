@@ -1056,11 +1056,7 @@ class ConfigEvaluator {
         } else if (type == MetaTypeFactory.TOKEN_TYPE) {
             return MetatypeUtils.evaluateToken(strVal);
         } else if (type == MetaTypeFactory.SCHEDULE_TYPE) {
-            //Schedule attribute could container more than one schedule delimited by commas
-            if (strVal.contains(","))
-                return convertListToScheduleArray(Arrays.asList(strVal.split(",")), attrDef, context, false);
-            else
-                return new SerializableSchedule(strVal);
+            return MetatypeUtils.evaluateSchedule(strVal);
         } else if (type == MetaTypeFactory.PID_TYPE) {
             return evaluateReference(strVal, attrDef, context);
         } else {
