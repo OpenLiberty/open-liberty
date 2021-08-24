@@ -22,6 +22,9 @@ public class Constants {
     public final static boolean RESTART_SERVER = true;
     public final static boolean DO_NOT_RESTART_SERVER = false;
 
+
+    public final static boolean Poke_BUILD_MACHINES = false;
+
     //RoleMappings Config
     public final static String NO_ROLES_ROLE_MAPPING_PROPS = "no_roles_roleMapping.prop";
     public final static String ALL_ROLE_MAPPING_PROPS = "roleMapping.orig.props";

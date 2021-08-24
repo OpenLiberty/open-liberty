@@ -12,6 +12,9 @@
 
 
 -buildpath: \
+        com.ibm.ws.org.jboss.logging;version=latest,\
 	org.jboss.weld:weld-osgi-bundle;version=3.1.7.SP1, \
 	org.jboss.weld.se:weld-se-core;version=3.1.7.SP1, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+        com.ibm.websphere.javaee.cdi.2.0;version=latest
+        
