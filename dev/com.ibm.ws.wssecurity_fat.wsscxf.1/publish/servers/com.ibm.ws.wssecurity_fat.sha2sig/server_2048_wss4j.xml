@@ -46,32 +46,32 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
-		ws-security.signature.username="soapprovider"
+		security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		security.signature.username="soapprovider"
 	>
 	
 		<signatureProperties
 			signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="server"
-			org.apache.ws.security.crypto.merlin.keystore.alias="soapprovider"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-receiver-2048.ks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="server"
+			org.apache.wss4j.crypto.merlin.keystore.alias="soapprovider"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/dsig-receiver-2048.ks" />
 	</wsSecurityProvider>
 
 	<wsSecurityClient
 		id="default"
-		ws-security.password="security"
-		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
-		ws-security.signature.username="soaprequester"
+		security.password="security"
+		security.username="user1"
+		security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		security.signature.username="soaprequester"
 	>
 	
 		<signatureProperties
 			signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="client"
-			org.apache.ws.security.crypto.merlin.keystore.alias="soaprequester"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-sender-2048.ks" />
+			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.password="client"
+			org.apache.wss4j.crypto.merlin.keystore.alias="soaprequester"
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/dsig-sender-2048.ks" />
 
 	</wsSecurityClient>
 	
