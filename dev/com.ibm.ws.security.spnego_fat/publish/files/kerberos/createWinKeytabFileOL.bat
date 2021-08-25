@@ -50,5 +50,5 @@ echo %DATE% %TIME%, Exit Code is %errorlevel%
 setspn -a %SERVICE_NAME%/%HOSTNAME% %USER%
 echo %DATE% %TIME%, Exit Code is %errorlevel%
 
-ktpass -out %KEYTAB% -in localhost_HTTP_krb5.keytab -princ %SERVICE_NAME%/%HOSTNAME%@%REALM% -mapUser %USER%@%REALM% -mapOp set -pass %PASSWORD% -crypto RC4-HMAC-NT -kvno 0 -ptype KRB5_NT_PRINCIPAL +Answer
+ktpass -out %KEYTAB% -in localhost_HTTP_krb5.keytab -princ %SERVICE_NAME%/%HOSTNAME%@%REALM% -mapUser %USER%@%REALM% -mapOp set -pass %PASSWORD% -crypto AES128-SHA1 -kvno 0 -ptype KRB5_NT_PRINCIPAL +Answer
 echo %DATE% %TIME%, Exit Code is %errorlevel%

@@ -9,5 +9,5 @@ echo %DATE% %TIME%
 setspn -A %SERVICE_NAME%/%HOSTNAME% %USER%
 echo %DATE% %TIME%, Exit Code is %errorlevel%
 
-ktpass -in %KEYTAB% -out %KEYTAB% -princ %SERVICE_NAME%/%HOSTNAME%@%REALM% -mapUser %USER%@%REALM% -mapOp add -pass %PASSWORD% -crypto RC4-HMAC-NT -kvno 0
+ktpass -in %KEYTAB% -out %KEYTAB% -princ %SERVICE_NAME%/%HOSTNAME%@%REALM% -mapUser %USER%@%REALM% -mapOp add -pass %PASSWORD% -crypto AES128-SHA1 -kvno 0
 echo %DATE% %TIME%, Exit Code is %errorlevel%
