@@ -671,7 +671,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
+        return getID();
     }
 
     @Override
@@ -679,7 +679,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         if (currentID != null) {
             return currentID;
         } else {
-            return toString();
+            return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
         }
     }
 }

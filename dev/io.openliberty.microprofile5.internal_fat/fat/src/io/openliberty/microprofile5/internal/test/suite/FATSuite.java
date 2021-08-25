@@ -20,6 +20,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @RunWith(Suite.class)
 @SuiteClasses({
                 BasicJAXRSCDITest.class,
+                //ConfiguredJAXRSCDITest.class, //Does not work yet
                 MP5CompatibleTest.class,
 })
 

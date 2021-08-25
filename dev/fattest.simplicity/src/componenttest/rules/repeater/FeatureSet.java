@@ -14,24 +14,29 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import componenttest.rules.repeater.EERepeatTests.EEVersion;
+
 /**
  * An immutable set of features with an ID
  */
 public class FeatureSet {
     private final String id;
     private final Set<String> features;
+    private final EEVersion eeVersion;
 
     /**
      * Create a new FeatureSet with the given ID and set of features
      *
-     * @param id       The ID of the FeatureSet. Must be unique.
-     * @param features The features to include in the set
+     * @param id        The ID of the FeatureSet. Must be unique.
+     * @param features  The features to include in the set
+     * @param eeVersion The EE Version that the features are based on. May be null.
      */
-    public FeatureSet(String id, Set<String> features) {
+    public FeatureSet(String id, Set<String> features, EEVersion eeVersion) {
         if (id == null)
             throw new NullPointerException();
         this.id = id;
         this.features = Collections.unmodifiableSet(new HashSet<>(features));
+        this.eeVersion = eeVersion;
     }
 
     /**
@@ -50,6 +55,15 @@ public class FeatureSet {
      */
     public final Set<String> getFeatures() {
         return this.features;
+    }
+
+    /**
+     * Get the EE Version upon which this set of features is based
+     *
+     * @return the EE version or null if not EE based
+     */
+    public final EEVersion getEEVersion() {
+        return this.eeVersion;
     }
 
     /**
@@ -113,6 +127,7 @@ public class FeatureSet {
     public static class FeatureSetBuilder {
 
         private final HashSet<String> features;
+        private final EEVersion eeVersion;
 
         /**
          * Create a new builder, starting with the same set of features from an existing FeatureSet
@@ -120,23 +135,26 @@ public class FeatureSet {
          * @param featureSet a FeatureSet to copy the features from
          */
         public FeatureSetBuilder(FeatureSet featureSet) {
-            this(featureSet.getFeatures());
+            this(featureSet.getFeatures(), featureSet.getEEVersion());
         }
 
         /**
          * Create a new builder, starting with the a given set of features
          *
-         * @param features a set of features to initially add
+         * @param features  a set of features to initially add
+         * @param eeVersion the EE version these features are based on
          */
-        public FeatureSetBuilder(Set<String> features) {
+        public FeatureSetBuilder(Set<String> features, EEVersion eeVersion) {
             this.features = new HashSet<>(features);
+            this.eeVersion = eeVersion;
         }
 
         /**
          * Create a new builder, initially with no features.
          */
-        public FeatureSetBuilder() {
+        public FeatureSetBuilder(EEVersion eeVersion) {
             this.features = new HashSet<>();
+            this.eeVersion = eeVersion;
         }
 
         /**
@@ -166,7 +184,7 @@ public class FeatureSet {
          * @return    the new FeatureSet
          */
         public FeatureSet build(String id) {
-            return new FeatureSet(id, this.features);
+            return new FeatureSet(id, this.features, this.eeVersion);
         }
     }
 

@@ -28,7 +28,7 @@ import componenttest.app.FATServlet;
 import componenttest.matchers.Matchers;
 
 @SuppressWarnings("serial")
-@WebServlet("/noCDITestServlet")
+@WebServlet("/")
 public class NoCDITestServlet extends FATServlet {
 
     public static final String NO_CDI_TEST_KEY = "aKey";
